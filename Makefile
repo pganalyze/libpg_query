@@ -100,5 +100,4 @@ examples: examples/simple
 	examples/simple
 
 examples/simple: $(ARLIB)
-	# -Wl,-undefined,dynamic_lookups
-	$(CC) -I. -L. -lpg_query -o $@ examples/simple.c
+	$(CC) -I. -L. -o $@ examples/simple.c $(ARLIB)
