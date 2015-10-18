@@ -40,34 +40,10 @@ DefElem * defWithOids(bool value)
   return makeDefElem("oids", (Node *) makeInteger(value));
 }
 
+/* src/timezone/pgtz.c */
+pg_tz *log_timezone = NULL;
+
 /* We don't even need these below, but the linker otherwise complains about them being used in files where we need some things */
-
-/* "_AllocateDir", referenced from:
-      _scan_directory_ci in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_start in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_next in libpg_query.a(pgtz.o) */
-#include <storage/fd.h>
-DIR* AllocateDir(const char *dirname)
-{
-  return NULL;
-}
-
-/* "_FreeDir", referenced from:
-      _scan_directory_ci in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_end in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_next in libpg_query.a(pgtz.o) */
-#include <storage/fd.h>
-int FreeDir(DIR *dir) {
-  return 0;
-}
-
-/* "_ReadDir", referenced from:
-      _scan_directory_ci in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_next in libpg_query.a(pgtz.o) */
-#include <storage/fd.h>
-struct dirent * ReadDir(DIR *dir, const char *dirname) {
-  return NULL;
-}
 
 /* "_DirectFunctionCall1Coll", referenced from:
       _pg_convert_to in libpg_query.a(mbutils.o)
@@ -234,14 +210,6 @@ Oid get_rel_type_id(Oid relid) {
   return 0;
 }
 
-/* "_get_share_path", referenced from:
-      _pg_TZDIR in libpg_query.a(pgtz.o) */
-#include <port.h>
-void get_share_path(const char *my_exec_path, char *ret_path)
-{
-  /* do nothing */
-}
-
 /*  "_get_typlenbyval", referenced from:
       _makeNullConst in libpg_query.a(makefuncs.o) */
 #include <utils/lsyscache.h>
@@ -284,25 +252,6 @@ size_t pg_strftime(char *s, size_t maxsize, const char *format, const struct pg_
   return 0;
 }
 
-/* "_pg_strncasecmp", referenced from:
-      _scan_directory_ci in libpg_query.a(pgtz.o) */
-int pg_strncasecmp(const char *s1, const char *s2, size_t n) {
-  return 0;
-}
-
-/* "_pg_toupper", referenced from:
-      _pg_tzset in libpg_query.a(pgtz.o) */
-unsigned char pg_toupper(unsigned char ch) {
-  return 0;
-}
-
-/* "_pg_tz_acceptable", referenced from:
-      _pg_tzenumerate_next in libpg_query.a(pgtz.o) */
-bool pg_tz_acceptable(pg_tz *tz)
-{
-  return false;
-}
-
 /* "_pg_wchar_strlen", referenced from:
       _pg_wchar2mb in libpg_query.a(mbutils.o) */
 #include <mb/pg_wchar.h>
@@ -338,8 +287,7 @@ int pq_putmessage(char msgtype, const char *s, size_t len)
 }
 
 /* "_proc_exit", referenced from:
-      _errfinish in libpg_query.a(elog.o)
-     (maybe you meant: _proc_exit_inprogress) */
+      _errfinish in libpg_query.a(elog.o) */
 #include <storage/ipc.h>
 void proc_exit(int code)
 {
@@ -351,21 +299,6 @@ void proc_exit(int code)
 #include <utils/lsyscache.h>
 bool type_is_rowtype(Oid typid) {
   return false;
-}
-
-/* "_tzload", referenced from:
-      _pg_tzset in libpg_query.a(pgtz.o)
-      _pg_tzenumerate_next in libpg_query.a(pgtz.o) */
-#include <pgtz.h>
-int tzload(const char *name, char *canonname, struct state * sp, int doextend) {
-  return 0;
-}
-
-/* "_tzparse", referenced from:
-      _pg_tzset in libpg_query.a(pgtz.o) */
-#include <pgtz.h>
-int tzparse(const char *name, struct state * sp, int lastditch) {
-  return 0;
 }
 
 /* "_write_syslogger_file", referenced from:

@@ -38,8 +38,7 @@ $(PGDIR)/src/backend/nodes/list.o \
 $(PGDIR)/src/backend/nodes/outfuncs_json.o \
 $(PGDIR)/src/backend/lib/stringinfo.o \
 $(PGDIR)/src/port/qsort.o \
-$(PGDIR)/src/common/psprintf.o \
-$(PGDIR)/src/timezone/pgtz.o
+$(PGDIR)/src/common/psprintf.o
 
 ALL_OBJS = $(OBJS) $(PGOBJS)
 
@@ -86,7 +85,6 @@ $(PGDIR): $(PGDIRGZ)
 	cd $(PGDIR); make -C src/backend/lib stringinfo.o
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
-	cd $(PGDIR); make -C src/timezone pgtz.o
 
 $(PGDIRGZ):
 	curl -o $(PGDIRGZ) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
