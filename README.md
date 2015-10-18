@@ -1,4 +1,4 @@
-# libpg_query
+# libpg_query [![Build Status](https://travis-ci.org/lfittl/libpg_query.svg?branch=master)](https://travis-ci.org/lfittl/libpg_query)
 
 C library for accessing the PostgreSQL parser outside of the server.
 
