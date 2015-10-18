@@ -12,44 +12,46 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```
-cd $GOROOT/src/pkg
-git clone git://github.com/lfittl/pg_query.go.git github.com/lfittl/pg_query.go
-cd github.com/lfittl/pg_query.go
+git clone git://github.com/lfittl/libpg_query
+cd libpg_query
 make
-go build
 ```
 
 Due to compiling parts of PostgreSQL, running `make` will take a while. Expect up to 5 minutes.
 
-Note: On some Linux systems you'll have to install the ```flex``` and ```curl``` packages beforehand.
-
 
 ## Usage
 
-### Parsing a query
+A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple.c) that parses a query looks like this:
 
-Put the following in a new Go package, after having installed pg_query as above:
+```
+#include <pg_query.h>
+#include <stdio.h>
 
-```go
-package main
+int main() {
+  PgQueryParseResult result;
 
-import (
-  "fmt"
-  pg_query "github.com/lfittl/pg_query.go"
-)
+  pg_query_init();
 
-func main() {
-  tree := pg_query.Parse("SELECT 1")
-  fmt.Printf("%s\n", tree)
+  result = pg_query_parse("SELECT 1");
+
+  printf("%s\n", result.parse_tree);
 }
 ```
 
-Running will output the query's parse tree:
+Compile it like this:
 
-```json
-$ go run main.go
+```
+cc -Ilibpg_query -Llibpg_query -lpg_query -Wl,-undefined,dynamic_lookup example.c
+```
+
+This will output:
+
+```
 [{"SELECT": {"distinctClause": null, "intoClause": null, "targetList": [{"RESTARGET": {"name": null, "indirection": null, "val": {"A_CONST": {"val": 1, "location": 7}}, "location": 7}}], "fromClause": null, "whereClause": null, "groupClause": null, "havingClause": null, "windowClause": null, "valuesLists": null, "sortClause": null, "limitOffset": null, "limitCount": null, "lockingClause": null, "withClause": null, "op": 0, "all": false, "larg": null, "rarg": null}}]
 ```
+
+Note that we currently require the `-Wl,-undefined,dynamic_lookup` since we only compile parts of the PostgreSQL source.
 
 
 ## Authors
