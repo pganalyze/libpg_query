@@ -14,4 +14,6 @@ int main() {
   result = pg_query_parse("SELECT 1");
 
   printf("%s\n", result.parse_tree);
+
+  return 0;
 }
