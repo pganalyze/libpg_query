@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/postgres
 PGDIRGZ = $(root_dir)/postgres.tar.gz
 
-PG_VERSION=9.4.5
+PG_VERSION = 9.4.5
 
 OBJS = pg_query.o \
 pg_query_parse.o \
@@ -43,7 +43,6 @@ CFLAGS   = -I $(PGDIR)/src/include -O2 -Wall -Wmissing-prototypes -Wpointer-arit
 -Wformat-security -fno-strict-aliasing -fwrapv
 INCFLAGS = -I.
 LIBPATH  = -L.
-LIBS 		 = -lpthread -ldl -lobjc
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
@@ -53,9 +52,7 @@ AR = ar rs
 RM = rm -f
 ECHO = echo
 
-# FIXME: Should respect architecture
-CC = clang
-LDSHARED = $(CC) -dynamic -bundle
+CC ?= cc
 
 all: $(ARLIB)
 
