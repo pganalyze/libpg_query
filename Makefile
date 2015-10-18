@@ -5,6 +5,8 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/postgres
 PGDIRGZ = $(root_dir)/postgres.tar.gz
 
+PG_VERSION=9.4.5
+
 OBJS = pg_query.o \
 pg_query_parse.o \
 pg_query_normalize.o \
@@ -65,8 +67,11 @@ clean:
 
 $(PGDIR): $(PGDIRGZ)
 	tar -xf $(PGDIRGZ)
-	mv $(root_dir)/postgres-pg_query $(PGDIR)
-	cd $(PGDIR); CFLAGS=-fPIC ./configure -q
+	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parse_replacement_char.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_regenerate_bison_flex_files.patch
+	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/utils/mb wchar.o encnames.o mbutils.o
 	cd $(PGDIR); make -C src/backend/utils/mmgr mcxt.o aset.o
@@ -81,7 +86,7 @@ $(PGDIR): $(PGDIRGZ)
 	cd $(PGDIR); make -C src/timezone pgtz.o
 
 $(PGDIRGZ):
-	curl -o $(PGDIRGZ) https://codeload.github.com/pganalyze/postgres/tar.gz/pg_query
+	curl -o $(PGDIRGZ) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
 
 .c.o: $(PGDIR)
 	@$(ECHO) compiling $(<)
