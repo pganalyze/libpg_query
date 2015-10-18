@@ -42,7 +42,7 @@ int main() {
 Compile it like this:
 
 ```
-cc -Ilibpg_query -Llibpg_query -lpg_query -Wl,-undefined,dynamic_lookup example.c
+cc -Ilibpg_query -Llibpg_query -lpg_query example.c
 ```
 
 This will output:
@@ -50,8 +50,6 @@ This will output:
 ```
 [{"SELECT": {"distinctClause": null, "intoClause": null, "targetList": [{"RESTARGET": {"name": null, "indirection": null, "val": {"A_CONST": {"val": 1, "location": 7}}, "location": 7}}], "fromClause": null, "whereClause": null, "groupClause": null, "havingClause": null, "windowClause": null, "valuesLists": null, "sortClause": null, "limitOffset": null, "limitCount": null, "lockingClause": null, "withClause": null, "op": 0, "all": false, "larg": null, "rarg": null}}]
 ```
-
-Note that we currently require the `-Wl,-undefined,dynamic_lookup` since we only compile parts of the PostgreSQL source.
 
 
 ## Authors

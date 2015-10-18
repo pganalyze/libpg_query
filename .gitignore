@@ -3,3 +3,6 @@ postgres.tar.gz
 
 *.o
 *.a
+
+examples/*
+!example/*.c

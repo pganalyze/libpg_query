@@ -1,7 +1,7 @@
 // Welcome to the easiest way to parse an SQL query :-)
 // Compile the file like this:
 //
-// cc -I../ -L../ -lpg_query -Wl,-undefined,dynamic_lookup simple.c
+// cc -I../ -L../ -lpg_query simple.c
 
 #include <pg_query.h>
 #include <stdio.h>

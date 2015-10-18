@@ -13,19 +13,24 @@ pg_query_normalize.o \
 pg_polyfills.o
 
 PGOBJS = $(PGDIR)/src/backend/utils/mb/wchar.o \
+$(PGDIR)/src/backend/libpq/pqformat.o \
 $(PGDIR)/src/backend/utils/mb/encnames.o \
 $(PGDIR)/src/backend/utils/mb/mbutils.o \
 $(PGDIR)/src/backend/utils/mmgr/mcxt.o \
 $(PGDIR)/src/backend/utils/mmgr/aset.o \
 $(PGDIR)/src/backend/utils/error/elog.o \
+$(PGDIR)/src/backend/utils/error/assert.o \
 $(PGDIR)/src/backend/utils/init/globals.o \
+$(PGDIR)/src/backend/utils/adt/datum.o \
 $(PGDIR)/src/backend/utils/adt/name.o \
 $(PGDIR)/src/backend/parser/gram.o \
 $(PGDIR)/src/backend/parser/parser.o \
 $(PGDIR)/src/backend/parser/keywords.o \
 $(PGDIR)/src/backend/parser/kwlookup.o \
 $(PGDIR)/src/backend/parser/scansup.o \
+$(PGDIR)/src/backend/nodes/bitmapset.o \
 $(PGDIR)/src/backend/nodes/copyfuncs.o \
+$(PGDIR)/src/backend/nodes/equalfuncs.o \
 $(PGDIR)/src/backend/nodes/nodeFuncs.o \
 $(PGDIR)/src/backend/nodes/makefuncs.o \
 $(PGDIR)/src/backend/nodes/value.o \
@@ -38,7 +43,7 @@ $(PGDIR)/src/timezone/pgtz.o
 
 ALL_OBJS = $(OBJS) $(PGOBJS)
 
-CFLAGS   = -I $(PGDIR)/src/include -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
+CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
 -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute \
 -Wformat-security -fno-strict-aliasing -fwrapv
 INCFLAGS = -I.
@@ -60,7 +65,7 @@ clean:
 	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES)
 	-@ $(RM) -r $(PGDIR)
 
-.PHONY: all clean
+.PHONY: all clean examples
 
 $(PGDIR): $(PGDIRGZ)
 	tar -xf $(PGDIRGZ)
@@ -70,13 +75,14 @@ $(PGDIR): $(PGDIRGZ)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_regenerate_bison_flex_files.patch
 	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib
 	cd $(PGDIR); make -C src/backend lib-recursive
+	cd $(PGDIR); make -C src/backend/libpq pqformat.o
 	cd $(PGDIR); make -C src/backend/utils/mb wchar.o encnames.o mbutils.o
 	cd $(PGDIR); make -C src/backend/utils/mmgr mcxt.o aset.o
-	cd $(PGDIR); make -C src/backend/utils/error elog.o
+	cd $(PGDIR); make -C src/backend/utils/error elog.o assert.o
 	cd $(PGDIR); make -C src/backend/utils/init globals.o
-	cd $(PGDIR); make -C src/backend/utils/adt name.o
+	cd $(PGDIR); make -C src/backend/utils/adt datum.o name.o
 	cd $(PGDIR); make -C src/backend/parser gram.o parser.o keywords.o kwlookup.o scansup.o
-	cd $(PGDIR); make -C src/backend/nodes copyfuncs.o nodeFuncs.o makefuncs.o value.o list.o outfuncs_json.o
+	cd $(PGDIR); make -C src/backend/nodes bitmapset.o copyfuncs.o equalfuncs.o nodeFuncs.o makefuncs.o value.o list.o outfuncs_json.o
 	cd $(PGDIR); make -C src/backend/lib stringinfo.o
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
@@ -91,3 +97,10 @@ $(PGDIRGZ):
 
 $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
+
+examples: examples/simple
+	examples/simple
+
+examples/simple: $(ARLIB)
+	# -Wl,-undefined,dynamic_lookups
+	$(CC) -I. -L. -lpg_query -o $@ examples/simple.c
