@@ -10,8 +10,10 @@ int main() {
   result = pg_query_parse("INSERT FROM DOES NOT WORK");
 
   if (result.error) {
-    printf("error: %s at %d\n", result.error->message, result.error->cursorpos);
+    printf("error: %s at location %d (%s:%d)\n", result.error->message,
+           result.error->cursorpos, result.error->filename, result.error->lineno);
     free(result.error->message);
+    free(result.error->filename);
     free(result.error);
   } else {
     printf("%s\n", result.parse_tree);

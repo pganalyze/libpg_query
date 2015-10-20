@@ -2,8 +2,10 @@
 #define PG_QUERY_H
 
 typedef struct {
-	char* message;
-	int cursorpos;
+	char* message; // exception message
+	char* filename; // source of exception (e.g. parse.l)
+	int lineno; // source of exception (e.g. 104)
+	int cursorpos; // char in query at which exception occurred
 } PgQueryError;
 
 typedef struct {

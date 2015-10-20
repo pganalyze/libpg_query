@@ -73,6 +73,8 @@ PgQueryParseResult pg_query_parse(char* input)
 
 		PgQueryError* error = malloc(sizeof(PgQueryError));
 		error->message   = strdup(error_data->message);
+		error->filename  = strdup(error_data->filename);
+		error->lineno    = error_data->lineno;
 		error->cursorpos = error_data->cursorpos;
 
 		result.error = error;
