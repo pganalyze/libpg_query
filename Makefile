@@ -44,7 +44,7 @@ ALL_OBJS = $(OBJS) $(PGOBJS)
 
 CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
 -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute \
--Wformat-security -fno-strict-aliasing -fwrapv
+-Wformat-security -fno-strict-aliasing -fwrapv -g
 INCFLAGS = -I.
 LIBPATH  = -L.
 
@@ -61,7 +61,7 @@ CC ?= cc
 all: $(ARLIB)
 
 clean:
-	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES)
+	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES)
 	-@ $(RM) -r $(PGDIR)
 
 .PHONY: all clean examples
@@ -72,7 +72,7 @@ $(PGDIR): $(PGDIRGZ)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parse_replacement_char.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_regenerate_bison_flex_files.patch
-	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib
+	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/libpq pqformat.o
 	cd $(PGDIR); make -C src/backend/utils/mb wchar.o encnames.o mbutils.o
@@ -96,8 +96,22 @@ $(PGDIRGZ):
 $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
 
-examples: examples/simple
-	examples/simple
+EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error
 
-examples/simple: $(ARLIB)
-	$(CC) -I. -L. -o $@ examples/simple.c $(ARLIB)
+examples: $(EXAMPLES)
+	examples/simple
+	examples/normalize
+	examples/simple_error
+	examples/normalize_error
+
+examples/simple: examples/simple.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g examples/simple.c $(ARLIB)
+
+examples/normalize: examples/normalize.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g examples/normalize.c $(ARLIB)
+
+examples/simple_error: examples/simple_error.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g examples/simple_error.c $(ARLIB)
+
+examples/normalize_error: examples/normalize_error.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g examples/normalize_error.c $(ARLIB)

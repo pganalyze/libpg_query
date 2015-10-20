@@ -20,6 +20,7 @@ int client_min_messages = NOTICE;
 int log_min_error_statement = ERROR;
 int log_min_messages = WARNING;
 int trace_recovery_messages = LOG;
+bool assert_enabled = true;
 
 /* src/backend/storage/lmgr/proc.c */
 #include "storage/proc.h"

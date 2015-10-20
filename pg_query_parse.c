@@ -68,6 +68,7 @@ PgQueryParseResult pg_query_parse(char* input)
 	}
 	PG_CATCH();
 	{
+		MemoryContextSwitchTo(ctx);
 		ErrorData* error_data = CopyErrorData();
 
 		PgQueryError* error = malloc(sizeof(PgQueryError));
