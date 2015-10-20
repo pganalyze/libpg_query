@@ -44,7 +44,7 @@ ALL_OBJS = $(OBJS) $(PGOBJS)
 
 CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
 -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute \
--Wformat-security -fno-strict-aliasing -fwrapv -g
+-Wformat-security -fno-strict-aliasing -fwrapv -fPIC -g
 INCFLAGS = -I.
 LIBPATH  = -L.
 
