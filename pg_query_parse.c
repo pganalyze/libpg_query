@@ -95,3 +95,15 @@ PgQueryParseResult pg_query_parse(char* input)
 
 	return result;
 }
+
+void pg_query_free_parse_result(PgQueryParseResult result)
+{
+  if (result.error) {
+    free(result.error->message);
+    free(result.error->filename);
+    free(result.error);
+  }
+
+  free(result.parse_tree);
+  free(result.stderr_buffer);
+}
