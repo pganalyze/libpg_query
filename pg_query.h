@@ -19,8 +19,16 @@ typedef struct {
   PgQueryError* error;
 } PgQueryNormalizeResult;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void pg_query_init(void);
 PgQueryNormalizeResult pg_query_normalize(char* input);
 PgQueryParseResult pg_query_parse(char* input);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
