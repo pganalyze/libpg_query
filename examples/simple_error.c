@@ -12,15 +12,11 @@ int main() {
   if (result.error) {
     printf("error: %s at location %d (%s:%d)\n", result.error->message,
            result.error->cursorpos, result.error->filename, result.error->lineno);
-    free(result.error->message);
-    free(result.error->filename);
-    free(result.error);
   } else {
     printf("%s\n", result.parse_tree);
   }
 
-  free(result.parse_tree);
-  free(result.stderr_buffer);
+  pg_query_free_parse_result(result);
 
   return 0;
 }

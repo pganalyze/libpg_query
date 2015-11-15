@@ -16,14 +16,11 @@ int main() {
 
   if (result.error) {
     printf("error: %s at %d\n", result.error->message, result.error->cursorpos);
-    free(result.error->message);
-    free(result.error);
   } else {
     printf("%s\n", result.parse_tree);
   }
 
-  free(result.parse_tree);
-  free(result.stderr_buffer);
+  pg_query_free_parse_result(result);
 
   return 0;
 }

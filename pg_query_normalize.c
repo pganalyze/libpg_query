@@ -358,3 +358,14 @@ PgQueryNormalizeResult pg_query_normalize(char* input)
 
 	return result;
 }
+
+void pg_query_free_normalize_result(PgQueryNormalizeResult result)
+{
+  if (result.error) {
+    free(result.error->message);
+    free(result.error->filename);
+    free(result.error);
+  }
+
+  free(result.normalized_query);
+}
