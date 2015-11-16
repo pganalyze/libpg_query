@@ -17,7 +17,7 @@ new file mode 100644
 index 0000000..eaded0f
 --- /dev/null
 +++ b/src/backend/nodes/outfuncs_json.c
-@@ -0,0 +1,1035 @@
+@@ -0,0 +1,1036 @@
 +/*-------------------------------------------------------------------------
 + *
 + * outfuncs_json.c
@@ -140,7 +140,7 @@ index 0000000..eaded0f
 +static void
 +_outToken(StringInfo str, const char *s)
 +{
-+	if (s == NULL || *s == '\0')
++	if (s == NULL)
 +	{
 +		appendStringInfoString(str, "null");
 +		return;
@@ -817,7 +817,7 @@ index 0000000..eaded0f
 +			break;
 +		case T_BitString:
 +			/* internal representation already has leading 'b' */
-+			appendStringInfoString(str, value->val.str);
++			_outToken(str, value->val.str);
 +			break;
 +		case T_Null:
 +			/* this is seen only within A_Const, not in transformed trees */
@@ -834,6 +834,7 @@ index 0000000..eaded0f
 +{
 +	WRITE_NODE_TYPE("A_CONST");
 +
++	appendStringInfo(str, "\"type\": %d, ", node->val.type);
 +	appendStringInfoString(str, "\"val\": ");
 +	_outValue(str, &(node->val));
 +	appendStringInfoString(str, ", ");
