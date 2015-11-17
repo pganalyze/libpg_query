@@ -17,7 +17,7 @@ new file mode 100644
 index 0000000..eaded0f
 --- /dev/null
 +++ b/src/backend/nodes/outfuncs_json.c
-@@ -0,0 +1,1036 @@
+@@ -0,0 +1,1057 @@
 +/*-------------------------------------------------------------------------
 + *
 + * outfuncs_json.c
@@ -834,7 +834,28 @@ index 0000000..eaded0f
 +{
 +	WRITE_NODE_TYPE("A_CONST");
 +
-+	appendStringInfo(str, "\"type\": %d, ", node->val.type);
++	appendStringInfoString(str, "\"type\": ");
++	switch (node->val.type)
++	{
++		case T_Integer:
++			appendStringInfoString(str, "\"integer\", ");
++			break;
++		case T_Float:
++			appendStringInfoString(str, "\"float\", ");
++			break;
++		case T_String:
++			appendStringInfoString(str, "\"string\", ");
++			break;
++		case T_BitString:
++			appendStringInfoString(str, "\"bitstring\", ");
++			break;
++		case T_Null:
++			appendStringInfoString(str, "\"null\", ");
++			break;
++		default:
++			elog(ERROR, "unrecognized value type: %d", (int) node->val.type);
++			break;
++	}
 +	appendStringInfoString(str, "\"val\": ");
 +	_outValue(str, &(node->val));
 +	appendStringInfoString(str, ", ");
