@@ -3,7 +3,7 @@ root_dir := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 TARGET = pg_query
 ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/postgres
-PGDIRGZ = $(root_dir)/postgres.tar.gz
+PGDIRBZ2 = $(root_dir)/postgres.tar.bz2
 
 PG_VERSION = 9.4.5
 
@@ -50,7 +50,7 @@ LIBPATH  = -L.
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
-CLEANFILES = $(PGDIRGZ)
+CLEANFILES = $(PGDIRBZ2)
 
 AR = ar rs
 RM = rm -f
@@ -66,8 +66,8 @@ clean:
 
 .PHONY: all clean examples
 
-$(PGDIR): $(PGDIRGZ)
-	tar -xf $(PGDIRGZ)
+$(PGDIR): $(PGDIRBZ2)
+	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parse_replacement_char.patch
@@ -86,8 +86,8 @@ $(PGDIR): $(PGDIRGZ)
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
 
-$(PGDIRGZ):
-	curl -o $(PGDIRGZ) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
+$(PGDIRBZ2):
+	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
 
 .c.o: $(PGDIR)
 	@$(ECHO) compiling $(<)

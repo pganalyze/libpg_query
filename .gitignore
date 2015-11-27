@@ -1,5 +1,5 @@
 postgres/*
-postgres.tar.gz
+postgres.tar.bz2
 
 *.o
 *.a
