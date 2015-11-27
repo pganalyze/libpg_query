@@ -339,10 +339,13 @@ PgQueryNormalizeResult pg_query_normalize(char* input)
 	}
 	PG_CATCH();
 	{
-		MemoryContextSwitchTo(ctx);
-		ErrorData* error_data = CopyErrorData();
+		ErrorData* error_data;
+		PgQueryError* error;
 
-		PgQueryError* error = malloc(sizeof(PgQueryError));
+		MemoryContextSwitchTo(ctx);
+		error_data = CopyErrorData();
+
+		error = malloc(sizeof(PgQueryError));
 		error->message   = strdup(error_data->message);
 		error->filename  = strdup(error_data->filename);
 		error->lineno    = error_data->lineno;
