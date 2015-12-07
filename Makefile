@@ -10,7 +10,8 @@ PG_VERSION = 9.4.5
 OBJS = pg_query.o \
 pg_query_parse.o \
 pg_query_normalize.o \
-pg_polyfills.o
+pg_polyfills.o \
+output_node_json.o
 
 PGOBJS = $(PGDIR)/src/backend/utils/mb/wchar.o \
 $(PGDIR)/src/backend/libpq/pqformat.o \
@@ -47,6 +48,10 @@ CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-
 -Wformat-security -fno-strict-aliasing -fwrapv -fPIC -g
 INCFLAGS = -I.
 LIBPATH  = -L.
+
+ifeq ($(JSON_OUTPUT_V2),1)
+	CFLAGS += -D JSON_OUTPUT_V2
+endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
