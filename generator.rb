@@ -184,7 +184,9 @@ class Generator
           elsif ['Bitmapset*', 'Relids'].include?(type)
             @outmethods[target] += format("  WRITE_BITMAPSET_FIELD(%s);\n", name)
           elsif type == 'Value'
-            @outmethods[target] += format("  _outValue(str, &node->%s);\n", name)
+            @outmethods[target] += format("  appendStringInfo(str, \"\\\"%s\\\": \");\n", name)
+            @outmethods[target] += format("  _outNode(str, &node->%s);\n", name)
+            @outmethods[target] += format("  appendStringInfo(str, \", \");\n", name)
           elsif type == 'Node*' || @nodetypes.include?(type[0..-2])
             @outmethods[target] += format("  WRITE_NODE_FIELD(%s);\n", name)
           elsif type.end_with?('*')
@@ -218,11 +220,11 @@ class Generator
         if INLINED_TYPES.include?($1)
           source = $1
           target = $1 + 'Info'
-          @outmethods[target] = format("  WRITE_NODE_TYPE(\"%s\");\n\n", target.upcase)
+          @outmethods[target] = format("  WRITE_NODE_TYPE(\"%s\");\n\n", target)
           @outmethods[source] = format("  _out%s(str, (const %s *) node);\n\n", target, source)
         else
           source = target = $1
-          @outmethods[target] = format("  WRITE_NODE_TYPE(\"%s\");\n\n", target.upcase)
+          @outmethods[target] = format("  WRITE_NODE_TYPE(\"%s\");\n\n", target)
         end
       elsif line[/^typedef ([A-z]+) ([A-z]+);/]
         @outmethods[$2] = @outmethods[$1]

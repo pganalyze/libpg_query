@@ -31,8 +31,8 @@
 
 /* Write a char field (ie, one ascii character) */
 #define WRITE_CHAR_FIELD(fldname) \
-  if (node->fldname == 0) { appendStringInfo(str, "\"" CppAsString(fldname) "\": null, "); \
-  } else { appendStringInfo(str, "\"" CppAsString(fldname) "\": \"%c\", ", node->fldname); }
+	if (node->fldname == 0) { appendStringInfo(str, "\"" CppAsString(fldname) "\": null, "); \
+	} else { appendStringInfo(str, "\"" CppAsString(fldname) "\": \"%c\", ", node->fldname); }
 
 /* Write an enumerated-type field as an integer code */
 #define WRITE_ENUM_FIELD(fldname, enumtype) \
@@ -62,7 +62,7 @@
 #define WRITE_NODE_FIELD(fldname) \
 	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
 	 _outNode(str, node->fldname), \
-     appendStringInfo(str, ", "))
+		 appendStringInfo(str, ", "))
 
 /* Write a bitmapset field */
 #define WRITE_BITMAPSET_FIELD(fldname) \
@@ -71,7 +71,7 @@
 	 appendStringInfo(str, ", "))
 
 
-#define booltostr(x)  ((x) ? "true" : "false")
+#define booltostr(x)	((x) ? "true" : "false")
 
 static void _outNode(StringInfo str, const void *obj);
 
@@ -140,14 +140,14 @@ _outList(StringInfo str, const List *node)
 
 /*
  * _outBitmapset -
- *	   converts a bitmap set of integers
+ *		 converts a bitmap set of integers
  *
  * Note: the output format is "(b int int ...)", similar to an integer List.
  */
 static void
 _outBitmapset(StringInfo str, const Bitmapset *bms)
 {
-	Bitmapset  *tmpset;
+	Bitmapset	*tmpset;
 	int			x;
 
 	appendStringInfoChar(str, '[');
@@ -168,7 +168,7 @@ _outDatum(StringInfo str, Datum value, int typlen, bool typbyval)
 {
 	Size		length,
 				i;
-	char	   *s;
+	char		 *s;
 
 	length = datumGetSize(value, typbyval, typlen);
 
@@ -230,23 +230,32 @@ _outPathInfo(StringInfo str, const Path *node)
 static void
 _outValue(StringInfo str, const Value *node)
 {
-  WRITE_NODE_TYPE("VALUE");
-
-	WRITE_ENUM_FIELD(type, NodeTag);
-
 	switch (node->type)
 	{
 		case T_Integer:
-		  appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
+			WRITE_NODE_TYPE("Integer");
+			appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
 			break;
 		case T_Float:
-	  case T_String:
-    case T_BitString:
-		  appendStringInfo(str, "\"str\": ");
-		  _outToken(str, node->val.str);
-		  appendStringInfo(str, ", ");
+			WRITE_NODE_TYPE("Float");
+			appendStringInfo(str, "\"str\": ");
+			_outToken(str, node->val.str);
+			appendStringInfo(str, ", ");
+			break;
+		case T_String:
+			WRITE_NODE_TYPE("String");
+			appendStringInfo(str, "\"str\": ");
+			_outToken(str, node->val.str);
+			appendStringInfo(str, ", ");
+			break;
+		case T_BitString:
+			WRITE_NODE_TYPE("BitString");
+			appendStringInfo(str, "\"str\": ");
+			_outToken(str, node->val.str);
+			appendStringInfo(str, ", ");
 			break;
 		case T_Null:
+			WRITE_NODE_TYPE("Null");
 			break;
 		default:
 			elog(ERROR, "unrecognized node type: %d", (int) node->type);
@@ -262,7 +271,7 @@ _outMergeJoin(StringInfo str, const MergeJoin *node)
 	int			numCols;
 	int			i;
 
-	WRITE_NODE_TYPE("MERGEJOIN");
+	WRITE_NODE_TYPE("MergeJoin");
 
 	_outJoinInfo(str, (const Join *) node);
 
@@ -298,7 +307,7 @@ _outMergeJoin(StringInfo str, const MergeJoin *node)
 static void
 _outConst(StringInfo str, const Const *node)
 {
-	WRITE_NODE_TYPE("CONST");
+	WRITE_NODE_TYPE("Const");
 
 	WRITE_OID_FIELD(consttype);
 	WRITE_INT_FIELD(consttypmod);
@@ -319,7 +328,7 @@ _outConst(StringInfo str, const Const *node)
 static void
 _outPath(StringInfo str, const Path *node)
 {
-	WRITE_NODE_TYPE("PATH");
+	WRITE_NODE_TYPE("Path");
 
 	_outPathInfo(str, (const Path *) node);
 }
@@ -331,7 +340,7 @@ _outEquivalenceClass(StringInfo str, const EquivalenceClass *node)
 	while (node->ec_merged)
 		node = node->ec_merged;
 
-	WRITE_NODE_TYPE("EQUIVALENCECLASS");
+	WRITE_NODE_TYPE("EquivalenceClass");
 
 	WRITE_NODE_FIELD(ec_opfamilies);
 	WRITE_OID_FIELD(ec_collation);
@@ -348,7 +357,7 @@ _outEquivalenceClass(StringInfo str, const EquivalenceClass *node)
 
 /*
  * _outNode -
- *	  converts a Node into the JSON representation and appends it to str
+ *		converts a Node into the JSON representation and appends it to str
  */
 static void
 _outNode(StringInfo str, const void *obj)
@@ -406,15 +415,13 @@ _outNode(StringInfo str, const void *obj)
 }
 
 /*
- * nodeToJSONStringV2 -
- *	   returns the JSON representation of the Node as a palloc'd string
+ * nodeToJSONStringV2 - returns the JSON representation of the Node as a palloc'd string
  */
 char *
 nodeToJSONStringV2(const void *obj)
 {
 	StringInfoData str;
 
-	/* see stringinfo.h for an explanation of this maneuver */
 	initStringInfo(&str);
 
 	if (obj == NULL) /* Make sure we generate valid JSON for empty queries */

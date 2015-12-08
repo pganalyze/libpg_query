@@ -17,10 +17,11 @@ const char* tests[] = {
 
 int main() {
   PgQueryParseResult result;
+  size_t i;
 
   pg_query_init();
 
-  for (size_t i = 0; i < testCount; i++) {
+  for (i = 0; i < testCount; i++) {
     result = pg_query_parse(tests[i]);
 
     if (result.error) {
