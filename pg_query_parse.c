@@ -1,6 +1,10 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
 
+#ifdef JSON_OUTPUT_V2
+	#include "output_node_json.h"
+#endif
+
 #include "parser/parser.h"
 #include "parser/scanner.h"
 #include "parser/scansup.h"
@@ -8,7 +12,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-PgQueryParseResult pg_query_parse(char* input)
+PgQueryParseResult pg_query_parse(const char* input)
 {
 	MemoryContext ctx = NULL;
 	PgQueryParseResult result = {0};
@@ -54,7 +58,12 @@ PgQueryParseResult pg_query_parse(char* input)
 		char *tree_json;
 
 		tree = raw_parser(input);
+
+#ifdef JSON_OUTPUT_V2
+		tree_json = nodeToJSONStringV2(tree);
+#else
 		tree_json = nodeToJSONString(tree);
+#endif
 
 #ifndef DEBUG
 		// Save stderr for result

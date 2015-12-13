@@ -35,7 +35,6 @@ $(PGDIR)/src/backend/nodes/nodeFuncs.o \
 $(PGDIR)/src/backend/nodes/makefuncs.o \
 $(PGDIR)/src/backend/nodes/value.o \
 $(PGDIR)/src/backend/nodes/list.o \
-$(PGDIR)/src/backend/nodes/outfuncs_json.o \
 $(PGDIR)/src/backend/lib/stringinfo.o \
 $(PGDIR)/src/port/qsort.o \
 $(PGDIR)/src/common/psprintf.o
@@ -47,6 +46,13 @@ CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-
 -Wformat-security -fno-strict-aliasing -fwrapv -fPIC -g
 INCFLAGS = -I.
 LIBPATH  = -L.
+
+ifeq ($(JSON_OUTPUT_V2),1)
+	CFLAGS += -D JSON_OUTPUT_V2
+	OBJS += output_node_json.o
+else
+	PGOBJS += $(PGDIR)/src/backend/nodes/outfuncs_json.o
+endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
@@ -69,7 +75,9 @@ clean:
 $(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch
+	if [ "$$JSON_OUTPUT_V2" != "1" ] ; then \
+		cd $(PGDIR) && patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch ; \
+	fi
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parse_replacement_char.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_regenerate_bison_flex_files.patch
 	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
@@ -81,7 +89,10 @@ $(PGDIR): $(PGDIRBZ2)
 	cd $(PGDIR); make -C src/backend/utils/init globals.o
 	cd $(PGDIR); make -C src/backend/utils/adt datum.o name.o
 	cd $(PGDIR); make -C src/backend/parser gram.o parser.o keywords.o kwlookup.o scansup.o
-	cd $(PGDIR); make -C src/backend/nodes bitmapset.o copyfuncs.o equalfuncs.o nodeFuncs.o makefuncs.o value.o list.o outfuncs_json.o
+	cd $(PGDIR); make -C src/backend/nodes bitmapset.o copyfuncs.o equalfuncs.o nodeFuncs.o makefuncs.o value.o list.o
+	if [ "$$JSON_OUTPUT_V2" != "1" ] ; then \
+		cd $(PGDIR) && make -C src/backend/nodes outfuncs_json.o ; \
+	fi
 	cd $(PGDIR); make -C src/backend/lib stringinfo.o
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
