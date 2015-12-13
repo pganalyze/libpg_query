@@ -228,39 +228,43 @@ _outPathInfo(StringInfo str, const Path *node)
 }
 
 static void
-_outValue(StringInfo str, const Value *node)
+_outInteger(StringInfo str, const Value *node)
 {
-	switch (node->type)
-	{
-		case T_Integer:
-			WRITE_NODE_TYPE("Integer");
-			appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
-			break;
-		case T_Float:
-			WRITE_NODE_TYPE("Float");
-			appendStringInfo(str, "\"str\": ");
-			_outToken(str, node->val.str);
-			appendStringInfo(str, ", ");
-			break;
-		case T_String:
-			WRITE_NODE_TYPE("String");
-			appendStringInfo(str, "\"str\": ");
-			_outToken(str, node->val.str);
-			appendStringInfo(str, ", ");
-			break;
-		case T_BitString:
-			WRITE_NODE_TYPE("BitString");
-			appendStringInfo(str, "\"str\": ");
-			_outToken(str, node->val.str);
-			appendStringInfo(str, ", ");
-			break;
-		case T_Null:
-			WRITE_NODE_TYPE("Null");
-			break;
-		default:
-			elog(ERROR, "unrecognized node type: %d", (int) node->type);
-			break;
-	}
+	WRITE_NODE_TYPE("Integer");
+	appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
+}
+
+static void
+_outFloat(StringInfo str, const Value *node)
+{
+	WRITE_NODE_TYPE("Float");
+	appendStringInfo(str, "\"str\": ");
+	_outToken(str, node->val.str);
+	appendStringInfo(str, ", ");
+}
+
+static void
+_outString(StringInfo str, const Value *node)
+{
+	WRITE_NODE_TYPE("String");
+	appendStringInfo(str, "\"str\": ");
+	_outToken(str, node->val.str);
+	appendStringInfo(str, ", ");
+}
+
+static void
+_outBitString(StringInfo str, const Value *node)
+{
+	WRITE_NODE_TYPE("BitString");
+	appendStringInfo(str, "\"str\": ");
+	_outToken(str, node->val.str);
+	appendStringInfo(str, ", ");
+}
+
+static void
+_outNull(StringInfo str, const Value *node)
+{
+	WRITE_NODE_TYPE("Null");
 }
 
 #include "output_node_json_defs.c"
@@ -370,18 +374,26 @@ _outNode(StringInfo str, const void *obj)
 	{
 		_outList(str, obj);
 	}
-	else if (IsA(obj, Integer) || IsA(obj, Float) || IsA(obj, String) || IsA(obj, BitString))
-	{
-		appendStringInfoChar(str, '{');
-		_outValue(str, obj);
-		removeTrailingDelimiter(str);
-		appendStringInfo(str, "}}");
-	}
 	else
 	{
 		appendStringInfoChar(str, '{');
 		switch (nodeTag(obj))
 		{
+			case T_Integer:
+				_outInteger(str, obj);
+				break;
+			case T_Float:
+				_outFloat(str, obj);
+				break;
+			case T_String:
+				_outString(str, obj);
+				break;
+			case T_BitString:
+				_outBitString(str, obj);
+				break;
+			case T_Null:
+				_outNull(str, obj);
+				break;
 			case T_MergeJoin:
 				_outMergeJoin(str, obj);
 				break;
