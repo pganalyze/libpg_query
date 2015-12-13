@@ -270,45 +270,6 @@ _outNull(StringInfo str, const Value *node)
 #include "output_node_json_defs.c"
 
 static void
-_outMergeJoin(StringInfo str, const MergeJoin *node)
-{
-	int			numCols;
-	int			i;
-
-	WRITE_NODE_TYPE("MergeJoin");
-
-	_outJoinInfo(str, (const Join *) node);
-
-	WRITE_NODE_FIELD(mergeclauses);
-
-	numCols = list_length(node->mergeclauses);
-
-	appendStringInfoString(str, "\"mergeFamilies\": [");
-	for (i = 0; i < numCols; i++)
-		appendStringInfo(str, "%u, ", node->mergeFamilies[i]);
-	removeTrailingDelimiter(str);
-	appendStringInfoString(str, "], ");
-
-	appendStringInfoString(str, "\"mergeCollations\": [");
-	for (i = 0; i < numCols; i++)
-		appendStringInfo(str, "%u, ", node->mergeCollations[i]);
-	removeTrailingDelimiter(str);
-	appendStringInfoString(str, "], ");
-
-	appendStringInfoString(str, "\"mergeStrategies\": [");
-	for (i = 0; i < numCols; i++)
-		appendStringInfo(str, "%d, ", node->mergeStrategies[i]);
-	removeTrailingDelimiter(str);
-	appendStringInfoString(str, "], ");
-
-	appendStringInfoString(str, "\"mergeNullsFirst\": [");
-	for (i = 0; i < numCols; i++)
-		appendStringInfo(str, "%d, ", (int) node->mergeNullsFirst[i]);
-	removeTrailingDelimiter(str);
-	appendStringInfoString(str, "], ");
-}
-
-static void
 _outConst(StringInfo str, const Const *node)
 {
 	WRITE_NODE_TYPE("Const");
@@ -393,9 +354,6 @@ _outNode(StringInfo str, const void *obj)
 				break;
 			case T_Null:
 				_outNull(str, obj);
-				break;
-			case T_MergeJoin:
-				_outMergeJoin(str, obj);
 				break;
 			case T_Const:
 				_outConst(str, obj);

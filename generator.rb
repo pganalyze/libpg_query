@@ -26,72 +26,8 @@ class Generator
   end
 
   TYPE_OVERRIDES = {
-    ['Query', 'queryId']                     => :skip, # we intentionally do not print the queryId field
-    ['RangeVar', 'catalogname']              => :skip, # presently not semantically meaningful
-    ['PlannerGlobal', 'boundParams']         => :skip, # NB: this isn't a complete set of fields
-    ['PlannerGlobal', 'subroots']            => :skip, # ^
-    ['Plan', 'startup_cost']                 => 'float',
-    ['Plan', 'total_cost']                   => 'float',
-    ['Plan', 'plan_rows']                    => 'float',
-    ['IndexPath', 'indextotalcost']          => 'float',
-    ['IndexPath', 'indexselectivity']        => 'float',
-    ['BitmapAndPath', 'bitmapselectivity']   => 'float',
-    ['BitmapOrPath', 'bitmapselectivity']    => 'float',
-    ['MergeAppendPath', 'limit_tuples']      => 'float',
-    ['SubPlan', 'startup_cost']              => 'float',
-    ['SubPlan', 'per_call_cost']             => 'float',
-    ['ParamPathInfo', 'ppi_rows']            => 'float',
-    ['RestrictInfo', 'eval_cost']            => :skip, # NB: this isn't a complete set of fields
-    ['RestrictInfo', 'scansel_cache']        => :skip, # ^
-    ['RestrictInfo', 'left_bucketsize']      => :skip, # ^
-    ['RestrictInfo', 'right_bucketsize']     => :skip, # ^
-    ['RestrictInfo', 'parent_ec']            => :skip, # don't write, leads to infinite recursion in plan tree dump
-    ['RestrictInfo', 'left_ec']              => :skip, # ^
-    ['RestrictInfo', 'right_ec']             => :skip, # ^
-    ['RestrictInfo', 'norm_selec']           => 'float',
-    ['RestrictInfo', 'outer_selec']          => 'float',
-    ['MinMaxAggInfo', 'subroot']             => :skip, # too large, not interesting enough
-    ['MinMaxAggInfo', 'pathcost']            => 'float',
-    ['PlannerInfo', 'parent_root']           => :skip, # NB: this isn't a complete set of fields
-    ['PlannerInfo', 'simple_rel_array_size'] => :skip, # ^
-    ['PlannerInfo', 'join_rel_hash']         => :skip, # ^
-    ['PlannerInfo', 'initial_rels']          => :skip, # ^
-    ['PlannerInfo', 'planner_cxt']           => :skip, # ^
-    ['PlannerInfo', 'non_recursive_plan']    => :skip, # ^
-    ['PlannerInfo', 'join_search_private']   => :skip, # ^
-    ['PlannerInfo', 'total_table_pages']     => 'float',
-    ['PlannerInfo', 'tuple_fraction']        => 'float',
-    ['PlannerInfo', 'limit_tuples']          => 'float',
-    ['RelOptInfo', 'rows']                   => 'float',
-    ['RelOptInfo', 'reltablespace']          => 'uint',
-    ['RelOptInfo', 'pages']                  => 'uint',
-    ['RelOptInfo', 'tuples']                 => 'float',
-    ['RelOptInfo', 'allvisfrac']             => 'float',
-    ['RelOptInfo', 'attr_needed']            => :skip, # NB: this isn't a complete set of fields
-    ['RelOptInfo', 'attr_widths']            => :skip, # ^
-    ['RelOptInfo', 'baserestrictcost']       => :skip, # ^
-    ['RelOptInfo', 'fdwroutine']             => :skip, # don't try to print
-    ['RelOptInfo', 'fdw_private']            => :skip, # ^
-    ['IndexOptInfo', 'pages']                => 'uint',
-    ['IndexOptInfo', 'tuples']               => 'float',
-    ['IndexOptInfo', 'reltablespace']        => :skip, # NB: this isn't a complete set of fields
-    ['IndexOptInfo', 'amcostestimate']       => :skip, # ^
-    ['IndexOptInfo', 'rel']                  => :skip, # Do NOT print rel field, else infinite recursion
-    ['IndexOptInfo', 'indexkeys']            => :skip, # array fields aren't really worth the trouble to print
-    ['IndexOptInfo', 'indexcollations']      => :skip, # ^
-    ['IndexOptInfo', 'opfamily']             => :skip, # ^
-    ['IndexOptInfo', 'opcintype']            => :skip, # ^
-    ['IndexOptInfo', 'sortopfamily']         => :skip, # ^
-    ['IndexOptInfo', 'reverse_sort']         => :skip, # ^
-    ['IndexOptInfo', 'nulls_first']          => :skip, # ^
-    ['IndexOptInfo', 'indexprs']             => :skip, # redundant since we print indextlist
-    ['IndexOptInfo', 'canreturn']            => :skip, # we don't bother with fields copied from the pg_am entry
-    ['IndexOptInfo', 'amcanorderbyop']       => :skip, # ^
-    ['IndexOptInfo', 'amoptionalkey']        => :skip, # ^
-    ['IndexOptInfo', 'amsearcharray']        => :skip, # ^
-    ['IndexOptInfo', 'amsearchnulls']        => :skip, # ^
-    ['IndexOptInfo', 'amhasgettuple']        => :skip, # ^
-    ['IndexOptInfo', 'amhasgetbitmap']       => :skip, # ^
+    ['Query', 'queryId']        => :skip, # we intentionally do not print the queryId field
+    ['RangeVar', 'catalogname'] => :skip, # presently not semantically meaningful
   }
 
   INLINE_LISTS = {
@@ -141,8 +77,6 @@ class Generator
     },
   }
   INLINED_TYPES = [
-    'Plan', 'Scan', 'Join',
-    'Path', 'JoinPath',
     'CreateStmt',
   ]
 
@@ -151,11 +85,12 @@ class Generator
     @outmethods = {}
     @inlined_outmethods = []
 
+    # Note: We intentionally don't read relation.h & plannodes.h since we're only
+    #   interesting in parsing (not planning) queries
+
     lines = File.read(File.join(@pgdir, '/src/include/nodes/parsenodes.h')) +
-            File.read(File.join(@pgdir, '/src/include/nodes/plannodes.h')) +
             File.read(File.join(@pgdir, '/src/include/nodes/primnodes.h')) +
-            File.read(File.join(@pgdir, '/src/include/nodes/value.h')) +
-            File.read(File.join(@pgdir, '/src/include/nodes/relation.h'))
+            File.read(File.join(@pgdir, '/src/include/nodes/value.h'))
     lines.each_line do |line|
       if source
         if line[/^\s+(struct |const )?([A-z0-9]+)\s+(\*)?([A-z_]+);/]
@@ -186,7 +121,7 @@ class Generator
           elsif type == 'Value'
             @outmethods[target] += format("  appendStringInfo(str, \"\\\"%s\\\": \");\n", name)
             @outmethods[target] += format("  _outNode(str, &node->%s);\n", name)
-            @outmethods[target] += format("  appendStringInfo(str, \", \");\n", name)
+            @outmethods[target] += format("  appendStringInfo(str, \", \");\n")
           elsif type == 'Node*' || @nodetypes.include?(type[0..-2])
             @outmethods[target] += format("  WRITE_NODE_FIELD(%s);\n", name)
           elsif type.end_with?('*')
