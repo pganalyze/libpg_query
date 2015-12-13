@@ -13,16 +13,12 @@
 #define WRITE_NODE_TYPE(nodelabel) \
 	appendStringInfoString(str, "\"" nodelabel "\": {")
 
-/* Write an integer field (anything written as ":fldname %d") */
+/* Write an integer field */
 #define WRITE_INT_FIELD(fldname) \
 	appendStringInfo(str, "\"" CppAsString(fldname) "\": %d, ", node->fldname)
 
-/* Write an unsigned integer field (anything written as ":fldname %u") */
+/* Write an unsigned integer field */
 #define WRITE_UINT_FIELD(fldname) \
-	appendStringInfo(str, "\"" CppAsString(fldname) "\": %u, ", node->fldname)
-
-/* Write an OID field (don't hard-wire assumption that OID is same as uint) */
-#define WRITE_OID_FIELD(fldname) \
 	appendStringInfo(str, "\"" CppAsString(fldname) "\": %u, ", node->fldname)
 
 /* Write a long-integer field */
@@ -138,12 +134,6 @@ _outList(StringInfo str, const List *node)
 	appendStringInfoChar(str, ']');
 }
 
-/*
- * _outBitmapset -
- *		 converts a bitmap set of integers
- *
- * Note: the output format is "(b int int ...)", similar to an integer List.
- */
 static void
 _outBitmapset(StringInfo str, const Bitmapset *bms)
 {
@@ -158,73 +148,6 @@ _outBitmapset(StringInfo str, const Bitmapset *bms)
 	bms_free(tmpset);
 	removeTrailingDelimiter(str);
 	appendStringInfoChar(str, ']');
-}
-
-/*
- * Print the value of a Datum given its type.
- */
-static void
-_outDatum(StringInfo str, Datum value, int typlen, bool typbyval)
-{
-	Size		length,
-				i;
-	char		 *s;
-
-	length = datumGetSize(value, typbyval, typlen);
-
-	if (typbyval)
-	{
-		s = (char *) (&value);
-		/*appendStringInfo(str, "%u [ ", (unsigned int) length);*/
-		appendStringInfoChar(str, '[');
-		for (i = 0; i < (Size) sizeof(Datum); i++)
-			appendStringInfo(str, "%d, ", (int) (s[i]));
-		removeTrailingDelimiter(str);
-		appendStringInfoChar(str, ']');
-	}
-	else
-	{
-		s = (char *) DatumGetPointer(value);
-		if (!PointerIsValid(s))
-			appendStringInfoString(str, "[]");
-		else
-		{
-			/*appendStringInfo(str, "%u [ ", (unsigned int) length);*/
-			appendStringInfoChar(str, '[');
-			for (i = 0; i < length; i++)
-				appendStringInfo(str, "%d, ", (int) (s[i]));
-			removeTrailingDelimiter(str);
-			appendStringInfoChar(str, ']');
-		}
-	}
-}
-
-/*
-* print the basic stuff of all nodes that inherit from Path
-*
-* Note we do NOT print the parent, else we'd be in infinite recursion.
-* We can print the parent's relids for identification purposes, though.
-* We also do not print the whole of param_info, since it's printed by
-* _outRelOptInfo; it's sufficient and less cluttering to print just the
-* required outer relids.
-*/
-static void
-_outPathInfo(StringInfo str, const Path *node)
-{
-	WRITE_ENUM_FIELD(pathtype, NodeTag);
-	appendStringInfoString(str, "\"parent_relids\": ");
-	_outBitmapset(str, node->parent->relids);
-	appendStringInfoString(str, ", ");
-	appendStringInfoString(str, "\"required_outer\": ");
-	if (node->param_info)
-		_outBitmapset(str, node->param_info->ppi_req_outer);
-	else
-		_outBitmapset(str, NULL);
-	appendStringInfoString(str, ", ");
-	WRITE_FLOAT_FIELD(rows);
-	WRITE_FLOAT_FIELD(startup_cost);
-	WRITE_FLOAT_FIELD(total_cost);
-	WRITE_NODE_FIELD(pathkeys);
 }
 
 static void
@@ -270,61 +193,6 @@ _outNull(StringInfo str, const Value *node)
 #include "output_node_json_defs.c"
 
 static void
-_outConst(StringInfo str, const Const *node)
-{
-	WRITE_NODE_TYPE("Const");
-
-	WRITE_OID_FIELD(consttype);
-	WRITE_INT_FIELD(consttypmod);
-	WRITE_OID_FIELD(constcollid);
-	WRITE_INT_FIELD(constlen);
-	WRITE_BOOL_FIELD(constbyval);
-	WRITE_BOOL_FIELD(constisnull);
-	WRITE_LOCATION_FIELD(location);
-
-	appendStringInfoString(str, "\"constvalue\": ");
-	if (node->constisnull)
-		appendStringInfoString(str, "null");
-	else
-		_outDatum(str, node->constvalue, node->constlen, node->constbyval);
-	appendStringInfoString(str, ", ");
-}
-
-static void
-_outPath(StringInfo str, const Path *node)
-{
-	WRITE_NODE_TYPE("Path");
-
-	_outPathInfo(str, (const Path *) node);
-}
-
-static void
-_outEquivalenceClass(StringInfo str, const EquivalenceClass *node)
-{
-	/* Only the final merged version is relevant for an Equivalence Class node */
-	while (node->ec_merged)
-		node = node->ec_merged;
-
-	WRITE_NODE_TYPE("EquivalenceClass");
-
-	WRITE_NODE_FIELD(ec_opfamilies);
-	WRITE_OID_FIELD(ec_collation);
-	WRITE_NODE_FIELD(ec_members);
-	WRITE_NODE_FIELD(ec_sources);
-	WRITE_NODE_FIELD(ec_derives);
-	WRITE_BITMAPSET_FIELD(ec_relids);
-	WRITE_BOOL_FIELD(ec_has_const);
-	WRITE_BOOL_FIELD(ec_has_volatile);
-	WRITE_BOOL_FIELD(ec_below_outer_join);
-	WRITE_BOOL_FIELD(ec_broken);
-	WRITE_UINT_FIELD(ec_sortref);
-}
-
-/*
- * _outNode -
- *		converts a Node into the JSON representation and appends it to str
- */
-static void
 _outNode(StringInfo str, const void *obj)
 {
 	if (obj == NULL)
@@ -355,24 +223,10 @@ _outNode(StringInfo str, const void *obj)
 			case T_Null:
 				_outNull(str, obj);
 				break;
-			case T_Const:
-				_outConst(str, obj);
-				break;
-			case T_Path:
-				_outPath(str, obj);
-				break;
-			case T_EquivalenceClass:
-				_outEquivalenceClass(str, obj);
-				break;
 
 			#include "output_node_json_conds.c"
 
 			default:
-
-				/*
-				 * This should be an ERROR, but it's too useful to be able to
-				 * dump structures that _outNode only understands part of.
-				 */
 				elog(WARNING, "could not dump unrecognized node type: %d",
 					 (int) nodeTag(obj));
 
@@ -384,9 +238,6 @@ _outNode(StringInfo str, const void *obj)
 	}
 }
 
-/*
- * nodeToJSONStringV2 - returns the JSON representation of the Node as a palloc'd string
- */
 char *
 nodeToJSONStringV2(const void *obj)
 {
