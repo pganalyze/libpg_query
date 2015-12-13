@@ -57,6 +57,12 @@
 /* Write a Node field */
 #define WRITE_NODE_FIELD(fldname) \
 	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
+	 _outNode(str, &node->fldname), \
+		 appendStringInfo(str, ", "))
+
+/* Write a Node* field */
+#define WRITE_NODE_PTR_FIELD(fldname) \
+	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
 	 _outNode(str, node->fldname), \
 		 appendStringInfo(str, ", "))
 

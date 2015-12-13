@@ -64,11 +64,9 @@ class Generator
           elsif ['Bitmapset*', 'Relids'].include?(type)
             @outmethods[target] += format("  WRITE_BITMAPSET_FIELD(%s);\n", name)
           elsif ['Value', 'CreateStmt'].include?(type)
-            @outmethods[target] += format("  appendStringInfo(str, \"\\\"%s\\\": \");\n", name)
-            @outmethods[target] += format("  _outNode(str, &node->%s);\n", name)
-            @outmethods[target] += format("  appendStringInfo(str, \", \");\n")
-          elsif type == 'Node*' || @nodetypes.include?(type[0..-2])
             @outmethods[target] += format("  WRITE_NODE_FIELD(%s);\n", name)
+          elsif type == 'Node*' || @nodetypes.include?(type[0..-2])
+            @outmethods[target] += format("  WRITE_NODE_PTR_FIELD(%s);\n", name)
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum

@@ -1,6 +1,9 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
-#include "output_node_json.h"
+
+#ifdef JSON_OUTPUT_V2
+	#include "output_node_json.h"
+#endif
 
 #include "parser/parser.h"
 #include "parser/scanner.h"
