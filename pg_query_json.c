@@ -1,4 +1,4 @@
-#include "output_node_json.h"
+#include "pg_query_json.h"
 
 #include "postgres.h"
 
@@ -192,7 +192,7 @@ _outNull(StringInfo str, const Value *node)
 	WRITE_NODE_TYPE("Null");
 }
 
-#include "output_node_json_defs.c"
+#include "pg_query_json_defs.c"
 
 static void
 _outNode(StringInfo str, const void *obj)
@@ -226,7 +226,7 @@ _outNode(StringInfo str, const void *obj)
 				_outNull(str, obj);
 				break;
 
-			#include "output_node_json_conds.c"
+			#include "pg_query_json_conds.c"
 
 			default:
 				elog(WARNING, "could not dump unrecognized node type: %d",
@@ -241,7 +241,7 @@ _outNode(StringInfo str, const void *obj)
 }
 
 char *
-nodeToJSONStringV2(const void *obj)
+pg_query_nodes_to_json(const void *obj)
 {
 	StringInfoData str;
 

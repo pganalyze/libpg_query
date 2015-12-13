@@ -49,7 +49,7 @@ LIBPATH  = -L.
 
 ifeq ($(JSON_OUTPUT_V2),1)
 	CFLAGS += -D JSON_OUTPUT_V2
-	OBJS += output_node_json.o
+	OBJS += pg_query_json.o
 else
 	PGOBJS += $(PGDIR)/src/backend/nodes/outfuncs_json.o
 endif

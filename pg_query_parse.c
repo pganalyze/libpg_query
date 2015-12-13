@@ -2,7 +2,7 @@
 #include "pg_query_internal.h"
 
 #ifdef JSON_OUTPUT_V2
-	#include "output_node_json.h"
+	#include "pg_query_json.h"
 #endif
 
 #include "parser/parser.h"
@@ -60,7 +60,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 		tree = raw_parser(input);
 
 #ifdef JSON_OUTPUT_V2
-		tree_json = nodeToJSONStringV2(tree);
+		tree_json = pg_query_nodes_to_json(tree);
 #else
 		tree_json = nodeToJSONString(tree);
 #endif

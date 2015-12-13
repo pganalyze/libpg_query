@@ -111,8 +111,8 @@ class Generator
       conds += "  break;\n"
     end
 
-    File.write('./output_node_json_defs.c', defs)
-    File.write('./output_node_json_conds.c', conds)
+    File.write('./pg_query_json_defs.c', defs)
+    File.write('./pg_query_json_conds.c', conds)
   end
 end
 
