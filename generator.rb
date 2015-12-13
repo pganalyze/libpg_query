@@ -49,8 +49,6 @@ class Generator
             # Ignore
           elsif type == 'NodeTag'
             # Nothing
-          elsif name == 'location' && type == 'int'
-            @outmethods[target] += format("  WRITE_LOCATION_FIELD(%s);\n", name)
           elsif ['bool', 'long', 'char'].include?(type)
             @outmethods[target] += format("  WRITE_%s_FIELD(%s);\n", type.upcase, name)
           elsif ['int', 'int16', 'int32', 'AttrNumber'].include?(type)

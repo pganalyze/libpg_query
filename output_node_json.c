@@ -50,10 +50,6 @@
 	 _outToken(str, node->fldname), \
 	 appendStringInfo(str, ", "))
 
-/* Write a parse location field (actually same as INT case) */
-#define WRITE_LOCATION_FIELD(fldname) \
-	appendStringInfo(str, "\"" CppAsString(fldname) "\": %d, ", node->fldname)
-
 /* Write a Node field */
 #define WRITE_NODE_FIELD(fldname) \
 	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
