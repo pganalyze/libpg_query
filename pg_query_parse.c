@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-PgQueryParseResult pg_query_parse(char* input)
+PgQueryParseResult pg_query_parse(const char* input)
 {
 	MemoryContext ctx = NULL;
 	PgQueryParseResult result = {0};

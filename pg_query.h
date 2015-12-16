@@ -24,8 +24,8 @@ extern "C" {
 #endif
 
 void pg_query_init(void);
-PgQueryNormalizeResult pg_query_normalize(char* input);
-PgQueryParseResult pg_query_parse(char* input);
+PgQueryNormalizeResult pg_query_normalize(const char* input);
+PgQueryParseResult pg_query_parse(const char* input);
 void pg_query_free_normalize_result(PgQueryNormalizeResult result);
 void pg_query_free_parse_result(PgQueryParseResult result);
 

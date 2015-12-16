@@ -303,7 +303,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	return result;
 }
 
-PgQueryNormalizeResult pg_query_normalize(char* input)
+PgQueryNormalizeResult pg_query_normalize(const char* input)
 {
 	MemoryContext ctx = NULL;
 	PgQueryNormalizeResult result = {0};
