@@ -15,11 +15,15 @@
 
 /* Write an integer field */
 #define WRITE_INT_FIELD(fldname) \
-	appendStringInfo(str, "\"" CppAsString(fldname) "\": %d, ", node->fldname)
+	if (node->fldname != 0) { \
+		appendStringInfo(str, "\"" CppAsString(fldname) "\": %d, ", node->fldname); \
+	}
 
 /* Write an unsigned integer field */
 #define WRITE_UINT_FIELD(fldname) \
-	appendStringInfo(str, "\"" CppAsString(fldname) "\": %u, ", node->fldname)
+	if (node->fldname != 0) { \
+		appendStringInfo(str, "\"" CppAsString(fldname) "\": %u, ", node->fldname); \
+	}
 
 /* Write a long-integer field */
 #define WRITE_LONG_FIELD(fldname) \
@@ -41,26 +45,34 @@
 
 /* Write a boolean field */
 #define WRITE_BOOL_FIELD(fldname) \
-	appendStringInfo(str, "\"" CppAsString(fldname) "\": %s, ", \
-					 booltostr(node->fldname))
+	if (node->fldname) { \
+		appendStringInfo(str, "\"" CppAsString(fldname) "\": %s, ", \
+					 	booltostr(node->fldname)); \
+	}
 
 /* Write a character-string (possibly NULL) field */
 #define WRITE_STRING_FIELD(fldname) \
-	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
-	 _outToken(str, node->fldname), \
-	 appendStringInfo(str, ", "))
+	if (node->fldname != NULL) { \
+		appendStringInfo(str, "\"" CppAsString(fldname) "\": "); \
+	 	_outToken(str, node->fldname); \
+	 	appendStringInfo(str, ", "); \
+	}
 
 /* Write a Node field */
 #define WRITE_NODE_FIELD(fldname) \
-	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
-	 _outNode(str, &node->fldname), \
-		 appendStringInfo(str, ", "))
+	if (true) { \
+		 appendStringInfo(str, "\"" CppAsString(fldname) "\": "); \
+	   _outNode(str, &node->fldname); \
+		 appendStringInfo(str, ", "); \
+  }
 
 /* Write a Node* field */
 #define WRITE_NODE_PTR_FIELD(fldname) \
-	(appendStringInfo(str, "\"" CppAsString(fldname) "\": "), \
-	 _outNode(str, node->fldname), \
-		 appendStringInfo(str, ", "))
+	if (node->fldname != NULL) { \
+		 appendStringInfo(str, "\"" CppAsString(fldname) "\": "); \
+		 _outNode(str, node->fldname); \
+		 appendStringInfo(str, ", "); \
+	}
 
 /* Write a bitmapset field */
 #define WRITE_BITMAPSET_FIELD(fldname) \
@@ -116,24 +128,60 @@ _outList(StringInfo str, const List *node)
 {
 	const ListCell *lc;
 
+	// Simple lists are frequent structures - we don't make them into full nodes to avoid super-verbose output
 	appendStringInfoChar(str, '[');
 
 	foreach(lc, node)
 	{
-		if (IsA(node, List))
-			_outNode(str, lfirst(lc));
-		else if (IsA(node, IntList))
-			appendStringInfo(str, " %d", lfirst_int(lc));
-		else if (IsA(node, OidList))
-			appendStringInfo(str, " %u", lfirst_oid(lc));
-		else
-			elog(ERROR, "unrecognized list node type: %d", (int) node->type);
+		_outNode(str, lfirst(lc));
 
 		if (lnext(lc))
 			appendStringInfoString(str, ", ");
 	}
 
 	appendStringInfoChar(str, ']');
+}
+
+static void
+_outIntList(StringInfo str, const List *node)
+{
+	const ListCell *lc;
+
+	WRITE_NODE_TYPE("IntList");
+	appendStringInfo(str, "\"items\": ");
+	appendStringInfoChar(str, '[');
+
+	foreach(lc, node)
+	{
+		appendStringInfo(str, " %d", lfirst_int(lc));
+
+		if (lnext(lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	appendStringInfoChar(str, ']');
+	appendStringInfo(str, ", ");
+}
+
+static void
+_outOidList(StringInfo str, const List *node)
+{
+	const ListCell *lc;
+
+	WRITE_NODE_TYPE("OidList");
+	appendStringInfo(str, "\"items\": ");
+	appendStringInfoChar(str, '[');
+
+	foreach(lc, node)
+	{
+		appendStringInfo(str, " %u", lfirst_oid(lc));
+
+		if (lnext(lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	appendStringInfoChar(str, ']');
+	appendStringInfo(str, ", ");
 }
 
 static void
@@ -201,7 +249,7 @@ _outNode(StringInfo str, const void *obj)
 	{
 		appendStringInfoString(str, "null");
 	}
-	else if (IsA(obj, List) ||IsA(obj, IntList) || IsA(obj, OidList))
+	else if (IsA(obj, List))
 	{
 		_outList(str, obj);
 	}
@@ -224,6 +272,12 @@ _outNode(StringInfo str, const void *obj)
 				break;
 			case T_Null:
 				_outNull(str, obj);
+				break;
+			case T_IntList:
+				_outIntList(str, obj);
+				break;
+			case T_OidList:
+				_outOidList(str, obj);
 				break;
 
 			#include "pg_query_json_conds.c"
