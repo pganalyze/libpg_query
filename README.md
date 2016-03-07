@@ -54,6 +54,15 @@ This will output:
 ```
 
 
+## Versions
+
+For stability, it is recommended you use individual tagged git versions, see CHANGELOG.
+
+Current `master` reflects a PostgreSQL base version of 9.4, with a legacy output format.
+
+New development is happening on `9.5-latest`, which will become `master` in the future.
+
+
 ## Authors
 
 - [Lukas Fittl](mailto:lukas@fittl.com)
