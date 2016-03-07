@@ -12,12 +12,14 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```
-git clone git://github.com/lfittl/libpg_query
+git clone -b 9.5-latest git://github.com/lfittl/libpg_query
 cd libpg_query
 make
 ```
 
 Due to compiling parts of PostgreSQL, running `make` will take a while. Expect up to 5 minutes.
+
+For a production build, its best to use `make DEBUG=0` and use a specific git tag (see CHANGELOG).
 
 
 ## Usage
