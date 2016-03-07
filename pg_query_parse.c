@@ -1,9 +1,6 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
-
-#ifdef JSON_OUTPUT_V2
-	#include "pg_query_json.h"
-#endif
+#include "pg_query_json.h"
 
 #include "parser/parser.h"
 #include "parser/scanner.h"
@@ -58,12 +55,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 		char *tree_json;
 
 		tree = raw_parser(input);
-
-#ifdef JSON_OUTPUT_V2
 		tree_json = pg_query_nodes_to_json(tree);
-#else
-		tree_json = nodeToJSONString(tree);
-#endif
 
 #ifndef DEBUG
 		// Save stderr for result

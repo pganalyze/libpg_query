@@ -13,6 +13,9 @@ case T_Param:
 case T_Aggref:
   _outAggref(str, obj);
   break;
+case T_GroupingFunc:
+  _outGroupingFunc(str, obj);
+  break;
 case T_WindowFunc:
   _outWindowFunc(str, obj);
   break;
@@ -115,6 +118,9 @@ case T_SetToDefault:
 case T_CurrentOfExpr:
   _outCurrentOfExpr(str, obj);
   break;
+case T_InferenceElem:
+  _outInferenceElem(str, obj);
+  break;
 case T_TargetEntry:
   _outTargetEntry(str, obj);
   break;
@@ -126,6 +132,9 @@ case T_JoinExpr:
   break;
 case T_FromExpr:
   _outFromExpr(str, obj);
+  break;
+case T_OnConflictExpr:
+  _outOnConflictExpr(str, obj);
   break;
 case T_IntoClause:
   _outIntoClause(str, obj);
@@ -397,6 +406,9 @@ case T_SecLabelStmt:
 case T_CreateForeignTableStmt:
   _outCreateForeignTableStmt(str, obj);
   break;
+case T_ImportForeignSchemaStmt:
+  _outImportForeignSchemaStmt(str, obj);
+  break;
 case T_CreateExtensionStmt:
   _outCreateExtensionStmt(str, obj);
   break;
@@ -420,6 +432,15 @@ case T_ReplicaIdentityStmt:
   break;
 case T_AlterSystemStmt:
   _outAlterSystemStmt(str, obj);
+  break;
+case T_CreatePolicyStmt:
+  _outCreatePolicyStmt(str, obj);
+  break;
+case T_AlterPolicyStmt:
+  _outAlterPolicyStmt(str, obj);
+  break;
+case T_CreateTransformStmt:
+  _outCreateTransformStmt(str, obj);
   break;
 case T_A_Expr:
   _outA_Expr(str, obj);
@@ -451,6 +472,9 @@ case T_A_ArrayExpr:
 case T_ResTarget:
   _outResTarget(str, obj);
   break;
+case T_MultiAssignRef:
+  _outMultiAssignRef(str, obj);
+  break;
 case T_TypeCast:
   _outTypeCast(str, obj);
   break;
@@ -468,6 +492,9 @@ case T_RangeSubselect:
   break;
 case T_RangeFunction:
   _outRangeFunction(str, obj);
+  break;
+case T_RangeTableSample:
+  _outRangeTableSample(str, obj);
   break;
 case T_TypeName:
   _outTypeName(str, obj);
@@ -490,17 +517,20 @@ case T_RangeTblEntry:
 case T_RangeTblFunction:
   _outRangeTblFunction(str, obj);
   break;
+case T_TableSampleClause:
+  _outTableSampleClause(str, obj);
+  break;
 case T_WithCheckOption:
   _outWithCheckOption(str, obj);
   break;
 case T_SortGroupClause:
   _outSortGroupClause(str, obj);
   break;
+case T_GroupingSet:
+  _outGroupingSet(str, obj);
+  break;
 case T_WindowClause:
   _outWindowClause(str, obj);
-  break;
-case T_PrivGrantee:
-  _outPrivGrantee(str, obj);
   break;
 case T_FuncWithArgs:
   _outFuncWithArgs(str, obj);
@@ -529,8 +559,17 @@ case T_XmlSerialize:
 case T_WithClause:
   _outWithClause(str, obj);
   break;
+case T_InferClause:
+  _outInferClause(str, obj);
+  break;
+case T_OnConflictClause:
+  _outOnConflictClause(str, obj);
+  break;
 case T_CommonTableExpr:
   _outCommonTableExpr(str, obj);
+  break;
+case T_RoleSpec:
+  _outRoleSpec(str, obj);
   break;
 case T_InlineCodeBlock:
   _outInlineCodeBlock(str, obj);

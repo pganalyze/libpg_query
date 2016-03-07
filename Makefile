@@ -5,12 +5,13 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/postgres
 PGDIRBZ2 = $(root_dir)/postgres.tar.bz2
 
-PG_VERSION = 9.4.5
+PG_VERSION = 9.5.1
 
 OBJS = pg_query.o \
 pg_query_parse.o \
 pg_query_normalize.o \
-pg_polyfills.o
+pg_polyfills.o \
+pg_query_json.o
 
 PGOBJS = $(PGDIR)/src/backend/utils/mb/wchar.o \
 $(PGDIR)/src/backend/libpq/pqformat.o \
@@ -23,6 +24,7 @@ $(PGDIR)/src/backend/utils/error/assert.o \
 $(PGDIR)/src/backend/utils/init/globals.o \
 $(PGDIR)/src/backend/utils/adt/datum.o \
 $(PGDIR)/src/backend/utils/adt/name.o \
+$(PGDIR)/src/backend/utils/adt/expandeddatum.o \
 $(PGDIR)/src/backend/parser/gram.o \
 $(PGDIR)/src/backend/parser/parser.o \
 $(PGDIR)/src/backend/parser/keywords.o \
@@ -47,13 +49,6 @@ CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-
 INCFLAGS = -I.
 LIBPATH  = -L.
 
-ifeq ($(JSON_OUTPUT_V2),1)
-	CFLAGS += -D JSON_OUTPUT_V2
-	OBJS += pg_query_json.o
-else
-	PGOBJS += $(PGDIR)/src/backend/nodes/outfuncs_json.o
-endif
-
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
 CLEANFILES = $(PGDIRBZ2)
@@ -75,11 +70,8 @@ clean:
 $(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
-	if [ "$$JSON_OUTPUT_V2" != "1" ] ; then \
-		cd $(PGDIR) && patch -p1 < $(root_dir)/patches/01_output_nodes_as_json.patch ; \
-	fi
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parse_replacement_char.patch
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_regenerate_bison_flex_files.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
+	cp $(root_dir)/patches/10_regenerated_bison_flex_files/{gram,scan}.c $(PGDIR)/src/backend/parser
 	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/libpq pqformat.o
@@ -87,12 +79,9 @@ $(PGDIR): $(PGDIRBZ2)
 	cd $(PGDIR); make -C src/backend/utils/mmgr mcxt.o aset.o
 	cd $(PGDIR); make -C src/backend/utils/error elog.o assert.o
 	cd $(PGDIR); make -C src/backend/utils/init globals.o
-	cd $(PGDIR); make -C src/backend/utils/adt datum.o name.o
+	cd $(PGDIR); make -C src/backend/utils/adt datum.o name.o expandeddatum.o
 	cd $(PGDIR); make -C src/backend/parser gram.o parser.o keywords.o kwlookup.o scansup.o
 	cd $(PGDIR); make -C src/backend/nodes bitmapset.o copyfuncs.o equalfuncs.o nodeFuncs.o makefuncs.o value.o list.o
-	if [ "$$JSON_OUTPUT_V2" != "1" ] ; then \
-		cd $(PGDIR) && make -C src/backend/nodes outfuncs_json.o ; \
-	fi
 	cd $(PGDIR); make -C src/backend/lib stringinfo.o
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
