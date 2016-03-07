@@ -11,7 +11,8 @@ OBJS = pg_query.o \
 pg_query_parse.o \
 pg_query_normalize.o \
 pg_polyfills.o \
-pg_query_json.o
+pg_query_json.o \
+pg_query_fingerprint.o
 
 PGOBJS = $(PGDIR)/src/backend/utils/mb/wchar.o \
 $(PGDIR)/src/backend/libpq/pqformat.o \
@@ -39,15 +40,28 @@ $(PGDIR)/src/backend/nodes/value.o \
 $(PGDIR)/src/backend/nodes/list.o \
 $(PGDIR)/src/backend/lib/stringinfo.o \
 $(PGDIR)/src/port/qsort.o \
-$(PGDIR)/src/common/psprintf.o
+$(PGDIR)/src/common/psprintf.o \
+$(PGDIR)/contrib/pgcrypto/sha1.o
 
 ALL_OBJS = $(OBJS) $(PGOBJS)
 
-CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
+CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -I $(PGDIR)/contrib/pgcrypto \
+-Wall -Wmissing-prototypes -Wpointer-arith \
 -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute \
--Wformat-security -fno-strict-aliasing -fwrapv -fPIC -g
+-Wformat-security -fno-strict-aliasing -fwrapv -fPIC
 INCFLAGS = -I.
 LIBPATH  = -L.
+
+PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
+PG_CFLAGS = -fPIC
+
+ifeq ($(DEBUG),1)
+	CFLAGS += -O0 -g
+	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
+else
+	CFLAGS += -O3
+	PG_CFLAGS += -O3
+endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
@@ -72,7 +86,7 @@ $(PGDIR): $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
 	cp $(root_dir)/patches/10_regenerated_bison_flex_files/{gram,scan}.c $(PGDIR)/src/backend/parser
-	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
+	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/libpq pqformat.o
 	cd $(PGDIR); make -C src/backend/utils/mb wchar.o encnames.o mbutils.o
@@ -85,6 +99,7 @@ $(PGDIR): $(PGDIRBZ2)
 	cd $(PGDIR); make -C src/backend/lib stringinfo.o
 	cd $(PGDIR); make -C src/port qsort.o
 	cd $(PGDIR); make -C src/common psprintf.o
+	cd $(PGDIR); make -C contrib/pgcrypto sha1.o
 
 $(PGDIRBZ2):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -96,13 +111,17 @@ $(PGDIRBZ2):
 $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
 
-EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error
+EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/fingerprint
+
+pg_query_fingerprint.o: pg_query_fingerprint.c pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c
+pg_query_json.o: pg_query_json.c pg_query_json_defs.c pg_query_json_conds.c
 
 examples: $(EXAMPLES)
 	examples/simple
 	examples/normalize
 	examples/simple_error
 	examples/normalize_error
+	examples/fingerprint
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g examples/simple.c $(ARLIB)
@@ -115,3 +134,6 @@ examples/simple_error: examples/simple_error.c $(ARLIB)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g examples/normalize_error.c $(ARLIB)
+
+examples/fingerprint: examples/fingerprint.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g examples/fingerprint.c $(ARLIB)
