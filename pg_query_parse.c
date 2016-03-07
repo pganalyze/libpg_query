@@ -124,6 +124,8 @@ PgQueryParseResult pg_query_parse(const char* input)
 
 		result.parse_tree = strdup(tree_json);
 		pfree(tree_json);
+	} else {
+		result.parse_tree = strdup("[]");
 	}
 
 	pg_query_exit_memory_context(ctx);
