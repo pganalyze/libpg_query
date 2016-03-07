@@ -27,13 +27,13 @@
       "targets", "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef",
       "fields", "A_Star", "ResTarget", "val", "FuncCall", "agg_distinct", "true", "args",
       "ColumnRef", "fields", "String", "str", "id", "funcname", "String", "str", "count",
-      "whereClause", "A_Expr", "kind", "1", "lexpr", "NullTest", "arg", "ColumnRef",
-      "fields", "String", "str", "something", "nulltesttype", "1", "rexpr", "A_Expr",
-      "lexpr", "TypeCast", "arg", "ColumnRef", "fields", "String", "str", "elsewhere",
-      "typeName", "TypeName", "names", "String", "str", "pg_catalog", "String", "str",
-      "interval", "typemod", "-1", "name", "String", "str", "<", "rexpr", "FuncCall",
-      "funcname", "String", "str", "now"],
-		"expectedHash": "fbfa0619cd50c64ab1301830e8f3f55d6f1c81ff"
+      "whereClause", "BoolExpr", "args", "NullTest", "arg", "ColumnRef", "fields", "String",
+      "str", "something", "nulltesttype", "1", "A_Expr", "lexpr", "TypeCast", "arg",
+      "ColumnRef", "fields", "String", "str", "elsewhere", "typeName", "TypeName",
+      "names", "String", "str", "pg_catalog", "String", "str", "interval", "typemod",
+      "-1", "name", "String", "str", "<", "rexpr", "FuncCall", "funcname", "String",
+      "str", "now"],
+		"expectedHash": "5851b1bbe459c429c3cec0cdd4a136215d0d094e"
   },
   {
     "input": "INSERT INTO test (a, b) VALUES (?, ?)",
@@ -56,37 +56,37 @@
   },
   {
     "input": "SELECT * FROM x WHERE y IN (?)",
-		"expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x",
+    "expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "9", "lexpr", "ColumnRef", "fields", "String", "str", "y",
+      "whereClause", "A_Expr", "kind", "6", "lexpr", "ColumnRef", "fields", "String", "str", "y",
       "name", "String", "str", "="],
-		"expectedHash": "68d00e0f1420c03fa1600ddf49455e068f6185c4"
+		"expectedHash": "48abd2ae1d24983140acd4998d1c3807eeb6fa80"
   },
   {
     "input": "SELECT * FROM x WHERE y IN (?, ?, ?)",
 		"expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "9", "lexpr", "ColumnRef", "fields", "String", "str", "y",
+      "whereClause", "A_Expr", "kind", "6", "lexpr", "ColumnRef", "fields", "String", "str", "y",
       "name", "String", "str", "="],
-		"expectedHash": "68d00e0f1420c03fa1600ddf49455e068f6185c4"
+		"expectedHash": "48abd2ae1d24983140acd4998d1c3807eeb6fa80"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ( ?::uuid )",
 		"expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "9", "lexpr", "ColumnRef", "fields", "String", "str", "y",
+      "whereClause", "A_Expr", "kind", "6", "lexpr", "ColumnRef", "fields", "String", "str", "y",
       "name", "String", "str", "=", "rexpr", "TypeCast", "typeName", "TypeName", "names",
       "String", "str", "uuid", "typemod", "-1"],
-		"expectedHash": "949ab5b077dc2025b9bfc537fdcd678e42d042fd"
+		"expectedHash": "84527cd41b9aea7f010b676b3ad5e9a5184a3f87"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ( ?::uuid, ?::uuid, ?::uuid )",
 		"expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "9", "lexpr", "ColumnRef", "fields", "String", "str", "y",
+      "whereClause", "A_Expr", "kind", "6", "lexpr", "ColumnRef", "fields", "String", "str", "y",
       "name", "String", "str", "=", "rexpr", "TypeCast", "typeName", "TypeName", "names",
       "String", "str", "uuid", "typemod", "-1"],
-		"expectedHash": "949ab5b077dc2025b9bfc537fdcd678e42d042fd"
+		"expectedHash": "84527cd41b9aea7f010b676b3ad5e9a5184a3f87"
   },
   {
     "input": "PREPARE a123 AS SELECT a",
@@ -120,11 +120,11 @@
       "withClause", "WithClause", "ctes", "CommonTableExpr", "ctename", "a", "ctequery",
       "SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence",
       "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause",
-      "A_Expr", "kind", "1", "lexpr", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
-      "str", "x", "String", "str", "y", "name", "String", "str", "=", "rexpr",
+      "BoolExpr", "args", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
+      "str", "x", "String", "str", "y", "name", "String", "str", "=",
       "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "x", "String", "str",
       "z", "name", "String", "str", "="],
-    "expectedHash": "fcf2500b7dcb8b030f3f00cb7c4f2dafd0dbca1c"
+    "expectedHash": "6b8a833815b466aa7288b942f7a22f2c44cd7ee7"
   },
   {
     "input": "CREATE TABLE types (a float(2), b float(49), c NUMERIC(2, 3), d character(4), e char(5), f varchar(6), g character varying(7))",
@@ -159,10 +159,8 @@
   },
   {
     "input": "VACUUM FULL my_table",
-    "expectedParts": ["VacuumStmt", "freeze_min_age", "-1", "freeze_table_age", "-1",
-      "multixact_freeze_min_age", "-1", "multixact_freeze_table_age", "-1", "options", "17",
-      "relation", "RangeVar", "inhOpt", "2", "relname", "my_table", "relpersistence", "p"],
-    "expectedHash": "764cba2fdeb69c2136c4450280456af1cb0065d5"
+    "expectedParts": ["VacuumStmt", "options", "17", "relation", "RangeVar", "inhOpt", "2", "relname", "my_table", "relpersistence", "p"],
+    "expectedHash": "a441b9a9c46b2919f4c2b02362a7490347be3a41"
   },
   {
     "input": "SELECT * FROM x AS a, y AS b",
