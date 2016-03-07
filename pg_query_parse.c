@@ -9,23 +9,38 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-PgQueryParseResult pg_query_parse(const char* input)
+MemoryContext pg_query_enter_memory_context(const char* ctx_name)
 {
 	MemoryContext ctx = NULL;
-	PgQueryParseResult result = {0};
+
+	ctx = AllocSetContextCreate(TopMemoryContext,
+								ctx_name,
+								ALLOCSET_DEFAULT_MINSIZE,
+								ALLOCSET_DEFAULT_INITSIZE,
+								ALLOCSET_DEFAULT_MAXSIZE);
+	MemoryContextSwitchTo(ctx);
+
+	return ctx;
+}
+
+void pg_query_exit_memory_context(MemoryContext ctx)
+{
+	// Return to previous PostgreSQL memory context
+	MemoryContextSwitchTo(TopMemoryContext);
+
+	MemoryContextDelete(ctx);
+}
+
+PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
+{
+	PgQueryInternalParsetreeAndError result = {0};
+	MemoryContext parse_context = CurrentMemoryContext;
 
 	char stderr_buffer[STDERR_BUFFER_LEN + 1] = {0};
 #ifndef DEBUG
 	int stderr_global;
 	int stderr_pipe[2];
 #endif
-
-	ctx = AllocSetContextCreate(TopMemoryContext,
-								"pg_query_raw_parse",
-								ALLOCSET_DEFAULT_MINSIZE,
-								ALLOCSET_DEFAULT_INITSIZE,
-								ALLOCSET_DEFAULT_MAXSIZE);
-	MemoryContextSwitchTo(ctx);
 
 #ifndef DEBUG
 	// Setup pipe for stderr redirection
@@ -35,7 +50,6 @@ PgQueryParseResult pg_query_parse(const char* input)
 		error->message = strdup("Failed to open pipe, too many open file descriptors")
 
 		result.error = error;
-		result.parse_tree = strdup("[]");
 
 		return result;
 	}
@@ -48,33 +62,26 @@ PgQueryParseResult pg_query_parse(const char* input)
 	close(stderr_pipe[1]);
 #endif
 
-	// Parse it!
 	PG_TRY();
 	{
-		List *tree;
-		char *tree_json;
-
-		tree = raw_parser(input);
-		tree_json = pg_query_nodes_to_json(tree);
+		result.tree = raw_parser(input);
 
 #ifndef DEBUG
 		// Save stderr for result
 		read(stderr_pipe[0], stderr_buffer, STDERR_BUFFER_LEN);
 #endif
 
-		result.parse_tree    = strdup(tree_json);
 		result.stderr_buffer = strdup(stderr_buffer);
-
-		pfree(tree_json);
 	}
 	PG_CATCH();
 	{
 		ErrorData* error_data;
 		PgQueryError* error;
 
-		MemoryContextSwitchTo(ctx);
+		MemoryContextSwitchTo(parse_context);
 		error_data = CopyErrorData();
 
+		// Note: This is intentionally malloc so exiting the memory context doesn't free this
 		error = malloc(sizeof(PgQueryError));
 		error->message   = strdup(error_data->message);
 		error->filename  = strdup(error_data->filename);
@@ -93,9 +100,33 @@ PgQueryParseResult pg_query_parse(const char* input)
 	close(stderr_global);
 #endif
 
-	// Return to previous PostgreSQL memory context
-	MemoryContextSwitchTo(TopMemoryContext);
-	MemoryContextDelete(ctx);
+	return result;
+}
+
+PgQueryParseResult pg_query_parse(const char* input)
+{
+	MemoryContext ctx = NULL;
+	PgQueryInternalParsetreeAndError parsetree_and_error;
+	PgQueryParseResult result = {0};
+
+	ctx = pg_query_enter_memory_context("pg_query_parse");
+
+	parsetree_and_error = pg_query_raw_parse(input);
+
+	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
+	result.stderr_buffer = parsetree_and_error.stderr_buffer;
+	result.error = parsetree_and_error.error;
+
+	if (parsetree_and_error.tree != NULL) {
+		char *tree_json;
+
+		tree_json = pg_query_nodes_to_json(parsetree_and_error.tree);
+
+		result.parse_tree = strdup(tree_json);
+		pfree(tree_json);
+	}
+
+	pg_query_exit_memory_context(ctx);
 
 	return result;
 }

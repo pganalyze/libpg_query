@@ -43,11 +43,22 @@ $(PGDIR)/src/common/psprintf.o
 
 ALL_OBJS = $(OBJS) $(PGOBJS)
 
-CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -O2 -Wall -Wmissing-prototypes -Wpointer-arith \
+CFLAGS   = -I $(PGDIR)/src/include -I $(PGDIR)/src/timezone -Wall -Wmissing-prototypes -Wpointer-arith \
 -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute \
--Wformat-security -fno-strict-aliasing -fwrapv -fPIC -g
+-Wformat-security -fno-strict-aliasing -fwrapv -fPIC
 INCFLAGS = -I.
 LIBPATH  = -L.
+
+PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
+PG_CFLAGS = -fPIC
+
+ifeq ($(DEBUG),1)
+	CFLAGS += -O0 -g
+	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
+else
+	CFLAGS += -O3
+	PG_CFLAGS += -O3
+endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = *.o
@@ -73,7 +84,7 @@ $(PGDIR): $(PGDIRBZ2)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
 	cp $(root_dir)/patches/10_regenerated_bison_flex_files/gram.c $(PGDIR)/src/backend/parser
 	cp $(root_dir)/patches/10_regenerated_bison_flex_files/scan.c $(PGDIR)/src/backend/parser
-	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
+	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/libpq pqformat.o
 	cd $(PGDIR); make -C src/backend/utils/mb wchar.o encnames.o mbutils.o
@@ -98,6 +109,7 @@ $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error
+pg_query_json.o: pg_query_json.c pg_query_json_defs.c pg_query_json_conds.c
 
 examples: $(EXAMPLES)
 	examples/simple
