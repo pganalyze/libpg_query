@@ -61,7 +61,7 @@ class Extractor
     @struct_defs = {}
     @typedefs = []
 
-    ['nodes/parsenodes', 'nodes/primnodes',
+    ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'c', 'postgres', 'postgres_ext',
      'storage/block', 'access/sdir'].each do |group|
       @target_group = group
@@ -162,8 +162,6 @@ class Extractor
       'DiscardStmt' => 'DiscardMode',
       'FetchStmt' => 'FetchDirection',
       'GrantStmt' => 'GrantTargetType',
-      'PrivGrantee' => 'GrantTargetType',
-      'LockingClause' => 'LockClauseStrength',
       'RangeTblEntry' => 'RTEKind',
       'TransactionStmt' => 'TransactionStmtKind',
       'VacuumStmt' => 'VacuumOption',

@@ -111,7 +111,7 @@ Oid GetUserId(void)
 /* "_GetUserNameFromId", referenced from:
       _current_user in libpg_query.a(name.o)
       _session_user in libpg_query.a(name.o) */
-char * GetUserNameFromId(Oid roleid)
+char * GetUserNameFromId(Oid roleid, bool noerr)
 {
   return "dummy";
 }
@@ -195,6 +195,14 @@ char * get_namespace_name(Oid nspid)
   return "dummy";
 }
 
+/*  "_get_promoted_array_type", referenced from:
+      _exprType in libpg_query.a(nodeFuncs.o) */
+#include <utils/lsyscache.h>
+Oid get_promoted_array_type(Oid typid)
+{
+  return InvalidOid;
+}
+
 /* "_get_ps_display", referenced from:
       _log_line_prefix in libpg_query.a(elog.o)
       _write_csvlog in libpg_query.a(elog.o) */
@@ -226,6 +234,12 @@ Datum hash_any(register const unsigned char *k, register int keylen)
 {
   Datum dummy = {0};
   return dummy;
+}
+
+/*   "_pg_detoast_datum", referenced from:
+      _makeConst in libpg_query.a(makefuncs.o) */
+struct varlena * pg_detoast_datum(struct varlena * datum) {
+  return NULL;
 }
 
 /* "_pg_detoast_datum_packed", referenced from:
@@ -261,32 +275,6 @@ size_t pg_wchar_strlen(const pg_wchar *str)
   return 0;
 }
 
-/* "_pq_endcopyout", referenced from:
-      _errfinish in libpg_query.a(elog.o) */
-#include <libpq/libpq.h>
-void pq_endcopyout(bool errorAbort)
-{
-  /* do nothing */
-}
-
-/* "_pq_flush", referenced from:
-      _send_message_to_frontend in libpg_query.a(elog.o) */
-#include <libpq/libpq.h>
-int pq_flush(void)
-{
-  return 0;
-}
-
-/* "_pq_putmessage", referenced from:
-      _pq_endmessage in libpg_query.a(pqformat.o)
-      _pq_puttextmessage in libpg_query.a(pqformat.o)
-      _pq_putemptymessage in libpg_query.a(pqformat.o) */
-#include <libpq/libpq.h>
-int pq_putmessage(char msgtype, const char *s, size_t len)
-{
-  return 0;
-}
-
 /* "_proc_exit", referenced from:
       _errfinish in libpg_query.a(elog.o) */
 #include <storage/ipc.h>
@@ -309,3 +297,16 @@ bool type_is_rowtype(Oid typid) {
 void write_syslogger_file(const char *buffer, int count, int destination) {
   /* do nothing */
 }
+
+/* "_PqCommMethods", referenced from:
+      _errfinish in libpg_query.a(elog.o)
+      _send_message_to_frontend in libpg_query.a(elog.o)
+      _pq_endmessage in libpg_query.a(pqformat.o)
+      _pq_puttextmessage in libpg_query.a(pqformat.o)
+      _pq_putemptymessage in libpg_query.a(pqformat.o) */
+#include "libpq/libpq.h"
+PQcommMethods *PqCommMethods = NULL;
+
+/* "_operator_precedence_warning", referenced from:
+      _base_yyparse in libpg_query.a(gram.o) */
+bool operator_precedence_warning = false;
