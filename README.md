@@ -22,7 +22,7 @@ Due to compiling parts of PostgreSQL, running `make` will take a while. Expect u
 For a production build, its best to use `make DEBUG=0` and use a specific git tag (see CHANGELOG).
 
 
-## Usage
+## Usage: Parsing a query
 
 A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple.c) that parses a query looks like this:
 
@@ -54,6 +54,40 @@ This will output:
 ```
 [{"SELECT": {"distinctClause": null, "intoClause": null, "targetList": [{"RESTARGET": {"name": null, "indirection": null, "val": {"A_CONST": {"val": 1, "location": 7}}, "location": 7}}], "fromClause": null, "whereClause": null, "groupClause": null, "havingClause": null, "windowClause": null, "valuesLists": null, "sortClause": null, "limitOffset": null, "limitCount": null, "lockingClause": null, "withClause": null, "op": 0, "all": false, "larg": null, "rarg": null}}]
 ```
+
+
+## Usage: Fingerprinting a query
+
+Fingerprinting allows you to identify similar queries that are different only because
+of the specific object that is being queried for (i.e. different object ids in the WHERE clause),
+or because of formatting.
+
+Example:
+
+```
+#include <pg_query.h>
+#include <stdio.h>
+
+int main() {
+  PgQueryFingerprintResult result;
+
+  pg_query_init();
+
+  result = pg_query_fingerprint("SELECT 1");
+
+  printf("%s\n", result.hexdigest);
+
+  pg_query_free_fingerprint_result(result);
+}
+```
+
+This will output:
+
+```
+8e1acac181c6d28f4a923392cf1c4eda49ee4cd2
+```
+
+See https://github.com/lfittl/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
 
 ## Versions
