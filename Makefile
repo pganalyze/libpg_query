@@ -72,13 +72,13 @@ ECHO = echo
 
 CC ?= cc
 
-all: $(ARLIB)
+all: examples test $(ARLIB)
 
 clean:
 	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES)
 	-@ $(RM) -r $(PGDIR)
 
-.PHONY: all clean examples
+.PHONY: all clean examples test
 
 $(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
@@ -111,7 +111,8 @@ $(PGDIRBZ2):
 $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
 
-EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/fingerprint
+EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error
+TESTS = test/fingerprint
 
 pg_query_fingerprint.o: pg_query_fingerprint.c pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c
 pg_query_json.o: pg_query_json.c pg_query_json_defs.c pg_query_json_conds.c
@@ -121,7 +122,6 @@ examples: $(EXAMPLES)
 	examples/normalize
 	examples/simple_error
 	examples/normalize_error
-	examples/fingerprint
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g examples/simple.c $(ARLIB)
@@ -135,5 +135,8 @@ examples/simple_error: examples/simple_error.c $(ARLIB)
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g examples/normalize_error.c $(ARLIB)
 
-examples/fingerprint: examples/fingerprint.c $(ARLIB)
-	$(CC) -I. -L. -o $@ -g examples/fingerprint.c $(ARLIB)
+test: $(TESTS)
+	test/fingerprint
+
+test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g test/fingerprint.c $(ARLIB)

@@ -1,9 +1,3 @@
-#include <pg_query.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 size_t testCount = 62;
 
 const char* tests[] = {
@@ -16,7 +10,7 @@ const char* tests[] = {
   "SELECT 1; SELECT a FROM b",
   "c8ff78820feae5ed6d7ca580c598f51e25aa2dbe",
   "SELECT COUNT(DISTINCT id), * FROM targets WHERE something IS NOT NULL AND elsewhere::interval < now()",
-  "fbfa0619cd50c64ab1301830e8f3f55d6f1c81ff",
+  "5851b1bbe459c429c3cec0cdd4a136215d0d094e",
   "INSERT INTO test (a, b) VALUES (?, ?)",
   "7987d8bb26ed399b481728a6e8ca1b668f13d93e",
   "INSERT INTO test (b, a) VALUES (?, ?)",
@@ -24,13 +18,13 @@ const char* tests[] = {
   "SELECT b AS x, a AS y FROM z",
   "b3a90446a1b17d7e89f211c28e791f45da72ca8b",
   "SELECT * FROM x WHERE y IN (?)",
-  "68d00e0f1420c03fa1600ddf49455e068f6185c4",
+  "48abd2ae1d24983140acd4998d1c3807eeb6fa80",
   "SELECT * FROM x WHERE y IN (?, ?, ?)",
-  "68d00e0f1420c03fa1600ddf49455e068f6185c4",
+  "48abd2ae1d24983140acd4998d1c3807eeb6fa80",
   "SELECT * FROM x WHERE y IN ( ?::uuid )",
-  "949ab5b077dc2025b9bfc537fdcd678e42d042fd",
+  "84527cd41b9aea7f010b676b3ad5e9a5184a3f87",
   "SELECT * FROM x WHERE y IN ( ?::uuid, ?::uuid, ?::uuid )",
-  "949ab5b077dc2025b9bfc537fdcd678e42d042fd",
+  "84527cd41b9aea7f010b676b3ad5e9a5184a3f87",
   "PREPARE a123 AS SELECT a",
   "0fd9ef315fb2409090b1c6457e3ff581018d3bed",
   "EXECUTE a123",
@@ -42,13 +36,13 @@ const char* tests[] = {
   "EXPLAIN ANALYZE SELECT a",
   "315ff6b68acdf887c8196fd2cb9ee7be506adf36",
   "WITH a AS (SELECT * FROM x WHERE x.y = ? AND x.z = 1) SELECT * FROM a",
-  "fcf2500b7dcb8b030f3f00cb7c4f2dafd0dbca1c",
+  "6b8a833815b466aa7288b942f7a22f2c44cd7ee7",
   "CREATE TABLE types (a float(2), b float(49), c NUMERIC(2, 3), d character(4), e char(5), f varchar(6), g character varying(7))",
   "8b9c10a0987ccba4f8d8263f3fa7e9e8095d6c58",
   "CREATE VIEW view_a (a, b) AS WITH RECURSIVE view_a (a, b) AS (SELECT * FROM a(1)) SELECT \"a\", \"b\" FROM \"view_a\"",
   "c1164d94a613858d257352dc6b7d3998d23cc27e",
   "VACUUM FULL my_table",
-  "764cba2fdeb69c2136c4450280456af1cb0065d5",
+  "a441b9a9c46b2919f4c2b02362a7490347be3a41",
   "SELECT * FROM x AS a, y AS b",
   "449b0e33058c2020cb901507428371e76dd1135c",
   "SELECT * FROM y AS a, x AS b",
@@ -70,26 +64,3 @@ const char* tests[] = {
   "SELECT * FROM a AS b",
   "1f3a0a714c4e3bbf38e9eab45104fe96f7746ab2",
 };
-
-int main() {
-  size_t i;
-
-  pg_query_init();
-
-  for (i = 0; i < testCount; i += 2) {
-    PgQueryFingerprintResult result = pg_query_fingerprint(tests[i]);
-
-    if (strcmp(result.hexdigest, tests[i + 1]) == 0) {
-      printf(".");
-    } else {
-      printf("INVALID (%s needs to be %s, SQL was: %s)\n", result.hexdigest, tests[i + 1], tests[i]);
-      pg_query_fingerprint_with_opts(tests[i], true);
-    }
-
-    pg_query_free_fingerprint_result(result);
-  }
-
-  printf("\n");
-
-  return 0;
-}
