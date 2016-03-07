@@ -3,6 +3,12 @@
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
 
+## 9.5-1.1.0    UNRELEASED
+
+* Add pg_query_fingerprint() method that uniquely identifies SQL queries,
+  whilst ignoring formatting and individual constant values
+
+
 ## 9.5-1.0.0    2016-03-06
 
 * First release based on PostgreSQL 9.5.1
