@@ -229,5 +229,29 @@
     "expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "a",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "1f3a0a714c4e3bbf38e9eab45104fe96f7746ab2"
+  },
+  {
+    "input": "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = ?",
+    "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
+      "targetList", "ResTarget", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
+      "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedHash": "4c035ee49cc619c96b7bcdbc015937ac2e2afc40"
+  },
+  {
+    "input": "UPDATE users SET something_else = $1 WHERE users.id = ?",
+    "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
+      "targetList", "ResTarget", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
+      "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedHash": "4c035ee49cc619c96b7bcdbc015937ac2e2afc40"
+  },
+  {
+    "input": "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
+    "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
+      "targetList", "ResTarget", "val", "SubLink", "subLinkType", "4", "subselect", "SelectStmt", "fromClause",
+      "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef",
+      "fields", "String", "str", "a", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "uid",
+      "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id",
+      "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedHash": "5d3b0231f5c33750146db5acd0dbc5e08be0d55d"
   }
 ]

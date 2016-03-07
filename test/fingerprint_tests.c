@@ -1,4 +1,4 @@
-size_t testCount = 62;
+size_t testCount = 68;
 
 const char* tests[] = {
   "SELECT 1",
@@ -63,4 +63,10 @@ const char* tests[] = {
   "1f3a0a714c4e3bbf38e9eab45104fe96f7746ab2",
   "SELECT * FROM a AS b",
   "1f3a0a714c4e3bbf38e9eab45104fe96f7746ab2",
+  "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = ?",
+  "4c035ee49cc619c96b7bcdbc015937ac2e2afc40",
+  "UPDATE users SET something_else = $1 WHERE users.id = ?",
+  "4c035ee49cc619c96b7bcdbc015937ac2e2afc40",
+  "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
+  "5d3b0231f5c33750146db5acd0dbc5e08be0d55d",
 };
