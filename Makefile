@@ -71,7 +71,8 @@ $(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
-	cp $(root_dir)/patches/10_regenerated_bison_flex_files/{gram,scan}.c $(PGDIR)/src/backend/parser
+	cp $(root_dir)/patches/10_regenerated_bison_flex_files/gram.c $(PGDIR)/src/backend/parser
+	cp $(root_dir)/patches/10_regenerated_bison_flex_files/scan.c $(PGDIR)/src/backend/parser
 	cd $(PGDIR); CFLAGS=-fPIC ./configure -q --without-readline --without-zlib --enable-cassert --enable-debug
 	cd $(PGDIR); make -C src/backend lib-recursive
 	cd $(PGDIR); make -C src/backend/libpq pqformat.o
