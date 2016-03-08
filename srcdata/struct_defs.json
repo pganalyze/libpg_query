@@ -7015,11 +7015,6 @@
           "name": "numParams",
           "c_type": "int",
           "comment": "/* number of ParamExternDatas following */"
-        },
-        {
-          "name": "params[FLEXIBLE_ARRAY_MEMBER]",
-          "c_type": "ParamExternData",
-          "comment": null
         }
       ],
       "comment": "/* ----------------\n *\t  ParamListInfo\n *\n *\t  ParamListInfo arrays are used to pass parameters into the executor\n *\t  for parameterized plans.  Each entry in the array defines the value\n *\t  to be substituted for a PARAM_EXTERN parameter.  The \"paramid\"\n *\t  of a PARAM_EXTERN Param can range from 1 to numParams.\n *\n *\t  Although parameter numbers are normally consecutive, we allow\n *\t  ptype == InvalidOid to signal an unused array entry.\n *\n *\t  pflags is a flags field.  Currently the only used bit is:\n *\t  PARAM_FLAG_CONST signals the planner that it may treat this parameter\n *\t  as a constant (i.e., generate a plan that works only for this value\n *\t  of the parameter).\n *\n *\t  There are two hook functions that can be associated with a ParamListInfo\n *\t  array to support dynamic parameter handling.  First, if paramFetch\n *\t  isn't null and the executor requires a value for an invalid parameter\n *\t  (one with ptype == InvalidOid), the paramFetch hook is called to give\n *\t  it a chance to fill in the parameter value.  Second, a parserSetup\n *\t  hook can be supplied to re-instantiate the original parsing hooks if\n *\t  a query needs to be re-parsed/planned (as a substitute for supposing\n *\t  that the current ptype values represent a fixed set of parameter types).\n\n *\t  Although the data structure is really an array, not a list, we keep\n *\t  the old typedef name to avoid unnecessary code changes.\n * ----------------\n */\n"
