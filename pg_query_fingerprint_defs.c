@@ -3136,12 +3136,7 @@ static void
 _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node, const char *field_name)
 {
   _fingerprintString(ctx, "TransactionStmt");
-
-  if (node->gid != NULL) {
-    _fingerprintString(ctx, "gid");
-    _fingerprintString(ctx, node->gid);
-  }
-
+  // Intentionally ignoring node->gid for fingerprinting
   if (node->kind != 0) {
     char buffer[50];
     sprintf(buffer, "%d", node->kind);
@@ -3149,12 +3144,7 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->options != NULL && node->options->length > 0) {
-    FingerprintContext subCtx;
-    _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, "options");
-    _fingerprintCopyTokens(&subCtx, ctx, "options");
-  }
+  // Intentionally ignoring node->options for fingerprinting
 }
 
 static void

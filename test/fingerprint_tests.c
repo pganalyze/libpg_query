@@ -1,4 +1,4 @@
-size_t testCount = 68;
+size_t testCount = 76;
 
 const char* tests[] = {
   "SELECT 1",
@@ -69,4 +69,12 @@ const char* tests[] = {
   "014c035ee49cc619c96b7bcdbc015937ac2e2afc40",
   "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
   "015d3b0231f5c33750146db5acd0dbc5e08be0d55d",
+  "SAVEPOINT some_id",
+  "0144f00f575a004bc89da2f79a524f62407e76e059",
+  "RELEASE some_id",
+  "019bedf3ed43f6ee7f9f1c73f1a0d2cefe9c7315f7",
+  "PREPARE TRANSACTION 'some_id'",
+  "018f01b6a2b3a6feade7c019af3475dd27c998f63c",
+  "START TRANSACTION READ WRITE",
+  "010fdcbd587cb59b80a410f5298953c36e6401342a",
 };

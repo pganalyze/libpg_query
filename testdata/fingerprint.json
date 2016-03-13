@@ -253,5 +253,25 @@
       "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id",
       "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
     "expectedHash": "015d3b0231f5c33750146db5acd0dbc5e08be0d55d"
+  },
+  {
+    "input": "SAVEPOINT some_id",
+    "expectedParts": ["TransactionStmt", "kind", "4"],
+    "expectedHash": "0144f00f575a004bc89da2f79a524f62407e76e059"
+  },
+  {
+    "input": "RELEASE some_id",
+    "expectedParts": ["TransactionStmt", "kind", "5"],
+    "expectedHash": "019bedf3ed43f6ee7f9f1c73f1a0d2cefe9c7315f7"
+  },
+  {
+    "input": "PREPARE TRANSACTION 'some_id'",
+    "expectedParts": ["TransactionStmt", "kind", "7"],
+    "expectedHash": "018f01b6a2b3a6feade7c019af3475dd27c998f63c"
+  },
+  {
+    "input": "START TRANSACTION READ WRITE",
+    "expectedParts": ["TransactionStmt", "kind", "1"],
+    "expectedHash": "010fdcbd587cb59b80a410f5298953c36e6401342a"
   }
 ]

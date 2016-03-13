@@ -220,10 +220,6 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, char *field_name)
 			case T_BitString:
 				_fingerprintBitString(ctx, obj);
 				break;
-			case T_Null:
-			case T_IntList:
-			case T_OidList:
-				return; // Ignore
 
 			#include "pg_query_fingerprint_conds.c"
 

@@ -101,6 +101,9 @@ EOL
     'Alias' => :skip,
     'ParamRef' => :skip,
     'SetToDefault' => :skip,
+    'IntList' => :skip,
+    'OidList' => :skip,
+    'Null' => :skip,
   }
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
@@ -108,13 +111,15 @@ EOL
     ['PrepareStmt', 'name'] => :skip,
     ['ExecuteStmt', 'name'] => :skip,
     ['DeallocateStmt', 'name'] => :skip,
+    ['TransactionStmt', 'options'] => :skip,
+    ['TransactionStmt', 'gid'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
   LONG_INT_TYPES = ['long']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
   FLOAT_TYPES = ['Cost']
 
-  IGNORE_FOR_GENERATOR = ['Integer', 'Float', 'String', 'BitString', 'Null', 'IntList', 'OidList', 'List']
+  IGNORE_FOR_GENERATOR = ['Integer', 'Float', 'String', 'BitString', 'List']
 
   def generate_fingerprint_defs!
     @fingerprint_defs = {}
