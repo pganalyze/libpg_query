@@ -33,6 +33,8 @@ static void _fingerprintNode(FingerprintContext *ctx, const void *obj, char *par
 static void _fingerprintInitForTokens(FingerprintContext *ctx);
 static void _fingerprintCopyTokens(FingerprintContext *source, FingerprintContext *target, char *field_name);
 
+#define PG_QUERY_FINGERPRINT_VERSION 1
+
 // Implementations
 
 static void
@@ -219,13 +221,9 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, char *field_name)
 				_fingerprintBitString(ctx, obj);
 				break;
 			case T_Null:
-				return; // Ignore
 			case T_IntList:
-				//_fingerprintIntList(ctx, obj); // FIXME
-				break;
 			case T_OidList:
-				//_fingerprintOidList(ctx, obj); // FIXME
-				break;
+				return; // Ignore
 
 			#include "pg_query_fingerprint_conds.c"
 
@@ -265,10 +263,12 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
     SHA1Final(sha1result, ctx.sha1);
 
     // This is intentionally malloc-ed and will survive exiting the memory context
-    result.hexdigest = calloc(41, sizeof(char));
+    result.hexdigest = calloc((1 + SHA1_RESULTLEN) * 2 + 1, sizeof(char));
+
+    sprintf(result.hexdigest, "%02x", PG_QUERY_FINGERPRINT_VERSION);
 
     for (i = 0; i < SHA1_RESULTLEN; i++) {
-      sprintf(result.hexdigest + i * 2, "%02x", sha1result[i]);
+      sprintf(result.hexdigest + (1 + i) * 2, "%02x", sha1result[i]);
     }
 
     if (printTokens) {
