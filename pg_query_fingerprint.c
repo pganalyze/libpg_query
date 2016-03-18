@@ -246,7 +246,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
   result.stderr_buffer = parsetree_and_error.stderr_buffer;
   result.error = parsetree_and_error.error;
 
-	if (parsetree_and_error.tree != NULL) {
+  if (parsetree_and_error.tree != NULL || result.error == NULL) {
     FingerprintContext ctx;
     int i;
     uint8 sha1result[SHA1_RESULTLEN];
@@ -254,7 +254,9 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
     ctx.sha1 = palloc0(sizeof(SHA1_CTX));
     SHA1Init(ctx.sha1);
 
-    _fingerprintNode(&ctx, parsetree_and_error.tree, NULL);
+    if (parsetree_and_error.tree != NULL) {
+      _fingerprintNode(&ctx, parsetree_and_error.tree, NULL);
+    }
 
     SHA1Final(sha1result, ctx.sha1);
 

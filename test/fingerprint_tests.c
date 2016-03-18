@@ -1,4 +1,4 @@
-size_t testCount = 76;
+size_t testCount = 78;
 
 const char* tests[] = {
   "SELECT 1",
@@ -77,4 +77,6 @@ const char* tests[] = {
   "018f01b6a2b3a6feade7c019af3475dd27c998f63c",
   "START TRANSACTION READ WRITE",
   "010fdcbd587cb59b80a410f5298953c36e6401342a",
+  "-- nothing",
+  "01da39a3ee5e6b4b0d3255bfef95601890afd80709",
 };

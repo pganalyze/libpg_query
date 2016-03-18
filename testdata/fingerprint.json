@@ -273,5 +273,10 @@
     "input": "START TRANSACTION READ WRITE",
     "expectedParts": ["TransactionStmt", "kind", "1"],
     "expectedHash": "010fdcbd587cb59b80a410f5298953c36e6401342a"
+  },
+  {
+    "input": "-- nothing",
+    "expectedParts": [],
+    "expectedHash": "01da39a3ee5e6b4b0d3255bfef95601890afd80709"
   }
 ]
