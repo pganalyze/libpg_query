@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/postgres
 PGDIRBZ2 = $(root_dir)/postgres.tar.bz2
 
-PG_VERSION = 9.5.2
+PG_VERSION = 9.5.3
 
 OBJS = pg_query.o \
 pg_query_parse.o \
