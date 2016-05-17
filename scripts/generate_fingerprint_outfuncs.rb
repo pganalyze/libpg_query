@@ -161,7 +161,7 @@ EOL
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
             when 'CreateStmt'
               fingerprint_def += format("  _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += format("  _fingerprintNode(ctx, &node->%s, \"%s\");\n", name, name)
+              fingerprint_def += format("  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->%s, \"%s\");\n", name, name)
             when 'char'
               fingerprint_def += format("  if (node->%s != 0) {\n", name)
               fingerprint_def += format("    char str[2] = {node->%s, '\\0'};\n", name)

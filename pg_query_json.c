@@ -65,9 +65,18 @@
 #define WRITE_NODE_FIELD(fldname) \
 	if (true) { \
 		 appendStringInfo(str, "\"" CppAsString(fldname) "\": "); \
-	   _outNode(str, &node->fldname); \
+	     _outNode(str, &node->fldname); \
 		 appendStringInfo(str, ", "); \
-  }
+  	}
+
+/* Write a Node field with a specific type */
+#define WRITE_NODE_FIELD_WITH_TYPE(fldname, typename) \
+	if (true) { \
+		 appendStringInfo(str, "\"" CppAsString(fldname) "\": {"); \
+	   	 _out##typename(str, (const typename *) &node->fldname); \
+		 removeTrailingDelimiter(str); \
+ 		 appendStringInfo(str, "}}, "); \
+	}
 
 /* Write a Node* field */
 #define WRITE_NODE_PTR_FIELD(fldname) \

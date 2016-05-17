@@ -12,14 +12,14 @@ int main() {
 
   pg_query_init();
 
-  for (i = 0; i < testCount; i += 2) {
+  for (i = 0; i < testsLength; i += 2) {
     PgQueryFingerprintResult result = pg_query_fingerprint(tests[i]);
 
     if (strcmp(result.hexdigest, tests[i + 1]) == 0) {
       printf(".");
     } else {
-      ret_code = -1;
-      printf("INVALID (%s needs to be %s, SQL was: %s)\n", result.hexdigest, tests[i + 1], tests[i]);
+      ret_code = -1;\
+      printf("INVALID result for \"%s\"\nexpected: %s\nactual: %s\nactual tokens: ", tests[i], tests[i + 1], result.hexdigest);
       pg_query_fingerprint_with_opts(tests[i], true);
     }
 

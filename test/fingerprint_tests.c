@@ -1,5 +1,3 @@
-size_t testCount = 78;
-
 const char* tests[] = {
   "SELECT 1",
   "018e1acac181c6d28f4a923392cf1c4eda49ee4cd2",
@@ -79,4 +77,8 @@ const char* tests[] = {
   "010fdcbd587cb59b80a410f5298953c36e6401342a",
   "-- nothing",
   "01da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "CREATE FOREIGN TABLE ft1 () SERVER no_server",
+  "01e7e0b0f08a81026fbc256bb862637574040101e8",
 };
+
+size_t testsLength = __LINE__ - 4;

@@ -112,7 +112,6 @@ $(ARLIB): $(PGDIR) $(OBJS) Makefile
 	@$(AR) $@ $(ALL_OBJS)
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error
-TESTS = test/fingerprint
 
 pg_query_fingerprint.o: pg_query_fingerprint.c pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c
 pg_query_json.o: pg_query_json.c pg_query_json_defs.c pg_query_json_conds.c
@@ -135,8 +134,14 @@ examples/simple_error: examples/simple_error.c $(ARLIB)
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g examples/normalize_error.c $(ARLIB)
 
+TESTS = test/fingerprint test/parse
+
 test: $(TESTS)
 	test/fingerprint
+	test/parse
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	$(CC) -I. -L. -o $@ -g test/fingerprint.c $(ARLIB)
+
+test/parse: test/parse.c test/parse_tests.c $(ARLIB)
+	$(CC) -I. -L. -o $@ -g test/parse.c $(ARLIB)

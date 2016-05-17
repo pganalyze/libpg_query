@@ -278,5 +278,10 @@
     "input": "-- nothing",
     "expectedParts": [],
     "expectedHash": "01da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  },
+  {
+    "input": "CREATE FOREIGN TABLE ft1 () SERVER no_server",
+    "expectedParts": ["CreateForeignTableStmt", "base", "CreateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "ft1", "relpersistence", "p", "servername", "no_server"],
+    "expectedHash": "01e7e0b0f08a81026fbc256bb862637574040101e8"
   }
 ]

@@ -4627,7 +4627,7 @@ _fingerprintCreateForeignTableStmt(FingerprintContext *ctx, const CreateForeignT
 {
   _fingerprintString(ctx, "CreateForeignTableStmt");
   _fingerprintString(ctx, "base");
-  _fingerprintNode(ctx, &node->base, "base");
+  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->base, "base");
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);

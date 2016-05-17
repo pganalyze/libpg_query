@@ -2,6 +2,10 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.2.0    UNRELEASED
+
+* Fix stack overflow when parsing CREATE FOREIGN TABLE ([#9](https://github.com/lfittl/libpg_query/issues/9))
+
 
 ## 9.5-1.1.0    2016-04-17
 

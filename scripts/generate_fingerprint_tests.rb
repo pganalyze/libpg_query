@@ -17,11 +17,11 @@ class Generator
     end
 
     File.write './test/fingerprint_tests.c', <<-EOF
-size_t testCount = #{test_lines.size};
-
 const char* tests[] = {
 #{test_lines.map { |test_line| format('  %s,', test_line.inspect) }.join("\n")}
 };
+
+size_t testsLength = __LINE__ - 4;
 EOF
   end
 end

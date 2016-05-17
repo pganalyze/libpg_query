@@ -1612,7 +1612,7 @@ _outCreateForeignTableStmt(StringInfo str, const CreateForeignTableStmt *node)
 {
   WRITE_NODE_TYPE("CreateForeignTableStmt");
 
-  WRITE_NODE_FIELD(base);
+  WRITE_NODE_FIELD_WITH_TYPE(base, CreateStmt);
   WRITE_STRING_FIELD(servername);
   WRITE_NODE_PTR_FIELD(options);
 }
