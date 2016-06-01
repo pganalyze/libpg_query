@@ -58,7 +58,7 @@ class Generator
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum
-            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s);\n", name, type)
+            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s);\n", name)
           end
         end
       end
@@ -99,8 +99,8 @@ class Generator
       conds += "  break;\n"
     end
 
-    File.write('./pg_query_json_defs.c', defs)
-    File.write('./pg_query_json_conds.c', conds)
+    File.write('./src/pg_query_json_defs.c', defs)
+    File.write('./src/pg_query_json_conds.c', conds)
   end
 end
 

@@ -237,8 +237,8 @@ EOL
       conds += "  break;\n"
     end
 
-    File.write('./pg_query_fingerprint_defs.c', defs)
-    File.write('./pg_query_fingerprint_conds.c', conds)
+    File.write('./src/pg_query_fingerprint_defs.c', defs)
+    File.write('./src/pg_query_fingerprint_conds.c', conds)
   end
 end
 

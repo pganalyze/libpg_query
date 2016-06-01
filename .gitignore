@@ -9,3 +9,6 @@ examples/*
 
 test/*
 !test/*.c
+
+tmp/*
+!tmp/.gitkeep

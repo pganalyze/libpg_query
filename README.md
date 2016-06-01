@@ -11,22 +11,22 @@ You can find further background to why a query's parse tree is useful here: http
 
 ## Installation
 
-```
+```sh
 git clone -b 9.5-latest git://github.com/lfittl/libpg_query
 cd libpg_query
 make
 ```
 
-Due to compiling parts of PostgreSQL, running `make` will take a while. Expect up to 5 minutes.
+Due to compiling parts of PostgreSQL, running `make` will take a bit. Expect up to 3 minutes.
 
-For a production build, its best to use `make DEBUG=0` and use a specific git tag (see CHANGELOG).
+For a production build, its best to use a specific git tag (see CHANGELOG).
 
 
 ## Usage: Parsing a query
 
 A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple.c) that parses a query looks like this:
 
-```
+```c
 #include <pg_query.h>
 #include <stdio.h>
 
@@ -51,7 +51,7 @@ cc -Ilibpg_query -Llibpg_query -lpg_query example.c
 
 This will output:
 
-```
+```json
 [{"SELECT": {"distinctClause": null, "intoClause": null, "targetList": [{"RESTARGET": {"name": null, "indirection": null, "val": {"A_CONST": {"val": 1, "location": 7}}, "location": 7}}], "fromClause": null, "whereClause": null, "groupClause": null, "havingClause": null, "windowClause": null, "valuesLists": null, "sortClause": null, "limitOffset": null, "limitCount": null, "lockingClause": null, "withClause": null, "op": 0, "all": false, "larg": null, "rarg": null}}]
 ```
 
@@ -64,7 +64,7 @@ or because of formatting.
 
 Example:
 
-```
+```c
 #include <pg_query.h>
 #include <stdio.h>
 
@@ -89,6 +89,39 @@ This will output:
 
 See https://github.com/lfittl/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
+## Usage: Parsing a PL/pgSQL function (Experimental)
+
+A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
+
+```c
+#include <pg_query.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+  PgQueryPlpgsqlParseResult result;
+
+  pg_query_init();
+
+  result = pg_query_parse_plpgsql("BEGIN \nIF v_version IS NULL THEN \nRETURN v_name;\nEND IF; \nRETURN v_name || '/' || v_version; \nEND;");
+
+  if (result.error) {
+    printf("error: %s at %d\n", result.error->message, result.error->cursorpos);
+  } else {
+    printf("%s\n", result.plpgsql_func);
+  }
+
+  pg_query_free_plpgsql_parse_result(result);
+
+  return 0;
+}
+```
+
+This will output:
+
+```json
+{"PLpgSQL_function": {"datums": [{"PLpgSQL_var": {"refname": "found", "datatype": {"PLpgSQL_type": {"typname": "UNKNOWN"}}}}], "action": {"PLpgSQL_stmt_block": {"lineno": 1, "body": [{"PLpgSQL_stmt_if": {"lineno": 2, "cond": {"PLpgSQL_expr": {"query": "SELECT v_version IS NULL"}}, "then_body": [{"PLpgSQL_stmt_return": {"lineno": 3, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name"}}}}]}}, {"PLpgSQL_stmt_return": {"lineno": 5, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name || '/' || v_version"}}}}]}}}}
+```
 
 ## Versions
 
@@ -106,8 +139,9 @@ New development is happening on `9.5-latest`, which will become `master` in the 
 
 ## License
 
-Copyright (c) 2015, Lukas Fittl <lukas@fittl.com><br>
-libpg_query is licensed under the 3-clause BSD license, see LICENSE file for details.
+PostgreSQL server source code, used under the [PostgreSQL license](https://www.postgresql.org/about/licence/).<br>
+Portions Copyright (c) 1996-2016, The PostgreSQL Global Development Group<br>
+Portions Copyright (c) 1994, The Regents of the University of California
 
-Query normalization code:<br>
-Copyright (c) 2008-2015, PostgreSQL Global Development Group
+All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
+Copyright (c) 2016, Lukas Fittl <lukas@fittl.com>
