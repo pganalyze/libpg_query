@@ -1,5 +1,6 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
+#include "pg_query_fingerprint.h"
 
 #include "postgres.h"
 #include "sha1.h"

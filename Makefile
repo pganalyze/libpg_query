@@ -101,7 +101,7 @@ test: $(TESTS)
 	test/parse_plpgsql
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -g test/fingerprint.c $(ARLIB)
+	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) -I. -o $@ -g test/parse.c $(ARLIB)

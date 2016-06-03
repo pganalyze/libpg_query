@@ -1,4 +1,5 @@
 #include <pg_query.h>
+#include <pg_query_fingerprint.h>
 
 #include <stdio.h>
 #include <stdlib.h>
