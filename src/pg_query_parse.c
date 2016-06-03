@@ -86,6 +86,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
 		error->message   = strdup(error_data->message);
 		error->filename  = strdup(error_data->filename);
 		error->funcname  = strdup(error_data->funcname);
+		error->context   = NULL;
 		error->lineno    = error_data->lineno;
 		error->cursorpos = error_data->cursorpos;
 
