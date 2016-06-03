@@ -7,7 +7,7 @@ typedef struct {
 	char* filename; // source of exception (e.g. parse.l)
 	int lineno; // source of exception (e.g. 104)
 	int cursorpos; // char in query at which exception occurred
-	char* context; // additional context (optional)
+	char* context; // additional context (optional, can be NULL)
 } PgQueryError;
 
 typedef struct {

@@ -118,9 +118,7 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result)
 {
   if (result.error) {
-    free(result.error->message);
-    free(result.error->filename);
-    free(result.error);
+		pg_query_free_error(result.error);
   }
 
   free(result.plpgsql_func);

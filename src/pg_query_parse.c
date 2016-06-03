@@ -85,6 +85,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
 		error = malloc(sizeof(PgQueryError));
 		error->message   = strdup(error_data->message);
 		error->filename  = strdup(error_data->filename);
+		error->funcname  = strdup(error_data->funcname);
 		error->lineno    = error_data->lineno;
 		error->cursorpos = error_data->cursorpos;
 
@@ -136,9 +137,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 void pg_query_free_parse_result(PgQueryParseResult result)
 {
   if (result.error) {
-    free(result.error->message);
-    free(result.error->filename);
-    free(result.error);
+		pg_query_free_error(result.error);
   }
 
   free(result.parse_tree);
