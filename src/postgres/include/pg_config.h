@@ -748,7 +748,7 @@
 #define PG_VERSION_NUM 90503
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 9.5.3 on x86_64-apple-darwin15.5.0, compiled by Apple LLVM version 7.3.0 (clang-703.0.31), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 9.5.3 on x86_64-apple-darwin14.5.0, compiled by Apple LLVM version 7.0.2 (clang-700.1.81), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -906,3 +906,6 @@
 /* Define to the type of an unsigned integer type wide enough to hold a
    pointer, if such a type exists, and if the system does not define it. */
 /* #undef uintptr_t */
+#undef HAVE_LOCALE_T
+#undef LOCALE_T_IN_XLOCALE
+#undef WCSTOMBS_L_IN_XLOCALE

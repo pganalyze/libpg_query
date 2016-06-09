@@ -63,6 +63,10 @@ extract_source: $(PGDIR)
 	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
 	touch ./src/postgres/guc-file.c
+	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
+	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
+	echo "#undef LOCALE_T_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
+	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
 
 .c.o:
 	@$(ECHO) compiling $(<)
