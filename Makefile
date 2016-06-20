@@ -102,7 +102,9 @@ TESTS = test/fingerprint test/parse test/parse_plpgsql
 test: $(TESTS)
 	test/fingerprint
 	test/parse
+	# Output-based tests
 	test/parse_plpgsql
+	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
@@ -110,5 +112,5 @@ test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) -I. -o $@ -g test/parse.c $(ARLIB)
 
-test/parse_plpgsql: test/parse_plpgsql.c test/parse_plpgsql_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -g test/parse_plpgsql.c $(ARLIB)
+test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
+	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)

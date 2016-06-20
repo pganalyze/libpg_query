@@ -9,6 +9,8 @@ examples/*
 
 test/*
 !test/*.c
+!test/*.sql
+!test/*.expected.json
 
 tmp/*
 !tmp/.gitkeep
