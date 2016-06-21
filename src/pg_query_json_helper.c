@@ -73,6 +73,9 @@ removeTrailingDelimiter(StringInfo str)
 	if (str->len >= 2 && str->data[str->len - 2] == ',' && str->data[str->len - 1] == ' ') {
 		str->len -= 2;
 		str->data[str->len] = '\0';
+	} else if (str->len >= 1 && str->data[str->len - 1] == ',') {
+		str->len -= 1;
+		str->data[str->len] = '\0';
 	}
 }
 

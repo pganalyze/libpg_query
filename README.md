@@ -103,12 +103,22 @@ int main() {
 
   pg_query_init();
 
-  result = pg_query_parse_plpgsql("BEGIN \nIF v_version IS NULL THEN \nRETURN v_name;\nEND IF; \nRETURN v_name || '/' || v_version; \nEND;");
+  result = pg_query_parse_plpgsql(" \
+  CREATE OR REPLACE FUNCTION cs_fmt_browser_version(v_name varchar, \
+                                                  v_version varchar) \
+RETURNS varchar AS $$ \
+BEGIN \
+    IF v_version IS NULL THEN \
+        RETURN v_name; \
+    END IF; \
+    RETURN v_name || '/' || v_version; \
+END; \
+$$ LANGUAGE plpgsql;");
 
   if (result.error) {
     printf("error: %s at %d\n", result.error->message, result.error->cursorpos);
   } else {
-    printf("%s\n", result.plpgsql_func);
+    printf("%s\n", result.plpgsql_funcs);
   }
 
   pg_query_free_plpgsql_parse_result(result);
@@ -120,7 +130,9 @@ int main() {
 This will output:
 
 ```json
-{"PLpgSQL_function": {"datums": [{"PLpgSQL_var": {"refname": "found", "datatype": {"PLpgSQL_type": {"typname": "UNKNOWN"}}}}], "action": {"PLpgSQL_stmt_block": {"lineno": 1, "body": [{"PLpgSQL_stmt_if": {"lineno": 2, "cond": {"PLpgSQL_expr": {"query": "SELECT v_version IS NULL"}}, "then_body": [{"PLpgSQL_stmt_return": {"lineno": 3, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name"}}}}]}}, {"PLpgSQL_stmt_return": {"lineno": 5, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name || '/' || v_version"}}}}]}}}}
+[
+{"PLpgSQL_function": {"datums": [{"PLpgSQL_var": {"refname": "found", "datatype": {"PLpgSQL_type": {"typname": "UNKNOWN"}}}}], "action": {"PLpgSQL_stmt_block": {"lineno": 1, "body": [{"PLpgSQL_stmt_if": {"lineno": 1, "cond": {"PLpgSQL_expr": {"query": "SELECT v_version IS NULL"}}, "then_body": [{"PLpgSQL_stmt_return": {"lineno": 1, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name"}}}}]}}, {"PLpgSQL_stmt_return": {"lineno": 1, "expr": {"PLpgSQL_expr": {"query": "SELECT v_name || '/' || v_version"}}}}]}}}}
+]
 ```
 
 ## Versions

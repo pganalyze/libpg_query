@@ -47,72 +47,72 @@ BEGIN
   RETURN v_name || '/' || v_version;
 END;$$;
 
-CREATE OR REPLACE FUNCTION cs_update_referrer_type_proc() RETURNS void AS $func$
-DECLARE
-    referrer_keys CURSOR IS
-        SELECT * FROM cs_referrer_keys
-        ORDER BY try_order;
-    func_body text;
-    func_cmd text;
-BEGIN
-  func_body := 'BEGIN';
-  -- Notice how we scan through the results of a query in a FOR loop
-  -- using the FOR <record> construct.
-  FOR referrer_key IN SELECT * FROM cs_referrer_keys ORDER BY try_order LOOP
-      func_body := func_body ||
-        ' IF v_' || referrer_key.kind
-        || ' LIKE ' || quote_literal(referrer_key.key_string)
-        || ' THEN RETURN ' || quote_literal(referrer_key.referrer_type)
-        || '; END IF;' ;
-  END LOOP;
-  func_body := func_body || ' RETURN NULL; END;';
-  func_cmd :=
-    'CREATE OR REPLACE FUNCTION cs_find_referrer_type(v_host varchar,
-                                                      v_domain varchar,
-                                                      v_url varchar)
-      RETURNS varchar AS '
-    || quote_literal(func_body)
-    || ' LANGUAGE plpgsql;' ;
-  EXECUTE func_cmd;
-END;$func$;
+-- CREATE OR REPLACE FUNCTION cs_update_referrer_type_proc() RETURNS void AS $func$
+-- DECLARE
+--     referrer_keys CURSOR IS
+--         SELECT * FROM cs_referrer_keys
+--         ORDER BY try_order;
+--     func_body text;
+--     func_cmd text;
+-- BEGIN
+--   func_body := 'BEGIN';
+--   -- Notice how we scan through the results of a query in a FOR loop
+--   -- using the FOR <record> construct.
+--   FOR referrer_key IN SELECT * FROM cs_referrer_keys ORDER BY try_order LOOP
+--       func_body := func_body ||
+--         ' IF v_' || referrer_key.kind
+--         || ' LIKE ' || quote_literal(referrer_key.key_string)
+--         || ' THEN RETURN ' || quote_literal(referrer_key.referrer_type)
+--         || '; END IF;' ;
+--   END LOOP;
+--   func_body := func_body || ' RETURN NULL; END;';
+--   func_cmd :=
+--     'CREATE OR REPLACE FUNCTION cs_find_referrer_type(v_host varchar,
+--                                                       v_domain varchar,
+--                                                       v_url varchar)
+--       RETURNS varchar AS '
+--     || quote_literal(func_body)
+--     || ' LANGUAGE plpgsql;' ;
+--   EXECUTE func_cmd;
+-- END;$func$;
 
-CREATE OR REPLACE FUNCTION cs_parse_url(
-    v_url IN VARCHAR,
-    v_host OUT VARCHAR,  -- This will be passed back
-    v_path OUT VARCHAR,  -- This one too
-    v_query OUT VARCHAR) -- And this one
-AS $$
-DECLARE
-    a_pos1 INTEGER;
-    a_pos2 INTEGER;
-BEGIN
-    v_host := NULL;
-    v_path := NULL;
-    v_query := NULL;
-    a_pos1 := instr(v_url, '//');
-
-    IF a_pos1 = 0 THEN
-        RETURN;
-    END IF;
-    a_pos2 := instr(v_url, '/', a_pos1 + 2);
-    IF a_pos2 = 0 THEN
-        v_host := substr(v_url, a_pos1 + 2);
-        v_path := '/';
-        RETURN;
-    END IF;
-
-    v_host := substr(v_url, a_pos1 + 2, a_pos2 - a_pos1 - 2);
-    a_pos1 := instr(v_url, '?', a_pos2 + 1);
-
-    IF a_pos1 = 0 THEN
-        v_path := substr(v_url, a_pos2);
-        RETURN;
-    END IF;
-
-    v_path := substr(v_url, a_pos2, a_pos1 - a_pos2);
-    v_query := substr(v_url, a_pos1 + 1);
-END;
-$$ LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION cs_parse_url(
+--     v_url IN VARCHAR,
+--     v_host OUT VARCHAR,  -- This will be passed back
+--     v_path OUT VARCHAR,  -- This one too
+--     v_query OUT VARCHAR) -- And this one
+-- AS $$
+-- DECLARE
+--     a_pos1 INTEGER;
+--     a_pos2 INTEGER;
+-- BEGIN
+--     v_host := NULL;
+--     v_path := NULL;
+--     v_query := NULL;
+--     a_pos1 := instr(v_url, '//');
+--
+--     IF a_pos1 = 0 THEN
+--         RETURN;
+--     END IF;
+--     a_pos2 := instr(v_url, '/', a_pos1 + 2);
+--     IF a_pos2 = 0 THEN
+--         v_host := substr(v_url, a_pos1 + 2);
+--         v_path := '/';
+--         RETURN;
+--     END IF;
+--
+--     v_host := substr(v_url, a_pos1 + 2, a_pos2 - a_pos1 - 2);
+--     a_pos1 := instr(v_url, '?', a_pos2 + 1);
+--
+--     IF a_pos1 = 0 THEN
+--         v_path := substr(v_url, a_pos2);
+--         RETURN;
+--     END IF;
+--
+--     v_path := substr(v_url, a_pos2, a_pos1 - a_pos2);
+--     v_query := substr(v_url, a_pos1 + 1);
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION cs_create_job(v_job_id integer) RETURNS void AS $$
 DECLARE
@@ -123,7 +123,7 @@ BEGIN
     SELECT count(*) INTO a_running_job_count FROM cs_jobs WHERE end_stamp IS NULL;
 
     IF a_running_job_count > 0 THEN
-        RAISE EXCEPTION 'Unable to create a new job: a job is currently running';(1)
+        RAISE EXCEPTION 'Unable to create a new job: a job is currently running';
     END IF;
 
     DELETE FROM cs_active_job;
@@ -132,7 +132,7 @@ BEGIN
     BEGIN
         INSERT INTO cs_jobs (job_id, start_stamp) VALUES (v_job_id, now());
     EXCEPTION
-        WHEN unique_violation THEN (2)
+        WHEN unique_violation THEN
             -- don't worry if it already exists
     END;
 END;
@@ -346,71 +346,71 @@ BEGIN
 	RETURN updateJob;
 END;$$;
 
-CREATE FUNCTION getArrivalDate(memberID integer, teamID integer, atDate date) RETURNS date
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-        affectations affectation[];
-        aff affectation;
-
-        DELAI_MAX CONSTANT INTEGER := 30;
-
-        idx INTEGER;
-		nbr_aff INTEGER;
-        start DATE;
-        endDate DATE;
-        sortie BOOLEAN;
-
-        arrivalDate DATE;
-
-        crs_affectation CURSOR (memberID INTEGER) FOR
-                SELECT
-                        affectation.key,
-                        affectation.key_team,
-                        affectation.key_support,
-                        affectation.start,
-                        affectation.endDate,
-                        affectation.repartition,
-                        affectation.key_typeaffectation
-                FROM support,affectation
-                WHERE
-                        support.key_member = memberID
-                AND     affectation.key_support = support.key
-                AND     affectation.start <= atDate
-                AND     affectation.key_team = teamID
-                ORDER BY affectation.start DESC;
-BEGIN
-        OPEN crs_affectation(memberID);
-        LOOP
-                IF NOT FOUND THEN
-                        EXIT;
-                END IF;
-                FETCH crs_affectation into aff.key,aff.key_team,aff.key_support,aff.start,aff.endDate,aff.repartition,aff.key_typeaffectation;
-                affectations := ARRAY_APPEND(affectations,aff);
-        END LOOP;
-        CLOSE crs_affectation;
-
-        nbr_aff := ARRAY_LENGTH(affectations, 1);
-		idx := 1;
-        sortie := FALSE;
-
-        WHILE (idx <= nbr_aff AND sortie = FALSE) LOOP
-                IF(arrivalDate IS NULL) THEN
-                        arrivalDate := affectations[idx].start;
-                        endDate := affectations[idx].endDate;
-                ELSE
-                        IF(arrivalDate - affectations[idx].endDate) < DELAI_MAX THEN
-                                arrivalDate := affectations[idx].start;
-                                endDate := affectations[idx].endDate;
-                        ELSE
-                                sortie := TRUE;
-                        END IF;
-                END IF;
-                idx := idx + 1;
-        END LOOP;
-
-        RETURN arrivalDate;
-END;$$;
+-- CREATE FUNCTION getArrivalDate(memberID integer, teamID integer, atDate date) RETURNS date
+--     LANGUAGE plpgsql
+--     AS $$
+-- DECLARE
+--         affectations affectation[];
+--         aff affectation;
+--
+--         DELAI_MAX CONSTANT INTEGER := 30;
+--
+--         idx INTEGER;
+-- 		nbr_aff INTEGER;
+--         start DATE;
+--         endDate DATE;
+--         sortie BOOLEAN;
+--
+--         arrivalDate DATE;
+--
+--         crs_affectation CURSOR (memberID INTEGER) FOR
+--                 SELECT
+--                         affectation.key,
+--                         affectation.key_team,
+--                         affectation.key_support,
+--                         affectation.start,
+--                         affectation.endDate,
+--                         affectation.repartition,
+--                         affectation.key_typeaffectation
+--                 FROM support,affectation
+--                 WHERE
+--                         support.key_member = memberID
+--                 AND     affectation.key_support = support.key
+--                 AND     affectation.start <= atDate
+--                 AND     affectation.key_team = teamID
+--                 ORDER BY affectation.start DESC;
+-- BEGIN
+--         OPEN crs_affectation(memberID);
+--         LOOP
+--                 IF NOT FOUND THEN
+--                         EXIT;
+--                 END IF;
+--                 FETCH crs_affectation into aff.key,aff.key_team,aff.key_support,aff.start,aff.endDate,aff.repartition,aff.key_typeaffectation;
+--                 affectations := ARRAY_APPEND(affectations,aff);
+--         END LOOP;
+--         CLOSE crs_affectation;
+--
+--         nbr_aff := ARRAY_LENGTH(affectations, 1);
+-- 		idx := 1;
+--         sortie := FALSE;
+--
+--         WHILE (idx <= nbr_aff AND sortie = FALSE) LOOP
+--                 IF(arrivalDate IS NULL) THEN
+--                         arrivalDate := affectations[idx].start;
+--                         endDate := affectations[idx].endDate;
+--                 ELSE
+--                         IF(arrivalDate - affectations[idx].endDate) < DELAI_MAX THEN
+--                                 arrivalDate := affectations[idx].start;
+--                                 endDate := affectations[idx].endDate;
+--                         ELSE
+--                                 sortie := TRUE;
+--                         END IF;
+--                 END IF;
+--                 idx := idx + 1;
+--         END LOOP;
+--
+--         RETURN arrivalDate;
+-- END;$$;
 
 CREATE FUNCTION cleanString(str character varying) RETURNS character varying
     LANGUAGE plpgsql

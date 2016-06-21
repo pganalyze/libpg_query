@@ -15,17 +15,32 @@
 	if (node->fldname != NULL) { \
 		ListCell *lc; \
 		appendStringInfo(str, "\"" CppAsString(fldname) "\": ["); \
-		foreach(lc, node->fldname) { outfunc(str, (fldtype *) lfirst(lc)); } \
+		foreach(lc, node->fldname) { \
+			appendStringInfoString(str, "{"); \
+			outfunc(str, (fldtype *) lfirst(lc)); \
+			removeTrailingDelimiter(str); \
+			appendStringInfoString(str, "}},"); \
+		} \
 		removeTrailingDelimiter(str); \
 		appendStringInfoString(str, "], "); \
   }
+
+  #define WRITE_STATEMENTS_FIELD(fldname) \
+  	if (node->fldname != NULL) { \
+  		ListCell *lc; \
+  		appendStringInfo(str, "\"" CppAsString(fldname) "\": ["); \
+  		foreach(lc, node->fldname) { \
+  			dump_stmt(str, (PLpgSQL_stmt *) lfirst(lc)); \
+  		} \
+  		removeTrailingDelimiter(str); \
+  		appendStringInfoString(str, "],"); \
+    }
 
 #define WRITE_EXPR_FIELD(fldname)   WRITE_OBJ_FIELD(fldname, dump_expr)
 #define WRITE_BLOCK_FIELD(fldname)  WRITE_OBJ_FIELD(fldname, dump_block)
 #define WRITE_RECORD_FIELD(fldname) WRITE_OBJ_FIELD(fldname, dump_record)
 #define WRITE_ROW_FIELD(fldname)    WRITE_OBJ_FIELD(fldname, dump_row)
 #define WRITE_VAR_FIELD(fldname)    WRITE_OBJ_FIELD(fldname, dump_var)
-#define WRITE_STATEMENTS_FIELD(fldname) WRITE_LIST_FIELD(fldname, PLpgSQL_stmt, dump_stmt)
 
 static void dump_record(StringInfo str, PLpgSQL_rec *stmt);
 static void dump_row(StringInfo str, PLpgSQL_row *stmt);
@@ -156,8 +171,8 @@ dump_block(StringInfo str, PLpgSQL_stmt_block *node)
 	WRITE_NODE_TYPE("PLpgSQL_stmt_block");
 
 	WRITE_INT_FIELD(lineno);
-  WRITE_STRING_FIELD(label);
-	WRITE_LIST_FIELD(body, PLpgSQL_stmt, dump_stmt);
+  	WRITE_STRING_FIELD(label);
+	WRITE_STATEMENTS_FIELD(body);
 	WRITE_OBJ_FIELD(exceptions, dump_exception_block);
 
 	removeTrailingDelimiter(str);
@@ -181,7 +196,10 @@ dump_exception(StringInfo str, PLpgSQL_exception *node)
 	appendStringInfo(str, "\"conditions\": [");
 	for (cond = node->conditions; cond; cond = cond->next)
 	{
+		appendStringInfoString(str, "{");
 		dump_condition(str, cond);
+		removeTrailingDelimiter(str);
+		appendStringInfoString(str, "}},");
 	}
 	removeTrailingDelimiter(str);
 	appendStringInfoString(str, "], ");
@@ -451,7 +469,7 @@ dump_execsql(StringInfo str, PLpgSQL_stmt_execsql *node)
 
 	WRITE_INT_FIELD(lineno);
 	WRITE_EXPR_FIELD(sqlstmt);
-	WRITE_BOOL_FIELD(mod_stmt);
+	//WRITE_BOOL_FIELD(mod_stmt); // This is only populated when executing the function
 	WRITE_BOOL_FIELD(into);
 	WRITE_BOOL_FIELD(strict);
 	WRITE_RECORD_FIELD(rec);
