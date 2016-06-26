@@ -260,7 +260,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 
 	if (node == NULL) return false;
 
-	if (IsA(node, A_Const) && ((A_Const *) node)->location >= 0)
+	if ((IsA(node, A_Const) && ((A_Const *) node)->location >= 0) || (IsA(node, DefElem) && ((DefElem *) node)->location >= 0))
 	{
 		/* enlarge array if needed */
 		if (jstate->clocations_count >= jstate->clocations_buf_size)
@@ -271,7 +271,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 						 jstate->clocations_buf_size *
 						 sizeof(pgssLocationLen));
 		}
-		jstate->clocations[jstate->clocations_count].location = ((A_Const *) node)->location;
+		jstate->clocations[jstate->clocations_count].location = IsA(node, DefElem) ? ((DefElem *) node)->location : ((A_Const *) node)->location;
 		/* initialize lengths to -1 to simplify fill_in_constant_lengths */
 		jstate->clocations[jstate->clocations_count].length = -1;
 		jstate->clocations_count++;
@@ -287,6 +287,10 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	else if (IsA(node, ExplainStmt))
 	{
 		return const_record_walker((Node *) ((ExplainStmt *) node)->query, jstate);
+	}
+	else if (IsA(node, AlterRoleStmt))
+	{
+		return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
 	}
 
 	PG_TRY();

@@ -1,8 +1,8 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
+ * - makeDefElemExtended
  * - makeDefElem
  * - makeTypeNameFromNameList
- * - makeDefElemExtended
  * - makeAlias
  * - makeGroupingSet
  * - makeTypeName
@@ -267,6 +267,7 @@ makeDefElem(char *name, Node *arg)
 	res->defname = name;
 	res->arg = arg;
 	res->defaction = DEFELEM_UNSPEC;
+	res->location = -1;
 
 	return res;
 }
@@ -277,7 +278,7 @@ makeDefElem(char *name, Node *arg)
  */
 DefElem *
 makeDefElemExtended(char *nameSpace, char *name, Node *arg,
-					DefElemAction defaction)
+					DefElemAction defaction, int location)
 {
 	DefElem    *res = makeNode(DefElem);
 
@@ -285,6 +286,7 @@ makeDefElemExtended(char *nameSpace, char *name, Node *arg,
 	res->defname = name;
 	res->arg = arg;
 	res->defaction = defaction;
+	res->location = location;
 
 	return res;
 }

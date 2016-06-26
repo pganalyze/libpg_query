@@ -1000,6 +1000,11 @@
           "name": "defaction",
           "c_type": "DefElemAction",
           "comment": "/* unspecified action, or SET/ADD/DROP */"
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": "/* parse location, or -1 if none/unknown */"
         }
       ],
       "comment": "/*\n * DefElem - a generic \"name = value\" option definition\n *\n * In some contexts the name can be qualified.  Also, certain SQL commands\n * allow a SET/ADD/DROP action to be attached to option settings, so it's\n * convenient to carry a field for that too.  (Note: currently, it is our\n * practice that the grammar allows namespace and action only in statements\n * where they are relevant; C code can just ignore those fields in other\n * statements.)\n */\n"

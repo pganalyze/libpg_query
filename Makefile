@@ -52,6 +52,7 @@ $(PGDIR):
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_normalize_alter_role_password.patch
 	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
@@ -98,9 +99,10 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) -I. -o $@ -g examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/fingerprint test/parse test/parse_plpgsql
+TESTS = test/fingerprint test/normalize test/parse test/parse_plpgsql
 test: $(TESTS)
 	test/fingerprint
+	test/normalize
 	test/parse
 	# Output-based tests
 	test/parse_plpgsql
@@ -108,6 +110,9 @@ test: $(TESTS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
+
+test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
+	$(CC) -I. -Isrc -o $@ -g test/normalize.c $(ARLIB)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) -I. -o $@ -g test/parse.c $(ARLIB)

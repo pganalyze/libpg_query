@@ -660,6 +660,7 @@ typedef struct DefElem
 	char	   *defname;
 	Node	   *arg;			/* a (Value *) or a (TypeName *) */
 	DefElemAction defaction;	/* unspecified action, or SET/ADD/DROP */
+	int			location;		/* parse location, or -1 if none/unknown */
 } DefElem;
 
 /*

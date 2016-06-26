@@ -5769,6 +5769,7 @@ _fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *pa
     _fingerprintString(ctx, node->defnamespace);
   }
 
+  // Intentionally ignoring node->location for fingerprinting
 }
 
 static void

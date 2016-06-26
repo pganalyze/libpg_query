@@ -11,6 +11,10 @@ const char* tests[] = {
   "[{\"CreateForeignTableStmt\": {\"base\": {\"CreateStmt\": {\"relation\": {\"RangeVar\": {\"relname\": \"ft1\", \"inhOpt\": 2, \"relpersistence\": \"p\", \"location\": 21}}, \"oncommit\": 0}}, \"servername\": \"no_server\"}}]",
   "SELECT parse_ident(E'\"c\".X XXXX\002XXXXXX')",
   "[{\"SelectStmt\": {\"targetList\": [{\"ResTarget\": {\"val\": {\"FuncCall\": {\"funcname\": [{\"String\": {\"str\": \"parse_ident\"}}], \"args\": [{\"A_Const\": {\"val\": {\"String\": {\"str\": \"\\\"c\\\".X XXXX\\u0002XXXXXX\"}}, \"location\": 19}}], \"location\": 7}}, \"location\": 7}}], \"op\": 0}}]",
+  "ALTER ROLE postgres LOGIN SUPERUSER PASSWORD 'xyz'",
+  "[{\"AlterRoleStmt\": {\"role\": {\"RoleSpec\": {\"roletype\": 0, \"rolename\": \"postgres\", \"location\": 11}}, \"options\": [{\"DefElem\": {\"defname\": \"canlogin\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": -1}}, {\"DefElem\": {\"defname\": \"superuser\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": -1}}, {\"DefElem\": {\"defname\": \"password\", \"arg\": {\"String\": {\"str\": \"xyz\"}}, \"defaction\": 0, \"location\": 45}}], \"action\": 1}}]",
+  "ALTER ROLE postgres LOGIN SUPERUSER PASSWORD ?",
+  "[{\"AlterRoleStmt\": {\"role\": {\"RoleSpec\": {\"roletype\": 0, \"rolename\": \"postgres\", \"location\": 11}}, \"options\": [{\"DefElem\": {\"defname\": \"canlogin\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": -1}}, {\"DefElem\": {\"defname\": \"superuser\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": -1}}, {\"DefElem\": {\"defname\": \"password\", \"arg\": {\"ParamRef\": {\"location\": 45}}, \"defaction\": 0, \"location\": 45}}], \"action\": 1}}]"
 };
 
 size_t testsLength = __LINE__ - 4;
