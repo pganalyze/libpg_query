@@ -2,6 +2,18 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.4.0    2016-06-26
+
+* Clean up includes to avoid dependency on stdbool.h and xlocale.h
+* Change PL/pgSQL input to be the full CREATE FUNCTION statement
+  * This is necessary for parsing, since we need the argument and return types
+* Fingerprinting Version 1.1
+  * Only ignore ResTarget.name when parent field name is targetList *and*
+    we have a SelectStmt as a parent node (fixes UpdateStmt fingerprinting)
+* Normalize the password in ALTER ROLE ... PASSWORD '123' statements
+* Make library thread-safe through thread-local storage [#13](https://github.com/lfittl/libpg_query/issues/13)
+
+
 ## 9.5-1.3.0    2016-05-31
 
 * Extract source code using LLVM instead of manually compiling the right objects
