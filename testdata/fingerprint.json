@@ -233,26 +233,27 @@
   {
     "input": "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = ?",
     "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
+      "targetList", "ResTarget", "name", "one_thing", "ResTarget", "name", "second_thing",
+      "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
       "str", "users", "String", "str", "id", "name", "String", "str", "="],
-    "expectedHash": "014c035ee49cc619c96b7bcdbc015937ac2e2afc40"
+    "expectedHash": "0144b6e365404dcb545d9d58d70503ef53884bfe4e"
   },
   {
     "input": "UPDATE users SET something_else = $1 WHERE users.id = ?",
     "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
+      "targetList", "ResTarget", "name", "something_else", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String",
       "str", "users", "String", "str", "id", "name", "String", "str", "="],
-    "expectedHash": "014c035ee49cc619c96b7bcdbc015937ac2e2afc40"
+    "expectedHash": "0102259f46bea283cf096ed88d8681817ca10b95cb"
   },
   {
     "input": "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
     "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "val", "SubLink", "subLinkType", "4", "subselect", "SelectStmt", "fromClause",
+      "targetList", "ResTarget", "name", "something_else", "val", "SubLink", "subLinkType", "4", "subselect", "SelectStmt", "fromClause",
       "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef",
       "fields", "String", "str", "a", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "uid",
       "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id",
       "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
-    "expectedHash": "015d3b0231f5c33750146db5acd0dbc5e08be0d55d"
+    "expectedHash": "01cb1a51c6a9d1d37e1cea944847edadafeab5bea7"
   },
   {
     "input": "SAVEPOINT some_id",
@@ -283,5 +284,15 @@
     "input": "CREATE FOREIGN TABLE ft1 () SERVER no_server",
     "expectedParts": ["CreateForeignTableStmt", "base", "CreateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "ft1", "relpersistence", "p", "servername", "no_server"],
     "expectedHash": "01e7e0b0f08a81026fbc256bb862637574040101e8"
+  },
+  {
+    "input": "UPDATE x SET a = 1, b = 2",
+    "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "name", "a", "ResTarget", "name", "b"],
+    "expectedHash": "01c4499e84432ec68e2b0aeebb027e7e7234238358"
+  },
+  {
+    "input": "UPDATE x SET z = now()",
+    "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "name", "z", "val", "FuncCall", "funcname", "String", "str", "now"],
+    "expectedHash": "0156860c0b3361b8865b4e4ff09a2c5f36c7787cb7"
   }
 ]

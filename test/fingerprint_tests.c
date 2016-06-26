@@ -62,11 +62,11 @@ const char* tests[] = {
   "SELECT * FROM a AS b",
   "011f3a0a714c4e3bbf38e9eab45104fe96f7746ab2",
   "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = ?",
-  "014c035ee49cc619c96b7bcdbc015937ac2e2afc40",
+  "0144b6e365404dcb545d9d58d70503ef53884bfe4e",
   "UPDATE users SET something_else = $1 WHERE users.id = ?",
-  "014c035ee49cc619c96b7bcdbc015937ac2e2afc40",
+  "0102259f46bea283cf096ed88d8681817ca10b95cb",
   "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
-  "015d3b0231f5c33750146db5acd0dbc5e08be0d55d",
+  "01cb1a51c6a9d1d37e1cea944847edadafeab5bea7",
   "SAVEPOINT some_id",
   "0144f00f575a004bc89da2f79a524f62407e76e059",
   "RELEASE some_id",
@@ -79,6 +79,10 @@ const char* tests[] = {
   "01da39a3ee5e6b4b0d3255bfef95601890afd80709",
   "CREATE FOREIGN TABLE ft1 () SERVER no_server",
   "01e7e0b0f08a81026fbc256bb862637574040101e8",
+  "UPDATE x SET a = 1, b = 2",
+  "01c4499e84432ec68e2b0aeebb027e7e7234238358",
+  "UPDATE x SET z = now()",
+  "0156860c0b3361b8865b4e4ff09a2c5f36c7787cb7",
 };
 
 size_t testsLength = __LINE__ - 4;

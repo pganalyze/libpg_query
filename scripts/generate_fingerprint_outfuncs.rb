@@ -15,7 +15,7 @@ class Generator
   end
 
   FINGERPRINT_RES_TARGET_NAME = <<-EOL
-  if (node->name != NULL && (field_name == NULL || strcmp(field_name, "targetList") != 0)) {
+  if (node->name != NULL && (field_name == NULL || parent == NULL || !IsA(parent, SelectStmt) || strcmp(field_name, "targetList") != 0)) {
     _fingerprintString(ctx, "name");
     _fingerprintString(ctx, node->name);
   }
@@ -25,7 +25,7 @@ EOL
   if (true) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, &node->%<name>s, "%<name>s");
+    _fingerprintNode(&subCtx, &node->%<name>s, node, "%<name>s");
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
 EOL
@@ -34,7 +34,7 @@ EOL
   if (node->%<name>s != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->%<name>s, "%<name>s");
+    _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s");
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
 EOL
@@ -43,7 +43,7 @@ EOL
   if (node->%<name>s != NULL && node->%<name>s->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->%<name>s, "%<name>s");
+    _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s");
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
 EOL
@@ -161,7 +161,7 @@ EOL
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
             when 'CreateStmt'
               fingerprint_def += format("  _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += format("  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->%s, \"%s\");\n", name, name)
+              fingerprint_def += format("  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->%s, node, \"%s\");\n", name, name)
             when 'char'
               fingerprint_def += format("  if (node->%s != 0) {\n", name)
               fingerprint_def += format("    char str[2] = {node->%s, '\\0'};\n", name)
@@ -226,14 +226,14 @@ EOL
       next unless fingerprint_def
 
       defs += "static void\n"
-      defs += format("_fingerprint%s(FingerprintContext *ctx, const %s *node, const char *field_name)\n", type, type)
+      defs += format("_fingerprint%s(FingerprintContext *ctx, const %s *node, const void *parent, const char *field_name)\n", type, type)
       defs += "{\n"
       defs += fingerprint_def
       defs += "}\n"
       defs += "\n"
 
       conds += format("case T_%s:\n", type)
-      conds += format("  _fingerprint%s(ctx, obj, field_name);\n", type)
+      conds += format("  _fingerprint%s(ctx, obj, parent, field_name);\n", type)
       conds += "  break;\n"
     end
 

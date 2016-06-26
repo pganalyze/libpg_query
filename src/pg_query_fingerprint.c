@@ -30,7 +30,7 @@ typedef struct FingerprintToken
   dlist_node list_node;
 } FingerprintToken;
 
-static void _fingerprintNode(FingerprintContext *ctx, const void *obj, char *parent_field_name);
+static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *parent_field_name);
 static void _fingerprintInitForTokens(FingerprintContext *ctx);
 static void _fingerprintCopyTokens(FingerprintContext *source, FingerprintContext *target, char *field_name);
 
@@ -115,7 +115,7 @@ static int compareFingerprintContext(const void *a, const void *b)
 }
 
 static void
-_fingerprintList(FingerprintContext *ctx, const List *node, char *field_name)
+_fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, char *field_name)
 {
   if (field_name != NULL && (strcmp(field_name, "fromClause") == 0 || strcmp(field_name, "targetList") == 0 ||
       strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0)) {
@@ -130,7 +130,7 @@ _fingerprintList(FingerprintContext *ctx, const List *node, char *field_name)
       FingerprintContext* subCtx = palloc0(sizeof(FingerprintContext));
 
       _fingerprintInitForTokens(subCtx);
-  		_fingerprintNode(subCtx, lfirst(lc), field_name);
+  		_fingerprintNode(subCtx, lfirst(lc), parent, field_name);
 
       bool exists = false;
       for (i = 0; i < subCtxCount; i++) {
@@ -158,7 +158,7 @@ _fingerprintList(FingerprintContext *ctx, const List *node, char *field_name)
 
     foreach(lc, node)
   	{
-  		_fingerprintNode(ctx, lfirst(lc), field_name);
+  		_fingerprintNode(ctx, lfirst(lc), parent, field_name);
 
   		lnext(lc);
   	}
@@ -192,7 +192,7 @@ _fingerprintCopyTokens(FingerprintContext *source, FingerprintContext *target, c
 #include "pg_query_fingerprint_defs.c"
 
 void
-_fingerprintNode(FingerprintContext *ctx, const void *obj, char *field_name)
+_fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *field_name)
 {
 	if (obj == NULL)
 	{
@@ -201,7 +201,7 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, char *field_name)
 
 	if (IsA(obj, List))
 	{
-		_fingerprintList(ctx, obj, field_name);
+		_fingerprintList(ctx, obj, parent, field_name);
 	}
 	else
 	{
@@ -256,7 +256,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
     SHA1Init(ctx.sha1);
 
     if (parsetree_and_error.tree != NULL) {
-      _fingerprintNode(&ctx, parsetree_and_error.tree, NULL);
+      _fingerprintNode(&ctx, parsetree_and_error.tree, NULL, NULL);
     }
 
     SHA1Final(sha1result, ctx.sha1);
@@ -275,7 +275,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
       dlist_iter iter;
 
       _fingerprintInitForTokens(&debugCtx);
-      _fingerprintNode(&debugCtx, parsetree_and_error.tree, NULL);
+      _fingerprintNode(&debugCtx, parsetree_and_error.tree, NULL, NULL);
 
       printf("[");
 
