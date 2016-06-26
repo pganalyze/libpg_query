@@ -165,7 +165,6 @@ PQcommMethods *PqCommMethods = NULL;
 
 
 
-
 /* --------------------------------
  *		pq_init - initialize libpq at backend startup
  * --------------------------------

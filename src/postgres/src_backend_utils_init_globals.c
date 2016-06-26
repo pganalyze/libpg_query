@@ -37,13 +37,17 @@
 
 
 
-volatile bool InterruptPending = false;
+__thread volatile bool InterruptPending = false;
 
 
 
-volatile uint32 InterruptHoldoffCount = 0;
-volatile uint32 QueryCancelHoldoffCount = 0;
-volatile uint32 CritSectionCount = 0;
+
+__thread volatile uint32 InterruptHoldoffCount = 0;
+
+__thread volatile uint32 QueryCancelHoldoffCount = 0;
+
+__thread volatile uint32 CritSectionCount = 0;
+
 
 
 
@@ -104,12 +108,14 @@ char		postgres_exec_path[MAXPGPATH];		/* full path to backend */
  *
  * These are initialized for the bootstrap/standalone case.
  */
-bool		IsPostmasterEnvironment = false;
+__thread bool		IsPostmasterEnvironment = false;
 
 
 
 
-bool		ExitOnAnyError = false;
+
+__thread bool		ExitOnAnyError = false;
+
 
 
 

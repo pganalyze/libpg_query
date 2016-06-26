@@ -893,11 +893,11 @@ typedef enum
 	IDENTIFIER_LOOKUP_EXPR		/* In SQL expression --- special case */
 } IdentifierLookup;
 
-extern IdentifierLookup plpgsql_IdentifierLookup;
+extern __thread  IdentifierLookup plpgsql_IdentifierLookup;
 
-extern int	plpgsql_variable_conflict;
+extern __thread  int plpgsql_variable_conflict;
 
-extern bool plpgsql_print_strict_params;
+extern __thread  bool plpgsql_print_strict_params;
 
 extern bool plpgsql_check_asserts;
 
@@ -909,18 +909,18 @@ extern bool plpgsql_check_asserts;
 extern int	plpgsql_extra_warnings;
 extern int	plpgsql_extra_errors;
 
-extern bool plpgsql_check_syntax;
-extern bool plpgsql_DumpExecTree;
+extern __thread  bool plpgsql_check_syntax;
+extern __thread  bool plpgsql_DumpExecTree;
 
-extern PLpgSQL_stmt_block *plpgsql_parse_result;
+extern __thread  PLpgSQL_stmt_block *plpgsql_parse_result;
 
-extern int	plpgsql_nDatums;
-extern PLpgSQL_datum **plpgsql_Datums;
+extern __thread  int plpgsql_nDatums;
+extern __thread  PLpgSQL_datum **plpgsql_Datums;
 
-extern char *plpgsql_error_funcname;
+extern __thread  char *plpgsql_error_funcname;
 
-extern PLpgSQL_function *plpgsql_curr_compile;
-extern MemoryContext compile_tmp_cxt;
+extern __thread  PLpgSQL_function *plpgsql_curr_compile;
+extern __thread  MemoryContext compile_tmp_cxt;
 
 extern PLpgSQL_plugin **plugin_ptr;
 

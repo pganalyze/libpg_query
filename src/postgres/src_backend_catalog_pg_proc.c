@@ -122,7 +122,6 @@ static bool match_prosrc_to_literal(const char *prosrc, const char *literal,
 bool function_parse_error_transpose(const char *prosrc) { return false; }
 
 
-
 /*
  * Try to locate the string literal containing the function body in the
  * given text of the CREATE FUNCTION or DO command.  If successful, return

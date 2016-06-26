@@ -21,7 +21,7 @@ extern int	Unix_socket_permissions;
 extern char *Unix_socket_group;
 extern char *Unix_socket_directories;
 extern char *ListenAddresses;
-extern bool ClientAuthInProgress;
+extern __thread  bool ClientAuthInProgress;
 extern int	PreAuthDelay;
 extern int	AuthenticationTimeout;
 extern bool Log_connections;

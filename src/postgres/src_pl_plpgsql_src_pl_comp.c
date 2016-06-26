@@ -71,21 +71,29 @@
  * Our own local and global variables
  * ----------
  */
-PLpgSQL_stmt_block *plpgsql_parse_result;
+__thread PLpgSQL_stmt_block *plpgsql_parse_result;
+
 
 static int	datums_alloc;
-int			plpgsql_nDatums;
-PLpgSQL_datum **plpgsql_Datums;
+__thread int			plpgsql_nDatums;
+
+__thread PLpgSQL_datum **plpgsql_Datums;
+
 static int	datums_last = 0;
 
-char	   *plpgsql_error_funcname;
-bool		plpgsql_DumpExecTree = false;
-bool		plpgsql_check_syntax = false;
+__thread char	   *plpgsql_error_funcname;
 
-PLpgSQL_function *plpgsql_curr_compile;
+__thread bool		plpgsql_DumpExecTree = false;
+
+__thread bool		plpgsql_check_syntax = false;
+
+
+__thread PLpgSQL_function *plpgsql_curr_compile;
+
 
 /* A context appropriate for short-term allocs during compilation */
-MemoryContext compile_tmp_cxt;
+__thread MemoryContext compile_tmp_cxt;
+
 
 /* ----------
  * Hash table for compiled functions
@@ -738,13 +746,11 @@ PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
 
 
 
-
 /* ----------
  * plpgsql_parse_cwordtype		Same lookup for compositeword%TYPE
  * ----------
  */
 PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
-
 
 
 /* ----------
@@ -755,14 +761,12 @@ PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
 PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
 
 
-
 /* ----------
  * plpgsql_parse_cwordrowtype		Scanner found compositeword%ROWTYPE.
  *			So word must be a namespace qualified table name.
  * ----------
  */
 PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }
-
 
 
 /*
@@ -879,7 +883,6 @@ plpgsql_build_record(const char *refname, int lineno, bool add2namespace)
 static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }
 
 
-
 /*
  * Build a row-variable data structure given the component variables.
  */
@@ -893,7 +896,6 @@ static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }
  * collation.  But collation is ignored if the datatype is non-collatable.
  */
 PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
-
 
 
 /*

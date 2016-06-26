@@ -466,8 +466,8 @@ struct YYLTYPE
 #endif
 
 
-extern YYSTYPE plpgsql_yylval;
-extern YYLTYPE plpgsql_yylloc;
+extern __thread  YYSTYPE plpgsql_yylval;
+extern __thread  YYLTYPE plpgsql_yylloc;
 int plpgsql_yyparse (void);
 
 #endif /* !YY_PLPGSQL_YY_PL_GRAM_H_INCLUDED  */
@@ -1831,18 +1831,21 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocatio
 
 
 /* The lookahead symbol.  */
-int yychar;
+__thread int yychar;
+
 
 /* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
+__thread YYSTYPE yylval;
+
 /* Location data for the lookahead symbol.  */
-YYLTYPE yylloc
+__thread YYLTYPE yylloc
 # if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
   = { 1, 1, 1, 1 }
 # endif
 ;
 /* Number of syntax errors so far.  */
-int yynerrs;
+__thread int yynerrs;
+
 
 
 /*----------.
@@ -5349,7 +5352,6 @@ make_return_stmt(int location)
 
 
 
-
 static PLpgSQL_stmt *
 make_return_next_stmt(int location)
 {
@@ -5766,7 +5768,6 @@ plpgsql_sql_error_callback(void *arg)
  * expect that the given string is a copy from the source text.
  */
 static PLpgSQL_type * parse_datatype(const char *string, int location) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup(string); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
-
 
 
 /*

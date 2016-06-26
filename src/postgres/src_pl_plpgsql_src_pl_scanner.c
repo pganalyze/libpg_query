@@ -60,7 +60,8 @@
 
 
 /* Klugy flag to tell scanner how to look up identifiers */
-IdentifierLookup plpgsql_IdentifierLookup = IDENTIFIER_LOOKUP_NORMAL;
+__thread IdentifierLookup plpgsql_IdentifierLookup = IDENTIFIER_LOOKUP_NORMAL;
+
 
 /*
  * A word about keywords:

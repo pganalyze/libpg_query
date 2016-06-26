@@ -42,9 +42,11 @@ static void plpgsql_extra_errors_assign_hook(const char *newvalue, void *extra);
 /* Custom GUC variable */
 
 
-int			plpgsql_variable_conflict = PLPGSQL_RESOLVE_ERROR;
+__thread int			plpgsql_variable_conflict = PLPGSQL_RESOLVE_ERROR;
 
-bool		plpgsql_print_strict_params = false;
+
+__thread bool		plpgsql_print_strict_params = false;
+
 
 
 

@@ -281,15 +281,18 @@ extern const struct config_enum_entry dynamic_shared_memory_options[];
 
 
 
-bool		check_function_bodies = true;
+__thread bool		check_function_bodies = true;
 
 
 
 
 
 
-int			log_min_messages = WARNING;
-int			client_min_messages = NOTICE;
+
+__thread int			log_min_messages = WARNING;
+
+__thread int			client_min_messages = NOTICE;
+
 
 
 

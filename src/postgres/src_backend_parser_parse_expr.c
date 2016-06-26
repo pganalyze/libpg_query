@@ -45,7 +45,8 @@
 
 
 /* GUC parameters */
-bool		operator_precedence_warning = false;
+__thread bool		operator_precedence_warning = false;
+
 
 
 /*

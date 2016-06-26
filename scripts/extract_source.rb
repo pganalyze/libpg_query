@@ -42,6 +42,7 @@ class Runner
     @file_analysis = {}
     @global_method_to_base_filename = {}
     @file_to_method_and_pos = {}
+    @external_variables = []
 
     @resolved_static_by_base_filename = {}
     @resolved_global = []
@@ -107,7 +108,7 @@ class Runner
     Dir.glob(@basepath + 'src/backend/port/win32_*.c') -
     Dir.glob(@basepath + 'src/backend/snowball/**/*.c')
 
-    #files = [@basepath + 'src/backend/commands/analyze.c']
+    #files = [@basepath + 'src/backend/parser/keywords.c']
 
     files.each do |file|
       if files == [file]
@@ -135,6 +136,10 @@ class Runner
       analysis.file_to_symbol_positions.each do |file, method_and_pos|
         @file_to_method_and_pos[file] = method_and_pos
       end
+
+      analysis.external_variables.each do |symbol|
+        @external_variables << symbol
+      end
     end
 
     #puts @caller_to_static_callees['/Users/lfittl/Code/libpg_query/postgres/src/backend/regex/regc_locale.c']['cclass'].inspect
@@ -143,16 +148,18 @@ class Runner
   end
 
   class FileAnalysis
-    attr_accessor :references, :static_symbols, :symbol_to_file, :file_to_symbol_positions, :included_files
+    attr_accessor :references, :static_symbols, :symbol_to_file, :file_to_symbol_positions, :external_variables, :included_files
 
     def initialize(filename, basepath, references = {}, static_symbols = [],
-      symbol_to_file = {}, file_to_symbol_positions = {}, included_files = [])
+      symbol_to_file = {}, file_to_symbol_positions = {}, external_variables = [],
+      included_files = [])
       @filename = filename
       @basepath = basepath
       @references = references
       @static_symbols = static_symbols
       @symbol_to_file = symbol_to_file
       @file_to_symbol_positions = file_to_symbol_positions
+      @external_variables = external_variables
       @included_files = included_files
     end
 
@@ -162,6 +169,7 @@ class Runner
         static_symbols: @static_symbols,
         symbol_to_file: @symbol_to_file,
         file_to_symbol_positions: @file_to_symbol_positions,
+        external_variables: @external_variables,
         included_files: @included_files,
       })
 
@@ -175,7 +183,8 @@ class Runner
       json = File.read(analysis_filename(filename, basepath))
       hsh = JSON.parse(json)
       new(filename, basepath, hsh['references'], hsh['static_symbols'],
-      hsh['symbol_to_file'], hsh['file_to_symbol_positions'], hsh['included_files'])
+      hsh['symbol_to_file'], hsh['file_to_symbol_positions'], hsh['external_variables'],
+      hsh['included_files'])
     rescue Errno::ENOENT
       nil
     end
@@ -220,6 +229,10 @@ class Runner
             start_offset = cursor.extent.start.offset
             end_offset = cursor.extent.end.offset
             end_offset += 1 if cursor.kind == :cursor_variable # The ";" isn't counted correctly by clang
+
+            if cursor.kind == :cursor_variable && cursor.linkage == :external && !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified?
+              analysis.external_variables << cursor.spelling
+            end
 
             analysis.file_to_symbol_positions[cursor.location.file] ||= {}
             analysis.file_to_symbol_positions[cursor.location.file][cursor.spelling] = [start_offset, end_offset]
@@ -324,13 +337,17 @@ class Runner
   end
 
   def write_out
+    all_thread_local_variables = []
+
     @symbols_to_output.each do |filename, symbols|
+      file_thread_local_variables = []
       dead_positions = (@file_to_method_and_pos[filename] || {}).dup
 
-      symbols.each do |method|
-        next if @mock.key?(method)
+      symbols.each do |symbol|
+        next if @mock.key?(symbol)
+        next if @external_variables.include?(symbol)
 
-        alive_pos = dead_positions[method]
+        alive_pos = dead_positions[symbol]
 
         # In some cases there are other symbols at the same location (macros), so delete by position instead of name
         dead_positions.delete_if { |_,pos| pos == alive_pos }
@@ -347,24 +364,34 @@ class Runner
       str += " */\n\n"
 
       next_start_pos = 0
-      dead_positions.each do |method, pos|
-        fail format("Position overrun for %s in %s, next_start_pos (%d) > file length (%d)", method, filename, next_start_pos, full_code.size) if next_start_pos > full_code.size
-        fail format("Position overrun for %s in %s, dead position pos[0]-1 (%d) > file length (%d)", method, filename, pos[0]-1, full_code.size) if pos[0]-1 > full_code.size
+      dead_positions.each do |symbol, pos|
+        fail format("Position overrun for %s in %s, next_start_pos (%d) > file length (%d)", symbol, filename, next_start_pos, full_code.size) if next_start_pos > full_code.size
+        fail format("Position overrun for %s in %s, dead position pos[0]-1 (%d) > file length (%d)", symbol, filename, pos[0]-1, full_code.size) if pos[0]-1 > full_code.size
 
         str += full_code[next_start_pos...(pos[0]-1)]
 
-        if @mock.key?(method)
-          str += "\n" + @mock[method] + "\n"
-        end
-
-        # In the off chance that part of a macro is before a method (e.g. ifdef),
-        # but the closing part is inside (e.g. endif) we need to output all macros inside skipped parts
         skipped_code = full_code[(pos[0]-1)...pos[1]]
-        str += "\n" + skipped_code.scan(/^(#\s*(?:include|define|undef|if|ifdef|ifndef|else|endif))((?:[^\n]*\\\s*\n)*)([^\n]*)$/m).map { |m| m.compact.join }.join("\n")
+
+        if @mock.key?(symbol)
+          str += "\n" + @mock[symbol] + "\n"
+        elsif @external_variables.include?(symbol) && symbols.include?(symbol)
+          file_thread_local_variables << symbol
+          str += "\n__thread " + skipped_code.strip + "\n"
+        else
+          # In the off chance that part of a macro is before a symbol (e.g. ifdef),
+          # but the closing part is inside (e.g. endif) we need to output all macros inside skipped parts
+          str += "\n" + skipped_code.scan(/^(#\s*(?:include|define|undef|if|ifdef|ifndef|else|endif))((?:[^\n]*\\\s*\n)*)([^\n]*)$/m).map { |m| m.compact.join }.join("\n")
+        end
 
         next_start_pos = pos[1]
       end
       str += full_code[next_start_pos..-1]
+
+      # In some cases we also need to take care of definitions in the same file
+      file_thread_local_variables.each do |variable|
+        str.gsub!(/(PGDLLIMPORT|extern)\s+(const|volatile)?\s*(\w+)\s+(\*{0,2})#{variable}(\[\])?;/, "\\1 __thread \\2 \\3 \\4#{variable}\\5;")
+      end
+      all_thread_local_variables += file_thread_local_variables
 
       if special_include_file?(filename)
         out_name = File.basename(filename)
@@ -384,8 +411,13 @@ class Runner
         out_file = @out_path + 'include/' + File.basename(include_file)
       end
 
+      code = File.read(include_file)
+      all_thread_local_variables.each do |variable|
+        code.gsub!(/(PGDLLIMPORT|extern)\s+(const|volatile)?\s*(\w+)\s+(\*{0,2})#{variable}(\[\])?;/, "\\1 __thread \\2 \\3 \\4#{variable}\\5;")
+      end
+
       FileUtils.mkdir_p File.dirname(out_file)
-      FileUtils.cp include_file, out_file
+      File.write(out_file, code)
     end
   end
 end

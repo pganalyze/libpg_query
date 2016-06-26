@@ -77,7 +77,6 @@ static char *printTypmod(const char *typname, int32 typmod, Oid typmodout);
 char * format_type_be(Oid type_oid) { return pstrdup("-"); }
 
 
-
 /*
  * This version returns a name which is always qualified.
  */

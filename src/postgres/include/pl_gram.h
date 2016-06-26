@@ -244,8 +244,8 @@ struct YYLTYPE
 #endif
 
 
-extern YYSTYPE plpgsql_yylval;
-extern YYLTYPE plpgsql_yylloc;
+extern __thread  YYSTYPE plpgsql_yylval;
+extern __thread  YYLTYPE plpgsql_yylloc;
 int plpgsql_yyparse (void);
 
 #endif /* !YY_PLPGSQL_YY_PL_GRAM_H_INCLUDED  */

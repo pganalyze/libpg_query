@@ -126,9 +126,11 @@ static const char *err_gettext(const char *str) pg_attribute_format_arg(1);
 static void set_errdata_field(MemoryContextData *cxt, char **ptr, const char *str);
 
 /* Global variables */
-ErrorContextCallback *error_context_stack = NULL;
+__thread ErrorContextCallback *error_context_stack = NULL;
 
-sigjmp_buf *PG_exception_stack = NULL;
+
+__thread sigjmp_buf *PG_exception_stack = NULL;
+
 
 extern bool redirection_done;
 
@@ -139,7 +141,8 @@ extern bool redirection_done;
  * libraries will miss any log messages that are generated before the
  * library is loaded.
  */
-emit_log_hook_type emit_log_hook = NULL;
+__thread emit_log_hook_type emit_log_hook = NULL;
+
 
 /* GUC parameters */
 
@@ -1598,12 +1601,6 @@ write_eventlog(int level, const char *line, int len)
  */
 static void send_message_to_server_log(ErrorData *edata) {}
 
-#ifdef HAVE_SYSLOG
-#endif   /* HAVE_SYSLOG */
-#ifdef WIN32
-#endif   /* WIN32 */
-#ifdef WIN32
-#endif
 
 /*
  * Send data to the syslogger using the chunked protocol
@@ -1645,7 +1642,6 @@ static void send_message_to_server_log(ErrorData *edata) {}
  * Write error report to client
  */
 static void send_message_to_frontend(ErrorData *edata) {}
-
 
 
 

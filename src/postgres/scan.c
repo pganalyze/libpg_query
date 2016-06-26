@@ -8593,9 +8593,12 @@ fprintf_to_ereport(const char *fmt, const char *msg)
  * But we shall have to live with it as a short-term thing until the switch
  * to SQL-standard string syntax is complete.
  */
-int				backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
-bool			escape_string_warning = true;
-bool			standard_conforming_strings = true;
+__thread int				backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
+
+__thread bool			escape_string_warning = true;
+
+__thread bool			standard_conforming_strings = true;
+
 
 /*
  * Set the type of YYSTYPE.

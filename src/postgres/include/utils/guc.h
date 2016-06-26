@@ -242,13 +242,13 @@ extern bool log_executor_stats;
 extern bool log_statement_stats;
 extern bool log_btree_build_stats;
 
-extern PGDLLIMPORT bool check_function_bodies;
+extern PGDLLIMPORT __thread  bool check_function_bodies;
 extern bool default_with_oids;
 extern bool SQL_inheritance;
 
 extern int	log_min_error_statement;
-extern int	log_min_messages;
-extern int	client_min_messages;
+extern __thread  int log_min_messages;
+extern __thread  int client_min_messages;
 extern int	log_min_duration_statement;
 extern int	log_temp_files;
 

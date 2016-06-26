@@ -68,14 +68,17 @@
  * CurrentMemoryContext
  *		Default memory context for allocations.
  */
-MemoryContext CurrentMemoryContext = NULL;
+__thread MemoryContext CurrentMemoryContext = NULL;
+
 
 /*
  * Standard top-level contexts. For a description of the purpose of each
  * of these contexts, refer to src/backend/utils/mmgr/README
  */
-MemoryContext TopMemoryContext = NULL;
-MemoryContext ErrorContext = NULL;
+__thread MemoryContext TopMemoryContext = NULL;
+
+__thread MemoryContext ErrorContext = NULL;
+
 
 
 

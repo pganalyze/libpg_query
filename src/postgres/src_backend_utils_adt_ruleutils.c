@@ -296,7 +296,8 @@ typedef struct
 
 
 /* GUC parameters */
-bool		quote_all_identifiers = false;
+__thread bool		quote_all_identifiers = false;
+
 
 
 /* ----------

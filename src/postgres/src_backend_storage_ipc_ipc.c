@@ -44,7 +44,8 @@
  * so that an ereport() from an on_proc_exit routine cannot get us out
  * of the exit procedure.  We do NOT want to go back to the idle loop...
  */
-bool		proc_exit_inprogress = false;
+__thread bool		proc_exit_inprogress = false;
+
 
 /*
  * This flag tracks whether we've called atexit() in the current process
@@ -104,8 +105,6 @@ struct ONEXIT
  */
 void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); exit(1); }
 
-#ifdef PROFILE_PID_DIR
-#endif
 
 /*
  * Code shared between proc_exit and the atexit handler.  Note that in

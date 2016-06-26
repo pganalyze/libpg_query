@@ -93,10 +93,12 @@
  *		global variables
  * ----------------
  */
-const char *debug_query_string; /* client-supplied query string */
+__thread const char *debug_query_string;
+ /* client-supplied query string */
 
 /* Note: whereToSendOutput is initialized for the bootstrap/standalone case */
-CommandDest whereToSendOutput = DestDebug;
+__thread CommandDest whereToSendOutput = DestDebug;
+
 
 /* flag for logging end of session */
 
@@ -104,7 +106,8 @@ CommandDest whereToSendOutput = DestDebug;
 
 
 /* GUC variable for maximum stack depth (measured in kilobytes) */
-int			max_stack_depth = 100;
+__thread int			max_stack_depth = 100;
+
 
 /* wait N seconds to allow attach from a debugger */
 
@@ -125,7 +128,8 @@ static long max_stack_depth_bytes = 100 * 1024L;
  * it directly. Newer versions use set_stack_base(), but we want to stay
  * binary-compatible for the time being.
  */
-char	   *stack_base_ptr = NULL;
+__thread char	   *stack_base_ptr = NULL;
+
 
 /*
  * On IA64 we also have to remember the register stack base.
@@ -514,7 +518,6 @@ static void log_disconnections(int code, Datum arg);
  * InterruptPending is true.
  */
 void ProcessInterrupts(void) {}
-
 
 
 

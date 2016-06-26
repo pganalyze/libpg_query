@@ -815,7 +815,6 @@ NameListToString(List *names)
 Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
 
 
-
 /*
  * get_conversion_oid - find a conversion by possibly qualified name
  */

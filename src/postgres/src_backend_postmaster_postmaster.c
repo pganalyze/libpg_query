@@ -345,7 +345,8 @@ typedef enum
 
 		/* T if we've reached PM_RUN */
 
-bool		ClientAuthInProgress = false;		/* T during new-client
+__thread bool		ClientAuthInProgress = false;
+		/* T during new-client
 												 * authentication */
 
 	/* stderr redirected for syslogger? */

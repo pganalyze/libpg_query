@@ -17,8 +17,8 @@ typedef struct {
 static PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt* stmt);
 
 static int	datums_alloc;
-int			plpgsql_nDatums;
-PLpgSQL_datum **plpgsql_Datums;
+extern __thread int			plpgsql_nDatums;
+extern __thread PLpgSQL_datum **plpgsql_Datums;
 static int	datums_last = 0;
 
 static void add_dummy_return(PLpgSQL_function *function)

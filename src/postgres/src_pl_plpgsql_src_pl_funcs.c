@@ -648,7 +648,6 @@ free_getdiag(PLpgSQL_stmt_getdiag *stmt)
 static void free_expr(PLpgSQL_expr *expr) {}
 
 
-
 void
 plpgsql_free_function_memory(PLpgSQL_function *func)
 {

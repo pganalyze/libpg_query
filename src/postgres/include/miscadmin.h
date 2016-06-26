@@ -77,16 +77,16 @@
 
 /* in globals.c */
 /* these are marked volatile because they are set by signal handlers: */
-extern PGDLLIMPORT volatile bool InterruptPending;
+extern PGDLLIMPORT __thread volatile bool InterruptPending;
 extern PGDLLIMPORT volatile bool QueryCancelPending;
 extern PGDLLIMPORT volatile bool ProcDiePending;
 
 extern volatile bool ClientConnectionLost;
 
 /* these are marked volatile because they are examined by signal handlers: */
-extern PGDLLIMPORT volatile uint32 InterruptHoldoffCount;
-extern PGDLLIMPORT volatile uint32 QueryCancelHoldoffCount;
-extern PGDLLIMPORT volatile uint32 CritSectionCount;
+extern PGDLLIMPORT __thread volatile uint32 InterruptHoldoffCount;
+extern PGDLLIMPORT __thread volatile uint32 QueryCancelHoldoffCount;
+extern PGDLLIMPORT __thread volatile uint32 CritSectionCount;
 
 /* in tcop/postgres.c */
 extern void ProcessInterrupts(void);
@@ -143,12 +143,12 @@ do { \
  * from utils/init/globals.c
  */
 extern pid_t PostmasterPid;
-extern bool IsPostmasterEnvironment;
+extern __thread  bool IsPostmasterEnvironment;
 extern PGDLLIMPORT bool IsUnderPostmaster;
 extern bool IsBackgroundWorker;
 extern PGDLLIMPORT bool IsBinaryUpgrade;
 
-extern bool ExitOnAnyError;
+extern __thread  bool ExitOnAnyError;
 
 extern PGDLLIMPORT char *DataDir;
 
