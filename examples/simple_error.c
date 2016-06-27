@@ -5,8 +5,6 @@
 int main() {
   PgQueryParseResult result;
 
-  pg_query_init();
-
   result = pg_query_parse("INSERT FROM DOES NOT WORK");
 
   if (result.error) {

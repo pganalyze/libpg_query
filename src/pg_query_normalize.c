@@ -312,12 +312,7 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 	MemoryContext ctx = NULL;
 	PgQueryNormalizeResult result = {0};
 
-	ctx = AllocSetContextCreate(TopMemoryContext,
-								"pg_query_normalize",
-								ALLOCSET_DEFAULT_MINSIZE,
-								ALLOCSET_DEFAULT_INITSIZE,
-								ALLOCSET_DEFAULT_MAXSIZE);
-	MemoryContextSwitchTo(ctx);
+	ctx = pg_query_enter_memory_context("pg_query_normalize");
 
 	PG_TRY();
 	{
@@ -360,8 +355,7 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 	}
 	PG_END_TRY();
 
-	MemoryContextSwitchTo(TopMemoryContext);
-	MemoryContextDelete(ctx);
+	pg_query_exit_memory_context(ctx);
 
 	return result;
 }

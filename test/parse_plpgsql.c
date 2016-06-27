@@ -17,11 +17,9 @@ int main() {
 	bool ret_code = EXIT_SUCCESS;
 	char *sample_buffer;
 	struct stat sample_stat;
-    int fd;
-    FILE* f_out;
+	int fd;
+	FILE* f_out;
 	PgQueryPlpgsqlParseResult result;
-
-	pg_query_init();
 
 	fd = open("test/plpgsql_samples.sql", O_RDONLY);
 	if (fd < 0) {

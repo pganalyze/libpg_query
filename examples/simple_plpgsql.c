@@ -5,8 +5,6 @@
 int main() {
   PgQueryPlpgsqlParseResult result;
 
-  pg_query_init();
-
   result = pg_query_parse_plpgsql(" \
   CREATE OR REPLACE FUNCTION cs_fmt_browser_version(v_name varchar, \
                                                   v_version varchar) \

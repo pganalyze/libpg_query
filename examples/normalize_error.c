@@ -5,8 +5,6 @@
 int main() {
   PgQueryNormalizeResult result;
 
-  pg_query_init();
-
   result = pg_query_normalize("SELECT $$$");
 
   if (result.error) {

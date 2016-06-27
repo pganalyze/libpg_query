@@ -11,8 +11,6 @@ int main() {
   size_t i;
   bool ret_code = 0;
 
-  pg_query_init();
-
   for (i = 0; i < testsLength; i += 2) {
     PgQueryFingerprintResult result = pg_query_fingerprint(tests[i]);
 

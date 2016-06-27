@@ -37,8 +37,6 @@ int main() {
 void* test_runner(void* ptr) {
   size_t i;
 
-  pg_query_init();
-
   for (i = 0; i < testsLength; i += 2) {
     PgQueryParseResult result = pg_query_parse(tests[i]);
 

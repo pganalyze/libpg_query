@@ -33,8 +33,6 @@ A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simp
 int main() {
   PgQueryParseResult result;
 
-  pg_query_init();
-
   result = pg_query_parse("SELECT 1");
 
   printf("%s\n", result.parse_tree);
@@ -71,8 +69,6 @@ Example:
 int main() {
   PgQueryFingerprintResult result;
 
-  pg_query_init();
-
   result = pg_query_fingerprint("SELECT 1");
 
   printf("%s\n", result.hexdigest);
@@ -100,8 +96,6 @@ A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simp
 
 int main() {
   PgQueryPlpgsqlParseResult result;
-
-  pg_query_init();
 
   result = pg_query_parse_plpgsql(" \
   CREATE OR REPLACE FUNCTION cs_fmt_browser_version(v_name varchar, \
