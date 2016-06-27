@@ -2,6 +2,11 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.4.1    2016-06-26
+
+* Automatically call pg_query_init as needed to ease threaded usage
+
+
 ## 9.5-1.4.0    2016-06-26
 
 * Clean up includes to avoid dependency on stdbool.h and xlocale.h
