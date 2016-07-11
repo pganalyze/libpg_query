@@ -9,6 +9,9 @@
 #include <nodes/parsenodes.h>
 #include <nodes/nodeFuncs.h>
 
+#define _GNU_SOURCE // Necessary to get asprintf (which is a GNU extension)
+#include <stdio.h>
+
 typedef struct {
   PLpgSQL_function *func;
   PgQueryError* error;
