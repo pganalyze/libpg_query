@@ -5,7 +5,7 @@ module.exports = function parse(sql) {
 	// Return the parse result
 	return new Promise(function(resolve, reject) {
 		var parsed = Module.parse(pointer);
-		var tree   = JSON.parse(parsed.parse_tree);
+		var tree   = JSON.parse(parsed['parse_tree']);
 
 		if(tree.length) {
 			resolve(tree, parsed);
