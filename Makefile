@@ -7,13 +7,15 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 9.5.3
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c)
+SRC_FILES := $(wildcard src/*.c src/*.cpp src/postgres/*.c)
 OBJ_FILES := $(SRC_FILES:.c=.o)
+OBJ_FILES := $(OBJ_FILES:.cpp=.o)
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
 
-CFLAGS  = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
-LIBPATH = -L.
+CFLAGS   = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+LIBPATH  = -L.
+CPPFLAGS = --bind
 
 PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
 PG_CFLAGS = -fPIC
@@ -35,6 +37,7 @@ RM = rm -f
 ECHO = echo
 
 CC ?= cc
+CPP = em++
 
 all: examples test build
 
@@ -72,6 +75,10 @@ extract_source: $(PGDIR)
 .c.o:
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+
+.cpp.o:
+	@$(ECHO) compiling $(<)
+	@$(CPP) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)

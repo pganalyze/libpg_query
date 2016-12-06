@@ -445,7 +445,7 @@
 #define HAVE_SIGPROCMASK 1
 
 /* Define to 1 if you have sigsetjmp(). */
-#define HAVE_SIGSETJMP 1
+/* #define HAVE_SIGSETJMP 1 */
 
 /* Define to 1 if the system has the type `sig_atomic_t'. */
 #define HAVE_SIG_ATOMIC_T 1
@@ -454,7 +454,7 @@
 #define HAVE_SNPRINTF 1
 
 /* Define to 1 if you have spinlocks. */
-#define HAVE_SPINLOCKS 1
+/* #define HAVE_SPINLOCKS 1 */
 
 /* Define to 1 if you have the `srandom' function. */
 #define HAVE_SRANDOM 1
@@ -722,7 +722,7 @@
 #define PACKAGE_VERSION "9.5.3"
 
 /* Define to the name of a signed 128-bit integer type. */
-#define PG_INT128_TYPE __int128
+/* #define PG_INT128_TYPE __int128 */
 
 /* Define to the name of a signed 64-bit integer type. */
 #define PG_INT64_TYPE long int
