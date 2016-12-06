@@ -1,17 +1,17 @@
 static void
-_fingerprintAlias(FingerprintContext *ctx, const Alias *node, const void *parent, const char *field_name)
+_fingerprintAlias(FingerprintContext *ctx, const Alias *node, const void *parent, const char *field_name, unsigned int depth)
 {
   // Intentionally ignoring all fields for fingerprinting
 }
 
 static void
-_fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *parent, const char *field_name)
+_fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeVar");
   if (node->alias != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->alias, node, "alias");
+    _fingerprintNode(&subCtx, node->alias, node, "alias", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "alias");
   }
 
@@ -49,13 +49,13 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
 }
 
 static void
-_fingerprintExpr(FingerprintContext *ctx, const Expr *node, const void *parent, const char *field_name)
+_fingerprintExpr(FingerprintContext *ctx, const Expr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Expr");
 }
 
 static void
-_fingerprintVar(FingerprintContext *ctx, const Var *node, const void *parent, const char *field_name)
+_fingerprintVar(FingerprintContext *ctx, const Var *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Var");
   // Intentionally ignoring node->location for fingerprinting
@@ -118,7 +118,7 @@ _fingerprintVar(FingerprintContext *ctx, const Var *node, const void *parent, co
 }
 
 static void
-_fingerprintConst(FingerprintContext *ctx, const Const *node, const void *parent, const char *field_name)
+_fingerprintConst(FingerprintContext *ctx, const Const *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Const");
 
@@ -163,7 +163,7 @@ _fingerprintConst(FingerprintContext *ctx, const Const *node, const void *parent
 }
 
 static void
-_fingerprintParam(FingerprintContext *ctx, const Param *node, const void *parent, const char *field_name)
+_fingerprintParam(FingerprintContext *ctx, const Param *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Param");
   // Intentionally ignoring node->location for fingerprinting
@@ -205,7 +205,7 @@ _fingerprintParam(FingerprintContext *ctx, const Param *node, const void *parent
 }
 
 static void
-_fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *parent, const char *field_name)
+_fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Aggref");
   if (node->aggcollid != 0) {
@@ -218,19 +218,19 @@ _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *pare
   if (node->aggdirectargs != NULL && node->aggdirectargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aggdirectargs, node, "aggdirectargs");
+    _fingerprintNode(&subCtx, node->aggdirectargs, node, "aggdirectargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggdirectargs");
   }
   if (node->aggdistinct != NULL && node->aggdistinct->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aggdistinct, node, "aggdistinct");
+    _fingerprintNode(&subCtx, node->aggdistinct, node, "aggdistinct", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggdistinct");
   }
   if (node->aggfilter != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aggfilter, node, "aggfilter");
+    _fingerprintNode(&subCtx, node->aggfilter, node, "aggfilter", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggfilter");
   }
   if (node->aggfnoid != 0) {
@@ -256,7 +256,7 @@ _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *pare
   if (node->aggorder != NULL && node->aggorder->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aggorder, node, "aggorder");
+    _fingerprintNode(&subCtx, node->aggorder, node, "aggorder", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggorder");
   }
 
@@ -279,7 +279,7 @@ _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *pare
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->inputcollid != 0) {
@@ -293,7 +293,7 @@ _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *pare
 }
 
 static void
-_fingerprintGroupingFunc(FingerprintContext *ctx, const GroupingFunc *node, const void *parent, const char *field_name)
+_fingerprintGroupingFunc(FingerprintContext *ctx, const GroupingFunc *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "GroupingFunc");
   if (node->agglevelsup != 0) {
@@ -306,38 +306,38 @@ _fingerprintGroupingFunc(FingerprintContext *ctx, const GroupingFunc *node, cons
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->cols != NULL && node->cols->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cols, node, "cols");
+    _fingerprintNode(&subCtx, node->cols, node, "cols", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cols");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->refs != NULL && node->refs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->refs, node, "refs");
+    _fingerprintNode(&subCtx, node->refs, node, "refs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "refs");
   }
 }
 
 static void
-_fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const void *parent, const char *field_name)
+_fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "WindowFunc");
   if (node->aggfilter != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aggfilter, node, "aggfilter");
+    _fingerprintNode(&subCtx, node->aggfilter, node, "aggfilter", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggfilter");
   }
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->inputcollid != 0) {
@@ -389,7 +389,7 @@ _fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const vo
 }
 
 static void
-_fingerprintArrayRef(FingerprintContext *ctx, const ArrayRef *node, const void *parent, const char *field_name)
+_fingerprintArrayRef(FingerprintContext *ctx, const ArrayRef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ArrayRef");
   if (node->refarraytype != 0) {
@@ -402,7 +402,7 @@ _fingerprintArrayRef(FingerprintContext *ctx, const ArrayRef *node, const void *
   if (node->refassgnexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->refassgnexpr, node, "refassgnexpr");
+    _fingerprintNode(&subCtx, node->refassgnexpr, node, "refassgnexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "refassgnexpr");
   }
   if (node->refcollid != 0) {
@@ -422,13 +422,13 @@ _fingerprintArrayRef(FingerprintContext *ctx, const ArrayRef *node, const void *
   if (node->refexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->refexpr, node, "refexpr");
+    _fingerprintNode(&subCtx, node->refexpr, node, "refexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "refexpr");
   }
   if (node->reflowerindexpr != NULL && node->reflowerindexpr->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->reflowerindexpr, node, "reflowerindexpr");
+    _fingerprintNode(&subCtx, node->reflowerindexpr, node, "reflowerindexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "reflowerindexpr");
   }
   if (node->reftypmod != 0) {
@@ -441,19 +441,19 @@ _fingerprintArrayRef(FingerprintContext *ctx, const ArrayRef *node, const void *
   if (node->refupperindexpr != NULL && node->refupperindexpr->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->refupperindexpr, node, "refupperindexpr");
+    _fingerprintNode(&subCtx, node->refupperindexpr, node, "refupperindexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "refupperindexpr");
   }
 }
 
 static void
-_fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *parent, const char *field_name)
+_fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FuncExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->funccollid != 0) {
@@ -505,13 +505,13 @@ _fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *
 }
 
 static void
-_fingerprintNamedArgExpr(FingerprintContext *ctx, const NamedArgExpr *node, const void *parent, const char *field_name)
+_fingerprintNamedArgExpr(FingerprintContext *ctx, const NamedArgExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "NamedArgExpr");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->argnumber != 0) {
@@ -531,13 +531,13 @@ _fingerprintNamedArgExpr(FingerprintContext *ctx, const NamedArgExpr *node, cons
 }
 
 static void
-_fingerprintOpExpr(FingerprintContext *ctx, const OpExpr *node, const void *parent, const char *field_name)
+_fingerprintOpExpr(FingerprintContext *ctx, const OpExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "OpExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->inputcollid != 0) {
@@ -584,13 +584,13 @@ _fingerprintOpExpr(FingerprintContext *ctx, const OpExpr *node, const void *pare
 }
 
 static void
-_fingerprintScalarArrayOpExpr(FingerprintContext *ctx, const ScalarArrayOpExpr *node, const void *parent, const char *field_name)
+_fingerprintScalarArrayOpExpr(FingerprintContext *ctx, const ScalarArrayOpExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ScalarArrayOpExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->inputcollid != 0) {
@@ -623,13 +623,13 @@ _fingerprintScalarArrayOpExpr(FingerprintContext *ctx, const ScalarArrayOpExpr *
 }
 
 static void
-_fingerprintBoolExpr(FingerprintContext *ctx, const BoolExpr *node, const void *parent, const char *field_name)
+_fingerprintBoolExpr(FingerprintContext *ctx, const BoolExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "BoolExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->boolop != 0) {
@@ -643,14 +643,14 @@ _fingerprintBoolExpr(FingerprintContext *ctx, const BoolExpr *node, const void *
 }
 
 static void
-_fingerprintSubLink(FingerprintContext *ctx, const SubLink *node, const void *parent, const char *field_name)
+_fingerprintSubLink(FingerprintContext *ctx, const SubLink *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SubLink");
   // Intentionally ignoring node->location for fingerprinting
   if (node->operName != NULL && node->operName->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->operName, node, "operName");
+    _fingerprintNode(&subCtx, node->operName, node, "operName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "operName");
   }
   if (node->subLinkId != 0) {
@@ -670,25 +670,25 @@ _fingerprintSubLink(FingerprintContext *ctx, const SubLink *node, const void *pa
   if (node->subselect != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->subselect, node, "subselect");
+    _fingerprintNode(&subCtx, node->subselect, node, "subselect", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "subselect");
   }
   if (node->testexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->testexpr, node, "testexpr");
+    _fingerprintNode(&subCtx, node->testexpr, node, "testexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "testexpr");
   }
 }
 
 static void
-_fingerprintSubPlan(FingerprintContext *ctx, const SubPlan *node, const void *parent, const char *field_name)
+_fingerprintSubPlan(FingerprintContext *ctx, const SubPlan *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SubPlan");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->firstColCollation != 0) {
@@ -715,13 +715,13 @@ _fingerprintSubPlan(FingerprintContext *ctx, const SubPlan *node, const void *pa
   if (node->parParam != NULL && node->parParam->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->parParam, node, "parParam");
+    _fingerprintNode(&subCtx, node->parParam, node, "parParam", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "parParam");
   }
   if (node->paramIds != NULL && node->paramIds->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->paramIds, node, "paramIds");
+    _fingerprintNode(&subCtx, node->paramIds, node, "paramIds", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "paramIds");
   }
 if (node->per_call_cost != 0) {
@@ -747,7 +747,7 @@ if (node->per_call_cost != 0) {
   if (node->setParam != NULL && node->setParam->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->setParam, node, "setParam");
+    _fingerprintNode(&subCtx, node->setParam, node, "setParam", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "setParam");
   }
 if (node->startup_cost != 0) {
@@ -767,7 +767,7 @@ if (node->startup_cost != 0) {
   if (node->testexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->testexpr, node, "testexpr");
+    _fingerprintNode(&subCtx, node->testexpr, node, "testexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "testexpr");
   }
 
@@ -783,25 +783,25 @@ if (node->startup_cost != 0) {
 }
 
 static void
-_fingerprintAlternativeSubPlan(FingerprintContext *ctx, const AlternativeSubPlan *node, const void *parent, const char *field_name)
+_fingerprintAlternativeSubPlan(FingerprintContext *ctx, const AlternativeSubPlan *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlternativeSubPlan");
   if (node->subplans != NULL && node->subplans->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->subplans, node, "subplans");
+    _fingerprintNode(&subCtx, node->subplans, node, "subplans", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "subplans");
   }
 }
 
 static void
-_fingerprintFieldSelect(FingerprintContext *ctx, const FieldSelect *node, const void *parent, const char *field_name)
+_fingerprintFieldSelect(FingerprintContext *ctx, const FieldSelect *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FieldSelect");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->fieldnum != 0) {
@@ -835,25 +835,25 @@ _fingerprintFieldSelect(FingerprintContext *ctx, const FieldSelect *node, const 
 }
 
 static void
-_fingerprintFieldStore(FingerprintContext *ctx, const FieldStore *node, const void *parent, const char *field_name)
+_fingerprintFieldStore(FingerprintContext *ctx, const FieldStore *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FieldStore");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->fieldnums != NULL && node->fieldnums->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fieldnums, node, "fieldnums");
+    _fingerprintNode(&subCtx, node->fieldnums, node, "fieldnums", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fieldnums");
   }
   if (node->newvals != NULL && node->newvals->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->newvals, node, "newvals");
+    _fingerprintNode(&subCtx, node->newvals, node, "newvals", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "newvals");
   }
   if (node->resulttype != 0) {
@@ -866,13 +866,13 @@ _fingerprintFieldStore(FingerprintContext *ctx, const FieldStore *node, const vo
 }
 
 static void
-_fingerprintRelabelType(FingerprintContext *ctx, const RelabelType *node, const void *parent, const char *field_name)
+_fingerprintRelabelType(FingerprintContext *ctx, const RelabelType *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RelabelType");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -907,13 +907,13 @@ _fingerprintRelabelType(FingerprintContext *ctx, const RelabelType *node, const 
 }
 
 static void
-_fingerprintCoerceViaIO(FingerprintContext *ctx, const CoerceViaIO *node, const void *parent, const char *field_name)
+_fingerprintCoerceViaIO(FingerprintContext *ctx, const CoerceViaIO *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CoerceViaIO");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->coerceformat != 0) {
@@ -941,13 +941,13 @@ _fingerprintCoerceViaIO(FingerprintContext *ctx, const CoerceViaIO *node, const 
 }
 
 static void
-_fingerprintArrayCoerceExpr(FingerprintContext *ctx, const ArrayCoerceExpr *node, const void *parent, const char *field_name)
+_fingerprintArrayCoerceExpr(FingerprintContext *ctx, const ArrayCoerceExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ArrayCoerceExpr");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->coerceformat != 0) {
@@ -994,13 +994,13 @@ _fingerprintArrayCoerceExpr(FingerprintContext *ctx, const ArrayCoerceExpr *node
 }
 
 static void
-_fingerprintConvertRowtypeExpr(FingerprintContext *ctx, const ConvertRowtypeExpr *node, const void *parent, const char *field_name)
+_fingerprintConvertRowtypeExpr(FingerprintContext *ctx, const ConvertRowtypeExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ConvertRowtypeExpr");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->convertformat != 0) {
@@ -1021,13 +1021,13 @@ _fingerprintConvertRowtypeExpr(FingerprintContext *ctx, const ConvertRowtypeExpr
 }
 
 static void
-_fingerprintCollateExpr(FingerprintContext *ctx, const CollateExpr *node, const void *parent, const char *field_name)
+_fingerprintCollateExpr(FingerprintContext *ctx, const CollateExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CollateExpr");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->collOid != 0) {
@@ -1041,19 +1041,19 @@ _fingerprintCollateExpr(FingerprintContext *ctx, const CollateExpr *node, const 
 }
 
 static void
-_fingerprintCaseExpr(FingerprintContext *ctx, const CaseExpr *node, const void *parent, const char *field_name)
+_fingerprintCaseExpr(FingerprintContext *ctx, const CaseExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CaseExpr");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->casecollid != 0) {
@@ -1073,33 +1073,33 @@ _fingerprintCaseExpr(FingerprintContext *ctx, const CaseExpr *node, const void *
   if (node->defresult != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->defresult, node, "defresult");
+    _fingerprintNode(&subCtx, node->defresult, node, "defresult", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "defresult");
   }
   // Intentionally ignoring node->location for fingerprinting
 }
 
 static void
-_fingerprintCaseWhen(FingerprintContext *ctx, const CaseWhen *node, const void *parent, const char *field_name)
+_fingerprintCaseWhen(FingerprintContext *ctx, const CaseWhen *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CaseWhen");
   if (node->expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->expr, node, "expr");
+    _fingerprintNode(&subCtx, node->expr, node, "expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "expr");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->result != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->result, node, "result");
+    _fingerprintNode(&subCtx, node->result, node, "result", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "result");
   }
 }
 
 static void
-_fingerprintCaseTestExpr(FingerprintContext *ctx, const CaseTestExpr *node, const void *parent, const char *field_name)
+_fingerprintCaseTestExpr(FingerprintContext *ctx, const CaseTestExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CaseTestExpr");
   if (node->collation != 0) {
@@ -1126,7 +1126,7 @@ _fingerprintCaseTestExpr(FingerprintContext *ctx, const CaseTestExpr *node, cons
 }
 
 static void
-_fingerprintArrayExpr(FingerprintContext *ctx, const ArrayExpr *node, const void *parent, const char *field_name)
+_fingerprintArrayExpr(FingerprintContext *ctx, const ArrayExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ArrayExpr");
   if (node->array_collid != 0) {
@@ -1153,7 +1153,7 @@ _fingerprintArrayExpr(FingerprintContext *ctx, const ArrayExpr *node, const void
   if (node->elements != NULL && node->elements->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->elements, node, "elements");
+    _fingerprintNode(&subCtx, node->elements, node, "elements", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "elements");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -1165,19 +1165,19 @@ _fingerprintArrayExpr(FingerprintContext *ctx, const ArrayExpr *node, const void
 }
 
 static void
-_fingerprintRowExpr(FingerprintContext *ctx, const RowExpr *node, const void *parent, const char *field_name)
+_fingerprintRowExpr(FingerprintContext *ctx, const RowExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RowExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->colnames != NULL && node->colnames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->colnames, node, "colnames");
+    _fingerprintNode(&subCtx, node->colnames, node, "colnames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colnames");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -1198,37 +1198,37 @@ _fingerprintRowExpr(FingerprintContext *ctx, const RowExpr *node, const void *pa
 }
 
 static void
-_fingerprintRowCompareExpr(FingerprintContext *ctx, const RowCompareExpr *node, const void *parent, const char *field_name)
+_fingerprintRowCompareExpr(FingerprintContext *ctx, const RowCompareExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RowCompareExpr");
   if (node->inputcollids != NULL && node->inputcollids->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->inputcollids, node, "inputcollids");
+    _fingerprintNode(&subCtx, node->inputcollids, node, "inputcollids", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "inputcollids");
   }
   if (node->largs != NULL && node->largs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->largs, node, "largs");
+    _fingerprintNode(&subCtx, node->largs, node, "largs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "largs");
   }
   if (node->opfamilies != NULL && node->opfamilies->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opfamilies, node, "opfamilies");
+    _fingerprintNode(&subCtx, node->opfamilies, node, "opfamilies", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opfamilies");
   }
   if (node->opnos != NULL && node->opnos->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opnos, node, "opnos");
+    _fingerprintNode(&subCtx, node->opnos, node, "opnos", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opnos");
   }
   if (node->rargs != NULL && node->rargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rargs, node, "rargs");
+    _fingerprintNode(&subCtx, node->rargs, node, "rargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rargs");
   }
   if (node->rctype != 0) {
@@ -1241,13 +1241,13 @@ _fingerprintRowCompareExpr(FingerprintContext *ctx, const RowCompareExpr *node, 
 }
 
 static void
-_fingerprintCoalesceExpr(FingerprintContext *ctx, const CoalesceExpr *node, const void *parent, const char *field_name)
+_fingerprintCoalesceExpr(FingerprintContext *ctx, const CoalesceExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CoalesceExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->coalescecollid != 0) {
@@ -1268,13 +1268,13 @@ _fingerprintCoalesceExpr(FingerprintContext *ctx, const CoalesceExpr *node, cons
 }
 
 static void
-_fingerprintMinMaxExpr(FingerprintContext *ctx, const MinMaxExpr *node, const void *parent, const char *field_name)
+_fingerprintMinMaxExpr(FingerprintContext *ctx, const MinMaxExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "MinMaxExpr");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->inputcollid != 0) {
@@ -1309,19 +1309,19 @@ _fingerprintMinMaxExpr(FingerprintContext *ctx, const MinMaxExpr *node, const vo
 }
 
 static void
-_fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *parent, const char *field_name)
+_fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "XmlExpr");
   if (node->arg_names != NULL && node->arg_names->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg_names, node, "arg_names");
+    _fingerprintNode(&subCtx, node->arg_names, node, "arg_names", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg_names");
   }
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -1334,7 +1334,7 @@ _fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *pa
   if (node->named_args != NULL && node->named_args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->named_args, node, "named_args");
+    _fingerprintNode(&subCtx, node->named_args, node, "named_args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "named_args");
   }
   if (node->op != 0) {
@@ -1368,13 +1368,13 @@ _fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *pa
 }
 
 static void
-_fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *parent, const char *field_name)
+_fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "NullTest");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
@@ -1393,13 +1393,13 @@ _fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *
 }
 
 static void
-_fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const void *parent, const char *field_name)
+_fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "BooleanTest");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->booltesttype != 0) {
@@ -1413,13 +1413,13 @@ _fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const 
 }
 
 static void
-_fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, const void *parent, const char *field_name)
+_fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CoerceToDomain");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->coercionformat != 0) {
@@ -1454,7 +1454,7 @@ _fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, 
 }
 
 static void
-_fingerprintCoerceToDomainValue(FingerprintContext *ctx, const CoerceToDomainValue *node, const void *parent, const char *field_name)
+_fingerprintCoerceToDomainValue(FingerprintContext *ctx, const CoerceToDomainValue *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CoerceToDomainValue");
   if (node->collation != 0) {
@@ -1482,13 +1482,13 @@ _fingerprintCoerceToDomainValue(FingerprintContext *ctx, const CoerceToDomainVal
 }
 
 static void
-_fingerprintSetToDefault(FingerprintContext *ctx, const SetToDefault *node, const void *parent, const char *field_name)
+_fingerprintSetToDefault(FingerprintContext *ctx, const SetToDefault *node, const void *parent, const char *field_name, unsigned int depth)
 {
   // Intentionally ignoring all fields for fingerprinting
 }
 
 static void
-_fingerprintCurrentOfExpr(FingerprintContext *ctx, const CurrentOfExpr *node, const void *parent, const char *field_name)
+_fingerprintCurrentOfExpr(FingerprintContext *ctx, const CurrentOfExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CurrentOfExpr");
 
@@ -1514,13 +1514,13 @@ _fingerprintCurrentOfExpr(FingerprintContext *ctx, const CurrentOfExpr *node, co
 }
 
 static void
-_fingerprintInferenceElem(FingerprintContext *ctx, const InferenceElem *node, const void *parent, const char *field_name)
+_fingerprintInferenceElem(FingerprintContext *ctx, const InferenceElem *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "InferenceElem");
   if (node->expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->expr, node, "expr");
+    _fingerprintNode(&subCtx, node->expr, node, "expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "expr");
   }
   if (node->infercollid != 0) {
@@ -1540,13 +1540,13 @@ _fingerprintInferenceElem(FingerprintContext *ctx, const InferenceElem *node, co
 }
 
 static void
-_fingerprintTargetEntry(FingerprintContext *ctx, const TargetEntry *node, const void *parent, const char *field_name)
+_fingerprintTargetEntry(FingerprintContext *ctx, const TargetEntry *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TargetEntry");
   if (node->expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->expr, node, "expr");
+    _fingerprintNode(&subCtx, node->expr, node, "expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "expr");
   }
 
@@ -1591,7 +1591,7 @@ _fingerprintTargetEntry(FingerprintContext *ctx, const TargetEntry *node, const 
 }
 
 static void
-_fingerprintRangeTblRef(FingerprintContext *ctx, const RangeTblRef *node, const void *parent, const char *field_name)
+_fingerprintRangeTblRef(FingerprintContext *ctx, const RangeTblRef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeTblRef");
   if (node->rtindex != 0) {
@@ -1604,13 +1604,13 @@ _fingerprintRangeTblRef(FingerprintContext *ctx, const RangeTblRef *node, const 
 }
 
 static void
-_fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *parent, const char *field_name)
+_fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "JoinExpr");
   if (node->alias != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->alias, node, "alias");
+    _fingerprintNode(&subCtx, node->alias, node, "alias", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "alias");
   }
 
@@ -1628,19 +1628,19 @@ _fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *
   if (node->larg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->larg, node, "larg");
+    _fingerprintNode(&subCtx, node->larg, node, "larg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "larg");
   }
   if (node->quals != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->quals, node, "quals");
+    _fingerprintNode(&subCtx, node->quals, node, "quals", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "quals");
   }
   if (node->rarg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rarg, node, "rarg");
+    _fingerprintNode(&subCtx, node->rarg, node, "rarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rarg");
   }
   if (node->rtindex != 0) {
@@ -1653,31 +1653,31 @@ _fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *
   if (node->usingClause != NULL && node->usingClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->usingClause, node, "usingClause");
+    _fingerprintNode(&subCtx, node->usingClause, node, "usingClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "usingClause");
   }
 }
 
 static void
-_fingerprintFromExpr(FingerprintContext *ctx, const FromExpr *node, const void *parent, const char *field_name)
+_fingerprintFromExpr(FingerprintContext *ctx, const FromExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FromExpr");
   if (node->fromlist != NULL && node->fromlist->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fromlist, node, "fromlist");
+    _fingerprintNode(&subCtx, node->fromlist, node, "fromlist", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fromlist");
   }
   if (node->quals != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->quals, node, "quals");
+    _fingerprintNode(&subCtx, node->quals, node, "quals", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "quals");
   }
 }
 
 static void
-_fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, const void *parent, const char *field_name)
+_fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "OnConflictExpr");
   if (node->action != 0) {
@@ -1690,13 +1690,13 @@ _fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, 
   if (node->arbiterElems != NULL && node->arbiterElems->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arbiterElems, node, "arbiterElems");
+    _fingerprintNode(&subCtx, node->arbiterElems, node, "arbiterElems", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arbiterElems");
   }
   if (node->arbiterWhere != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arbiterWhere, node, "arbiterWhere");
+    _fingerprintNode(&subCtx, node->arbiterWhere, node, "arbiterWhere", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arbiterWhere");
   }
   if (node->constraint != 0) {
@@ -1716,31 +1716,31 @@ _fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, 
   if (node->exclRelTlist != NULL && node->exclRelTlist->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->exclRelTlist, node, "exclRelTlist");
+    _fingerprintNode(&subCtx, node->exclRelTlist, node, "exclRelTlist", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "exclRelTlist");
   }
   if (node->onConflictSet != NULL && node->onConflictSet->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->onConflictSet, node, "onConflictSet");
+    _fingerprintNode(&subCtx, node->onConflictSet, node, "onConflictSet", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "onConflictSet");
   }
   if (node->onConflictWhere != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->onConflictWhere, node, "onConflictWhere");
+    _fingerprintNode(&subCtx, node->onConflictWhere, node, "onConflictWhere", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "onConflictWhere");
   }
 }
 
 static void
-_fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const void *parent, const char *field_name)
+_fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "IntoClause");
   if (node->colNames != NULL && node->colNames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->colNames, node, "colNames");
+    _fingerprintNode(&subCtx, node->colNames, node, "colNames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colNames");
   }
   if (node->onCommit != 0) {
@@ -1753,13 +1753,13 @@ _fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const vo
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->rel != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rel, node, "rel");
+    _fingerprintNode(&subCtx, node->rel, node, "rel", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rel");
   }
 
@@ -1776,13 +1776,13 @@ _fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const vo
   if (node->viewQuery != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->viewQuery, node, "viewQuery");
+    _fingerprintNode(&subCtx, node->viewQuery, node, "viewQuery", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "viewQuery");
   }
 }
 
 static void
-_fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent, const char *field_name)
+_fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Query");
 
@@ -1800,31 +1800,31 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
   if (node->constraintDeps != NULL && node->constraintDeps->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constraintDeps, node, "constraintDeps");
+    _fingerprintNode(&subCtx, node->constraintDeps, node, "constraintDeps", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constraintDeps");
   }
   if (node->cteList != NULL && node->cteList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cteList, node, "cteList");
+    _fingerprintNode(&subCtx, node->cteList, node, "cteList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cteList");
   }
   if (node->distinctClause != NULL && node->distinctClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->distinctClause, node, "distinctClause");
+    _fingerprintNode(&subCtx, node->distinctClause, node, "distinctClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "distinctClause");
   }
   if (node->groupClause != NULL && node->groupClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->groupClause, node, "groupClause");
+    _fingerprintNode(&subCtx, node->groupClause, node, "groupClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "groupClause");
   }
   if (node->groupingSets != NULL && node->groupingSets->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->groupingSets, node, "groupingSets");
+    _fingerprintNode(&subCtx, node->groupingSets, node, "groupingSets", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "groupingSets");
   }
 
@@ -1870,31 +1870,31 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
   if (node->havingQual != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->havingQual, node, "havingQual");
+    _fingerprintNode(&subCtx, node->havingQual, node, "havingQual", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "havingQual");
   }
   if (node->jointree != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->jointree, node, "jointree");
+    _fingerprintNode(&subCtx, node->jointree, node, "jointree", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "jointree");
   }
   if (node->limitCount != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->limitCount, node, "limitCount");
+    _fingerprintNode(&subCtx, node->limitCount, node, "limitCount", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "limitCount");
   }
   if (node->limitOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->limitOffset, node, "limitOffset");
+    _fingerprintNode(&subCtx, node->limitOffset, node, "limitOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "limitOffset");
   }
   if (node->onConflict != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->onConflict, node, "onConflict");
+    _fingerprintNode(&subCtx, node->onConflict, node, "onConflict", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "onConflict");
   }
   if (node->queryId != 0) {
@@ -1921,181 +1921,181 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
   if (node->returningList != NULL && node->returningList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->returningList, node, "returningList");
+    _fingerprintNode(&subCtx, node->returningList, node, "returningList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "returningList");
   }
   if (node->rowMarks != NULL && node->rowMarks->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rowMarks, node, "rowMarks");
+    _fingerprintNode(&subCtx, node->rowMarks, node, "rowMarks", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rowMarks");
   }
   if (node->rtable != NULL && node->rtable->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rtable, node, "rtable");
+    _fingerprintNode(&subCtx, node->rtable, node, "rtable", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rtable");
   }
   if (node->setOperations != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->setOperations, node, "setOperations");
+    _fingerprintNode(&subCtx, node->setOperations, node, "setOperations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "setOperations");
   }
   if (node->sortClause != NULL && node->sortClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->sortClause, node, "sortClause");
+    _fingerprintNode(&subCtx, node->sortClause, node, "sortClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "sortClause");
   }
   if (node->targetList != NULL && node->targetList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->targetList, node, "targetList");
+    _fingerprintNode(&subCtx, node->targetList, node, "targetList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "targetList");
   }
   if (node->utilityStmt != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->utilityStmt, node, "utilityStmt");
+    _fingerprintNode(&subCtx, node->utilityStmt, node, "utilityStmt", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "utilityStmt");
   }
   if (node->windowClause != NULL && node->windowClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->windowClause, node, "windowClause");
+    _fingerprintNode(&subCtx, node->windowClause, node, "windowClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "windowClause");
   }
   if (node->withCheckOptions != NULL && node->withCheckOptions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withCheckOptions, node, "withCheckOptions");
+    _fingerprintNode(&subCtx, node->withCheckOptions, node, "withCheckOptions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withCheckOptions");
   }
 }
 
 static void
-_fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const void *parent, const char *field_name)
+_fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "InsertStmt");
   if (node->cols != NULL && node->cols->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cols, node, "cols");
+    _fingerprintNode(&subCtx, node->cols, node, "cols", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cols");
   }
   if (node->onConflictClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->onConflictClause, node, "onConflictClause");
+    _fingerprintNode(&subCtx, node->onConflictClause, node, "onConflictClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "onConflictClause");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->returningList != NULL && node->returningList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->returningList, node, "returningList");
+    _fingerprintNode(&subCtx, node->returningList, node, "returningList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "returningList");
   }
   if (node->selectStmt != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->selectStmt, node, "selectStmt");
+    _fingerprintNode(&subCtx, node->selectStmt, node, "selectStmt", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "selectStmt");
   }
   if (node->withClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withClause, node, "withClause");
+    _fingerprintNode(&subCtx, node->withClause, node, "withClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withClause");
   }
 }
 
 static void
-_fingerprintDeleteStmt(FingerprintContext *ctx, const DeleteStmt *node, const void *parent, const char *field_name)
+_fingerprintDeleteStmt(FingerprintContext *ctx, const DeleteStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DeleteStmt");
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->returningList != NULL && node->returningList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->returningList, node, "returningList");
+    _fingerprintNode(&subCtx, node->returningList, node, "returningList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "returningList");
   }
   if (node->usingClause != NULL && node->usingClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->usingClause, node, "usingClause");
+    _fingerprintNode(&subCtx, node->usingClause, node, "usingClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "usingClause");
   }
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
   if (node->withClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withClause, node, "withClause");
+    _fingerprintNode(&subCtx, node->withClause, node, "withClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withClause");
   }
 }
 
 static void
-_fingerprintUpdateStmt(FingerprintContext *ctx, const UpdateStmt *node, const void *parent, const char *field_name)
+_fingerprintUpdateStmt(FingerprintContext *ctx, const UpdateStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "UpdateStmt");
   if (node->fromClause != NULL && node->fromClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fromClause, node, "fromClause");
+    _fingerprintNode(&subCtx, node->fromClause, node, "fromClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fromClause");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->returningList != NULL && node->returningList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->returningList, node, "returningList");
+    _fingerprintNode(&subCtx, node->returningList, node, "returningList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "returningList");
   }
   if (node->targetList != NULL && node->targetList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->targetList, node, "targetList");
+    _fingerprintNode(&subCtx, node->targetList, node, "targetList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "targetList");
   }
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
   if (node->withClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withClause, node, "withClause");
+    _fingerprintNode(&subCtx, node->withClause, node, "withClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withClause");
   }
 }
 
 static void
-_fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const void *parent, const char *field_name)
+_fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SelectStmt");
 
@@ -2106,55 +2106,55 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
   if (node->distinctClause != NULL && node->distinctClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->distinctClause, node, "distinctClause");
+    _fingerprintNode(&subCtx, node->distinctClause, node, "distinctClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "distinctClause");
   }
   if (node->fromClause != NULL && node->fromClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fromClause, node, "fromClause");
+    _fingerprintNode(&subCtx, node->fromClause, node, "fromClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fromClause");
   }
   if (node->groupClause != NULL && node->groupClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->groupClause, node, "groupClause");
+    _fingerprintNode(&subCtx, node->groupClause, node, "groupClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "groupClause");
   }
   if (node->havingClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->havingClause, node, "havingClause");
+    _fingerprintNode(&subCtx, node->havingClause, node, "havingClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "havingClause");
   }
   if (node->intoClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->intoClause, node, "intoClause");
+    _fingerprintNode(&subCtx, node->intoClause, node, "intoClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "intoClause");
   }
   if (node->larg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->larg, node, "larg");
+    _fingerprintNode(&subCtx, node->larg, node, "larg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "larg");
   }
   if (node->limitCount != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->limitCount, node, "limitCount");
+    _fingerprintNode(&subCtx, node->limitCount, node, "limitCount", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "limitCount");
   }
   if (node->limitOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->limitOffset, node, "limitOffset");
+    _fingerprintNode(&subCtx, node->limitOffset, node, "limitOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "limitOffset");
   }
   if (node->lockingClause != NULL && node->lockingClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->lockingClause, node, "lockingClause");
+    _fingerprintNode(&subCtx, node->lockingClause, node, "lockingClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lockingClause");
   }
   if (node->op != 0) {
@@ -2167,55 +2167,55 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
   if (node->rarg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rarg, node, "rarg");
+    _fingerprintNode(&subCtx, node->rarg, node, "rarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rarg");
   }
   if (node->sortClause != NULL && node->sortClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->sortClause, node, "sortClause");
+    _fingerprintNode(&subCtx, node->sortClause, node, "sortClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "sortClause");
   }
   if (node->targetList != NULL && node->targetList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->targetList, node, "targetList");
+    _fingerprintNode(&subCtx, node->targetList, node, "targetList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "targetList");
   }
   if (node->valuesLists != NULL && node->valuesLists->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->valuesLists, node, "valuesLists");
+    _fingerprintNode(&subCtx, node->valuesLists, node, "valuesLists", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "valuesLists");
   }
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
   if (node->windowClause != NULL && node->windowClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->windowClause, node, "windowClause");
+    _fingerprintNode(&subCtx, node->windowClause, node, "windowClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "windowClause");
   }
   if (node->withClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withClause, node, "withClause");
+    _fingerprintNode(&subCtx, node->withClause, node, "withClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withClause");
   }
 }
 
 static void
-_fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTableStmt");
   if (node->cmds != NULL && node->cmds->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cmds, node, "cmds");
+    _fingerprintNode(&subCtx, node->cmds, node, "cmds", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cmds");
   }
 
@@ -2226,7 +2226,7 @@ _fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, 
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->relkind != 0) {
@@ -2239,7 +2239,7 @@ _fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, 
 }
 
 static void
-_fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, const void *parent, const char *field_name)
+_fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTableCmd");
   if (node->behavior != 0) {
@@ -2252,7 +2252,7 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
   if (node->def != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->def, node, "def");
+    _fingerprintNode(&subCtx, node->def, node, "def", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "def");
   }
 
@@ -2269,7 +2269,7 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
   if (node->newowner != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->newowner, node, "newowner");
+    _fingerprintNode(&subCtx, node->newowner, node, "newowner", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "newowner");
   }
   if (node->subtype != 0) {
@@ -2282,7 +2282,7 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
 }
 
 static void
-_fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterDomainStmt");
   if (node->behavior != 0) {
@@ -2295,7 +2295,7 @@ _fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node
   if (node->def != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->def, node, "def");
+    _fingerprintNode(&subCtx, node->def, node, "def", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "def");
   }
 
@@ -2318,13 +2318,13 @@ _fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node
   if (node->typeName != NULL && node->typeName->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *node, const void *parent, const char *field_name)
+_fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SetOperationStmt");
 
@@ -2335,31 +2335,31 @@ _fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *no
   if (node->colCollations != NULL && node->colCollations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->colCollations, node, "colCollations");
+    _fingerprintNode(&subCtx, node->colCollations, node, "colCollations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colCollations");
   }
   if (node->colTypes != NULL && node->colTypes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->colTypes, node, "colTypes");
+    _fingerprintNode(&subCtx, node->colTypes, node, "colTypes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colTypes");
   }
   if (node->colTypmods != NULL && node->colTypmods->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->colTypmods, node, "colTypmods");
+    _fingerprintNode(&subCtx, node->colTypmods, node, "colTypmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colTypmods");
   }
   if (node->groupClauses != NULL && node->groupClauses->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->groupClauses, node, "groupClauses");
+    _fingerprintNode(&subCtx, node->groupClauses, node, "groupClauses", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "groupClauses");
   }
   if (node->larg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->larg, node, "larg");
+    _fingerprintNode(&subCtx, node->larg, node, "larg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "larg");
   }
   if (node->op != 0) {
@@ -2372,13 +2372,13 @@ _fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *no
   if (node->rarg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rarg, node, "rarg");
+    _fingerprintNode(&subCtx, node->rarg, node, "rarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rarg");
   }
 }
 
 static void
-_fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void *parent, const char *field_name)
+_fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "GrantStmt");
   if (node->behavior != 0) {
@@ -2396,7 +2396,7 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
   if (node->grantees != NULL && node->grantees->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->grantees, node, "grantees");
+    _fingerprintNode(&subCtx, node->grantees, node, "grantees", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "grantees");
   }
 
@@ -2407,7 +2407,7 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
   if (node->objects != NULL && node->objects->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objects, node, "objects");
+    _fingerprintNode(&subCtx, node->objects, node, "objects", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objects");
   }
   if (node->objtype != 0) {
@@ -2420,7 +2420,7 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
   if (node->privileges != NULL && node->privileges->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->privileges, node, "privileges");
+    _fingerprintNode(&subCtx, node->privileges, node, "privileges", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "privileges");
   }
   if (node->targtype != 0) {
@@ -2433,7 +2433,7 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
 }
 
 static void
-_fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, const void *parent, const char *field_name)
+_fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "GrantRoleStmt");
 
@@ -2451,19 +2451,19 @@ _fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, co
   if (node->granted_roles != NULL && node->granted_roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->granted_roles, node, "granted_roles");
+    _fingerprintNode(&subCtx, node->granted_roles, node, "granted_roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "granted_roles");
   }
   if (node->grantee_roles != NULL && node->grantee_roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->grantee_roles, node, "grantee_roles");
+    _fingerprintNode(&subCtx, node->grantee_roles, node, "grantee_roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "grantee_roles");
   }
   if (node->grantor != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->grantor, node, "grantor");
+    _fingerprintNode(&subCtx, node->grantor, node, "grantor", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "grantor");
   }
 
@@ -2474,25 +2474,25 @@ _fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, co
 }
 
 static void
-_fingerprintAlterDefaultPrivilegesStmt(FingerprintContext *ctx, const AlterDefaultPrivilegesStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterDefaultPrivilegesStmt(FingerprintContext *ctx, const AlterDefaultPrivilegesStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterDefaultPrivilegesStmt");
   if (node->action != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->action, node, "action");
+    _fingerprintNode(&subCtx, node->action, node, "action", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "action");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintClosePortalStmt(FingerprintContext *ctx, const ClosePortalStmt *node, const void *parent, const char *field_name)
+_fingerprintClosePortalStmt(FingerprintContext *ctx, const ClosePortalStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ClosePortalStmt");
 
@@ -2504,7 +2504,7 @@ _fingerprintClosePortalStmt(FingerprintContext *ctx, const ClosePortalStmt *node
 }
 
 static void
-_fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const void *parent, const char *field_name)
+_fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ClusterStmt");
 
@@ -2516,7 +2516,7 @@ _fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const 
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
@@ -2527,13 +2527,13 @@ _fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const 
 }
 
 static void
-_fingerprintCopyStmt(FingerprintContext *ctx, const CopyStmt *node, const void *parent, const char *field_name)
+_fingerprintCopyStmt(FingerprintContext *ctx, const CopyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CopyStmt");
   if (node->attlist != NULL && node->attlist->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->attlist, node, "attlist");
+    _fingerprintNode(&subCtx, node->attlist, node, "attlist", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "attlist");
   }
 
@@ -2555,31 +2555,31 @@ _fingerprintCopyStmt(FingerprintContext *ctx, const CopyStmt *node, const void *
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 }
 
 static void
-_fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateStmt");
   if (node->constraints != NULL && node->constraints->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constraints, node, "constraints");
+    _fingerprintNode(&subCtx, node->constraints, node, "constraints", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constraints");
   }
 
@@ -2590,13 +2590,13 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
   if (node->inhRelations != NULL && node->inhRelations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->inhRelations, node, "inhRelations");
+    _fingerprintNode(&subCtx, node->inhRelations, node, "inhRelations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "inhRelations");
   }
   if (node->ofTypename != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ofTypename, node, "ofTypename");
+    _fingerprintNode(&subCtx, node->ofTypename, node, "ofTypename", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ofTypename");
   }
   if (node->oncommit != 0) {
@@ -2609,19 +2609,19 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->tableElts != NULL && node->tableElts->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->tableElts, node, "tableElts");
+    _fingerprintNode(&subCtx, node->tableElts, node, "tableElts", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "tableElts");
   }
 
@@ -2633,25 +2633,25 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
 }
 
 static void
-_fingerprintDefineStmt(FingerprintContext *ctx, const DefineStmt *node, const void *parent, const char *field_name)
+_fingerprintDefineStmt(FingerprintContext *ctx, const DefineStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DefineStmt");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->definition != NULL && node->definition->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->definition, node, "definition");
+    _fingerprintNode(&subCtx, node->definition, node, "definition", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "definition");
   }
   if (node->defnames != NULL && node->defnames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->defnames, node, "defnames");
+    _fingerprintNode(&subCtx, node->defnames, node, "defnames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "defnames");
   }
   if (node->kind != 0) {
@@ -2669,13 +2669,13 @@ _fingerprintDefineStmt(FingerprintContext *ctx, const DefineStmt *node, const vo
 }
 
 static void
-_fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *parent, const char *field_name)
+_fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropStmt");
   if (node->arguments != NULL && node->arguments->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arguments, node, "arguments");
+    _fingerprintNode(&subCtx, node->arguments, node, "arguments", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arguments");
   }
   if (node->behavior != 0) {
@@ -2698,7 +2698,7 @@ _fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *
   if (node->objects != NULL && node->objects->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objects, node, "objects");
+    _fingerprintNode(&subCtx, node->objects, node, "objects", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objects");
   }
   if (node->removeType != 0) {
@@ -2711,7 +2711,7 @@ _fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *
 }
 
 static void
-_fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, const void *parent, const char *field_name)
+_fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TruncateStmt");
   if (node->behavior != 0) {
@@ -2724,7 +2724,7 @@ _fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, cons
   if (node->relations != NULL && node->relations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relations, node, "relations");
+    _fingerprintNode(&subCtx, node->relations, node, "relations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relations");
   }
 
@@ -2735,7 +2735,7 @@ _fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, cons
 }
 
 static void
-_fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const void *parent, const char *field_name)
+_fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CommentStmt");
 
@@ -2747,13 +2747,13 @@ _fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const 
   if (node->objargs != NULL && node->objargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objargs, node, "objargs");
+    _fingerprintNode(&subCtx, node->objargs, node, "objargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objargs");
   }
   if (node->objname != NULL && node->objname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objname, node, "objname");
+    _fingerprintNode(&subCtx, node->objname, node, "objname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objname");
   }
   if (node->objtype != 0) {
@@ -2766,7 +2766,7 @@ _fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const 
 }
 
 static void
-_fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void *parent, const char *field_name)
+_fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FetchStmt");
   if (node->direction != 0) {
@@ -2797,7 +2797,7 @@ _fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void
 }
 
 static void
-_fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void *parent, const char *field_name)
+_fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "IndexStmt");
 
@@ -2819,7 +2819,7 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
   if (node->excludeOpNames != NULL && node->excludeOpNames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->excludeOpNames, node, "excludeOpNames");
+    _fingerprintNode(&subCtx, node->excludeOpNames, node, "excludeOpNames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "excludeOpNames");
   }
 
@@ -2849,7 +2849,7 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
   if (node->indexParams != NULL && node->indexParams->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->indexParams, node, "indexParams");
+    _fingerprintNode(&subCtx, node->indexParams, node, "indexParams", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "indexParams");
   }
 
@@ -2872,7 +2872,7 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -2883,7 +2883,7 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
@@ -2905,31 +2905,31 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
 }
 
 static void
-_fingerprintCreateFunctionStmt(FingerprintContext *ctx, const CreateFunctionStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateFunctionStmt(FingerprintContext *ctx, const CreateFunctionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateFunctionStmt");
   if (node->funcname != NULL && node->funcname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcname, node, "funcname");
+    _fingerprintNode(&subCtx, node->funcname, node, "funcname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcname");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->parameters != NULL && node->parameters->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->parameters, node, "parameters");
+    _fingerprintNode(&subCtx, node->parameters, node, "parameters", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "parameters");
   }
 
@@ -2940,49 +2940,49 @@ _fingerprintCreateFunctionStmt(FingerprintContext *ctx, const CreateFunctionStmt
   if (node->returnType != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->returnType, node, "returnType");
+    _fingerprintNode(&subCtx, node->returnType, node, "returnType", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "returnType");
   }
   if (node->withClause != NULL && node->withClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->withClause, node, "withClause");
+    _fingerprintNode(&subCtx, node->withClause, node, "withClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "withClause");
   }
 }
 
 static void
-_fingerprintAlterFunctionStmt(FingerprintContext *ctx, const AlterFunctionStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterFunctionStmt(FingerprintContext *ctx, const AlterFunctionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterFunctionStmt");
   if (node->actions != NULL && node->actions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->actions, node, "actions");
+    _fingerprintNode(&subCtx, node->actions, node, "actions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "actions");
   }
   if (node->func != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->func, node, "func");
+    _fingerprintNode(&subCtx, node->func, node, "func", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "func");
   }
 }
 
 static void
-_fingerprintDoStmt(FingerprintContext *ctx, const DoStmt *node, const void *parent, const char *field_name)
+_fingerprintDoStmt(FingerprintContext *ctx, const DoStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DoStmt");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
 }
 
 static void
-_fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const void *parent, const char *field_name)
+_fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RenameStmt");
   if (node->behavior != 0) {
@@ -3006,19 +3006,19 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
   if (node->objarg != NULL && node->objarg->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objarg, node, "objarg");
+    _fingerprintNode(&subCtx, node->objarg, node, "objarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objarg");
   }
   if (node->object != NULL && node->object->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->object, node, "object");
+    _fingerprintNode(&subCtx, node->object, node, "object", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->relationType != 0) {
@@ -3044,13 +3044,13 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
 }
 
 static void
-_fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *parent, const char *field_name)
+_fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RuleStmt");
   if (node->actions != NULL && node->actions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->actions, node, "actions");
+    _fingerprintNode(&subCtx, node->actions, node, "actions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "actions");
   }
   if (node->event != 0) {
@@ -3068,7 +3068,7 @@ _fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
@@ -3085,13 +3085,13 @@ _fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
 }
 
 static void
-_fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const void *parent, const char *field_name)
+_fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "NotifyStmt");
 
@@ -3109,7 +3109,7 @@ _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const vo
 }
 
 static void
-_fingerprintListenStmt(FingerprintContext *ctx, const ListenStmt *node, const void *parent, const char *field_name)
+_fingerprintListenStmt(FingerprintContext *ctx, const ListenStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ListenStmt");
 
@@ -3121,7 +3121,7 @@ _fingerprintListenStmt(FingerprintContext *ctx, const ListenStmt *node, const vo
 }
 
 static void
-_fingerprintUnlistenStmt(FingerprintContext *ctx, const UnlistenStmt *node, const void *parent, const char *field_name)
+_fingerprintUnlistenStmt(FingerprintContext *ctx, const UnlistenStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "UnlistenStmt");
 
@@ -3133,7 +3133,7 @@ _fingerprintUnlistenStmt(FingerprintContext *ctx, const UnlistenStmt *node, cons
 }
 
 static void
-_fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node, const void *parent, const char *field_name)
+_fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TransactionStmt");
   // Intentionally ignoring node->gid for fingerprinting
@@ -3148,25 +3148,25 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
 }
 
 static void
-_fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *parent, const char *field_name)
+_fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ViewStmt");
   if (node->aliases != NULL && node->aliases->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aliases, node, "aliases");
+    _fingerprintNode(&subCtx, node->aliases, node, "aliases", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aliases");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
 
@@ -3177,7 +3177,7 @@ _fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *
   if (node->view != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->view, node, "view");
+    _fingerprintNode(&subCtx, node->view, node, "view", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "view");
   }
   if (node->withCheckOption != 0) {
@@ -3190,7 +3190,7 @@ _fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *
 }
 
 static void
-_fingerprintLoadStmt(FingerprintContext *ctx, const LoadStmt *node, const void *parent, const char *field_name)
+_fingerprintLoadStmt(FingerprintContext *ctx, const LoadStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "LoadStmt");
 
@@ -3202,37 +3202,37 @@ _fingerprintLoadStmt(FingerprintContext *ctx, const LoadStmt *node, const void *
 }
 
 static void
-_fingerprintCreateDomainStmt(FingerprintContext *ctx, const CreateDomainStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateDomainStmt(FingerprintContext *ctx, const CreateDomainStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateDomainStmt");
   if (node->collClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->collClause, node, "collClause");
+    _fingerprintNode(&subCtx, node->collClause, node, "collClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "collClause");
   }
   if (node->constraints != NULL && node->constraints->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constraints, node, "constraints");
+    _fingerprintNode(&subCtx, node->constraints, node, "constraints", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constraints");
   }
   if (node->domainname != NULL && node->domainname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->domainname, node, "domainname");
+    _fingerprintNode(&subCtx, node->domainname, node, "domainname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "domainname");
   }
   if (node->typeName != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintCreatedbStmt(FingerprintContext *ctx, const CreatedbStmt *node, const void *parent, const char *field_name)
+_fingerprintCreatedbStmt(FingerprintContext *ctx, const CreatedbStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreatedbStmt");
 
@@ -3244,13 +3244,13 @@ _fingerprintCreatedbStmt(FingerprintContext *ctx, const CreatedbStmt *node, cons
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintDropdbStmt(FingerprintContext *ctx, const DropdbStmt *node, const void *parent, const char *field_name)
+_fingerprintDropdbStmt(FingerprintContext *ctx, const DropdbStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropdbStmt");
 
@@ -3267,7 +3267,7 @@ _fingerprintDropdbStmt(FingerprintContext *ctx, const DropdbStmt *node, const vo
 }
 
 static void
-_fingerprintVacuumStmt(FingerprintContext *ctx, const VacuumStmt *node, const void *parent, const char *field_name)
+_fingerprintVacuumStmt(FingerprintContext *ctx, const VacuumStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "VacuumStmt");
   if (node->options != 0) {
@@ -3280,37 +3280,37 @@ _fingerprintVacuumStmt(FingerprintContext *ctx, const VacuumStmt *node, const vo
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->va_cols != NULL && node->va_cols->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->va_cols, node, "va_cols");
+    _fingerprintNode(&subCtx, node->va_cols, node, "va_cols", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "va_cols");
   }
 }
 
 static void
-_fingerprintExplainStmt(FingerprintContext *ctx, const ExplainStmt *node, const void *parent, const char *field_name)
+_fingerprintExplainStmt(FingerprintContext *ctx, const ExplainStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ExplainStmt");
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
 }
 
 static void
-_fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateTableAsStmt");
 
@@ -3321,7 +3321,7 @@ _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *
   if (node->into != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->into, node, "into");
+    _fingerprintNode(&subCtx, node->into, node, "into", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "into");
   }
 
@@ -3332,7 +3332,7 @@ _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
   if (node->relkind != 0) {
@@ -3345,7 +3345,7 @@ _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *
 }
 
 static void
-_fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateSeqStmt");
 
@@ -3356,7 +3356,7 @@ _fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, co
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->ownerId != 0) {
@@ -3369,13 +3369,13 @@ _fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, co
   if (node->sequence != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->sequence, node, "sequence");
+    _fingerprintNode(&subCtx, node->sequence, node, "sequence", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "sequence");
   }
 }
 
 static void
-_fingerprintAlterSeqStmt(FingerprintContext *ctx, const AlterSeqStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterSeqStmt(FingerprintContext *ctx, const AlterSeqStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterSeqStmt");
 
@@ -3386,25 +3386,25 @@ _fingerprintAlterSeqStmt(FingerprintContext *ctx, const AlterSeqStmt *node, cons
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->sequence != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->sequence, node, "sequence");
+    _fingerprintNode(&subCtx, node->sequence, node, "sequence", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "sequence");
   }
 }
 
 static void
-_fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node, const void *parent, const char *field_name)
+_fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "VariableSetStmt");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
 
@@ -3428,7 +3428,7 @@ _fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node
 }
 
 static void
-_fingerprintVariableShowStmt(FingerprintContext *ctx, const VariableShowStmt *node, const void *parent, const char *field_name)
+_fingerprintVariableShowStmt(FingerprintContext *ctx, const VariableShowStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "VariableShowStmt");
 
@@ -3440,7 +3440,7 @@ _fingerprintVariableShowStmt(FingerprintContext *ctx, const VariableShowStmt *no
 }
 
 static void
-_fingerprintDiscardStmt(FingerprintContext *ctx, const DiscardStmt *node, const void *parent, const char *field_name)
+_fingerprintDiscardStmt(FingerprintContext *ctx, const DiscardStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DiscardStmt");
   if (node->target != 0) {
@@ -3453,25 +3453,25 @@ _fingerprintDiscardStmt(FingerprintContext *ctx, const DiscardStmt *node, const 
 }
 
 static void
-_fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateTrigStmt");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->columns != NULL && node->columns->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->columns, node, "columns");
+    _fingerprintNode(&subCtx, node->columns, node, "columns", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "columns");
   }
   if (node->constrrel != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constrrel, node, "constrrel");
+    _fingerprintNode(&subCtx, node->constrrel, node, "constrrel", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constrrel");
   }
 
@@ -3489,7 +3489,7 @@ _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, 
   if (node->funcname != NULL && node->funcname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcname, node, "funcname");
+    _fingerprintNode(&subCtx, node->funcname, node, "funcname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcname");
   }
 
@@ -3505,7 +3505,7 @@ _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, 
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
@@ -3529,25 +3529,25 @@ _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, 
   if (node->whenClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whenClause, node, "whenClause");
+    _fingerprintNode(&subCtx, node->whenClause, node, "whenClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whenClause");
   }
 }
 
 static void
-_fingerprintCreatePLangStmt(FingerprintContext *ctx, const CreatePLangStmt *node, const void *parent, const char *field_name)
+_fingerprintCreatePLangStmt(FingerprintContext *ctx, const CreatePLangStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreatePLangStmt");
   if (node->plhandler != NULL && node->plhandler->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->plhandler, node, "plhandler");
+    _fingerprintNode(&subCtx, node->plhandler, node, "plhandler", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "plhandler");
   }
   if (node->plinline != NULL && node->plinline->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->plinline, node, "plinline");
+    _fingerprintNode(&subCtx, node->plinline, node, "plinline", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "plinline");
   }
 
@@ -3564,7 +3564,7 @@ _fingerprintCreatePLangStmt(FingerprintContext *ctx, const CreatePLangStmt *node
   if (node->plvalidator != NULL && node->plvalidator->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->plvalidator, node, "plvalidator");
+    _fingerprintNode(&subCtx, node->plvalidator, node, "plvalidator", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "plvalidator");
   }
 
@@ -3575,13 +3575,13 @@ _fingerprintCreatePLangStmt(FingerprintContext *ctx, const CreatePLangStmt *node
 }
 
 static void
-_fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateRoleStmt");
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -3600,7 +3600,7 @@ _fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, 
 }
 
 static void
-_fingerprintAlterRoleStmt(FingerprintContext *ctx, const AlterRoleStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterRoleStmt(FingerprintContext *ctx, const AlterRoleStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterRoleStmt");
   if (node->action != 0) {
@@ -3613,19 +3613,19 @@ _fingerprintAlterRoleStmt(FingerprintContext *ctx, const AlterRoleStmt *node, co
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->role != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->role, node, "role");
+    _fingerprintNode(&subCtx, node->role, node, "role", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "role");
   }
 }
 
 static void
-_fingerprintDropRoleStmt(FingerprintContext *ctx, const DropRoleStmt *node, const void *parent, const char *field_name)
+_fingerprintDropRoleStmt(FingerprintContext *ctx, const DropRoleStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropRoleStmt");
 
@@ -3636,13 +3636,13 @@ _fingerprintDropRoleStmt(FingerprintContext *ctx, const DropRoleStmt *node, cons
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
 }
 
 static void
-_fingerprintLockStmt(FingerprintContext *ctx, const LockStmt *node, const void *parent, const char *field_name)
+_fingerprintLockStmt(FingerprintContext *ctx, const LockStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "LockStmt");
   if (node->mode != 0) {
@@ -3660,19 +3660,19 @@ _fingerprintLockStmt(FingerprintContext *ctx, const LockStmt *node, const void *
   if (node->relations != NULL && node->relations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relations, node, "relations");
+    _fingerprintNode(&subCtx, node->relations, node, "relations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relations");
   }
 }
 
 static void
-_fingerprintConstraintsSetStmt(FingerprintContext *ctx, const ConstraintsSetStmt *node, const void *parent, const char *field_name)
+_fingerprintConstraintsSetStmt(FingerprintContext *ctx, const ConstraintsSetStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ConstraintsSetStmt");
   if (node->constraints != NULL && node->constraints->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constraints, node, "constraints");
+    _fingerprintNode(&subCtx, node->constraints, node, "constraints", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constraints");
   }
 
@@ -3683,7 +3683,7 @@ _fingerprintConstraintsSetStmt(FingerprintContext *ctx, const ConstraintsSetStmt
 }
 
 static void
-_fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const void *parent, const char *field_name)
+_fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ReindexStmt");
   if (node->kind != 0) {
@@ -3709,25 +3709,25 @@ _fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const 
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 }
 
 static void
-_fingerprintCheckPointStmt(FingerprintContext *ctx, const CheckPointStmt *node, const void *parent, const char *field_name)
+_fingerprintCheckPointStmt(FingerprintContext *ctx, const CheckPointStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CheckPointStmt");
 }
 
 static void
-_fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateSchemaStmt");
   if (node->authrole != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->authrole, node, "authrole");
+    _fingerprintNode(&subCtx, node->authrole, node, "authrole", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "authrole");
   }
 
@@ -3738,7 +3738,7 @@ _fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *no
   if (node->schemaElts != NULL && node->schemaElts->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->schemaElts, node, "schemaElts");
+    _fingerprintNode(&subCtx, node->schemaElts, node, "schemaElts", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "schemaElts");
   }
 
@@ -3750,7 +3750,7 @@ _fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *no
 }
 
 static void
-_fingerprintAlterDatabaseStmt(FingerprintContext *ctx, const AlterDatabaseStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterDatabaseStmt(FingerprintContext *ctx, const AlterDatabaseStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterDatabaseStmt");
 
@@ -3762,13 +3762,13 @@ _fingerprintAlterDatabaseStmt(FingerprintContext *ctx, const AlterDatabaseStmt *
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintAlterDatabaseSetStmt(FingerprintContext *ctx, const AlterDatabaseSetStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterDatabaseSetStmt(FingerprintContext *ctx, const AlterDatabaseSetStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterDatabaseSetStmt");
 
@@ -3780,13 +3780,13 @@ _fingerprintAlterDatabaseSetStmt(FingerprintContext *ctx, const AlterDatabaseSet
   if (node->setstmt != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt");
+    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "setstmt");
   }
 }
 
 static void
-_fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterRoleSetStmt");
 
@@ -3798,25 +3798,25 @@ _fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *no
   if (node->role != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->role, node, "role");
+    _fingerprintNode(&subCtx, node->role, node, "role", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "role");
   }
   if (node->setstmt != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt");
+    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "setstmt");
   }
 }
 
 static void
-_fingerprintCreateConversionStmt(FingerprintContext *ctx, const CreateConversionStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateConversionStmt(FingerprintContext *ctx, const CreateConversionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateConversionStmt");
   if (node->conversion_name != NULL && node->conversion_name->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->conversion_name, node, "conversion_name");
+    _fingerprintNode(&subCtx, node->conversion_name, node, "conversion_name", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "conversion_name");
   }
 
@@ -3833,7 +3833,7 @@ _fingerprintCreateConversionStmt(FingerprintContext *ctx, const CreateConversion
   if (node->func_name != NULL && node->func_name->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->func_name, node, "func_name");
+    _fingerprintNode(&subCtx, node->func_name, node, "func_name", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "func_name");
   }
 
@@ -3845,7 +3845,7 @@ _fingerprintCreateConversionStmt(FingerprintContext *ctx, const CreateConversion
 }
 
 static void
-_fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateCastStmt");
   if (node->context != 0) {
@@ -3858,7 +3858,7 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
   if (node->func != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->func, node, "func");
+    _fingerprintNode(&subCtx, node->func, node, "func", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "func");
   }
 
@@ -3869,19 +3869,19 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
   if (node->sourcetype != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->sourcetype, node, "sourcetype");
+    _fingerprintNode(&subCtx, node->sourcetype, node, "sourcetype", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "sourcetype");
   }
   if (node->targettype != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->targettype, node, "targettype");
+    _fingerprintNode(&subCtx, node->targettype, node, "targettype", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "targettype");
   }
 }
 
 static void
-_fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateOpClassStmt");
 
@@ -3893,7 +3893,7 @@ _fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *
   if (node->datatype != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->datatype, node, "datatype");
+    _fingerprintNode(&subCtx, node->datatype, node, "datatype", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "datatype");
   }
 
@@ -3904,25 +3904,25 @@ _fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *
   if (node->items != NULL && node->items->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->items, node, "items");
+    _fingerprintNode(&subCtx, node->items, node, "items", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "items");
   }
   if (node->opclassname != NULL && node->opclassname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opclassname, node, "opclassname");
+    _fingerprintNode(&subCtx, node->opclassname, node, "opclassname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opclassname");
   }
   if (node->opfamilyname != NULL && node->opfamilyname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname");
+    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opfamilyname");
   }
 }
 
 static void
-_fingerprintCreateOpFamilyStmt(FingerprintContext *ctx, const CreateOpFamilyStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateOpFamilyStmt(FingerprintContext *ctx, const CreateOpFamilyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateOpFamilyStmt");
 
@@ -3934,13 +3934,13 @@ _fingerprintCreateOpFamilyStmt(FingerprintContext *ctx, const CreateOpFamilyStmt
   if (node->opfamilyname != NULL && node->opfamilyname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname");
+    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opfamilyname");
   }
 }
 
 static void
-_fingerprintAlterOpFamilyStmt(FingerprintContext *ctx, const AlterOpFamilyStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterOpFamilyStmt(FingerprintContext *ctx, const AlterOpFamilyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterOpFamilyStmt");
 
@@ -3957,58 +3957,58 @@ _fingerprintAlterOpFamilyStmt(FingerprintContext *ctx, const AlterOpFamilyStmt *
   if (node->items != NULL && node->items->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->items, node, "items");
+    _fingerprintNode(&subCtx, node->items, node, "items", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "items");
   }
   if (node->opfamilyname != NULL && node->opfamilyname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname");
+    _fingerprintNode(&subCtx, node->opfamilyname, node, "opfamilyname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opfamilyname");
   }
 }
 
 static void
-_fingerprintPrepareStmt(FingerprintContext *ctx, const PrepareStmt *node, const void *parent, const char *field_name)
+_fingerprintPrepareStmt(FingerprintContext *ctx, const PrepareStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "PrepareStmt");
   if (node->argtypes != NULL && node->argtypes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->argtypes, node, "argtypes");
+    _fingerprintNode(&subCtx, node->argtypes, node, "argtypes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "argtypes");
   }
   // Intentionally ignoring node->name for fingerprinting
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
 }
 
 static void
-_fingerprintExecuteStmt(FingerprintContext *ctx, const ExecuteStmt *node, const void *parent, const char *field_name)
+_fingerprintExecuteStmt(FingerprintContext *ctx, const ExecuteStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ExecuteStmt");
   // Intentionally ignoring node->name for fingerprinting
   if (node->params != NULL && node->params->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->params, node, "params");
+    _fingerprintNode(&subCtx, node->params, node, "params", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "params");
   }
 }
 
 static void
-_fingerprintDeallocateStmt(FingerprintContext *ctx, const DeallocateStmt *node, const void *parent, const char *field_name)
+_fingerprintDeallocateStmt(FingerprintContext *ctx, const DeallocateStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DeallocateStmt");
   // Intentionally ignoring node->name for fingerprinting
 }
 
 static void
-_fingerprintDeclareCursorStmt(FingerprintContext *ctx, const DeclareCursorStmt *node, const void *parent, const char *field_name)
+_fingerprintDeclareCursorStmt(FingerprintContext *ctx, const DeclareCursorStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DeclareCursorStmt");
   if (node->options != 0) {
@@ -4027,26 +4027,26 @@ _fingerprintDeclareCursorStmt(FingerprintContext *ctx, const DeclareCursorStmt *
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->query, node, "query");
+    _fingerprintNode(&subCtx, node->query, node, "query", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
 }
 
 static void
-_fingerprintCreateTableSpaceStmt(FingerprintContext *ctx, const CreateTableSpaceStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateTableSpaceStmt(FingerprintContext *ctx, const CreateTableSpaceStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateTableSpaceStmt");
   // Intentionally ignoring node->location for fingerprinting
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->owner != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->owner, node, "owner");
+    _fingerprintNode(&subCtx, node->owner, node, "owner", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "owner");
   }
 
@@ -4058,7 +4058,7 @@ _fingerprintCreateTableSpaceStmt(FingerprintContext *ctx, const CreateTableSpace
 }
 
 static void
-_fingerprintDropTableSpaceStmt(FingerprintContext *ctx, const DropTableSpaceStmt *node, const void *parent, const char *field_name)
+_fingerprintDropTableSpaceStmt(FingerprintContext *ctx, const DropTableSpaceStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropTableSpaceStmt");
 
@@ -4075,7 +4075,7 @@ _fingerprintDropTableSpaceStmt(FingerprintContext *ctx, const DropTableSpaceStmt
 }
 
 static void
-_fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSchemaStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterObjectSchemaStmt");
 
@@ -4092,13 +4092,13 @@ _fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSche
   if (node->objarg != NULL && node->objarg->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objarg, node, "objarg");
+    _fingerprintNode(&subCtx, node->objarg, node, "objarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objarg");
   }
   if (node->object != NULL && node->object->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->object, node, "object");
+    _fingerprintNode(&subCtx, node->object, node, "object", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
   if (node->objectType != 0) {
@@ -4111,31 +4111,31 @@ _fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSche
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 }
 
 static void
-_fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterOwnerStmt");
   if (node->newowner != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->newowner, node, "newowner");
+    _fingerprintNode(&subCtx, node->newowner, node, "newowner", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "newowner");
   }
   if (node->objarg != NULL && node->objarg->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objarg, node, "objarg");
+    _fingerprintNode(&subCtx, node->objarg, node, "objarg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objarg");
   }
   if (node->object != NULL && node->object->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->object, node, "object");
+    _fingerprintNode(&subCtx, node->object, node, "object", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
   if (node->objectType != 0) {
@@ -4148,13 +4148,13 @@ _fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, 
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 }
 
 static void
-_fingerprintDropOwnedStmt(FingerprintContext *ctx, const DropOwnedStmt *node, const void *parent, const char *field_name)
+_fingerprintDropOwnedStmt(FingerprintContext *ctx, const DropOwnedStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropOwnedStmt");
   if (node->behavior != 0) {
@@ -4167,85 +4167,85 @@ _fingerprintDropOwnedStmt(FingerprintContext *ctx, const DropOwnedStmt *node, co
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
 }
 
 static void
-_fingerprintReassignOwnedStmt(FingerprintContext *ctx, const ReassignOwnedStmt *node, const void *parent, const char *field_name)
+_fingerprintReassignOwnedStmt(FingerprintContext *ctx, const ReassignOwnedStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ReassignOwnedStmt");
   if (node->newrole != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->newrole, node, "newrole");
+    _fingerprintNode(&subCtx, node->newrole, node, "newrole", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "newrole");
   }
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
 }
 
 static void
-_fingerprintCompositeTypeStmt(FingerprintContext *ctx, const CompositeTypeStmt *node, const void *parent, const char *field_name)
+_fingerprintCompositeTypeStmt(FingerprintContext *ctx, const CompositeTypeStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CompositeTypeStmt");
   if (node->coldeflist != NULL && node->coldeflist->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->coldeflist, node, "coldeflist");
+    _fingerprintNode(&subCtx, node->coldeflist, node, "coldeflist", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "coldeflist");
   }
   if (node->typevar != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typevar, node, "typevar");
+    _fingerprintNode(&subCtx, node->typevar, node, "typevar", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typevar");
   }
 }
 
 static void
-_fingerprintCreateEnumStmt(FingerprintContext *ctx, const CreateEnumStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateEnumStmt(FingerprintContext *ctx, const CreateEnumStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateEnumStmt");
   if (node->typeName != NULL && node->typeName->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
   if (node->vals != NULL && node->vals->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->vals, node, "vals");
+    _fingerprintNode(&subCtx, node->vals, node, "vals", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "vals");
   }
 }
 
 static void
-_fingerprintCreateRangeStmt(FingerprintContext *ctx, const CreateRangeStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateRangeStmt(FingerprintContext *ctx, const CreateRangeStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateRangeStmt");
   if (node->params != NULL && node->params->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->params, node, "params");
+    _fingerprintNode(&subCtx, node->params, node, "params", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "params");
   }
   if (node->typeName != NULL && node->typeName->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintAlterEnumStmt(FingerprintContext *ctx, const AlterEnumStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterEnumStmt(FingerprintContext *ctx, const AlterEnumStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterEnumStmt");
 
@@ -4273,43 +4273,43 @@ _fingerprintAlterEnumStmt(FingerprintContext *ctx, const AlterEnumStmt *node, co
   if (node->typeName != NULL && node->typeName->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintAlterTSDictionaryStmt(FingerprintContext *ctx, const AlterTSDictionaryStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterTSDictionaryStmt(FingerprintContext *ctx, const AlterTSDictionaryStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTSDictionaryStmt");
   if (node->dictname != NULL && node->dictname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->dictname, node, "dictname");
+    _fingerprintNode(&subCtx, node->dictname, node, "dictname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "dictname");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintAlterTSConfigurationStmt(FingerprintContext *ctx, const AlterTSConfigurationStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterTSConfigurationStmt(FingerprintContext *ctx, const AlterTSConfigurationStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTSConfigurationStmt");
   if (node->cfgname != NULL && node->cfgname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cfgname, node, "cfgname");
+    _fingerprintNode(&subCtx, node->cfgname, node, "cfgname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cfgname");
   }
   if (node->dicts != NULL && node->dicts->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->dicts, node, "dicts");
+    _fingerprintNode(&subCtx, node->dicts, node, "dicts", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "dicts");
   }
   if (node->kind != 0) {
@@ -4337,13 +4337,13 @@ _fingerprintAlterTSConfigurationStmt(FingerprintContext *ctx, const AlterTSConfi
   if (node->tokentype != NULL && node->tokentype->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->tokentype, node, "tokentype");
+    _fingerprintNode(&subCtx, node->tokentype, node, "tokentype", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "tokentype");
   }
 }
 
 static void
-_fingerprintCreateFdwStmt(FingerprintContext *ctx, const CreateFdwStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateFdwStmt(FingerprintContext *ctx, const CreateFdwStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateFdwStmt");
 
@@ -4355,19 +4355,19 @@ _fingerprintCreateFdwStmt(FingerprintContext *ctx, const CreateFdwStmt *node, co
   if (node->func_options != NULL && node->func_options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->func_options, node, "func_options");
+    _fingerprintNode(&subCtx, node->func_options, node, "func_options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "func_options");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintAlterFdwStmt(FingerprintContext *ctx, const AlterFdwStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterFdwStmt(FingerprintContext *ctx, const AlterFdwStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterFdwStmt");
 
@@ -4379,19 +4379,19 @@ _fingerprintAlterFdwStmt(FingerprintContext *ctx, const AlterFdwStmt *node, cons
   if (node->func_options != NULL && node->func_options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->func_options, node, "func_options");
+    _fingerprintNode(&subCtx, node->func_options, node, "func_options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "func_options");
   }
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintCreateForeignServerStmt(FingerprintContext *ctx, const CreateForeignServerStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateForeignServerStmt(FingerprintContext *ctx, const CreateForeignServerStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateForeignServerStmt");
 
@@ -4403,7 +4403,7 @@ _fingerprintCreateForeignServerStmt(FingerprintContext *ctx, const CreateForeign
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4427,7 +4427,7 @@ _fingerprintCreateForeignServerStmt(FingerprintContext *ctx, const CreateForeign
 }
 
 static void
-_fingerprintAlterForeignServerStmt(FingerprintContext *ctx, const AlterForeignServerStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterForeignServerStmt(FingerprintContext *ctx, const AlterForeignServerStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterForeignServerStmt");
 
@@ -4438,7 +4438,7 @@ _fingerprintAlterForeignServerStmt(FingerprintContext *ctx, const AlterForeignSe
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4456,13 +4456,13 @@ _fingerprintAlterForeignServerStmt(FingerprintContext *ctx, const AlterForeignSe
 }
 
 static void
-_fingerprintCreateUserMappingStmt(FingerprintContext *ctx, const CreateUserMappingStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateUserMappingStmt(FingerprintContext *ctx, const CreateUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateUserMappingStmt");
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4474,19 +4474,19 @@ _fingerprintCreateUserMappingStmt(FingerprintContext *ctx, const CreateUserMappi
   if (node->user != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->user, node, "user");
+    _fingerprintNode(&subCtx, node->user, node, "user", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "user");
   }
 }
 
 static void
-_fingerprintAlterUserMappingStmt(FingerprintContext *ctx, const AlterUserMappingStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterUserMappingStmt(FingerprintContext *ctx, const AlterUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterUserMappingStmt");
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4498,13 +4498,13 @@ _fingerprintAlterUserMappingStmt(FingerprintContext *ctx, const AlterUserMapping
   if (node->user != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->user, node, "user");
+    _fingerprintNode(&subCtx, node->user, node, "user", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "user");
   }
 }
 
 static void
-_fingerprintDropUserMappingStmt(FingerprintContext *ctx, const DropUserMappingStmt *node, const void *parent, const char *field_name)
+_fingerprintDropUserMappingStmt(FingerprintContext *ctx, const DropUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DropUserMappingStmt");
 
@@ -4521,13 +4521,13 @@ _fingerprintDropUserMappingStmt(FingerprintContext *ctx, const DropUserMappingSt
   if (node->user != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->user, node, "user");
+    _fingerprintNode(&subCtx, node->user, node, "user", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "user");
   }
 }
 
 static void
-_fingerprintAlterTableSpaceOptionsStmt(FingerprintContext *ctx, const AlterTableSpaceOptionsStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterTableSpaceOptionsStmt(FingerprintContext *ctx, const AlterTableSpaceOptionsStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTableSpaceOptionsStmt");
 
@@ -4538,7 +4538,7 @@ _fingerprintAlterTableSpaceOptionsStmt(FingerprintContext *ctx, const AlterTable
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4550,7 +4550,7 @@ _fingerprintAlterTableSpaceOptionsStmt(FingerprintContext *ctx, const AlterTable
 }
 
 static void
-_fingerprintAlterTableMoveAllStmt(FingerprintContext *ctx, const AlterTableMoveAllStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterTableMoveAllStmt(FingerprintContext *ctx, const AlterTableMoveAllStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterTableMoveAllStmt");
 
@@ -4580,13 +4580,13 @@ _fingerprintAlterTableMoveAllStmt(FingerprintContext *ctx, const AlterTableMoveA
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
 }
 
 static void
-_fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, const void *parent, const char *field_name)
+_fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SecLabelStmt");
 
@@ -4598,13 +4598,13 @@ _fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, cons
   if (node->objargs != NULL && node->objargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objargs, node, "objargs");
+    _fingerprintNode(&subCtx, node->objargs, node, "objargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objargs");
   }
   if (node->objname != NULL && node->objname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objname, node, "objname");
+    _fingerprintNode(&subCtx, node->objname, node, "objname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objname");
   }
   if (node->objtype != 0) {
@@ -4623,15 +4623,15 @@ _fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, cons
 }
 
 static void
-_fingerprintCreateForeignTableStmt(FingerprintContext *ctx, const CreateForeignTableStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateForeignTableStmt(FingerprintContext *ctx, const CreateForeignTableStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateForeignTableStmt");
   _fingerprintString(ctx, "base");
-  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->base, node, "base");
+  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->base, node, "base", depth);
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4643,7 +4643,7 @@ _fingerprintCreateForeignTableStmt(FingerprintContext *ctx, const CreateForeignT
 }
 
 static void
-_fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeignSchemaStmt *node, const void *parent, const char *field_name)
+_fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeignSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ImportForeignSchemaStmt");
   if (node->list_type != 0) {
@@ -4662,7 +4662,7 @@ _fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeign
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 
@@ -4680,13 +4680,13 @@ _fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeign
   if (node->table_list != NULL && node->table_list->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->table_list, node, "table_list");
+    _fingerprintNode(&subCtx, node->table_list, node, "table_list", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "table_list");
   }
 }
 
 static void
-_fingerprintCreateExtensionStmt(FingerprintContext *ctx, const CreateExtensionStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateExtensionStmt(FingerprintContext *ctx, const CreateExtensionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateExtensionStmt");
 
@@ -4703,13 +4703,13 @@ _fingerprintCreateExtensionStmt(FingerprintContext *ctx, const CreateExtensionSt
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintAlterExtensionStmt(FingerprintContext *ctx, const AlterExtensionStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterExtensionStmt(FingerprintContext *ctx, const AlterExtensionStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterExtensionStmt");
 
@@ -4721,13 +4721,13 @@ _fingerprintAlterExtensionStmt(FingerprintContext *ctx, const AlterExtensionStmt
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
 }
 
 static void
-_fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExtensionContentsStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExtensionContentsStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterExtensionContentsStmt");
   if (node->action != 0) {
@@ -4746,13 +4746,13 @@ _fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExten
   if (node->objargs != NULL && node->objargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objargs, node, "objargs");
+    _fingerprintNode(&subCtx, node->objargs, node, "objargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objargs");
   }
   if (node->objname != NULL && node->objname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->objname, node, "objname");
+    _fingerprintNode(&subCtx, node->objname, node, "objname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objname");
   }
   if (node->objtype != 0) {
@@ -4765,7 +4765,7 @@ _fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExten
 }
 
 static void
-_fingerprintCreateEventTrigStmt(FingerprintContext *ctx, const CreateEventTrigStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateEventTrigStmt(FingerprintContext *ctx, const CreateEventTrigStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateEventTrigStmt");
 
@@ -4777,7 +4777,7 @@ _fingerprintCreateEventTrigStmt(FingerprintContext *ctx, const CreateEventTrigSt
   if (node->funcname != NULL && node->funcname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcname, node, "funcname");
+    _fingerprintNode(&subCtx, node->funcname, node, "funcname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcname");
   }
 
@@ -4789,13 +4789,13 @@ _fingerprintCreateEventTrigStmt(FingerprintContext *ctx, const CreateEventTrigSt
   if (node->whenclause != NULL && node->whenclause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whenclause, node, "whenclause");
+    _fingerprintNode(&subCtx, node->whenclause, node, "whenclause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whenclause");
   }
 }
 
 static void
-_fingerprintAlterEventTrigStmt(FingerprintContext *ctx, const AlterEventTrigStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterEventTrigStmt(FingerprintContext *ctx, const AlterEventTrigStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterEventTrigStmt");
   if (node->tgenabled != 0) {
@@ -4813,7 +4813,7 @@ _fingerprintAlterEventTrigStmt(FingerprintContext *ctx, const AlterEventTrigStmt
 }
 
 static void
-_fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt *node, const void *parent, const char *field_name)
+_fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RefreshMatViewStmt");
 
@@ -4824,7 +4824,7 @@ _fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
@@ -4835,7 +4835,7 @@ _fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt
 }
 
 static void
-_fingerprintReplicaIdentityStmt(FingerprintContext *ctx, const ReplicaIdentityStmt *node, const void *parent, const char *field_name)
+_fingerprintReplicaIdentityStmt(FingerprintContext *ctx, const ReplicaIdentityStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ReplicaIdentityStmt");
   if (node->identity_type != 0) {
@@ -4853,19 +4853,19 @@ _fingerprintReplicaIdentityStmt(FingerprintContext *ctx, const ReplicaIdentitySt
 }
 
 static void
-_fingerprintAlterSystemStmt(FingerprintContext *ctx, const AlterSystemStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterSystemStmt(FingerprintContext *ctx, const AlterSystemStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterSystemStmt");
   if (node->setstmt != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt");
+    _fingerprintNode(&subCtx, node->setstmt, node, "setstmt", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "setstmt");
   }
 }
 
 static void
-_fingerprintCreatePolicyStmt(FingerprintContext *ctx, const CreatePolicyStmt *node, const void *parent, const char *field_name)
+_fingerprintCreatePolicyStmt(FingerprintContext *ctx, const CreatePolicyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreatePolicyStmt");
 
@@ -4883,31 +4883,31 @@ _fingerprintCreatePolicyStmt(FingerprintContext *ctx, const CreatePolicyStmt *no
   if (node->qual != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->qual, node, "qual");
+    _fingerprintNode(&subCtx, node->qual, node, "qual", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "qual");
   }
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
   if (node->table != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->table, node, "table");
+    _fingerprintNode(&subCtx, node->table, node, "table", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "table");
   }
   if (node->with_check != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->with_check, node, "with_check");
+    _fingerprintNode(&subCtx, node->with_check, node, "with_check", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "with_check");
   }
 }
 
 static void
-_fingerprintAlterPolicyStmt(FingerprintContext *ctx, const AlterPolicyStmt *node, const void *parent, const char *field_name)
+_fingerprintAlterPolicyStmt(FingerprintContext *ctx, const AlterPolicyStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AlterPolicyStmt");
 
@@ -4919,37 +4919,37 @@ _fingerprintAlterPolicyStmt(FingerprintContext *ctx, const AlterPolicyStmt *node
   if (node->qual != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->qual, node, "qual");
+    _fingerprintNode(&subCtx, node->qual, node, "qual", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "qual");
   }
   if (node->roles != NULL && node->roles->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->roles, node, "roles");
+    _fingerprintNode(&subCtx, node->roles, node, "roles", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "roles");
   }
   if (node->table != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->table, node, "table");
+    _fingerprintNode(&subCtx, node->table, node, "table", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "table");
   }
   if (node->with_check != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->with_check, node, "with_check");
+    _fingerprintNode(&subCtx, node->with_check, node, "with_check", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "with_check");
   }
 }
 
 static void
-_fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformStmt *node, const void *parent, const char *field_name)
+_fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateTransformStmt");
   if (node->fromsql != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fromsql, node, "fromsql");
+    _fingerprintNode(&subCtx, node->fromsql, node, "fromsql", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fromsql");
   }
 
@@ -4966,19 +4966,19 @@ _fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformSt
   if (node->tosql != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->tosql, node, "tosql");
+    _fingerprintNode(&subCtx, node->tosql, node, "tosql", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "tosql");
   }
   if (node->type_name != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->type_name, node, "type_name");
+    _fingerprintNode(&subCtx, node->type_name, node, "type_name", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "type_name");
   }
 }
 
 static void
-_fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *parent, const char *field_name)
+_fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "A_Expr");
   if (node->kind != 0) {
@@ -4991,51 +4991,51 @@ _fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *pare
   if (node->lexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->lexpr, node, "lexpr");
+    _fingerprintNode(&subCtx, node->lexpr, node, "lexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lexpr");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->name != NULL && node->name->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->name, node, "name");
+    _fingerprintNode(&subCtx, node->name, node, "name", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "name");
   }
   if (node->rexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->rexpr, node, "rexpr");
+    _fingerprintNode(&subCtx, node->rexpr, node, "rexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rexpr");
   }
 }
 
 static void
-_fingerprintColumnRef(FingerprintContext *ctx, const ColumnRef *node, const void *parent, const char *field_name)
+_fingerprintColumnRef(FingerprintContext *ctx, const ColumnRef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ColumnRef");
   if (node->fields != NULL && node->fields->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fields, node, "fields");
+    _fingerprintNode(&subCtx, node->fields, node, "fields", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fields");
   }
   // Intentionally ignoring node->location for fingerprinting
 }
 
 static void
-_fingerprintParamRef(FingerprintContext *ctx, const ParamRef *node, const void *parent, const char *field_name)
+_fingerprintParamRef(FingerprintContext *ctx, const ParamRef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   // Intentionally ignoring all fields for fingerprinting
 }
 
 static void
-_fingerprintA_Const(FingerprintContext *ctx, const A_Const *node, const void *parent, const char *field_name)
+_fingerprintA_Const(FingerprintContext *ctx, const A_Const *node, const void *parent, const char *field_name, unsigned int depth)
 {
   // Intentionally ignoring all fields for fingerprinting
 }
 
 static void
-_fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *parent, const char *field_name)
+_fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FuncCall");
 
@@ -5046,13 +5046,13 @@ _fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *
   if (node->agg_filter != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->agg_filter, node, "agg_filter");
+    _fingerprintNode(&subCtx, node->agg_filter, node, "agg_filter", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "agg_filter");
   }
   if (node->agg_order != NULL && node->agg_order->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->agg_order, node, "agg_order");
+    _fingerprintNode(&subCtx, node->agg_order, node, "agg_order", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "agg_order");
   }
 
@@ -5068,7 +5068,7 @@ _fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
 
@@ -5079,81 +5079,81 @@ _fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *
   if (node->funcname != NULL && node->funcname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcname, node, "funcname");
+    _fingerprintNode(&subCtx, node->funcname, node, "funcname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcname");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->over != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->over, node, "over");
+    _fingerprintNode(&subCtx, node->over, node, "over", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "over");
   }
 }
 
 static void
-_fingerprintA_Star(FingerprintContext *ctx, const A_Star *node, const void *parent, const char *field_name)
+_fingerprintA_Star(FingerprintContext *ctx, const A_Star *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "A_Star");
 }
 
 static void
-_fingerprintA_Indices(FingerprintContext *ctx, const A_Indices *node, const void *parent, const char *field_name)
+_fingerprintA_Indices(FingerprintContext *ctx, const A_Indices *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "A_Indices");
   if (node->lidx != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->lidx, node, "lidx");
+    _fingerprintNode(&subCtx, node->lidx, node, "lidx", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lidx");
   }
   if (node->uidx != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->uidx, node, "uidx");
+    _fingerprintNode(&subCtx, node->uidx, node, "uidx", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "uidx");
   }
 }
 
 static void
-_fingerprintA_Indirection(FingerprintContext *ctx, const A_Indirection *node, const void *parent, const char *field_name)
+_fingerprintA_Indirection(FingerprintContext *ctx, const A_Indirection *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "A_Indirection");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->indirection != NULL && node->indirection->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->indirection, node, "indirection");
+    _fingerprintNode(&subCtx, node->indirection, node, "indirection", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "indirection");
   }
 }
 
 static void
-_fingerprintA_ArrayExpr(FingerprintContext *ctx, const A_ArrayExpr *node, const void *parent, const char *field_name)
+_fingerprintA_ArrayExpr(FingerprintContext *ctx, const A_ArrayExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "A_ArrayExpr");
   if (node->elements != NULL && node->elements->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->elements, node, "elements");
+    _fingerprintNode(&subCtx, node->elements, node, "elements", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "elements");
   }
   // Intentionally ignoring node->location for fingerprinting
 }
 
 static void
-_fingerprintResTarget(FingerprintContext *ctx, const ResTarget *node, const void *parent, const char *field_name)
+_fingerprintResTarget(FingerprintContext *ctx, const ResTarget *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ResTarget");
   if (node->indirection != NULL && node->indirection->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->indirection, node, "indirection");
+    _fingerprintNode(&subCtx, node->indirection, node, "indirection", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "indirection");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -5164,13 +5164,13 @@ _fingerprintResTarget(FingerprintContext *ctx, const ResTarget *node, const void
   if (node->val != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->val, node, "val");
+    _fingerprintNode(&subCtx, node->val, node, "val", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "val");
   }
 }
 
 static void
-_fingerprintMultiAssignRef(FingerprintContext *ctx, const MultiAssignRef *node, const void *parent, const char *field_name)
+_fingerprintMultiAssignRef(FingerprintContext *ctx, const MultiAssignRef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "MultiAssignRef");
   if (node->colno != 0) {
@@ -5190,58 +5190,58 @@ _fingerprintMultiAssignRef(FingerprintContext *ctx, const MultiAssignRef *node, 
   if (node->source != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->source, node, "source");
+    _fingerprintNode(&subCtx, node->source, node, "source", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "source");
   }
 }
 
 static void
-_fingerprintTypeCast(FingerprintContext *ctx, const TypeCast *node, const void *parent, const char *field_name)
+_fingerprintTypeCast(FingerprintContext *ctx, const TypeCast *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TypeCast");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->typeName != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintCollateClause(FingerprintContext *ctx, const CollateClause *node, const void *parent, const char *field_name)
+_fingerprintCollateClause(FingerprintContext *ctx, const CollateClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CollateClause");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->collname != NULL && node->collname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->collname, node, "collname");
+    _fingerprintNode(&subCtx, node->collname, node, "collname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "collname");
   }
   // Intentionally ignoring node->location for fingerprinting
 }
 
 static void
-_fingerprintSortBy(FingerprintContext *ctx, const SortBy *node, const void *parent, const char *field_name)
+_fingerprintSortBy(FingerprintContext *ctx, const SortBy *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SortBy");
   // Intentionally ignoring node->location for fingerprinting
   if (node->node != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->node, node, "node");
+    _fingerprintNode(&subCtx, node->node, node, "node", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "node");
   }
   if (node->sortby_dir != 0) {
@@ -5261,19 +5261,19 @@ _fingerprintSortBy(FingerprintContext *ctx, const SortBy *node, const void *pare
   if (node->useOp != NULL && node->useOp->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->useOp, node, "useOp");
+    _fingerprintNode(&subCtx, node->useOp, node, "useOp", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "useOp");
   }
 }
 
 static void
-_fingerprintWindowDef(FingerprintContext *ctx, const WindowDef *node, const void *parent, const char *field_name)
+_fingerprintWindowDef(FingerprintContext *ctx, const WindowDef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "WindowDef");
   if (node->endOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->endOffset, node, "endOffset");
+    _fingerprintNode(&subCtx, node->endOffset, node, "endOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "endOffset");
   }
   if (node->frameOptions != 0) {
@@ -5293,13 +5293,13 @@ _fingerprintWindowDef(FingerprintContext *ctx, const WindowDef *node, const void
   if (node->orderClause != NULL && node->orderClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->orderClause, node, "orderClause");
+    _fingerprintNode(&subCtx, node->orderClause, node, "orderClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "orderClause");
   }
   if (node->partitionClause != NULL && node->partitionClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->partitionClause, node, "partitionClause");
+    _fingerprintNode(&subCtx, node->partitionClause, node, "partitionClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "partitionClause");
   }
 
@@ -5311,19 +5311,19 @@ _fingerprintWindowDef(FingerprintContext *ctx, const WindowDef *node, const void
   if (node->startOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->startOffset, node, "startOffset");
+    _fingerprintNode(&subCtx, node->startOffset, node, "startOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "startOffset");
   }
 }
 
 static void
-_fingerprintRangeSubselect(FingerprintContext *ctx, const RangeSubselect *node, const void *parent, const char *field_name)
+_fingerprintRangeSubselect(FingerprintContext *ctx, const RangeSubselect *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeSubselect");
   if (node->alias != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->alias, node, "alias");
+    _fingerprintNode(&subCtx, node->alias, node, "alias", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "alias");
   }
 
@@ -5334,31 +5334,31 @@ _fingerprintRangeSubselect(FingerprintContext *ctx, const RangeSubselect *node, 
   if (node->subquery != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->subquery, node, "subquery");
+    _fingerprintNode(&subCtx, node->subquery, node, "subquery", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "subquery");
   }
 }
 
 static void
-_fingerprintRangeFunction(FingerprintContext *ctx, const RangeFunction *node, const void *parent, const char *field_name)
+_fingerprintRangeFunction(FingerprintContext *ctx, const RangeFunction *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeFunction");
   if (node->alias != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->alias, node, "alias");
+    _fingerprintNode(&subCtx, node->alias, node, "alias", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "alias");
   }
   if (node->coldeflist != NULL && node->coldeflist->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->coldeflist, node, "coldeflist");
+    _fingerprintNode(&subCtx, node->coldeflist, node, "coldeflist", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "coldeflist");
   }
   if (node->functions != NULL && node->functions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->functions, node, "functions");
+    _fingerprintNode(&subCtx, node->functions, node, "functions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "functions");
   }
 
@@ -5379,51 +5379,51 @@ _fingerprintRangeFunction(FingerprintContext *ctx, const RangeFunction *node, co
 }
 
 static void
-_fingerprintRangeTableSample(FingerprintContext *ctx, const RangeTableSample *node, const void *parent, const char *field_name)
+_fingerprintRangeTableSample(FingerprintContext *ctx, const RangeTableSample *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeTableSample");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->method != NULL && node->method->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->method, node, "method");
+    _fingerprintNode(&subCtx, node->method, node, "method", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "method");
   }
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
   if (node->repeatable != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->repeatable, node, "repeatable");
+    _fingerprintNode(&subCtx, node->repeatable, node, "repeatable", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "repeatable");
   }
 }
 
 static void
-_fingerprintTypeName(FingerprintContext *ctx, const TypeName *node, const void *parent, const char *field_name)
+_fingerprintTypeName(FingerprintContext *ctx, const TypeName *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TypeName");
   if (node->arrayBounds != NULL && node->arrayBounds->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arrayBounds, node, "arrayBounds");
+    _fingerprintNode(&subCtx, node->arrayBounds, node, "arrayBounds", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arrayBounds");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->names != NULL && node->names->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->names, node, "names");
+    _fingerprintNode(&subCtx, node->names, node, "names", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "names");
   }
 
@@ -5453,19 +5453,19 @@ _fingerprintTypeName(FingerprintContext *ctx, const TypeName *node, const void *
   if (node->typmods != NULL && node->typmods->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typmods, node, "typmods");
+    _fingerprintNode(&subCtx, node->typmods, node, "typmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typmods");
   }
 }
 
 static void
-_fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void *parent, const char *field_name)
+_fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ColumnDef");
   if (node->collClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->collClause, node, "collClause");
+    _fingerprintNode(&subCtx, node->collClause, node, "collClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "collClause");
   }
   if (node->collOid != 0) {
@@ -5484,19 +5484,19 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
   if (node->constraints != NULL && node->constraints->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->constraints, node, "constraints");
+    _fingerprintNode(&subCtx, node->constraints, node, "constraints", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "constraints");
   }
   if (node->cooked_default != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cooked_default, node, "cooked_default");
+    _fingerprintNode(&subCtx, node->cooked_default, node, "cooked_default", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cooked_default");
   }
   if (node->fdwoptions != NULL && node->fdwoptions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fdwoptions, node, "fdwoptions");
+    _fingerprintNode(&subCtx, node->fdwoptions, node, "fdwoptions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fdwoptions");
   }
   if (node->inhcount != 0) {
@@ -5525,7 +5525,7 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
   if (node->raw_default != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->raw_default, node, "raw_default");
+    _fingerprintNode(&subCtx, node->raw_default, node, "raw_default", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "raw_default");
   }
   if (node->storage != 0) {
@@ -5537,25 +5537,25 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
   if (node->typeName != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 }
 
 static void
-_fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void *parent, const char *field_name)
+_fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "IndexElem");
   if (node->collation != NULL && node->collation->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->collation, node, "collation");
+    _fingerprintNode(&subCtx, node->collation, node, "collation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "collation");
   }
   if (node->expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->expr, node, "expr");
+    _fingerprintNode(&subCtx, node->expr, node, "expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "expr");
   }
 
@@ -5580,7 +5580,7 @@ _fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void
   if (node->opclass != NULL && node->opclass->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->opclass, node, "opclass");
+    _fingerprintNode(&subCtx, node->opclass, node, "opclass", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opclass");
   }
   if (node->ordering != 0) {
@@ -5593,7 +5593,7 @@ _fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void
 }
 
 static void
-_fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const void *parent, const char *field_name)
+_fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "Constraint");
 
@@ -5629,13 +5629,13 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
   if (node->exclusions != NULL && node->exclusions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->exclusions, node, "exclusions");
+    _fingerprintNode(&subCtx, node->exclusions, node, "exclusions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "exclusions");
   }
   if (node->fk_attrs != NULL && node->fk_attrs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->fk_attrs, node, "fk_attrs");
+    _fingerprintNode(&subCtx, node->fk_attrs, node, "fk_attrs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "fk_attrs");
   }
   if (node->fk_del_action != 0) {
@@ -5686,14 +5686,14 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
   if (node->keys != NULL && node->keys->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->keys, node, "keys");
+    _fingerprintNode(&subCtx, node->keys, node, "keys", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "keys");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->old_conpfeqop != NULL && node->old_conpfeqop->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->old_conpfeqop, node, "old_conpfeqop");
+    _fingerprintNode(&subCtx, node->old_conpfeqop, node, "old_conpfeqop", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "old_conpfeqop");
   }
   if (node->old_pktable_oid != 0) {
@@ -5706,25 +5706,25 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
   if (node->options != NULL && node->options->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->options, node, "options");
+    _fingerprintNode(&subCtx, node->options, node, "options", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "options");
   }
   if (node->pk_attrs != NULL && node->pk_attrs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->pk_attrs, node, "pk_attrs");
+    _fingerprintNode(&subCtx, node->pk_attrs, node, "pk_attrs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "pk_attrs");
   }
   if (node->pktable != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->pktable, node, "pktable");
+    _fingerprintNode(&subCtx, node->pktable, node, "pktable", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "pktable");
   }
   if (node->raw_expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->raw_expr, node, "raw_expr");
+    _fingerprintNode(&subCtx, node->raw_expr, node, "raw_expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "raw_expr");
   }
 
@@ -5735,19 +5735,19 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
   if (node->where_clause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->where_clause, node, "where_clause");
+    _fingerprintNode(&subCtx, node->where_clause, node, "where_clause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "where_clause");
   }
 }
 
 static void
-_fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *parent, const char *field_name)
+_fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "DefElem");
   if (node->arg != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->arg, node, "arg");
+    _fingerprintNode(&subCtx, node->arg, node, "arg", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
   if (node->defaction != 0) {
@@ -5773,13 +5773,13 @@ _fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *pa
 }
 
 static void
-_fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, const void *parent, const char *field_name)
+_fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeTblEntry");
   if (node->alias != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->alias, node, "alias");
+    _fingerprintNode(&subCtx, node->alias, node, "alias", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "alias");
   }
   if (node->checkAsUser != 0) {
@@ -5792,19 +5792,19 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->ctecolcollations != NULL && node->ctecolcollations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecolcollations, node, "ctecolcollations");
+    _fingerprintNode(&subCtx, node->ctecolcollations, node, "ctecolcollations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecolcollations");
   }
   if (node->ctecoltypes != NULL && node->ctecoltypes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecoltypes, node, "ctecoltypes");
+    _fingerprintNode(&subCtx, node->ctecoltypes, node, "ctecoltypes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecoltypes");
   }
   if (node->ctecoltypmods != NULL && node->ctecoltypmods->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecoltypmods, node, "ctecoltypmods");
+    _fingerprintNode(&subCtx, node->ctecoltypmods, node, "ctecoltypmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecoltypmods");
   }
   if (node->ctelevelsup != 0) {
@@ -5823,7 +5823,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->eref != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->eref, node, "eref");
+    _fingerprintNode(&subCtx, node->eref, node, "eref", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "eref");
   }
 
@@ -5834,7 +5834,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->functions != NULL && node->functions->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->functions, node, "functions");
+    _fingerprintNode(&subCtx, node->functions, node, "functions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "functions");
   }
 
@@ -5864,7 +5864,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->joinaliasvars != NULL && node->joinaliasvars->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->joinaliasvars, node, "joinaliasvars");
+    _fingerprintNode(&subCtx, node->joinaliasvars, node, "joinaliasvars", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "joinaliasvars");
   }
   if (node->jointype != 0) {
@@ -5909,7 +5909,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->securityQuals != NULL && node->securityQuals->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->securityQuals, node, "securityQuals");
+    _fingerprintNode(&subCtx, node->securityQuals, node, "securityQuals", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "securityQuals");
   }
 
@@ -5939,13 +5939,13 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->subquery != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->subquery, node, "subquery");
+    _fingerprintNode(&subCtx, node->subquery, node, "subquery", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "subquery");
   }
   if (node->tablesample != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->tablesample, node, "tablesample");
+    _fingerprintNode(&subCtx, node->tablesample, node, "tablesample", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "tablesample");
   }
   if (true) {
@@ -5965,25 +5965,25 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
   if (node->values_collations != NULL && node->values_collations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->values_collations, node, "values_collations");
+    _fingerprintNode(&subCtx, node->values_collations, node, "values_collations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "values_collations");
   }
   if (node->values_lists != NULL && node->values_lists->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->values_lists, node, "values_lists");
+    _fingerprintNode(&subCtx, node->values_lists, node, "values_lists", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "values_lists");
   }
 }
 
 static void
-_fingerprintRangeTblFunction(FingerprintContext *ctx, const RangeTblFunction *node, const void *parent, const char *field_name)
+_fingerprintRangeTblFunction(FingerprintContext *ctx, const RangeTblFunction *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RangeTblFunction");
   if (node->funccolcollations != NULL && node->funccolcollations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funccolcollations, node, "funccolcollations");
+    _fingerprintNode(&subCtx, node->funccolcollations, node, "funccolcollations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funccolcollations");
   }
   if (node->funccolcount != 0) {
@@ -5996,25 +5996,25 @@ _fingerprintRangeTblFunction(FingerprintContext *ctx, const RangeTblFunction *no
   if (node->funccolnames != NULL && node->funccolnames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funccolnames, node, "funccolnames");
+    _fingerprintNode(&subCtx, node->funccolnames, node, "funccolnames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funccolnames");
   }
   if (node->funccoltypes != NULL && node->funccoltypes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funccoltypes, node, "funccoltypes");
+    _fingerprintNode(&subCtx, node->funccoltypes, node, "funccoltypes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funccoltypes");
   }
   if (node->funccoltypmods != NULL && node->funccoltypmods->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funccoltypmods, node, "funccoltypmods");
+    _fingerprintNode(&subCtx, node->funccoltypmods, node, "funccoltypmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funccoltypmods");
   }
   if (node->funcexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcexpr, node, "funcexpr");
+    _fingerprintNode(&subCtx, node->funcexpr, node, "funcexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcexpr");
   }
   if (true) {
@@ -6034,19 +6034,19 @@ _fingerprintRangeTblFunction(FingerprintContext *ctx, const RangeTblFunction *no
 }
 
 static void
-_fingerprintTableSampleClause(FingerprintContext *ctx, const TableSampleClause *node, const void *parent, const char *field_name)
+_fingerprintTableSampleClause(FingerprintContext *ctx, const TableSampleClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TableSampleClause");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->repeatable != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->repeatable, node, "repeatable");
+    _fingerprintNode(&subCtx, node->repeatable, node, "repeatable", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "repeatable");
   }
   if (node->tsmhandler != 0) {
@@ -6059,7 +6059,7 @@ _fingerprintTableSampleClause(FingerprintContext *ctx, const TableSampleClause *
 }
 
 static void
-_fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node, const void *parent, const char *field_name)
+_fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "WithCheckOption");
 
@@ -6083,7 +6083,7 @@ _fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node
   if (node->qual != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->qual, node, "qual");
+    _fingerprintNode(&subCtx, node->qual, node, "qual", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "qual");
   }
 
@@ -6095,7 +6095,7 @@ _fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node
 }
 
 static void
-_fingerprintSortGroupClause(FingerprintContext *ctx, const SortGroupClause *node, const void *parent, const char *field_name)
+_fingerprintSortGroupClause(FingerprintContext *ctx, const SortGroupClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "SortGroupClause");
   if (node->eqop != 0) {
@@ -6132,13 +6132,13 @@ _fingerprintSortGroupClause(FingerprintContext *ctx, const SortGroupClause *node
 }
 
 static void
-_fingerprintGroupingSet(FingerprintContext *ctx, const GroupingSet *node, const void *parent, const char *field_name)
+_fingerprintGroupingSet(FingerprintContext *ctx, const GroupingSet *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "GroupingSet");
   if (node->content != NULL && node->content->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->content, node, "content");
+    _fingerprintNode(&subCtx, node->content, node, "content", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "content");
   }
   if (node->kind != 0) {
@@ -6152,7 +6152,7 @@ _fingerprintGroupingSet(FingerprintContext *ctx, const GroupingSet *node, const 
 }
 
 static void
-_fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, const void *parent, const char *field_name)
+_fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "WindowClause");
 
@@ -6163,7 +6163,7 @@ _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, cons
   if (node->endOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->endOffset, node, "endOffset");
+    _fingerprintNode(&subCtx, node->endOffset, node, "endOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "endOffset");
   }
   if (node->frameOptions != 0) {
@@ -6182,13 +6182,13 @@ _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, cons
   if (node->orderClause != NULL && node->orderClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->orderClause, node, "orderClause");
+    _fingerprintNode(&subCtx, node->orderClause, node, "orderClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "orderClause");
   }
   if (node->partitionClause != NULL && node->partitionClause->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->partitionClause, node, "partitionClause");
+    _fingerprintNode(&subCtx, node->partitionClause, node, "partitionClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "partitionClause");
   }
 
@@ -6200,7 +6200,7 @@ _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, cons
   if (node->startOffset != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->startOffset, node, "startOffset");
+    _fingerprintNode(&subCtx, node->startOffset, node, "startOffset", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "startOffset");
   }
   if (node->winref != 0) {
@@ -6213,31 +6213,31 @@ _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, cons
 }
 
 static void
-_fingerprintFuncWithArgs(FingerprintContext *ctx, const FuncWithArgs *node, const void *parent, const char *field_name)
+_fingerprintFuncWithArgs(FingerprintContext *ctx, const FuncWithArgs *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FuncWithArgs");
   if (node->funcargs != NULL && node->funcargs->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcargs, node, "funcargs");
+    _fingerprintNode(&subCtx, node->funcargs, node, "funcargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcargs");
   }
   if (node->funcname != NULL && node->funcname->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->funcname, node, "funcname");
+    _fingerprintNode(&subCtx, node->funcname, node, "funcname", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "funcname");
   }
 }
 
 static void
-_fingerprintAccessPriv(FingerprintContext *ctx, const AccessPriv *node, const void *parent, const char *field_name)
+_fingerprintAccessPriv(FingerprintContext *ctx, const AccessPriv *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "AccessPriv");
   if (node->cols != NULL && node->cols->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->cols, node, "cols");
+    _fingerprintNode(&subCtx, node->cols, node, "cols", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "cols");
   }
 
@@ -6249,19 +6249,19 @@ _fingerprintAccessPriv(FingerprintContext *ctx, const AccessPriv *node, const vo
 }
 
 static void
-_fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *node, const void *parent, const char *field_name)
+_fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CreateOpClassItem");
   if (node->args != NULL && node->args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->args, node, "args");
+    _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
   if (node->class_args != NULL && node->class_args->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->class_args, node, "class_args");
+    _fingerprintNode(&subCtx, node->class_args, node, "class_args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "class_args");
   }
   if (node->itemtype != 0) {
@@ -6274,7 +6274,7 @@ _fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *
   if (node->name != NULL && node->name->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->name, node, "name");
+    _fingerprintNode(&subCtx, node->name, node, "name", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "name");
   }
   if (node->number != 0) {
@@ -6287,19 +6287,19 @@ _fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *
   if (node->order_family != NULL && node->order_family->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->order_family, node, "order_family");
+    _fingerprintNode(&subCtx, node->order_family, node, "order_family", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "order_family");
   }
   if (node->storedtype != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->storedtype, node, "storedtype");
+    _fingerprintNode(&subCtx, node->storedtype, node, "storedtype", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "storedtype");
   }
 }
 
 static void
-_fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node, const void *parent, const char *field_name)
+_fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "TableLikeClause");
   if (node->options != 0) {
@@ -6312,25 +6312,25 @@ _fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node
   if (node->relation != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->relation, node, "relation");
+    _fingerprintNode(&subCtx, node->relation, node, "relation", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 }
 
 static void
-_fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *node, const void *parent, const char *field_name)
+_fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "FunctionParameter");
   if (node->argType != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->argType, node, "argType");
+    _fingerprintNode(&subCtx, node->argType, node, "argType", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "argType");
   }
   if (node->defexpr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->defexpr, node, "defexpr");
+    _fingerprintNode(&subCtx, node->defexpr, node, "defexpr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "defexpr");
   }
   if (node->mode != 0) {
@@ -6349,13 +6349,13 @@ _fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *
 }
 
 static void
-_fingerprintLockingClause(FingerprintContext *ctx, const LockingClause *node, const void *parent, const char *field_name)
+_fingerprintLockingClause(FingerprintContext *ctx, const LockingClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "LockingClause");
   if (node->lockedRels != NULL && node->lockedRels->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->lockedRels, node, "lockedRels");
+    _fingerprintNode(&subCtx, node->lockedRels, node, "lockedRels", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lockedRels");
   }
   if (node->strength != 0) {
@@ -6375,7 +6375,7 @@ _fingerprintLockingClause(FingerprintContext *ctx, const LockingClause *node, co
 }
 
 static void
-_fingerprintRowMarkClause(FingerprintContext *ctx, const RowMarkClause *node, const void *parent, const char *field_name)
+_fingerprintRowMarkClause(FingerprintContext *ctx, const RowMarkClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RowMarkClause");
 
@@ -6407,20 +6407,20 @@ _fingerprintRowMarkClause(FingerprintContext *ctx, const RowMarkClause *node, co
 }
 
 static void
-_fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, const void *parent, const char *field_name)
+_fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "XmlSerialize");
   if (node->expr != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->expr, node, "expr");
+    _fingerprintNode(&subCtx, node->expr, node, "expr", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "expr");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->typeName != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->typeName, node, "typeName");
+    _fingerprintNode(&subCtx, node->typeName, node, "typeName", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
   if (node->xmloption != 0) {
@@ -6433,13 +6433,13 @@ _fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, cons
 }
 
 static void
-_fingerprintWithClause(FingerprintContext *ctx, const WithClause *node, const void *parent, const char *field_name)
+_fingerprintWithClause(FingerprintContext *ctx, const WithClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "WithClause");
   if (node->ctes != NULL && node->ctes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctes, node, "ctes");
+    _fingerprintNode(&subCtx, node->ctes, node, "ctes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctes");
   }
   // Intentionally ignoring node->location for fingerprinting
@@ -6451,7 +6451,7 @@ _fingerprintWithClause(FingerprintContext *ctx, const WithClause *node, const vo
 }
 
 static void
-_fingerprintInferClause(FingerprintContext *ctx, const InferClause *node, const void *parent, const char *field_name)
+_fingerprintInferClause(FingerprintContext *ctx, const InferClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "InferClause");
 
@@ -6463,20 +6463,20 @@ _fingerprintInferClause(FingerprintContext *ctx, const InferClause *node, const 
   if (node->indexElems != NULL && node->indexElems->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->indexElems, node, "indexElems");
+    _fingerprintNode(&subCtx, node->indexElems, node, "indexElems", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "indexElems");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
 }
 
 static void
-_fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *node, const void *parent, const char *field_name)
+_fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "OnConflictClause");
   if (node->action != 0) {
@@ -6489,56 +6489,56 @@ _fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *no
   if (node->infer != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->infer, node, "infer");
+    _fingerprintNode(&subCtx, node->infer, node, "infer", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "infer");
   }
   // Intentionally ignoring node->location for fingerprinting
   if (node->targetList != NULL && node->targetList->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->targetList, node, "targetList");
+    _fingerprintNode(&subCtx, node->targetList, node, "targetList", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "targetList");
   }
   if (node->whereClause != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause");
+    _fingerprintNode(&subCtx, node->whereClause, node, "whereClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "whereClause");
   }
 }
 
 static void
-_fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node, const void *parent, const char *field_name)
+_fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "CommonTableExpr");
   if (node->aliascolnames != NULL && node->aliascolnames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->aliascolnames, node, "aliascolnames");
+    _fingerprintNode(&subCtx, node->aliascolnames, node, "aliascolnames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aliascolnames");
   }
   if (node->ctecolcollations != NULL && node->ctecolcollations->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecolcollations, node, "ctecolcollations");
+    _fingerprintNode(&subCtx, node->ctecolcollations, node, "ctecolcollations", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecolcollations");
   }
   if (node->ctecolnames != NULL && node->ctecolnames->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecolnames, node, "ctecolnames");
+    _fingerprintNode(&subCtx, node->ctecolnames, node, "ctecolnames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecolnames");
   }
   if (node->ctecoltypes != NULL && node->ctecoltypes->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecoltypes, node, "ctecoltypes");
+    _fingerprintNode(&subCtx, node->ctecoltypes, node, "ctecoltypes", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecoltypes");
   }
   if (node->ctecoltypmods != NULL && node->ctecoltypmods->length > 0) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctecoltypmods, node, "ctecoltypmods");
+    _fingerprintNode(&subCtx, node->ctecoltypmods, node, "ctecoltypmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecoltypmods");
   }
 
@@ -6550,7 +6550,7 @@ _fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node
   if (node->ctequery != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->ctequery, node, "ctequery");
+    _fingerprintNode(&subCtx, node->ctequery, node, "ctequery", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctequery");
   }
 
@@ -6569,7 +6569,7 @@ _fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node
 }
 
 static void
-_fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *parent, const char *field_name)
+_fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "RoleSpec");
   // Intentionally ignoring node->location for fingerprinting
@@ -6589,7 +6589,7 @@ _fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *
 }
 
 static void
-_fingerprintInlineCodeBlock(FingerprintContext *ctx, const InlineCodeBlock *node, const void *parent, const char *field_name)
+_fingerprintInlineCodeBlock(FingerprintContext *ctx, const InlineCodeBlock *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "InlineCodeBlock");
 

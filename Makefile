@@ -99,15 +99,22 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) -I. -o $@ -g examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/fingerprint test/normalize test/parse test/concurrency test/parse_plpgsql
+TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql
 test: $(TESTS)
+	test/complex
+	test/concurrency
 	test/fingerprint
 	test/normalize
 	test/parse
-	test/concurrency
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+
+test/complex: test/complex.c $(ARLIB)
+	$(CC) -I. -Isrc -o $@ -g test/complex.c $(ARLIB)
+
+test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
+	$(CC) -I. -o $@ -pthread -g test/concurrency.c $(ARLIB)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
@@ -120,6 +127,3 @@ test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
 	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
-
-test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -pthread -g test/concurrency.c $(ARLIB)

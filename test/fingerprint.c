@@ -17,7 +17,7 @@ int main() {
     if (strcmp(result.hexdigest, tests[i + 1]) == 0) {
       printf(".");
     } else {
-      ret_code = -1;\
+      ret_code = -1;
       printf("INVALID result for \"%s\"\nexpected: %s\nactual: %s\nactual tokens: ", tests[i], tests[i + 1], result.hexdigest);
       pg_query_fingerprint_with_opts(tests[i], true);
     }
