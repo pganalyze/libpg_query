@@ -2,6 +2,12 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.4.2    2016-12-06
+
+* Cut off fingerprints at 100 nodes deep to avoid excessive runtimes/memory
+* Fix warning on Linux due to missing asprintf include
+
+
 ## 9.5-1.4.1    2016-06-26
 
 * Automatically call pg_query_init as needed to ease threaded usage
