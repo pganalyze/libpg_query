@@ -721,9 +721,6 @@
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "9.5.3"
 
-/* Define to the name of a signed 128-bit integer type. */
-#define PG_INT128_TYPE __int128
-
 /* Define to the name of a signed 64-bit integer type. */
 #define PG_INT64_TYPE long int
 
