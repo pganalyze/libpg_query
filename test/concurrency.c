@@ -20,7 +20,7 @@ int main() {
   for (i = 0; i < THREAD_COUNT; i += 1) {
     ret = pthread_create(&threads[i], NULL, test_runner, NULL);
     if (ret) {
-      printf("ERROR creating pthread - pthread_create return code %d\n", ret);
+      perror("ERROR creating pthread");
       return 1;
     }
   }
