@@ -8,7 +8,7 @@
 
 #include "parse_tests.c"
 
-#define THREAD_COUNT 1000
+#define THREAD_COUNT 500
 
 void* test_runner(void*);
 
