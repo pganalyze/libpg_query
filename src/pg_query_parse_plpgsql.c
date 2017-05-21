@@ -80,7 +80,7 @@ static void plpgsql_compile_error_callback(void *arg)
 static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 {
 	char *func_name;
-    char *proc_source;
+    char *proc_source = NULL;
 	PLpgSQL_function *function;
 	ErrorContextCallback plerrcontext;
 	PLpgSQL_variable *var;
@@ -111,6 +111,8 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
           }
       }
     }
+
+	assert(proc_source);
 
     if (stmt->returnType != NULL) {
         foreach(lc3, stmt->returnType->names)
