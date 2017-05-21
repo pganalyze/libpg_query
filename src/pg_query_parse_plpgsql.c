@@ -1,3 +1,6 @@
+#define _GNU_SOURCE // Necessary to get asprintf (which is a GNU extension)
+#include <stdio.h>
+
 #include "pg_query.h"
 #include "pg_query_internal.h"
 #include "pg_query_json_plpgsql.h"
@@ -8,9 +11,6 @@
 #include <catalog/pg_proc_fn.h>
 #include <nodes/parsenodes.h>
 #include <nodes/nodeFuncs.h>
-
-#define _GNU_SOURCE // Necessary to get asprintf (which is a GNU extension)
-#include <stdio.h>
 
 typedef struct {
   PLpgSQL_function *func;
