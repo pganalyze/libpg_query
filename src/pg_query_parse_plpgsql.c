@@ -13,8 +13,8 @@
 #include <nodes/nodeFuncs.h>
 
 typedef struct {
-  PLpgSQL_function *func;
-  PgQueryError* error;
+	PLpgSQL_function *func;
+	PgQueryError* error;
 } PgQueryInternalPlpgsqlFuncAndError;
 
 static PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt* stmt);
@@ -80,7 +80,7 @@ static void plpgsql_compile_error_callback(void *arg)
 static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 {
 	char *func_name;
-    char *proc_source = NULL;
+	char *proc_source = NULL;
 	PLpgSQL_function *function;
 	ErrorContextCallback plerrcontext;
 	PLpgSQL_variable *var;
@@ -88,46 +88,46 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	MemoryContext func_cxt;
 	int			i;
 	PLpgSQL_rec *rec;
-    const ListCell *lc, *lc2, *lc3;
-    bool is_trigger = false;
-    bool is_setof = false;
+	const ListCell *lc, *lc2, *lc3;
+	bool is_trigger = false;
+	bool is_setof = false;
 
-    assert(IsA(stmt, CreateFunctionStmt));
+	assert(IsA(stmt, CreateFunctionStmt));
 
-    func_name = strVal(linitial(stmt->funcname));
+	func_name = strVal(linitial(stmt->funcname));
 
-    foreach(lc, stmt->options)
-    {
-      DefElem* elem = (DefElem*) lfirst(lc);
+	foreach(lc, stmt->options)
+	{
+		DefElem* elem = (DefElem*) lfirst(lc);
 
-      if (strcmp(elem->defname, "as") == 0) {
-          const ListCell *lc2;
+		if (strcmp(elem->defname, "as") == 0) {
+			const ListCell *lc2;
 
-          assert(IsA(elem->arg, List));
+			assert(IsA(elem->arg, List));
 
-          foreach(lc2, (List*) elem->arg)
-          {
-              proc_source = strVal(lfirst(lc2));
-          }
-      }
-    }
+			foreach(lc2, (List*) elem->arg)
+			{
+				proc_source = strVal(lfirst(lc2));
+			}
+		}
+	}
 
 	assert(proc_source);
 
-    if (stmt->returnType != NULL) {
-        foreach(lc3, stmt->returnType->names)
-        {
-            char* val = strVal(lfirst(lc3));
+	if (stmt->returnType != NULL) {
+		foreach(lc3, stmt->returnType->names)
+		{
+			char* val = strVal(lfirst(lc3));
 
-            if (strcmp(val, "trigger") == 0) {
-                is_trigger = true;
-            }
-        }
+			if (strcmp(val, "trigger") == 0) {
+				is_trigger = true;
+			}
+		}
 
-        if (stmt->returnType->setof) {
-            is_setof = true;
-        }
-    }
+		if (stmt->returnType->setof) {
+			is_setof = true;
+		}
+	}
 
 	/*
 	 * Setup the scanner input and error info.  We assume that this function
@@ -213,15 +213,15 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 								 true);
 	function->found_varno = var->dno;
 
-    if (is_trigger) {
-    	/* Add the record for referencing NEW */
-    	rec = plpgsql_build_record("new", 0, true);
-    	function->new_varno = rec->dno;
+	if (is_trigger) {
+		/* Add the record for referencing NEW */
+		rec = plpgsql_build_record("new", 0, true);
+		function->new_varno = rec->dno;
 
-    	/* Add the record for referencing OLD */
-    	rec = plpgsql_build_record("old", 0, true);
-    	function->old_varno = rec->dno;
-    }
+		/* Add the record for referencing OLD */
+		rec = plpgsql_build_record("old", 0, true);
+		function->old_varno = rec->dno;
+	}
 
 	/*
 	 * Now parse the function's text
@@ -295,21 +295,21 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt
 
 	PG_TRY();
 	{
-    result.func = compile_create_function_stmt(stmt);
+		result.func = compile_create_function_stmt(stmt);
 
 #ifndef DEBUG
 		// Save stderr for result
 		read(stderr_pipe[0], stderr_buffer, STDERR_BUFFER_LEN);
 #endif
 
-        if (strlen(stderr_buffer) > 0) {
-            PgQueryError* error = malloc(sizeof(PgQueryError));
-    		error->message = strdup(stderr_buffer);
-            error->filename = "";
-    		error->funcname = "";
-    		error->context  = "";
-            result.error = error;
-        }
+		if (strlen(stderr_buffer) > 0) {
+			PgQueryError* error = malloc(sizeof(PgQueryError));
+			error->message = strdup(stderr_buffer);
+			error->filename = "";
+			error->funcname = "";
+			error->context  = "";
+			result.error = error;
+		}
 	}
 	PG_CATCH();
 	{
@@ -346,8 +346,8 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt
 typedef struct createFunctionStmts
 {
 	CreateFunctionStmt **stmts;
-    int stmts_buf_size;
-    int stmts_count;
+	int stmts_buf_size;
+	int stmts_count;
 } createFunctionStmts;
 
 static bool create_function_stmts_walker(Node *node, createFunctionStmts *state)
@@ -385,57 +385,57 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 {
 	MemoryContext ctx = NULL;
 	PgQueryPlpgsqlParseResult result = {0};
-    PgQueryInternalParsetreeAndError parse_result;
-    createFunctionStmts statements;
-    size_t i;
+	PgQueryInternalParsetreeAndError parse_result;
+	createFunctionStmts statements;
+	size_t i;
 
 	ctx = pg_query_enter_memory_context("pg_query_parse_plpgsql");
 
-    parse_result = pg_query_raw_parse(input);
-    result.error = parse_result.error;
-    if (result.error != NULL) {
-        pg_query_exit_memory_context(ctx);
-        return result;
-    }
+	parse_result = pg_query_raw_parse(input);
+	result.error = parse_result.error;
+	if (result.error != NULL) {
+		pg_query_exit_memory_context(ctx);
+		return result;
+	}
 
-    statements.stmts_buf_size = 100;
-    statements.stmts = (CreateFunctionStmt**) palloc(statements.stmts_buf_size * sizeof(CreateFunctionStmt*));
-    statements.stmts_count = 0;
+	statements.stmts_buf_size = 100;
+	statements.stmts = (CreateFunctionStmt**) palloc(statements.stmts_buf_size * sizeof(CreateFunctionStmt*));
+	statements.stmts_count = 0;
 
-    create_function_stmts_walker((Node*) parse_result.tree, &statements);
+	create_function_stmts_walker((Node*) parse_result.tree, &statements);
 
-    result.plpgsql_funcs = strdup("[\n");
+	result.plpgsql_funcs = strdup("[\n");
 
-    for (i = 0; i < statements.stmts_count; i++) {
-	    PgQueryInternalPlpgsqlFuncAndError func_and_error;
+	for (i = 0; i < statements.stmts_count; i++) {
+		PgQueryInternalPlpgsqlFuncAndError func_and_error;
 
-    	func_and_error = pg_query_raw_parse_plpgsql(statements.stmts[i]);
+		func_and_error = pg_query_raw_parse_plpgsql(statements.stmts[i]);
 
-        // These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
-        result.error = func_and_error.error;
+		// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
+		result.error = func_and_error.error;
 
-        if (result.error != NULL) {
-            pg_query_exit_memory_context(ctx);
-        	return result;
-        }
+		if (result.error != NULL) {
+			pg_query_exit_memory_context(ctx);
+			return result;
+		}
 
-    	if (func_and_error.func != NULL) {
-    		char *func_json;
-            char *new_out;
+		if (func_and_error.func != NULL) {
+			char *func_json;
+			char *new_out;
 
-    		func_json = plpgsqlToJSON(func_and_error.func);
-            plpgsql_free_function_memory(func_and_error.func);
+			func_json = plpgsqlToJSON(func_and_error.func);
+			plpgsql_free_function_memory(func_and_error.func);
 
-            asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
-            free(result.plpgsql_funcs);
-            result.plpgsql_funcs = new_out;
+			asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
+			free(result.plpgsql_funcs);
+			result.plpgsql_funcs = new_out;
 
-    		pfree(func_json);
-    	}
-    }
+			pfree(func_json);
+		}
+	}
 
-    result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 2] = '\n';
-    result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 1] = ']';
+	result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 2] = '\n';
+	result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 1] = ']';
 
 	pg_query_exit_memory_context(ctx);
 
@@ -444,9 +444,9 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result)
 {
-  if (result.error) {
+	if (result.error) {
 		pg_query_free_error(result.error);
-  }
+	}
 
-  free(result.plpgsql_funcs);
+	free(result.plpgsql_funcs);
 }
