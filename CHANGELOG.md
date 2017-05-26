@@ -2,6 +2,17 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.5.0    2017-05-26
+
+* Update to Postgres 9.5.7
+* Disable 128-bit integer support (they are not used), to support 32-bit archs [@herwinw](https://github.com/herwinw)
+* Cleanup efforts [@herwinw](https://github.com/herwinw)
+  * Improve concurrency tests
+  * Make sure we have a valid proc_source
+  * Normalized whitespace in pg_query_parse_plpgsql
+  * Move inclusion of stdio.h in plpgsql parser
+
+
 ## 9.5-1.4.2    2016-12-06
 
 * Cut off fingerprints at 100 nodes deep to avoid excessive runtimes/memory
