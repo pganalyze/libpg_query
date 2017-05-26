@@ -509,14 +509,18 @@ static char *flatten_reloptions(Oid relid);
  *
  * Note that the SQL-function versions of this omit any info about the
  * index tablespace; this is intentional because pg_dump wants it that way.
- * However pg_get_indexdef_string() includes index tablespace if not default.
+ * However pg_get_indexdef_string() includes the index tablespace.
  * ----------
  */
 
 
 
 
-/* Internal version that returns a palloc'd C string; no pretty-printing */
+/*
+ * Internal version for use by ALTER TABLE.
+ * Includes a tablespace clause in the result.
+ * Returns a palloc'd C string; no pretty-printing.
+ */
 
 
 /* Internal version that just reports the column definitions */
@@ -650,7 +654,7 @@ static char *flatten_reloptions(Oid relid);
 
 
 /*
- * Append used transformated types to specified buffer
+ * Append used transformed types to specified buffer
  */
 
 

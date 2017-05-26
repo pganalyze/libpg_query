@@ -1352,7 +1352,9 @@ read_nondefault_variables(void)
 
 /*
  * estimate_variable_size:
- * Estimate max size for dumping the given GUC variable.
+ *		Compute space needed for dumping the given GUC variable.
+ *
+ * It's OK to overestimate, but not to underestimate.
  */
 
 

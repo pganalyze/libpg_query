@@ -1335,7 +1335,10 @@ FlushErrorState(void)
 /*
  * ThrowErrorData --- report an error described by an ErrorData structure
  *
- * This is intended to be used to re-report errors originally thrown by
+ * This is somewhat like ReThrowError, but it allows elevels besides ERROR,
+ * and the boolean flags such as output_to_server are computed via the
+ * default rules rather than being copied from the given ErrorData.
+ * This is primarily used to re-report errors originally reported by
  * background worker processes and then propagated (with or without
  * modification) to the backend responsible for them.
  */

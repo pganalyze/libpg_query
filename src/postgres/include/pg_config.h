@@ -85,11 +85,20 @@
 /* Define to 1 if you have the `append_history' function. */
 /* #undef HAVE_APPEND_HISTORY */
 
+/* Define to 1 if you have the `ASN1_STRING_get0_data' function. */
+/* #undef HAVE_ASN1_STRING_GET0_DATA */
+
 /* Define to 1 if you want to use atomics if available. */
 #define HAVE_ATOMICS 1
 
 /* Define to 1 if you have the <atomic.h> header file. */
 /* #undef HAVE_ATOMIC_H */
+
+/* Define to 1 if you have the `BIO_get_data' function. */
+/* #undef HAVE_BIO_GET_DATA */
+
+/* Define to 1 if you have the `BIO_meth_new' function. */
+/* #undef HAVE_BIO_METH_NEW */
 
 /* Define to 1 if you have the `cbrt' function. */
 #define HAVE_CBRT 1
@@ -102,6 +111,9 @@
 
 /* Define to 1 if you have the `crypt' function. */
 #define HAVE_CRYPT 1
+
+/* Define to 1 if you have the `CRYPTO_lock' function. */
+/* #undef HAVE_CRYPTO_LOCK */
 
 /* Define to 1 if you have the <crypt.h> header file. */
 /* #undef HAVE_CRYPT_H */
@@ -365,6 +377,9 @@
 /* Define to 1 if you have the <net/if.h> header file. */
 #define HAVE_NET_IF_H 1
 
+/* Define to 1 if you have the `OPENSSL_init_ssl' function. */
+/* #undef HAVE_OPENSSL_INIT_SSL */
+
 /* Define to 1 if you have the <ossp/uuid.h> header file. */
 /* #undef HAVE_OSSP_UUID_H */
 
@@ -400,6 +415,9 @@
 
 /* Define to 1 if you have the `random' function. */
 #define HAVE_RANDOM 1
+
+/* Define to 1 if you have the `RAND_OpenSSL' function. */
+/* #undef HAVE_RAND_OPENSSL */
 
 /* Define to 1 if you have the <readline.h> header file. */
 /* #undef HAVE_READLINE_H */
@@ -710,7 +728,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 9.5.3"
+#define PACKAGE_STRING "PostgreSQL 9.5.7"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -719,7 +737,10 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "9.5.3"
+#define PACKAGE_VERSION "9.5.7"
+
+/* Define to the name of a signed 128-bit integer type. */
+#define PG_INT128_TYPE __int128
 
 /* Define to the name of a signed 64-bit integer type. */
 #define PG_INT64_TYPE long int
@@ -739,13 +760,13 @@
 #define PG_USE_INLINE 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "9.5.3"
+#define PG_VERSION "9.5.7"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 90503
+#define PG_VERSION_NUM 90507
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 9.5.3 on x86_64-apple-darwin14.5.0, compiled by Apple LLVM version 7.0.2 (clang-700.1.81), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 9.5.7 on x86_64-apple-darwin16.6.0, compiled by Apple LLVM version 8.1.0 (clang-802.0.42), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -906,3 +927,4 @@
 #undef HAVE_LOCALE_T
 #undef LOCALE_T_IN_XLOCALE
 #undef WCSTOMBS_L_IN_XLOCALE
+#undef PG_INT128_TYPE

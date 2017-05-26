@@ -244,6 +244,15 @@ makeTypeNameFromNameList(List *names)
 
 
 /*
+ * makeColumnDef -
+ *	build a ColumnDef node to represent a simple column definition.
+ *
+ * Type and collation are specified by OID.
+ * Other properties are all basic to start with.
+ */
+
+
+/*
  * makeFuncExpr -
  *	build an expression tree representing a function call.
  *

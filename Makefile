@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 9.5.3
+PG_VERSION = 9.5.7
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c)
 OBJ_FILES := $(SRC_FILES:.c=.o)
@@ -68,6 +68,8 @@ extract_source: $(PGDIR)
 	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
 	echo "#undef LOCALE_T_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
 	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
+	# Support 32-bit systems without reconfiguring
+	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
 
 .c.o:
 	@$(ECHO) compiling $(<)

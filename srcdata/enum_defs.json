@@ -1514,7 +1514,7 @@
           "name": "IS_NOT_NULL"
         }
       ],
-      "comment": "/* ----------------\n * NullTest\n *\n * NullTest represents the operation of testing a value for NULLness.\n * The appropriate test is performed and returned as a boolean Datum.\n *\n * NOTE: the semantics of this for rowtype inputs are noticeably different\n * from the scalar case.  We provide an \"argisrow\" flag to reflect that.\n * ----------------\n */\n"
+      "comment": "/* ----------------\n * NullTest\n *\n * NullTest represents the operation of testing a value for NULLness.\n * The appropriate test is performed and returned as a boolean Datum.\n *\n * When argisrow is false, this simply represents a test for the null value.\n *\n * When argisrow is true, the input expression must yield a rowtype, and\n * the node implements \"row IS [NOT] NULL\" per the SQL standard.  This\n * includes checking individual fields for NULLness when the row datum\n * itself isn't NULL.\n *\n * NOTE: the combination of a rowtype input and argisrow==false does NOT\n * correspond to the SQL notation \"row IS [NOT] NULL\"; instead, this case\n * represents the SQL notation \"row IS [NOT] DISTINCT FROM NULL\".\n * ----------------\n */\n"
     },
     "BoolTestType": {
       "values": [

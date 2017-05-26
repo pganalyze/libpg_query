@@ -79,7 +79,6 @@ class Runner
       @basepath + 'src/backend/utils/adt/like_match.c', # Built through like.c
       @basepath + 'src/backend/utils/misc/guc-file.c', # Built through guc.c
       @basepath + 'src/backend/utils/sort/qsort_tuple.c', # Built through tuplesort.c
-      @basepath + 'src/backend/parser/scan.c', # Built through gram.c
       @basepath + 'src/backend/bootstrap/bootscanner.c', # Built through bootparse.c
       @basepath + 'src/backend/regex/regc_color.c', # Built through regcomp.c
       @basepath + 'src/backend/regex/regc_cvec.c', # Built through regcomp.c
@@ -198,7 +197,7 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
+    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
     cursor = translation_unit.cursor
 
     func_cursor = nil
@@ -333,7 +332,7 @@ class Runner
   end
 
   def special_include_file?(filename)
-    filename[/\/(reg(c|e)_[\w_]+|scan|guc-file|qsort_tuple|repl_scanner|levenshtein|bootscanner|like_match)\.c$/] || filename[/\/[\w_]+_impl.h$/]
+    filename[/\/(reg(c|e)_[\w_]+|guc-file|qsort_tuple|repl_scanner|levenshtein|bootscanner|like_match)\.c$/] || filename[/\/[\w_]+_impl.h$/]
   end
 
   def write_out
