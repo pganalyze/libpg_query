@@ -3,7 +3,7 @@
  * port.h
  *	  Header for src/port/ compatibility functions.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/port.h
@@ -42,6 +42,7 @@ extern void join_path_components(char *ret_path,
 					 const char *head, const char *tail);
 extern void canonicalize_path(char *path);
 extern void make_native_path(char *path);
+extern void cleanup_path(char *path);
 extern bool path_contains_parent_reference(const char *path);
 extern bool path_is_relative_and_below_cwd(const char *path);
 extern bool path_is_prefix_of_path(const char *path1, const char *path2);
@@ -202,7 +203,8 @@ extern char *pgwin32_setlocale(int category, const char *locale);
 #endif   /* WIN32 */
 
 /* Portable prompt handling */
-extern char *simple_prompt(const char *prompt, int maxlen, bool echo);
+extern void simple_prompt(const char *prompt, char *destination, size_t destlen,
+			  bool echo);
 
 #ifdef WIN32
 #define PG_SIGNAL_COUNT 32
@@ -213,12 +215,12 @@ extern int	pgkill(int pid, int sig);
 extern int	pclose_check(FILE *stream);
 
 /* Global variable holding time zone information. */
-#ifndef __CYGWIN__
-#define TIMEZONE_GLOBAL timezone
-#define TZNAME_GLOBAL tzname
-#else
+#if defined(WIN32) || defined(__CYGWIN__)
 #define TIMEZONE_GLOBAL _timezone
 #define TZNAME_GLOBAL _tzname
+#else
+#define TIMEZONE_GLOBAL timezone
+#define TZNAME_GLOBAL tzname
 #endif
 
 #if defined(WIN32) || defined(__CYGWIN__)
@@ -229,7 +231,7 @@ extern int	pgrename(const char *from, const char *to);
 extern int	pgunlink(const char *path);
 
 /* Include this first so later includes don't see these defines */
-#ifdef WIN32_ONLY_COMPILER
+#ifdef _MSC_VER
 #include <io.h>
 #endif
 
@@ -249,7 +251,7 @@ extern int	pgunlink(const char *path);
 #if defined(WIN32) && !defined(__CYGWIN__)
 extern int	pgsymlink(const char *oldpath, const char *newpath);
 extern int	pgreadlink(const char *path, char *buf, size_t size);
-extern bool pgwin32_is_junction(char *path);
+extern bool pgwin32_is_junction(const char *path);
 
 #define symlink(oldpath, newpath)	pgsymlink(oldpath, newpath)
 #define readlink(path, buf, size)	pgreadlink(path, buf, size)
@@ -359,6 +361,7 @@ extern off_t ftello(FILE *stream);
 
 extern double pg_erand48(unsigned short xseed[3]);
 extern long pg_lrand48(void);
+extern long pg_jrand48(unsigned short xseed[3]);
 extern void pg_srand48(long seed);
 
 #ifndef HAVE_FLS
@@ -400,7 +403,7 @@ extern size_t strlcat(char *dst, const char *src, size_t siz);
 extern size_t strlcpy(char *dst, const char *src, size_t siz);
 #endif
 
-#if !defined(HAVE_RANDOM) && !defined(__BORLANDC__)
+#if !defined(HAVE_RANDOM)
 extern long random(void);
 #endif
 
@@ -452,6 +455,11 @@ extern int	pg_codepage_to_encoding(UINT cp);
 extern char *inet_net_ntop(int af, const void *src, int bits,
 			  char *dst, size_t size);
 
+/* port/pg_strong_random.c */
+#ifdef HAVE_STRONG_RANDOM
+extern bool pg_strong_random(void *buf, size_t len);
+#endif
+
 /* port/pgcheckdir.c */
 extern int	pg_check_dir(const char *dir);
 
@@ -461,6 +469,11 @@ extern int	pg_mkdir_p(char *path, int omode);
 /* port/pqsignal.c */
 typedef void (*pqsigfunc) (int signo);
 extern pqsigfunc pqsignal(int signo, pqsigfunc func);
+#ifndef WIN32
+extern pqsigfunc pqsignal_no_restart(int signo, pqsigfunc func);
+#else
+#define pqsignal_no_restart(signo, func) pqsignal(signo, func)
+#endif
 
 /* port/quotes.c */
 extern char *escape_single_quotes_ascii(const char *src);

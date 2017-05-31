@@ -14,7 +14,10 @@ int main() {
   for (i = 0; i < testsLength; i += 2) {
     PgQueryParseResult result = pg_query_parse(tests[i]);
 
-    if (strcmp(result.parse_tree, tests[i + 1]) == 0) {
+		if (result.error) {
+			ret_code = -1;
+			printf("%s\n", result.error->message);
+		} else if (strcmp(result.parse_tree, tests[i + 1]) == 0) {
       printf(".");
     } else {
       ret_code = -1;

@@ -163,7 +163,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 									 ALLOCSET_DEFAULT_MINSIZE,
 									 ALLOCSET_DEFAULT_INITSIZE,
 									 ALLOCSET_DEFAULT_MAXSIZE);
-	compile_tmp_cxt = MemoryContextSwitchTo(func_cxt);
+	plpgsql_compile_tmp_cxt = MemoryContextSwitchTo(func_cxt);
 
 	function->fn_signature = pstrdup(func_name);
 	function->fn_is_trigger = PLPGSQL_NOT_TRIGGER;
@@ -181,7 +181,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	function->extra_errors = 0;
 
 	plpgsql_ns_init();
-	plpgsql_ns_push(func_name);
+	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
 	plpgsql_DumpExecTree = false;
 
 	datums_alloc = 128;
@@ -257,8 +257,8 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 
 	plpgsql_check_syntax = false;
 
-	MemoryContextSwitchTo(compile_tmp_cxt);
-	compile_tmp_cxt = NULL;
+	MemoryContextSwitchTo(plpgsql_compile_tmp_cxt);
+	plpgsql_compile_tmp_cxt = NULL;
 	return function;
 }
 
@@ -365,6 +365,8 @@ static bool create_function_stmts_walker(Node *node, createFunctionStmts *state)
 		}
 		state->stmts[state->stmts_count] = (CreateFunctionStmt *) node;
 		state->stmts_count++;
+	} else if (IsA(node, RawStmt)) {
+		return create_function_stmts_walker((Node *) ((RawStmt *) node)->stmt, state);
 	}
 
 	PG_TRY();
@@ -403,6 +405,12 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 	statements.stmts_count = 0;
 
 	create_function_stmts_walker((Node*) parse_result.tree, &statements);
+
+	if (statements.stmts_count == 0) {
+		result.plpgsql_funcs = strdup("[]");
+		pg_query_exit_memory_context(ctx);
+		return result;
+	}
 
 	result.plpgsql_funcs = strdup("[\n");
 

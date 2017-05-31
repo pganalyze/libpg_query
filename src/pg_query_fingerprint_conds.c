@@ -4,6 +4,9 @@ case T_Alias:
 case T_RangeVar:
   _fingerprintRangeVar(ctx, obj, parent, field_name, depth);
   break;
+case T_TableFunc:
+  _fingerprintTableFunc(ctx, obj, parent, field_name, depth);
+  break;
 case T_Expr:
   _fingerprintExpr(ctx, obj, parent, field_name, depth);
   break;
@@ -97,6 +100,9 @@ case T_CoalesceExpr:
 case T_MinMaxExpr:
   _fingerprintMinMaxExpr(ctx, obj, parent, field_name, depth);
   break;
+case T_SQLValueFunction:
+  _fingerprintSQLValueFunction(ctx, obj, parent, field_name, depth);
+  break;
 case T_XmlExpr:
   _fingerprintXmlExpr(ctx, obj, parent, field_name, depth);
   break;
@@ -138,6 +144,12 @@ case T_OnConflictExpr:
   break;
 case T_IntoClause:
   _fingerprintIntoClause(ctx, obj, parent, field_name, depth);
+  break;
+case T_NextValueExpr:
+  _fingerprintNextValueExpr(ctx, obj, parent, field_name, depth);
+  break;
+case T_RawStmt:
+  _fingerprintRawStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_Query:
   _fingerprintQuery(ctx, obj, parent, field_name, depth);
@@ -343,11 +355,17 @@ case T_CreateTableSpaceStmt:
 case T_DropTableSpaceStmt:
   _fingerprintDropTableSpaceStmt(ctx, obj, parent, field_name, depth);
   break;
+case T_AlterObjectDependsStmt:
+  _fingerprintAlterObjectDependsStmt(ctx, obj, parent, field_name, depth);
+  break;
 case T_AlterObjectSchemaStmt:
   _fingerprintAlterObjectSchemaStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_AlterOwnerStmt:
   _fingerprintAlterOwnerStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterOperatorStmt:
+  _fingerprintAlterOperatorStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_DropOwnedStmt:
   _fingerprintDropOwnedStmt(ctx, obj, parent, field_name, depth);
@@ -442,6 +460,33 @@ case T_AlterPolicyStmt:
 case T_CreateTransformStmt:
   _fingerprintCreateTransformStmt(ctx, obj, parent, field_name, depth);
   break;
+case T_CreateAmStmt:
+  _fingerprintCreateAmStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionCmd:
+  _fingerprintPartitionCmd(ctx, obj, parent, field_name, depth);
+  break;
+case T_CreatePublicationStmt:
+  _fingerprintCreatePublicationStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterPublicationStmt:
+  _fingerprintAlterPublicationStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_CreateSubscriptionStmt:
+  _fingerprintCreateSubscriptionStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterSubscriptionStmt:
+  _fingerprintAlterSubscriptionStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_DropSubscriptionStmt:
+  _fingerprintDropSubscriptionStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_CreateStatsStmt:
+  _fingerprintCreateStatsStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterCollationStmt:
+  _fingerprintAlterCollationStmt(ctx, obj, parent, field_name, depth);
+  break;
 case T_A_Expr:
   _fingerprintA_Expr(ctx, obj, parent, field_name, depth);
   break;
@@ -496,6 +541,12 @@ case T_RangeFunction:
 case T_RangeTableSample:
   _fingerprintRangeTableSample(ctx, obj, parent, field_name, depth);
   break;
+case T_RangeTableFunc:
+  _fingerprintRangeTableFunc(ctx, obj, parent, field_name, depth);
+  break;
+case T_RangeTableFuncCol:
+  _fingerprintRangeTableFuncCol(ctx, obj, parent, field_name, depth);
+  break;
 case T_TypeName:
   _fingerprintTypeName(ctx, obj, parent, field_name, depth);
   break;
@@ -532,8 +583,8 @@ case T_GroupingSet:
 case T_WindowClause:
   _fingerprintWindowClause(ctx, obj, parent, field_name, depth);
   break;
-case T_FuncWithArgs:
-  _fingerprintFuncWithArgs(ctx, obj, parent, field_name, depth);
+case T_ObjectWithArgs:
+  _fingerprintObjectWithArgs(ctx, obj, parent, field_name, depth);
   break;
 case T_AccessPriv:
   _fingerprintAccessPriv(ctx, obj, parent, field_name, depth);
@@ -570,6 +621,21 @@ case T_CommonTableExpr:
   break;
 case T_RoleSpec:
   _fingerprintRoleSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_TriggerTransition:
+  _fingerprintTriggerTransition(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionElem:
+  _fingerprintPartitionElem(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionSpec:
+  _fingerprintPartitionSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionBoundSpec:
+  _fingerprintPartitionBoundSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionRangeDatum:
+  _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);
   break;
 case T_InlineCodeBlock:
   _fingerprintInlineCodeBlock(ctx, obj, parent, field_name, depth);

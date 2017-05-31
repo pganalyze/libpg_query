@@ -6,7 +6,7 @@
  * for developers.  If you edit any of these, be sure to do a *full*
  * rebuild (and an initdb if noted).
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/pg_config_manual.h
@@ -46,15 +46,9 @@
 #define INDEX_MAX_KEYS		32
 
 /*
- * Set the upper and lower bounds of sequence values.
+ * Maximum number of columns in a partition key
  */
-#define SEQ_MAXVALUE	PG_INT64_MAX
-#define SEQ_MINVALUE	(-SEQ_MAXVALUE)
-
-/*
- * Number of spare LWLocks to allocate for user-defined add-on code.
- */
-#define NUM_USER_DEFINED_LWLOCKS	4
+#define PARTITION_MAX_KEYS	32
 
 /*
  * When we don't have native spinlocks, we use semaphores to simulate them.
@@ -151,6 +145,24 @@
 #ifdef USE_POSIX_FADVISE
 #define USE_PREFETCH
 #endif
+
+/*
+ * Default and maximum values for backend_flush_after, bgwriter_flush_after
+ * and checkpoint_flush_after; measured in blocks.  Currently, these are
+ * enabled by default if sync_file_range() exists, ie, only on Linux.  Perhaps
+ * we could also enable by default if we have mmap and msync(MS_ASYNC)?
+ */
+#ifdef HAVE_SYNC_FILE_RANGE
+#define DEFAULT_BACKEND_FLUSH_AFTER 0	/* never enabled by default */
+#define DEFAULT_BGWRITER_FLUSH_AFTER 64
+#define DEFAULT_CHECKPOINT_FLUSH_AFTER 32
+#else
+#define DEFAULT_BACKEND_FLUSH_AFTER 0
+#define DEFAULT_BGWRITER_FLUSH_AFTER 0
+#define DEFAULT_CHECKPOINT_FLUSH_AFTER 0
+#endif
+/* upper limit for all three variables */
+#define WRITEBACK_MAX_PENDING_FLUSHES 256
 
 /*
  * USE_SSL code should be compiled only when compiling with an SSL
@@ -277,6 +289,13 @@
  * copyObject().
  */
 /* #define COPY_PARSE_PLAN_TREES */
+
+/*
+ * Define this to force all raw parse trees for DML statements to be scanned
+ * by raw_expression_tree_walker(), to facilitate catching errors and
+ * omissions in that function.
+ */
+/* #define RAW_EXPRESSION_COVERAGE_TEST */
 
 /*
  * Enable debugging print statements for lock-related operations.

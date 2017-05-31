@@ -11,7 +11,7 @@
  * nodeFuncs.c
  *		Various general-purpose manipulations of Node trees
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -26,6 +26,7 @@
 #include "catalog/pg_type.h"
 #include "miscadmin.h"
 #include "nodes/makefuncs.h"
+#include "nodes/execnodes.h"
 #include "nodes/nodeFuncs.h"
 #include "nodes/relation.h"
 #include "utils/builtins.h"
@@ -34,6 +35,11 @@
 
 static bool expression_returns_set_walker(Node *node, void *context);
 static int	leftmostLoc(int loc1, int loc2);
+static bool fix_opfuncids_walker(Node *node, void *context);
+static bool planstate_walk_subplans(List *plans, bool (*walker) (),
+												void *context);
+static bool planstate_walk_members(List *plans, PlanState **planstates,
+					   bool (*walker) (), void *context);
 
 
 /*
@@ -178,6 +184,9 @@ exprLocation(const Node *expr)
 	{
 		case T_RangeVar:
 			loc = ((const RangeVar *) expr)->location;
+			break;
+		case T_TableFunc:
+			loc = ((const TableFunc *) expr)->location;
 			break;
 		case T_Var:
 			loc = ((const Var *) expr)->location;
@@ -338,6 +347,10 @@ exprLocation(const Node *expr)
 		case T_MinMaxExpr:
 			/* GREATEST/LEAST keyword should always be the first thing */
 			loc = ((const MinMaxExpr *) expr)->location;
+			break;
+		case T_SQLValueFunction:
+			/* function keyword should always be the first thing */
+			loc = ((const SQLValueFunction *) expr)->location;
 			break;
 		case T_XmlExpr:
 			{
@@ -510,6 +523,12 @@ exprLocation(const Node *expr)
 			/* just use nested expr's location */
 			loc = exprLocation((Node *) ((const InferenceElem *) expr)->expr);
 			break;
+		case T_PartitionBoundSpec:
+			loc = ((const PartitionBoundSpec *) expr)->location;
+			break;
+		case T_PartitionRangeDatum:
+			loc = ((const PartitionRangeDatum *) expr)->location;
+			break;
 		default:
 			/* for any other node type it's just unknown... */
 			loc = -1;
@@ -533,6 +552,58 @@ leftmostLoc(int loc1, int loc2)
 	else
 		return Min(loc1, loc2);
 }
+
+
+/*
+ * fix_opfuncids
+ *	  Calculate opfuncid field from opno for each OpExpr node in given tree.
+ *	  The given tree can be anything expression_tree_walker handles.
+ *
+ * The argument is modified in-place.  (This is OK since we'd want the
+ * same change for any node, even if it gets visited more than once due to
+ * shared structure.)
+ */
+
+
+
+
+/*
+ * set_opfuncid
+ *		Set the opfuncid (procedure OID) in an OpExpr node,
+ *		if it hasn't been set already.
+ *
+ * Because of struct equivalence, this can also be used for
+ * DistinctExpr and NullIfExpr nodes.
+ */
+
+
+/*
+ * set_sa_opfuncid
+ *		As above, for ScalarArrayOpExpr nodes.
+ */
+
+
+
+/*
+ *	check_functions_in_node -
+ *	  apply checker() to each function OID contained in given expression node
+ *
+ * Returns TRUE if the checker() function does; for nodes representing more
+ * than one function call, returns TRUE if the checker() function does so
+ * for any of those functions.  Returns FALSE if node does not invoke any
+ * SQL-visible function.  Caller must not pass node == NULL.
+ *
+ * This function examines only the given node; it does not recurse into any
+ * sub-expressions.  Callers typically prefer to keep control of the recursion
+ * for themselves, in case additional checks should be made, or because they
+ * have special rules about which parts of the tree need to be visited.
+ *
+ * Note: we ignore MinMaxExpr, SQLValueFunction, XmlExpr, and CoerceToDomain
+ * nodes, because they do not contain SQL function OIDs.  However, they can
+ * invoke SQL-visible functions, so callers should take thought about how to
+ * treat them.
+ */
+
 
 
 /*
@@ -786,8 +857,10 @@ leftmostLoc(int loc1, int loc2)
  * Unlike expression_tree_walker, there is no special rule about query
  * boundaries: we descend to everything that's possibly interesting.
  *
- * Currently, the node type coverage extends to SelectStmt and everything
- * that could appear under it, but not other statement types.
+ * Currently, the node type coverage here extends only to DML statements
+ * (SELECT/INSERT/UPDATE/DELETE) and nodes that can appear in them, because
+ * this is used mainly during analysis of CTEs, and only DML statements can
+ * appear in CTEs.
  */
 bool
 raw_expression_tree_walker(Node *node,
@@ -810,6 +883,7 @@ raw_expression_tree_walker(Node *node,
 	{
 		case T_SetToDefault:
 		case T_CurrentOfExpr:
+		case T_SQLValueFunction:
 		case T_Integer:
 		case T_Float:
 		case T_String:
@@ -847,9 +921,8 @@ raw_expression_tree_walker(Node *node,
 				/* we assume walker doesn't care about CaseWhens, either */
 				foreach(temp, caseexpr->args)
 				{
-					CaseWhen   *when = (CaseWhen *) lfirst(temp);
+					CaseWhen   *when = lfirst_node(CaseWhen, temp);
 
-					Assert(IsA(when, CaseWhen));
 					if (walker(when->expr, context))
 						return true;
 					if (walker(when->result, context))
@@ -1141,6 +1214,32 @@ raw_expression_tree_walker(Node *node,
 					return true;
 			}
 			break;
+		case T_RangeTableFunc:
+			{
+				RangeTableFunc *rtf = (RangeTableFunc *) node;
+
+				if (walker(rtf->docexpr, context))
+					return true;
+				if (walker(rtf->rowexpr, context))
+					return true;
+				if (walker(rtf->namespaces, context))
+					return true;
+				if (walker(rtf->columns, context))
+					return true;
+				if (walker(rtf->alias, context))
+					return true;
+			}
+			break;
+		case T_RangeTableFuncCol:
+			{
+				RangeTableFuncCol *rtfc = (RangeTableFuncCol *) node;
+
+				if (walker(rtfc->colexpr, context))
+					return true;
+				if (walker(rtfc->coldefexpr, context))
+					return true;
+			}
+			break;
 		case T_TypeName:
 			{
 				TypeName   *tn = (TypeName *) node;
@@ -1221,3 +1320,25 @@ raw_expression_tree_walker(Node *node,
 	}
 	return false;
 }
+
+/*
+ * planstate_tree_walker --- walk plan state trees
+ *
+ * The walker has already visited the current node, and so we need only
+ * recurse into any sub-nodes it has.
+ */
+
+
+/*
+ * Walk a list of SubPlans (or initPlans, which also use SubPlan nodes).
+ */
+
+
+/*
+ * Walk the constituent plans of a ModifyTable, Append, MergeAppend,
+ * BitmapAnd, or BitmapOr node.
+ *
+ * Note: we don't actually need to examine the Plan list members, but
+ * we need the list in order to determine the length of the PlanState array.
+ */
+

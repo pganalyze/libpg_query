@@ -106,6 +106,12 @@
 /* Define to 1 if you have the `class' function. */
 /* #undef HAVE_CLASS */
 
+/* Define to 1 if you have the `clock_gettime' function. */
+#define HAVE_CLOCK_GETTIME 1
+
+/* Define to 1 if your compiler handles computed gotos. */
+#define HAVE_COMPUTED_GOTO 1
+
 /* Define to 1 if you have the <crtdefs.h> header file. */
 /* #undef HAVE_CRTDEFS_H */
 
@@ -368,9 +374,6 @@
 /* Define to 1 if you have the `mkdtemp' function. */
 #define HAVE_MKDTEMP 1
 
-/* Define to 1 if you have the <netinet/in.h> header file. */
-#define HAVE_NETINET_IN_H 1
-
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #define HAVE_NETINET_TCP_H 1
 
@@ -395,9 +398,6 @@
 /* Define to 1 if you have the `posix_fadvise' function. */
 /* #undef HAVE_POSIX_FADVISE */
 
-/* Define to 1 if you have the POSIX signal interface. */
-#define HAVE_POSIX_SIGNALS 1
-
 /* Define to 1 if the assembler supports PPC's LWARX mutex hint bit. */
 /* #undef HAVE_PPC_LWARX_MUTEX_HINT */
 
@@ -407,11 +407,14 @@
 /* Define to 1 if the PS_STRINGS thing exists. */
 /* #undef HAVE_PS_STRINGS */
 
+/* Define if you have POSIX threads libraries and header files. */
+#define HAVE_PTHREAD 1
+
 /* Define to 1 if you have the `pthread_is_threaded_np' function. */
 #define HAVE_PTHREAD_IS_THREADED_NP 1
 
-/* Define to 1 if you have the <pwd.h> header file. */
-#define HAVE_PWD_H 1
+/* Have PTHREAD_PRIO_INHERIT. */
+#define HAVE_PTHREAD_PRIO_INHERIT 1
 
 /* Define to 1 if you have the `random' function. */
 #define HAVE_RANDOM 1
@@ -459,15 +462,6 @@
 /* Define to 1 if you have the `shm_open' function. */
 #define HAVE_SHM_OPEN 1
 
-/* Define to 1 if you have the `sigprocmask' function. */
-#define HAVE_SIGPROCMASK 1
-
-/* Define to 1 if you have sigsetjmp(). */
-#define HAVE_SIGSETJMP 1
-
-/* Define to 1 if the system has the type `sig_atomic_t'. */
-#define HAVE_SIG_ATOMIC_T 1
-
 /* Define to 1 if you have the `snprintf' function. */
 #define HAVE_SNPRINTF 1
 
@@ -503,6 +497,9 @@
 
 /* Define to 1 if you have the `strlcpy' function. */
 #define HAVE_STRLCPY 1
+
+/* Define to use have a strong random number source */
+#define HAVE_STRONG_RANDOM 1
 
 /* Define to 1 if you have the `strtoll' function. */
 #define HAVE_STRTOLL 1
@@ -555,14 +552,11 @@
 /* Define to 1 if you have the syslog interface. */
 #define HAVE_SYSLOG 1
 
-/* Define to 1 if you have the <sys/ioctl.h> header file. */
-#define HAVE_SYS_IOCTL_H 1
+/* Define to 1 if you have the <sys/epoll.h> header file. */
+/* #undef HAVE_SYS_EPOLL_H */
 
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #define HAVE_SYS_IPC_H 1
-
-/* Define to 1 if you have the <sys/poll.h> header file. */
-#define HAVE_SYS_POLL_H 1
 
 /* Define to 1 if you have the <sys/pstat.h> header file. */
 /* #undef HAVE_SYS_PSTAT_H */
@@ -579,9 +573,6 @@
 /* Define to 1 if you have the <sys/shm.h> header file. */
 #define HAVE_SYS_SHM_H 1
 
-/* Define to 1 if you have the <sys/socket.h> header file. */
-#define HAVE_SYS_SOCKET_H 1
-
 /* Define to 1 if you have the <sys/sockio.h> header file. */
 #define HAVE_SYS_SOCKIO_H 1
 
@@ -590,9 +581,6 @@
 
 /* Define to 1 if you have the <sys/tas.h> header file. */
 /* #undef HAVE_SYS_TAS_H */
-
-/* Define to 1 if you have the <sys/time.h> header file. */
-#define HAVE_SYS_TIME_H 1
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
@@ -613,8 +601,14 @@
 /* Define to 1 if you have the `towlower' function. */
 #define HAVE_TOWLOWER 1
 
+/* Define to 1 if your compiler understands `typeof' or something similar. */
+#define HAVE_TYPEOF 1
+
 /* Define to 1 if you have the external array `tzname'. */
 #define HAVE_TZNAME 1
+
+/* Define to 1 if you have the `ucol_strcollUTF8' function. */
+/* #undef HAVE_UCOL_STRCOLLUTF8 */
 
 /* Define to 1 if you have the <ucred.h> header file. */
 /* #undef HAVE_UCRED_H */
@@ -688,6 +682,9 @@
 /* Define to 1 if your compiler understands __builtin_bswap32. */
 #define HAVE__BUILTIN_BSWAP32 1
 
+/* Define to 1 if your compiler understands __builtin_bswap64. */
+#define HAVE__BUILTIN_BSWAP64 1
+
 /* Define to 1 if your compiler understands __builtin_constant_p. */
 #define HAVE__BUILTIN_CONSTANT_P 1
 
@@ -728,7 +725,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 9.5.7"
+#define PACKAGE_STRING "PostgreSQL 10beta1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -737,7 +734,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "9.5.7"
+#define PACKAGE_VERSION "10beta1"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -750,27 +747,27 @@
 #define PG_KRB_SRVNAM "postgres"
 
 /* PostgreSQL major version as a string */
-#define PG_MAJORVERSION "9.5"
+#define PG_MAJORVERSION "10"
 
 /* Define to gnu_printf if compiler supports it, else printf. */
 #define PG_PRINTF_ATTRIBUTE printf
 
-/* Define to 1 if "static inline" works without unwanted warnings from
-   compilations where static inline functions are defined but not called. */
-#define PG_USE_INLINE 1
-
 /* PostgreSQL version as a string */
-#define PG_VERSION "9.5.7"
+#define PG_VERSION "10beta1"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 90507
+#define PG_VERSION_NUM 100000
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 9.5.7 on x86_64-apple-darwin16.6.0, compiled by Apple LLVM version 8.1.0 (clang-802.0.42), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 10beta1 on x86_64-apple-darwin16.6.0, compiled by Apple LLVM version 8.1.0 (clang-802.0.42), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
 /* #undef PROFILE_PID_DIR */
+
+/* Define to necessary symbol if this constant uses a non-standard name on
+   your system. */
+/* #undef PTHREAD_CREATE_JOINABLE */
 
 /* RELSEG_SIZE is the maximum number of blocks allowed in one disk file. Thus,
    the maximum size of a single file is RELSEG_SIZE * BLCKSZ; relations bigger
@@ -812,6 +809,12 @@
 /* Define to 1 to build with Bonjour support. (--with-bonjour) */
 /* #undef USE_BONJOUR */
 
+/* Define to 1 to build with BSD Authentication support. (--with-bsd-auth) */
+/* #undef USE_BSD_AUTH */
+
+/* Define to use /dev/urandom for random number generation */
+#define USE_DEV_URANDOM 1
+
 /* Define to 1 if you want float4 values to be passed by value.
    (--enable-float4-byval) */
 #define USE_FLOAT4_BYVAL 1
@@ -820,9 +823,8 @@
    (--enable-float8-byval) */
 #define USE_FLOAT8_BYVAL 1
 
-/* Define to 1 if you want 64-bit integer timestamp and interval support.
-   (--enable-integer-datetimes) */
-#define USE_INTEGER_DATETIMES 1
+/* Define to build with ICU support. (--with-icu) */
+/* #undef USE_ICU */
 
 /* Define to 1 to build with LDAP support. (--with-ldap) */
 /* #undef USE_LDAP */
@@ -840,6 +842,9 @@
 /* Define to build with OpenSSL support. (--with-openssl) */
 /* #undef USE_OPENSSL */
 
+/* Define to use OpenSSL for random number generation */
+/* #undef USE_OPENSSL_RANDOM */
+
 /* Define to 1 to build with PAM support. (--with-pam) */
 /* #undef USE_PAM */
 
@@ -855,6 +860,9 @@
 /* Define to 1 to use Intel SSSE 4.2 CRC instructions with a runtime check. */
 #define USE_SSE42_CRC32C_WITH_RUNTIME_CHECK 1
 
+/* Define to build with systemd support. (--with-systemd) */
+/* #undef USE_SYSTEMD */
+
 /* Define to select SysV-style semaphores. */
 #define USE_SYSV_SEMAPHORES 1
 
@@ -863,6 +871,9 @@
 
 /* Define to select unnamed POSIX semaphores. */
 /* #undef USE_UNNAMED_POSIX_SEMAPHORES */
+
+/* Define to use native Windows API for random number generation */
+/* #undef USE_WIN32_RANDOM */
 
 /* Define to select Win32-style semaphores. */
 /* #undef USE_WIN32_SEMAPHORES */
@@ -920,6 +931,9 @@
 
 /* Define to empty if the C compiler does not understand signed types. */
 /* #undef signed */
+
+/* Define to how the compiler spells `typeof'. */
+/* #undef typeof */
 
 /* Define to the type of an unsigned integer type wide enough to hold a
    pointer, if such a type exists, and if the system does not define it. */

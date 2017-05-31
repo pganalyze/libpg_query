@@ -1,4 +1,5 @@
 [
+  "OverridingKind",
   "QuerySource",
   "SortByDir",
   "SortByNulls",
@@ -27,7 +28,7 @@
   "DiscardMode",
   "ReindexObjectType",
   "AlterTSConfigType",
-  "InhOption",
+  "AlterSubscriptionType",
   "OnCommitAction",
   "ParamKind",
   "CoercionContext",
@@ -36,6 +37,7 @@
   "SubLinkType",
   "RowCompareType",
   "MinMaxOp",
+  "SQLValueFunctionOp",
   "XmlExprOp",
   "XmlOptionType",
   "NullTestType",
@@ -45,6 +47,10 @@
   "NodeTag",
   "CmdType",
   "JoinType",
+  "AggStrategy",
+  "AggSplit",
+  "SetOpCmd",
+  "SetOpStrategy",
   "OnConflictAction",
   "vartag_external",
   "ScanDirection"

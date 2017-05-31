@@ -86,7 +86,7 @@ static void
 dump_stmt(StringInfo str, PLpgSQL_stmt *node)
 {
 	appendStringInfoChar(str, '{');
-	switch ((enum PLpgSQL_stmt_types) node->cmd_type)
+	switch (node->cmd_type)
 	{
 		case PLPGSQL_STMT_BLOCK:
 			dump_block(str, (PLpgSQL_stmt_block *) node);

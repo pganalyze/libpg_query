@@ -6,7 +6,7 @@
  * The type cache exists to speed lookup of certain information about data
  * types that is not directly available from a type's pg_type row.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/typcache.h
@@ -132,6 +132,7 @@ typedef struct DomainConstraintRef
 	List	   *constraints;	/* list of DomainConstraintState nodes */
 	MemoryContext refctx;		/* context holding DomainConstraintRef */
 	TypeCacheEntry *tcache;		/* typcache entry for domain type */
+	bool		need_exprstate; /* does caller need check_exprstate? */
 
 	/* Management data --- treat these fields as private to typcache.c */
 	DomainConstraintCache *dcc; /* current constraints, or NULL if none */
@@ -142,7 +143,7 @@ typedef struct DomainConstraintRef
 extern TypeCacheEntry *lookup_type_cache(Oid type_id, int flags);
 
 extern void InitDomainConstraintRef(Oid type_id, DomainConstraintRef *ref,
-						MemoryContext refctx);
+						MemoryContext refctx, bool need_exprstate);
 
 extern void UpdateDomainConstraintRef(DomainConstraintRef *ref);
 

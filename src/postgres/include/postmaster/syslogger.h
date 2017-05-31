@@ -3,7 +3,7 @@
  * syslogger.h
  *	  Exports from postmaster/syslogger.c.
  *
- * Copyright (c) 2004-2015, PostgreSQL Global Development Group
+ * Copyright (c) 2004-2017, PostgreSQL Global Development Group
  *
  * src/include/postmaster/syslogger.h
  *
@@ -86,5 +86,12 @@ extern void write_syslogger_file(const char *buffer, int count, int dest);
 #ifdef EXEC_BACKEND
 extern void SysLoggerMain(int argc, char *argv[]) pg_attribute_noreturn();
 #endif
+
+/*
+ * Name of files saving meta-data information about the log
+ * files currently in use by the syslogger
+ */
+#define LOG_METAINFO_DATAFILE  "current_logfiles"
+#define LOG_METAINFO_DATAFILE_TMP  LOG_METAINFO_DATAFILE ".tmp"
 
 #endif   /* _SYSLOGGER_H */

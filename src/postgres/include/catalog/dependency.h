@@ -4,7 +4,7 @@
  *	  Routines to support inter-object dependencies.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/dependency.h
@@ -55,6 +55,12 @@
  * this dependency type acts the same as an internal dependency, but it's
  * kept separate for clarity and to simplify pg_dump.
  *
+ * DEPENDENCY_AUTO_EXTENSION ('x'): the dependent object is not a member
+ * of the extension that is the referenced object (and so should not be
+ * ignored by pg_dump), but cannot function without the extension and
+ * should be dropped when the extension itself is.  The dependent object
+ * may be dropped on its own as well.
+ *
  * DEPENDENCY_PIN ('p'): there is no dependent object; this type of entry
  * is a signal that the system itself depends on the referenced object,
  * and so that object must never be deleted.  Entries of this type are
@@ -70,6 +76,7 @@ typedef enum DependencyType
 	DEPENDENCY_AUTO = 'a',
 	DEPENDENCY_INTERNAL = 'i',
 	DEPENDENCY_EXTENSION = 'e',
+	DEPENDENCY_AUTO_EXTENSION = 'x',
 	DEPENDENCY_PIN = 'p'
 } DependencyType;
 
@@ -134,11 +141,13 @@ typedef enum ObjectClass
 	OCLASS_OPERATOR,			/* pg_operator */
 	OCLASS_OPCLASS,				/* pg_opclass */
 	OCLASS_OPFAMILY,			/* pg_opfamily */
+	OCLASS_AM,					/* pg_am */
 	OCLASS_AMOP,				/* pg_amop */
 	OCLASS_AMPROC,				/* pg_amproc */
 	OCLASS_REWRITE,				/* pg_rewrite */
 	OCLASS_TRIGGER,				/* pg_trigger */
 	OCLASS_SCHEMA,				/* pg_namespace */
+	OCLASS_STATISTIC_EXT,		/* pg_statistic_ext */
 	OCLASS_TSPARSER,			/* pg_ts_parser */
 	OCLASS_TSDICT,				/* pg_ts_dict */
 	OCLASS_TSTEMPLATE,			/* pg_ts_template */
@@ -153,25 +162,29 @@ typedef enum ObjectClass
 	OCLASS_EXTENSION,			/* pg_extension */
 	OCLASS_EVENT_TRIGGER,		/* pg_event_trigger */
 	OCLASS_POLICY,				/* pg_policy */
+	OCLASS_PUBLICATION,			/* pg_publication */
+	OCLASS_PUBLICATION_REL,		/* pg_publication_rel */
+	OCLASS_SUBSCRIPTION,		/* pg_subscription */
 	OCLASS_TRANSFORM			/* pg_transform */
 } ObjectClass;
 
 #define LAST_OCLASS		OCLASS_TRANSFORM
 
+/* flag bits for performDeletion/performMultipleDeletions: */
+#define PERFORM_DELETION_INTERNAL			0x0001		/* internal action */
+#define PERFORM_DELETION_CONCURRENTLY		0x0002		/* concurrent drop */
+#define PERFORM_DELETION_QUIETLY			0x0004		/* suppress notices */
+#define PERFORM_DELETION_SKIP_ORIGINAL		0x0008		/* keep original obj */
+#define PERFORM_DELETION_SKIP_EXTENSIONS	0x0010		/* keep extensions */
+
 
 /* in dependency.c */
-
-#define PERFORM_DELETION_INTERNAL			0x0001
-#define PERFORM_DELETION_CONCURRENTLY		0x0002
 
 extern void performDeletion(const ObjectAddress *object,
 				DropBehavior behavior, int flags);
 
 extern void performMultipleDeletions(const ObjectAddresses *objects,
 						 DropBehavior behavior, int flags);
-
-extern void deleteWhatDependsOn(const ObjectAddress *object,
-					bool showNotices);
 
 extern void recordDependencyOnExpr(const ObjectAddress *depender,
 					   Node *expr, List *rtable,
@@ -180,7 +193,8 @@ extern void recordDependencyOnExpr(const ObjectAddress *depender,
 extern void recordDependencyOnSingleRelExpr(const ObjectAddress *depender,
 								Node *expr, Oid relId,
 								DependencyType behavior,
-								DependencyType self_behavior);
+								DependencyType self_behavior,
+								bool ignore_self);
 
 extern ObjectClass getObjectClass(const ObjectAddress *object);
 
@@ -224,11 +238,9 @@ extern long changeDependencyFor(Oid classId, Oid objectId,
 
 extern Oid	getExtensionOfObject(Oid classId, Oid objectId);
 
-extern bool sequenceIsOwned(Oid seqId, Oid *tableId, int32 *colId);
-
-extern void markSequenceUnowned(Oid seqId);
-
-extern List *getOwnedSequences(Oid relid);
+extern bool sequenceIsOwned(Oid seqId, char deptype, Oid *tableId, int32 *colId);
+extern List *getOwnedSequences(Oid relid, AttrNumber attnum);
+extern Oid getOwnedSequence(Oid relid, AttrNumber attnum);
 
 extern Oid	get_constraint_index(Oid constraintId);
 

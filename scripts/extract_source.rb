@@ -88,9 +88,12 @@ class Runner
       @basepath + 'src/backend/regex/regc_nfa.c', # Built through regcomp.c
       @basepath + 'src/backend/regex/rege_dfa.c', # Built through regexec.c
       @basepath + 'src/backend/replication/repl_scanner.c', # Built through repl_gram.c
+      @basepath + 'src/backend/replication/libpqwalreceiver/libpqwalreceiver.c',
+      @basepath + 'src/backend/replication/syncrep_scanner.c',
       @basepath + 'src/backend/port/posix_sema.c', # Linux only
       @basepath + 'src/common/fe_memutils.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/restricted_token.c', # This file is not expected to be compiled for backend code
+      @basepath + 'src/common/unicode/norm_test.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/port/dirent.c', # Win32 only
       @basepath + 'src/port/getaddrinfo.c', # Win32 only
       @basepath + 'src/port/getrusage.c', # Win32 only
@@ -101,6 +104,8 @@ class Runner
       @basepath + 'src/port/strlcpy.c', # Win32 only
       @basepath + 'src/port/unsetenv.c', # Win32 only
       @basepath + 'src/port/win32error.c', # Win32 only
+      @basepath + 'src/port/win32env.c', # Win32 only
+      @basepath + 'src/port/win32security.c' # Win32 only
     ] -
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -

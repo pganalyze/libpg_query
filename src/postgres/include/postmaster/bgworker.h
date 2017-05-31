@@ -31,7 +31,7 @@
  * different) code.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -58,6 +58,15 @@
  */
 #define BGWORKER_BACKEND_DATABASE_CONNECTION		0x0002
 
+/*
+ * This class is used internally for parallel queries, to keep track of the
+ * number of active parallel workers and make sure we never launch more than
+ * max_parallel_workers parallel workers at the same time.  Third party
+ * background workers should not use this class.
+ */
+#define BGWORKER_CLASS_PARALLEL					0x0010
+/* add additional bgworker classes here */
+
 
 typedef void (*bgworker_main_type) (Datum main_arg);
 
@@ -82,9 +91,8 @@ typedef struct BackgroundWorker
 	int			bgw_flags;
 	BgWorkerStartTime bgw_start_time;
 	int			bgw_restart_time;		/* in seconds, or BGW_NEVER_RESTART */
-	bgworker_main_type bgw_main;
-	char		bgw_library_name[BGW_MAXLEN];	/* only if bgw_main is NULL */
-	char		bgw_function_name[BGW_MAXLEN];	/* only if bgw_main is NULL */
+	char		bgw_library_name[BGW_MAXLEN];
+	char		bgw_function_name[BGW_MAXLEN];
 	Datum		bgw_main_arg;
 	char		bgw_extra[BGW_EXTRALEN];
 	pid_t		bgw_notify_pid; /* SIGUSR1 this backend on start/stop */

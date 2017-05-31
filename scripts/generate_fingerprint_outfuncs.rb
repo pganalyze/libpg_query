@@ -113,11 +113,13 @@ EOL
     ['DeallocateStmt', 'name'] => :skip,
     ['TransactionStmt', 'options'] => :skip,
     ['TransactionStmt', 'gid'] => :skip,
+    ['RawStmt', 'stmt_len'] => :skip,
+    ['RawStmt', 'stmt_location'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
   LONG_INT_TYPES = ['long']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
-  FLOAT_TYPES = ['Cost']
+  FLOAT_TYPES = ['Cost', 'double']
 
   IGNORE_FOR_GENERATOR = ['Integer', 'Float', 'String', 'BitString', 'List']
 

@@ -26,9 +26,9 @@
  * - plpgsql_yyerror
  * - plpgsql_push_back_token
  * - plpgsql_token_is_unreserved_keyword
+ * - plpgsql_peek
  * - plpgsql_append_source_text
  * - plpgsql_peek2
- * - plpgsql_peek
  * - plpgsql_scanner_finish
  * - plpgsql_latest_lineno
  *--------------------------------------------------------------------
@@ -40,7 +40,7 @@
  *	  lexical scanning for PL/pgSQL
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -49,12 +49,14 @@
  *
  *-------------------------------------------------------------------------
  */
-#include "plpgsql.h"
+#include "postgres.h"
 
 #include "mb/pg_wchar.h"
 #include "parser/scanner.h"
 
+#include "plpgsql.h"
 #include "pl_gram.h"			/* must be after parser/scanner.h */
+
 
 #define PG_KEYWORD(a,b,c) {a,b,c},
 

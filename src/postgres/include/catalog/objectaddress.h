@@ -3,7 +3,7 @@
  * objectaddress.h
  *	  functions for working with object addresses
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/objectaddress.h
@@ -14,7 +14,7 @@
 #define OBJECTADDRESS_H
 
 #include "nodes/pg_list.h"
-#include "storage/lock.h"
+#include "storage/lockdefs.h"
 #include "utils/acl.h"
 #include "utils/relcache.h"
 
@@ -40,13 +40,17 @@ extern const ObjectAddress InvalidObjectAddress;
 #define ObjectAddressSet(addr, class_id, object_id) \
 	ObjectAddressSubSet(addr, class_id, object_id, 0)
 
-extern ObjectAddress get_object_address(ObjectType objtype, List *objname,
-				   List *objargs, Relation *relp,
+extern ObjectAddress get_object_address(ObjectType objtype, Node *object,
+				   Relation *relp,
 				   LOCKMODE lockmode, bool missing_ok);
+
+extern ObjectAddress get_object_address_rv(ObjectType objtype, RangeVar *rel,
+					  List *object, Relation *relp,
+					  LOCKMODE lockmode, bool missing_ok);
 
 extern void check_object_ownership(Oid roleid,
 					   ObjectType objtype, ObjectAddress address,
-					   List *objname, List *objargs, Relation relation);
+					   Node *object, Relation relation);
 
 extern Oid	get_object_namespace(const ObjectAddress *address);
 

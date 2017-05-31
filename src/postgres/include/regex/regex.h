@@ -58,7 +58,7 @@ typedef struct
 	size_t		re_nsub;		/* number of subexpressions */
 	long		re_info;		/* information about RE */
 #define  REG_UBACKREF		 000001
-#define  REG_ULOOKAHEAD		 000002
+#define  REG_ULOOKAROUND	 000002
 #define  REG_UBOUNDS	 000004
 #define  REG_UBRACES	 000010
 #define  REG_UBSALNUM		 000020
@@ -172,6 +172,5 @@ extern int	pg_regexec(regex_t *, const pg_wchar *, size_t, size_t, rm_detail_t *
 extern int	pg_regprefix(regex_t *, pg_wchar **, size_t *);
 extern void pg_regfree(regex_t *);
 extern size_t pg_regerror(int, const regex_t *, char *, size_t);
-extern void pg_set_regex_collation(Oid collation);
 
 #endif   /* _REGEX_H_ */

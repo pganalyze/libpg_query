@@ -4,6 +4,9 @@ case T_Alias:
 case T_RangeVar:
   _outRangeVar(str, obj);
   break;
+case T_TableFunc:
+  _outTableFunc(str, obj);
+  break;
 case T_Var:
   _outVar(str, obj);
   break;
@@ -97,6 +100,9 @@ case T_CoalesceExpr:
 case T_MinMaxExpr:
   _outMinMaxExpr(str, obj);
   break;
+case T_SQLValueFunction:
+  _outSQLValueFunction(str, obj);
+  break;
 case T_XmlExpr:
   _outXmlExpr(str, obj);
   break;
@@ -138,6 +144,12 @@ case T_OnConflictExpr:
   break;
 case T_IntoClause:
   _outIntoClause(str, obj);
+  break;
+case T_NextValueExpr:
+  _outNextValueExpr(str, obj);
+  break;
+case T_RawStmt:
+  _outRawStmt(str, obj);
   break;
 case T_Query:
   _outQuery(str, obj);
@@ -343,11 +355,17 @@ case T_CreateTableSpaceStmt:
 case T_DropTableSpaceStmt:
   _outDropTableSpaceStmt(str, obj);
   break;
+case T_AlterObjectDependsStmt:
+  _outAlterObjectDependsStmt(str, obj);
+  break;
 case T_AlterObjectSchemaStmt:
   _outAlterObjectSchemaStmt(str, obj);
   break;
 case T_AlterOwnerStmt:
   _outAlterOwnerStmt(str, obj);
+  break;
+case T_AlterOperatorStmt:
+  _outAlterOperatorStmt(str, obj);
   break;
 case T_DropOwnedStmt:
   _outDropOwnedStmt(str, obj);
@@ -442,6 +460,33 @@ case T_AlterPolicyStmt:
 case T_CreateTransformStmt:
   _outCreateTransformStmt(str, obj);
   break;
+case T_CreateAmStmt:
+  _outCreateAmStmt(str, obj);
+  break;
+case T_PartitionCmd:
+  _outPartitionCmd(str, obj);
+  break;
+case T_CreatePublicationStmt:
+  _outCreatePublicationStmt(str, obj);
+  break;
+case T_AlterPublicationStmt:
+  _outAlterPublicationStmt(str, obj);
+  break;
+case T_CreateSubscriptionStmt:
+  _outCreateSubscriptionStmt(str, obj);
+  break;
+case T_AlterSubscriptionStmt:
+  _outAlterSubscriptionStmt(str, obj);
+  break;
+case T_DropSubscriptionStmt:
+  _outDropSubscriptionStmt(str, obj);
+  break;
+case T_CreateStatsStmt:
+  _outCreateStatsStmt(str, obj);
+  break;
+case T_AlterCollationStmt:
+  _outAlterCollationStmt(str, obj);
+  break;
 case T_A_Expr:
   _outA_Expr(str, obj);
   break;
@@ -496,6 +541,12 @@ case T_RangeFunction:
 case T_RangeTableSample:
   _outRangeTableSample(str, obj);
   break;
+case T_RangeTableFunc:
+  _outRangeTableFunc(str, obj);
+  break;
+case T_RangeTableFuncCol:
+  _outRangeTableFuncCol(str, obj);
+  break;
 case T_TypeName:
   _outTypeName(str, obj);
   break;
@@ -532,8 +583,8 @@ case T_GroupingSet:
 case T_WindowClause:
   _outWindowClause(str, obj);
   break;
-case T_FuncWithArgs:
-  _outFuncWithArgs(str, obj);
+case T_ObjectWithArgs:
+  _outObjectWithArgs(str, obj);
   break;
 case T_AccessPriv:
   _outAccessPriv(str, obj);
@@ -570,6 +621,21 @@ case T_CommonTableExpr:
   break;
 case T_RoleSpec:
   _outRoleSpec(str, obj);
+  break;
+case T_TriggerTransition:
+  _outTriggerTransition(str, obj);
+  break;
+case T_PartitionElem:
+  _outPartitionElem(str, obj);
+  break;
+case T_PartitionSpec:
+  _outPartitionSpec(str, obj);
+  break;
+case T_PartitionBoundSpec:
+  _outPartitionBoundSpec(str, obj);
+  break;
+case T_PartitionRangeDatum:
+  _outPartitionRangeDatum(str, obj);
   break;
 case T_InlineCodeBlock:
   _outInlineCodeBlock(str, obj);

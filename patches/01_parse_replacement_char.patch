@@ -1,25 +1,26 @@
-diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
+diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
+index 2822331..fa67597 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -144,6 +144,9 @@
+@@ -153,6 +153,9 @@ static Node *makeBitStringConst(char *str, int location);
  static Node *makeNullAConst(int location);
  static Node *makeAConst(Value *v, int location);
  static Node *makeBoolAConst(bool state, int location);
 +static Node *makeParamRef(int number, int location);
 +static Node *makeParamRefCast(int number, int location, TypeName *typename);
 +static Node *makeInterval_or_AExprOp(Node *lexpr, Node *rexpr, int location);
- static Node *makeRoleSpec(RoleSpecType type, int location);
+ static RoleSpec *makeRoleSpec(RoleSpecType type, int location);
  static void check_qualified_name(List *names, core_yyscan_t yyscanner);
  static List *check_func_name(List *names, core_yyscan_t yyscanner);
-@@ -497,6 +500,7 @@
+@@ -525,6 +528,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %type <str>		createdb_opt_name
  %type <node>	var_value zone_value
- %type <node>	auth_ident RoleSpec opt_granted_by
-+%type <node>  Iconst_or_Normalized Sconst_or_Normalized NonReservedWord_or_Sconst_or_Normalized
+ %type <rolespec> auth_ident RoleSpec opt_granted_by
++%type <node>  Iconst_or_Normalized Sconst_or_Normalized Flat_Sconst_or_Normalized NonReservedWord_or_Sconst_or_Normalized
 
  %type <keyword> unreserved_keyword type_func_name_keyword
  %type <keyword> col_name_keyword reserved_keyword
-@@ -705,6 +709,7 @@
+@@ -750,6 +754,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %left		'+' '-'
  %left		'*' '/' '%'
  %left		'^'
@@ -27,7 +28,36 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  /* Unary Operators */
  %left		AT				/* sets precedence for AT TIME ZONE */
  %left		COLLATE
-@@ -1446,12 +1451,12 @@
+@@ -982,24 +987,22 @@ AlterOptRoleList:
+ 		;
+
+ AlterOptRoleElem:
+-			PASSWORD Sconst
++			PASSWORD Flat_Sconst_or_Normalized
+ 				{
+-					$$ = makeDefElem("password",
+-									 (Node *)makeString($2), @1);
++					$$ = makeDefElem("password", $2, @1);
+ 				}
+ 			| PASSWORD NULL_P
+ 				{
+ 					$$ = makeDefElem("password", NULL, @1);
+ 				}
+-			| ENCRYPTED PASSWORD Sconst
++			| ENCRYPTED PASSWORD Flat_Sconst_or_Normalized
+ 				{
+ 					/*
+ 					 * These days, passwords are always stored in encrypted
+ 					 * form, so there is no difference between PASSWORD and
+ 					 * ENCRYPTED PASSWORD.
+ 					 */
+-					$$ = makeDefElem("password",
+-									 (Node *)makeString($3), @1);
++					$$ = makeDefElem("password", $3, @1);
+ 				}
+ 			| UNENCRYPTED PASSWORD Sconst
+ 				{
+@@ -1506,12 +1509,12 @@ set_rest_more:	/* Generic SET syntaxes: */
  							 parser_errposition(@2)));
  					$$ = NULL; /*not reached*/
  				}
@@ -42,7 +72,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  					$$ = n;
  				}
  			| NAMES opt_encoding
-@@ -1465,20 +1470,20 @@
+@@ -1525,20 +1528,20 @@ set_rest_more:	/* Generic SET syntaxes: */
  						n->kind = VAR_SET_DEFAULT;
  					$$ = n;
  				}
@@ -67,16 +97,16 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  					$$ = n;
  				}
  			| SESSION AUTHORIZATION DEFAULT
-@@ -1520,6 +1525,8 @@
+@@ -1580,6 +1583,8 @@ var_value:	opt_boolean_or_string
  				{ $$ = makeStringConst($1, @1); }
  			| NumericOnly
  				{ $$ = makeAConst($1, @1); }
 +      | '?'
-+				{ $$ = makeStringConst("?", @1); }
++        { $$ = makeStringConst("?", @1); }
  		;
 
  iso_level:	READ UNCOMMITTED						{ $$ = "read uncommitted"; }
-@@ -1549,9 +1556,9 @@
+@@ -1609,9 +1614,9 @@ opt_boolean_or_string:
   * so use IDENT (meaning we reject anything that is a key word).
   */
  zone_value:
@@ -88,50 +118,42 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  				}
  			| IDENT
  				{
-@@ -11234,13 +11241,13 @@
+@@ -12352,10 +12357,10 @@ ConstCharacter:  CharacterWithLength
  				}
  		;
 
--CharacterWithLength:  character '(' Iconst ')' opt_charset
-+CharacterWithLength:  character '(' Iconst_or_Normalized ')' opt_charset
+-CharacterWithLength:  character '(' Iconst ')'
++CharacterWithLength:  character '(' Iconst_or_Normalized ')'
  				{
- 					if (($5 != NULL) && (strcmp($5, "sql_text") != 0))
- 						$1 = psprintf("%s_%s", $1, $5);
-
  					$$ = SystemTypeName($1);
 -					$$->typmods = list_make1(makeIntConst($3, @3));
 +					$$->typmods = list_make1($3);
  					$$->location = @1;
  				}
  		;
-@@ -11493,6 +11500,13 @@
+@@ -12597,6 +12602,10 @@ a_expr:		c_expr									{ $$ = $1; }
+ 				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, ">=", $1, $3, @2); }
  			| a_expr NOT_EQUALS a_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, "<>", $1, $3, @2); }
-
 +      | a_expr '?' a_expr                     %prec Op
 +				{ $$ = makeInterval_or_AExprOp($1, $3, @2); }
-+			/*| '?' a_expr                          %prec Op
-+				{ $$ = makeInterval_or_AExprOp(NULL, $2, @1); }*/
 +			| a_expr '?'                            %prec POSTFIXOP
 +				{ $$ = makeInterval_or_AExprOp($1, NULL, @2); }
-+
+
  			| a_expr qual_Op a_expr				%prec Op
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, $3, @2); }
- 			| qual_Op a_expr					%prec Op
-@@ -11880,6 +11894,12 @@
+@@ -12997,6 +13006,10 @@ b_expr:		c_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, ">=", $1, $3, @2); }
  			| b_expr NOT_EQUALS b_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, "<>", $1, $3, @2); }
 +      | b_expr '?' b_expr                     %prec Op
 +				{ $$ = makeInterval_or_AExprOp($1, $3, @2); }
-+			/*| '?' b_expr                          %prec Op
-+				{ $$ = makeInterval_or_AExprOp(NULL, $2, @1); }*/
 +			| b_expr '?'                            %prec POSTFIXOP
 +				{ $$ = makeInterval_or_AExprOp($1, NULL, @2); }
  			| b_expr qual_Op b_expr				%prec Op
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, $3, @2); }
  			| qual_Op b_expr					%prec Op
-@@ -11927,6 +11947,18 @@
+@@ -13042,6 +13055,18 @@ b_expr:		c_expr
   */
  c_expr:		columnref								{ $$ = $1; }
  			| AexprConst							{ $$ = $1; }
@@ -141,7 +163,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
 +					{
 +						A_Indirection *n = makeNode(A_Indirection);
 +						n->arg = makeParamRef(0, @1);
-+						n->indirection = check_indirection($2, yyscanner);
++  					n->indirection = check_indirection($2, yyscanner);
 +						$$ = (Node *) n;
 +					}
 +					else
@@ -150,7 +172,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  			| PARAM opt_indirection
  				{
  					ParamRef *p = makeNode(ParamRef);
-@@ -12845,6 +12877,7 @@
+@@ -13883,6 +13908,7 @@ MathOp:		 '+'									{ $$ = "+"; }
  			| LESS_EQUALS							{ $$ = "<="; }
  			| GREATER_EQUALS						{ $$ = ">="; }
  			| NOT_EQUALS							{ $$ = "<>"; }
@@ -158,7 +180,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  		;
 
  qual_Op:	Op
-@@ -12956,6 +12989,10 @@
+@@ -13994,6 +14020,10 @@ extract_list:
  				{
  					$$ = list_make2(makeStringConst($1, @1), $3);
  				}
@@ -169,7 +191,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  			| /*EMPTY*/								{ $$ = NIL; }
  		;
 
-@@ -13433,6 +13470,19 @@
+@@ -14448,6 +14478,19 @@ AexprConst: Iconst
  											makeIntConst($3, @3));
  					$$ = makeStringConstCast($5, @5, t);
  				}
@@ -189,7 +211,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  			| TRUE_P
  				{
  					$$ = makeBoolAConst(TRUE, @1);
-@@ -13529,6 +13579,21 @@
+@@ -14544,6 +14587,25 @@ role_list:	RoleSpec
  					{ $$ = lappend($1, $3); }
  		;
 
@@ -204,6 +226,10 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
 +			| '?'																												{ $$ = makeParamRef( 0, @1); }
 +		;
 +
++Flat_Sconst_or_Normalized: Sconst  																	 { $$ = makeStringConst($1, @1); }
++			| '?'																												{ $$ = makeParamRef( 0, @1); }
++		;
++
 +NonReservedWord_or_Sconst_or_Normalized: NonReservedWord_or_Sconst	{ $$ = makeStringConst($1, @1); }
 +			| '?'																												{ $$ = makeParamRef( 0, @1); }
 +		;
@@ -211,7 +237,7 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  /*
   * Name classification hierarchy.
   *
-@@ -14223,6 +14288,49 @@
+@@ -15281,6 +15343,49 @@ makeBoolAConst(bool state, int location)
  	return makeTypeCast((Node *)n, SystemTypeName("bool"), -1);
  }
 
@@ -261,10 +287,11 @@ diff -Naur a/src/backend/parser/gram.y b/src/backend/parser/gram.y
  /* makeRoleSpec
   * Create a RoleSpec with the given type
   */
-diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
+diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
+index 634bfa5..0c342d6 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -253,6 +253,9 @@
+@@ -253,6 +253,9 @@ xehexesc		[\\]x[0-9A-Fa-f]{1,2}
  xeunicode		[\\](u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})
  xeunicodefail	[\\](u[0-9A-Fa-f]{0,3}|U[0-9A-Fa-f]{0,7})
 
@@ -274,7 +301,7 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
  /* Extended quote
   * xqdouble implements embedded quote, ''''
   */
-@@ -328,8 +331,9 @@
+@@ -328,8 +331,9 @@ xcinside		[^*/]+
  digit			[0-9]
  ident_start		[A-Za-z\200-\377_]
  ident_cont		[A-Za-z\200-\377_0-9\$]
@@ -285,7 +312,7 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
 
  /* Assorted special-case operators and operator-like tokens */
  typecast		"::"
-@@ -351,7 +355,7 @@
+@@ -351,7 +355,7 @@ not_equals		"!="
   * If you change either set, adjust the character lists appearing in the
   * rule for "operator"!
   */
@@ -294,7 +321,7 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
  op_chars		[\~\!\@\#\^\&\|\`\?\+\-\*\/\%\<\>\=]
  operator		{op_chars}+
 
-@@ -799,6 +803,11 @@
+@@ -804,6 +808,11 @@ other			.
  					return IDENT;
  				}
 
@@ -306,7 +333,7 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
  {typecast}		{
  					SET_YYLLOC();
  					return TYPECAST;
-@@ -892,6 +901,25 @@
+@@ -897,6 +906,25 @@ other			.
  						nchars--; /* else remove the +/-, and check again */
  					}
 
@@ -332,7 +359,7 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
  					SET_YYLLOC();
 
  					if (nchars < yyleng)
-@@ -905,7 +933,7 @@
+@@ -910,7 +938,7 @@ other			.
  						 * that the "self" rule would have.
  						 */
  						if (nchars == 1 &&
@@ -341,10 +368,10 @@ diff -Naur a/src/backend/parser/scan.l b/src/backend/parser/scan.l
  							return yytext[0];
  					}
 
-@@ -972,15 +1000,21 @@
+@@ -977,15 +1005,21 @@ other			.
  {identifier}	{
  					const ScanKeyword *keyword;
- 					char		   *ident;
+ 					char	   *ident;
 +          char       *keyword_text = pstrdup(yytext);
 
  					SET_YYLLOC();

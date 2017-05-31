@@ -1,8 +1,8 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - makeDefElemExtended
  * - makeDefElem
  * - makeTypeNameFromNameList
+ * - makeDefElemExtended
  * - makeAlias
  * - makeGroupingSet
  * - makeTypeName
@@ -20,7 +20,7 @@
  *	  creator functions for primitive nodes. The functions here are for
  *	  the most frequently created nodes.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -199,7 +199,7 @@ makeRangeVar(char *schemaname, char *relname, int location)
 	r->catalogname = NULL;
 	r->schemaname = schemaname;
 	r->relname = relname;
-	r->inhOpt = INH_DEFAULT;
+	r->inh = true;
 	r->relpersistence = RELPERSISTENCE_PERMANENT;
 	r->alias = NULL;
 	r->location = location;
@@ -268,7 +268,7 @@ makeTypeNameFromNameList(List *names)
  * and no special action.
  */
 DefElem *
-makeDefElem(char *name, Node *arg)
+makeDefElem(char *name, Node *arg, int location)
 {
 	DefElem    *res = makeNode(DefElem);
 
@@ -276,7 +276,7 @@ makeDefElem(char *name, Node *arg)
 	res->defname = name;
 	res->arg = arg;
 	res->defaction = DEFELEM_UNSPEC;
-	res->location = -1;
+	res->location = location;
 
 	return res;
 }

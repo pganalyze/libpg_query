@@ -4,7 +4,7 @@
  *	  POSTGRES relation descriptor (a/k/a relcache entry) definitions.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/rel.h
@@ -15,9 +15,10 @@
 #define REL_H
 
 #include "access/tupdesc.h"
-#include "catalog/pg_am.h"
+#include "access/xlog.h"
 #include "catalog/pg_class.h"
 #include "catalog/pg_index.h"
+#include "catalog/pg_publication.h"
 #include "fmgr.h"
 #include "nodes/bitmapset.h"
 #include "rewrite/prs2lock.h"
@@ -45,23 +46,35 @@ typedef struct LockInfoData
 
 typedef LockInfoData *LockInfo;
 
-
 /*
- * Cached lookup information for the frequently used index access method
- * functions, defined by the pg_am row associated with an index relation.
+ * Information about the partition key of a relation
  */
-typedef struct RelationAmInfo
+typedef struct PartitionKeyData
 {
-	FmgrInfo	aminsert;
-	FmgrInfo	ambeginscan;
-	FmgrInfo	amgettuple;
-	FmgrInfo	amgetbitmap;
-	FmgrInfo	amrescan;
-	FmgrInfo	amendscan;
-	FmgrInfo	ammarkpos;
-	FmgrInfo	amrestrpos;
-	FmgrInfo	amcanreturn;
-} RelationAmInfo;
+	char		strategy;		/* partitioning strategy */
+	int16		partnatts;		/* number of columns in the partition key */
+	AttrNumber *partattrs;		/* attribute numbers of columns in the
+								 * partition key */
+	List	   *partexprs;		/* list of expressions in the partitioning
+								 * key, or NIL */
+
+	Oid		   *partopfamily;	/* OIDs of operator families */
+	Oid		   *partopcintype;	/* OIDs of opclass declared input data types */
+	FmgrInfo   *partsupfunc;	/* lookup info for support funcs */
+
+	/* Partitioning collation per attribute */
+	Oid		   *partcollation;
+
+	/* Type information per attribute */
+	Oid		   *parttypid;
+	int32	   *parttypmod;
+	int16	   *parttyplen;
+	bool	   *parttypbyval;
+	char	   *parttypalign;
+	Oid		   *parttypcoll;
+} PartitionKeyData;
+
+typedef struct PartitionKeyData *PartitionKey;
 
 /*
  * Here are the contents of a relation cache entry.
@@ -79,6 +92,7 @@ typedef struct RelationData
 	bool		rd_isvalid;		/* relcache entry is valid */
 	char		rd_indexvalid;	/* state of rd_indexlist: 0 = not valid, 1 =
 								 * valid, 2 = temporarily forced */
+	bool		rd_statvalid;	/* is rd_statlist valid? */
 
 	/*
 	 * rd_createSubid is the ID of the highest subtransaction the rel has
@@ -107,15 +121,32 @@ typedef struct RelationData
 	/* use "struct" here to avoid needing to include rowsecurity.h: */
 	struct RowSecurityDesc *rd_rsdesc;	/* row security policies, or NULL */
 
+	/* data managed by RelationGetFKeyList: */
+	List	   *rd_fkeylist;	/* list of ForeignKeyCacheInfo (see below) */
+	bool		rd_fkeyvalid;	/* true if list has been computed */
+
+	MemoryContext rd_partkeycxt;	/* private memory cxt for the below */
+	struct PartitionKeyData *rd_partkey;		/* partition key, or NULL */
+	MemoryContext rd_pdcxt;		/* private context for partdesc */
+	struct PartitionDescData *rd_partdesc;		/* partitions, or NULL */
+	List	   *rd_partcheck;	/* partition CHECK quals */
+
 	/* data managed by RelationGetIndexList: */
 	List	   *rd_indexlist;	/* list of OIDs of indexes on relation */
 	Oid			rd_oidindex;	/* OID of unique index on OID, if any */
+	Oid			rd_pkindex;		/* OID of primary key, if any */
 	Oid			rd_replidindex; /* OID of replica identity index, if any */
+
+	/* data managed by RelationGetStatExtList: */
+	List	   *rd_statlist;	/* list of OIDs of extended stats */
 
 	/* data managed by RelationGetIndexAttrBitmap: */
 	Bitmapset  *rd_indexattr;	/* identifies columns used in indexes */
 	Bitmapset  *rd_keyattr;		/* cols that can be ref'd by foreign keys */
+	Bitmapset  *rd_pkattr;		/* cols included in primary key */
 	Bitmapset  *rd_idattr;		/* included in replica identity index */
+
+	PublicationActions  *rd_pubactions;	/* publication actions */
 
 	/*
 	 * rd_options is set whenever rd_rel is loaded into the relcache entry.
@@ -128,7 +159,6 @@ typedef struct RelationData
 	Form_pg_index rd_index;		/* pg_index tuple describing this index */
 	/* use "struct" here to avoid needing to include htup.h: */
 	struct HeapTupleData *rd_indextuple;		/* all of pg_index tuple */
-	Form_pg_am	rd_am;			/* pg_am tuple for index's AM */
 
 	/*
 	 * index access support info (used only for an index relation)
@@ -145,8 +175,10 @@ typedef struct RelationData
 	 * rd_indexcxt.  A relcache reset will include freeing that chunk and
 	 * setting rd_amcache = NULL.
 	 */
+	Oid			rd_amhandler;	/* OID of index AM's handler function */
 	MemoryContext rd_indexcxt;	/* private memory cxt for this stuff */
-	RelationAmInfo *rd_aminfo;	/* lookup info for funcs found in pg_am */
+	/* use "struct" here to avoid needing to include amapi.h: */
+	struct IndexAmRoutine *rd_amroutine;		/* index AM's API struct */
 	Oid		   *rd_opfamily;	/* OIDs of op families for each index col */
 	Oid		   *rd_opcintype;	/* OIDs of opclass declared input data types */
 	RegProcedure *rd_support;	/* OIDs of support procedures */
@@ -186,6 +218,34 @@ typedef struct RelationData
 	struct PgStat_TableStatus *pgstat_info;		/* statistics collection area */
 } RelationData;
 
+
+/*
+ * ForeignKeyCacheInfo
+ *		Information the relcache can cache about foreign key constraints
+ *
+ * This is basically just an image of relevant columns from pg_constraint.
+ * We make it a subclass of Node so that copyObject() can be used on a list
+ * of these, but we also ensure it is a "flat" object without substructure,
+ * so that list_free_deep() is sufficient to free such a list.
+ * The per-FK-column arrays can be fixed-size because we allow at most
+ * INDEX_MAX_KEYS columns in a foreign key constraint.
+ *
+ * Currently, we only cache fields of interest to the planner, but the
+ * set of fields could be expanded in future.
+ */
+typedef struct ForeignKeyCacheInfo
+{
+	NodeTag		type;
+	Oid			conrelid;		/* relation constrained by the foreign key */
+	Oid			confrelid;		/* relation referenced by the foreign key */
+	int			nkeys;			/* number of columns in the foreign key */
+	/* these arrays each have nkeys valid entries: */
+	AttrNumber	conkey[INDEX_MAX_KEYS]; /* cols in referencing table */
+	AttrNumber	confkey[INDEX_MAX_KEYS];		/* cols in referenced table */
+	Oid			conpfeqop[INDEX_MAX_KEYS];		/* PK = FK operator OIDs */
+} ForeignKeyCacheInfo;
+
+
 /*
  * StdRdOptions
  *		Standard contents of rd_options for heaps and generic indexes.
@@ -220,6 +280,7 @@ typedef struct StdRdOptions
 	AutoVacOpts autovacuum;		/* autovacuum-related options */
 	bool		user_catalog_table;		/* use as an additional catalog
 										 * relation */
+	int			parallel_workers;		/* max number of parallel workers */
 } StdRdOptions;
 
 #define HEAP_MIN_FILLFACTOR			10
@@ -250,13 +311,22 @@ typedef struct StdRdOptions
 /*
  * RelationIsUsedAsCatalogTable
  *		Returns whether the relation should be treated as a catalog table
- *		from the pov of logical decoding.  Note multiple eval or argument!
+ *		from the pov of logical decoding.  Note multiple eval of argument!
  */
 #define RelationIsUsedAsCatalogTable(relation)	\
 	((relation)->rd_options && \
 	 ((relation)->rd_rel->relkind == RELKIND_RELATION || \
 	  (relation)->rd_rel->relkind == RELKIND_MATVIEW) ? \
 	 ((StdRdOptions *) (relation)->rd_options)->user_catalog_table : false)
+
+/*
+ * RelationGetParallelWorkers
+ *		Returns the relation's parallel_workers reloption setting.
+ *		Note multiple eval of argument!
+ */
+#define RelationGetParallelWorkers(relation, defaultpw) \
+	((relation)->rd_options ? \
+	 ((StdRdOptions *) (relation)->rd_options)->parallel_workers : (defaultpw))
 
 
 /*
@@ -508,8 +578,64 @@ typedef struct ViewOptions
 	 RelationNeedsWAL(relation) && \
 	 !IsCatalogRelation(relation))
 
+/*
+ * RelationGetPartitionKey
+ *		Returns the PartitionKey of a relation
+ */
+#define RelationGetPartitionKey(relation) ((relation)->rd_partkey)
+
+/*
+ * PartitionKey inquiry functions
+ */
+static inline int
+get_partition_strategy(PartitionKey key)
+{
+	return key->strategy;
+}
+
+static inline int
+get_partition_natts(PartitionKey key)
+{
+	return key->partnatts;
+}
+
+static inline List *
+get_partition_exprs(PartitionKey key)
+{
+	return key->partexprs;
+}
+
+/*
+ * PartitionKey inquiry functions - one column
+ */
+static inline int16
+get_partition_col_attnum(PartitionKey key, int col)
+{
+	return key->partattrs[col];
+}
+
+static inline Oid
+get_partition_col_typid(PartitionKey key, int col)
+{
+	return key->parttypid[col];
+}
+
+static inline int32
+get_partition_col_typmod(PartitionKey key, int col)
+{
+	return key->parttypmod[col];
+}
+
+/*
+ * RelationGetPartitionDesc
+ *		Returns partition descriptor for a relation.
+ */
+#define RelationGetPartitionDesc(relation) ((relation)->rd_partdesc)
+
 /* routines in utils/cache/relcache.c */
 extern void RelationIncrementReferenceCount(Relation rel);
 extern void RelationDecrementReferenceCount(Relation rel);
+extern bool RelationHasUnloggedIndex(Relation rel);
+extern List *RelationGetRepsetList(Relation rel);
 
 #endif   /* REL_H */

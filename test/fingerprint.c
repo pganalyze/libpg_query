@@ -14,7 +14,10 @@ int main() {
   for (i = 0; i < testsLength; i += 2) {
     PgQueryFingerprintResult result = pg_query_fingerprint(tests[i]);
 
-    if (strcmp(result.hexdigest, tests[i + 1]) == 0) {
+		if (result.error) {
+			ret_code = -1;
+			printf("%s\n", result.error->message);
+		} else if (strcmp(result.hexdigest, tests[i + 1]) == 0) {
       printf(".");
     } else {
       ret_code = -1;

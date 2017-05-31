@@ -38,7 +38,7 @@
  *	  clients.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -93,6 +93,10 @@
 #include <dns_sd.h>
 #endif
 
+#ifdef USE_SYSTEMD
+#include <systemd/sd-daemon.h>
+#endif
+
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
 #include <pthread.h>
 #endif
@@ -101,9 +105,9 @@
 #include "access/xlog.h"
 #include "bootstrap/bootstrap.h"
 #include "catalog/pg_control.h"
+#include "common/ip.h"
 #include "lib/ilist.h"
 #include "libpq/auth.h"
-#include "libpq/ip.h"
 #include "libpq/libpq.h"
 #include "libpq/pqsignal.h"
 #include "miscadmin.h"
@@ -115,6 +119,7 @@
 #include "postmaster/pgarch.h"
 #include "postmaster/postmaster.h"
 #include "postmaster/syslogger.h"
+#include "replication/logicallauncher.h"
 #include "replication/walsender.h"
 #include "storage/fd.h"
 #include "storage/ipc.h"
@@ -128,6 +133,7 @@
 #include "utils/memutils.h"
 #include "utils/ps_status.h"
 #include "utils/timeout.h"
+#include "utils/varlena.h"
 
 #ifdef EXEC_BACKEND
 #include "storage/spin.h"
@@ -166,7 +172,7 @@
 typedef struct bkend
 {
 	pid_t		pid;			/* process id of backend */
-	long		cancel_key;		/* cancel key for cancels for this backend */
+	int32		cancel_key;		/* cancel key for cancels for this backend */
 	int			child_slot;		/* PMChildSlot for this backend, if any */
 
 	/*
@@ -361,13 +367,20 @@ __thread bool		ClientAuthInProgress = false;
 
 
 
+#ifndef HAVE_STRONG_RANDOM
 /*
- * State for assigning random salts and cancel keys.
+ * State for assigning cancel keys.
  * Also, the global MyCancelKey passes the cancel key assigned to a given
  * backend from the postmaster to that backend (via fork).
  */
+static unsigned int random_seed = 0;
+static struct timeval random_start_time;
+#endif
 
-
+#ifdef USE_SSL
+/* Set when and if SSL has been initialized properly */
+static bool LoadedSSL = false;
+#endif
 
 #ifdef USE_BONJOUR
 static DNSServiceRef bonjour_sdref = NULL;
@@ -406,8 +419,7 @@ static void processCancelRequest(Port *port, void *pkt);
 static int	initMasks(fd_set *rmask);
 static void report_fork_failure_to_client(Port *port, int errnum);
 static CAC_state canAcceptConnections(void);
-static long PostmasterRandom(void);
-static void RandomSalt(char *md5Salt);
+static bool RandomCancelKey(int32 *cancel_key);
 static void signal_child(pid_t pid, int signal);
 static bool SignalSomeChildren(int signal, int targets);
 static void TerminateChildren(int signal);
@@ -416,7 +428,7 @@ static void TerminateChildren(int signal);
 
 static int	CountChildren(int target);
 static bool assign_backendlist_entry(RegisteredBgWorker *rw);
-static void maybe_start_bgworker(void);
+static void maybe_start_bgworkers(void);
 static bool CreateOptsFile(int argc, char *argv[], char *fullprogname);
 static pid_t StartChildProcess(AuxProcType type);
 static void StartAutovacuumWorker(void);
@@ -475,7 +487,7 @@ typedef struct
 	InheritableSocket portsocket;
 	char		DataDir[MAXPGPATH];
 	pgsocket	ListenSocket[MAXLISTEN];
-	long		MyCancelKey;
+	int32		MyCancelKey;
 	int			MyPMChildSlot;
 #ifndef WIN32
 	unsigned long UsedShmemSegID;
@@ -487,8 +499,10 @@ typedef struct
 	VariableCache ShmemVariableCache;
 	Backend    *ShmemBackendArray;
 #ifndef HAVE_SPINLOCKS
-	PGSemaphore SpinlockSemaArray;
+	PGSemaphore *SpinlockSemaArray;
 #endif
+	int			NamedLWLockTrancheRequests;
+	NamedLWLockTranche *NamedLWLockTrancheArray;
 	LWLockPadded *MainLWLockArray;
 	slock_t    *ProcStructLock;
 	PROC_HDR   *ProcGlobal;
@@ -571,6 +585,8 @@ HANDLE		PostmasterHandle;
 #ifdef EXEC_BACKEND
 #endif
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
+#endif
+#ifndef HAVE_STRONG_RANDOM
 #endif
 
 
@@ -709,6 +725,8 @@ HANDLE		PostmasterHandle;
 /*
  * SIGHUP -- reread config files, and tell children to do same
  */
+#ifdef USE_SSL
+#endif
 #ifdef EXEC_BACKEND
 #endif
 
@@ -716,12 +734,18 @@ HANDLE		PostmasterHandle;
 /*
  * pmdie -- signal handler for processing various postmaster signals.
  */
-
+#ifdef USE_SYSTEMD
+#endif
+#ifdef USE_SYSTEMD
+#endif
+#ifdef USE_SYSTEMD
+#endif
 
 /*
  * Reaper -- signal handler to cleanup after a child process dies.
  */
-
+#ifdef USE_SYSTEMD
+#endif
 
 /*
  * Scan the bgworkers list and see if the given PID (which has just stopped
@@ -852,7 +876,8 @@ HANDLE		PostmasterHandle;
  *		Shouldn't return at all.
  *		If PostgresMain() fails, return status.
  */
-
+#ifndef HAVE_STRONG_RANDOM
+#endif
 
 
 #ifdef EXEC_BACKEND
@@ -1312,12 +1337,22 @@ SubPostmasterMain(int argc, char *argv[])
 		 * context structures contain function pointers and cannot be passed
 		 * through the parameter file.
 		 *
+		 * If for some reason reload fails (maybe the user installed broken
+		 * key files), soldier on without SSL; that's better than all
+		 * connections becoming impossible.
+		 *
 		 * XXX should we do this in all child processes?  For the moment it's
 		 * enough to do it in backend children.
 		 */
 #ifdef USE_SSL
 		if (EnableSSL)
-			secure_initialize();
+		{
+			if (secure_initialize(false) == 0)
+				LoadedSSL = true;
+			else
+				ereport(LOG,
+						(errmsg("SSL configuration could not be loaded in child process")));
+		}
 #endif
 
 		/*
@@ -1439,7 +1474,10 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * sigusr1_handler - handle signal conditions from child processes
  */
-
+#ifdef USE_SYSTEMD
+#endif
+#ifdef USE_SYSTEMD
+#endif
 
 /*
  * SIGTERM or SIGQUIT while processing startup packet.
@@ -1471,18 +1509,11 @@ SubPostmasterMain(int argc, char *argv[])
 
 
 /*
- * RandomSalt
+ * Generate a random cancel key.
  */
-
-
-/*
- * PostmasterRandom
- *
- * Caution: use this only for values needed during connection-request
- * processing.  Otherwise, the intended property of having an unpredictable
- * delay between random_start_time and random_stop_time will be broken.
- */
-
+#ifdef HAVE_STRONG_RANDOM
+#else
+#endif
 
 /*
  * Count up number of child processes of specified types (dead_end children
@@ -1494,7 +1525,7 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * StartChildProcess -- start an auxiliary process for the postmaster
  *
- * xlop determines what kind of child will be started.  All child types
+ * "type" determines what kind of child will be started.  All child types
  * initially go to AuxiliaryProcessMain, which will handle common setup.
  *
  * Return value of StartChildProcess is subprocess' PID, or 0 if failed
@@ -1609,18 +1640,17 @@ bgworker_forkexec(int shmem_slot)
 
 
 /*
- * If the time is right, start one background worker.
+ * If the time is right, start background worker(s).
  *
- * As a side effect, the bgworker control variables are set or reset whenever
- * there are more workers to start after this one, and whenever the overall
- * system state requires it.
+ * As a side effect, the bgworker control variables are set or reset
+ * depending on whether more workers may need to be started.
  *
- * The reason we start at most one worker per call is to avoid consuming the
+ * We limit the number of workers started per call, to avoid consuming the
  * postmaster's attention for too long when many such requests are pending.
  * As long as StartWorkerNeeded is true, ServerLoop will not block and will
  * call this function again after dealing with any other issues.
  */
-
+#define MAX_BGWORKERS_TO_LAUNCH 100
 
 /*
  * When a backend asks to be notified about worker state changes, we
@@ -1684,6 +1714,8 @@ save_backend_variables(BackendParameters *param, Port *port,
 #ifndef HAVE_SPINLOCKS
 	param->SpinlockSemaArray = SpinlockSemaArray;
 #endif
+	param->NamedLWLockTrancheRequests = NamedLWLockTrancheRequests;
+	param->NamedLWLockTrancheArray = NamedLWLockTrancheArray;
 	param->MainLWLockArray = MainLWLockArray;
 	param->ProcStructLock = ProcStructLock;
 	param->ProcGlobal = ProcGlobal;
@@ -1915,6 +1947,8 @@ restore_backend_variables(BackendParameters *param, Port *port)
 #ifndef HAVE_SPINLOCKS
 	SpinlockSemaArray = param->SpinlockSemaArray;
 #endif
+	NamedLWLockTrancheRequests = param->NamedLWLockTrancheRequests;
+	NamedLWLockTrancheArray = param->NamedLWLockTrancheArray;
 	MainLWLockArray = param->MainLWLockArray;
 	ProcStructLock = param->ProcStructLock;
 	ProcGlobal = param->ProcGlobal;

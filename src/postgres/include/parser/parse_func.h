@@ -4,7 +4,7 @@
  *
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/parser/parse_func.h
@@ -62,9 +62,11 @@ extern const char *func_signature_string(List *funcname, int nargs,
 
 extern Oid LookupFuncName(List *funcname, int nargs, const Oid *argtypes,
 			   bool noError);
-extern Oid LookupFuncNameTypeNames(List *funcname, List *argtypes,
+extern Oid LookupFuncWithArgs(ObjectWithArgs *func,
 						bool noError);
-extern Oid LookupAggNameTypeNames(List *aggname, List *argtypes,
+extern Oid LookupAggWithArgs(ObjectWithArgs *agg,
 					   bool noError);
+
+extern void check_srf_call_placement(ParseState *pstate, int location);
 
 #endif   /* PARSE_FUNC_H */

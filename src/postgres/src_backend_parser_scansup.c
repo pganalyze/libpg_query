@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - truncate_identifier
  * - downcase_truncate_identifier
+ * - downcase_identifier
  * - scanner_isspace
  *--------------------------------------------------------------------
  */
@@ -12,7 +13,7 @@
  *	  support routines for the lex/flex scanner, used by both the normal
  * backend as well as the bootstrap backend
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -59,6 +60,15 @@
 char *
 downcase_truncate_identifier(const char *ident, int len, bool warn)
 {
+	return downcase_identifier(ident, len, warn, true);
+}
+
+/*
+ * a workhorse for downcase_truncate_identifier
+ */
+char *
+downcase_identifier(const char *ident, int len, bool warn, bool truncate)
+{
 	char	   *result;
 	int			i;
 	bool		enc_is_single_byte;
@@ -87,11 +97,12 @@ downcase_truncate_identifier(const char *ident, int len, bool warn)
 	}
 	result[i] = '\0';
 
-	if (i >= NAMEDATALEN)
+	if (i >= NAMEDATALEN && truncate)
 		truncate_identifier(result, i, warn);
 
 	return result;
 }
+
 
 /*
  * truncate_identifier() --- truncate an identifier to NAMEDATALEN-1 bytes.

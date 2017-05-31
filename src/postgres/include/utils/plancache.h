@@ -5,7 +5,7 @@
  *
  * See plancache.c for comments.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/plancache.h
@@ -17,6 +17,10 @@
 
 #include "access/tupdesc.h"
 #include "nodes/params.h"
+#include "utils/queryenvironment.h"
+
+/* Forward declaration, to avoid including parsenodes.h here */
+struct RawStmt;
 
 #define CACHEDPLANSOURCE_MAGIC		195726186
 #define CACHEDPLAN_MAGIC			953717834
@@ -76,7 +80,7 @@
 typedef struct CachedPlanSource
 {
 	int			magic;			/* should equal CACHEDPLANSOURCE_MAGIC */
-	Node	   *raw_parse_tree; /* output of raw_parser(), or NULL */
+	struct RawStmt *raw_parse_tree;		/* output of raw_parser(), or NULL */
 	const char *query_string;	/* source text of query */
 	const char *commandTag;		/* command tag (a constant!), or NULL */
 	Oid		   *param_types;	/* array of parameter type OIDs, or NULL */
@@ -93,8 +97,10 @@ typedef struct CachedPlanSource
 	List	   *invalItems;		/* other dependencies, as PlanInvalItems */
 	struct OverrideSearchPath *search_path;		/* search_path used for
 												 * parsing and planning */
-	Oid			planUserId;		/* User-id that the plan depends on */
 	MemoryContext query_context;	/* context holding the above, or NULL */
+	Oid			rewriteRoleId;	/* Role ID we did rewriting for */
+	bool		rewriteRowSecurity;		/* row_security used during rewrite */
+	bool		dependsOnRLS;	/* is rewritten query specific to the above? */
 	/* If we have a generic plan, this is a reference-counted link to it: */
 	struct CachedPlan *gplan;	/* generic plan, or NULL if not valid */
 	/* Some state flags: */
@@ -109,8 +115,6 @@ typedef struct CachedPlanSource
 	double		generic_cost;	/* cost of generic plan, or -1 if not known */
 	double		total_custom_cost;		/* total cost of custom plans so far */
 	int			num_custom_plans;		/* number of plans included in total */
-	bool		hasRowSecurity; /* planned with row security? */
-	bool		row_security_env;		/* row security setting when planned */
 } CachedPlanSource;
 
 /*
@@ -126,11 +130,12 @@ typedef struct CachedPlanSource
 typedef struct CachedPlan
 {
 	int			magic;			/* should equal CACHEDPLAN_MAGIC */
-	List	   *stmt_list;		/* list of statement nodes (PlannedStmts and
-								 * bare utility statements) */
+	List	   *stmt_list;		/* list of PlannedStmts */
 	bool		is_oneshot;		/* is it a "oneshot" plan? */
 	bool		is_saved;		/* is CachedPlan in a long-lived context? */
 	bool		is_valid;		/* is the stmt_list currently valid? */
+	Oid			planRoleId;		/* Role ID the plan was created for */
+	bool		dependsOnRole;	/* is plan specific to that role? */
 	TransactionId saved_xmin;	/* if valid, replan when TransactionXmin
 								 * changes from this value */
 	int			generation;		/* parent's generation number for this plan */
@@ -142,10 +147,10 @@ typedef struct CachedPlan
 extern void InitPlanCache(void);
 extern void ResetPlanCache(void);
 
-extern CachedPlanSource *CreateCachedPlan(Node *raw_parse_tree,
+extern CachedPlanSource *CreateCachedPlan(struct RawStmt *raw_parse_tree,
 				 const char *query_string,
 				 const char *commandTag);
-extern CachedPlanSource *CreateOneShotCachedPlan(Node *raw_parse_tree,
+extern CachedPlanSource *CreateOneShotCachedPlan(struct RawStmt *raw_parse_tree,
 						const char *query_string,
 						const char *commandTag);
 extern void CompleteCachedPlan(CachedPlanSource *plansource,
@@ -168,11 +173,13 @@ extern CachedPlanSource *CopyCachedPlan(CachedPlanSource *plansource);
 
 extern bool CachedPlanIsValid(CachedPlanSource *plansource);
 
-extern List *CachedPlanGetTargetList(CachedPlanSource *plansource);
+extern List *CachedPlanGetTargetList(CachedPlanSource *plansource,
+							QueryEnvironment *queryEnv);
 
 extern CachedPlan *GetCachedPlan(CachedPlanSource *plansource,
 			  ParamListInfo boundParams,
-			  bool useResOwner);
+			  bool useResOwner,
+			  QueryEnvironment *queryEnv);
 extern void ReleaseCachedPlan(CachedPlan *plan, bool useResOwner);
 
 #endif   /* PLANCACHE_H */

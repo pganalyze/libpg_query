@@ -11,7 +11,7 @@
  * datum.c
  *	  POSTGRES Datum (abstract data type) manipulation routines.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -208,6 +208,10 @@ datumCopy(Datum value, bool typByVal, int typLen)
  * of say the representation of zero in one's complement arithmetic).
  * Also, it will probably not give the answer you want if either
  * datum has been "toasted".
+ *
+ * Do not try to make this any smarter than it currently is with respect
+ * to "toasted" datums, because some of the callers could be working in the
+ * context of an aborted transaction.
  *-------------------------------------------------------------------------
  */
 bool
@@ -245,3 +249,40 @@ datumIsEqual(Datum value1, Datum value2, bool typByVal, int typLen)
 	}
 	return res;
 }
+
+/*-------------------------------------------------------------------------
+ * datumEstimateSpace
+ *
+ * Compute the amount of space that datumSerialize will require for a
+ * particular Datum.
+ *-------------------------------------------------------------------------
+ */
+
+
+/*-------------------------------------------------------------------------
+ * datumSerialize
+ *
+ * Serialize a possibly-NULL datum into caller-provided storage.
+ *
+ * The format is as follows: first, we write a 4-byte header word, which
+ * is either the length of a pass-by-reference datum, -1 for a
+ * pass-by-value datum, or -2 for a NULL.  If the value is NULL, nothing
+ * further is written.  If it is pass-by-value, sizeof(Datum) bytes
+ * follow.  Otherwise, the number of bytes indicated by the header word
+ * follow.  The caller is responsible for ensuring that there is enough
+ * storage to store the number of bytes that will be written; use
+ * datumEstimateSpace() to find out how many will be needed.
+ * *start_address is updated to point to the byte immediately following
+ * those written.
+ *-------------------------------------------------------------------------
+ */
+
+
+/*-------------------------------------------------------------------------
+ * datumRestore
+ *
+ * Restore a possibly-NULL datum previously serialized by datumSerialize.
+ * *start_address is updated according to the number of bytes consumed.
+ *-------------------------------------------------------------------------
+ */
+

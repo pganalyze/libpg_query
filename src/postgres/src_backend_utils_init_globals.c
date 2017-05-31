@@ -14,7 +14,7 @@
  * globals.c
  *	  global variable declarations
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -38,6 +38,7 @@
 
 
 __thread volatile bool InterruptPending = false;
+
 
 
 
@@ -89,6 +90,8 @@ char		postgres_exec_path[MAXPGPATH];		/* full path to backend */
 
 
 
+
+
 /*
  * DatabasePath is the path (relative to DataDir) of my database's
  * primary directory, ie, its directory in the default tablespace.
@@ -126,12 +129,14 @@ __thread bool		ExitOnAnyError = false;
 
 
 
+
 /*
  * Primary determinants of sizes of shared-memory structures.
  *
  * MaxBackends is computed by PostmasterMain after modules have had a chance to
  * register background workers.
  */
+
 
 
 

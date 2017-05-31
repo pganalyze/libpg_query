@@ -7,7 +7,7 @@
  * Client-side code should include postgres_fe.h instead.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1995, Regents of the University of California
  *
  * src/include/postgres.h
@@ -287,20 +287,18 @@ typedef struct
 /* Externally visible macros */
 
 /*
- * VARDATA, VARSIZE, and SET_VARSIZE are the recommended API for most code
- * for varlena datatypes.  Note that they only work on untoasted,
- * 4-byte-header Datums!
+ * In consumers oblivious to data alignment, call PG_DETOAST_DATUM_PACKED(),
+ * VARDATA_ANY(), VARSIZE_ANY() and VARSIZE_ANY_EXHDR().  Elsewhere, call
+ * PG_DETOAST_DATUM(), VARDATA() and VARSIZE().  Directly fetching an int16,
+ * int32 or wider field in the struct representing the datum layout requires
+ * aligned data.  memcpy() is alignment-oblivious, as are most operations on
+ * datatypes, such as text, whose layout struct contains only char fields.
  *
- * Code that wants to use 1-byte-header values without detoasting should
- * use VARSIZE_ANY/VARSIZE_ANY_EXHDR/VARDATA_ANY.  The other macros here
- * should usually be used only by tuple assembly/disassembly code and
- * code that specifically wants to work with still-toasted Datums.
+ * Code assembling a new datum should call VARDATA() and SET_VARSIZE().
+ * (Datums begin life untoasted.)
  *
- * WARNING: It is only safe to use VARDATA_ANY() -- typically with
- * PG_DETOAST_DATUM_PACKED() -- if you really don't care about the alignment.
- * Either because you're working with something like text where the alignment
- * doesn't matter or because you're not going to access its constituent parts
- * and just use things like memcpy on it anyways.
+ * Other macros here should usually be used only by tuple assembly/disassembly
+ * code and code that specifically wants to work with still-toasted Datums.
  */
 #define VARDATA(PTR)						VARDATA_4B(PTR)
 #define VARSIZE(PTR)						VARSIZE_4B(PTR)
@@ -600,7 +598,7 @@ typedef Datum *DatumPtr;
  * value has adequate lifetime.
  */
 
-#define NameGetDatum(X) PointerGetDatum(X)
+#define NameGetDatum(X) CStringGetDatum(NameStr(*(X)))
 
 /*
  * DatumGetInt64
@@ -630,6 +628,41 @@ extern Datum Int64GetDatum(int64 X);
 #endif
 
 /*
+ * DatumGetUInt64
+ *		Returns 64-bit unsigned integer value of a datum.
+ *
+ * Note: this macro hides whether int64 is pass by value or by reference.
+ */
+
+#ifdef USE_FLOAT8_BYVAL
+#define DatumGetUInt64(X) ((uint64) GET_8_BYTES(X))
+#else
+#define DatumGetUInt64(X) (* ((uint64 *) DatumGetPointer(X)))
+#endif
+
+/*
+ * UInt64GetDatum
+ *		Returns datum representation for a 64-bit unsigned integer.
+ *
+ * Note: if int64 is pass by reference, this function returns a reference
+ * to palloc'd space.
+ */
+
+#ifdef USE_FLOAT8_BYVAL
+#define UInt64GetDatum(X) ((Datum) SET_8_BYTES(X))
+#else
+#define UInt64GetDatum(X) Int64GetDatum((int64) (X))
+#endif
+
+/*
+ * Float <-> Datum conversions
+ *
+ * These have to be implemented as inline functions rather than macros, when
+ * passing by value, because many machines pass int and float function
+ * parameters/results differently; so we need to play weird games with unions.
+ */
+
+/*
  * DatumGetFloat4
  *		Returns 4-byte floating point value of a datum.
  *
@@ -637,7 +670,18 @@ extern Datum Int64GetDatum(int64 X);
  */
 
 #ifdef USE_FLOAT4_BYVAL
-extern float4 DatumGetFloat4(Datum X);
+static inline float4
+DatumGetFloat4(Datum X)
+{
+	union
+	{
+		int32		value;
+		float4		retval;
+	}			myunion;
+
+	myunion.value = GET_4_BYTES(X);
+	return myunion.retval;
+}
 #else
 #define DatumGetFloat4(X) (* ((float4 *) DatumGetPointer(X)))
 #endif
@@ -649,8 +693,22 @@ extern float4 DatumGetFloat4(Datum X);
  * Note: if float4 is pass by reference, this function returns a reference
  * to palloc'd space.
  */
+#ifdef USE_FLOAT4_BYVAL
+static inline Datum
+Float4GetDatum(float4 X)
+{
+	union
+	{
+		float4		value;
+		int32		retval;
+	}			myunion;
 
+	myunion.value = X;
+	return SET_4_BYTES(myunion.retval);
+}
+#else
 extern Datum Float4GetDatum(float4 X);
+#endif
 
 /*
  * DatumGetFloat8
@@ -660,7 +718,18 @@ extern Datum Float4GetDatum(float4 X);
  */
 
 #ifdef USE_FLOAT8_BYVAL
-extern float8 DatumGetFloat8(Datum X);
+static inline float8
+DatumGetFloat8(Datum X)
+{
+	union
+	{
+		int64		value;
+		float8		retval;
+	}			myunion;
+
+	myunion.value = GET_8_BYTES(X);
+	return myunion.retval;
+}
 #else
 #define DatumGetFloat8(X) (* ((float8 *) DatumGetPointer(X)))
 #endif
@@ -673,7 +742,22 @@ extern float8 DatumGetFloat8(Datum X);
  * to palloc'd space.
  */
 
+#ifdef USE_FLOAT8_BYVAL
+static inline Datum
+Float8GetDatum(float8 X)
+{
+	union
+	{
+		float8		value;
+		int64		retval;
+	}			myunion;
+
+	myunion.value = X;
+	return SET_8_BYTES(myunion.retval);
+}
+#else
 extern Datum Float8GetDatum(float8 X);
+#endif
 
 
 /*

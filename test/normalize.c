@@ -14,7 +14,10 @@ int main() {
   for (i = 0; i < testsLength; i += 2) {
     PgQueryNormalizeResult result = pg_query_normalize(tests[i]);
 
-    if (strcmp(result.normalized_query, tests[i + 1]) == 0) {
+		if (result.error) {
+			ret_code = -1;
+			printf("%s\n", result.error->message);
+		} else if (strcmp(result.normalized_query, tests[i + 1]) == 0) {
       printf(".");
     } else {
       ret_code = -1;

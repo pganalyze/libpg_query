@@ -34,7 +34,7 @@ static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const voi
 static void _fingerprintInitForTokens(FingerprintContext *ctx);
 static void _fingerprintCopyTokens(FingerprintContext *source, FingerprintContext *target, char *field_name);
 
-#define PG_QUERY_FINGERPRINT_VERSION 1
+#define PG_QUERY_FINGERPRINT_VERSION 2
 
 // Implementations
 

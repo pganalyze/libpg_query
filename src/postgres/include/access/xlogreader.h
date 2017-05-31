@@ -3,7 +3,7 @@
  * xlogreader.h
  *		Definitions for the generic XLog reading facility
  *
- * Portions Copyright (c) 2013-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2013-2017, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *		src/include/access/xlogreader.h
@@ -51,7 +51,8 @@ typedef struct
 	uint8		flags;
 
 	/* Information on full-page image, if any */
-	bool		has_image;
+	bool		has_image;		/* has image, even for consistency checking */
+	bool		apply_image;	/* has image that should be restored */
 	char	   *bkp_image;
 	uint16		hole_offset;
 	uint16		hole_length;
@@ -139,21 +140,43 @@ struct XLogReaderState
 	 * ----------------------------------------
 	 */
 
-	/* Buffer for currently read page (XLOG_BLCKSZ bytes) */
+	/*
+	 * Buffer for currently read page (XLOG_BLCKSZ bytes, valid up to at least
+	 * readLen bytes)
+	 */
 	char	   *readBuf;
+	uint32		readLen;
 
-	/* last read segment, segment offset, read length, TLI */
+	/* last read segment, segment offset, TLI for data currently in readBuf */
 	XLogSegNo	readSegNo;
 	uint32		readOff;
-	uint32		readLen;
 	TimeLineID	readPageTLI;
 
-	/* beginning of last page read, and its TLI  */
+	/*
+	 * beginning of prior page read, and its TLI.  Doesn't necessarily
+	 * correspond to what's in readBuf; used for timeline sanity checks.
+	 */
 	XLogRecPtr	latestPagePtr;
 	TimeLineID	latestPageTLI;
 
 	/* beginning of the WAL record being read. */
 	XLogRecPtr	currRecPtr;
+	/* timeline to read it from, 0 if a lookup is required */
+	TimeLineID	currTLI;
+	/*
+	 * Safe point to read to in currTLI if current TLI is historical
+	 * (tliSwitchPoint) or InvalidXLogRecPtr if on current timeline.
+	 *
+	 * Actually set to the start of the segment containing the timeline
+	 * switch that ends currTLI's validity, not the LSN of the switch
+	 * its self, since we can't assume the old segment will be present.
+	 */
+	XLogRecPtr	currTLIValidUntil;
+	/*
+	 * If currTLI is not the most recent known timeline, the next timeline to
+	 * read from when currTLIValidUntil is reached.
+	 */
+	TimeLineID	nextTLI;
 
 	/* Buffer for current ReadRecord result (expandable) */
 	char	   *readRecordBuf;
@@ -173,6 +196,9 @@ extern void XLogReaderFree(XLogReaderState *state);
 /* Read the next XLog record. Returns NULL on end-of-WAL or failure */
 extern struct XLogRecord *XLogReadRecord(XLogReaderState *state,
 			   XLogRecPtr recptr, char **errormsg);
+
+/* Invalidate read state */
+extern void XLogReaderInvalReadState(XLogReaderState *state);
 
 #ifdef FRONTEND
 extern XLogRecPtr XLogFindNextRecord(XLogReaderState *state, XLogRecPtr RecPtr);
@@ -196,6 +222,8 @@ extern bool DecodeXLogRecord(XLogReaderState *state, XLogRecord *record,
 	((decoder)->blocks[block_id].in_use)
 #define XLogRecHasBlockImage(decoder, block_id) \
 	((decoder)->blocks[block_id].has_image)
+#define XLogRecBlockImageApply(decoder, block_id) \
+	((decoder)->blocks[block_id].apply_image)
 
 extern bool RestoreBlockImage(XLogReaderState *recoder, uint8 block_id, char *dst);
 extern char *XLogRecGetBlockData(XLogReaderState *record, uint8 block_id, Size *len);

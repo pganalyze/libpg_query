@@ -40,7 +40,9 @@ void* test_runner(void* ptr) {
   for (i = 0; i < testsLength; i += 2) {
     PgQueryParseResult result = pg_query_parse(tests[i]);
 
-    if (strcmp(result.parse_tree, tests[i + 1]) == 0) {
+		if (result.error) {
+			printf("%s\n", result.error->message);
+		} else if (strcmp(result.parse_tree, tests[i + 1]) == 0) {
       printf(".");
     } else {
       printf("INVALID result for \"%s\"\nexpected: %s\nactual: %s\n", tests[i], tests[i + 1], result.parse_tree);

@@ -10,7 +10,7 @@
  *	  Display type names "nicely".
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -78,7 +78,8 @@ char * format_type_be(Oid type_oid) { return pstrdup("-"); }
 
 
 /*
- * This version returns a name which is always qualified.
+ * This version returns a name that is always qualified (unless it's one
+ * of the SQL-keyword type names, such as TIMESTAMP WITH TIME ZONE).
  */
 
 
@@ -87,6 +88,15 @@ char * format_type_be(Oid type_oid) { return pstrdup("-"); }
  */
 
 
+/*
+ * This version allows a nondefault typemod to be specified, and forces
+ * qualification of normal type names.
+ */
+
+
+/*
+ * Common workhorse.
+ */
 
 
 

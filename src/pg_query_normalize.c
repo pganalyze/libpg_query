@@ -29,6 +29,9 @@ typedef struct pgssConstLocations
 
 	/* Current number of valid entries in clocations array */
 	int			clocations_count;
+
+	/* highest Param id we've seen, in order to start normalization correctly */
+	int			highest_extern_param_id;
 } pgssConstLocations;
 
 /*
@@ -190,11 +193,12 @@ fill_in_constant_lengths(pgssConstLocations *jstate, const char *query)
  */
 static char *
 generate_normalized_query(pgssConstLocations *jstate, const char *query,
-						  int *query_len_p, int encoding)
+						  int query_loc, int *query_len_p, int encoding)
 {
 	char	   *norm_query;
 	int			query_len = *query_len_p;
 	int			i,
+				norm_query_buflen,		/* Space allowed for norm_query */
 				len_to_wrt,		/* Length (in bytes) to write */
 				quer_loc = 0,	/* Source query byte location */
 				n_quer_loc = 0, /* Normalized query byte location */
@@ -207,8 +211,17 @@ generate_normalized_query(pgssConstLocations *jstate, const char *query,
 	 */
 	fill_in_constant_lengths(jstate, query);
 
+	/*
+	 * Allow for $n symbols to be longer than the constants they replace.
+	 * Constants must take at least one byte in text form, while a $n symbol
+	 * certainly isn't more than 11 bytes, even if n reaches INT_MAX.  We
+	 * could refine that limit based on the max value of n for the current
+	 * query, but it hardly seems worth any extra effort to do so.
+	 */
+	norm_query_buflen = query_len + jstate->clocations_count * 10;
+
 	/* Allocate result buffer */
-	norm_query = palloc(query_len + 1);
+	norm_query = palloc(norm_query_buflen + 1);
 
 	for (i = 0; i < jstate->clocations_count; i++)
 	{
@@ -216,6 +229,9 @@ generate_normalized_query(pgssConstLocations *jstate, const char *query,
 					tok_len;	/* Length (in bytes) of that tok */
 
 		off = jstate->clocations[i].location;
+		/* Adjust recorded location if we're dealing with partial string */
+		off -= query_loc;
+
 		tok_len = jstate->clocations[i].length;
 
 		if (tok_len < 0)
@@ -229,8 +245,9 @@ generate_normalized_query(pgssConstLocations *jstate, const char *query,
 		memcpy(norm_query + n_quer_loc, query + quer_loc, len_to_wrt);
 		n_quer_loc += len_to_wrt;
 
-		/* And insert a '?' in place of the constant token */
-		norm_query[n_quer_loc++] = '?';
+		/* And insert a param symbol in place of the constant token */
+		n_quer_loc += sprintf(norm_query + n_quer_loc, "$%d",
+							  i + 1 + jstate->highest_extern_param_id);
 
 		quer_loc = off + tok_len;
 		last_off = off;
@@ -247,7 +264,7 @@ generate_normalized_query(pgssConstLocations *jstate, const char *query,
 	memcpy(norm_query + n_quer_loc, query + quer_loc, len_to_wrt);
 	n_quer_loc += len_to_wrt;
 
-	Assert(n_quer_loc <= query_len);
+	Assert(n_quer_loc <= norm_query_buflen);
 	norm_query[n_quer_loc] = '\0';
 
 	*query_len_p = n_quer_loc;
@@ -260,7 +277,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 
 	if (node == NULL) return false;
 
-	if ((IsA(node, A_Const) && ((A_Const *) node)->location >= 0) || (IsA(node, DefElem) && ((DefElem *) node)->location >= 0))
+	if ((IsA(node, A_Const) && ((A_Const *) node)->location >= 0))
 	{
 		/* enlarge array if needed */
 		if (jstate->clocations_count >= jstate->clocations_buf_size)
@@ -271,10 +288,24 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 						 jstate->clocations_buf_size *
 						 sizeof(pgssLocationLen));
 		}
-		jstate->clocations[jstate->clocations_count].location = IsA(node, DefElem) ? ((DefElem *) node)->location : ((A_Const *) node)->location;
+		jstate->clocations[jstate->clocations_count].location = ((A_Const *) node)->location;
 		/* initialize lengths to -1 to simplify fill_in_constant_lengths */
 		jstate->clocations[jstate->clocations_count].length = -1;
 		jstate->clocations_count++;
+	}
+	else if (IsA(node, ParamRef))
+	{
+		/* Track the highest ParamRef number */
+		if (((ParamRef *) node)->number > jstate->highest_extern_param_id)
+			jstate->highest_extern_param_id = ((ParamRef *) node)->number;
+	}
+	else if (IsA(node, DefElem))
+	{
+		return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
+	}
+	else if (IsA(node, RawStmt))
+	{
+		return const_record_walker((Node *) ((RawStmt *) node)->stmt, jstate);
 	}
 	else if (IsA(node, VariableSetStmt))
 	{
@@ -328,13 +359,14 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		jstate.clocations = (pgssLocationLen *)
 			palloc(jstate.clocations_buf_size * sizeof(pgssLocationLen));
 		jstate.clocations_count = 0;
+		jstate.highest_extern_param_id = 0;
 
 		/* Walk tree and record const locations */
 		const_record_walker((Node *) tree, &jstate);
 
 		/* Normalize query */
 		query_len = (int) strlen(input);
-		result.normalized_query = strdup(generate_normalized_query(&jstate, input, &query_len, PG_UTF8));
+		result.normalized_query = strdup(generate_normalized_query(&jstate, input, 0, &query_len, PG_UTF8));
 	}
 	PG_CATCH();
 	{

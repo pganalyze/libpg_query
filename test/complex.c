@@ -10318,7 +10318,7 @@ const char* query = "select ? as field_id \
     union all select ? \
     union all select ?";
 
-const char *fingerprint = "01e124b65b9d8ab9ae5df172956e91dc3a89a16f23";
+const char *fingerprint = "02b3deb3c387b2d3a61d1b9fec018cb51dc30e47e5";
 
 int main() {
   size_t i;
@@ -10327,7 +10327,10 @@ int main() {
   for (i = 0; i < 1000; i++) {
     PgQueryFingerprintResult result = pg_query_fingerprint(query);
 
-    if (strcmp(result.hexdigest, fingerprint) == 0) {
+		if (result.error) {
+			ret_code = -1;
+			printf("%s\n", result.error->message);
+		} else if (strcmp(result.hexdigest, fingerprint) == 0) {
       printf(".");
     } else {
       ret_code = -1;

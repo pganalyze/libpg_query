@@ -5,7 +5,7 @@
  *	  However, we define it here so that the format is documented.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/pg_control.h
@@ -20,8 +20,10 @@
 #include "port/pg_crc32c.h"
 
 
+#define MOCK_AUTH_NONCE_LEN		32
+
 /* Version identifier for this pg_control format */
-#define PG_CONTROL_VERSION	942
+#define PG_CONTROL_VERSION	1002
 
 /*
  * Body of CheckPoint XLOG records.  This is declared here because we keep
@@ -54,8 +56,8 @@ typedef struct CheckPoint
 	/*
 	 * Oldest XID still running. This is only needed to initialize hot standby
 	 * mode from an online checkpoint, so we only bother calculating this for
-	 * online checkpoints and only when wal_level is hot_standby. Otherwise
-	 * it's set to InvalidTransactionId.
+	 * online checkpoints and only when wal_level is replica. Otherwise it's
+	 * set to InvalidTransactionId.
 	 */
 	TransactionId oldestActiveXid;
 } CheckPoint;
@@ -215,15 +217,19 @@ typedef struct ControlFileData
 	uint32		toast_max_chunk_size;	/* chunk size in TOAST tables */
 	uint32		loblksize;		/* chunk size in pg_largeobject */
 
-	/* flag indicating internal format of timestamp, interval, time */
-	bool		enableIntTimes; /* int64 storage enabled? */
-
 	/* flags indicating pass-by-value status of various types */
 	bool		float4ByVal;	/* float4 pass-by-value? */
 	bool		float8ByVal;	/* float8, int8, etc pass-by-value? */
 
 	/* Are data pages protected by checksums? Zero if no checksum version */
 	uint32		data_checksum_version;
+
+	/*
+	 * Random nonce, used in authentication requests that need to proceed
+	 * based on values that are cluster-unique, like a SASL exchange that
+	 * failed at an early stage.
+	 */
+	char		mock_authentication_nonce[MOCK_AUTH_NONCE_LEN];
 
 	/* CRC of all above ... MUST BE LAST! */
 	pg_crc32c	crc;

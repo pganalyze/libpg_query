@@ -3,7 +3,7 @@
  * lsyscache.h
  *	  Convenience routines for common queries in the system catalog cache.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/lsyscache.h
@@ -35,6 +35,28 @@ typedef enum IOFuncSelector
 	IOFunc_send
 } IOFuncSelector;
 
+/* Flag bits for get_attstatsslot */
+#define ATTSTATSSLOT_VALUES		0x01
+#define ATTSTATSSLOT_NUMBERS	0x02
+
+/* Result struct for get_attstatsslot */
+typedef struct AttStatsSlot
+{
+	/* Always filled: */
+	Oid			staop;			/* Actual staop for the found slot */
+	/* Filled if ATTSTATSSLOT_VALUES is specified: */
+	Oid			valuetype;		/* Actual datatype of the values */
+	Datum	   *values;			/* slot's "values" array, or NULL if none */
+	int			nvalues;		/* length of values[], or 0 */
+	/* Filled if ATTSTATSSLOT_NUMBERS is specified: */
+	float4	   *numbers;		/* slot's "numbers" array, or NULL if none */
+	int			nnumbers;		/* length of numbers[], or 0 */
+
+	/* Remaining fields are private to get_attstatsslot/free_attstatsslot */
+	void	   *values_arr;		/* palloc'd values array, if any */
+	void	   *numbers_arr;	/* palloc'd numbers array, if any */
+} AttStatsSlot;
+
 /* Hook for plugins to get control in get_attavgwidth() */
 typedef int32 (*get_attavgwidth_hook_type) (Oid relid, AttrNumber attnum);
 extern PGDLLIMPORT get_attavgwidth_hook_type get_attavgwidth_hook;
@@ -64,6 +86,7 @@ extern Oid get_opfamily_proc(Oid opfamily, Oid lefttype, Oid righttype,
 extern char *get_attname(Oid relid, AttrNumber attnum);
 extern char *get_relid_attribute_name(Oid relid, AttrNumber attnum);
 extern AttrNumber get_attnum(Oid relid, const char *attname);
+extern char	get_attidentity(Oid relid, AttrNumber attnum);
 extern Oid	get_atttype(Oid relid, AttrNumber attnum);
 extern int32 get_atttypmod(Oid relid, AttrNumber attnum);
 extern void get_atttypetypmodcoll(Oid relid, AttrNumber attnum,
@@ -75,6 +98,7 @@ extern Oid	get_opclass_family(Oid opclass);
 extern Oid	get_opclass_input_type(Oid opclass);
 extern RegProcedure get_opcode(Oid opno);
 extern char *get_opname(Oid opno);
+extern Oid	get_op_rettype(Oid opno);
 extern void op_input_types(Oid opno, Oid *lefttype, Oid *righttype);
 extern bool op_mergejoinable(Oid opno, Oid inputtype);
 extern bool op_hashjoinable(Oid opno, Oid inputtype);
@@ -93,6 +117,7 @@ extern Oid	get_func_variadictype(Oid funcid);
 extern bool get_func_retset(Oid funcid);
 extern bool func_strict(Oid funcid);
 extern char func_volatile(Oid funcid);
+extern char func_parallel(Oid funcid);
 extern bool get_func_leakproof(Oid funcid);
 extern float4 get_func_cost(Oid funcid);
 extern float4 get_func_rows(Oid funcid);
@@ -102,6 +127,7 @@ extern Oid	get_rel_namespace(Oid relid);
 extern Oid	get_rel_type_id(Oid relid);
 extern char get_rel_relkind(Oid relid);
 extern Oid	get_rel_tablespace(Oid relid);
+extern char get_rel_persistence(Oid relid);
 extern Oid	get_transform_fromsql(Oid typid, Oid langid, List *trftypes);
 extern Oid	get_transform_tosql(Oid typid, Oid langid, List *trftypes);
 extern bool get_typisdefined(Oid typid);
@@ -144,15 +170,9 @@ extern Oid	getBaseType(Oid typid);
 extern Oid	getBaseTypeAndTypmod(Oid typid, int32 *typmod);
 extern int32 get_typavgwidth(Oid typid, int32 typmod);
 extern int32 get_attavgwidth(Oid relid, AttrNumber attnum);
-extern bool get_attstatsslot(HeapTuple statstuple,
-				 Oid atttype, int32 atttypmod,
-				 int reqkind, Oid reqop,
-				 Oid *actualop,
-				 Datum **values, int *nvalues,
-				 float4 **numbers, int *nnumbers);
-extern void free_attstatsslot(Oid atttype,
-				  Datum *values, int nvalues,
-				  float4 *numbers, int nnumbers);
+extern bool get_attstatsslot(AttStatsSlot *sslot, HeapTuple statstuple,
+				 int reqkind, Oid reqop, int flags);
+extern void free_attstatsslot(AttStatsSlot *sslot);
 extern char *get_namespace_name(Oid nspid);
 extern char *get_namespace_name_or_temp(Oid nspid);
 extern Oid	get_range_subtype(Oid rangeOid);

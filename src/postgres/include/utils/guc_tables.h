@@ -5,7 +5,7 @@
  *
  * See src/backend/utils/misc/README for design notes.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  *
  *	  src/include/utils/guc_tables.h
  *
@@ -72,6 +72,7 @@ enum config_group
 	REPLICATION_SENDING,
 	REPLICATION_MASTER,
 	REPLICATION_STANDBY,
+	REPLICATION_SUBSCRIBERS,
 	QUERY_TUNING,
 	QUERY_TUNING_METHOD,
 	QUERY_TUNING_COST,

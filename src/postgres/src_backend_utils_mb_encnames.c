@@ -108,6 +108,24 @@ const pg_enc2name pg_enc2name_tbl[] =
 
 
 
+#ifndef FRONTEND
+
+/*
+ * Table of encoding names for ICU
+ *
+ * Reference: <https://ssl.icu-project.org/icu-bin/convexp>
+ *
+ * NULL entries are not supported by ICU, or their mapping is unclear.
+ */
+
+
+
+
+
+
+#endif /* not FRONTEND */
+
+
 /* ----------
  * Encoding checks, for error returns -1 else encoding id
  * ----------

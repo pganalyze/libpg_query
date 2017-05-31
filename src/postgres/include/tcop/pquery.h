@@ -4,7 +4,7 @@
  *	  prototypes for pquery.c.
  *
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/tcop/pquery.h
@@ -34,10 +34,10 @@ extern void PortalSetResultFormat(Portal portal, int nFormats,
 					  int16 *formats);
 
 extern bool PortalRun(Portal portal, long count, bool isTopLevel,
-		  DestReceiver *dest, DestReceiver *altdest,
+		  bool run_once, DestReceiver *dest, DestReceiver *altdest,
 		  char *completionTag);
 
-extern long PortalRunFetch(Portal portal,
+extern uint64 PortalRunFetch(Portal portal,
 			   FetchDirection fdirection,
 			   long count,
 			   DestReceiver *dest);

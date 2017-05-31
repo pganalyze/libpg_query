@@ -172,7 +172,7 @@ extern int plpgsql_yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 117 "pl_gram.y" /* yacc.c:1909  */
+#line 119 "pl_gram.y" /* yacc.c:1909  */
 
 		core_YYSTYPE			core_yystype;
 		/* these fields must match core_YYSTYPE: */

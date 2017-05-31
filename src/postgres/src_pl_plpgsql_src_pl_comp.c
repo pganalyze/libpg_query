@@ -4,12 +4,13 @@
  * - plpgsql_error_funcname
  * - plpgsql_check_syntax
  * - plpgsql_curr_compile
- * - compile_tmp_cxt
+ * - plpgsql_compile_tmp_cxt
  * - plpgsql_DumpExecTree
- * - plpgsql_nDatums
- * - plpgsql_Datums
  * - plpgsql_build_variable
  * - plpgsql_adddatum
+ * - plpgsql_nDatums
+ * - plpgsql_Datums
+ * - datums_alloc
  * - plpgsql_build_record
  * - build_row_from_class
  * - plpgsql_build_datatype
@@ -17,6 +18,7 @@
  * - plpgsql_parse_dblword
  * - plpgsql_parse_word
  * - plpgsql_add_initdatums
+ * - datums_last
  * - plpgsql_recognize_err_condition
  * - exception_label_map
  * - plpgsql_parse_err_condition
@@ -26,9 +28,9 @@
  * - plpgsql_parse_cwordrowtype
  * - plpgsql_parse_result
  * - plpgsql_compile_error_callback
- * - datums_alloc
- * - datums_last
+ * - plpgsql_start_datums
  * - add_dummy_return
+ * - plpgsql_finish_datums
  *--------------------------------------------------------------------
  */
 
@@ -37,7 +39,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -47,7 +49,7 @@
  *-------------------------------------------------------------------------
  */
 
-#include "plpgsql.h"
+#include "postgres.h"
 
 #include <ctype.h>
 
@@ -63,8 +65,11 @@
 #include "utils/guc.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
+#include "utils/regproc.h"
 #include "utils/rel.h"
 #include "utils/syscache.h"
+
+#include "plpgsql.h"
 
 
 /* ----------
@@ -79,7 +84,7 @@ __thread int			plpgsql_nDatums;
 
 __thread PLpgSQL_datum **plpgsql_Datums;
 
-static int	datums_last = 0;
+static int	datums_last;
 
 __thread char	   *plpgsql_error_funcname;
 
@@ -92,7 +97,7 @@ __thread PLpgSQL_function *plpgsql_curr_compile;
 
 
 /* A context appropriate for short-term allocs during compilation */
-__thread MemoryContext compile_tmp_cxt;
+__thread MemoryContext plpgsql_compile_tmp_cxt;
 
 
 /* ----------
@@ -135,7 +140,7 @@ static PLpgSQL_function *do_compile(FunctionCallInfo fcinfo,
 		   PLpgSQL_func_hashkey *hashkey,
 		   bool forValidator);
 static void plpgsql_compile_error_callback(void *arg);
-static void add_parameter_name(int itemtype, int itemno, const char *name);
+static void add_parameter_name(PLpgSQL_nsitem_type itemtype, int itemno, const char *name);
 static void add_dummy_return(PLpgSQL_function *function);
 static Node *plpgsql_pre_column_ref(ParseState *pstate, ColumnRef *cref);
 static Node *plpgsql_post_column_ref(ParseState *pstate, ColumnRef *cref, Node *var);
@@ -146,6 +151,8 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
 static PLpgSQL_row *build_row_from_class(Oid classOid);
 static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
 static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod, Oid collation);
+static void plpgsql_start_datums(void);
+static void plpgsql_finish_datums(PLpgSQL_function *function);
 static void compute_function_hashkey(FunctionCallInfo fcinfo,
 						 Form_pg_proc procStruct,
 						 PLpgSQL_func_hashkey *hashkey,
@@ -189,7 +196,7 @@ static void delete_function(PLpgSQL_function *func);
  * careful about pfree'ing their allocations, it is also wise to
  * switch into a short-term context before calling into the
  * backend. An appropriate context for performing short-term
- * allocations is the compile_tmp_cxt.
+ * allocations is the plpgsql_compile_tmp_cxt.
  *
  * NB: this code is not re-entrant.  We assume that nothing we do here could
  * result in the invocation of another plpgsql function.
@@ -215,7 +222,6 @@ plpgsql_compile_inline(char *proc_source)
 	PLpgSQL_variable *var;
 	int			parse_rc;
 	MemoryContext func_cxt;
-	int			i;
 
 	/*
 	 * Setup the scanner input and error info.  We assume that this function
@@ -247,11 +253,9 @@ plpgsql_compile_inline(char *proc_source)
 	 * its own memory context, so it can be reclaimed easily.
 	 */
 	func_cxt = AllocSetContextCreate(CurrentMemoryContext,
-									 "PL/pgSQL function context",
-									 ALLOCSET_DEFAULT_MINSIZE,
-									 ALLOCSET_DEFAULT_INITSIZE,
-									 ALLOCSET_DEFAULT_MAXSIZE);
-	compile_tmp_cxt = MemoryContextSwitchTo(func_cxt);
+									 "PL/pgSQL inline code context",
+									 ALLOCSET_DEFAULT_SIZES);
+	plpgsql_compile_tmp_cxt = MemoryContextSwitchTo(func_cxt);
 
 	function->fn_signature = pstrdup(func_name);
 	function->fn_is_trigger = PLPGSQL_NOT_TRIGGER;
@@ -269,13 +273,9 @@ plpgsql_compile_inline(char *proc_source)
 	function->extra_errors = 0;
 
 	plpgsql_ns_init();
-	plpgsql_ns_push(func_name);
+	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
 	plpgsql_DumpExecTree = false;
-
-	datums_alloc = 128;
-	plpgsql_nDatums = 0;
-	plpgsql_Datums = palloc(sizeof(PLpgSQL_datum *) * datums_alloc);
-	datums_last = 0;
+	plpgsql_start_datums();
 
 	/* Set up as though in a function returning VOID */
 	function->fn_rettype = VOIDOID;
@@ -322,10 +322,8 @@ plpgsql_compile_inline(char *proc_source)
 	 * Complete the function's info
 	 */
 	function->fn_nargs = 0;
-	function->ndatums = plpgsql_nDatums;
-	function->datums = palloc(sizeof(PLpgSQL_datum *) * plpgsql_nDatums);
-	for (i = 0; i < plpgsql_nDatums; i++)
-		function->datums[i] = plpgsql_Datums[i];
+
+	plpgsql_finish_datums(function);
 
 	/*
 	 * Pop the error context stack
@@ -335,8 +333,8 @@ plpgsql_compile_inline(char *proc_source)
 
 	plpgsql_check_syntax = false;
 
-	MemoryContextSwitchTo(compile_tmp_cxt);
-	compile_tmp_cxt = NULL;
+	MemoryContextSwitchTo(plpgsql_compile_tmp_cxt);
+	plpgsql_compile_tmp_cxt = NULL;
 	return function;
 }
 
@@ -870,6 +868,7 @@ plpgsql_build_record(const char *refname, int lineno, bool add2namespace)
 	rec->tup = NULL;
 	rec->tupdesc = NULL;
 	rec->freetup = false;
+	rec->freetupdesc = false;
 	plpgsql_adddatum((PLpgSQL_datum *) rec);
 	if (add2namespace)
 		plpgsql_ns_additem(PLPGSQL_NSTYPE_REC, rec->dno, rec->refname);
@@ -994,6 +993,22 @@ plpgsql_parse_err_condition(char *condname)
 }
 
 /* ----------
+ * plpgsql_start_datums			Initialize datum list at compile startup.
+ * ----------
+ */
+static void
+plpgsql_start_datums(void)
+{
+	datums_alloc = 128;
+	plpgsql_nDatums = 0;
+	/* This is short-lived, so needn't allocate in function's cxt */
+	plpgsql_Datums = MemoryContextAlloc(plpgsql_compile_tmp_cxt,
+									 sizeof(PLpgSQL_datum *) * datums_alloc);
+	/* datums_last tracks what's been seen by plpgsql_add_initdatums() */
+	datums_last = 0;
+}
+
+/* ----------
  * plpgsql_adddatum			Add a variable, record or row
  *					to the compiler's datum list.
  * ----------
@@ -1009,6 +1024,39 @@ plpgsql_adddatum(PLpgSQL_datum *new)
 
 	new->dno = plpgsql_nDatums;
 	plpgsql_Datums[plpgsql_nDatums++] = new;
+}
+
+/* ----------
+ * plpgsql_finish_datums	Copy completed datum info into function struct.
+ *
+ * This is also responsible for building resettable_datums, a bitmapset
+ * of the dnos of all ROW, REC, and RECFIELD datums in the function.
+ * ----------
+ */
+static void
+plpgsql_finish_datums(PLpgSQL_function *function)
+{
+	Bitmapset  *resettable_datums = NULL;
+	int			i;
+
+	function->ndatums = plpgsql_nDatums;
+	function->datums = palloc(sizeof(PLpgSQL_datum *) * plpgsql_nDatums);
+	for (i = 0; i < plpgsql_nDatums; i++)
+	{
+		function->datums[i] = plpgsql_Datums[i];
+		switch (function->datums[i]->dtype)
+		{
+			case PLPGSQL_DTYPE_ROW:
+			case PLPGSQL_DTYPE_REC:
+			case PLPGSQL_DTYPE_RECFIELD:
+				resettable_datums = bms_add_member(resettable_datums, i);
+				break;
+
+			default:
+				break;
+		}
+	}
+	function->resettable_datums = resettable_datums;
 }
 
 

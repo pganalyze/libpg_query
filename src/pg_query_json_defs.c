@@ -14,9 +14,29 @@ _outRangeVar(StringInfo str, const RangeVar *node)
 
   WRITE_STRING_FIELD(schemaname);
   WRITE_STRING_FIELD(relname);
-  WRITE_ENUM_FIELD(inhOpt);
+  WRITE_BOOL_FIELD(inh);
   WRITE_CHAR_FIELD(relpersistence);
   WRITE_NODE_PTR_FIELD(alias);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outTableFunc(StringInfo str, const TableFunc *node)
+{
+  WRITE_NODE_TYPE("TableFunc");
+
+  WRITE_NODE_PTR_FIELD(ns_uris);
+  WRITE_NODE_PTR_FIELD(ns_names);
+  WRITE_NODE_PTR_FIELD(docexpr);
+  WRITE_NODE_PTR_FIELD(rowexpr);
+  WRITE_NODE_PTR_FIELD(colnames);
+  WRITE_NODE_PTR_FIELD(coltypes);
+  WRITE_NODE_PTR_FIELD(coltypmods);
+  WRITE_NODE_PTR_FIELD(colcollations);
+  WRITE_NODE_PTR_FIELD(colexprs);
+  WRITE_NODE_PTR_FIELD(coldefexprs);
+  WRITE_BITMAPSET_FIELD(notnulls);
+  WRITE_INT_FIELD(ordinalitycol);
   WRITE_INT_FIELD(location);
 }
 
@@ -58,6 +78,8 @@ _outAggref(StringInfo str, const Aggref *node)
   WRITE_UINT_FIELD(aggtype);
   WRITE_UINT_FIELD(aggcollid);
   WRITE_UINT_FIELD(inputcollid);
+  WRITE_UINT_FIELD(aggtranstype);
+  WRITE_NODE_PTR_FIELD(aggargtypes);
   WRITE_NODE_PTR_FIELD(aggdirectargs);
   WRITE_NODE_PTR_FIELD(args);
   WRITE_NODE_PTR_FIELD(aggorder);
@@ -67,6 +89,7 @@ _outAggref(StringInfo str, const Aggref *node)
   WRITE_BOOL_FIELD(aggvariadic);
   WRITE_CHAR_FIELD(aggkind);
   WRITE_UINT_FIELD(agglevelsup);
+  WRITE_ENUM_FIELD(aggsplit);
   WRITE_INT_FIELD(location);
 }
 
@@ -237,6 +260,7 @@ _outSubPlan(StringInfo str, const SubPlan *node)
   WRITE_UINT_FIELD(firstColCollation);
   WRITE_BOOL_FIELD(useHashTable);
   WRITE_BOOL_FIELD(unknownEqFalse);
+  WRITE_BOOL_FIELD(parallel_safe);
   WRITE_NODE_PTR_FIELD(setParam);
   WRITE_NODE_PTR_FIELD(parParam);
   WRITE_NODE_PTR_FIELD(args);
@@ -432,6 +456,17 @@ _outMinMaxExpr(StringInfo str, const MinMaxExpr *node)
 }
 
 static void
+_outSQLValueFunction(StringInfo str, const SQLValueFunction *node)
+{
+  WRITE_NODE_TYPE("SQLValueFunction");
+
+  WRITE_ENUM_FIELD(op);
+  WRITE_UINT_FIELD(type);
+  WRITE_INT_FIELD(typmod);
+  WRITE_INT_FIELD(location);
+}
+
+static void
 _outXmlExpr(StringInfo str, const XmlExpr *node)
 {
   WRITE_NODE_TYPE("XmlExpr");
@@ -599,6 +634,25 @@ _outIntoClause(StringInfo str, const IntoClause *node)
 }
 
 static void
+_outNextValueExpr(StringInfo str, const NextValueExpr *node)
+{
+  WRITE_NODE_TYPE("NextValueExpr");
+
+  WRITE_UINT_FIELD(seqid);
+  WRITE_UINT_FIELD(typeId);
+}
+
+static void
+_outRawStmt(StringInfo str, const RawStmt *node)
+{
+  WRITE_NODE_TYPE("RawStmt");
+
+  WRITE_NODE_PTR_FIELD(stmt);
+  WRITE_INT_FIELD(stmt_location);
+  WRITE_INT_FIELD(stmt_len);
+}
+
+static void
 _outQuery(StringInfo str, const Query *node)
 {
   WRITE_NODE_TYPE("Query");
@@ -610,6 +664,7 @@ _outQuery(StringInfo str, const Query *node)
   WRITE_INT_FIELD(resultRelation);
   WRITE_BOOL_FIELD(hasAggs);
   WRITE_BOOL_FIELD(hasWindowFuncs);
+  WRITE_BOOL_FIELD(hasTargetSRFs);
   WRITE_BOOL_FIELD(hasSubLinks);
   WRITE_BOOL_FIELD(hasDistinctOn);
   WRITE_BOOL_FIELD(hasRecursive);
@@ -620,6 +675,7 @@ _outQuery(StringInfo str, const Query *node)
   WRITE_NODE_PTR_FIELD(rtable);
   WRITE_NODE_PTR_FIELD(jointree);
   WRITE_NODE_PTR_FIELD(targetList);
+  WRITE_ENUM_FIELD(override);
   WRITE_NODE_PTR_FIELD(onConflict);
   WRITE_NODE_PTR_FIELD(returningList);
   WRITE_NODE_PTR_FIELD(groupClause);
@@ -634,6 +690,8 @@ _outQuery(StringInfo str, const Query *node)
   WRITE_NODE_PTR_FIELD(setOperations);
   WRITE_NODE_PTR_FIELD(constraintDeps);
   WRITE_NODE_PTR_FIELD(withCheckOptions);
+  WRITE_INT_FIELD(stmt_location);
+  WRITE_INT_FIELD(stmt_len);
 }
 
 static void
@@ -647,6 +705,7 @@ _outInsertStmt(StringInfo str, const InsertStmt *node)
   WRITE_NODE_PTR_FIELD(onConflictClause);
   WRITE_NODE_PTR_FIELD(returningList);
   WRITE_NODE_PTR_FIELD(withClause);
+  WRITE_ENUM_FIELD(override);
 }
 
 static void
@@ -828,6 +887,8 @@ _outCreateStmt(StringInfo str, const CreateStmt *node)
   WRITE_NODE_PTR_FIELD(relation);
   WRITE_NODE_PTR_FIELD(tableElts);
   WRITE_NODE_PTR_FIELD(inhRelations);
+  WRITE_NODE_PTR_FIELD(partbound);
+  WRITE_NODE_PTR_FIELD(partspec);
   WRITE_NODE_PTR_FIELD(ofTypename);
   WRITE_NODE_PTR_FIELD(constraints);
   WRITE_NODE_PTR_FIELD(options);
@@ -846,6 +907,7 @@ _outDefineStmt(StringInfo str, const DefineStmt *node)
   WRITE_NODE_PTR_FIELD(defnames);
   WRITE_NODE_PTR_FIELD(args);
   WRITE_NODE_PTR_FIELD(definition);
+  WRITE_BOOL_FIELD(if_not_exists);
 }
 
 static void
@@ -854,7 +916,6 @@ _outDropStmt(StringInfo str, const DropStmt *node)
   WRITE_NODE_TYPE("DropStmt");
 
   WRITE_NODE_PTR_FIELD(objects);
-  WRITE_NODE_PTR_FIELD(arguments);
   WRITE_ENUM_FIELD(removeType);
   WRITE_ENUM_FIELD(behavior);
   WRITE_BOOL_FIELD(missing_ok);
@@ -877,8 +938,7 @@ _outCommentStmt(StringInfo str, const CommentStmt *node)
   WRITE_NODE_TYPE("CommentStmt");
 
   WRITE_ENUM_FIELD(objtype);
-  WRITE_NODE_PTR_FIELD(objname);
-  WRITE_NODE_PTR_FIELD(objargs);
+  WRITE_NODE_PTR_FIELD(object);
   WRITE_STRING_FIELD(comment);
 }
 
@@ -958,7 +1018,6 @@ _outRenameStmt(StringInfo str, const RenameStmt *node)
   WRITE_ENUM_FIELD(relationType);
   WRITE_NODE_PTR_FIELD(relation);
   WRITE_NODE_PTR_FIELD(object);
-  WRITE_NODE_PTR_FIELD(objarg);
   WRITE_STRING_FIELD(subname);
   WRITE_STRING_FIELD(newname);
   WRITE_ENUM_FIELD(behavior);
@@ -1103,6 +1162,7 @@ _outCreateSeqStmt(StringInfo str, const CreateSeqStmt *node)
   WRITE_NODE_PTR_FIELD(sequence);
   WRITE_NODE_PTR_FIELD(options);
   WRITE_UINT_FIELD(ownerId);
+  WRITE_BOOL_FIELD(for_identity);
   WRITE_BOOL_FIELD(if_not_exists);
 }
 
@@ -1113,6 +1173,7 @@ _outAlterSeqStmt(StringInfo str, const AlterSeqStmt *node)
 
   WRITE_NODE_PTR_FIELD(sequence);
   WRITE_NODE_PTR_FIELD(options);
+  WRITE_BOOL_FIELD(for_identity);
   WRITE_BOOL_FIELD(missing_ok);
 }
 
@@ -1158,6 +1219,7 @@ _outCreateTrigStmt(StringInfo str, const CreateTrigStmt *node)
   WRITE_NODE_PTR_FIELD(columns);
   WRITE_NODE_PTR_FIELD(whenClause);
   WRITE_BOOL_FIELD(isconstraint);
+  WRITE_NODE_PTR_FIELD(transitionRels);
   WRITE_BOOL_FIELD(deferrable);
   WRITE_BOOL_FIELD(initdeferred);
   WRITE_NODE_PTR_FIELD(constrrel);
@@ -1396,6 +1458,17 @@ _outDropTableSpaceStmt(StringInfo str, const DropTableSpaceStmt *node)
 }
 
 static void
+_outAlterObjectDependsStmt(StringInfo str, const AlterObjectDependsStmt *node)
+{
+  WRITE_NODE_TYPE("AlterObjectDependsStmt");
+
+  WRITE_ENUM_FIELD(objectType);
+  WRITE_NODE_PTR_FIELD(relation);
+  WRITE_NODE_PTR_FIELD(object);
+  WRITE_NODE_PTR_FIELD(extname);
+}
+
+static void
 _outAlterObjectSchemaStmt(StringInfo str, const AlterObjectSchemaStmt *node)
 {
   WRITE_NODE_TYPE("AlterObjectSchemaStmt");
@@ -1403,7 +1476,6 @@ _outAlterObjectSchemaStmt(StringInfo str, const AlterObjectSchemaStmt *node)
   WRITE_ENUM_FIELD(objectType);
   WRITE_NODE_PTR_FIELD(relation);
   WRITE_NODE_PTR_FIELD(object);
-  WRITE_NODE_PTR_FIELD(objarg);
   WRITE_STRING_FIELD(newschema);
   WRITE_BOOL_FIELD(missing_ok);
 }
@@ -1416,8 +1488,16 @@ _outAlterOwnerStmt(StringInfo str, const AlterOwnerStmt *node)
   WRITE_ENUM_FIELD(objectType);
   WRITE_NODE_PTR_FIELD(relation);
   WRITE_NODE_PTR_FIELD(object);
-  WRITE_NODE_PTR_FIELD(objarg);
   WRITE_NODE_PTR_FIELD(newowner);
+}
+
+static void
+_outAlterOperatorStmt(StringInfo str, const AlterOperatorStmt *node)
+{
+  WRITE_NODE_TYPE("AlterOperatorStmt");
+
+  WRITE_NODE_PTR_FIELD(opername);
+  WRITE_NODE_PTR_FIELD(options);
 }
 
 static void
@@ -1471,10 +1551,11 @@ _outAlterEnumStmt(StringInfo str, const AlterEnumStmt *node)
   WRITE_NODE_TYPE("AlterEnumStmt");
 
   WRITE_NODE_PTR_FIELD(typeName);
+  WRITE_STRING_FIELD(oldVal);
   WRITE_STRING_FIELD(newVal);
   WRITE_STRING_FIELD(newValNeighbor);
   WRITE_BOOL_FIELD(newValIsAfter);
-  WRITE_BOOL_FIELD(skipIfExists);
+  WRITE_BOOL_FIELD(skipIfNewValExists);
 }
 
 static void
@@ -1529,6 +1610,7 @@ _outCreateForeignServerStmt(StringInfo str, const CreateForeignServerStmt *node)
   WRITE_STRING_FIELD(servertype);
   WRITE_STRING_FIELD(version);
   WRITE_STRING_FIELD(fdwname);
+  WRITE_BOOL_FIELD(if_not_exists);
   WRITE_NODE_PTR_FIELD(options);
 }
 
@@ -1550,6 +1632,7 @@ _outCreateUserMappingStmt(StringInfo str, const CreateUserMappingStmt *node)
 
   WRITE_NODE_PTR_FIELD(user);
   WRITE_STRING_FIELD(servername);
+  WRITE_BOOL_FIELD(if_not_exists);
   WRITE_NODE_PTR_FIELD(options);
 }
 
@@ -1601,8 +1684,7 @@ _outSecLabelStmt(StringInfo str, const SecLabelStmt *node)
   WRITE_NODE_TYPE("SecLabelStmt");
 
   WRITE_ENUM_FIELD(objtype);
-  WRITE_NODE_PTR_FIELD(objname);
-  WRITE_NODE_PTR_FIELD(objargs);
+  WRITE_NODE_PTR_FIELD(object);
   WRITE_STRING_FIELD(provider);
   WRITE_STRING_FIELD(label);
 }
@@ -1657,8 +1739,7 @@ _outAlterExtensionContentsStmt(StringInfo str, const AlterExtensionContentsStmt 
   WRITE_STRING_FIELD(extname);
   WRITE_INT_FIELD(action);
   WRITE_ENUM_FIELD(objtype);
-  WRITE_NODE_PTR_FIELD(objname);
-  WRITE_NODE_PTR_FIELD(objargs);
+  WRITE_NODE_PTR_FIELD(object);
 }
 
 static void
@@ -1716,6 +1797,7 @@ _outCreatePolicyStmt(StringInfo str, const CreatePolicyStmt *node)
   WRITE_STRING_FIELD(policy_name);
   WRITE_NODE_PTR_FIELD(table);
   WRITE_STRING_FIELD(cmd_name);
+  WRITE_BOOL_FIELD(permissive);
   WRITE_NODE_PTR_FIELD(roles);
   WRITE_NODE_PTR_FIELD(qual);
   WRITE_NODE_PTR_FIELD(with_check);
@@ -1743,6 +1825,101 @@ _outCreateTransformStmt(StringInfo str, const CreateTransformStmt *node)
   WRITE_STRING_FIELD(lang);
   WRITE_NODE_PTR_FIELD(fromsql);
   WRITE_NODE_PTR_FIELD(tosql);
+}
+
+static void
+_outCreateAmStmt(StringInfo str, const CreateAmStmt *node)
+{
+  WRITE_NODE_TYPE("CreateAmStmt");
+
+  WRITE_STRING_FIELD(amname);
+  WRITE_NODE_PTR_FIELD(handler_name);
+  WRITE_CHAR_FIELD(amtype);
+}
+
+static void
+_outPartitionCmd(StringInfo str, const PartitionCmd *node)
+{
+  WRITE_NODE_TYPE("PartitionCmd");
+
+  WRITE_NODE_PTR_FIELD(name);
+  WRITE_NODE_PTR_FIELD(bound);
+}
+
+static void
+_outCreatePublicationStmt(StringInfo str, const CreatePublicationStmt *node)
+{
+  WRITE_NODE_TYPE("CreatePublicationStmt");
+
+  WRITE_STRING_FIELD(pubname);
+  WRITE_NODE_PTR_FIELD(options);
+  WRITE_NODE_PTR_FIELD(tables);
+  WRITE_BOOL_FIELD(for_all_tables);
+}
+
+static void
+_outAlterPublicationStmt(StringInfo str, const AlterPublicationStmt *node)
+{
+  WRITE_NODE_TYPE("AlterPublicationStmt");
+
+  WRITE_STRING_FIELD(pubname);
+  WRITE_NODE_PTR_FIELD(options);
+  WRITE_NODE_PTR_FIELD(tables);
+  WRITE_BOOL_FIELD(for_all_tables);
+  WRITE_ENUM_FIELD(tableAction);
+}
+
+static void
+_outCreateSubscriptionStmt(StringInfo str, const CreateSubscriptionStmt *node)
+{
+  WRITE_NODE_TYPE("CreateSubscriptionStmt");
+
+  WRITE_STRING_FIELD(subname);
+  WRITE_STRING_FIELD(conninfo);
+  WRITE_NODE_PTR_FIELD(publication);
+  WRITE_NODE_PTR_FIELD(options);
+}
+
+static void
+_outAlterSubscriptionStmt(StringInfo str, const AlterSubscriptionStmt *node)
+{
+  WRITE_NODE_TYPE("AlterSubscriptionStmt");
+
+  WRITE_ENUM_FIELD(kind);
+  WRITE_STRING_FIELD(subname);
+  WRITE_STRING_FIELD(conninfo);
+  WRITE_NODE_PTR_FIELD(publication);
+  WRITE_NODE_PTR_FIELD(options);
+}
+
+static void
+_outDropSubscriptionStmt(StringInfo str, const DropSubscriptionStmt *node)
+{
+  WRITE_NODE_TYPE("DropSubscriptionStmt");
+
+  WRITE_STRING_FIELD(subname);
+  WRITE_BOOL_FIELD(missing_ok);
+  WRITE_ENUM_FIELD(behavior);
+}
+
+static void
+_outCreateStatsStmt(StringInfo str, const CreateStatsStmt *node)
+{
+  WRITE_NODE_TYPE("CreateStatsStmt");
+
+  WRITE_NODE_PTR_FIELD(defnames);
+  WRITE_NODE_PTR_FIELD(stat_types);
+  WRITE_NODE_PTR_FIELD(exprs);
+  WRITE_NODE_PTR_FIELD(relations);
+  WRITE_BOOL_FIELD(if_not_exists);
+}
+
+static void
+_outAlterCollationStmt(StringInfo str, const AlterCollationStmt *node)
+{
+  WRITE_NODE_TYPE("AlterCollationStmt");
+
+  WRITE_NODE_PTR_FIELD(collname);
 }
 
 static void
@@ -1813,6 +1990,7 @@ _outA_Indices(StringInfo str, const A_Indices *node)
 {
   WRITE_NODE_TYPE("A_Indices");
 
+  WRITE_BOOL_FIELD(is_slice);
   WRITE_NODE_PTR_FIELD(lidx);
   WRITE_NODE_PTR_FIELD(uidx);
 }
@@ -1939,6 +2117,34 @@ _outRangeTableSample(StringInfo str, const RangeTableSample *node)
 }
 
 static void
+_outRangeTableFunc(StringInfo str, const RangeTableFunc *node)
+{
+  WRITE_NODE_TYPE("RangeTableFunc");
+
+  WRITE_BOOL_FIELD(lateral);
+  WRITE_NODE_PTR_FIELD(docexpr);
+  WRITE_NODE_PTR_FIELD(rowexpr);
+  WRITE_NODE_PTR_FIELD(namespaces);
+  WRITE_NODE_PTR_FIELD(columns);
+  WRITE_NODE_PTR_FIELD(alias);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outRangeTableFuncCol(StringInfo str, const RangeTableFuncCol *node)
+{
+  WRITE_NODE_TYPE("RangeTableFuncCol");
+
+  WRITE_STRING_FIELD(colname);
+  WRITE_NODE_PTR_FIELD(typeName);
+  WRITE_BOOL_FIELD(for_ordinality);
+  WRITE_BOOL_FIELD(is_not_null);
+  WRITE_NODE_PTR_FIELD(colexpr);
+  WRITE_NODE_PTR_FIELD(coldefexpr);
+  WRITE_INT_FIELD(location);
+}
+
+static void
 _outTypeName(StringInfo str, const TypeName *node)
 {
   WRITE_NODE_TYPE("TypeName");
@@ -1964,9 +2170,11 @@ _outColumnDef(StringInfo str, const ColumnDef *node)
   WRITE_BOOL_FIELD(is_local);
   WRITE_BOOL_FIELD(is_not_null);
   WRITE_BOOL_FIELD(is_from_type);
+  WRITE_BOOL_FIELD(is_from_parent);
   WRITE_CHAR_FIELD(storage);
   WRITE_NODE_PTR_FIELD(raw_default);
   WRITE_NODE_PTR_FIELD(cooked_default);
+  WRITE_CHAR_FIELD(identity);
   WRITE_NODE_PTR_FIELD(collClause);
   WRITE_UINT_FIELD(collOid);
   WRITE_NODE_PTR_FIELD(constraints);
@@ -2001,6 +2209,7 @@ _outConstraint(StringInfo str, const Constraint *node)
   WRITE_BOOL_FIELD(is_no_inherit);
   WRITE_NODE_PTR_FIELD(raw_expr);
   WRITE_STRING_FIELD(cooked_expr);
+  WRITE_CHAR_FIELD(generated_when);
   WRITE_NODE_PTR_FIELD(keys);
   WRITE_NODE_PTR_FIELD(exclusions);
   WRITE_NODE_PTR_FIELD(options);
@@ -2047,14 +2256,16 @@ _outRangeTblEntry(StringInfo str, const RangeTblEntry *node)
   WRITE_NODE_PTR_FIELD(joinaliasvars);
   WRITE_NODE_PTR_FIELD(functions);
   WRITE_BOOL_FIELD(funcordinality);
+  WRITE_NODE_PTR_FIELD(tablefunc);
   WRITE_NODE_PTR_FIELD(values_lists);
-  WRITE_NODE_PTR_FIELD(values_collations);
   WRITE_STRING_FIELD(ctename);
   WRITE_UINT_FIELD(ctelevelsup);
   WRITE_BOOL_FIELD(self_reference);
-  WRITE_NODE_PTR_FIELD(ctecoltypes);
-  WRITE_NODE_PTR_FIELD(ctecoltypmods);
-  WRITE_NODE_PTR_FIELD(ctecolcollations);
+  WRITE_NODE_PTR_FIELD(coltypes);
+  WRITE_NODE_PTR_FIELD(coltypmods);
+  WRITE_NODE_PTR_FIELD(colcollations);
+  WRITE_STRING_FIELD(enrname);
+  WRITE_FLOAT_FIELD(enrtuples);
   WRITE_NODE_PTR_FIELD(alias);
   WRITE_NODE_PTR_FIELD(eref);
   WRITE_BOOL_FIELD(lateral);
@@ -2143,12 +2354,13 @@ _outWindowClause(StringInfo str, const WindowClause *node)
 }
 
 static void
-_outFuncWithArgs(StringInfo str, const FuncWithArgs *node)
+_outObjectWithArgs(StringInfo str, const ObjectWithArgs *node)
 {
-  WRITE_NODE_TYPE("FuncWithArgs");
+  WRITE_NODE_TYPE("ObjectWithArgs");
 
-  WRITE_NODE_PTR_FIELD(funcname);
-  WRITE_NODE_PTR_FIELD(funcargs);
+  WRITE_NODE_PTR_FIELD(objname);
+  WRITE_NODE_PTR_FIELD(objargs);
+  WRITE_BOOL_FIELD(args_unspecified);
 }
 
 static void
@@ -2167,7 +2379,6 @@ _outCreateOpClassItem(StringInfo str, const CreateOpClassItem *node)
 
   WRITE_INT_FIELD(itemtype);
   WRITE_NODE_PTR_FIELD(name);
-  WRITE_NODE_PTR_FIELD(args);
   WRITE_INT_FIELD(number);
   WRITE_NODE_PTR_FIELD(order_family);
   WRITE_NODE_PTR_FIELD(class_args);
@@ -2283,6 +2494,60 @@ _outRoleSpec(StringInfo str, const RoleSpec *node)
 
   WRITE_ENUM_FIELD(roletype);
   WRITE_STRING_FIELD(rolename);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outTriggerTransition(StringInfo str, const TriggerTransition *node)
+{
+  WRITE_NODE_TYPE("TriggerTransition");
+
+  WRITE_STRING_FIELD(name);
+  WRITE_BOOL_FIELD(isNew);
+  WRITE_BOOL_FIELD(isTable);
+}
+
+static void
+_outPartitionElem(StringInfo str, const PartitionElem *node)
+{
+  WRITE_NODE_TYPE("PartitionElem");
+
+  WRITE_STRING_FIELD(name);
+  WRITE_NODE_PTR_FIELD(expr);
+  WRITE_NODE_PTR_FIELD(collation);
+  WRITE_NODE_PTR_FIELD(opclass);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outPartitionSpec(StringInfo str, const PartitionSpec *node)
+{
+  WRITE_NODE_TYPE("PartitionSpec");
+
+  WRITE_STRING_FIELD(strategy);
+  WRITE_NODE_PTR_FIELD(partParams);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outPartitionBoundSpec(StringInfo str, const PartitionBoundSpec *node)
+{
+  WRITE_NODE_TYPE("PartitionBoundSpec");
+
+  WRITE_CHAR_FIELD(strategy);
+  WRITE_NODE_PTR_FIELD(listdatums);
+  WRITE_NODE_PTR_FIELD(lowerdatums);
+  WRITE_NODE_PTR_FIELD(upperdatums);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outPartitionRangeDatum(StringInfo str, const PartitionRangeDatum *node)
+{
+  WRITE_NODE_TYPE("PartitionRangeDatum");
+
+  WRITE_BOOL_FIELD(infinite);
+  WRITE_NODE_PTR_FIELD(value);
   WRITE_INT_FIELD(location);
 }
 

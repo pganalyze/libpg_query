@@ -6,7 +6,7 @@
  * NOTE: for historical reasons, this does not correspond to pqcomm.c.
  * pqcomm.c's routines are declared in libpq.h.
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/libpq/pqcomm.h
@@ -107,7 +107,7 @@ typedef struct
 
 /* The earliest and latest frontend/backend protocol version supported. */
 
-#define PG_PROTOCOL_EARLIEST	PG_PROTOCOL(1,0)
+#define PG_PROTOCOL_EARLIEST	PG_PROTOCOL(2,0)
 #define PG_PROTOCOL_LATEST		PG_PROTOCOL(3,0)
 
 typedef uint32 ProtocolVersion; /* FE/BE protocol version number */
@@ -172,8 +172,9 @@ extern bool Db_user_namespace;
 #define AUTH_REQ_GSS		7	/* GSSAPI without wrap() */
 #define AUTH_REQ_GSS_CONT	8	/* Continue GSS exchanges */
 #define AUTH_REQ_SSPI		9	/* SSPI negotiate without wrap() */
-#define AUTH_REQ_SASL	   10	/* SASL authentication. Not supported before
-								 * libpq version 10. */
+#define AUTH_REQ_SASL	   10	/* Begin SASL authentication */
+#define AUTH_REQ_SASL_CONT 11	/* Continue SASL authentication */
+#define AUTH_REQ_SASL_FIN  12	/* Final SASL message */
 
 typedef uint32 AuthRequest;
 

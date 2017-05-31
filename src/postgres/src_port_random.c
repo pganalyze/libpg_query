@@ -1,34 +1,31 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - ScanKeywords
- * - NumScanKeywords
+ * - random
  *--------------------------------------------------------------------
  */
 
 /*-------------------------------------------------------------------------
  *
- * keywords.c
- *	  lexical token lookup for key words in PostgreSQL
+ * random.c
+ *	  random() wrapper
  *
- *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
  * IDENTIFICATION
- *	  src/backend/parser/keywords.c
+ *	  src/port/random.c
  *
  *-------------------------------------------------------------------------
  */
-#include "postgres.h"
 
-#include "parser/gramparse.h"
+#include "c.h"
 
-#define PG_KEYWORD(a,b,c) {a,b,c},
+#include <math.h>
 
 
-const ScanKeyword ScanKeywords[] = {
-#include "parser/kwlist.h"
-};
-
-const int	NumScanKeywords = lengthof(ScanKeywords);
+long
+random()
+{
+	return pg_lrand48();
+}

@@ -9,7 +9,7 @@
  * pg_proc.c
  *	  routines to support manipulation of the pg_proc relation
  *
- * Portions Copyright (c) 1996-2015, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -43,13 +43,10 @@
 #include "utils/acl.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
+#include "utils/regproc.h"
 #include "utils/rel.h"
 #include "utils/syscache.h"
 
-
-Datum		fmgr_internal_validator(PG_FUNCTION_ARGS);
-Datum		fmgr_c_validator(PG_FUNCTION_ARGS);
-Datum		fmgr_sql_validator(PG_FUNCTION_ARGS);
 
 typedef struct
 {
