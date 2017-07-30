@@ -2,6 +2,12 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.6.1    2017-07-29
+
+* Fingerprinting Version 1.2
+  * Ignore portal_name in DeclareCursorStmt, FetchStmt and ClosePortalStmt
+
+
 ## 9.5-1.6.0    2017-07-29
 
 * Change normalization methods to output $1/$2 .. $N instead of ? characters
