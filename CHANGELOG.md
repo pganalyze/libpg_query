@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.6.0    2017-07-29
+
+* Change normalization methods to output $1/$2 .. $N instead of ? characters
+  * BREAKING CHANGE in pg_query_normalize(..) output
+  * This matches the change in the upcoming Postgres 10, and makes it easier
+    to migrate applications to the new normalization format
+
+
 ## 9.5-1.5.0    2017-05-26
 
 * Update to Postgres 9.5.7
