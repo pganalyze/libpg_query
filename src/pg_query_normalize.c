@@ -271,13 +271,10 @@ generate_normalized_query(pgssConstLocations *jstate, const char *query,
 	return norm_query;
 }
 
-static bool const_record_walker(Node *node, pgssConstLocations *jstate)
+static void RecordConstLocation(pgssConstLocations *jstate, int location)
 {
-	bool result;
-
-	if (node == NULL) return false;
-
-	if ((IsA(node, A_Const) && ((A_Const *) node)->location >= 0))
+	/* -1 indicates unknown or undefined location */
+	if (location >= 0)
 	{
 		/* enlarge array if needed */
 		if (jstate->clocations_count >= jstate->clocations_buf_size)
@@ -288,16 +285,28 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 						 jstate->clocations_buf_size *
 						 sizeof(pgssLocationLen));
 		}
-		jstate->clocations[jstate->clocations_count].location = ((A_Const *) node)->location;
+		jstate->clocations[jstate->clocations_count].location = location;
 		/* initialize lengths to -1 to simplify fill_in_constant_lengths */
 		jstate->clocations[jstate->clocations_count].length = -1;
 		jstate->clocations_count++;
+	}
+}
+
+static bool const_record_walker(Node *node, pgssConstLocations *jstate)
+{
+	bool result;
+
+	if (node == NULL) return false;
+
+	if (IsA(node, A_Const))
+	{
+		RecordConstLocation(jstate, castNode(A_Const, node)->location);
 	}
 	else if (IsA(node, ParamRef))
 	{
 		/* Track the highest ParamRef number */
 		if (((ParamRef *) node)->number > jstate->highest_extern_param_id)
-			jstate->highest_extern_param_id = ((ParamRef *) node)->number;
+			jstate->highest_extern_param_id = castNode(ParamRef, node)->number;
 	}
 	else if (IsA(node, DefElem))
 	{
