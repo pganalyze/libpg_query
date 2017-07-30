@@ -144,22 +144,22 @@ static void do_serialize(char **destptr, Size *maxbytes, const char *fmt,...) pg
 
 static void set_config_sourcefile(const char *name, char *sourcefile,
 					  int sourceline);
-static bool call_bool_check_hook(struct config_bool * conf, bool *newval,
+static bool call_bool_check_hook(struct config_bool *conf, bool *newval,
 					 void **extra, GucSource source, int elevel);
-static bool call_int_check_hook(struct config_int * conf, int *newval,
+static bool call_int_check_hook(struct config_int *conf, int *newval,
 					void **extra, GucSource source, int elevel);
-static bool call_real_check_hook(struct config_real * conf, double *newval,
+static bool call_real_check_hook(struct config_real *conf, double *newval,
 					 void **extra, GucSource source, int elevel);
-static bool call_string_check_hook(struct config_string * conf, char **newval,
+static bool call_string_check_hook(struct config_string *conf, char **newval,
 					   void **extra, GucSource source, int elevel);
-static bool call_enum_check_hook(struct config_enum * conf, int *newval,
+static bool call_enum_check_hook(struct config_enum *conf, int *newval,
 					 void **extra, GucSource source, int elevel);
 
 static bool check_log_destination(char **newval, void **extra, GucSource source);
 static void assign_log_destination(const char *newval, void *extra);
 
 static bool check_wal_consistency_checking(char **newval, void **extra,
-	GucSource source);
+							   GucSource source);
 static void assign_wal_consistency_checking(const char *newval, void *extra);
 
 #ifdef HAVE_SYSLOG
@@ -294,8 +294,8 @@ extern const struct config_enum_entry dynamic_shared_memory_options[];
 
 
 
-		/* this is sort of all three
-												 * above together */
+	/* this is sort of all three above
+											 * together */
 
 
 
@@ -562,17 +562,17 @@ typedef struct
 static int	guc_var_compare(const void *a, const void *b);
 static int	guc_name_compare(const char *namea, const char *nameb);
 static void InitializeGUCOptionsFromEnvironment(void);
-static void InitializeOneGUCOption(struct config_generic * gconf);
-static void push_old_value(struct config_generic * gconf, GucAction action);
-static void ReportGUCOption(struct config_generic * record);
-static void reapply_stacked_values(struct config_generic * variable,
-					   struct config_string * pHolder,
+static void InitializeOneGUCOption(struct config_generic *gconf);
+static void push_old_value(struct config_generic *gconf, GucAction action);
+static void ReportGUCOption(struct config_generic *record);
+static void reapply_stacked_values(struct config_generic *variable,
+					   struct config_string *pHolder,
 					   GucStack *stack,
 					   const char *curvalue,
 					   GucContext curscontext, GucSource cursource);
 static void ShowGUCConfigOption(const char *name, DestReceiver *dest);
 static void ShowAllGUCConfig(DestReceiver *dest);
-static char *_ShowOption(struct config_generic * record, bool use_units);
+static char *_ShowOption(struct config_generic *record, bool use_units);
 static bool validate_option_array_item(const char *name, const char *value,
 						   bool skipIfNoPermissions);
 static void write_auto_conf_file(int fd, const char *filename, ConfigVariable *head_p);
@@ -1136,7 +1136,7 @@ static void replace_auto_config_value(ConfigVariable **head_p, ConfigVariable **
  *		variable scontext, integer
  */
 static void
-write_one_nondefault_variable(FILE *fp, struct config_generic * gconf)
+write_one_nondefault_variable(FILE *fp, struct config_generic *gconf)
 {
 	if (gconf->source == PGC_S_DEFAULT)
 		return;
@@ -1351,7 +1351,7 @@ read_nondefault_variables(void)
 
 	FreeFile(fp);
 }
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 
 /*
  * can_skip_gucvar:
@@ -1589,10 +1589,10 @@ read_nondefault_variables(void)
 
 #ifdef USE_PREFETCH
 #else
-#endif   /* USE_PREFETCH */
+#endif							/* USE_PREFETCH */
 
 #ifdef USE_PREFETCH
-#endif   /* USE_PREFETCH */
+#endif							/* USE_PREFETCH */
 
 
 

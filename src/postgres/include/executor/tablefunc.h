@@ -54,7 +54,7 @@ typedef struct TableFuncRoutine
 	void		(*InitOpaque) (struct TableFuncScanState *state, int natts);
 	void		(*SetDocument) (struct TableFuncScanState *state, Datum value);
 	void		(*SetNamespace) (struct TableFuncScanState *state, char *name,
-											 char *uri);
+								 char *uri);
 	void		(*SetRowFilter) (struct TableFuncScanState *state, char *path);
 	void		(*SetColumnFilter) (struct TableFuncScanState *state,
 									char *path, int colnum);
@@ -64,4 +64,4 @@ typedef struct TableFuncRoutine
 	void		(*DestroyOpaque) (struct TableFuncScanState *state);
 } TableFuncRoutine;
 
-#endif   /* _TABLEFUNC_H */
+#endif							/* _TABLEFUNC_H */

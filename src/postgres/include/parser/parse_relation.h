@@ -117,7 +117,7 @@ extern void addRTEtoQuery(ParseState *pstate, RangeTblEntry *rte,
 			  bool addToRelNameSpace, bool addToVarNameSpace);
 extern void errorMissingRTE(ParseState *pstate, RangeVar *relation) pg_attribute_noreturn();
 extern void errorMissingColumn(ParseState *pstate,
-		 char *relname, char *colname, int location) pg_attribute_noreturn();
+				   char *relname, char *colname, int location) pg_attribute_noreturn();
 extern void expandRTE(RangeTblEntry *rte, int rtindex, int sublevels_up,
 		  int location, bool include_dropped,
 		  List **colnames, List **colvars);
@@ -129,4 +129,4 @@ extern Oid	attnumTypeId(Relation rd, int attid);
 extern Oid	attnumCollationId(Relation rd, int attid);
 extern bool isQueryUsingTempRelation(Query *query);
 
-#endif   /* PARSE_RELATION_H */
+#endif							/* PARSE_RELATION_H */

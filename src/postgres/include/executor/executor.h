@@ -71,9 +71,9 @@ extern PGDLLIMPORT ExecutorStart_hook_type ExecutorStart_hook;
 
 /* Hook for plugins to get control in ExecutorRun() */
 typedef void (*ExecutorRun_hook_type) (QueryDesc *queryDesc,
-												   ScanDirection direction,
-												   uint64 count,
-												   bool execute_once);
+									   ScanDirection direction,
+									   uint64 count,
+									   bool execute_once);
 extern PGDLLIMPORT ExecutorRun_hook_type ExecutorRun_hook;
 
 /* Hook for plugins to get control in ExecutorFinish() */
@@ -184,6 +184,7 @@ extern void InitResultRelInfo(ResultRelInfo *resultRelInfo,
 				  Relation partition_root,
 				  int instrument_options);
 extern ResultRelInfo *ExecGetTriggerResultRel(EState *estate, Oid relid);
+extern void ExecCleanUpTriggerState(EState *estate);
 extern bool ExecContextForcesOids(PlanState *planstate, bool *hasoids);
 extern void ExecConstraints(ResultRelInfo *resultRelInfo,
 				TupleTableSlot *slot, EState *estate);
@@ -534,5 +535,7 @@ extern void ExecSimpleRelationDelete(EState *estate, EPQState *epqstate,
 						 TupleTableSlot *searchslot);
 extern void CheckCmdReplicaIdentity(Relation rel, CmdType cmd);
 
+extern void CheckSubscriptionRelkind(char relkind, const char *nspname,
+						 const char *relname);
 
-#endif   /* EXECUTOR_H  */
+#endif							/* EXECUTOR_H  */

@@ -37,7 +37,7 @@ static bool expression_returns_set_walker(Node *node, void *context);
 static int	leftmostLoc(int loc1, int loc2);
 static bool fix_opfuncids_walker(Node *node, void *context);
 static bool planstate_walk_subplans(List *plans, bool (*walker) (),
-												void *context);
+									void *context);
 static bool planstate_walk_members(List *plans, PlanState **planstates,
 					   bool (*walker) (), void *context);
 
@@ -131,7 +131,7 @@ static bool planstate_walk_members(List *plans, PlanState **planstates,
  * worry about subplans or PlaceHolderVars.
  */
 #ifdef USE_ASSERT_CHECKING
-#endif   /* USE_ASSERT_CHECKING */
+#endif							/* USE_ASSERT_CHECKING */
 
 /*
  *	exprSetInputCollation -
@@ -522,6 +522,12 @@ exprLocation(const Node *expr)
 		case T_InferenceElem:
 			/* just use nested expr's location */
 			loc = exprLocation((Node *) ((const InferenceElem *) expr)->expr);
+			break;
+		case T_PartitionElem:
+			loc = ((const PartitionElem *) expr)->location;
+			break;
+		case T_PartitionSpec:
+			loc = ((const PartitionSpec *) expr)->location;
 			break;
 		case T_PartitionBoundSpec:
 			loc = ((const PartitionBoundSpec *) expr)->location;

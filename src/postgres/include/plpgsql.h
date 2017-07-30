@@ -232,10 +232,10 @@ typedef struct PLpgSQL_expr
 	struct PLpgSQL_nsitem *ns;
 
 	/* fields for "simple expression" fast-path execution: */
-	Expr	   *expr_simple_expr;		/* NULL means not a simple expr */
+	Expr	   *expr_simple_expr;	/* NULL means not a simple expr */
 	int			expr_simple_generation; /* plancache generation we checked */
-	Oid			expr_simple_type;		/* result type Oid, if simple */
-	int32		expr_simple_typmod;		/* result typmod, if simple */
+	Oid			expr_simple_type;	/* result type Oid, if simple */
+	int32		expr_simple_typmod; /* result typmod, if simple */
 
 	/*
 	 * if expr is simple AND prepared in current transaction,
@@ -243,8 +243,8 @@ typedef struct PLpgSQL_expr
 	 * seeing if expr_simple_lxid matches current LXID.  (If not,
 	 * expr_simple_state probably points at garbage!)
 	 */
-	ExprState  *expr_simple_state;		/* eval tree for expr_simple_expr */
-	bool		expr_simple_in_use;		/* true if eval tree is active */
+	ExprState  *expr_simple_state;	/* eval tree for expr_simple_expr */
+	bool		expr_simple_in_use; /* true if eval tree is active */
 	LocalTransactionId expr_simple_lxid;
 } PLpgSQL_expr;
 
@@ -349,6 +349,7 @@ typedef struct PLpgSQL_arrayelem
 typedef struct PLpgSQL_nsitem
 {
 	PLpgSQL_nsitem_type itemtype;
+
 	/*
 	 * For labels, itemno is a value of enum PLpgSQL_label_type. For other
 	 * itemtypes, itemno is the associated PLpgSQL_datum's dno.
@@ -746,7 +747,7 @@ typedef struct PLpgSQL_stmt_execsql
 	int			lineno;
 	PLpgSQL_expr *sqlstmt;
 	bool		mod_stmt;		/* is the stmt INSERT/UPDATE/DELETE?  Note:
-								   mod_stmt is set when we plan the query */
+								 * mod_stmt is set when we plan the query */
 	bool		into;			/* INTO supplied? */
 	bool		strict;			/* INTO STRICT flag */
 	PLpgSQL_rec *rec;			/* INTO target, if record */
@@ -864,7 +865,7 @@ typedef struct PLpgSQL_function
 	/* the datums representing the function's local variables */
 	int			ndatums;
 	PLpgSQL_datum **datums;
-	Bitmapset  *resettable_datums;		/* dnos of non-simple vars */
+	Bitmapset  *resettable_datums;	/* dnos of non-simple vars */
 
 	/* function body parsetree */
 	PLpgSQL_stmt_block *action;
@@ -896,7 +897,7 @@ typedef struct PLpgSQL_execstate
 								 * CONTINUE stmt, if any */
 	ErrorData  *cur_error;		/* current exception handler's error */
 
-	Tuplestorestate *tuple_store;		/* SRFs accumulate results here */
+	Tuplestorestate *tuple_store;	/* SRFs accumulate results here */
 	MemoryContext tuple_store_cxt;
 	ResourceOwner tuple_store_owner;
 	ReturnSetInfo *rsi;
@@ -976,7 +977,7 @@ typedef struct PLpgSQL_plugin
 	/* Function pointers set by PL/pgSQL itself */
 	void		(*error_callback) (void *arg);
 	void		(*assign_expr) (PLpgSQL_execstate *estate, PLpgSQL_datum *target,
-											PLpgSQL_expr *expr);
+								PLpgSQL_expr *expr);
 } PLpgSQL_plugin;
 
 /*
@@ -1152,4 +1153,4 @@ extern void plpgsql_scanner_finish(void);
  */
 extern int	plpgsql_yyparse(void);
 
-#endif   /* PLPGSQL_H */
+#endif							/* PLPGSQL_H */

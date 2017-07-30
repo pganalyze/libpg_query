@@ -27,7 +27,7 @@ typedef uint32 (*HashValueFunc) (const void *key, Size keysize);
  * as key comparison functions.)
  */
 typedef int (*HashCompareFunc) (const void *key1, const void *key2,
-											Size keysize);
+								Size keysize);
 
 /*
  * Key copying functions must have this signature.  The return value is not
@@ -157,4 +157,4 @@ extern int	bitmap_match(const void *key1, const void *key2, Size keysize);
 
 #define oid_hash uint32_hash	/* Remove me eventually */
 
-#endif   /* HSEARCH_H */
+#endif							/* HSEARCH_H */

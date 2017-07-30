@@ -91,7 +91,7 @@
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif
-#ifdef _MSC_VER		/* mstcpip.h is missing on mingw */
+#ifdef _MSC_VER					/* mstcpip.h is missing on mingw */
 #include <mstcpip.h>
 #endif
 
@@ -101,6 +101,25 @@
 #include "storage/ipc.h"
 #include "utils/guc.h"
 #include "utils/memutils.h"
+
+/*
+ * Cope with the various platform-specific ways to spell TCP keepalive socket
+ * options.  This doesn't cover Windows, which as usual does its own thing.
+ */
+#if defined(TCP_KEEPIDLE)
+/* TCP_KEEPIDLE is the name of this option on Linux and *BSD */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPIDLE
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPIDLE"
+#elif defined(TCP_KEEPALIVE_THRESHOLD)
+/* TCP_KEEPALIVE_THRESHOLD is the name of this option on Solaris >= 11 */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPALIVE_THRESHOLD
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPALIVE_THRESHOLD"
+#elif defined(TCP_KEEPALIVE) && defined(__darwin__)
+/* TCP_KEEPALIVE is the name of this option on macOS */
+/* Caution: Solaris has this symbol but it means something different */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPALIVE
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPALIVE"
+#endif
 
 /*
  * Configuration options
@@ -155,7 +174,7 @@ static int	internal_flush(void);
 #ifdef HAVE_UNIX_SOCKETS
 static int	Lock_AF_UNIX(char *unixSocketDir, char *unixSocketPath);
 static int	Setup_AF_UNIX(char *sock_path);
-#endif   /* HAVE_UNIX_SOCKETS */
+#endif							/* HAVE_UNIX_SOCKETS */
 
 
 
@@ -192,8 +211,8 @@ PQcommMethods *PqCommMethods = NULL;
  */
 #if defined(ENABLE_GSS) || defined(ENABLE_SSPI)
 #ifdef ENABLE_GSS
-#endif   /* ENABLE_GSS */
-#endif   /* ENABLE_GSS || ENABLE_SSPI */
+#endif							/* ENABLE_GSS */
+#endif							/* ENABLE_GSS || ENABLE_SSPI */
 
 
 
@@ -224,7 +243,7 @@ PQcommMethods *PqCommMethods = NULL;
 #if !defined(WIN32) || defined(IPV6_V6ONLY)
 #endif
 #ifdef HAVE_UNIX_SOCKETS
-#endif   /* HAVE_UNIX_SOCKETS */
+#endif							/* HAVE_UNIX_SOCKETS */
 #ifdef HAVE_IPV6
 #endif
 #ifdef HAVE_UNIX_SOCKETS
@@ -255,7 +274,7 @@ PQcommMethods *PqCommMethods = NULL;
 #ifdef WIN32
 #else
 #endif
-#endif   /* HAVE_UNIX_SOCKETS */
+#endif							/* HAVE_UNIX_SOCKETS */
 
 
 /*
@@ -299,8 +318,8 @@ PQcommMethods *PqCommMethods = NULL;
 #ifdef HAVE_UTIME
 #else							/* !HAVE_UTIME */
 #ifdef HAVE_UTIMES
-#endif   /* HAVE_UTIMES */
-#endif   /* HAVE_UTIME */
+#endif							/* HAVE_UTIMES */
+#endif							/* HAVE_UTIME */
 
 /*
  * RemoveSocketFiles -- unlink socket files at postmaster shutdown
@@ -595,34 +614,28 @@ pq_setkeepaliveswin32(Port *port, int idle, int interval)
 }
 #endif
 
-#if defined(TCP_KEEPIDLE) || defined(TCP_KEEPALIVE) || defined(WIN32)
+#if defined(PG_TCP_KEEPALIVE_IDLE) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
-#ifdef TCP_KEEPIDLE
-#else
-#endif   /* TCP_KEEPIDLE */
 #else							/* WIN32 */
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 #else
 #endif
 
-#if defined(TCP_KEEPIDLE) || defined(TCP_KEEPALIVE) || defined(SIO_KEEPALIVE_VALS)
+#if defined(PG_TCP_KEEPALIVE_IDLE) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
-#ifdef TCP_KEEPIDLE
-#else
-#endif
 #else							/* WIN32 */
 #endif
-#else							/* TCP_KEEPIDLE || SIO_KEEPALIVE_VALS */
+#else
 #endif
 
 #if defined(TCP_KEEPINTVL) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
 #else
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 #else
 #endif
 
-#if defined(TCP_KEEPINTVL) || defined (SIO_KEEPALIVE_VALS)
+#if defined(TCP_KEEPINTVL) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
 #else							/* WIN32 */
 #endif

@@ -49,7 +49,7 @@ struct ParseState;
  * ----------------
  */
 
-#define PARAM_FLAG_CONST	0x0001		/* parameter is constant */
+#define PARAM_FLAG_CONST	0x0001	/* parameter is constant */
 
 typedef struct ParamExternData
 {
@@ -74,7 +74,7 @@ typedef struct ParamListInfoData
 	int			numParams;		/* number of ParamExternDatas following */
 	struct Bitmapset *paramMask;	/* if non-NULL, can ignore omitted params */
 	ParamExternData params[FLEXIBLE_ARRAY_MEMBER];
-}	ParamListInfoData;
+}			ParamListInfoData;
 
 
 /* ----------------
@@ -108,4 +108,4 @@ extern Size EstimateParamListSpace(ParamListInfo paramLI);
 extern void SerializeParamList(ParamListInfo paramLI, char **start_address);
 extern ParamListInfo RestoreParamList(char **start_address);
 
-#endif   /* PARAMS_H */
+#endif							/* PARAMS_H */

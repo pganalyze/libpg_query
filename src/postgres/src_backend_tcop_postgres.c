@@ -68,6 +68,8 @@
 #include "pg_getopt.h"
 #include "postmaster/autovacuum.h"
 #include "postmaster/postmaster.h"
+#include "replication/logicallauncher.h"
+#include "replication/logicalworker.h"
 #include "replication/slot.h"
 #include "replication/walsender.h"
 #include "rewrite/rewriteHandler.h"
@@ -139,13 +141,6 @@ char	   *register_stack_base_ptr = NULL;
 #endif
 
 /*
- * Flag to mark SIGHUP. Whenever the main loop comes around it
- * will reread the configuration file. (Better than doing the
- * reading in the signal handler, ey?)
- */
-
-
-/*
  * Flag to keep track of whether we have started a transaction.
  * For extended query protocol this has to be remembered across messages.
  */
@@ -175,7 +170,7 @@ char	   *register_stack_base_ptr = NULL;
 /* assorted command-line switches */
 	/* -D switch */
 	/* -E switch */
-		/* -j switch */
+	/* -j switch */
 
 /* whether or not, and why, we were canceled by conflict with recovery */
 
@@ -203,7 +198,6 @@ static bool IsTransactionExitStmt(Node *parsetree);
 static bool IsTransactionExitStmtList(List *pstmts);
 static bool IsTransactionStmtList(List *pstmts);
 static void drop_unnamed_stmt(void);
-static void SigHupHandler(SIGNAL_ARGS);
 static void log_disconnections(int code, Datum arg);
 
 
@@ -491,7 +485,13 @@ static void log_disconnections(int code, Datum arg);
 /* signal handler for floating point exception */
 
 
-/* SIGHUP: set flag to re-read config file at next convenient time */
+/*
+ * SIGHUP: set flag to re-read config file at next convenient time.
+ *
+ * Sets the ConfigReloadPending flag, which should be checked at convenient
+ * places inside main loops. (Better than doing the reading in the signal
+ * handler, ey?)
+ */
 
 
 /*
@@ -540,15 +540,15 @@ ia64_get_bsp(void)
 	char	   *ret;
 
 	/* the ;; is a "stop", seems to be required before fetching BSP */
-	__asm__		__volatile__(
-										 ";;\n"
-										 "	mov	%0=ar.bsp	\n"
-							 :			 "=r"(ret));
+	__asm__ __volatile__(
+						 ";;\n"
+						 "	mov	%0=ar.bsp	\n"
+:						 "=r"(ret));
 
 	return ret;
 }
 #endif
-#endif   /* IA64 */
+#endif							/* IA64 */
 
 
 /*
@@ -595,7 +595,7 @@ check_stack_depth(void)
 				(errcode(ERRCODE_STATEMENT_TOO_COMPLEX),
 				 errmsg("stack depth limit exceeded"),
 				 errhint("Increase the configuration parameter \"max_stack_depth\" (currently %dkB), "
-			  "after ensuring the platform's stack depth limit is adequate.",
+						 "after ensuring the platform's stack depth limit is adequate.",
 						 max_stack_depth)));
 	}
 }
@@ -643,7 +643,7 @@ stack_is_too_deep(void)
 	if (stack_depth > max_stack_depth_bytes &&
 		register_stack_base_ptr != NULL)
 		return true;
-#endif   /* IA64 */
+#endif							/* IA64 */
 
 	return false;
 }
@@ -739,7 +739,7 @@ stack_is_too_deep(void)
 
 
 #if defined(HAVE_GETRUSAGE)
-#endif   /* HAVE_GETRUSAGE */
+#endif							/* HAVE_GETRUSAGE */
 
 /*
  * on_proc_exit handler to log end of session

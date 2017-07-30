@@ -27,6 +27,7 @@ extern ObjectAddress DefineIndex(Oid relationId,
 			Oid indexRelationId,
 			bool is_alter_table,
 			bool check_rights,
+			bool check_not_in_use,
 			bool skip_build,
 			bool quiet);
 extern Oid	ReindexIndex(RangeVar *indexRelation, int options);
@@ -163,4 +164,4 @@ extern TypeName *defGetTypeName(DefElem *def);
 extern int	defGetTypeLength(DefElem *def);
 extern List *defGetStringList(DefElem *def);
 
-#endif   /* DEFREM_H */
+#endif							/* DEFREM_H */

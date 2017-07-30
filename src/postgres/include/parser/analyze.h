@@ -18,7 +18,7 @@
 
 /* Hook for plugins to get control at end of parse analysis */
 typedef void (*post_parse_analyze_hook_type) (ParseState *pstate,
-														  Query *query);
+											  Query *query);
 extern PGDLLIMPORT post_parse_analyze_hook_type post_parse_analyze_hook;
 
 
@@ -43,4 +43,4 @@ extern void applyLockingClause(Query *qry, Index rtindex,
 				   LockClauseStrength strength,
 				   LockWaitPolicy waitPolicy, bool pushedDown);
 
-#endif   /* ANALYZE_H */
+#endif							/* ANALYZE_H */

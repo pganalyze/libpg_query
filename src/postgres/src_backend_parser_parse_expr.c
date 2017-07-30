@@ -55,20 +55,20 @@ __thread bool		operator_precedence_warning = false;
  * Node-type groups for operator precedence warnings
  * We use zero for everything not otherwise classified
  */
-#define PREC_GROUP_POSTFIX_IS	1		/* postfix IS tests (NullTest, etc) */
-#define PREC_GROUP_INFIX_IS		2		/* infix IS (IS DISTINCT FROM, etc) */
-#define PREC_GROUP_LESS			3		/* < > */
-#define PREC_GROUP_EQUAL		4		/* = */
-#define PREC_GROUP_LESS_EQUAL	5		/* <= >= <> */
-#define PREC_GROUP_LIKE			6		/* LIKE ILIKE SIMILAR */
-#define PREC_GROUP_BETWEEN		7		/* BETWEEN */
-#define PREC_GROUP_IN			8		/* IN */
-#define PREC_GROUP_NOT_LIKE		9		/* NOT LIKE/ILIKE/SIMILAR */
-#define PREC_GROUP_NOT_BETWEEN	10		/* NOT BETWEEN */
-#define PREC_GROUP_NOT_IN		11		/* NOT IN */
-#define PREC_GROUP_POSTFIX_OP	12		/* generic postfix operators */
-#define PREC_GROUP_INFIX_OP		13		/* generic infix operators */
-#define PREC_GROUP_PREFIX_OP	14		/* generic prefix operators */
+#define PREC_GROUP_POSTFIX_IS	1	/* postfix IS tests (NullTest, etc) */
+#define PREC_GROUP_INFIX_IS		2	/* infix IS (IS DISTINCT FROM, etc) */
+#define PREC_GROUP_LESS			3	/* < > */
+#define PREC_GROUP_EQUAL		4	/* = */
+#define PREC_GROUP_LESS_EQUAL	5	/* <= >= <> */
+#define PREC_GROUP_LIKE			6	/* LIKE ILIKE SIMILAR */
+#define PREC_GROUP_BETWEEN		7	/* BETWEEN */
+#define PREC_GROUP_IN			8	/* IN */
+#define PREC_GROUP_NOT_LIKE		9	/* NOT LIKE/ILIKE/SIMILAR */
+#define PREC_GROUP_NOT_BETWEEN	10	/* NOT BETWEEN */
+#define PREC_GROUP_NOT_IN		11	/* NOT IN */
+#define PREC_GROUP_POSTFIX_OP	12	/* generic postfix operators */
+#define PREC_GROUP_INFIX_OP		13	/* generic infix operators */
+#define PREC_GROUP_PREFIX_OP	14	/* generic prefix operators */
 
 /*
  * Map precedence groupings to old precedence ordering
@@ -121,8 +121,7 @@ static Node *transformCurrentOfExpr(ParseState *pstate, CurrentOfExpr *cexpr);
 static Node *transformColumnRef(ParseState *pstate, ColumnRef *cref);
 static Node *transformWholeRowRef(ParseState *pstate, RangeTblEntry *rte,
 					 int location);
-static Node *transformIndirection(ParseState *pstate, Node *basenode,
-					 List *indirection);
+static Node *transformIndirection(ParseState *pstate, A_Indirection *ind);
 static Node *transformTypeCast(ParseState *pstate, TypeCast *tc);
 static Node *transformCollateClause(ParseState *pstate, CollateClause *c);
 static Node *make_row_comparison_op(ParseState *pstate, List *opname,

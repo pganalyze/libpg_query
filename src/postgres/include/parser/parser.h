@@ -23,7 +23,7 @@ typedef enum
 	BACKSLASH_QUOTE_OFF,
 	BACKSLASH_QUOTE_ON,
 	BACKSLASH_QUOTE_SAFE_ENCODING
-}	BackslashQuoteType;
+}			BackslashQuoteType;
 
 /* GUC variables in scan.l (every one of these is a bad idea :-() */
 extern __thread  int backslash_quote;
@@ -38,4 +38,4 @@ extern List *raw_parser(const char *str);
 extern List *SystemFuncName(char *name);
 extern TypeName *SystemTypeName(char *name);
 
-#endif   /* PARSER_H */
+#endif							/* PARSER_H */

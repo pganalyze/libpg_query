@@ -43,7 +43,7 @@
  */
 #define PG_KEYWORD(a,b,c) {a,0,c},
 
-#endif   /* FRONTEND */
+#endif							/* FRONTEND */
 
 
 const ScanKeyword ScanKeywords[] = {

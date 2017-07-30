@@ -82,8 +82,8 @@ extern FuncCall *makeFuncCall(List *name, List *args, int location);
 
 extern DefElem *makeDefElem(char *name, Node *arg, int location);
 extern DefElem *makeDefElemExtended(char *nameSpace, char *name, Node *arg,
-									DefElemAction defaction, int location);
+					DefElemAction defaction, int location);
 
 extern GroupingSet *makeGroupingSet(GroupingSetKind kind, List *content, int location);
 
-#endif   /* MAKEFUNC_H */
+#endif							/* MAKEFUNC_H */

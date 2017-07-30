@@ -171,11 +171,11 @@ typedef enum ObjectClass
 #define LAST_OCLASS		OCLASS_TRANSFORM
 
 /* flag bits for performDeletion/performMultipleDeletions: */
-#define PERFORM_DELETION_INTERNAL			0x0001		/* internal action */
-#define PERFORM_DELETION_CONCURRENTLY		0x0002		/* concurrent drop */
-#define PERFORM_DELETION_QUIETLY			0x0004		/* suppress notices */
-#define PERFORM_DELETION_SKIP_ORIGINAL		0x0008		/* keep original obj */
-#define PERFORM_DELETION_SKIP_EXTENSIONS	0x0010		/* keep extensions */
+#define PERFORM_DELETION_INTERNAL			0x0001	/* internal action */
+#define PERFORM_DELETION_CONCURRENTLY		0x0002	/* concurrent drop */
+#define PERFORM_DELETION_QUIETLY			0x0004	/* suppress notices */
+#define PERFORM_DELETION_SKIP_ORIGINAL		0x0008	/* keep original obj */
+#define PERFORM_DELETION_SKIP_EXTENSIONS	0x0010	/* keep extensions */
 
 
 /* in dependency.c */
@@ -240,7 +240,7 @@ extern Oid	getExtensionOfObject(Oid classId, Oid objectId);
 
 extern bool sequenceIsOwned(Oid seqId, char deptype, Oid *tableId, int32 *colId);
 extern List *getOwnedSequences(Oid relid, AttrNumber attnum);
-extern Oid getOwnedSequence(Oid relid, AttrNumber attnum);
+extern Oid	getOwnedSequence(Oid relid, AttrNumber attnum);
 
 extern Oid	get_constraint_index(Oid constraintId);
 
@@ -278,4 +278,4 @@ extern void shdepDropOwned(List *relids, DropBehavior behavior);
 
 extern void shdepReassignOwned(List *relids, Oid newrole);
 
-#endif   /* DEPENDENCY_H */
+#endif							/* DEPENDENCY_H */

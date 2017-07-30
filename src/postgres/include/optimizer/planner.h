@@ -20,15 +20,15 @@
 
 /* Hook for plugins to get control in planner() */
 typedef PlannedStmt *(*planner_hook_type) (Query *parse,
-													   int cursorOptions,
-												  ParamListInfo boundParams);
+										   int cursorOptions,
+										   ParamListInfo boundParams);
 extern PGDLLIMPORT planner_hook_type planner_hook;
 
 /* Hook for plugins to get control when grouping_planner() plans upper rels */
 typedef void (*create_upper_paths_hook_type) (PlannerInfo *root,
-													 UpperRelationKind stage,
-													   RelOptInfo *input_rel,
-													 RelOptInfo *output_rel);
+											  UpperRelationKind stage,
+											  RelOptInfo *input_rel,
+											  RelOptInfo *output_rel);
 extern PGDLLIMPORT create_upper_paths_hook_type create_upper_paths_hook;
 
 
@@ -59,4 +59,4 @@ extern bool plan_cluster_use_sort(Oid tableOid, Oid indexOid);
 
 extern List *get_partitioned_child_rels(PlannerInfo *root, Index rti);
 
-#endif   /* PLANNER_H */
+#endif							/* PLANNER_H */

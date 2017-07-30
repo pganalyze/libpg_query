@@ -90,7 +90,7 @@
 #define PRETTYINDENT_JOIN		4
 #define PRETTYINDENT_VAR		4
 
-#define PRETTYINDENT_LIMIT		40		/* wrap limit */
+#define PRETTYINDENT_LIMIT		40	/* wrap limit */
 
 /* Pretty flags */
 #define PRETTYFLAG_PAREN		1
@@ -120,8 +120,8 @@ typedef struct
 	int			wrapColumn;		/* max line length, or -1 for no limit */
 	int			indentLevel;	/* current indent level for prettyprint */
 	bool		varprefix;		/* TRUE to print prefixes on Vars */
-	ParseExprKind special_exprkind;		/* set only for exprkinds needing
-										 * special handling */
+	ParseExprKind special_exprkind; /* set only for exprkinds needing special
+									 * handling */
 } deparse_context;
 
 /*
@@ -287,7 +287,7 @@ typedef struct
  */
 typedef struct
 {
-	char		name[NAMEDATALEN];		/* Hash key --- must be first */
+	char		name[NAMEDATALEN];	/* Hash key --- must be first */
 	int			counter;		/* Largest addition used so far for name */
 } NameHashEntry;
 

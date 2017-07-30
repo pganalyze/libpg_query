@@ -145,7 +145,7 @@ __thread emit_log_hook_type emit_log_hook = NULL;
 
 /* GUC parameters */
 
-		/* format for extra log line info */
+ /* format for extra log line info */
 
 
 
@@ -399,7 +399,7 @@ errstart(int elevel, const char *filename, int lineno,
 		 * because it suggests an infinite loop of errors during error
 		 * recovery.
 		 */
-		errordata_stack_depth = -1;		/* make room on stack */
+		errordata_stack_depth = -1; /* make room on stack */
 		ereport(PANIC, (errmsg_internal("ERRORDATA_STACK_SIZE exceeded")));
 	}
 
@@ -1121,7 +1121,7 @@ elog_start(const char *filename, int lineno, const char *funcname)
 		 * else failure to convert it to client encoding could cause further
 		 * recursion.
 		 */
-		errordata_stack_depth = -1;		/* make room on stack */
+		errordata_stack_depth = -1; /* make room on stack */
 		ereport(PANIC, (errmsg_internal("ERRORDATA_STACK_SIZE exceeded")));
 	}
 
@@ -1459,7 +1459,7 @@ pg_re_throw(void)
  * Write a message line to syslog
  */
 
-#endif   /* HAVE_SYSLOG */
+#endif							/* HAVE_SYSLOG */
 
 #ifdef WIN32
 /*
@@ -1491,7 +1491,7 @@ write_eventlog(int level, const char *line, int len)
 	if (evtHandle == INVALID_HANDLE_VALUE)
 	{
 		evtHandle = RegisterEventSource(NULL,
-						 event_source ? event_source : DEFAULT_EVENT_SOURCE);
+										event_source ? event_source : DEFAULT_EVENT_SOURCE);
 		if (evtHandle == NULL)
 		{
 			evtHandle = INVALID_HANDLE_VALUE;
@@ -1563,7 +1563,7 @@ write_eventlog(int level, const char *line, int len)
 				 &line,
 				 NULL);
 }
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 
 #ifdef WIN32
 #else

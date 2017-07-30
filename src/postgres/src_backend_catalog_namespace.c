@@ -164,7 +164,7 @@
 typedef struct
 {
 	List	   *searchPath;		/* the desired search path */
-	Oid			creationNamespace;		/* the desired creation namespace */
+	Oid			creationNamespace;	/* the desired creation namespace */
 	int			nestLevel;		/* subtransaction nesting level */
 } OverrideStackEntry;
 
@@ -478,9 +478,19 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 
 /*
+ * lookup_collation
+ *		If there's a collation of the given name/namespace, and it works
+ *		with the given encoding, return its OID.  Else return InvalidOid.
+ */
+
+
+/*
  * CollationGetCollid
  *		Try to resolve an unqualified collation name.
  *		Returns OID if collation found in search path, else InvalidOid.
+ *
+ * Note that this will only find collations that work with the current
+ * database's encoding.
  */
 
 
@@ -489,6 +499,9 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether a collation (identified by OID) is visible in the
  *		current search path.  Visible means "would be found by searching
  *		for the unqualified collation name".
+ *
+ * Note that only collations that work with the current database's encoding
+ * will be considered visible.
  */
 
 
@@ -831,6 +844,9 @@ NameListToString(List *names)
 
 /*
  * get_collation_oid - find a collation by possibly qualified name
+ *
+ * Note that this will only find collations that work with the current
+ * database's encoding.
  */
 Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
 

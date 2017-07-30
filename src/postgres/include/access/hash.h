@@ -57,7 +57,7 @@ typedef uint32 Bucket;
 #define LH_BUCKET_BEING_POPULATED	(1 << 4)
 #define LH_BUCKET_BEING_SPLIT	(1 << 5)
 #define LH_BUCKET_NEEDS_SPLIT_CLEANUP	(1 << 6)
-#define LH_PAGE_HAS_DEAD_TUPLES	(1 << 7)
+#define LH_PAGE_HAS_DEAD_TUPLES (1 << 7)
 
 #define LH_PAGE_TYPE \
 	(LH_OVERFLOW_PAGE | LH_BUCKET_PAGE | LH_BITMAP_PAGE | LH_META_PAGE)
@@ -97,7 +97,7 @@ typedef HashPageOpaqueData *HashPageOpaque;
  */
 #define HASHO_PAGE_ID		0xFF80
 
-typedef struct HashScanPosItem    /* what we remember about each match */
+typedef struct HashScanPosItem	/* what we remember about each match */
 {
 	ItemPointerData heapTid;	/* TID of referenced heap item */
 	OffsetNumber indexOffset;	/* index item's location within page */
@@ -145,8 +145,8 @@ typedef struct HashScanOpaqueData
 	 */
 	bool		hashso_buc_split;
 	/* info about killed items if any (killedItems is NULL if never used) */
-	HashScanPosItem	*killedItems;	/* tids and offset numbers of killed items */
-	int			numKilled;			/* number of currently stored items */
+	HashScanPosItem *killedItems;	/* tids and offset numbers of killed items */
+	int			numKilled;		/* number of currently stored items */
 } HashScanOpaqueData;
 
 typedef HashScanOpaqueData *HashScanOpaque;
@@ -212,13 +212,13 @@ typedef struct HashMetaPageData
 	uint32		hashm_maxbucket;	/* ID of maximum bucket in use */
 	uint32		hashm_highmask; /* mask to modulo into entire table */
 	uint32		hashm_lowmask;	/* mask to modulo into lower half of table */
-	uint32		hashm_ovflpoint;/* splitpoint from which ovflpgs being
-								 * allocated */
+	uint32		hashm_ovflpoint;	/* splitpoint from which ovflpgs being
+									 * allocated */
 	uint32		hashm_firstfree;	/* lowest-number free ovflpage (bit#) */
 	uint32		hashm_nmaps;	/* number of bitmap pages */
 	RegProcedure hashm_procid;	/* hash procedure id from pg_proc */
-	uint32		hashm_spares[HASH_MAX_SPLITPOINTS];		/* spare pages before
-														 * each splitpoint */
+	uint32		hashm_spares[HASH_MAX_SPLITPOINTS]; /* spare pages before each
+													 * splitpoint */
 	BlockNumber hashm_mapp[HASH_MAX_BITMAPS];	/* blknos of ovfl bitmaps */
 } HashMetaPageData;
 
@@ -241,7 +241,7 @@ typedef HashMetaPageData *HashMetaPage;
 /*
  * Constants
  */
-#define BYTE_TO_BIT				3		/* 2^3 bits/byte */
+#define BYTE_TO_BIT				3	/* 2^3 bits/byte */
 #define ALL_SET					((uint32) ~0)
 
 /*
@@ -338,7 +338,7 @@ extern void _hash_pgaddmultitup(Relation rel, Buffer buf, IndexTuple *itups,
 extern Buffer _hash_addovflpage(Relation rel, Buffer metabuf, Buffer buf, bool retain_pin);
 extern BlockNumber _hash_freeovflpage(Relation rel, Buffer bucketbuf, Buffer ovflbuf,
 				   Buffer wbuf, IndexTuple *itups, OffsetNumber *itup_offsets,
-			 Size *tups_size, uint16 nitups, BufferAccessStrategy bstrategy);
+				   Size *tups_size, uint16 nitups, BufferAccessStrategy bstrategy);
 extern void _hash_initbitmapbuffer(Buffer buf, uint16 bmsize, bool initpage);
 extern void _hash_squeezebucket(Relation rel,
 					Bucket bucket, BlockNumber bucket_blkno,
@@ -358,7 +358,7 @@ extern Buffer _hash_getbucketbuf_from_hashkey(Relation rel, uint32 hashkey,
 								HashMetaPage *cachedmetap);
 extern Buffer _hash_getinitbuf(Relation rel, BlockNumber blkno);
 extern void _hash_initbuf(Buffer buf, uint32 max_bucket, uint32 num_bucket,
-				uint32 flag, bool initpage);
+			  uint32 flag, bool initpage);
 extern Buffer _hash_getnewbuf(Relation rel, BlockNumber blkno,
 				ForkNumber forkNum);
 extern Buffer _hash_getbuf_with_strategy(Relation rel, BlockNumber blkno,
@@ -422,4 +422,4 @@ extern void hashbucketcleanup(Relation rel, Bucket cur_bucket,
 				  bool bucket_has_garbage,
 				  IndexBulkDeleteCallback callback, void *callback_state);
 
-#endif   /* HASH_H */
+#endif							/* HASH_H */

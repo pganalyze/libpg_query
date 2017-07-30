@@ -38,6 +38,7 @@ typedef struct ItemPointerData
 	BlockIdData ip_blkid;
 	OffsetNumber ip_posid;
 }
+
 /* If compiler understands packed and aligned pragmas, use those */
 #if defined(pg_attribute_packed) && defined(pg_attribute_aligned)
 pg_attribute_packed()
@@ -161,4 +162,4 @@ typedef ItemPointerData *ItemPointer;
 extern bool ItemPointerEquals(ItemPointer pointer1, ItemPointer pointer2);
 extern int32 ItemPointerCompare(ItemPointer arg1, ItemPointer arg2);
 
-#endif   /* ITEMPTR_H */
+#endif							/* ITEMPTR_H */

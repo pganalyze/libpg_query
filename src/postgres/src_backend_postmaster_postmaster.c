@@ -131,6 +131,7 @@
 #include "utils/datetime.h"
 #include "utils/dynamic_loader.h"
 #include "utils/memutils.h"
+#include "utils/pidfile.h"
 #include "utils/ps_status.h"
 #include "utils/timeout.h"
 #include "utils/varlena.h"
@@ -346,14 +347,15 @@ typedef enum
 /* Start time of SIGKILL timeout during immediate shutdown or child crash */
 /* Zero means timeout is not running */
 
+
 /* Length of said timeout */
 #define SIGKILL_CHILDREN_AFTER_SECS		5
 
-		/* T if we've reached PM_RUN */
+	/* T if we've reached PM_RUN */
 
 __thread bool		ClientAuthInProgress = false;
-		/* T during new-client
-												 * authentication */
+	/* T during new-client
+											 * authentication */
 
 	/* stderr redirected for syslogger? */
 
@@ -361,6 +363,9 @@ __thread bool		ClientAuthInProgress = false;
 
 
 /* the launcher needs to be signalled to communicate some condition */
+
+
+/* received START_WALRECEIVER signal */
 
 
 /* set when there's a worker that needs to be started up */
@@ -432,6 +437,7 @@ static void maybe_start_bgworkers(void);
 static bool CreateOptsFile(int argc, char *argv[], char *fullprogname);
 static pid_t StartChildProcess(AuxProcType type);
 static void StartAutovacuumWorker(void);
+static void MaybeStartWalReceiver(void);
 static void InitPostmasterDeathWatchHandle(void);
 
 /*
@@ -461,7 +467,7 @@ typedef struct
 	HANDLE		procHandle;
 	DWORD		procId;
 } win32_deadchild_waitinfo;
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 
 static pid_t backend_forkexec(Port *port);
 static pid_t internal_forkexec(int argc, char *argv[], Port *port);
@@ -543,7 +549,7 @@ static bool save_backend_variables(BackendParameters *param, Port *port,
 
 static void ShmemBackendArrayAdd(Backend *bn);
 static void ShmemBackendArrayRemove(Backend *bn);
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 
 #define StartupDataBase()		StartChildProcess(StartupProcess)
 #define StartBackgroundWriter() StartChildProcess(BgWriterProcess)
@@ -841,7 +847,7 @@ HANDLE		PostmasterHandle;
  */
 #ifdef EXEC_BACKEND
 #else							/* !EXEC_BACKEND */
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 #ifdef EXEC_BACKEND
 #endif
 
@@ -1032,6 +1038,7 @@ internal_forkexec(int argc, char *argv[], Port *port)
 static pid_t
 internal_forkexec(int argc, char *argv[], Port *port)
 {
+	int			retry_count = 0;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	int			i;
@@ -1048,6 +1055,9 @@ internal_forkexec(int argc, char *argv[], Port *port)
 	Assert(argv[argc] == NULL);
 	Assert(strncmp(argv[1], "--fork", 6) == 0);
 	Assert(argv[2] == NULL);
+
+	/* Resume here if we need to retry */
+retry:
 
 	/* Set up shared memory for parameter passing */
 	ZeroMemory(&sa, sizeof(sa));
@@ -1140,22 +1150,26 @@ internal_forkexec(int argc, char *argv[], Port *port)
 
 	/*
 	 * Reserve the memory region used by our main shared memory segment before
-	 * we resume the child process.
+	 * we resume the child process.  Normally this should succeed, but if ASLR
+	 * is active then it might sometimes fail due to the stack or heap having
+	 * gotten mapped into that range.  In that case, just terminate the
+	 * process and retry.
 	 */
 	if (!pgwin32_ReserveSharedMemoryRegion(pi.hProcess))
 	{
-		/*
-		 * Failed to reserve the memory, so terminate the newly created
-		 * process and give up.
-		 */
+		/* pgwin32_ReserveSharedMemoryRegion already made a log entry */
 		if (!TerminateProcess(pi.hProcess, 255))
 			ereport(LOG,
 					(errmsg_internal("could not terminate process that failed to reserve memory: error code %lu",
 									 GetLastError())));
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-		return -1;				/* logging done made by
-								 * pgwin32_ReserveSharedMemoryRegion() */
+		if (++retry_count < 100)
+			goto retry;
+		ereport(LOG,
+				(errmsg("giving up after too many tries to reserve shared memory"),
+				 errhint("This might be caused by ASLR or antivirus software.")));
+		return -1;
 	}
 
 	/*
@@ -1204,7 +1218,7 @@ internal_forkexec(int argc, char *argv[], Port *port)
 									 pgwin32_deadchild_callback,
 									 childinfo,
 									 INFINITE,
-								WT_EXECUTEONLYONCE | WT_EXECUTEINWAITTHREAD))
+									 WT_EXECUTEONLYONCE | WT_EXECUTEINWAITTHREAD))
 		ereport(FATAL,
 				(errmsg_internal("could not register process for wait: error code %lu",
 								 GetLastError())));
@@ -1215,7 +1229,7 @@ internal_forkexec(int argc, char *argv[], Port *port)
 
 	return pi.dwProcessId;
 }
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 
 
 /*
@@ -1389,7 +1403,7 @@ SubPostmasterMain(int argc, char *argv[])
 		/* Attach process to shared data structures */
 		CreateSharedMemoryAndSemaphores(false, 0);
 
-		AuxiliaryProcessMain(argc - 2, argv + 2);		/* does not return */
+		AuxiliaryProcessMain(argc - 2, argv + 2);	/* does not return */
 	}
 	if (strcmp(argv[1], "--forkavlauncher") == 0)
 	{
@@ -1402,7 +1416,7 @@ SubPostmasterMain(int argc, char *argv[])
 		/* Attach process to shared data structures */
 		CreateSharedMemoryAndSemaphores(false, 0);
 
-		AutoVacLauncherMain(argc - 2, argv + 2);		/* does not return */
+		AutoVacLauncherMain(argc - 2, argv + 2);	/* does not return */
 	}
 	if (strcmp(argv[1], "--forkavworker") == 0)
 	{
@@ -1443,24 +1457,24 @@ SubPostmasterMain(int argc, char *argv[])
 	{
 		/* Do not want to attach to shared memory */
 
-		PgArchiverMain(argc, argv);		/* does not return */
+		PgArchiverMain(argc, argv); /* does not return */
 	}
 	if (strcmp(argv[1], "--forkcol") == 0)
 	{
 		/* Do not want to attach to shared memory */
 
-		PgstatCollectorMain(argc, argv);		/* does not return */
+		PgstatCollectorMain(argc, argv);	/* does not return */
 	}
 	if (strcmp(argv[1], "--forklog") == 0)
 	{
 		/* Do not want to attach to shared memory */
 
-		SysLoggerMain(argc, argv);		/* does not return */
+		SysLoggerMain(argc, argv);	/* does not return */
 	}
 
 	abort();					/* shouldn't get here */
 }
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 
 
 /*
@@ -1535,7 +1549,7 @@ SubPostmasterMain(int argc, char *argv[])
 #endif
 #ifdef EXEC_BACKEND
 #else							/* !EXEC_BACKEND */
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 
 /*
  * StartAutovacuumWorker
@@ -1548,6 +1562,13 @@ SubPostmasterMain(int argc, char *argv[])
  */
 #ifdef EXEC_BACKEND
 #endif
+
+/*
+ * MaybeStartWalReceiver
+ *		Start the WAL receiver process, if not running and our state allows.
+ */
+
+
 
 /*
  * Create the opts file
@@ -2021,7 +2042,7 @@ ShmemBackendArrayRemove(Backend *bn)
 	/* Mark the slot as empty */
 	ShmemBackendArray[i].pid = 0;
 }
-#endif   /* EXEC_BACKEND */
+#endif							/* EXEC_BACKEND */
 
 
 #ifdef WIN32
@@ -2097,7 +2118,7 @@ pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
 	/* Queue SIGCHLD signal */
 	pg_queue_signal(SIGCHLD);
 }
-#endif   /* WIN32 */
+#endif							/* WIN32 */
 
 /*
  * Initialize one and only handle for monitoring postmaster death.
@@ -2107,4 +2128,4 @@ pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
  */
 #ifndef WIN32
 #else
-#endif   /* WIN32 */
+#endif							/* WIN32 */

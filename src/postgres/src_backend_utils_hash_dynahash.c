@@ -1010,7 +1010,7 @@ hash_corrupted(HTAB *hashp)
 #define MAX_SEQ_SCANS 100
 
 static HTAB *seq_scan_tables[MAX_SEQ_SCANS];	/* tables being scanned */
-		/* subtransaction nest level */
+	/* subtransaction nest level */
 static int	num_seq_scans = 0;
 
 

@@ -43,6 +43,7 @@ __thread volatile bool InterruptPending = false;
 
 
 
+
 __thread volatile uint32 InterruptHoldoffCount = 0;
 
 __thread volatile uint32 QueryCancelHoldoffCount = 0;
@@ -76,10 +77,10 @@ __thread volatile uint32 CritSectionCount = 0;
 	/* debugging output file */
 
 	/* full path to my executable */
-		/* full path to lib directory */
+ /* full path to lib directory */
 
 #ifdef EXEC_BACKEND
-char		postgres_exec_path[MAXPGPATH];		/* full path to backend */
+char		postgres_exec_path[MAXPGPATH];	/* full path to backend */
 
 /* note: currently this is not valid in backend processes */
 #endif
@@ -142,7 +143,7 @@ __thread bool		ExitOnAnyError = false;
 
 
 
-		/* GUC parameters for vacuum */
+	/* GUC parameters for vacuum */
 
 
 
@@ -152,5 +153,5 @@ __thread bool		ExitOnAnyError = false;
 
 
 
-		/* working state for vacuum */
+	/* working state for vacuum */
 

@@ -71,7 +71,7 @@ typedef struct varatt_external
 	int32		va_extsize;		/* External saved size (doesn't) */
 	Oid			va_valueid;		/* Unique ID of value within TOAST table */
 	Oid			va_toastrelid;	/* RelID of TOAST table containing it */
-}	varatt_external;
+}			varatt_external;
 
 /*
  * struct varatt_indirect is a "TOAST pointer" representing an out-of-line
@@ -85,7 +85,7 @@ typedef struct varatt_external
 typedef struct varatt_indirect
 {
 	struct varlena *pointer;	/* Pointer to in-memory varlena */
-}	varatt_indirect;
+}			varatt_indirect;
 
 /*
  * struct varatt_expanded is a "TOAST pointer" representing an out-of-line
@@ -147,7 +147,7 @@ typedef union
 	{
 		uint32		va_header;
 		uint32		va_rawsize; /* Original data size (excludes header) */
-		char		va_data[FLEXIBLE_ARRAY_MEMBER];		/* Compressed data */
+		char		va_data[FLEXIBLE_ARRAY_MEMBER]; /* Compressed data */
 	}			va_compressed;
 } varattrib_4b;
 
@@ -264,7 +264,7 @@ typedef struct
 #define SET_VARTAG_1B_E(PTR,tag) \
 	(((varattrib_1b_e *) (PTR))->va_header = 0x01, \
 	 ((varattrib_1b_e *) (PTR))->va_tag = (tag))
-#endif   /* WORDS_BIGENDIAN */
+#endif							/* WORDS_BIGENDIAN */
 
 #define VARHDRSZ_SHORT			offsetof(varattrib_1b, va_data)
 #define VARATT_SHORT_MAX		0x7F
@@ -679,7 +679,7 @@ DatumGetFloat4(Datum X)
 		float4		retval;
 	}			myunion;
 
-	myunion.value = GET_4_BYTES(X);
+	myunion.value = DatumGetInt32(X);
 	return myunion.retval;
 }
 #else
@@ -704,7 +704,7 @@ Float4GetDatum(float4 X)
 	}			myunion;
 
 	myunion.value = X;
-	return SET_4_BYTES(myunion.retval);
+	return Int32GetDatum(myunion.retval);
 }
 #else
 extern Datum Float4GetDatum(float4 X);
@@ -727,7 +727,7 @@ DatumGetFloat8(Datum X)
 		float8		retval;
 	}			myunion;
 
-	myunion.value = GET_8_BYTES(X);
+	myunion.value = DatumGetInt64(X);
 	return myunion.retval;
 }
 #else
@@ -753,7 +753,7 @@ Float8GetDatum(float8 X)
 	}			myunion;
 
 	myunion.value = X;
-	return SET_8_BYTES(myunion.retval);
+	return Int64GetDatum(myunion.retval);
 }
 #else
 extern Datum Float8GetDatum(float8 X);
@@ -801,6 +801,6 @@ extern Datum Float8GetDatum(float8 X);
  */
 extern void ExceptionalCondition(const char *conditionName,
 					 const char *errorType,
-			   const char *fileName, int lineNumber) pg_attribute_noreturn();
+					 const char *fileName, int lineNumber) pg_attribute_noreturn();
 
-#endif   /* POSTGRES_H */
+#endif							/* POSTGRES_H */

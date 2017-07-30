@@ -21,8 +21,8 @@ typedef enum
 {
 	BYTEA_OUTPUT_ESCAPE,
 	BYTEA_OUTPUT_HEX
-}	ByteaOutputType;
+}			ByteaOutputType;
 
 extern int	bytea_output;		/* ByteaOutputType, but int for GUC enum */
 
-#endif   /* BYTEA_H */
+#endif							/* BYTEA_H */

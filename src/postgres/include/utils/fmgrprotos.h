@@ -2506,6 +2506,7 @@ extern Datum pg_show_replication_origin_status(PG_FUNCTION_ARGS);
 extern Datum pg_stat_get_subscription(PG_FUNCTION_ARGS);
 extern Datum pg_get_publication_tables(PG_FUNCTION_ARGS);
 extern Datum pg_get_replica_identity_index(PG_FUNCTION_ARGS);
+extern Datum pg_relation_is_publishable(PG_FUNCTION_ARGS);
 extern Datum numeric_scale(PG_FUNCTION_ARGS);
 
 #endif /* FMGRPROTOS_H */

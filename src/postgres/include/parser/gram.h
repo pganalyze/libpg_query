@@ -993,7 +993,7 @@ typedef union YYSTYPE
 	VariableSetStmt		*vsetstmt;
 	PartitionElem		*partelem;
 	PartitionSpec		*partspec;
-	PartitionRangeDatum	*partrange_datum;
+	PartitionBoundSpec	*partboundspec;
 	RoleSpec			*rolespec;
 }
 /* Line 1529 of yacc.c.  */

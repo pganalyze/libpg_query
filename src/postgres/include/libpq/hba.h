@@ -90,13 +90,13 @@ typedef struct HbaLine
 	bool		compat_realm;
 	bool		upn_username;
 	List	   *radiusservers;
-	char       *radiusservers_s;
+	char	   *radiusservers_s;
 	List	   *radiussecrets;
-	char       *radiussecrets_s;
+	char	   *radiussecrets_s;
 	List	   *radiusidentifiers;
-	char       *radiusidentifiers_s;
+	char	   *radiusidentifiers_s;
 	List	   *radiusports;
-	char       *radiusports_s;
+	char	   *radiusports_s;
 } HbaLine;
 
 typedef struct IdentLine
@@ -120,4 +120,4 @@ extern int check_usermap(const char *usermap_name,
 			  bool case_sensitive);
 extern bool pg_isblank(const char c);
 
-#endif   /* HBA_H */
+#endif							/* HBA_H */

@@ -130,7 +130,7 @@ extern volatile sig_atomic_t catchupInterruptPending;
 extern void SendSharedInvalidMessages(const SharedInvalidationMessage *msgs,
 						  int n);
 extern void ReceiveSharedInvalidMessages(
-					  void (*invalFunction) (SharedInvalidationMessage *msg),
+							 void (*invalFunction) (SharedInvalidationMessage *msg),
 							 void (*resetFunction) (void));
 
 /* signal handler for catchup events (PROCSIG_CATCHUP_INTERRUPT) */
@@ -151,4 +151,4 @@ extern void ProcessCommittedInvalidationMessages(SharedInvalidationMessage *msgs
 
 extern void LocalExecuteInvalidationMessage(SharedInvalidationMessage *msg);
 
-#endif   /* SINVAL_H */
+#endif							/* SINVAL_H */

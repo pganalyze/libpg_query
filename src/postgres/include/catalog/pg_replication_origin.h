@@ -46,7 +46,7 @@ CATALOG(pg_replication_origin,6000) BKI_SHARED_RELATION BKI_WITHOUT_OIDS
 	 */
 
 	/* external, free-format, name */
-	text roname BKI_FORCE_NOT_NULL;
+	text		roname BKI_FORCE_NOT_NULL;
 
 #ifdef CATALOG_VARLEN			/* further variable-length fields */
 #endif
@@ -67,4 +67,4 @@ typedef FormData_pg_replication_origin *Form_pg_replication_origin;
  * ----------------
  */
 
-#endif   /* PG_REPLICATION_ORIGIN_H */
+#endif							/* PG_REPLICATION_ORIGIN_H */

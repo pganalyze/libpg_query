@@ -39,7 +39,8 @@ CATALOG(pg_collation,3456)
 	NameData	collcollate;	/* LC_COLLATE setting */
 	NameData	collctype;		/* LC_CTYPE setting */
 #ifdef CATALOG_VARLEN			/* variable-length fields start here */
-	text		collversion;	/* provider-dependent version of collation data */
+	text		collversion;	/* provider-dependent version of collation
+								 * data */
 #endif
 } FormData_pg_collation;
 
@@ -69,13 +70,13 @@ typedef FormData_pg_collation *Form_pg_collation;
  * ----------------
  */
 
-DATA(insert OID = 100 ( default		PGNSP PGUID d -1 "" "" 0 ));
+DATA(insert OID = 100 ( default		PGNSP PGUID d -1 "" "" _null_ ));
 DESCR("database's default collation");
 #define DEFAULT_COLLATION_OID	100
-DATA(insert OID = 950 ( C			PGNSP PGUID c -1 "C" "C" 0 ));
+DATA(insert OID = 950 ( C			PGNSP PGUID c -1 "C" "C" _null_ ));
 DESCR("standard C collation");
 #define C_COLLATION_OID			950
-DATA(insert OID = 951 ( POSIX		PGNSP PGUID c -1 "POSIX" "POSIX" 0 ));
+DATA(insert OID = 951 ( POSIX		PGNSP PGUID c -1 "POSIX" "POSIX" _null_ ));
 DESCR("standard POSIX collation");
 #define POSIX_COLLATION_OID		951
 
@@ -84,4 +85,4 @@ DESCR("standard POSIX collation");
 #define COLLPROVIDER_ICU		'i'
 #define COLLPROVIDER_LIBC		'c'
 
-#endif   /* PG_COLLATION_H */
+#endif							/* PG_COLLATION_H */

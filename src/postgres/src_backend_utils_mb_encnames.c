@@ -123,7 +123,7 @@ const pg_enc2name pg_enc2name_tbl[] =
 
 
 
-#endif /* not FRONTEND */
+#endif							/* not FRONTEND */
 
 
 /* ----------

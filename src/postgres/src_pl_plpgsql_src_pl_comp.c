@@ -261,7 +261,7 @@ plpgsql_compile_inline(char *proc_source)
 	function->fn_is_trigger = PLPGSQL_NOT_TRIGGER;
 	function->fn_input_collation = InvalidOid;
 	function->fn_cxt = func_cxt;
-	function->out_param_varno = -1;		/* set up for no OUT param */
+	function->out_param_varno = -1; /* set up for no OUT param */
 	function->resolve_option = plpgsql_variable_conflict;
 	function->print_strict_params = plpgsql_print_strict_params;
 
@@ -555,7 +555,7 @@ plpgsql_parse_dblword(char *word1, char *word2,
 					/* Block-qualified reference to scalar variable. */
 					wdatum->datum = plpgsql_Datums[ns->itemno];
 					wdatum->ident = NULL;
-					wdatum->quoted = false;		/* not used */
+					wdatum->quoted = false; /* not used */
 					wdatum->idents = idents;
 					return true;
 
@@ -585,7 +585,7 @@ plpgsql_parse_dblword(char *word1, char *word2,
 						wdatum->datum = plpgsql_Datums[ns->itemno];
 					}
 					wdatum->ident = NULL;
-					wdatum->quoted = false;		/* not used */
+					wdatum->quoted = false; /* not used */
 					wdatum->idents = idents;
 					return true;
 
@@ -1003,7 +1003,7 @@ plpgsql_start_datums(void)
 	plpgsql_nDatums = 0;
 	/* This is short-lived, so needn't allocate in function's cxt */
 	plpgsql_Datums = MemoryContextAlloc(plpgsql_compile_tmp_cxt,
-									 sizeof(PLpgSQL_datum *) * datums_alloc);
+										sizeof(PLpgSQL_datum *) * datums_alloc);
 	/* datums_last tracks what's been seen by plpgsql_add_initdatums() */
 	datums_last = 0;
 }

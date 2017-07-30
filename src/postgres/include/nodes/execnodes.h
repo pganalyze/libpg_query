@@ -43,8 +43,8 @@ struct ExprContext;
 struct ExprEvalStep;			/* avoid including execExpr.h everywhere */
 
 typedef Datum (*ExprStateEvalFunc) (struct ExprState *expression,
-												struct ExprContext *econtext,
-												bool *isNull);
+									struct ExprContext *econtext,
+									bool *isNull);
 
 /* Bits in ExprState->flags (see also execExpr.h for private flag bits): */
 /* expression is for use with ExecQual() */
@@ -138,8 +138,8 @@ typedef struct IndexInfo
 	List	   *ii_Predicate;	/* list of Expr */
 	ExprState  *ii_PredicateState;
 	Oid		   *ii_ExclusionOps;	/* array with one entry per column */
-	Oid		   *ii_ExclusionProcs;		/* array with one entry per column */
-	uint16	   *ii_ExclusionStrats;		/* array with one entry per column */
+	Oid		   *ii_ExclusionProcs;	/* array with one entry per column */
+	uint16	   *ii_ExclusionStrats; /* array with one entry per column */
 	Oid		   *ii_UniqueOps;	/* array with one entry per column */
 	Oid		   *ii_UniqueProcs; /* array with one entry per column */
 	uint16	   *ii_UniqueStrats;	/* array with one entry per column */
@@ -203,7 +203,7 @@ typedef struct ExprContext
 	MemoryContext ecxt_per_tuple_memory;
 
 	/* Values to substitute for Param nodes in expression */
-	ParamExecData *ecxt_param_exec_vals;		/* for PARAM_EXEC params */
+	ParamExecData *ecxt_param_exec_vals;	/* for PARAM_EXEC params */
 	ParamListInfo ecxt_param_list_info; /* for other param types */
 
 	/*
@@ -249,7 +249,7 @@ typedef enum
 {
 	SFRM_ValuePerCall = 0x01,	/* one value returned per call */
 	SFRM_Materialize = 0x02,	/* result set instantiated in Tuplestore */
-	SFRM_Materialize_Random = 0x04,		/* Tuplestore needs randomAccess */
+	SFRM_Materialize_Random = 0x04, /* Tuplestore needs randomAccess */
 	SFRM_Materialize_Preferred = 0x08	/* caller prefers Tuplestore */
 } SetFunctionReturnMode;
 
@@ -336,61 +336,81 @@ typedef struct JunkFilter
 	AttrNumber	jf_junkAttNo;
 } JunkFilter;
 
-/* ----------------
- *	  ResultRelInfo information
+/*
+ * ResultRelInfo
  *
- *		Whenever we update an existing relation, we have to
- *		update indices on the relation, and perhaps also fire triggers.
- *		The ResultRelInfo class is used to hold all the information needed
- *		about a result relation, including indices.. -cim 10/15/89
- *
- *		RangeTableIndex			result relation's range table index
- *		RelationDesc			relation descriptor for result relation
- *		NumIndices				# of indices existing on result relation
- *		IndexRelationDescs		array of relation descriptors for indices
- *		IndexRelationInfo		array of key/attr info for indices
- *		TrigDesc				triggers to be fired, if any
- *		TrigFunctions			cached lookup info for trigger functions
- *		TrigWhenExprs			array of trigger WHEN expr states
- *		TrigInstrument			optional runtime measurements for triggers
- *		FdwRoutine				FDW callback functions, if foreign table
- *		FdwState				available to save private state of FDW
- *		usesFdwDirectModify		true when modifying foreign table directly
- *		WithCheckOptions		list of WithCheckOption's to be checked
- *		WithCheckOptionExprs	list of WithCheckOption expr states
- *		ConstraintExprs			array of constraint-checking expr states
- *		junkFilter				for removing junk attributes from tuples
- *		projectReturning		for computing a RETURNING list
- *		onConflictSetProj		for computing ON CONFLICT DO UPDATE SET
- *		onConflictSetWhere		list of ON CONFLICT DO UPDATE exprs (qual)
- *		PartitionCheck			partition check expression
- *		PartitionCheckExpr		partition check expression state
- * ----------------
+ * Whenever we update an existing relation, we have to update indexes on the
+ * relation, and perhaps also fire triggers.  ResultRelInfo holds all the
+ * information needed about a result relation, including indexes.
  */
 typedef struct ResultRelInfo
 {
 	NodeTag		type;
+
+	/* result relation's range table index */
 	Index		ri_RangeTableIndex;
+
+	/* relation descriptor for result relation */
 	Relation	ri_RelationDesc;
+
+	/* # of indices existing on result relation */
 	int			ri_NumIndices;
+
+	/* array of relation descriptors for indices */
 	RelationPtr ri_IndexRelationDescs;
+
+	/* array of key/attr info for indices */
 	IndexInfo **ri_IndexRelationInfo;
+
+	/* triggers to be fired, if any */
 	TriggerDesc *ri_TrigDesc;
+
+	/* cached lookup info for trigger functions */
 	FmgrInfo   *ri_TrigFunctions;
+
+	/* array of trigger WHEN expr states */
 	ExprState **ri_TrigWhenExprs;
+
+	/* optional runtime measurements for triggers */
 	Instrumentation *ri_TrigInstrument;
+
+	/* FDW callback functions, if foreign table */
 	struct FdwRoutine *ri_FdwRoutine;
+
+	/* available to save private state of FDW */
 	void	   *ri_FdwState;
+
+	/* true when modifying foreign table directly */
 	bool		ri_usesFdwDirectModify;
+
+	/* list of WithCheckOption's to be checked */
 	List	   *ri_WithCheckOptions;
+
+	/* list of WithCheckOption expr states */
 	List	   *ri_WithCheckOptionExprs;
+
+	/* array of constraint-checking expr states */
 	ExprState **ri_ConstraintExprs;
+
+	/* for removing junk attributes from tuples */
 	JunkFilter *ri_junkFilter;
+
+	/* for computing a RETURNING list */
 	ProjectionInfo *ri_projectReturning;
+
+	/* for computing ON CONFLICT DO UPDATE SET */
 	ProjectionInfo *ri_onConflictSetProj;
+
+	/* list of ON CONFLICT DO UPDATE exprs (qual) */
 	ExprState  *ri_onConflictSetWhere;
+
+	/* partition check expression */
 	List	   *ri_PartitionCheck;
+
+	/* partition check expression state */
 	ExprState  *ri_PartitionCheckExpr;
+
+	/* relation descriptor for root partitioned table */
 	Relation	ri_PartitionRoot;
 } ResultRelInfo;
 
@@ -419,8 +439,8 @@ typedef struct EState
 
 	/* Info about target table(s) for insert/update/delete queries: */
 	ResultRelInfo *es_result_relations; /* array of ResultRelInfos */
-	int			es_num_result_relations;		/* length of array */
-	ResultRelInfo *es_result_relation_info;		/* currently active array elt */
+	int			es_num_result_relations;	/* length of array */
+	ResultRelInfo *es_result_relation_info; /* currently active array elt */
 
 	/*
 	 * Info about the target partitioned target table root(s) for
@@ -433,10 +453,10 @@ typedef struct EState
 	int			es_num_root_result_relations;	/* length of the array */
 
 	/* Stuff used for firing triggers: */
-	List	   *es_trig_target_relations;		/* trigger-only ResultRelInfos */
+	List	   *es_trig_target_relations;	/* trigger-only ResultRelInfos */
 	TupleTableSlot *es_trig_tuple_slot; /* for trigger output tuples */
-	TupleTableSlot *es_trig_oldtup_slot;		/* for TriggerEnabled */
-	TupleTableSlot *es_trig_newtup_slot;		/* for TriggerEnabled */
+	TupleTableSlot *es_trig_oldtup_slot;	/* for TriggerEnabled */
+	TupleTableSlot *es_trig_newtup_slot;	/* for TriggerEnabled */
 
 	/* Parameter info: */
 	ParamListInfo es_param_list_info;	/* values of external params */
@@ -460,9 +480,9 @@ typedef struct EState
 
 	List	   *es_exprcontexts;	/* List of ExprContexts within EState */
 
-	List	   *es_subplanstates;		/* List of PlanState for SubPlans */
+	List	   *es_subplanstates;	/* List of PlanState for SubPlans */
 
-	List	   *es_auxmodifytables;		/* List of secondary ModifyTableStates */
+	List	   *es_auxmodifytables; /* List of secondary ModifyTableStates */
 
 	/*
 	 * this ExprContext is for per-output-tuple operations, such as constraint
@@ -485,7 +505,7 @@ typedef struct EState
 	bool	   *es_epqScanDone; /* true if EPQ tuple has been fetched */
 
 	/* The per-query shared memory area to use for parallel execution. */
-	struct dsa_area   *es_query_dsa;
+	struct dsa_area *es_query_dsa;
 } EState;
 
 
@@ -569,7 +589,7 @@ typedef struct TupleHashEntryData
 	uint32		hash;			/* hash value (cached) */
 } TupleHashEntryData;
 
-/* define paramters necessary to generate the tuple hash table interface */
+/* define parameters necessary to generate the tuple hash table interface */
 #define SH_PREFIX tuplehash
 #define SH_ELEMENT_TYPE TupleHashEntryData
 #define SH_KEY_TYPE MinimalTuple
@@ -593,7 +613,7 @@ typedef struct TupleHashTableData
 	FmgrInfo   *in_hash_funcs;	/* hash functions for input datatype(s) */
 	FmgrInfo   *cur_eq_funcs;	/* equality functions for input vs. table */
 	uint32		hash_iv;		/* hash-function IV */
-}	TupleHashTableData;
+}			TupleHashTableData;
 
 typedef tuplehash_iterator TupleHashIterator;
 
@@ -691,8 +711,7 @@ typedef struct SetExprState
 	 * output.  If so, it's stored here.
 	 */
 	TupleDesc	funcResultDesc;
-	bool		funcReturnsTuple;		/* valid when funcResultDesc isn't
-										 * NULL */
+	bool		funcReturnsTuple;	/* valid when funcResultDesc isn't NULL */
 
 	/*
 	 * Remember whether the function is declared to return a set.  This is set
@@ -784,7 +803,7 @@ typedef enum DomainConstraintType
 typedef struct DomainConstraintState
 {
 	NodeTag		type;
-	DomainConstraintType constrainttype;		/* constraint type */
+	DomainConstraintType constrainttype;	/* constraint type */
 	char	   *name;			/* name of constraint (for error msgs) */
 	Expr	   *check_expr;		/* for CHECK, a boolean expression */
 	ExprState  *check_exprstate;	/* check_expr's eval state, or NULL */
@@ -907,7 +926,7 @@ typedef struct ProjectSetState
 	Node	  **elems;			/* array of expression states */
 	ExprDoneCond *elemdone;		/* array of per-SRF is-done states */
 	int			nelems;			/* length of elemdone[] array */
-	bool		pending_srf_tuples;		/* still evaluating srfs in tlist? */
+	bool		pending_srf_tuples; /* still evaluating srfs in tlist? */
 } ProjectSetState;
 
 /* ----------------
@@ -923,30 +942,31 @@ typedef struct ModifyTableState
 	PlanState **mt_plans;		/* subplans (one per target rel) */
 	int			mt_nplans;		/* number of plans in the array */
 	int			mt_whichplan;	/* which one is being executed (0..n-1) */
-	ResultRelInfo *resultRelInfo;		/* per-subplan target relations */
+	ResultRelInfo *resultRelInfo;	/* per-subplan target relations */
 	ResultRelInfo *rootResultRelInfo;	/* root target relation (partitioned
 										 * table root) */
 	List	  **mt_arowmarks;	/* per-subplan ExecAuxRowMark lists */
 	EPQState	mt_epqstate;	/* for evaluating EvalPlanQual rechecks */
 	bool		fireBSTriggers; /* do we need to fire stmt triggers? */
-	OnConflictAction mt_onconflict;		/* ON CONFLICT type */
-	List	   *mt_arbiterindexes;		/* unique index OIDs to arbitrate
-										 * taking alt path */
+	OnConflictAction mt_onconflict; /* ON CONFLICT type */
+	List	   *mt_arbiterindexes;	/* unique index OIDs to arbitrate taking
+									 * alt path */
 	TupleTableSlot *mt_existing;	/* slot to store existing target tuple in */
-	List	   *mt_excludedtlist;		/* the excluded pseudo relation's
-										 * tlist  */
-	TupleTableSlot *mt_conflproj;		/* CONFLICT ... SET ... projection
-										 * target */
+	List	   *mt_excludedtlist;	/* the excluded pseudo relation's tlist  */
+	TupleTableSlot *mt_conflproj;	/* CONFLICT ... SET ... projection target */
 	struct PartitionDispatchData **mt_partition_dispatch_info;
-										/* Tuple-routing support info */
-	int				mt_num_dispatch;	/* Number of entries in the above
-										 * array */
-	int				mt_num_partitions;	/* Number of members in the
-										 * following arrays */
-	ResultRelInfo  *mt_partitions;	/* Per partition result relation */
+	/* Tuple-routing support info */
+	int			mt_num_dispatch;	/* Number of entries in the above array */
+	int			mt_num_partitions;	/* Number of members in the following
+									 * arrays */
+	ResultRelInfo *mt_partitions;	/* Per partition result relation */
 	TupleConversionMap **mt_partition_tupconv_maps;
-									/* Per partition tuple conversion map */
+	/* Per partition tuple conversion map */
 	TupleTableSlot *mt_partition_tuple_slot;
+	struct TransitionCaptureState *mt_transition_capture;
+									/* controls transition table population */
+	TupleConversionMap **mt_transition_tupconv_maps;
+									/* Per plan/partition tuple conversion */
 } ModifyTableState;
 
 /* ----------------
@@ -1082,7 +1102,7 @@ typedef struct SampleScanState
 	List	   *args;			/* expr states for TABLESAMPLE params */
 	ExprState  *repeatable;		/* expr state for REPEATABLE expr */
 	/* use struct pointer to avoid including tsmapi.h here */
-	struct TsmRoutine *tsmroutine;		/* descriptor for tablesample method */
+	struct TsmRoutine *tsmroutine;	/* descriptor for tablesample method */
 	void	   *tsm_state;		/* tablesample method can keep state here */
 	bool		use_bulkread;	/* use bulkread buffer access strategy? */
 	bool		use_pagemode;	/* use page-at-a-time visibility checking? */
@@ -1381,8 +1401,7 @@ typedef struct FunctionScanState
 	bool		simple;
 	int64		ordinal;
 	int			nfuncs;
-	struct FunctionScanPerFuncState *funcstates;		/* array of length
-														 * nfuncs */
+	struct FunctionScanPerFuncState *funcstates;	/* array of length nfuncs */
 	MemoryContext argcontext;
 } FunctionScanState;
 
@@ -1429,7 +1448,7 @@ typedef struct TableFuncScanState
 	List	   *ns_uris;		/* list of states of namespace uri exprs */
 	Bitmapset  *notnulls;		/* nullability flag for each output column */
 	void	   *opaque;			/* table builder private space */
-	const struct TableFuncRoutine *routine;		/* table builder methods */
+	const struct TableFuncRoutine *routine; /* table builder methods */
 	FmgrInfo   *in_functions;	/* input function for each column */
 	Oid		   *typioparams;	/* typioparam for each column */
 	int64		ordinal;		/* row number to be output next */
@@ -1501,7 +1520,7 @@ typedef struct WorkTableScanState
 typedef struct ForeignScanState
 {
 	ScanState	ss;				/* its first field is NodeTag */
-	ExprState  *fdw_recheck_quals;		/* original quals not in ss.ps.qual */
+	ExprState  *fdw_recheck_quals;	/* original quals not in ss.ps.qual */
 	Size		pscan_len;		/* size of parallel coordination information */
 	/* use struct pointer to avoid including fdwapi.h here */
 	struct FdwRoutine *fdwroutine;
@@ -1651,9 +1670,9 @@ typedef struct HashJoinState
 {
 	JoinState	js;				/* its first field is NodeTag */
 	ExprState  *hashclauses;
-	List	   *hj_OuterHashKeys;		/* list of ExprState nodes */
-	List	   *hj_InnerHashKeys;		/* list of ExprState nodes */
-	List	   *hj_HashOperators;		/* list of operator OIDs */
+	List	   *hj_OuterHashKeys;	/* list of ExprState nodes */
+	List	   *hj_InnerHashKeys;	/* list of ExprState nodes */
+	List	   *hj_HashOperators;	/* list of operator OIDs */
 	HashJoinTable hj_HashTable;
 	uint32		hj_CurHashValue;
 	int			hj_CurBucketNo;
@@ -1755,14 +1774,13 @@ typedef struct AggState
 	ExprContext **aggcontexts;	/* econtexts for long-lived data (per GS) */
 	ExprContext *tmpcontext;	/* econtext for input expressions */
 	ExprContext *curaggcontext; /* currently active aggcontext */
-	AggStatePerTrans curpertrans;		/* currently active trans state */
+	AggStatePerTrans curpertrans;	/* currently active trans state */
 	bool		input_done;		/* indicates end of input */
 	bool		agg_done;		/* indicates completion of Agg scan */
 	int			projected_set;	/* The last projected grouping set */
 	int			current_set;	/* The current grouping set being evaluated */
 	Bitmapset  *grouped_cols;	/* grouped cols in current projection */
-	List	   *all_grouped_cols;		/* list of all grouped cols in DESC
-										 * order */
+	List	   *all_grouped_cols;	/* list of all grouped cols in DESC order */
 	/* These fields are for grouping set phase data */
 	int			maxsets;		/* The max number of sets in any phase */
 	AggStatePerPhase phases;	/* array of all phases */
@@ -1811,15 +1829,14 @@ typedef struct WindowAggState
 	int64		frameheadpos;	/* current frame head position */
 	int64		frametailpos;	/* current frame tail position */
 	/* use struct pointer to avoid including windowapi.h here */
-	struct WindowObjectData *agg_winobj;		/* winobj for aggregate
-												 * fetches */
+	struct WindowObjectData *agg_winobj;	/* winobj for aggregate fetches */
 	int64		aggregatedbase; /* start row for current aggregates */
 	int64		aggregatedupto; /* rows before this one are aggregated */
 
 	int			frameOptions;	/* frame_clause options, see WindowDef */
 	ExprState  *startOffset;	/* expression for starting bound offset */
 	ExprState  *endOffset;		/* expression for ending bound offset */
-	Datum		startOffsetValue;		/* result of startOffset evaluation */
+	Datum		startOffsetValue;	/* result of startOffset evaluation */
 	Datum		endOffsetValue; /* result of endOffset evaluation */
 
 	MemoryContext partcontext;	/* context for partition-lifespan data */
@@ -1829,15 +1846,14 @@ typedef struct WindowAggState
 
 	bool		all_first;		/* true if the scan is starting */
 	bool		all_done;		/* true if the scan is finished */
-	bool		partition_spooled;		/* true if all tuples in current
-										 * partition have been spooled into
-										 * tuplestore */
-	bool		more_partitions;/* true if there's more partitions after this
-								 * one */
-	bool		framehead_valid;/* true if frameheadpos is known up to date
-								 * for current row */
-	bool		frametail_valid;/* true if frametailpos is known up to date
-								 * for current row */
+	bool		partition_spooled;	/* true if all tuples in current partition
+									 * have been spooled into tuplestore */
+	bool		more_partitions;	/* true if there's more partitions after
+									 * this one */
+	bool		framehead_valid;	/* true if frameheadpos is known up to
+									 * date for current row */
+	bool		frametail_valid;	/* true if frametailpos is known up to
+									 * date for current row */
 
 	TupleTableSlot *first_part_slot;	/* first tuple of current or next
 										 * partition */
@@ -1911,8 +1927,7 @@ typedef struct GatherMergeState
 	bool		need_to_scan_locally;
 	int			gm_nkeys;
 	SortSupport gm_sortkeys;	/* array of length ms_nkeys */
-	struct GMReaderTupleBuffer *gm_tuple_buffers;		/* tuple buffer per
-														 * reader */
+	struct GMReaderTupleBuffer *gm_tuple_buffers;	/* tuple buffer per reader */
 } GatherMergeState;
 
 /* ----------------
@@ -2008,4 +2023,4 @@ typedef struct LimitState
 	TupleTableSlot *subSlot;	/* tuple last obtained from subplan */
 } LimitState;
 
-#endif   /* EXECNODES_H */
+#endif							/* EXECNODES_H */
