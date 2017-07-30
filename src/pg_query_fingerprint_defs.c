@@ -2701,12 +2701,7 @@ static void
 _fingerprintClosePortalStmt(FingerprintContext *ctx, const ClosePortalStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "ClosePortalStmt");
-
-  if (node->portalname != NULL) {
-    _fingerprintString(ctx, "portalname");
-    _fingerprintString(ctx, node->portalname);
-  }
-
+  // Intentionally ignoring node->portalname for fingerprinting
 }
 
 static void
@@ -2999,12 +2994,7 @@ _fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void
     _fingerprintString(ctx, "true");
   }
 
-
-  if (node->portalname != NULL) {
-    _fingerprintString(ctx, "portalname");
-    _fingerprintString(ctx, node->portalname);
-  }
-
+  // Intentionally ignoring node->portalname for fingerprinting
 }
 
 static void
@@ -4239,12 +4229,7 @@ _fingerprintDeclareCursorStmt(FingerprintContext *ctx, const DeclareCursorStmt *
     _fingerprintString(ctx, buffer);
   }
 
-
-  if (node->portalname != NULL) {
-    _fingerprintString(ctx, "portalname");
-    _fingerprintString(ctx, node->portalname);
-  }
-
+  // Intentionally ignoring node->portalname for fingerprinting
   if (node->query != NULL) {
     FingerprintContext subCtx;
     _fingerprintInitForTokens(&subCtx);

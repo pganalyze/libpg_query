@@ -15,6 +15,11 @@
     "expectedHash": "02a281c251c3a43d2fe7457dff01f76c5cc523f8c8"
   },
   {
+    "input": "SELECT $1",
+    "expectedParts": ["SelectStmt", "targetList", "ResTarget"],
+    "expectedHash": "018e1acac181c6d28f4a923392cf1c4eda49ee4cd2"
+  },
+  {
     "input": "SELECT 1; SELECT a FROM b",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "targetList", "ResTarget",
       "RawStmt", "stmt", "SelectStmt",
@@ -280,6 +285,21 @@
     "input": "START TRANSACTION READ WRITE",
     "expectedParts": ["RawStmt", "stmt", "TransactionStmt", "kind", "1"],
     "expectedHash": "026533aebe647cd56cc75921de13fdd2b9c2fe4706"
+  },
+  {
+    "input": "DECLARE cursor_123 CURSOR FOR SELECT * FROM test WHERE id = 123",
+    "expectedParts": ["DeclareCursorStmt", "options", "32", "query", "SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "test", "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str", "id", "name", "String", "str", "="],
+    "expectedHash": "01ec6defa94a57af2acfc46c636c7758c460db0a09"
+  },
+  {
+    "input": "FETCH 1000 FROM cursor_123",
+    "expectedParts": ["FetchStmt", "howMany", "1000"],
+    "expectedHash": "0150ba260f2a074d62d1cf002022dc38ae8182aab4"
+  },
+  {
+    "input": "CLOSE cursor_123",
+    "expectedParts": ["ClosePortalStmt"],
+    "expectedHash": "01cb90bbce23b030cb3ac4c1d306c6dffb6f5840d9"
   },
   {
     "input": "-- nothing",

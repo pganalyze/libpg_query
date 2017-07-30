@@ -115,6 +115,9 @@ EOL
     ['TransactionStmt', 'gid'] => :skip,
     ['RawStmt', 'stmt_len'] => :skip,
     ['RawStmt', 'stmt_location'] => :skip,
+    ['DeclareCursorStmt', 'portalname'] => :skip,
+    ['FetchStmt', 'portalname'] => :skip,
+    ['ClosePortalStmt', 'portalname'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
   LONG_INT_TYPES = ['long']
