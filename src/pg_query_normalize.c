@@ -323,6 +323,10 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	{
 		return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
 	}
+	else if (IsA(node, DeclareCursorStmt))
+	{
+		return const_record_walker((Node *) ((DeclareCursorStmt *) node)->query, jstate);
+	}
 
 	PG_TRY();
 	{
