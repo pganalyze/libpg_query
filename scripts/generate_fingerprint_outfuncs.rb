@@ -19,7 +19,16 @@ class Generator
     _fingerprintString(ctx, "name");
     _fingerprintString(ctx, node->name);
   }
-EOL
+
+  EOL
+
+  FINGERPRINT_RANGE_VAR_RELNAME = <<-EOL
+  if (node->relname != NULL && node->relpersistence != 't') {
+    _fingerprintString(ctx, "relname");
+    _fingerprintString(ctx, node->relname);
+  }
+
+  EOL
 
   FINGERPRINT_NODE = <<-EOL
   if (true) {
@@ -28,7 +37,8 @@ EOL
     _fingerprintNode(&subCtx, &node->%<name>s, node, "%<name>s", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
-EOL
+
+  EOL
 
   FINGERPRINT_NODE_PTR = <<-EOL
   if (node->%<name>s != NULL) {
@@ -37,7 +47,8 @@ EOL
     _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
-EOL
+
+  EOL
 
   FINGERPRINT_LIST = <<-EOL
   if (node->%<name>s != NULL && node->%<name>s->length > 0) {
@@ -46,7 +57,7 @@ EOL
     _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
   }
-EOL
+  EOL
 
   FINGERPRINT_INT = <<-EOL
   if (node->%<name>s != 0) {
@@ -56,7 +67,7 @@ EOL
     _fingerprintString(ctx, buffer);
   }
 
-EOL
+  EOL
 
   FINGERPRINT_LONG_INT = <<-EOL
   if (node->%<name>s != 0) {
@@ -66,17 +77,50 @@ EOL
     _fingerprintString(ctx, buffer);
   }
 
-EOL
+  EOL
 
   FINGERPRINT_FLOAT = <<-EOL
-if (node->%<name>s != 0) {
-  char buffer[50];
-  sprintf(buffer, "%%f", node->%<name>s);
-  _fingerprintString(ctx, "%<name>s");
-  _fingerprintString(ctx, buffer);
-}
+  if (node->%<name>s != 0) {
+    char buffer[50];
+    sprintf(buffer, "%%f", node->%<name>s);
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, buffer);
+  }
 
-EOL
+  EOL
+
+  FINGERPRINT_CHAR = <<-EOL
+  if (node->%<name>s != 0) {
+    char buffer[2] = {node->%<name>s, '\\0'};
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, buffer);
+  }
+
+  EOL
+
+  FINGERPRINT_CHAR_PTR = <<-EOL
+  if (node->%<name>s != NULL) {
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, node->%<name>s);
+  }
+
+  EOL
+
+  FINGERPRINT_STRING = <<-EOL
+  if (strlen(node->%<name>s) > 0) {
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, node->%<name>s);
+  }
+
+  EOL
+
+  FINGERPRINT_BOOL = <<-EOL
+  if (node->%<name>s) {
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, "true");
+  }
+
+  EOL
 
   FINGERPRINT_INT_ARRAY = <<-EOL
   if (true) {
@@ -93,7 +137,8 @@ EOL
 
     bms_free(bms);
   }
-EOL
+
+  EOL
 
   # Fingerprinting additional code to be inserted
   FINGERPRINT_OVERRIDE_NODES = {
@@ -108,6 +153,7 @@ EOL
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
+    ['RangeVar', 'relname'] => FINGERPRINT_RANGE_VAR_RELNAME,
     ['PrepareStmt', 'name'] => :skip,
     ['ExecuteStmt', 'name'] => :skip,
     ['DeallocateStmt', 'name'] => :skip,
@@ -139,7 +185,7 @@ EOL
           fp_override = "  // Intentionally ignoring all fields for fingerprinting\n" if fp_override == :skip
           fingerprint_def = fp_override
         else
-          fingerprint_def = format("  _fingerprintString(ctx, \"%s\");\n", type)
+          fingerprint_def = format("  _fingerprintString(ctx, \"%s\");\n\n", type)
           struct_def['fields'].reject { |f| f['name'].nil? }.sort_by { |f| f['name'] }.each do |field|
             name = field['name']
             field_type = field['c_type']
@@ -147,7 +193,7 @@ EOL
             fp_override = FINGERPRINT_OVERRIDE_FIELDS[[type, field['name']]] || FINGERPRINT_OVERRIDE_FIELDS[[nil, field['name']]]
             if fp_override
               if fp_override == :skip
-                fp_override = format("  // Intentionally ignoring node->%s for fingerprinting\n", name)
+                fp_override = format("  // Intentionally ignoring node->%s for fingerprinting\n\n", name)
               end
               fingerprint_def += fp_override
               next
@@ -168,26 +214,13 @@ EOL
               fingerprint_def += format("  _fingerprintString(ctx, \"%s\");\n", name)
               fingerprint_def += format("  _fingerprintCreateStmt(ctx, (const CreateStmt*) &node->%s, node, \"%s\", depth);\n", name, name)
             when 'char'
-              fingerprint_def += format("  if (node->%s != 0) {\n", name)
-              fingerprint_def += format("    char str[2] = {node->%s, '\\0'};\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += "    _fingerprintString(ctx, str);\n"
-              fingerprint_def += "  }\n\n"
-            when 'string'
-              fingerprint_def += format("  if (strlen(node->%s) > 0) {\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, node->%s);\n", name)
-              fingerprint_def += "  }\n\n"
+              fingerprint_def += format(FINGERPRINT_CHAR, name: name)
             when 'char*'
-              fingerprint_def += format("\n  if (node->%s != NULL) {\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, node->%s);\n", name)
-              fingerprint_def += "  }\n\n"
+              fingerprint_def += format(FINGERPRINT_CHAR_PTR, name: name)
+            when 'string'
+              fingerprint_def += format(FINGERPRINT_STRING, name: name)
             when 'bool'
-              fingerprint_def += format("\n  if (node->%s) {", name)
-              fingerprint_def += format("    _fingerprintString(ctx, \"%s\");\n", name)
-              fingerprint_def += format("    _fingerprintString(ctx, \"true\");\n")
-              fingerprint_def += "  }\n\n"
+              fingerprint_def += format(FINGERPRINT_BOOL, name: name)
             when 'Datum', 'void*', 'Expr', 'NodeTag'
               # Ignore
             when *INT_TYPES

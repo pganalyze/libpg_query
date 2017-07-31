@@ -118,7 +118,7 @@ static void
 _fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, char *field_name, unsigned int depth)
 {
 	if (field_name != NULL && (strcmp(field_name, "fromClause") == 0 || strcmp(field_name, "targetList") == 0 ||
-			strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0)) {
+			strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0 || strcmp(field_name, "valuesLists") == 0)) {
 
 		FingerprintContext** subCtxArr = palloc0(node->length * sizeof(FingerprintContext*));
 		size_t subCtxCount = 0;

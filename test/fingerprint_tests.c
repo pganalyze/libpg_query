@@ -15,6 +15,8 @@ const char* tests[] = {
   "02809368278814c4c8ec65e47425fdaf559483f8f6",
   "INSERT INTO test (b, a) VALUES (?, ?)",
   "02809368278814c4c8ec65e47425fdaf559483f8f6",
+  "INSERT INTO test (a, b) VALUES (ARRAY[?, ?, ?, ?], ?::timestamptz), (ARRAY[?, ?, ?, ?], ?::timestamptz), (?, ?::timestamptz)",
+  "02822becf2500e9e1d2843b272c1a1cd5eef353409",
   "SELECT b AS x, a AS y FROM z",
   "020a812d6225e62b9492df056a6cb92032faed2145",
   "SELECT * FROM x WHERE y IN (?)",
@@ -91,6 +93,10 @@ const char* tests[] = {
   "02c888ae857224dffe91cbf2e6cc3abc6a59d38954",
   "UPDATE x SET z = now()",
   "021eb7a0cdb9a1eb9b0bd0aa41b9e23a53f2c5c8b5",
+  "CREATE TEMPORARY TABLE my_temp_table (test_id integer NOT NULL) ON COMMIT DROP",
+  "0282b35175ec22cfdae1f954c7c0ceaee8bc74a0c1",
+  "CREATE TEMPORARY TABLE my_temp_table AS SELECT 1",
+  "0257b59721145c9c48f37ca5466d756b902fb5fe9a",
 };
 
 size_t testsLength = __LINE__ - 4;
