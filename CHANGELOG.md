@@ -2,6 +2,15 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.6.2    2017-07-30
+
+* Fingerprinting Version 1.3
+  * Attributes to be ignored:
+    * RangeVar.relname (if node also has RangeVar.relpersistence = "t")
+  * Special cases: List nodes where parent field name is valuesLists
+    * Follow same logic described for fromClause/targetList/cols/rexpr
+
+
 ## 9.5-1.6.1    2017-07-29
 
 * Fingerprinting Version 1.2
