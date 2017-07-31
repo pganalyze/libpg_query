@@ -53,6 +53,11 @@
 		"expectedHash": "017987d8bb26ed399b481728a6e8ca1b668f13d93e"
   },
   {
+    "input": "INSERT INTO test (a, b) VALUES (ARRAY[?, ?, ?, ?], ?::timestamptz), (ARRAY[?, ?, ?, ?], ?::timestamptz), (?, ?::timestamptz)",
+    "expectedParts": ["InsertStmt", "cols", "ResTarget", "name", "a", "ResTarget", "name", "b", "relation", "RangeVar", "inhOpt", "2", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "valuesLists", "A_ArrayExpr", "TypeCast", "typeName", "TypeName", "names", "String", "str", "timestamptz", "typemod", "-1", "TypeCast", "typeName", "TypeName", "names", "String", "str", "timestamptz", "typemod", "-1"],
+    "expectedHash": "0151928b5d24bf0848e98b457cd729b57184e6ef21"
+  },
+  {
     "input": "SELECT b AS x, a AS y FROM z",
 		"expectedParts": ["SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "z",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields",
@@ -314,5 +319,15 @@
     "input": "UPDATE x SET z = now()",
     "expectedParts": ["UpdateStmt", "relation", "RangeVar", "inhOpt", "2", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "name", "z", "val", "FuncCall", "funcname", "String", "str", "now"],
     "expectedHash": "0156860c0b3361b8865b4e4ff09a2c5f36c7787cb7"
+  },
+  {
+    "input": "CREATE TEMPORARY TABLE my_temp_table (test_id integer NOT NULL) ON COMMIT DROP",
+    "expectedParts": ["CreateStmt", "oncommit", "3", "relation", "RangeVar", "inhOpt", "2", "relpersistence", "t", "tableElts", "ColumnDef", "colname", "test_id", "constraints", "Constraint", "contype", "1", "is_local", "true", "typeName", "TypeName", "names", "String", "str", "pg_catalog", "String", "str", "int4", "typemod", "-1"],
+    "expectedHash": "01c6c745f0655374b4f30d65ec58a07c0facd3ce46"
+  },
+  {
+    "input": "CREATE TEMPORARY TABLE my_temp_table AS SELECT 1",
+    "expectedParts": ["CreateTableAsStmt", "into", "IntoClause", "rel", "RangeVar", "inhOpt", "2", "relpersistence", "t", "query", "SelectStmt", "targetList", "ResTarget", "relkind", "32"],
+    "expectedHash": "0144ce53682faa4488c02710b652abffc76c333b10"
   }
 ]
