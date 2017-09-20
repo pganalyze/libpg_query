@@ -264,6 +264,13 @@ datumIsEqual(Datum value1, Datum value2, bool typByVal, int typLen)
  *
  * Serialize a possibly-NULL datum into caller-provided storage.
  *
+ * Note: "expanded" objects are flattened so as to produce a self-contained
+ * representation, but other sorts of toast pointers are transferred as-is.
+ * This is because the intended use of this function is to pass the value
+ * to another process within the same database server.  The other process
+ * could not access an "expanded" object within this process's memory, but
+ * we assume it can dereference the same TOAST pointers this one can.
+ *
  * The format is as follows: first, we write a 4-byte header word, which
  * is either the length of a pass-by-reference datum, -1 for a
  * pass-by-value datum, or -2 for a NULL.  If the value is NULL, nothing

@@ -247,7 +247,7 @@
         {
           "name": "withCheckOptions",
           "c_type": "List*",
-          "comment": "/* a list of WithCheckOption's, which\n\t\t\t\t\t\t\t\t\t\t * are only added during rewrite and\n\t\t\t\t\t\t\t\t\t\t * therefore are not written out as\n\t\t\t\t\t\t\t\t\t\t * part of Query. */\n"
+          "comment": "/* a list of WithCheckOption's, which are\n\t\t\t\t\t\t\t\t\t * only added during rewrite and therefore\n\t\t\t\t\t\t\t\t\t * are not written out as part of Query. */\n"
         },
         {
           "comment": ""
@@ -1231,7 +1231,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * PartitionElem - a column in the partition key\n */\n"
+      "comment": "/*\n * PartitionElem - parse-time representation of a single partition key\n *\n * expr can be either a raw expression tree or a parse-analyzed expression.\n * We don't store these on-disk, though.\n */\n"
     },
     "PartitionSpec": {
       "fields": [
@@ -1256,7 +1256,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * PartitionSpec - partition key specification\n */\n"
+      "comment": "/*\n * PartitionSpec - parse-time representation of a partition key specification\n *\n * This represents the key space we will be partitioning on.\n */\n"
     },
     "PartitionBoundSpec": {
       "fields": [
@@ -1271,34 +1271,34 @@
         {
           "name": "strategy",
           "c_type": "char",
-          "comment": null
+          "comment": "/* see PARTITION_STRATEGY codes above */"
         },
         {
           "comment": ""
         },
         {
-          "comment": "\t/* List partition values */\n"
+          "comment": "\t/* Partitioning info for LIST strategy: */\n"
         },
         {
           "name": "listdatums",
           "c_type": "List*",
-          "comment": null
+          "comment": "/* List of Consts (or A_Consts in raw tree) */"
         },
         {
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * Range partition lower and upper bounds; each member of the lists is a\n\t * PartitionRangeDatum (see below).\n\t */\n"
+          "comment": "\t/* Partitioning info for RANGE strategy: */\n"
         },
         {
           "name": "lowerdatums",
           "c_type": "List*",
-          "comment": null
+          "comment": "/* List of PartitionRangeDatums */"
         },
         {
           "name": "upperdatums",
           "c_type": "List*",
-          "comment": null
+          "comment": "/* List of PartitionRangeDatums */"
         },
         {
           "comment": ""
@@ -1306,10 +1306,10 @@
         {
           "name": "location",
           "c_type": "int",
-          "comment": null
+          "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * PartitionBoundSpec - a partition bound specification\n */\n"
+      "comment": "/*\n * PartitionBoundSpec - a partition bound specification\n *\n * This represents the portion of the partition key space assigned to a\n * particular partition.  These are stored on disk in pg_class.relpartbound.\n */\n"
     },
     "PartitionRangeDatum": {
       "fields": [
@@ -1322,14 +1322,14 @@
           "comment": ""
         },
         {
-          "name": "infinite",
-          "c_type": "bool",
+          "name": "kind",
+          "c_type": "PartitionRangeDatumKind",
           "comment": null
         },
         {
           "name": "value",
           "c_type": "Node*",
-          "comment": null
+          "comment": "/* Const (or A_Const in raw tree), if kind is\n\t\t\t\t\t\t\t\t * PARTITION_RANGE_DATUM_VALUE, else NULL */\n"
         },
         {
           "comment": ""
@@ -1337,10 +1337,10 @@
         {
           "name": "location",
           "c_type": "int",
-          "comment": null
+          "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * PartitionRangeDatum\n */\n"
+      "comment": null
     },
     "PartitionCmd": {
       "fields": [
@@ -1352,15 +1352,15 @@
         {
           "name": "name",
           "c_type": "RangeVar*",
-          "comment": null
+          "comment": "/* name of partition to attach/detach */"
         },
         {
           "name": "bound",
-          "c_type": "Node*",
-          "comment": null
+          "c_type": "PartitionBoundSpec*",
+          "comment": "/* FOR VALUES, if attaching */"
         }
       ],
-      "comment": "/*\n * PartitionCmd -  ALTER TABLE partition commands\n */\n"
+      "comment": "/*\n * PartitionCmd - info for ALTER TABLE ATTACH/DETACH PARTITION commands\n */\n"
     },
     "RangeTblEntry": {
       "fields": [
@@ -1387,7 +1387,7 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t */\n"
+          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t *\n\t * As a special case, RTE_NAMEDTUPLESTORE can also set relid to indicate\n\t * that the tuple format of the tuplestore is the same as the referenced\n\t * relation.  This allows plans referencing AFTER trigger transition\n\t * tables to be invalidated if the underlying table is altered.\n\t */\n"
         },
         {
           "name": "relid",
@@ -1499,7 +1499,7 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * Fields valid for values and CTE RTEs (else NIL):\n\t *\n\t * We need these for CTE RTEs so that the types of self-referential\n\t * columns are well-defined.  For VALUES RTEs, storing these explicitly\n\t * saves having to re-determine the info by scanning the values_lists.\n\t */\n"
+          "comment": "\t/*\n\t * Fields valid for table functions, values, CTE and ENR RTEs (else NIL):\n\t *\n\t * We need these for CTE RTEs so that the types of self-referential\n\t * columns are well-defined.  For VALUES RTEs, storing these explicitly\n\t * saves having to re-determine the info by scanning the values_lists. For\n\t * ENRs, we store the types explicitly here (we could get the information\n\t * from the catalogs if 'relid' was supplied, but we'd still need these\n\t * for TupleDesc-based ENRs, so we might as well always store the type\n\t * info here).\n\t */\n"
         },
         {
           "name": "coltypes",
@@ -1518,6 +1518,9 @@
         },
         {
           "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * Fields valid for ENR RTEs (else NULL/zero):\n\t */\n"
         },
         {
           "name": "enrname",
@@ -2567,7 +2570,7 @@
         {
           "name": "objects",
           "c_type": "List*",
-          "comment": "/* list of RangeVar nodes, ObjectWithArgs nodes,\n\t\t\t\t\t\t\t\t * or plain names (as Value strings) */\n"
+          "comment": "/* list of RangeVar nodes, ObjectWithArgs\n\t\t\t\t\t\t\t\t * nodes, or plain names (as Value strings) */\n"
         },
         {
           "name": "privileges",
@@ -2615,7 +2618,7 @@
         {
           "name": "args_unspecified",
           "c_type": "bool",
-          "comment": "/* argument list was omitted, so name must\n\t\t\t\t\t\t\t\t   * be unique (note that objargs == NIL means\n\t\t\t\t\t\t\t\t   * zero args) */\n"
+          "comment": "/* argument list was omitted, so name must\n\t\t\t\t\t\t\t\t\t * be unique (note that objargs == NIL\n\t\t\t\t\t\t\t\t\t * means zero args) */\n"
         }
       ],
       "comment": "/*\n * Note: ObjectWithArgs carries only the types of the input parameters of the\n * function.  So it is sufficient to identify an existing function, but it\n * is not enough info to define a function nor to call it.\n */\n"
@@ -2814,7 +2817,7 @@
         },
         {
           "name": "partbound",
-          "c_type": "Node*",
+          "c_type": "PartitionBoundSpec*",
           "comment": "/* FOR VALUES clause */"
         },
         {
@@ -3019,7 +3022,7 @@
         {
           "name": "old_pktable_oid",
           "c_type": "Oid",
-          "comment": "/* pg_constraint.confrelid of my former self */"
+          "comment": "/* pg_constraint.confrelid of my former\n\t\t\t\t\t\t\t\t\t * self */\n"
         },
         {
           "comment": ""
@@ -6369,12 +6372,12 @@
         {
           "name": "refupperindexpr",
           "c_type": "List*",
-          "comment": "/* expressions that evaluate to upper array\n\t\t\t\t\t\t\t\t * indexes */\n"
+          "comment": "/* expressions that evaluate to upper\n\t\t\t\t\t\t\t\t\t * array indexes */\n"
         },
         {
           "name": "reflowerindexpr",
           "c_type": "List*",
-          "comment": "/* expressions that evaluate to lower array\n\t\t\t\t\t\t\t\t * indexes, or NIL for single array element */\n"
+          "comment": "/* expressions that evaluate to lower\n\t\t\t\t\t\t\t\t\t * array indexes, or NIL for single array\n\t\t\t\t\t\t\t\t\t * element */\n"
         },
         {
           "name": "refexpr",
@@ -6689,7 +6692,7 @@
         {
           "name": "firstColCollation",
           "c_type": "Oid",
-          "comment": "/* Collation of first column of\n\t\t\t\t\t\t\t\t\t\t * subplan result */\n"
+          "comment": "/* Collation of first column of subplan\n\t\t\t\t\t\t\t\t\t * result */\n"
         },
         {
           "comment": "\t/* Information about execution strategy: */\n"
@@ -7564,6 +7567,26 @@
       ],
       "comment": "/*\n * Node representing [WHERE] CURRENT OF cursor_name\n *\n * CURRENT OF is a bit like a Var, in that it carries the rangetable index\n * of the target relation being constrained; this aids placing the expression\n * correctly during planning.  We can assume however that its \"levelsup\" is\n * always zero, due to the syntactic constraints on where it can appear.\n *\n * The referenced cursor can be represented either as a hardwired string\n * or as a reference to a run-time parameter of type REFCURSOR.  The latter\n * case is for the convenience of plpgsql.\n */\n"
     },
+    "NextValueExpr": {
+      "fields": [
+        {
+          "name": "xpr",
+          "c_type": "Expr",
+          "comment": null
+        },
+        {
+          "name": "seqid",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "name": "typeId",
+          "c_type": "Oid",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * NextValueExpr - get next value from sequence\n *\n * This has the same effect as calling the nextval() function, but it does not\n * check permissions on the sequence.  This is used for identity columns,\n * where the sequence is an implicit dependency without its own permissions.\n */\n"
+    },
     "InferenceElem": {
       "fields": [
         {
@@ -7588,26 +7611,6 @@
         }
       ],
       "comment": "/*\n * InferenceElem - an element of a unique index inference specification\n *\n * This mostly matches the structure of IndexElems, but having a dedicated\n * primnode allows for a clean separation between the use of index parameters\n * by utility commands, and this node.\n */\n"
-    },
-    "NextValueExpr": {
-      "fields": [
-        {
-          "name": "xpr",
-          "c_type": "Expr",
-          "comment": null
-        },
-        {
-          "name": "seqid",
-          "c_type": "Oid",
-          "comment": null
-        },
-        {
-          "name": "typeId",
-          "c_type": "Oid",
-          "comment": null
-        }
-      ],
-      "comment": "/*\n * NextValueExpr - get next value from sequence\n *\n * This has the same effect as calling the nextval() function, but it does not\n * check permissions on the sequence.  This is used for identity columns,\n * where the sequence is an implicit dependency without its own permissions.\n */\n"
     },
     "TargetEntry": {
       "fields": [
@@ -7634,7 +7637,7 @@
         {
           "name": "ressortgroupref",
           "c_type": "Index",
-          "comment": "/* nonzero if referenced by a sort/group\n\t\t\t\t\t\t\t\t * clause */\n"
+          "comment": "/* nonzero if referenced by a sort/group\n\t\t\t\t\t\t\t\t\t * clause */\n"
         },
         {
           "name": "resorigtbl",

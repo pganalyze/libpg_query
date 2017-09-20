@@ -549,6 +549,15 @@ _outCurrentOfExpr(StringInfo str, const CurrentOfExpr *node)
 }
 
 static void
+_outNextValueExpr(StringInfo str, const NextValueExpr *node)
+{
+  WRITE_NODE_TYPE("NextValueExpr");
+
+  WRITE_UINT_FIELD(seqid);
+  WRITE_UINT_FIELD(typeId);
+}
+
+static void
 _outInferenceElem(StringInfo str, const InferenceElem *node)
 {
   WRITE_NODE_TYPE("InferenceElem");
@@ -631,15 +640,6 @@ _outIntoClause(StringInfo str, const IntoClause *node)
   WRITE_STRING_FIELD(tableSpaceName);
   WRITE_NODE_PTR_FIELD(viewQuery);
   WRITE_BOOL_FIELD(skipData);
-}
-
-static void
-_outNextValueExpr(StringInfo str, const NextValueExpr *node)
-{
-  WRITE_NODE_TYPE("NextValueExpr");
-
-  WRITE_UINT_FIELD(seqid);
-  WRITE_UINT_FIELD(typeId);
 }
 
 static void
@@ -1838,15 +1838,6 @@ _outCreateAmStmt(StringInfo str, const CreateAmStmt *node)
 }
 
 static void
-_outPartitionCmd(StringInfo str, const PartitionCmd *node)
-{
-  WRITE_NODE_TYPE("PartitionCmd");
-
-  WRITE_NODE_PTR_FIELD(name);
-  WRITE_NODE_PTR_FIELD(bound);
-}
-
-static void
 _outCreatePublicationStmt(StringInfo str, const CreatePublicationStmt *node)
 {
   WRITE_NODE_TYPE("CreatePublicationStmt");
@@ -2546,9 +2537,18 @@ _outPartitionRangeDatum(StringInfo str, const PartitionRangeDatum *node)
 {
   WRITE_NODE_TYPE("PartitionRangeDatum");
 
-  WRITE_BOOL_FIELD(infinite);
+  WRITE_ENUM_FIELD(kind);
   WRITE_NODE_PTR_FIELD(value);
   WRITE_INT_FIELD(location);
+}
+
+static void
+_outPartitionCmd(StringInfo str, const PartitionCmd *node)
+{
+  WRITE_NODE_TYPE("PartitionCmd");
+
+  WRITE_NODE_PTR_FIELD(name);
+  WRITE_NODE_PTR_FIELD(bound);
 }
 
 static void

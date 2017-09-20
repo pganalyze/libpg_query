@@ -124,6 +124,9 @@ case T_SetToDefault:
 case T_CurrentOfExpr:
   _outCurrentOfExpr(str, obj);
   break;
+case T_NextValueExpr:
+  _outNextValueExpr(str, obj);
+  break;
 case T_InferenceElem:
   _outInferenceElem(str, obj);
   break;
@@ -144,9 +147,6 @@ case T_OnConflictExpr:
   break;
 case T_IntoClause:
   _outIntoClause(str, obj);
-  break;
-case T_NextValueExpr:
-  _outNextValueExpr(str, obj);
   break;
 case T_RawStmt:
   _outRawStmt(str, obj);
@@ -463,9 +463,6 @@ case T_CreateTransformStmt:
 case T_CreateAmStmt:
   _outCreateAmStmt(str, obj);
   break;
-case T_PartitionCmd:
-  _outPartitionCmd(str, obj);
-  break;
 case T_CreatePublicationStmt:
   _outCreatePublicationStmt(str, obj);
   break;
@@ -636,6 +633,9 @@ case T_PartitionBoundSpec:
   break;
 case T_PartitionRangeDatum:
   _outPartitionRangeDatum(str, obj);
+  break;
+case T_PartitionCmd:
+  _outPartitionCmd(str, obj);
   break;
 case T_InlineCodeBlock:
   _outInlineCodeBlock(str, obj);

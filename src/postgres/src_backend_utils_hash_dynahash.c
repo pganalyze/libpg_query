@@ -33,7 +33,8 @@
  * to hash_create.  This prevents any attempt to split buckets on-the-fly.
  * Therefore, each hash bucket chain operates independently, and no fields
  * of the hash header change after init except nentries and freeList.
- * A partitioned table uses spinlocks to guard changes of those fields.
+ * (A partitioned table uses multiple copies of those fields, guarded by
+ * spinlocks, for additional concurrency.)
  * This lets any subset of the hash buckets be treated as a separately
  * lockable partition.  We expect callers to use the low-order bits of a
  * lookup key's hash value as a partition number --- this will work because
@@ -139,15 +140,27 @@ typedef HASHELEMENT *HASHBUCKET;
 typedef HASHBUCKET *HASHSEGMENT;
 
 /*
- * Using array of FreeListData instead of separate arrays of mutexes, nentries
- * and freeLists prevents, at least partially, sharing one cache line between
- * different mutexes (see below).
+ * Per-freelist data.
+ *
+ * In a partitioned hash table, each freelist is associated with a specific
+ * set of hashcodes, as determined by the FREELIST_IDX() macro below.
+ * nentries tracks the number of live hashtable entries having those hashcodes
+ * (NOT the number of entries in the freelist, as you might expect).
+ *
+ * The coverage of a freelist might be more or less than one partition, so it
+ * needs its own lock rather than relying on caller locking.  Relying on that
+ * wouldn't work even if the coverage was the same, because of the occasional
+ * need to "borrow" entries from another freelist; see get_hash_entry().
+ *
+ * Using an array of FreeListData instead of separate arrays of mutexes,
+ * nentries and freeLists helps to reduce sharing of cache lines between
+ * different mutexes.
  */
 typedef struct
 {
-	slock_t		mutex;			/* spinlock */
-	long		nentries;		/* number of entries */
-	HASHELEMENT *freeList;		/* list of free elements */
+	slock_t		mutex;			/* spinlock for this freelist */
+	long		nentries;		/* number of entries in associated buckets */
+	HASHELEMENT *freeList;		/* chain of free elements */
 } FreeListData;
 
 /*
@@ -161,12 +174,14 @@ typedef struct
 struct HASHHDR
 {
 	/*
-	 * The freelist can become a point of contention on high-concurrency hash
-	 * tables, so we use an array of freelist, each with its own mutex and
-	 * nentries count, instead of just a single one.
+	 * The freelist can become a point of contention in high-concurrency hash
+	 * tables, so we use an array of freelists, each with its own mutex and
+	 * nentries count, instead of just a single one.  Although the freelists
+	 * normally operate independently, we will scavenge entries from freelists
+	 * other than a hashcode's default freelist when necessary.
 	 *
-	 * If hash table is not partitioned only freeList[0] is used and spinlocks
-	 * are not used at all.
+	 * If the hash table is not partitioned, only freeList[0] is used and its
+	 * spinlock is not used at all; callers' locking is assumed sufficient.
 	 */
 	FreeListData freeList[NUM_FREELISTS];
 
@@ -202,7 +217,7 @@ struct HASHHDR
 #define IS_PARTITIONED(hctl)  ((hctl)->num_partitions != 0)
 
 #define FREELIST_IDX(hctl, hashcode) \
-	(IS_PARTITIONED(hctl) ? hashcode % NUM_FREELISTS : 0)
+	(IS_PARTITIONED(hctl) ? (hashcode) % NUM_FREELISTS : 0)
 
 /*
  * Top control structure for a hashtable --- in a shared table, each backend
@@ -435,6 +450,7 @@ hash_search_with_hash_value(HTAB *hashp,
 							bool *foundPtr)
 {
 	HASHHDR    *hctl = hashp->hctl;
+	int			freelist_idx = FREELIST_IDX(hctl, hashvalue);
 	Size		keysize;
 	uint32		bucket;
 	long		segment_num;
@@ -443,7 +459,6 @@ hash_search_with_hash_value(HTAB *hashp,
 	HASHBUCKET	currBucket;
 	HASHBUCKET *prevBucketPtr;
 	HashCompareFunc match;
-	int			freelist_idx = FREELIST_IDX(hctl, hashvalue);
 
 #if HASH_STATISTICS
 	hash_accesses++;
@@ -526,13 +541,14 @@ hash_search_with_hash_value(HTAB *hashp,
 				if (IS_PARTITIONED(hctl))
 					SpinLockAcquire(&(hctl->freeList[freelist_idx].mutex));
 
+				/* delete the record from the appropriate nentries counter. */
 				Assert(hctl->freeList[freelist_idx].nentries > 0);
 				hctl->freeList[freelist_idx].nentries--;
 
 				/* remove record from hash bucket's chain. */
 				*prevBucketPtr = currBucket->link;
 
-				/* add the record to the freelist for this table.  */
+				/* add the record to the appropriate freelist. */
 				currBucket->link = hctl->freeList[freelist_idx].freeList;
 				hctl->freeList[freelist_idx].freeList = currBucket;
 
@@ -628,14 +644,15 @@ hash_search_with_hash_value(HTAB *hashp,
 #endif
 
 /*
- * create a new entry if possible
+ * Allocate a new hashtable entry if possible; return NULL if out of memory.
+ * (Or, if the underlying space allocator throws error for out-of-memory,
+ * we won't return at all.)
  */
 static HASHBUCKET
 get_hash_entry(HTAB *hashp, int freelist_idx)
 {
 	HASHHDR    *hctl = hashp->hctl;
 	HASHBUCKET	newElement;
-	int			borrow_from_idx;
 
 	for (;;)
 	{
@@ -652,19 +669,32 @@ get_hash_entry(HTAB *hashp, int freelist_idx)
 		if (IS_PARTITIONED(hctl))
 			SpinLockRelease(&hctl->freeList[freelist_idx].mutex);
 
-		/* no free elements.  allocate another chunk of buckets */
+		/*
+		 * No free elements in this freelist.  In a partitioned table, there
+		 * might be entries in other freelists, but to reduce contention we
+		 * prefer to first try to get another chunk of buckets from the main
+		 * shmem allocator.  If that fails, though, we *MUST* root through all
+		 * the other freelists before giving up.  There are multiple callers
+		 * that assume that they can allocate every element in the initially
+		 * requested table size, or that deleting an element guarantees they
+		 * can insert a new element, even if shared memory is entirely full.
+		 * Failing because the needed element is in a different freelist is
+		 * not acceptable.
+		 */
 		if (!element_alloc(hashp, hctl->nelem_alloc, freelist_idx))
 		{
+			int			borrow_from_idx;
+
 			if (!IS_PARTITIONED(hctl))
 				return NULL;	/* out of memory */
 
-			/* try to borrow element from another partition */
+			/* try to borrow element from another freelist */
 			borrow_from_idx = freelist_idx;
 			for (;;)
 			{
 				borrow_from_idx = (borrow_from_idx + 1) % NUM_FREELISTS;
 				if (borrow_from_idx == freelist_idx)
-					break;
+					break;		/* examined all freelists, fail */
 
 				SpinLockAcquire(&(hctl->freeList[borrow_from_idx].mutex));
 				newElement = hctl->freeList[borrow_from_idx].freeList;
@@ -674,17 +704,19 @@ get_hash_entry(HTAB *hashp, int freelist_idx)
 					hctl->freeList[borrow_from_idx].freeList = newElement->link;
 					SpinLockRelease(&(hctl->freeList[borrow_from_idx].mutex));
 
+					/* careful: count the new element in its proper freelist */
 					SpinLockAcquire(&hctl->freeList[freelist_idx].mutex);
 					hctl->freeList[freelist_idx].nentries++;
 					SpinLockRelease(&hctl->freeList[freelist_idx].mutex);
 
-					break;
+					return newElement;
 				}
 
 				SpinLockRelease(&(hctl->freeList[borrow_from_idx].mutex));
 			}
 
-			return newElement;
+			/* no elements available to borrow either, so out of memory */
+			return NULL;
 		}
 	}
 

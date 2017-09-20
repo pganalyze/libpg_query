@@ -604,10 +604,10 @@ leftmostLoc(int loc1, int loc2)
  * for themselves, in case additional checks should be made, or because they
  * have special rules about which parts of the tree need to be visited.
  *
- * Note: we ignore MinMaxExpr, SQLValueFunction, XmlExpr, and CoerceToDomain
- * nodes, because they do not contain SQL function OIDs.  However, they can
- * invoke SQL-visible functions, so callers should take thought about how to
- * treat them.
+ * Note: we ignore MinMaxExpr, SQLValueFunction, XmlExpr, CoerceToDomain,
+ * and NextValueExpr nodes, because they do not contain SQL function OIDs.
+ * However, they can invoke SQL-visible functions, so callers should take
+ * thought about how to treat them.
  */
 
 

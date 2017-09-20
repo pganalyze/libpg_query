@@ -248,6 +248,26 @@
       ],
       "comment": "/*\n * DefElem - a generic \"name = value\" option definition\n *\n * In some contexts the name can be qualified.  Also, certain SQL commands\n * allow a SET/ADD/DROP action to be attached to option settings, so it's\n * convenient to carry a field for that too.  (Note: currently, it is our\n * practice that the grammar allows namespace and action only in statements\n * where they are relevant; C code can just ignore those fields in other\n * statements.)\n */\n"
     },
+    "PartitionRangeDatumKind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PARTITION_RANGE_DATUM_MINVALUE",
+          "comment": null
+        },
+        {
+          "name": "PARTITION_RANGE_DATUM_VALUE",
+          "comment": null
+        },
+        {
+          "name": "PARTITION_RANGE_DATUM_MAXVALUE",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * PartitionRangeDatum - one of the values in a range partition bound\n *\n * This can be MINVALUE, MAXVALUE or a specific bounded value.\n */\n"
+    },
     "RTEKind": {
       "values": [
         {
@@ -1331,10 +1351,6 @@
           "comment": null
         },
         {
-          "name": "ALTER_SUBSCRIPTION_PUBLICATION_REFRESH",
-          "comment": null
-        },
-        {
           "name": "ALTER_SUBSCRIPTION_REFRESH",
           "comment": null
         },
@@ -2345,6 +2361,10 @@
           "comment": null
         },
         {
+          "name": "T_NextValueExpr",
+          "comment": null
+        },
+        {
           "name": "T_InferenceElem",
           "comment": null
         },
@@ -2370,10 +2390,6 @@
         },
         {
           "name": "T_IntoClause",
-          "comment": null
-        },
-        {
-          "name": "T_NextValueExpr",
           "comment": null
         },
         {
@@ -3142,10 +3158,6 @@
           "comment": null
         },
         {
-          "name": "T_PartitionCmd",
-          "comment": null
-        },
-        {
           "name": "T_CreatePublicationStmt",
           "comment": null
         },
@@ -3377,6 +3389,10 @@
         },
         {
           "name": "T_PartitionRangeDatum",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionCmd",
           "comment": null
         },
         {

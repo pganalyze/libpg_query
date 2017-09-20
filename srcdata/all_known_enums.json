@@ -7,6 +7,7 @@
   "RoleSpecType",
   "TableLikeOption",
   "DefElemAction",
+  "PartitionRangeDatumKind",
   "RTEKind",
   "WCOKind",
   "GroupingSetKind",

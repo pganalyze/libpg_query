@@ -124,6 +124,9 @@ case T_SetToDefault:
 case T_CurrentOfExpr:
   _fingerprintCurrentOfExpr(ctx, obj, parent, field_name, depth);
   break;
+case T_NextValueExpr:
+  _fingerprintNextValueExpr(ctx, obj, parent, field_name, depth);
+  break;
 case T_InferenceElem:
   _fingerprintInferenceElem(ctx, obj, parent, field_name, depth);
   break;
@@ -144,9 +147,6 @@ case T_OnConflictExpr:
   break;
 case T_IntoClause:
   _fingerprintIntoClause(ctx, obj, parent, field_name, depth);
-  break;
-case T_NextValueExpr:
-  _fingerprintNextValueExpr(ctx, obj, parent, field_name, depth);
   break;
 case T_RawStmt:
   _fingerprintRawStmt(ctx, obj, parent, field_name, depth);
@@ -463,9 +463,6 @@ case T_CreateTransformStmt:
 case T_CreateAmStmt:
   _fingerprintCreateAmStmt(ctx, obj, parent, field_name, depth);
   break;
-case T_PartitionCmd:
-  _fingerprintPartitionCmd(ctx, obj, parent, field_name, depth);
-  break;
 case T_CreatePublicationStmt:
   _fingerprintCreatePublicationStmt(ctx, obj, parent, field_name, depth);
   break;
@@ -636,6 +633,9 @@ case T_PartitionBoundSpec:
   break;
 case T_PartitionRangeDatum:
   _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionCmd:
+  _fingerprintPartitionCmd(ctx, obj, parent, field_name, depth);
   break;
 case T_InlineCodeBlock:
   _fingerprintInlineCodeBlock(ctx, obj, parent, field_name, depth);

@@ -452,6 +452,9 @@ typedef struct EState
 	ResultRelInfo *es_root_result_relations;	/* array of ResultRelInfos */
 	int			es_num_root_result_relations;	/* length of the array */
 
+	/* Info about leaf partitions of partitioned table(s) for insert queries: */
+	List	   *es_leaf_result_relations;	/* List of ResultRelInfos */
+
 	/* Stuff used for firing triggers: */
 	List	   *es_trig_target_relations;	/* trigger-only ResultRelInfos */
 	TupleTableSlot *es_trig_tuple_slot; /* for trigger output tuples */
@@ -818,6 +821,18 @@ typedef struct DomainConstraintState
  * ----------------------------------------------------------------
  */
 
+struct PlanState;
+
+/* ----------------
+ *	 ExecProcNodeMtd
+ *
+ * This is the method called by ExecProcNode to return the next tuple
+ * from an executor node.  It returns NULL, or an empty TupleTableSlot,
+ * if no more tuples are available.
+ * ----------------
+ */
+typedef TupleTableSlot *(*ExecProcNodeMtd) (struct PlanState *pstate);
+
 /* ----------------
  *		PlanState node
  *
@@ -834,6 +849,10 @@ typedef struct PlanState
 	EState	   *state;			/* at execution time, states of individual
 								 * nodes point to one EState for the whole
 								 * top-level plan */
+
+	ExecProcNodeMtd ExecProcNode;	/* function to return next tuple */
+	ExecProcNodeMtd ExecProcNodeReal;	/* actual function, if above is a
+										 * wrapper */
 
 	Instrumentation *instrument;	/* Optional runtime stats for this node */
 	WorkerInstrumentation *worker_instrument;	/* per-worker instrumentation */
@@ -964,9 +983,9 @@ typedef struct ModifyTableState
 	/* Per partition tuple conversion map */
 	TupleTableSlot *mt_partition_tuple_slot;
 	struct TransitionCaptureState *mt_transition_capture;
-									/* controls transition table population */
+	/* controls transition table population */
 	TupleConversionMap **mt_transition_tupconv_maps;
-									/* Per plan/partition tuple conversion */
+	/* Per plan/partition tuple conversion */
 } ModifyTableState;
 
 /* ----------------
