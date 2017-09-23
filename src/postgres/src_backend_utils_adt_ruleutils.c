@@ -648,7 +648,7 @@ static char *flatten_reloptions(Oid relid);
 
 /*
  * pg_get_serial_sequence
- *		Get the name of the sequence used by a serial column,
+ *		Get the name of the sequence used by an identity or serial column,
  *		formatted suitably for passing to setval, nextval or currval.
  *		First parameter is not treated as double-quoted, second parameter
  *		is --- see documentation for reason.
