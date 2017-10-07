@@ -725,10 +725,6 @@
 },
 
 {
-	"unsafe_new_enum_value_usage", ERRCODE_UNSAFE_NEW_ENUM_VALUE_USAGE
-},
-
-{
 	"operator_intervention", ERRCODE_OPERATOR_INTERVENTION
 },
 
