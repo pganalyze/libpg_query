@@ -97,6 +97,8 @@ enum SysCacheIdentifier
 	TYPEOID,
 	USERMAPPINGOID,
 	USERMAPPINGUSERSERVER
+
+#define SysCacheSize (USERMAPPINGUSERSERVER + 1)
 };
 
 extern void InitCatalogCache(void);
@@ -128,6 +130,8 @@ extern uint32 GetSysCacheHashValue(int cacheId,
 struct catclist;
 extern struct catclist *SearchSysCacheList(int cacheId, int nkeys,
 				   Datum key1, Datum key2, Datum key3, Datum key4);
+
+extern void SysCacheInvalidate(int cacheId, uint32 hashValue);
 
 extern bool RelationInvalidatesSnapshotsOnly(Oid relid);
 extern bool RelationHasSysCache(Oid relid);

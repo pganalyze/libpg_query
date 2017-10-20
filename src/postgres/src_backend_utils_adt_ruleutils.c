@@ -410,6 +410,9 @@ static void get_rule_expr(Node *node, deparse_context *context,
 			  bool showimplicit);
 static void get_rule_expr_toplevel(Node *node, deparse_context *context,
 					   bool showimplicit);
+static void get_rule_expr_funccall(Node *node, deparse_context *context,
+					   bool showimplicit);
+static bool looks_like_function(Node *node);
 static void get_oper_expr(OpExpr *expr, deparse_context *context);
 static void get_func_expr(FuncExpr *expr, deparse_context *context,
 			  bool showimplicit);
@@ -1207,6 +1210,26 @@ static char *flatten_reloptions(Oid relid);
  */
 
 
+/*
+ * get_rule_expr_funccall		- Parse back a function-call expression
+ *
+ * Same as get_rule_expr(), except that we guarantee that the output will
+ * look like a function call, or like one of the things the grammar treats as
+ * equivalent to a function call (see the func_expr_windowless production).
+ * This is needed in places where the grammar uses func_expr_windowless and
+ * you can't substitute a parenthesized a_expr.  If what we have isn't going
+ * to look like a function call, wrap it in a dummy CAST() expression, which
+ * will satisfy the grammar --- and, indeed, is likely what the user wrote to
+ * produce such a thing.
+ */
+
+
+/*
+ * Helper function to identify node types that satisfy func_expr_windowless.
+ * If in doubt, "false" is always a safe answer.
+ */
+
+
 
 /*
  * get_oper_expr			- Parse back an OpExpr node
@@ -1326,7 +1349,11 @@ static char *flatten_reloptions(Oid relid);
  * We strip any top-level FieldStore or assignment ArrayRef nodes that
  * appear in the input, and return the subexpression that's to be assigned.
  * If printit is true, we also print out the appropriate decoration for the
- * base column name (that the caller just printed).
+ * base column name (that the caller just printed).  We might also need to
+ * strip CoerceToDomain nodes, but only ones that appear above assignment
+ * nodes.
+ *
+ * Returns the subexpression that's to be assigned.
  */
 
 

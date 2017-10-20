@@ -357,6 +357,9 @@ __thread bool		ClientAuthInProgress = false;
 /* the launcher needs to be signalled to communicate some condition */
 
 
+/* received START_WALRECEIVER signal */
+
+
 /* set when there's a worker that needs to be started up */
 
 
@@ -420,6 +423,7 @@ static void maybe_start_bgworker(void);
 static bool CreateOptsFile(int argc, char *argv[], char *fullprogname);
 static pid_t StartChildProcess(AuxProcType type);
 static void StartAutovacuumWorker(void);
+static void MaybeStartWalReceiver(void);
 static void InitPostmasterDeathWatchHandle(void);
 
 /*
@@ -1007,6 +1011,7 @@ internal_forkexec(int argc, char *argv[], Port *port)
 static pid_t
 internal_forkexec(int argc, char *argv[], Port *port)
 {
+	int			retry_count = 0;
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	int			i;
@@ -1023,6 +1028,9 @@ internal_forkexec(int argc, char *argv[], Port *port)
 	Assert(argv[argc] == NULL);
 	Assert(strncmp(argv[1], "--fork", 6) == 0);
 	Assert(argv[2] == NULL);
+
+	/* Resume here if we need to retry */
+retry:
 
 	/* Set up shared memory for parameter passing */
 	ZeroMemory(&sa, sizeof(sa));
@@ -1115,22 +1123,26 @@ internal_forkexec(int argc, char *argv[], Port *port)
 
 	/*
 	 * Reserve the memory region used by our main shared memory segment before
-	 * we resume the child process.
+	 * we resume the child process.  Normally this should succeed, but if ASLR
+	 * is active then it might sometimes fail due to the stack or heap having
+	 * gotten mapped into that range.  In that case, just terminate the
+	 * process and retry.
 	 */
 	if (!pgwin32_ReserveSharedMemoryRegion(pi.hProcess))
 	{
-		/*
-		 * Failed to reserve the memory, so terminate the newly created
-		 * process and give up.
-		 */
+		/* pgwin32_ReserveSharedMemoryRegion already made a log entry */
 		if (!TerminateProcess(pi.hProcess, 255))
 			ereport(LOG,
 					(errmsg_internal("could not terminate process that failed to reserve memory: error code %lu",
 									 GetLastError())));
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-		return -1;				/* logging done made by
-								 * pgwin32_ReserveSharedMemoryRegion() */
+		if (++retry_count < 100)
+			goto retry;
+		ereport(LOG,
+				(errmsg("giving up after too many tries to reserve shared memory"),
+				 errhint("This might be caused by ASLR or antivirus software.")));
+		return -1;
 	}
 
 	/*
@@ -1517,6 +1529,13 @@ SubPostmasterMain(int argc, char *argv[])
  */
 #ifdef EXEC_BACKEND
 #endif
+
+/*
+ * MaybeStartWalReceiver
+ *		Start the WAL receiver process, if not running and our state allows.
+ */
+
+
 
 /*
  * Create the opts file

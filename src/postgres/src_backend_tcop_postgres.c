@@ -139,13 +139,6 @@ char	   *register_stack_base_ptr = NULL;
 #endif
 
 /*
- * Flag to mark SIGHUP. Whenever the main loop comes around it
- * will reread the configuration file. (Better than doing the
- * reading in the signal handler, ey?)
- */
-
-
-/*
  * Flag to keep track of whether we have started a transaction.
  * For extended query protocol this has to be remembered across messages.
  */
@@ -213,7 +206,6 @@ static bool IsTransactionExitStmt(Node *parsetree);
 static bool IsTransactionExitStmtList(List *parseTrees);
 static bool IsTransactionStmtList(List *parseTrees);
 static void drop_unnamed_stmt(void);
-static void SigHupHandler(SIGNAL_ARGS);
 static void log_disconnections(int code, Datum arg);
 
 
@@ -499,7 +491,13 @@ static void log_disconnections(int code, Datum arg);
 /* signal handler for floating point exception */
 
 
-/* SIGHUP: set flag to re-read config file at next convenient time */
+/*
+ * SIGHUP: set flag to re-read config file at next convenient time.
+ *
+ * Sets the ConfigReloadPending flag, which should be checked at convenient
+ * places inside main loops. (Better than doing the reading in the signal
+ * handler, ey?)
+ */
 
 
 /*

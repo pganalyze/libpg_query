@@ -103,6 +103,25 @@
 #include "utils/memutils.h"
 
 /*
+ * Cope with the various platform-specific ways to spell TCP keepalive socket
+ * options.  This doesn't cover Windows, which as usual does its own thing.
+ */
+#if defined(TCP_KEEPIDLE)
+/* TCP_KEEPIDLE is the name of this option on Linux and *BSD */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPIDLE
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPIDLE"
+#elif defined(TCP_KEEPALIVE_THRESHOLD)
+/* TCP_KEEPALIVE_THRESHOLD is the name of this option on Solaris >= 11 */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPALIVE_THRESHOLD
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPALIVE_THRESHOLD"
+#elif defined(TCP_KEEPALIVE) && defined(__darwin__)
+/* TCP_KEEPALIVE is the name of this option on macOS */
+/* Caution: Solaris has this symbol but it means something different */
+#define PG_TCP_KEEPALIVE_IDLE TCP_KEEPALIVE
+#define PG_TCP_KEEPALIVE_IDLE_STR "TCP_KEEPALIVE"
+#endif
+
+/*
  * Configuration options
  */
 
@@ -591,24 +610,18 @@ pq_setkeepaliveswin32(Port *port, int idle, int interval)
 }
 #endif
 
-#if defined(TCP_KEEPIDLE) || defined(TCP_KEEPALIVE) || defined(WIN32)
+#if defined(PG_TCP_KEEPALIVE_IDLE) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
-#ifdef TCP_KEEPIDLE
-#else
-#endif   /* TCP_KEEPIDLE */
 #else							/* WIN32 */
 #endif   /* WIN32 */
 #else
 #endif
 
-#if defined(TCP_KEEPIDLE) || defined(TCP_KEEPALIVE) || defined(SIO_KEEPALIVE_VALS)
+#if defined(PG_TCP_KEEPALIVE_IDLE) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
-#ifdef TCP_KEEPIDLE
-#else
-#endif
 #else							/* WIN32 */
 #endif
-#else							/* TCP_KEEPIDLE || SIO_KEEPALIVE_VALS */
+#else
 #endif
 
 #if defined(TCP_KEEPINTVL) || defined(SIO_KEEPALIVE_VALS)
@@ -618,7 +631,7 @@ pq_setkeepaliveswin32(Port *port, int idle, int interval)
 #else
 #endif
 
-#if defined(TCP_KEEPINTVL) || defined (SIO_KEEPALIVE_VALS)
+#if defined(TCP_KEEPINTVL) || defined(SIO_KEEPALIVE_VALS)
 #ifndef WIN32
 #else							/* WIN32 */
 #endif

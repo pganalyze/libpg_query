@@ -728,7 +728,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 9.5.7"
+#define PACKAGE_STRING "PostgreSQL 9.5.9"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -737,7 +737,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "9.5.7"
+#define PACKAGE_VERSION "9.5.9"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -760,13 +760,13 @@
 #define PG_USE_INLINE 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "9.5.7"
+#define PG_VERSION "9.5.9"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 90507
+#define PG_VERSION_NUM 90509
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 9.5.7 on x86_64-apple-darwin16.6.0, compiled by Apple LLVM version 8.1.0 (clang-802.0.42), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 9.5.9 on x86_64-apple-darwin16.7.0, compiled by Apple LLVM version 9.0.0 (clang-900.0.38), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
