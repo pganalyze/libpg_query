@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.7.0    2017-10-20
+
+* Update to Postgres 9.5.9
+* Support gcc versions earlier than 4.6.0
+* Export version information in pg_query.h directly
+
+
 ## 9.5-1.6.2    2017-07-30
 
 * Fingerprinting Version 1.3
