@@ -47,6 +47,10 @@ void pg_query_free_parse_result(PgQueryParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 
+// Postgres version information
+#define PG_VERSION "9.5.9"
+#define PG_MAJORVERSION "9.5"
+#define PG_VERSION_NUM 90509
 
 // Deprecated APIs below
 

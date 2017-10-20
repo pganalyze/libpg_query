@@ -72,6 +72,10 @@ extract_source: $(PGDIR)
 	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
 	# Support gcc earlier than 4.6.0 without reconfiguring
 	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
+	# Copy version information so its easily accessible
+	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 
 .c.o:
 	@$(ECHO) compiling $(<)
