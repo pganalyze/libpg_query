@@ -69,6 +69,8 @@ extract_source: $(PGDIR)
 	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
 	# Support 32-bit systems without reconfiguring
 	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
+	# Support gcc earlier than 4.6.0 without reconfiguring
+	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
 
 .c.o:
 	@$(ECHO) compiling $(<)
