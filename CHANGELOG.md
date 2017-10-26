@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.7.1    2017-10-26
+
+* Allow "$1 FROM $2" to be parsed
+  - This is new with Postgres 10 output of pg_stat_statements, so we should
+    treat this the same as "? FROM ?" in earlier versions.
+
+
 ## 9.5-1.7.0    2017-10-20
 
 * Update to Postgres 9.5.9
