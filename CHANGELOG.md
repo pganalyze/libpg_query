@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.0   2017-10-30
+
+* First release based on PostgreSQL 10.0
+  - Parse tree output may have changed in backwards-incompatible ways!
+  - Fingerprint base version bumped to "02" to reflect the change in parse trees
+
+
 ## 9.5-1.7.1    2017-10-26
 
 * Allow "$1 FROM $2" to be parsed
