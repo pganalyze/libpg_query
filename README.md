@@ -12,7 +12,7 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```sh
-git clone -b 9.5-latest git://github.com/lfittl/libpg_query
+git clone -b 10-latest git://github.com/lfittl/libpg_query
 cd libpg_query
 make
 ```
@@ -133,9 +133,9 @@ This will output:
 
 For stability, it is recommended you use individual tagged git versions, see CHANGELOG.
 
-Current `master` reflects a PostgreSQL base version of 9.4, with a legacy output format.
+`master` reflects a PostgreSQL base version of 9.4, with a legacy output format.
 
-New development is happening on `9.5-latest`, which will become `master` in the future.
+New development is happening on `10-latest`, which reflects a base version of Postgres 10.
 
 
 ## Authors
@@ -146,8 +146,8 @@ New development is happening on `9.5-latest`, which will become `master` in the 
 ## License
 
 PostgreSQL server source code, used under the [PostgreSQL license](https://www.postgresql.org/about/licence/).<br>
-Portions Copyright (c) 1996-2016, The PostgreSQL Global Development Group<br>
+Portions Copyright (c) 1996-2017, The PostgreSQL Global Development Group<br>
 Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
-Copyright (c) 2016, Lukas Fittl <lukas@fittl.com>
+Copyright (c) 2017, Lukas Fittl <lukas@fittl.com>
