@@ -2,6 +2,43 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 9.5-1.7.1    2017-10-26
+
+* Allow "$1 FROM $2" to be parsed
+  - This is new with Postgres 10 output of pg_stat_statements, so we should
+    treat this the same as "? FROM ?" in earlier versions.
+
+
+## 9.5-1.7.0    2017-10-20
+
+* Update to Postgres 9.5.9
+* Support gcc versions earlier than 4.6.0
+* Export version information in pg_query.h directly
+
+
+## 9.5-1.6.2    2017-07-30
+
+* Fingerprinting Version 1.3
+  * Attributes to be ignored:
+    * RangeVar.relname (if node also has RangeVar.relpersistence = "t")
+  * Special cases: List nodes where parent field name is valuesLists
+    * Follow same logic described for fromClause/targetList/cols/rexpr
+
+
+## 9.5-1.6.1    2017-07-29
+
+* Fingerprinting Version 1.2
+  * Ignore portal_name in DeclareCursorStmt, FetchStmt and ClosePortalStmt
+
+
+## 9.5-1.6.0    2017-07-29
+
+* Change normalization methods to output $1/$2 .. $N instead of ? characters
+  * BREAKING CHANGE in pg_query_normalize(..) output
+  * This matches the change in the upcoming Postgres 10, and makes it easier
+    to migrate applications to the new normalization format
+
+
 ## 9.5-1.5.0    2017-05-26
 
 * Update to Postgres 9.5.7
