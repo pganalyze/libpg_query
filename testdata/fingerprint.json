@@ -58,7 +58,7 @@
   {
     "input": "INSERT INTO test (a, b) VALUES (ARRAY[?, ?, ?, ?], ?::timestamptz), (ARRAY[?, ?, ?, ?], ?::timestamptz), (?, ?::timestamptz)",
     "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name",
-      "a", "ResTarget", "name", "b", "relation", "RangeVar", "inhOpt", "2",
+      "a", "ResTarget", "name", "b", "relation", "RangeVar", "inh", "true",
       "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt",
       "valuesLists", "A_ArrayExpr", "TypeCast", "typeName", "TypeName", "names",
       "String", "str", "timestamptz", "typemod", "-1", "TypeCast", "typeName",
@@ -187,14 +187,14 @@
   {
     "input": "SELECT * FROM x AS a, y AS b",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
-      "relname", "x", "relpersistence", "p", "RangeVar", "inhOpt", "2", "relname", "y",
+      "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "02e50dcae0f1a1e237231d9d8e411383ba7f25068c"
   },
   {
     "input": "SELECT * FROM y AS a, x AS b",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
-      "relname", "x", "relpersistence", "p", "RangeVar", "inhOpt", "2", "relname", "y",
+      "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "02e50dcae0f1a1e237231d9d8e411383ba7f25068c"
   },
@@ -214,7 +214,7 @@
   },
   {
     "input": "SELECT x, y FROM z",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inhOpt", "2", "relname", "z",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z",
       "relpersistence", "p", "targetList", "ResTarget", "val", "ColumnRef", "fields",
       "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
     "expectedHash": "025bad7941491107df4b3c6bc0be2dfca4eba836d9"
@@ -300,7 +300,7 @@
   {
     "input": "DECLARE cursor_123 CURSOR FOR SELECT * FROM test WHERE id = 123",
     "expectedParts": ["RawStmt", "stmt", "DeclareCursorStmt", "options", "32", "query", "SelectStmt",
-      "fromClause", "RangeVar", "inhOpt", "2", "relname", "test", "relpersistence",
+      "fromClause", "RangeVar", "inh", "true", "relname", "test", "relpersistence",
       "p", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
       "whereClause", "A_Expr", "lexpr", "ColumnRef", "fields", "String", "str",
       "id", "name", "String", "str", "="],
