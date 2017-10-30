@@ -54,7 +54,8 @@
 #include "sha1.h"
 
 /* constant table */
-static uint32 _K[] = {0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6};
+__thread static uint32 _K[] = {0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6};
+
 
 #define K(t)	_K[(t) / 20]
 

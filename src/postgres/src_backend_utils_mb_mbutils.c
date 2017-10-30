@@ -96,8 +96,10 @@ typedef struct ConvProcInfo
 /*
  * These variables track the currently-selected encodings.
  */
-static const pg_enc2name *ClientEncoding = &pg_enc2name_tbl[PG_SQL_ASCII];
-static const pg_enc2name *DatabaseEncoding = &pg_enc2name_tbl[PG_SQL_ASCII];
+__thread static const pg_enc2name *ClientEncoding = &pg_enc2name_tbl[PG_SQL_ASCII];
+
+__thread static const pg_enc2name *DatabaseEncoding = &pg_enc2name_tbl[PG_SQL_ASCII];
+
 
 
 /*

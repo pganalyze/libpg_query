@@ -122,7 +122,8 @@ __thread int			max_stack_depth = 100;
  */
 
 /* max_stack_depth converted to bytes for speed of checking */
-static long max_stack_depth_bytes = 100 * 1024L;
+__thread static long max_stack_depth_bytes = 100 * 1024L;
+
 
 /*
  * Stack base pointer -- initialized by PostmasterMain and inherited by

@@ -8536,7 +8536,7 @@ static yyconst struct yy_trans_info yy_transition[37005] =
 
  {   1,   0 },    };
 
-static yyconst struct yy_trans_info *yy_start_state_list[27] =
+__thread static yyconst struct yy_trans_info *yy_start_state_list[27] =
     {
     &yy_transition[1],
     &yy_transition[3],
@@ -8566,7 +8566,8 @@ static yyconst struct yy_trans_info *yy_start_state_list[27] =
     &yy_transition[6195],
     &yy_transition[6453],
 
-    } ;
+    }
+;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.

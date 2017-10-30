@@ -234,7 +234,8 @@ class Runner
             end_offset = cursor.extent.end.offset
             end_offset += 1 if cursor.kind == :cursor_variable # The ";" isn't counted correctly by clang
 
-            if cursor.kind == :cursor_variable && cursor.linkage == :external && !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified?
+            if cursor.kind == :cursor_variable && (cursor.linkage == :external || cursor.linkage == :internal) &&
+              !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified?
               analysis.external_variables << cursor.spelling
             end
 

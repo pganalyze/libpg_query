@@ -77,7 +77,8 @@
  * items.
  * ----------
  */
-static PLpgSQL_nsitem *ns_top = NULL;
+__thread static PLpgSQL_nsitem *ns_top = NULL;
+
 
 
 /* ----------

@@ -244,29 +244,40 @@ typedef struct
  */
 
 /* The stuff the core lexer needs */
-static core_yyscan_t yyscanner = NULL;
-static core_yy_extra_type core_yy;
+__thread static core_yyscan_t yyscanner = NULL;
+
+__thread static core_yy_extra_type core_yy;
+
 
 /* The original input string */
-static const char *scanorig;
+__thread static const char *scanorig;
+
 
 /* Current token's length (corresponds to plpgsql_yylval and plpgsql_yylloc) */
-static int	plpgsql_yyleng;
+__thread static int	plpgsql_yyleng;
+
 
 /* Current token's code (corresponds to plpgsql_yylval and plpgsql_yylloc) */
-static int	plpgsql_yytoken;
+__thread static int	plpgsql_yytoken;
+
 
 /* Token pushback stack */
 #define MAX_PUSHBACKS 4
 
-static int	num_pushbacks;
-static int	pushback_token[MAX_PUSHBACKS];
-static TokenAuxData pushback_auxdata[MAX_PUSHBACKS];
+__thread static int	num_pushbacks;
+
+__thread static int	pushback_token[MAX_PUSHBACKS];
+
+__thread static TokenAuxData pushback_auxdata[MAX_PUSHBACKS];
+
 
 /* State for plpgsql_location_to_lineno() */
-static const char *cur_line_start;
-static const char *cur_line_end;
-static int	cur_line_num;
+__thread static const char *cur_line_start;
+
+__thread static const char *cur_line_end;
+
+__thread static int	cur_line_num;
+
 
 /* Internal functions */
 static int	internal_yylex(TokenAuxData *auxdata);

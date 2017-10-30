@@ -73,7 +73,8 @@
 
 
 
-static int	spins_per_delay = DEFAULT_SPINS_PER_DELAY;
+__thread static int	spins_per_delay = DEFAULT_SPINS_PER_DELAY;
+
 
 
 /*
