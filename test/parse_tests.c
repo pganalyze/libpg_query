@@ -16,7 +16,7 @@ const char* tests[] = {
   "ALTER ROLE postgres LOGIN SUPERUSER PASSWORD ?",
   "[{\"RawStmt\": {\"stmt\": {\"AlterRoleStmt\": {\"role\": {\"RoleSpec\": {\"roletype\": 0, \"rolename\": \"postgres\", \"location\": 11}}, \"options\": [{\"DefElem\": {\"defname\": \"canlogin\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": 20}}, {\"DefElem\": {\"defname\": \"superuser\", \"arg\": {\"Integer\": {\"ival\": 1}}, \"defaction\": 0, \"location\": 26}}, {\"DefElem\": {\"defname\": \"password\", \"arg\": {\"ParamRef\": {\"location\": 45}}, \"defaction\": 0, \"location\": 36}}], \"action\": 1}}}}]",
   "SELECT extract($1 FROM $2)",
-  "[{\"RawStmt\": {\"stmt\": [{\"SelectStmt\": {\"targetList\": [{\"ResTarget\": {\"val\": {\"FuncCall\": {\"funcname\": [{\"String\": {\"str\": \"pg_catalog\"}}, {\"String\": {\"str\": \"date_part\"}}], \"args\": [{\"ParamRef\": {\"number\": 1, \"location\": 15}}, {\"ParamRef\": {\"number\": 2, \"location\": 23}}], \"location\": 7}}, \"location\": 7}}], \"op\": 0}}]}}]"
+  "[{\"RawStmt\": {\"stmt\": {\"SelectStmt\": {\"targetList\": [{\"ResTarget\": {\"val\": {\"FuncCall\": {\"funcname\": [{\"String\": {\"str\": \"pg_catalog\"}}, {\"String\": {\"str\": \"date_part\"}}], \"args\": [{\"ParamRef\": {\"number\": 1, \"location\": 15}}, {\"ParamRef\": {\"number\": 2, \"location\": 23}}], \"location\": 7}}, \"location\": 7}}], \"op\": 0}}}}]"
 };
 
 size_t testsLength = __LINE__ - 4;
