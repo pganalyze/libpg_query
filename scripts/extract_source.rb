@@ -381,7 +381,11 @@ class Runner
           str += "\n" + @mock[symbol] + "\n"
         elsif @external_variables.include?(symbol) && symbols.include?(symbol)
           file_thread_local_variables << symbol
-          str += "\n__thread " + skipped_code.strip + "\n"
+          if skipped_code.include?('static')
+            str += "\n" + skipped_code.strip.gsub('static', 'static __thread') + "\n"
+          else
+            str += "\n__thread " + skipped_code.strip + "\n"
+          end
         else
           # In the off chance that part of a macro is before a symbol (e.g. ifdef),
           # but the closing part is inside (e.g. endif) we need to output all macros inside skipped parts

@@ -290,7 +290,7 @@ static bool has_seq_scans(HTAB *hashp);
 /*
  * memory allocation support
  */
-__thread static MemoryContext CurrentDynaHashCxt = NULL;
+static __thread MemoryContext CurrentDynaHashCxt = NULL;
 
 
 
@@ -1042,10 +1042,10 @@ hash_corrupted(HTAB *hashp)
 
 #define MAX_SEQ_SCANS 100
 
-__thread static HTAB *seq_scan_tables[MAX_SEQ_SCANS];
+static __thread HTAB *seq_scan_tables[MAX_SEQ_SCANS];
 	/* tables being scanned */
 	/* subtransaction nest level */
-__thread static int	num_seq_scans = 0;
+static __thread int	num_seq_scans = 0;
 
 
 

@@ -235,7 +235,7 @@ static void AllocSetCheck(MemoryContext context);
 /*
  * This is the virtual function table for AllocSet contexts.
  */
-__thread static MemoryContextMethods AllocSetMethods = {
+static __thread MemoryContextMethods AllocSetMethods = {
 	AllocSetAlloc,
 	AllocSetFree,
 	AllocSetRealloc,

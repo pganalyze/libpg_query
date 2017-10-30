@@ -244,39 +244,39 @@ typedef struct
  */
 
 /* The stuff the core lexer needs */
-__thread static core_yyscan_t yyscanner = NULL;
+static __thread core_yyscan_t yyscanner = NULL;
 
-__thread static core_yy_extra_type core_yy;
+static __thread core_yy_extra_type core_yy;
 
 
 /* The original input string */
-__thread static const char *scanorig;
+static __thread const char *scanorig;
 
 
 /* Current token's length (corresponds to plpgsql_yylval and plpgsql_yylloc) */
-__thread static int	plpgsql_yyleng;
+static __thread int	plpgsql_yyleng;
 
 
 /* Current token's code (corresponds to plpgsql_yylval and plpgsql_yylloc) */
-__thread static int	plpgsql_yytoken;
+static __thread int	plpgsql_yytoken;
 
 
 /* Token pushback stack */
 #define MAX_PUSHBACKS 4
 
-__thread static int	num_pushbacks;
+static __thread int	num_pushbacks;
 
-__thread static int	pushback_token[MAX_PUSHBACKS];
+static __thread int	pushback_token[MAX_PUSHBACKS];
 
-__thread static TokenAuxData pushback_auxdata[MAX_PUSHBACKS];
+static __thread TokenAuxData pushback_auxdata[MAX_PUSHBACKS];
 
 
 /* State for plpgsql_location_to_lineno() */
-__thread static const char *cur_line_start;
+static __thread const char *cur_line_start;
 
-__thread static const char *cur_line_end;
+static __thread const char *cur_line_end;
 
-__thread static int	cur_line_num;
+static __thread int	cur_line_num;
 
 
 /* Internal functions */

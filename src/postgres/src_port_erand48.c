@@ -51,19 +51,19 @@
 #define RAND48_MULT_2	(0x0005)
 #define RAND48_ADD		(0x000b)
 
-__thread static unsigned short _rand48_seed[3] = {
+static __thread unsigned short _rand48_seed[3] = {
 	RAND48_SEED_0,
 	RAND48_SEED_1,
 	RAND48_SEED_2
 };
 
-__thread static unsigned short _rand48_mult[3] = {
+static __thread unsigned short _rand48_mult[3] = {
 	RAND48_MULT_0,
 	RAND48_MULT_1,
 	RAND48_MULT_2
 };
 
-__thread static unsigned short _rand48_add = RAND48_ADD;
+static __thread unsigned short _rand48_add = RAND48_ADD;
 
 
 

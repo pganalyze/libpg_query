@@ -79,13 +79,13 @@
 __thread PLpgSQL_stmt_block *plpgsql_parse_result;
 
 
-__thread static int	datums_alloc;
+static __thread int	datums_alloc;
 
 __thread int			plpgsql_nDatums;
 
 __thread PLpgSQL_datum **plpgsql_Datums;
 
-__thread static int	datums_last;
+static __thread int	datums_last;
 
 
 __thread char	   *plpgsql_error_funcname;

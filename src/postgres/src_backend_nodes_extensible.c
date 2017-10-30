@@ -31,7 +31,7 @@
 #include "nodes/extensible.h"
 #include "utils/hsearch.h"
 
-__thread static HTAB *extensible_node_methods = NULL;
+static __thread HTAB *extensible_node_methods = NULL;
 
 
 
