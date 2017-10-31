@@ -2,6 +2,11 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.1   2017-10-31
+
+* Fix fingerprint tests
+
+
 ## 10-1.0.0   2017-10-30
 
 * First release based on PostgreSQL 10.0
