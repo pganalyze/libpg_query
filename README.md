@@ -138,6 +138,28 @@ For stability, it is recommended you use individual tagged git versions, see CHA
 New development is happening on `10-latest`, which reflects a base version of Postgres 10.
 
 
+## Resources
+
+pg_query wrappers in other languages:
+
+* Ruby: [pg_query](https://github.com/lfittl/pg_query)
+* Go: [pg_query_go](https://github.com/lfittl/pg_query_go)
+* Javascript (Node): [pg-query-parser](https://github.com/zhm/pg-query-parser)
+* Javascript (Browser): [pg-query-emscripten](https://github.com/lfittl/pg-query-emscripten)
+* Python: [psqlparse](https://github.com/alculquicondor/psqlparse)
+
+Products, tools and libraries built on pg_query:
+
+* [pganalyze](https://pganalyze.com/)
+* [hsql](https://github.com/JackDanger/hsql)
+* [sqlint](https://github.com/purcell/sqlint)
+* [pghero](https://github.com/ankane/pghero)
+* [dexter](https://github.com/ankane/dexter)
+* [pgscope](https://github.com/gjalves/pgscope)
+
+Please feel free to [open a PR](https://github.com/lfittl/libpg_query/pull/new/master) to add yours! :)
+
+
 ## Authors
 
 - [Lukas Fittl](mailto:lukas@fittl.com)
