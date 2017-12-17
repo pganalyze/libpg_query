@@ -44,7 +44,7 @@ int main() {
 Compile it like this:
 
 ```
-cc -Ilibpg_query -Llibpg_query -lpg_query example.c
+cc -Ilibpg_query -Llibpg_query example.c -lpg_query
 ```
 
 This will output:
