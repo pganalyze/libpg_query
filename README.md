@@ -156,6 +156,7 @@ Products, tools and libraries built on pg_query:
 * [pghero](https://github.com/ankane/pghero)
 * [dexter](https://github.com/ankane/dexter)
 * [pgscope](https://github.com/gjalves/pgscope)
+* [pg_materialize](https://github.com/aanari/pg-materialize)
 
 Please feel free to [open a PR](https://github.com/lfittl/libpg_query/pull/new/master) to add yours! :)
 
