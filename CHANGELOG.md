@@ -2,6 +2,11 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.2
+
+* Avoid compiler warning due to unused result in pg_query_parse_plpgsql
+
+
 ## 10-1.0.1   2017-10-31
 
 * Fix fingerprint tests
