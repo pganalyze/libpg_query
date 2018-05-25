@@ -14,3 +14,8 @@ test/*
 
 tmp/*
 !tmp/.gitkeep
+
+build
+
+*.swp
+
