@@ -48,14 +48,17 @@ class Generator
             @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s);\n", name)
           elsif ['Bitmapset*', 'Relids'].include?(type)
             @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s);\n", name)
-          elsif ['Value', 'CreateStmt'].include?(type)
+          elsif ['Value'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s);\n", name)
+          elsif ['CreateStmt'].include?(type)
+            # Special case where the node is embedded but with the wrong tag
+            @outmethods[node_type] += format("  WRITE_NODE_FIELD_WITH_TYPE(%s, %s);\n", name, type)
           elsif type == 'Node*' || @nodetypes.include?(type[0..-2])
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s);\n", name)
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum
-            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s);\n", name, type)
+            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s);\n", name)
           end
         end
       end
@@ -96,8 +99,8 @@ class Generator
       conds += "  break;\n"
     end
 
-    File.write('./pg_query_json_defs.c', defs)
-    File.write('./pg_query_json_conds.c', conds)
+    File.write('./src/pg_query_json_defs.c', defs)
+    File.write('./src/pg_query_json_conds.c', conds)
   end
 end
 

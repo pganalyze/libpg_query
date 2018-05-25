@@ -61,7 +61,7 @@ class Extractor
     @struct_defs = {}
     @typedefs = []
 
-    ['nodes/parsenodes', 'nodes/primnodes',
+    ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'c', 'postgres', 'postgres_ext',
      'storage/block', 'access/sdir'].each do |group|
       @target_group = group
@@ -162,8 +162,6 @@ class Extractor
       'DiscardStmt' => 'DiscardMode',
       'FetchStmt' => 'FetchDirection',
       'GrantStmt' => 'GrantTargetType',
-      'PrivGrantee' => 'GrantTargetType',
-      'LockingClause' => 'LockClauseStrength',
       'RangeTblEntry' => 'RTEKind',
       'TransactionStmt' => 'TransactionStmtKind',
       'VacuumStmt' => 'VacuumOption',
@@ -226,6 +224,7 @@ class Extractor
     @struct_defs['nodes/value']['BitString'] = { fields: [{ name: 'str', c_type: 'char*' }] }
     @struct_defs['nodes/pg_list'] = { 'List' => { fields: [{ name: 'items', c_type: '[]Node' }] } }
     @struct_defs['nodes/value']['Null'] = { fields: [] }
+    @struct_defs['nodes/params']['ParamListInfoData'][:fields].reject! { |f| f[:c_type] == 'ParamExternData' }
 
     File.write('./srcdata/nodetypes.json', JSON.pretty_generate(@nodetypes))
     File.write('./srcdata/all_known_enums.json', JSON.pretty_generate(@all_known_enums))

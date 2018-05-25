@@ -1,5 +1,25 @@
 {
   "nodes/parsenodes": {
+    "OverridingKind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "OVERRIDING_NOT_SET",
+          "comment": null
+        },
+        {
+          "name": "OVERRIDING_USER_VALUE",
+          "comment": null
+        },
+        {
+          "name": "OVERRIDING_SYSTEM_VALUE",
+          "comment": null
+        }
+      ],
+      "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
+    },
     "QuerySource": {
       "values": [
         {
@@ -82,18 +102,6 @@
           "comment": "/* normal operator */"
         },
         {
-          "name": "AEXPR_AND",
-          "comment": "/* booleans - name field is unused */"
-        },
-        {
-          "name": "AEXPR_OR",
-          "comment": null
-        },
-        {
-          "name": "AEXPR_NOT",
-          "comment": null
-        },
-        {
           "name": "AEXPR_OP_ANY",
           "comment": "/* scalar op ANY (array) */"
         },
@@ -106,6 +114,10 @@
           "comment": "/* IS DISTINCT FROM - name must be \"=\" */"
         },
         {
+          "name": "AEXPR_NOT_DISTINCT",
+          "comment": "/* IS NOT DISTINCT FROM - name must be \"=\" */"
+        },
+        {
           "name": "AEXPR_NULLIF",
           "comment": "/* NULLIF - name must be \"=\" */"
         },
@@ -116,9 +128,65 @@
         {
           "name": "AEXPR_IN",
           "comment": "/* [NOT] IN - name must be \"=\" or \"<>\" */"
+        },
+        {
+          "name": "AEXPR_LIKE",
+          "comment": "/* [NOT] LIKE - name must be \"~~\" or \"!~~\" */"
+        },
+        {
+          "name": "AEXPR_ILIKE",
+          "comment": "/* [NOT] ILIKE - name must be \"~~*\" or \"!~~*\" */"
+        },
+        {
+          "name": "AEXPR_SIMILAR",
+          "comment": "/* [NOT] SIMILAR - name must be \"~\" or \"!~\" */"
+        },
+        {
+          "name": "AEXPR_BETWEEN",
+          "comment": "/* name must be \"BETWEEN\" */"
+        },
+        {
+          "name": "AEXPR_NOT_BETWEEN",
+          "comment": "/* name must be \"NOT BETWEEN\" */"
+        },
+        {
+          "name": "AEXPR_BETWEEN_SYM",
+          "comment": "/* name must be \"BETWEEN SYMMETRIC\" */"
+        },
+        {
+          "name": "AEXPR_NOT_BETWEEN_SYM",
+          "comment": "/* name must be \"NOT BETWEEN SYMMETRIC\" */"
+        },
+        {
+          "name": "AEXPR_PAREN",
+          "comment": "/* nameless dummy node for parentheses */"
         }
       ],
       "comment": "/*\n * A_Expr - infix, prefix, and postfix expressions\n */\n"
+    },
+    "RoleSpecType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "ROLESPEC_CSTRING",
+          "comment": "/* role name is stored as a C string */"
+        },
+        {
+          "name": "ROLESPEC_CURRENT_USER",
+          "comment": "/* role spec is CURRENT_USER */"
+        },
+        {
+          "name": "ROLESPEC_SESSION_USER",
+          "comment": "/* role spec is SESSION_USER */"
+        },
+        {
+          "name": "ROLESPEC_PUBLIC",
+          "comment": "/* role name is \"public\" */"
+        }
+      ],
+      "comment": "/*\n * RoleSpec - a role name or one of a few special values.\n */\n"
     },
     "TableLikeOption": {
       "values": [
@@ -131,6 +199,10 @@
         },
         {
           "name": "CREATE_TABLE_LIKE_CONSTRAINTS",
+          "comment": null
+        },
+        {
+          "name": "CREATE_TABLE_LIKE_IDENTITY",
           "comment": null
         },
         {
@@ -176,32 +248,25 @@
       ],
       "comment": "/*\n * DefElem - a generic \"name = value\" option definition\n *\n * In some contexts the name can be qualified.  Also, certain SQL commands\n * allow a SET/ADD/DROP action to be attached to option settings, so it's\n * convenient to carry a field for that too.  (Note: currently, it is our\n * practice that the grammar allows namespace and action only in statements\n * where they are relevant; C code can just ignore those fields in other\n * statements.)\n */\n"
     },
-    "LockClauseStrength": {
+    "PartitionRangeDatumKind": {
       "values": [
         {
           "comment": ""
         },
         {
-          "comment": "\t/* order is important -- see applyLockingClause */\n"
-        },
-        {
-          "name": "LCS_FORKEYSHARE",
+          "name": "PARTITION_RANGE_DATUM_MINVALUE",
           "comment": null
         },
         {
-          "name": "LCS_FORSHARE",
+          "name": "PARTITION_RANGE_DATUM_VALUE",
           "comment": null
         },
         {
-          "name": "LCS_FORNOKEYUPDATE",
-          "comment": null
-        },
-        {
-          "name": "LCS_FORUPDATE",
+          "name": "PARTITION_RANGE_DATUM_MAXVALUE",
           "comment": null
         }
       ],
-      "comment": "/*\n * LockingClause - raw representation of FOR [NO KEY] UPDATE/[KEY] SHARE\n *\t\toptions\n *\n * Note: lockedRels == NIL means \"all relations in query\".  Otherwise it\n * is a list of RangeVar nodes.  (We use RangeVar mainly because it carries\n * a location field --- currently, parse analysis insists on unqualified\n * names in LockingClause.)\n */\n"
+      "comment": "/*\n * PartitionRangeDatum - one of the values in a range partition bound\n *\n * This can be MINVALUE, MAXVALUE or a specific bounded value.\n */\n"
     },
     "RTEKind": {
       "values": [
@@ -225,15 +290,75 @@
           "comment": "/* function in FROM */"
         },
         {
+          "name": "RTE_TABLEFUNC",
+          "comment": "/* TableFunc(.., column list) */"
+        },
+        {
           "name": "RTE_VALUES",
           "comment": "/* VALUES (<exprlist>), (<exprlist>), ... */"
         },
         {
           "name": "RTE_CTE",
           "comment": "/* common table expr (WITH list element) */"
+        },
+        {
+          "name": "RTE_NAMEDTUPLESTORE",
+          "comment": "/* tuplestore, e.g. for AFTER triggers */"
         }
       ],
-      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is TRUE for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be FALSE for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  modifiedCols (for INSERT/UPDATE; we can tell which from the query type).\n *\t  selectedCols and modifiedCols are bitmapsets, which cannot have negative\n *\t  integer members, so we subtract FirstLowInvalidHeapAttributeNumber from\n *\t  column numbers before storing them in these fields.  A whole-row Var\n *\t  reference is represented by setting the bit for InvalidAttrNumber.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is TRUE for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be FALSE for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
+    },
+    "WCOKind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "WCO_VIEW_CHECK",
+          "comment": "/* WCO on an auto-updatable view */"
+        },
+        {
+          "name": "WCO_RLS_INSERT_CHECK",
+          "comment": "/* RLS INSERT WITH CHECK policy */"
+        },
+        {
+          "name": "WCO_RLS_UPDATE_CHECK",
+          "comment": "/* RLS UPDATE WITH CHECK policy */"
+        },
+        {
+          "name": "WCO_RLS_CONFLICT_CHECK",
+          "comment": "/* RLS ON CONFLICT DO UPDATE USING policy */"
+        }
+      ],
+      "comment": "/*\n * WithCheckOption -\n *\t\trepresentation of WITH CHECK OPTION checks to be applied to new tuples\n *\t\twhen inserting/updating an auto-updatable view, or RLS WITH CHECK\n *\t\tpolicies to be applied when inserting/updating a relation with RLS.\n */\n"
+    },
+    "GroupingSetKind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "GROUPING_SET_EMPTY",
+          "comment": null
+        },
+        {
+          "name": "GROUPING_SET_SIMPLE",
+          "comment": null
+        },
+        {
+          "name": "GROUPING_SET_ROLLUP",
+          "comment": null
+        },
+        {
+          "name": "GROUPING_SET_CUBE",
+          "comment": null
+        },
+        {
+          "name": "GROUPING_SET_SETS",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * GroupingSet -\n *\t\trepresentation of CUBE, ROLLUP and GROUPING SETS clauses\n *\n * In a Query with grouping sets, the groupClause contains a flat list of\n * SortGroupClause nodes for each distinct expression used.  The actual\n * structure of the GROUP BY clause is given by the groupingSets tree.\n *\n * In the raw parser output, GroupingSet nodes (of all types except SIMPLE\n * which is not used) are potentially mixed in with the expressions in the\n * groupClause of the SelectStmt.  (An expression can't contain a GroupingSet,\n * but a list may mix GroupingSet and expression nodes.)  At this stage, the\n * content of each node is a list of expressions, some of which may be RowExprs\n * which represent sublists rather than actual row constructors, and nested\n * GroupingSet nodes where legal in the grammar.  The structure directly\n * reflects the query syntax.\n *\n * In parse analysis, the transformed expressions are used to build the tlist\n * and groupClause list (of SortGroupClause nodes), and the groupingSets tree\n * is eventually reduced to a fixed format:\n *\n * EMPTY nodes represent (), and obviously have no content\n *\n * SIMPLE nodes represent a list of one or more expressions to be treated as an\n * atom by the enclosing structure; the content is an integer list of\n * ressortgroupref values (see SortGroupClause)\n *\n * CUBE and ROLLUP nodes contain a list of one or more SIMPLE nodes.\n *\n * SETS nodes contain a list of EMPTY, SIMPLE, CUBE or ROLLUP nodes, but after\n * parse analysis they cannot contain more SETS nodes; enough of the syntactic\n * transforms of the spec have been applied that we no longer have arbitrarily\n * deep nesting (though we still preserve the use of cube/rollup).\n *\n * Note that if the groupingSets tree contains no SIMPLE nodes (only EMPTY\n * nodes at the leaves), then the groupClause will be empty, but this is still\n * an aggregation query (similar to using aggs or HAVING without GROUP BY).\n *\n * As an example, the following clause:\n *\n * GROUP BY GROUPING SETS ((a,b), CUBE(c,(d,e)))\n *\n * looks like this after raw parsing:\n *\n * SETS( RowExpr(a,b) , CUBE( c, RowExpr(d,e) ) )\n *\n * and parse analysis converts it to:\n *\n * SETS( SIMPLE(1,2), CUBE( SIMPLE(3), SIMPLE(4,5) ) )\n */\n"
     },
     "SetOperation": {
       "values": [
@@ -265,7 +390,19 @@
           "comment": ""
         },
         {
+          "name": "OBJECT_ACCESS_METHOD",
+          "comment": null
+        },
+        {
           "name": "OBJECT_AGGREGATE",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_AMOP",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_AMPROC",
           "comment": null
         },
         {
@@ -281,10 +418,6 @@
           "comment": null
         },
         {
-          "name": "OBJECT_CONSTRAINT",
-          "comment": null
-        },
-        {
           "name": "OBJECT_COLLATION",
           "comment": null
         },
@@ -297,7 +430,19 @@
           "comment": null
         },
         {
+          "name": "OBJECT_DEFAULT",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_DEFACL",
+          "comment": null
+        },
+        {
           "name": "OBJECT_DOMAIN",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_DOMCONSTRAINT",
           "comment": null
         },
         {
@@ -353,6 +498,18 @@
           "comment": null
         },
         {
+          "name": "OBJECT_POLICY",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_PUBLICATION",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_PUBLICATION_REL",
+          "comment": null
+        },
+        {
           "name": "OBJECT_ROLE",
           "comment": null
         },
@@ -369,11 +526,27 @@
           "comment": null
         },
         {
+          "name": "OBJECT_SUBSCRIPTION",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_STATISTIC_EXT",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_TABCONSTRAINT",
+          "comment": null
+        },
+        {
           "name": "OBJECT_TABLE",
           "comment": null
         },
         {
           "name": "OBJECT_TABLESPACE",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_TRANSFORM",
           "comment": null
         },
         {
@@ -398,6 +571,10 @@
         },
         {
           "name": "OBJECT_TYPE",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_USER_MAPPING",
           "comment": null
         },
         {
@@ -525,6 +702,10 @@
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
+          "name": "AT_ReAddComment",
+          "comment": "/* internal to commands/tablecmds.c */"
+        },
+        {
           "name": "AT_AlterColumnType",
           "comment": "/* alter column type */"
         },
@@ -543,6 +724,14 @@
         {
           "name": "AT_DropCluster",
           "comment": "/* SET WITHOUT CLUSTER */"
+        },
+        {
+          "name": "AT_SetLogged",
+          "comment": "/* SET LOGGED */"
+        },
+        {
+          "name": "AT_SetUnLogged",
+          "comment": "/* SET UNLOGGED */"
         },
         {
           "name": "AT_AddOids",
@@ -641,8 +830,44 @@
           "comment": "/* REPLICA IDENTITY */"
         },
         {
+          "name": "AT_EnableRowSecurity",
+          "comment": "/* ENABLE ROW SECURITY */"
+        },
+        {
+          "name": "AT_DisableRowSecurity",
+          "comment": "/* DISABLE ROW SECURITY */"
+        },
+        {
+          "name": "AT_ForceRowSecurity",
+          "comment": "/* FORCE ROW SECURITY */"
+        },
+        {
+          "name": "AT_NoForceRowSecurity",
+          "comment": "/* NO FORCE ROW SECURITY */"
+        },
+        {
           "name": "AT_GenericOptions",
           "comment": "/* OPTIONS (...) */"
+        },
+        {
+          "name": "AT_AttachPartition",
+          "comment": "/* ATTACH PARTITION */"
+        },
+        {
+          "name": "AT_DetachPartition",
+          "comment": "/* DETACH PARTITION */"
+        },
+        {
+          "name": "AT_AddIdentity",
+          "comment": "/* ADD IDENTITY */"
+        },
+        {
+          "name": "AT_SetIdentity",
+          "comment": "/* SET identity column options */"
+        },
+        {
+          "name": "AT_DropIdentity",
+          "comment": "/* DROP IDENTITY */"
         }
       ],
       "comment": null
@@ -777,6 +1002,10 @@
           "comment": null
         },
         {
+          "name": "CONSTR_IDENTITY",
+          "comment": null
+        },
+        {
           "name": "CONSTR_CHECK",
           "comment": null
         },
@@ -814,6 +1043,26 @@
         }
       ],
       "comment": "/* ----------\n * Definitions for constraints in CreateStmt\n *\n * Note that column defaults are treated as a type of constraint,\n * even though that's a bit odd semantically.\n *\n * For constraints that use expressions (CONSTR_CHECK, CONSTR_DEFAULT)\n * we may have the expression in either \"raw\" form (an untransformed\n * parse tree) or \"cooked\" form (the nodeToString representation of\n * an executable expression tree), depending on how this Constraint\n * node was created (by parsing, or by inheritance from an existing\n * relation).  We should never have both in the same node!\n *\n * FKCONSTR_ACTION_xxx values are stored into pg_constraint.confupdtype\n * and pg_constraint.confdeltype columns; FKCONSTR_MATCH_xxx values are\n * stored into pg_constraint.confmatchtype.  Changing the code values may\n * require an initdb!\n *\n * If skip_validation is true then we skip checking that the existing rows\n * in the table satisfy the constraint, and just install the catalog entries\n * for the constraint.  A new FK constraint is marked as valid iff\n * initially_valid is true.  (Usually skip_validation and initially_valid\n * are inverses, but we can set both true if the table is known empty.)\n *\n * Constraint attributes (DEFERRABLE etc) are initially represented as\n * separate Constraint nodes for simplicity of parsing.  parse_utilcmd.c makes\n * a pass through the constraints list to insert the info into the appropriate\n * Constraint node.\n * ----------\n */\n"
+    },
+    "ImportForeignSchemaType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "FDW_IMPORT_SCHEMA_ALL",
+          "comment": "/* all relations wanted */"
+        },
+        {
+          "name": "FDW_IMPORT_SCHEMA_LIMIT_TO",
+          "comment": "/* include only listed tables in import */"
+        },
+        {
+          "name": "FDW_IMPORT_SCHEMA_EXCEPT",
+          "comment": "/* exclude listed tables from import */"
+        }
+      ],
+      "comment": "/* ----------------------\n *\t\tImport Foreign Schema Statement\n * ----------------------\n */\n"
     },
     "RoleStmtType": {
       "values": [
@@ -992,9 +1241,17 @@
         {
           "name": "VACOPT_NOWAIT",
           "comment": null
+        },
+        {
+          "name": "VACOPT_SKIPTOAST",
+          "comment": null
+        },
+        {
+          "name": "VACOPT_DISABLE_PAGE_SKIPPING",
+          "comment": null
         }
       ],
-      "comment": "/* ----------------------\n *\t\tVacuum and Analyze Statements\n *\n * Even though these are nominally two statements, it's convenient to use\n * just one node type for both.  Note that at least one of VACOPT_VACUUM\n * and VACOPT_ANALYZE must be set in options.  VACOPT_FREEZE is an internal\n * convenience for the grammar and is not examined at runtime --- the\n * freeze_min_age and freeze_table_age fields are what matter.\n * ----------------------\n */\n"
+      "comment": "/* ----------------------\n *\t\tVacuum and Analyze Statements\n *\n * Even though these are nominally two statements, it's convenient to use\n * just one node type for both.  Note that at least one of VACOPT_VACUUM\n * and VACOPT_ANALYZE must be set in options.\n * ----------------------\n */\n"
     },
     "DiscardMode": {
       "values": [
@@ -1019,29 +1276,93 @@
         }
       ],
       "comment": "/* ----------------------\n * Discard Statement\n * ----------------------\n */\n"
-    }
-  },
-  "nodes/primnodes": {
-    "InhOption": {
+    },
+    "ReindexObjectType": {
       "values": [
         {
           "comment": ""
         },
         {
-          "name": "INH_NO",
-          "comment": "/* Do NOT scan child tables */"
+          "name": "REINDEX_OBJECT_INDEX",
+          "comment": "/* index */"
         },
         {
-          "name": "INH_YES",
-          "comment": "/* DO scan child tables */"
+          "name": "REINDEX_OBJECT_TABLE",
+          "comment": "/* table or materialized view */"
         },
         {
-          "name": "INH_DEFAULT",
-          "comment": "/* Use current SQL_inheritance option */"
+          "name": "REINDEX_OBJECT_SCHEMA",
+          "comment": "/* schema */"
+        },
+        {
+          "name": "REINDEX_OBJECT_SYSTEM",
+          "comment": "/* system catalogs */"
+        },
+        {
+          "name": "REINDEX_OBJECT_DATABASE",
+          "comment": "/* database */"
+        }
+      ],
+      "comment": "/* Reindex options */\n"
+    },
+    "AlterTSConfigType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "ALTER_TSCONFIG_ADD_MAPPING",
+          "comment": null
+        },
+        {
+          "name": "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN",
+          "comment": null
+        },
+        {
+          "name": "ALTER_TSCONFIG_REPLACE_DICT",
+          "comment": null
+        },
+        {
+          "name": "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN",
+          "comment": null
+        },
+        {
+          "name": "ALTER_TSCONFIG_DROP_MAPPING",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * TS Configuration stmts: DefineStmt, RenameStmt and DropStmt are default\n */\n"
+    },
+    "AlterSubscriptionType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "ALTER_SUBSCRIPTION_OPTIONS",
+          "comment": null
+        },
+        {
+          "name": "ALTER_SUBSCRIPTION_CONNECTION",
+          "comment": null
+        },
+        {
+          "name": "ALTER_SUBSCRIPTION_PUBLICATION",
+          "comment": null
+        },
+        {
+          "name": "ALTER_SUBSCRIPTION_REFRESH",
+          "comment": null
+        },
+        {
+          "name": "ALTER_SUBSCRIPTION_ENABLED",
+          "comment": null
         }
       ],
       "comment": null
-    },
+    }
+  },
+  "nodes/primnodes": {
     "OnCommitAction": {
       "values": [
         {
@@ -1082,9 +1403,13 @@
         {
           "name": "PARAM_SUBLINK",
           "comment": null
+        },
+        {
+          "name": "PARAM_MULTIEXPR",
+          "comment": null
         }
       ],
-      "comment": "/* ----------------\n * Param\n *\t\tparamkind - specifies the kind of parameter. The possible values\n *\t\tfor this field are:\n *\n *\t\tPARAM_EXTERN:  The parameter value is supplied from outside the plan.\n *\t\t\t\tSuch parameters are numbered from 1 to n.\n *\n *\t\tPARAM_EXEC:  The parameter is an internal executor parameter, used\n *\t\t\t\tfor passing values into and out of sub-queries or from\n *\t\t\t\tnestloop joins to their inner scans.\n *\t\t\t\tFor historical reasons, such parameters are numbered from 0.\n *\t\t\t\tThese numbers are independent of PARAM_EXTERN numbers.\n *\n *\t\tPARAM_SUBLINK:\tThe parameter represents an output column of a SubLink\n *\t\t\t\tnode's sub-select.  The column number is contained in the\n *\t\t\t\t`paramid' field.  (This type of Param is converted to\n *\t\t\t\tPARAM_EXEC during planning.)\n *\n * Note: currently, paramtypmod is valid for PARAM_SUBLINK Params, and for\n * PARAM_EXEC Params generated from them; it is always -1 for PARAM_EXTERN\n * params, since the APIs that supply values for such parameters don't carry\n * any typmod info.\n * ----------------\n */\n"
+      "comment": "/*\n * Param\n *\n *\t\tparamkind specifies the kind of parameter. The possible values\n *\t\tfor this field are:\n *\n *\t\tPARAM_EXTERN:  The parameter value is supplied from outside the plan.\n *\t\t\t\tSuch parameters are numbered from 1 to n.\n *\n *\t\tPARAM_EXEC:  The parameter is an internal executor parameter, used\n *\t\t\t\tfor passing values into and out of sub-queries or from\n *\t\t\t\tnestloop joins to their inner scans.\n *\t\t\t\tFor historical reasons, such parameters are numbered from 0.\n *\t\t\t\tThese numbers are independent of PARAM_EXTERN numbers.\n *\n *\t\tPARAM_SUBLINK:\tThe parameter represents an output column of a SubLink\n *\t\t\t\tnode's sub-select.  The column number is contained in the\n *\t\t\t\t`paramid' field.  (This type of Param is converted to\n *\t\t\t\tPARAM_EXEC during planning.)\n *\n *\t\tPARAM_MULTIEXPR:  Like PARAM_SUBLINK, the parameter represents an\n *\t\t\t\toutput column of a SubLink node's sub-select, but here, the\n *\t\t\t\tSubLink is always a MULTIEXPR SubLink.  The high-order 16 bits\n *\t\t\t\tof the `paramid' field contain the SubLink's subLinkId, and\n *\t\t\t\tthe low-order 16 bits contain the column number.  (This type\n *\t\t\t\tof Param is also converted to PARAM_EXEC during planning.)\n */\n"
     },
     "CoercionContext": {
       "values": [
@@ -1139,7 +1464,7 @@
           "name": "OR_EXPR"
         }
       ],
-      "comment": "/*\n * BoolExpr - expression node for the basic Boolean operators AND, OR, NOT\n *\n * Notice the arguments are given as a List.  For NOT, of course the list\n * must always have exactly one element.  For AND and OR, the executor can\n * handle any number of arguments.  The parser generally treats AND and OR\n * as binary and so it typically only produces two-element lists, but the\n * optimizer will flatten trees of AND and OR nodes to produce longer lists\n * when possible.  There are also a few special cases where more arguments\n * can appear before optimization.\n */\n"
+      "comment": "/*\n * BoolExpr - expression node for the basic Boolean operators AND, OR, NOT\n *\n * Notice the arguments are given as a List.  For NOT, of course the list\n * must always have exactly one element.  For AND and OR, there can be two\n * or more arguments.\n */\n"
     },
     "SubLinkType": {
       "values": [
@@ -1167,6 +1492,10 @@
           "comment": null
         },
         {
+          "name": "MULTIEXPR_SUBLINK",
+          "comment": null
+        },
+        {
           "name": "ARRAY_SUBLINK",
           "comment": null
         },
@@ -1175,7 +1504,7 @@
           "comment": "/* for SubPlans only */"
         }
       ],
-      "comment": "/*\n * SubLink\n *\n * A SubLink represents a subselect appearing in an expression, and in some\n * cases also the combining operator(s) just above it.  The subLinkType\n * indicates the form of the expression represented:\n *\tEXISTS_SUBLINK\t\tEXISTS(SELECT ...)\n *\tALL_SUBLINK\t\t\t(lefthand) op ALL (SELECT ...)\n *\tANY_SUBLINK\t\t\t(lefthand) op ANY (SELECT ...)\n *\tROWCOMPARE_SUBLINK\t(lefthand) op (SELECT ...)\n *\tEXPR_SUBLINK\t\t(SELECT with single targetlist item ...)\n *\tARRAY_SUBLINK\t\tARRAY(SELECT with single targetlist item ...)\n *\tCTE_SUBLINK\t\t\tWITH query (never actually part of an expression)\n * For ALL, ANY, and ROWCOMPARE, the lefthand is a list of expressions of the\n * same length as the subselect's targetlist.  ROWCOMPARE will *always* have\n * a list with more than one entry; if the subselect has just one target\n * then the parser will create an EXPR_SUBLINK instead (and any operator\n * above the subselect will be represented separately).  Note that both\n * ROWCOMPARE and EXPR require the subselect to deliver only one row.\n * ALL, ANY, and ROWCOMPARE require the combining operators to deliver boolean\n * results.  ALL and ANY combine the per-row results using AND and OR\n * semantics respectively.\n * ARRAY requires just one target column, and creates an array of the target\n * column's type using any number of rows resulting from the subselect.\n *\n * SubLink is classed as an Expr node, but it is not actually executable;\n * it must be replaced in the expression tree by a SubPlan node during\n * planning.\n *\n * NOTE: in the raw output of gram.y, testexpr contains just the raw form\n * of the lefthand expression (if any), and operName is the String name of\n * the combining operator.  Also, subselect is a raw parsetree.  During parse\n * analysis, the parser transforms testexpr into a complete boolean expression\n * that compares the lefthand value(s) to PARAM_SUBLINK nodes representing the\n * output columns of the subselect.  And subselect is transformed to a Query.\n * This is the representation seen in saved rules and in the rewriter.\n *\n * In EXISTS, EXPR, and ARRAY SubLinks, testexpr and operName are unused and\n * are always null.\n *\n * The CTE_SUBLINK case never occurs in actual SubLink nodes, but it is used\n * in SubPlans generated for WITH subqueries.\n */\n"
+      "comment": "/*\n * SubLink\n *\n * A SubLink represents a subselect appearing in an expression, and in some\n * cases also the combining operator(s) just above it.  The subLinkType\n * indicates the form of the expression represented:\n *\tEXISTS_SUBLINK\t\tEXISTS(SELECT ...)\n *\tALL_SUBLINK\t\t\t(lefthand) op ALL (SELECT ...)\n *\tANY_SUBLINK\t\t\t(lefthand) op ANY (SELECT ...)\n *\tROWCOMPARE_SUBLINK\t(lefthand) op (SELECT ...)\n *\tEXPR_SUBLINK\t\t(SELECT with single targetlist item ...)\n *\tMULTIEXPR_SUBLINK\t(SELECT with multiple targetlist items ...)\n *\tARRAY_SUBLINK\t\tARRAY(SELECT with single targetlist item ...)\n *\tCTE_SUBLINK\t\t\tWITH query (never actually part of an expression)\n * For ALL, ANY, and ROWCOMPARE, the lefthand is a list of expressions of the\n * same length as the subselect's targetlist.  ROWCOMPARE will *always* have\n * a list with more than one entry; if the subselect has just one target\n * then the parser will create an EXPR_SUBLINK instead (and any operator\n * above the subselect will be represented separately).\n * ROWCOMPARE, EXPR, and MULTIEXPR require the subselect to deliver at most\n * one row (if it returns no rows, the result is NULL).\n * ALL, ANY, and ROWCOMPARE require the combining operators to deliver boolean\n * results.  ALL and ANY combine the per-row results using AND and OR\n * semantics respectively.\n * ARRAY requires just one target column, and creates an array of the target\n * column's type using any number of rows resulting from the subselect.\n *\n * SubLink is classed as an Expr node, but it is not actually executable;\n * it must be replaced in the expression tree by a SubPlan node during\n * planning.\n *\n * NOTE: in the raw output of gram.y, testexpr contains just the raw form\n * of the lefthand expression (if any), and operName is the String name of\n * the combining operator.  Also, subselect is a raw parsetree.  During parse\n * analysis, the parser transforms testexpr into a complete boolean expression\n * that compares the lefthand value(s) to PARAM_SUBLINK nodes representing the\n * output columns of the subselect.  And subselect is transformed to a Query.\n * This is the representation seen in saved rules and in the rewriter.\n *\n * In EXISTS, EXPR, MULTIEXPR, and ARRAY SubLinks, testexpr and operName\n * are unused and are always null.\n *\n * subLinkId is currently used only for MULTIEXPR SubLinks, and is zero in\n * other SubLinks.  This number identifies different multiple-assignment\n * subqueries within an UPDATE statement's SET list.  It is unique only\n * within a particular targetlist.  The output column(s) of the MULTIEXPR\n * are referenced by PARAM_MULTIEXPR Params appearing elsewhere in the tlist.\n *\n * The CTE_SUBLINK case never occurs in actual SubLink nodes, but it is used\n * in SubPlans generated for WITH subqueries.\n */\n"
     },
     "RowCompareType": {
       "values": [
@@ -1228,6 +1557,74 @@
       ],
       "comment": "/*\n * MinMaxExpr - a GREATEST or LEAST function\n */\n"
     },
+    "SQLValueFunctionOp": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "SVFOP_CURRENT_DATE",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_TIME",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_TIME_N",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_TIMESTAMP",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_TIMESTAMP_N",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_LOCALTIME",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_LOCALTIME_N",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_LOCALTIMESTAMP",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_LOCALTIMESTAMP_N",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_ROLE",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_USER",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_USER",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_SESSION_USER",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_CATALOG",
+          "comment": null
+        },
+        {
+          "name": "SVFOP_CURRENT_SCHEMA",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * SQLValueFunction - parameterless functions with special grammar productions\n *\n * The SQL standard categorizes some of these as <datetime value function>\n * and others as <general value specification>.  We call 'em SQLValueFunctions\n * for lack of a better term.  We store type and typmod of the result so that\n * some code doesn't need to know each function individually, and because\n * we would need to store typmod anyway for some of the datetime functions.\n * Note that currently, all variants return non-collating datatypes, so we do\n * not need a collation field; also, all these functions are stable.\n */\n"
+    },
     "XmlExprOp": {
       "values": [
         {
@@ -1266,7 +1663,7 @@
           "comment": "/* xmlval IS DOCUMENT */"
         }
       ],
-      "comment": "/*\n * XmlExpr - various SQL/XML functions requiring special grammar productions\n *\n * 'name' carries the \"NAME foo\" argument (already XML-escaped).\n * 'named_args' and 'arg_names' represent an xml_attribute list.\n * 'args' carries all other arguments.\n *\n * Note: result type/typmod/collation are not stored, but can be deduced\n * from the XmlExprOp.  The type/typmod fields are just used for display\n * purposes, and are NOT necessarily the true result type of the node.\n * (We also use type == InvalidOid to mark a not-yet-parse-analyzed XmlExpr.)\n */\n"
+      "comment": "/*\n * XmlExpr - various SQL/XML functions requiring special grammar productions\n *\n * 'name' carries the \"NAME foo\" argument (already XML-escaped).\n * 'named_args' and 'arg_names' represent an xml_attribute list.\n * 'args' carries all other arguments.\n *\n * Note: result type/typmod/collation are not stored, but can be deduced\n * from the XmlExprOp.  The type/typmod fields are just used for display\n * purposes, and are NOT necessarily the true result type of the node.\n */\n"
     },
     "XmlOptionType": {
       "values": [
@@ -1297,7 +1694,7 @@
           "name": "IS_NOT_NULL"
         }
       ],
-      "comment": "/* ----------------\n * NullTest\n *\n * NullTest represents the operation of testing a value for NULLness.\n * The appropriate test is performed and returned as a boolean Datum.\n *\n * NOTE: the semantics of this for rowtype inputs are noticeably different\n * from the scalar case.  We provide an \"argisrow\" flag to reflect that.\n * ----------------\n */\n"
+      "comment": "/* ----------------\n * NullTest\n *\n * NullTest represents the operation of testing a value for NULLness.\n * The appropriate test is performed and returned as a boolean Datum.\n *\n * When argisrow is false, this simply represents a test for the null value.\n *\n * When argisrow is true, the input expression must yield a rowtype, and\n * the node implements \"row IS [NOT] NULL\" per the SQL standard.  This\n * includes checking individual fields for NULLness when the row datum\n * itself isn't NULL.\n *\n * NOTE: the combination of a rowtype input and argisrow==false does NOT\n * correspond to the SQL notation \"row IS [NOT] NULL\"; instead, this case\n * represents the SQL notation \"row IS [NOT] DISTINCT FROM NULL\".\n * ----------------\n */\n"
     },
     "BoolTestType": {
       "values": [
@@ -1313,6 +1710,65 @@
         }
       ],
       "comment": "/*\n * BooleanTest\n *\n * BooleanTest represents the operation of determining whether a boolean\n * is TRUE, FALSE, or UNKNOWN (ie, NULL).  All six meaningful combinations\n * are supported.  Note that a NULL input does *not* cause a NULL result.\n * The appropriate test is performed and returned as a boolean Datum.\n */\n"
+    }
+  },
+  "nodes/lockoptions": {
+    "LockClauseStrength": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "LCS_NONE",
+          "comment": "/* no such clause - only used in PlanRowMark */"
+        },
+        {
+          "name": "LCS_FORKEYSHARE",
+          "comment": "/* FOR KEY SHARE */"
+        },
+        {
+          "name": "LCS_FORSHARE",
+          "comment": "/* FOR SHARE */"
+        },
+        {
+          "name": "LCS_FORNOKEYUPDATE",
+          "comment": "/* FOR NO KEY UPDATE */"
+        },
+        {
+          "name": "LCS_FORUPDATE",
+          "comment": "/* FOR UPDATE */"
+        }
+      ],
+      "comment": "/*\n * This enum represents the different strengths of FOR UPDATE/SHARE clauses.\n * The ordering here is important, because the highest numerical value takes\n * precedence when a RTE is specified multiple ways.  See applyLockingClause.\n */\n"
+    },
+    "LockWaitPolicy": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Wait for the lock to become available (default behavior) */\n"
+        },
+        {
+          "name": "LockWaitBlock",
+          "comment": null
+        },
+        {
+          "comment": "\t/* Skip rows that can't be locked (SKIP LOCKED) */\n"
+        },
+        {
+          "name": "LockWaitSkip",
+          "comment": null
+        },
+        {
+          "comment": "\t/* Raise an error if a row cannot be locked (NOWAIT) */\n"
+        },
+        {
+          "name": "LockWaitError",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * This enum controls how to deal with rows being locked by FOR UPDATE/SHARE\n * clauses (i.e., it represents the NOWAIT and SKIP LOCKED options).\n * The ordering here is important, because the highest numerical value takes\n * precedence when a RTE is specified multiple ways.  See applyLockingClause.\n */\n"
     }
   },
   "nodes/nodes": {
@@ -1374,6 +1830,10 @@
           "comment": null
         },
         {
+          "name": "T_ProjectSet",
+          "comment": null
+        },
+        {
           "name": "T_ModifyTable",
           "comment": null
         },
@@ -1403,6 +1863,10 @@
         },
         {
           "name": "T_SeqScan",
+          "comment": null
+        },
+        {
+          "name": "T_SampleScan",
           "comment": null
         },
         {
@@ -1438,7 +1902,15 @@
           "comment": null
         },
         {
+          "name": "T_TableFuncScan",
+          "comment": null
+        },
+        {
           "name": "T_CteScan",
+          "comment": null
+        },
+        {
+          "name": "T_NamedTuplestoreScan",
           "comment": null
         },
         {
@@ -1447,6 +1919,10 @@
         },
         {
           "name": "T_ForeignScan",
+          "comment": null
+        },
+        {
+          "name": "T_CustomScan",
           "comment": null
         },
         {
@@ -1487,6 +1963,14 @@
         },
         {
           "name": "T_Unique",
+          "comment": null
+        },
+        {
+          "name": "T_Gather",
+          "comment": null
+        },
+        {
+          "name": "T_GatherMerge",
           "comment": null
         },
         {
@@ -1535,6 +2019,10 @@
           "comment": null
         },
         {
+          "name": "T_ProjectSetState",
+          "comment": null
+        },
+        {
           "name": "T_ModifyTableState",
           "comment": null
         },
@@ -1567,6 +2055,10 @@
           "comment": null
         },
         {
+          "name": "T_SampleScanState",
+          "comment": null
+        },
+        {
           "name": "T_IndexScanState",
           "comment": null
         },
@@ -1595,6 +2087,10 @@
           "comment": null
         },
         {
+          "name": "T_TableFuncScanState",
+          "comment": null
+        },
+        {
           "name": "T_ValuesScanState",
           "comment": null
         },
@@ -1603,11 +2099,19 @@
           "comment": null
         },
         {
+          "name": "T_NamedTuplestoreScanState",
+          "comment": null
+        },
+        {
           "name": "T_WorkTableScanState",
           "comment": null
         },
         {
           "name": "T_ForeignScanState",
+          "comment": null
+        },
+        {
+          "name": "T_CustomScanState",
           "comment": null
         },
         {
@@ -1651,6 +2155,14 @@
           "comment": null
         },
         {
+          "name": "T_GatherState",
+          "comment": null
+        },
+        {
+          "name": "T_GatherMergeState",
+          "comment": null
+        },
+        {
           "name": "T_HashState",
           "comment": null
         },
@@ -1681,6 +2193,10 @@
           "comment": null
         },
         {
+          "name": "T_TableFunc",
+          "comment": null
+        },
+        {
           "name": "T_Expr",
           "comment": null
         },
@@ -1698,6 +2214,10 @@
         },
         {
           "name": "T_Aggref",
+          "comment": null
+        },
+        {
+          "name": "T_GroupingFunc",
           "comment": null
         },
         {
@@ -1809,6 +2329,10 @@
           "comment": null
         },
         {
+          "name": "T_SQLValueFunction",
+          "comment": null
+        },
+        {
           "name": "T_XmlExpr",
           "comment": null
         },
@@ -1837,6 +2361,14 @@
           "comment": null
         },
         {
+          "name": "T_NextValueExpr",
+          "comment": null
+        },
+        {
+          "name": "T_InferenceElem",
+          "comment": null
+        },
+        {
           "name": "T_TargetEntry",
           "comment": null
         },
@@ -1853,6 +2385,10 @@
           "comment": null
         },
         {
+          "name": "T_OnConflictExpr",
+          "comment": null
+        },
+        {
           "name": "T_IntoClause",
           "comment": null
         },
@@ -1860,18 +2396,10 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * TAGS FOR EXPRESSION STATE NODES (execnodes.h)\n\t *\n\t * These correspond (not always one-for-one) to primitive nodes derived\n\t * from Expr.\n\t */\n"
+          "comment": "\t/*\n\t * TAGS FOR EXPRESSION STATE NODES (execnodes.h)\n\t *\n\t * ExprState represents the evaluation state for a whole expression tree.\n\t * Most Expr-based plan nodes do not have a corresponding expression state\n\t * node, they're fully handled within execExpr* - but sometimes the state\n\t * needs to be shared with other parts of the executor, as for example\n\t * with AggrefExprState, which nodeAgg.c has to modify.\n\t */\n"
         },
         {
           "name": "T_ExprState",
-          "comment": null
-        },
-        {
-          "name": "T_GenericExprState",
-          "comment": null
-        },
-        {
-          "name": "T_WholeRowVarExprState",
           "comment": null
         },
         {
@@ -1883,19 +2411,7 @@
           "comment": null
         },
         {
-          "name": "T_ArrayRefExprState",
-          "comment": null
-        },
-        {
-          "name": "T_FuncExprState",
-          "comment": null
-        },
-        {
-          "name": "T_ScalarArrayOpExprState",
-          "comment": null
-        },
-        {
-          "name": "T_BoolExprState",
+          "name": "T_SetExprState",
           "comment": null
         },
         {
@@ -1904,66 +2420,6 @@
         },
         {
           "name": "T_AlternativeSubPlanState",
-          "comment": null
-        },
-        {
-          "name": "T_FieldSelectState",
-          "comment": null
-        },
-        {
-          "name": "T_FieldStoreState",
-          "comment": null
-        },
-        {
-          "name": "T_CoerceViaIOState",
-          "comment": null
-        },
-        {
-          "name": "T_ArrayCoerceExprState",
-          "comment": null
-        },
-        {
-          "name": "T_ConvertRowtypeExprState",
-          "comment": null
-        },
-        {
-          "name": "T_CaseExprState",
-          "comment": null
-        },
-        {
-          "name": "T_CaseWhenState",
-          "comment": null
-        },
-        {
-          "name": "T_ArrayExprState",
-          "comment": null
-        },
-        {
-          "name": "T_RowExprState",
-          "comment": null
-        },
-        {
-          "name": "T_RowCompareExprState",
-          "comment": null
-        },
-        {
-          "name": "T_CoalesceExprState",
-          "comment": null
-        },
-        {
-          "name": "T_MinMaxExprState",
-          "comment": null
-        },
-        {
-          "name": "T_XmlExprState",
-          "comment": null
-        },
-        {
-          "name": "T_NullTestState",
-          "comment": null
-        },
-        {
-          "name": "T_CoerceToDomainState",
           "comment": null
         },
         {
@@ -1993,6 +2449,10 @@
           "comment": null
         },
         {
+          "name": "T_ForeignKeyOptInfo",
+          "comment": null
+        },
+        {
           "name": "T_ParamPathInfo",
           "comment": null
         },
@@ -2017,6 +2477,22 @@
           "comment": null
         },
         {
+          "name": "T_TidPath",
+          "comment": null
+        },
+        {
+          "name": "T_SubqueryScanPath",
+          "comment": null
+        },
+        {
+          "name": "T_ForeignPath",
+          "comment": null
+        },
+        {
+          "name": "T_CustomPath",
+          "comment": null
+        },
+        {
           "name": "T_NestPath",
           "comment": null
         },
@@ -2026,14 +2502,6 @@
         },
         {
           "name": "T_HashPath",
-          "comment": null
-        },
-        {
-          "name": "T_TidPath",
-          "comment": null
-        },
-        {
-          "name": "T_ForeignPath",
           "comment": null
         },
         {
@@ -2057,6 +2525,73 @@
           "comment": null
         },
         {
+          "name": "T_GatherPath",
+          "comment": null
+        },
+        {
+          "name": "T_GatherMergePath",
+          "comment": null
+        },
+        {
+          "name": "T_ProjectionPath",
+          "comment": null
+        },
+        {
+          "name": "T_ProjectSetPath",
+          "comment": null
+        },
+        {
+          "name": "T_SortPath",
+          "comment": null
+        },
+        {
+          "name": "T_GroupPath",
+          "comment": null
+        },
+        {
+          "name": "T_UpperUniquePath",
+          "comment": null
+        },
+        {
+          "name": "T_AggPath",
+          "comment": null
+        },
+        {
+          "name": "T_GroupingSetsPath",
+          "comment": null
+        },
+        {
+          "name": "T_MinMaxAggPath",
+          "comment": null
+        },
+        {
+          "name": "T_WindowAggPath",
+          "comment": null
+        },
+        {
+          "name": "T_SetOpPath",
+          "comment": null
+        },
+        {
+          "name": "T_RecursiveUnionPath",
+          "comment": null
+        },
+        {
+          "name": "T_LockRowsPath",
+          "comment": null
+        },
+        {
+          "name": "T_ModifyTablePath",
+          "comment": null
+        },
+        {
+          "name": "T_LimitPath",
+          "comment": null
+        },
+        {
+          "comment": "\t/* these aren't subclasses of Path: */\n"
+        },
+        {
           "name": "T_EquivalenceClass",
           "comment": null
         },
@@ -2066,6 +2601,10 @@
         },
         {
           "name": "T_PathKey",
+          "comment": null
+        },
+        {
+          "name": "T_PathTarget",
           "comment": null
         },
         {
@@ -2081,11 +2620,11 @@
           "comment": null
         },
         {
-          "name": "T_LateralJoinInfo",
+          "name": "T_AppendRelInfo",
           "comment": null
         },
         {
-          "name": "T_AppendRelInfo",
+          "name": "T_PartitionedChildRelInfo",
           "comment": null
         },
         {
@@ -2101,6 +2640,18 @@
           "comment": null
         },
         {
+          "name": "T_RollupData",
+          "comment": null
+        },
+        {
+          "name": "T_GroupingSetData",
+          "comment": null
+        },
+        {
+          "name": "T_StatisticExtInfo",
+          "comment": null
+        },
+        {
           "comment": ""
         },
         {
@@ -2112,6 +2663,10 @@
         },
         {
           "name": "T_AllocSetContext",
+          "comment": null
+        },
+        {
+          "name": "T_SlabContext",
           "comment": null
         },
         {
@@ -2166,7 +2721,21 @@
           "comment": ""
         },
         {
+          "comment": "\t/*\n\t * TAGS FOR EXTENSIBLE NODES (extensible.h)\n\t */\n"
+        },
+        {
+          "name": "T_ExtensibleNode",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
           "comment": "\t/*\n\t * TAGS FOR STATEMENT NODES (mostly in parsenodes.h)\n\t */\n"
+        },
+        {
+          "name": "T_RawStmt",
+          "comment": null
         },
         {
           "name": "T_Query",
@@ -2445,11 +3014,19 @@
           "comment": null
         },
         {
+          "name": "T_AlterObjectDependsStmt",
+          "comment": null
+        },
+        {
           "name": "T_AlterObjectSchemaStmt",
           "comment": null
         },
         {
           "name": "T_AlterOwnerStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterOperatorStmt",
           "comment": null
         },
         {
@@ -2529,6 +3106,10 @@
           "comment": null
         },
         {
+          "name": "T_ImportForeignSchemaStmt",
+          "comment": null
+        },
+        {
           "name": "T_CreateExtensionStmt",
           "comment": null
         },
@@ -2558,6 +3139,50 @@
         },
         {
           "name": "T_AlterSystemStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreatePolicyStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterPolicyStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreateTransformStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreateAmStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreatePublicationStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterPublicationStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreateSubscriptionStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterSubscriptionStmt",
+          "comment": null
+        },
+        {
+          "name": "T_DropSubscriptionStmt",
+          "comment": null
+        },
+        {
+          "name": "T_CreateStatsStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterCollationStmt",
           "comment": null
         },
         {
@@ -2607,6 +3232,10 @@
           "comment": null
         },
         {
+          "name": "T_MultiAssignRef",
+          "comment": null
+        },
+        {
           "name": "T_TypeCast",
           "comment": null
         },
@@ -2628,6 +3257,18 @@
         },
         {
           "name": "T_RangeFunction",
+          "comment": null
+        },
+        {
+          "name": "T_RangeTableSample",
+          "comment": null
+        },
+        {
+          "name": "T_RangeTableFunc",
+          "comment": null
+        },
+        {
+          "name": "T_RangeTableFuncCol",
           "comment": null
         },
         {
@@ -2659,6 +3300,10 @@
           "comment": null
         },
         {
+          "name": "T_TableSampleClause",
+          "comment": null
+        },
+        {
           "name": "T_WithCheckOption",
           "comment": null
         },
@@ -2667,15 +3312,15 @@
           "comment": null
         },
         {
+          "name": "T_GroupingSet",
+          "comment": null
+        },
+        {
           "name": "T_WindowClause",
           "comment": null
         },
         {
-          "name": "T_PrivGrantee",
-          "comment": null
-        },
-        {
-          "name": "T_FuncWithArgs",
+          "name": "T_ObjectWithArgs",
           "comment": null
         },
         {
@@ -2711,7 +3356,43 @@
           "comment": null
         },
         {
+          "name": "T_InferClause",
+          "comment": null
+        },
+        {
+          "name": "T_OnConflictClause",
+          "comment": null
+        },
+        {
           "name": "T_CommonTableExpr",
+          "comment": null
+        },
+        {
+          "name": "T_RoleSpec",
+          "comment": null
+        },
+        {
+          "name": "T_TriggerTransition",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionElem",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionSpec",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionBoundSpec",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionRangeDatum",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionCmd",
           "comment": null
         },
         {
@@ -2745,6 +3426,10 @@
           "comment": null
         },
         {
+          "name": "T_SQLCmd",
+          "comment": null
+        },
+        {
           "comment": ""
         },
         {
@@ -2752,7 +3437,7 @@
         },
         {
           "name": "T_TriggerData",
-          "comment": null
+          "comment": "/* in commands/trigger.h */"
         },
         {
           "name": "T_EventTriggerData",
@@ -2777,9 +3462,21 @@
         {
           "name": "T_FdwRoutine",
           "comment": "/* in foreign/fdwapi.h */"
+        },
+        {
+          "name": "T_IndexAmRoutine",
+          "comment": "/* in access/amapi.h */"
+        },
+        {
+          "name": "T_TsmRoutine",
+          "comment": "/* in access/tsmapi.h */"
+        },
+        {
+          "name": "T_ForeignKeyCacheInfo",
+          "comment": "/* in utils/rel.h */"
         }
       ],
-      "comment": "/*\n * The first field of every node is NodeTag. Each node created (with makeNode)\n * will have one of the following tags as the value of its first field.\n *\n * Note that the numbers of the node tags are not contiguous. We left holes\n * here so that we can add more tags without changing the existing enum's.\n * (Since node tag numbers never exist outside backend memory, there's no\n * real harm in renumbering, it just costs a full rebuild ...)\n */\n"
+      "comment": "/*\n * The first field of every node is NodeTag. Each node created (with makeNode)\n * will have one of the following tags as the value of its first field.\n *\n * Note that inserting or deleting node types changes the numbers of other\n * node types later in the list.  This is no problem during development, since\n * the node numbers are never stored on disk.  But don't do it in a released\n * branch, because that would represent an ABI break for extensions.\n */\n"
     },
     "CmdType": {
       "values": [
@@ -2877,6 +3574,119 @@
         }
       ],
       "comment": "/*\n * JoinType -\n *\t  enums for types of relation joins\n *\n * JoinType determines the exact semantics of joining two relations using\n * a matching qualification.  For example, it tells what to do with a tuple\n * that has no match in the other relation.\n *\n * This is needed in both parsenodes.h and plannodes.h, so put it here...\n */\n"
+    },
+    "AggStrategy": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "AGG_PLAIN",
+          "comment": "/* simple agg across all input rows */"
+        },
+        {
+          "name": "AGG_SORTED",
+          "comment": "/* grouped agg, input must be sorted */"
+        },
+        {
+          "name": "AGG_HASHED",
+          "comment": "/* grouped agg, use internal hashtable */"
+        },
+        {
+          "name": "AGG_MIXED",
+          "comment": "/* grouped agg, hash and sort both used */"
+        }
+      ],
+      "comment": "/*\n * AggStrategy -\n *\t  overall execution strategies for Agg plan nodes\n *\n * This is needed in both plannodes.h and relation.h, so put it here...\n */\n"
+    },
+    "AggSplit": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Basic, non-split aggregation: */\n"
+        },
+        {
+          "name": "AGGSPLIT_SIMPLE",
+          "comment": null
+        },
+        {
+          "comment": "\t/* Initial phase of partial aggregation, with serialization: */\n"
+        },
+        {
+          "name": "AGGSPLIT_INITIAL_SERIAL",
+          "comment": null
+        },
+        {
+          "comment": "\t/* Final phase of partial aggregation, with deserialization: */\n"
+        },
+        {
+          "name": "AGGSPLIT_FINAL_DESERIAL",
+          "comment": null
+        }
+      ],
+      "comment": "/* Supported operating modes (i.e., useful combinations of these options): */\n"
+    },
+    "SetOpCmd": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "SETOPCMD_INTERSECT",
+          "comment": null
+        },
+        {
+          "name": "SETOPCMD_INTERSECT_ALL",
+          "comment": null
+        },
+        {
+          "name": "SETOPCMD_EXCEPT",
+          "comment": null
+        },
+        {
+          "name": "SETOPCMD_EXCEPT_ALL",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * SetOpCmd and SetOpStrategy -\n *\t  overall semantics and execution strategies for SetOp plan nodes\n *\n * This is needed in both plannodes.h and relation.h, so put it here...\n */\n"
+    },
+    "SetOpStrategy": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "SETOP_SORTED",
+          "comment": "/* input must be sorted */"
+        },
+        {
+          "name": "SETOP_HASHED",
+          "comment": "/* use internal hashtable */"
+        }
+      ],
+      "comment": null
+    },
+    "OnConflictAction": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "ONCONFLICT_NONE",
+          "comment": "/* No \"ON CONFLICT\" clause */"
+        },
+        {
+          "name": "ONCONFLICT_NOTHING",
+          "comment": "/* ON CONFLICT ... DO NOTHING */"
+        },
+        {
+          "name": "ONCONFLICT_UPDATE",
+          "comment": "/* ON CONFLICT ... DO UPDATE */"
+        }
+      ],
+      "comment": "/*\n * OnConflictAction -\n *\t  \"ON CONFLICT\" clause type of query\n *\n * This is needed in both parsenodes.h and plannodes.h, so put it here...\n */\n"
     }
   },
   "nodes/params": {
@@ -2893,6 +3703,14 @@
         },
         {
           "name": "VARTAG_INDIRECT",
+          "comment": null
+        },
+        {
+          "name": "VARTAG_EXPANDED_RO",
+          "comment": null
+        },
+        {
+          "name": "VARTAG_EXPANDED_RW",
           "comment": null
         },
         {

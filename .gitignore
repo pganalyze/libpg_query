@@ -6,3 +6,16 @@ postgres.tar.bz2
 
 examples/*
 !examples/*.c
+
+test/*
+!test/*.c
+!test/*.sql
+!test/*.expected.json
+
+tmp/*
+!tmp/.gitkeep
+
+build
+
+*.swp
+
