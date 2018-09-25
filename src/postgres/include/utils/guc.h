@@ -244,10 +244,11 @@ extern bool log_btree_build_stats;
 
 extern PGDLLIMPORT __thread  bool check_function_bodies;
 extern bool default_with_oids;
+extern bool	session_auth_is_superuser;
 
 extern int	log_min_error_statement;
-extern __thread  int log_min_messages;
-extern __thread  int client_min_messages;
+extern PGDLLIMPORT __thread  int log_min_messages;
+extern PGDLLIMPORT __thread  int client_min_messages;
 extern int	log_min_duration_statement;
 extern int	log_temp_files;
 
@@ -256,12 +257,12 @@ extern int	temp_file_limit;
 extern int	num_temp_buffers;
 
 extern char *cluster_name;
-extern char *ConfigFileName;
+extern PGDLLIMPORT char *ConfigFileName;
 extern char *HbaFileName;
 extern char *IdentFileName;
 extern char *external_pid_file;
 
-extern char *application_name;
+extern PGDLLIMPORT char *application_name;
 
 extern int	tcp_keepalives_idle;
 extern int	tcp_keepalives_interval;
@@ -345,8 +346,9 @@ extern void DefineCustomEnumVariable(
 extern void EmitWarningsOnPlaceholders(const char *className);
 
 extern const char *GetConfigOption(const char *name, bool missing_ok,
-				bool restrict_superuser);
+				bool restrict_privileged);
 extern const char *GetConfigOptionResetString(const char *name);
+extern int	GetConfigOptionFlags(const char *name, bool missing_ok);
 extern void ProcessConfigFile(GucContext context);
 extern void InitializeGUCOptions(void);
 extern bool SelectConfigFiles(const char *userDoption, const char *progname);

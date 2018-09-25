@@ -4,10 +4,10 @@
  * - makeTypeNameFromNameList
  * - makeDefElemExtended
  * - makeAlias
+ * - makeSimpleA_Expr
  * - makeGroupingSet
  * - makeTypeName
  * - makeFuncCall
- * - makeSimpleA_Expr
  * - makeA_Expr
  * - makeRangeVar
  * - makeBoolExpr

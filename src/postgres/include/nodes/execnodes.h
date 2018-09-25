@@ -509,6 +509,8 @@ typedef struct EState
 
 	/* The per-query shared memory area to use for parallel execution. */
 	struct dsa_area *es_query_dsa;
+
+	bool		es_use_parallel_mode; /* can we use parallel workers? */
 } EState;
 
 
@@ -979,15 +981,24 @@ typedef struct ModifyTableState
 	int			mt_num_partitions;	/* Number of members in the following
 									 * arrays */
 	ResultRelInfo *mt_partitions;	/* Per partition result relation */
-	TupleConversionMap **mt_partition_tupconv_maps;
+
 	/* Per partition tuple conversion map */
+	TupleConversionMap **mt_partition_tupconv_maps;
+
+	/*
+	 * Used to manipulate any given leaf partition's rowtype after that
+	 * partition is chosen for insertion by tuple-routing.
+	 */
 	TupleTableSlot *mt_partition_tuple_slot;
-	struct TransitionCaptureState *mt_transition_capture;
+
 	/* controls transition table population for specified operation */
-	struct TransitionCaptureState *mt_oc_transition_capture;
+	struct TransitionCaptureState *mt_transition_capture;
+
 	/* controls transition table population for INSERT...ON CONFLICT UPDATE */
-	TupleConversionMap **mt_transition_tupconv_maps;
+	struct TransitionCaptureState *mt_oc_transition_capture;
+
 	/* Per plan/partition tuple conversion */
+	TupleConversionMap **mt_transition_tupconv_maps;
 } ModifyTableState;
 
 /* ----------------
@@ -1795,7 +1806,7 @@ typedef struct AggState
 	ExprContext **aggcontexts;	/* econtexts for long-lived data (per GS) */
 	ExprContext *tmpcontext;	/* econtext for input expressions */
 	ExprContext *curaggcontext; /* currently active aggcontext */
-	AggStatePerTrans curpertrans;	/* currently active trans state */
+	AggStatePerTrans curpertrans;	/* currently active trans state, if any */
 	bool		input_done;		/* indicates end of input */
 	bool		agg_done;		/* indicates completion of Agg scan */
 	int			projected_set;	/* The last projected grouping set */
@@ -1816,10 +1827,9 @@ typedef struct AggState
 	int			num_hashes;
 	AggStatePerHash perhash;
 	AggStatePerGroup *hash_pergroup;	/* array of per-group pointers */
-	/* support for evaluation of agg inputs */
-	TupleTableSlot *evalslot;	/* slot for agg inputs */
-	ProjectionInfo *evalproj;	/* projection machinery */
-	TupleDesc	evaldesc;		/* descriptor of input tuples */
+	/* support for evaluation of agg input expressions: */
+	ProjectionInfo *combinedproj;	/* projection machinery */
+	AggStatePerAgg curperagg;	/* currently active aggregate, if any */
 } AggState;
 
 /* ----------------

@@ -47,11 +47,11 @@
  *--------------------------------------------------------------------
  */
 
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -393,7 +393,7 @@ extern int plpgsql_yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
 #line 119 "pl_gram.y" /* yacc.c:355  */
@@ -450,6 +450,8 @@ union YYSTYPE
 
 #line 403 "pl_gram.c" /* yacc.c:355  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -477,7 +479,7 @@ int plpgsql_yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 432 "pl_gram.c" /* yacc.c:358  */
+#line 434 "pl_gram.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -2127,7 +2129,7 @@ yyreduce:
     {
 						plpgsql_parse_result = (PLpgSQL_stmt_block *) (yyvsp[-1].stmt);
 					}
-#line 2079 "pl_gram.c" /* yacc.c:1646  */
+#line 2081 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 5:
@@ -2135,7 +2137,7 @@ yyreduce:
     {
 						plpgsql_DumpExecTree = true;
 					}
-#line 2087 "pl_gram.c" /* yacc.c:1646  */
+#line 2089 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 6:
@@ -2148,7 +2150,7 @@ yyreduce:
 						else
 							elog(ERROR, "unrecognized print_strict_params option %s", (yyvsp[0].str));
 					}
-#line 2100 "pl_gram.c" /* yacc.c:1646  */
+#line 2102 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 7:
@@ -2156,7 +2158,7 @@ yyreduce:
     {
 						plpgsql_curr_compile->resolve_option = PLPGSQL_RESOLVE_ERROR;
 					}
-#line 2108 "pl_gram.c" /* yacc.c:1646  */
+#line 2110 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 8:
@@ -2164,7 +2166,7 @@ yyreduce:
     {
 						plpgsql_curr_compile->resolve_option = PLPGSQL_RESOLVE_VARIABLE;
 					}
-#line 2116 "pl_gram.c" /* yacc.c:1646  */
+#line 2118 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 9:
@@ -2172,7 +2174,7 @@ yyreduce:
     {
 						plpgsql_curr_compile->resolve_option = PLPGSQL_RESOLVE_COLUMN;
 					}
-#line 2124 "pl_gram.c" /* yacc.c:1646  */
+#line 2126 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 10:
@@ -2180,7 +2182,7 @@ yyreduce:
     {
 					(yyval.str) = (yyvsp[0].word).ident;
 				}
-#line 2132 "pl_gram.c" /* yacc.c:1646  */
+#line 2134 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 11:
@@ -2188,7 +2190,7 @@ yyreduce:
     {
 					(yyval.str) = pstrdup((yyvsp[0].keyword));
 				}
-#line 2140 "pl_gram.c" /* yacc.c:1646  */
+#line 2142 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 14:
@@ -2211,7 +2213,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 2163 "pl_gram.c" /* yacc.c:1646  */
+#line 2165 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 15:
@@ -2223,7 +2225,7 @@ yyreduce:
 						(yyval.declhdr).n_initvars = 0;
 						(yyval.declhdr).initvarnos = NULL;
 					}
-#line 2175 "pl_gram.c" /* yacc.c:1646  */
+#line 2177 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 16:
@@ -2234,7 +2236,7 @@ yyreduce:
 						(yyval.declhdr).n_initvars = 0;
 						(yyval.declhdr).initvarnos = NULL;
 					}
-#line 2186 "pl_gram.c" /* yacc.c:1646  */
+#line 2188 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 17:
@@ -2245,7 +2247,7 @@ yyreduce:
 						/* Remember variables declared in decl_stmts */
 						(yyval.declhdr).n_initvars = plpgsql_add_initdatums(&((yyval.declhdr).initvarnos));
 					}
-#line 2197 "pl_gram.c" /* yacc.c:1646  */
+#line 2199 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 18:
@@ -2259,7 +2261,7 @@ yyreduce:
 						 */
 						plpgsql_IdentifierLookup = IDENTIFIER_LOOKUP_DECLARE;
 					}
-#line 2211 "pl_gram.c" /* yacc.c:1646  */
+#line 2213 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 22:
@@ -2267,7 +2269,7 @@ yyreduce:
     {
 						/* We allow useless extra DECLAREs */
 					}
-#line 2219 "pl_gram.c" /* yacc.c:1646  */
+#line 2221 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 23:
@@ -2282,7 +2284,7 @@ yyreduce:
 								 errmsg("block label must be placed before DECLARE, not after"),
 								 parser_errposition((yylsp[-2]))));
 					}
-#line 2234 "pl_gram.c" /* yacc.c:1646  */
+#line 2236 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 24:
@@ -2341,7 +2343,7 @@ yyreduce:
 										 parser_errposition((yylsp[-1]))));
 						}
 					}
-#line 2293 "pl_gram.c" /* yacc.c:1646  */
+#line 2295 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 25:
@@ -2350,13 +2352,13 @@ yyreduce:
 						plpgsql_ns_additem((yyvsp[-1].nsitem)->itemtype,
 										   (yyvsp[-1].nsitem)->itemno, (yyvsp[-4].varname).name);
 					}
-#line 2302 "pl_gram.c" /* yacc.c:1646  */
+#line 2304 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 544 "pl_gram.y" /* yacc.c:1646  */
     { plpgsql_ns_push((yyvsp[-2].varname).name, PLPGSQL_LABEL_OTHER); }
-#line 2308 "pl_gram.c" /* yacc.c:1646  */
+#line 2310 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 27:
@@ -2408,7 +2410,7 @@ yyreduce:
 							new->cursor_explicit_argrow = (yyvsp[-2].datum)->dno;
 						new->cursor_options = CURSOR_OPT_FAST_PLAN | (yyvsp[-5].ival);
 					}
-#line 2360 "pl_gram.c" /* yacc.c:1646  */
+#line 2362 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 28:
@@ -2416,7 +2418,7 @@ yyreduce:
     {
 						(yyval.ival) = 0;
 					}
-#line 2368 "pl_gram.c" /* yacc.c:1646  */
+#line 2370 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 29:
@@ -2424,7 +2426,7 @@ yyreduce:
     {
 						(yyval.ival) = CURSOR_OPT_NO_SCROLL;
 					}
-#line 2376 "pl_gram.c" /* yacc.c:1646  */
+#line 2378 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 30:
@@ -2432,7 +2434,7 @@ yyreduce:
     {
 						(yyval.ival) = CURSOR_OPT_SCROLL;
 					}
-#line 2384 "pl_gram.c" /* yacc.c:1646  */
+#line 2386 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 31:
@@ -2440,7 +2442,7 @@ yyreduce:
     {
 						(yyval.expr) = read_sql_stmt("");
 					}
-#line 2392 "pl_gram.c" /* yacc.c:1646  */
+#line 2394 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 32:
@@ -2448,7 +2450,7 @@ yyreduce:
     {
 						(yyval.datum) = NULL;
 					}
-#line 2400 "pl_gram.c" /* yacc.c:1646  */
+#line 2402 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 33:
@@ -2479,7 +2481,7 @@ yyreduce:
 						plpgsql_adddatum((PLpgSQL_datum *) new);
 						(yyval.datum) = (PLpgSQL_datum *) new;
 					}
-#line 2431 "pl_gram.c" /* yacc.c:1646  */
+#line 2433 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 34:
@@ -2487,7 +2489,7 @@ yyreduce:
     {
 						(yyval.list) = list_make1((yyvsp[0].datum));
 					}
-#line 2439 "pl_gram.c" /* yacc.c:1646  */
+#line 2441 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 35:
@@ -2495,7 +2497,7 @@ yyreduce:
     {
 						(yyval.list) = lappend((yyvsp[-2].list), (yyvsp[0].datum));
 					}
-#line 2447 "pl_gram.c" /* yacc.c:1646  */
+#line 2449 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 36:
@@ -2505,7 +2507,7 @@ yyreduce:
 							plpgsql_build_variable((yyvsp[-1].varname).name, (yyvsp[-1].varname).lineno,
 												   (yyvsp[0].dtype), true);
 					}
-#line 2457 "pl_gram.c" /* yacc.c:1646  */
+#line 2459 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 39:
@@ -2524,7 +2526,7 @@ yyreduce:
 									 parser_errposition((yylsp[0]))));
 						(yyval.nsitem) = nsi;
 					}
-#line 2476 "pl_gram.c" /* yacc.c:1646  */
+#line 2478 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 40:
@@ -2543,7 +2545,7 @@ yyreduce:
 									 parser_errposition((yylsp[0]))));
 						(yyval.nsitem) = nsi;
 					}
-#line 2495 "pl_gram.c" /* yacc.c:1646  */
+#line 2497 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 41:
@@ -2573,7 +2575,7 @@ yyreduce:
 									 parser_errposition((yylsp[0]))));
 						(yyval.nsitem) = nsi;
 					}
-#line 2525 "pl_gram.c" /* yacc.c:1646  */
+#line 2527 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 42:
@@ -2605,7 +2607,7 @@ yyreduce:
 						}
 
 					}
-#line 2557 "pl_gram.c" /* yacc.c:1646  */
+#line 2559 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 43:
@@ -2637,19 +2639,19 @@ yyreduce:
 						}
 
 					}
-#line 2589 "pl_gram.c" /* yacc.c:1646  */
+#line 2591 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 44:
 #line 786 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.boolean) = false; }
-#line 2595 "pl_gram.c" /* yacc.c:1646  */
+#line 2597 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 45:
 #line 788 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.boolean) = true; }
-#line 2601 "pl_gram.c" /* yacc.c:1646  */
+#line 2603 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 46:
@@ -2662,13 +2664,13 @@ yyreduce:
 						(yyval.dtype) = read_datatype(yychar);
 						yyclearin;
 					}
-#line 2614 "pl_gram.c" /* yacc.c:1646  */
+#line 2616 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 47:
 #line 803 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.oid) = InvalidOid; }
-#line 2620 "pl_gram.c" /* yacc.c:1646  */
+#line 2622 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 48:
@@ -2677,7 +2679,7 @@ yyreduce:
 						(yyval.oid) = get_collation_oid(list_make1(makeString((yyvsp[0].word).ident)),
 											   false);
 					}
-#line 2629 "pl_gram.c" /* yacc.c:1646  */
+#line 2631 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 49:
@@ -2686,7 +2688,7 @@ yyreduce:
 						(yyval.oid) = get_collation_oid(list_make1(makeString(pstrdup((yyvsp[0].keyword)))),
 											   false);
 					}
-#line 2638 "pl_gram.c" /* yacc.c:1646  */
+#line 2640 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 50:
@@ -2694,25 +2696,25 @@ yyreduce:
     {
 						(yyval.oid) = get_collation_oid((yyvsp[0].cword).idents, false);
 					}
-#line 2646 "pl_gram.c" /* yacc.c:1646  */
+#line 2648 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 51:
 #line 821 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.boolean) = false; }
-#line 2652 "pl_gram.c" /* yacc.c:1646  */
+#line 2654 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 52:
 #line 823 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.boolean) = true; }
-#line 2658 "pl_gram.c" /* yacc.c:1646  */
+#line 2660 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 53:
 #line 827 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = NULL; }
-#line 2664 "pl_gram.c" /* yacc.c:1646  */
+#line 2666 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 54:
@@ -2720,13 +2722,13 @@ yyreduce:
     {
 						(yyval.expr) = read_sql_expression(';', ";");
 					}
-#line 2672 "pl_gram.c" /* yacc.c:1646  */
+#line 2674 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 59:
 #line 848 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.list) = NIL; }
-#line 2678 "pl_gram.c" /* yacc.c:1646  */
+#line 2680 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 60:
@@ -2738,133 +2740,133 @@ yyreduce:
 						else
 							(yyval.list) = lappend((yyvsp[-1].list), (yyvsp[0].stmt));
 					}
-#line 2690 "pl_gram.c" /* yacc.c:1646  */
+#line 2692 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 61:
 #line 860 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[-1].stmt); }
-#line 2696 "pl_gram.c" /* yacc.c:1646  */
+#line 2698 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 62:
 #line 862 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2702 "pl_gram.c" /* yacc.c:1646  */
+#line 2704 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 63:
 #line 864 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2708 "pl_gram.c" /* yacc.c:1646  */
+#line 2710 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 64:
 #line 866 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2714 "pl_gram.c" /* yacc.c:1646  */
+#line 2716 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 65:
 #line 868 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2720 "pl_gram.c" /* yacc.c:1646  */
+#line 2722 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 66:
 #line 870 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2726 "pl_gram.c" /* yacc.c:1646  */
+#line 2728 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 67:
 #line 872 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2732 "pl_gram.c" /* yacc.c:1646  */
+#line 2734 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 68:
 #line 874 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2738 "pl_gram.c" /* yacc.c:1646  */
+#line 2740 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 69:
 #line 876 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2744 "pl_gram.c" /* yacc.c:1646  */
+#line 2746 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 70:
 #line 878 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2750 "pl_gram.c" /* yacc.c:1646  */
+#line 2752 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 71:
 #line 880 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2756 "pl_gram.c" /* yacc.c:1646  */
+#line 2758 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 72:
 #line 882 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2762 "pl_gram.c" /* yacc.c:1646  */
+#line 2764 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 73:
 #line 884 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2768 "pl_gram.c" /* yacc.c:1646  */
+#line 2770 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 74:
 #line 886 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2774 "pl_gram.c" /* yacc.c:1646  */
+#line 2776 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 75:
 #line 888 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2780 "pl_gram.c" /* yacc.c:1646  */
+#line 2782 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 76:
 #line 890 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2786 "pl_gram.c" /* yacc.c:1646  */
+#line 2788 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 77:
 #line 892 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2792 "pl_gram.c" /* yacc.c:1646  */
+#line 2794 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 78:
 #line 894 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2798 "pl_gram.c" /* yacc.c:1646  */
+#line 2800 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 79:
 #line 896 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2804 "pl_gram.c" /* yacc.c:1646  */
+#line 2806 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 80:
 #line 898 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2810 "pl_gram.c" /* yacc.c:1646  */
+#line 2812 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 81:
 #line 900 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.stmt) = (yyvsp[0].stmt); }
-#line 2816 "pl_gram.c" /* yacc.c:1646  */
+#line 2818 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 82:
@@ -2879,7 +2881,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 2831 "pl_gram.c" /* yacc.c:1646  */
+#line 2833 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 83:
@@ -2895,7 +2897,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 2847 "pl_gram.c" /* yacc.c:1646  */
+#line 2849 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 84:
@@ -2959,7 +2961,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 2911 "pl_gram.c" /* yacc.c:1646  */
+#line 2913 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 85:
@@ -2967,7 +2969,7 @@ yyreduce:
     {
 						(yyval.boolean) = false;
 					}
-#line 2919 "pl_gram.c" /* yacc.c:1646  */
+#line 2921 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 86:
@@ -2975,7 +2977,7 @@ yyreduce:
     {
 						(yyval.boolean) = false;
 					}
-#line 2927 "pl_gram.c" /* yacc.c:1646  */
+#line 2929 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 87:
@@ -2983,7 +2985,7 @@ yyreduce:
     {
 						(yyval.boolean) = true;
 					}
-#line 2935 "pl_gram.c" /* yacc.c:1646  */
+#line 2937 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 88:
@@ -2991,7 +2993,7 @@ yyreduce:
     {
 						(yyval.list) = lappend((yyvsp[-2].list), (yyvsp[0].diagitem));
 					}
-#line 2943 "pl_gram.c" /* yacc.c:1646  */
+#line 2945 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 89:
@@ -2999,7 +3001,7 @@ yyreduce:
     {
 						(yyval.list) = list_make1((yyvsp[0].diagitem));
 					}
-#line 2951 "pl_gram.c" /* yacc.c:1646  */
+#line 2953 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 90:
@@ -3013,7 +3015,7 @@ yyreduce:
 
 						(yyval.diagitem) = new;
 					}
-#line 2965 "pl_gram.c" /* yacc.c:1646  */
+#line 2967 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 91:
@@ -3063,7 +3065,7 @@ yyreduce:
 						else
 							yyerror("unrecognized GET DIAGNOSTICS item");
 					}
-#line 3015 "pl_gram.c" /* yacc.c:1646  */
+#line 3017 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 92:
@@ -3078,7 +3080,7 @@ yyreduce:
 									 parser_errposition((yylsp[0]))));
 						(yyval.datum) = (yyvsp[0].datum);
 					}
-#line 3030 "pl_gram.c" /* yacc.c:1646  */
+#line 3032 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 93:
@@ -3087,7 +3089,7 @@ yyreduce:
 						/* just to give a better message than "syntax error" */
 						word_is_not_variable(&((yyvsp[0].word)), (yylsp[0]));
 					}
-#line 3039 "pl_gram.c" /* yacc.c:1646  */
+#line 3041 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 94:
@@ -3096,7 +3098,7 @@ yyreduce:
 						/* just to give a better message than "syntax error" */
 						cword_is_not_variable(&((yyvsp[0].cword)), (yylsp[0]));
 					}
-#line 3048 "pl_gram.c" /* yacc.c:1646  */
+#line 3050 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 95:
@@ -3105,7 +3107,7 @@ yyreduce:
 						check_assignable((yyvsp[0].wdatum).datum, (yylsp[0]));
 						(yyval.datum) = (yyvsp[0].wdatum).datum;
 					}
-#line 3057 "pl_gram.c" /* yacc.c:1646  */
+#line 3059 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 96:
@@ -3124,7 +3126,7 @@ yyreduce:
 
 						(yyval.datum) = (PLpgSQL_datum *) new;
 					}
-#line 3076 "pl_gram.c" /* yacc.c:1646  */
+#line 3078 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 97:
@@ -3142,7 +3144,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 3094 "pl_gram.c" /* yacc.c:1646  */
+#line 3096 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 98:
@@ -3150,7 +3152,7 @@ yyreduce:
     {
 						(yyval.list) = NIL;
 					}
-#line 3102 "pl_gram.c" /* yacc.c:1646  */
+#line 3104 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 99:
@@ -3165,7 +3167,7 @@ yyreduce:
 
 						(yyval.list) = lappend((yyvsp[-3].list), new);
 					}
-#line 3117 "pl_gram.c" /* yacc.c:1646  */
+#line 3119 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 100:
@@ -3173,7 +3175,7 @@ yyreduce:
     {
 						(yyval.list) = NIL;
 					}
-#line 3125 "pl_gram.c" /* yacc.c:1646  */
+#line 3127 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 101:
@@ -3181,7 +3183,7 @@ yyreduce:
     {
 						(yyval.list) = (yyvsp[0].list);
 					}
-#line 3133 "pl_gram.c" /* yacc.c:1646  */
+#line 3135 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 102:
@@ -3189,7 +3191,7 @@ yyreduce:
     {
 						(yyval.stmt) = make_case((yylsp[-6]), (yyvsp[-5].expr), (yyvsp[-4].list), (yyvsp[-3].list));
 					}
-#line 3141 "pl_gram.c" /* yacc.c:1646  */
+#line 3143 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 103:
@@ -3206,7 +3208,7 @@ yyreduce:
 						plpgsql_push_back_token(K_WHEN);
 						(yyval.expr) = expr;
 					}
-#line 3158 "pl_gram.c" /* yacc.c:1646  */
+#line 3160 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 104:
@@ -3214,7 +3216,7 @@ yyreduce:
     {
 						(yyval.list) = lappend((yyvsp[-1].list), (yyvsp[0].casewhen));
 					}
-#line 3166 "pl_gram.c" /* yacc.c:1646  */
+#line 3168 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 105:
@@ -3222,7 +3224,7 @@ yyreduce:
     {
 						(yyval.list) = list_make1((yyvsp[0].casewhen));
 					}
-#line 3174 "pl_gram.c" /* yacc.c:1646  */
+#line 3176 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 106:
@@ -3235,7 +3237,7 @@ yyreduce:
 						new->stmts	= (yyvsp[0].list);
 						(yyval.casewhen) = new;
 					}
-#line 3187 "pl_gram.c" /* yacc.c:1646  */
+#line 3189 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 107:
@@ -3243,7 +3245,7 @@ yyreduce:
     {
 						(yyval.list) = NIL;
 					}
-#line 3195 "pl_gram.c" /* yacc.c:1646  */
+#line 3197 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 108:
@@ -3260,7 +3262,7 @@ yyreduce:
 						else
 							(yyval.list) = list_make1(NULL);
 					}
-#line 3212 "pl_gram.c" /* yacc.c:1646  */
+#line 3214 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 109:
@@ -3279,7 +3281,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 3231 "pl_gram.c" /* yacc.c:1646  */
+#line 3233 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 110:
@@ -3299,7 +3301,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 3251 "pl_gram.c" /* yacc.c:1646  */
+#line 3253 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 111:
@@ -3335,7 +3337,7 @@ yyreduce:
 						/* close namespace started in opt_loop_label */
 						plpgsql_ns_pop();
 					}
-#line 3287 "pl_gram.c" /* yacc.c:1646  */
+#line 3289 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 112:
@@ -3581,7 +3583,7 @@ yyreduce:
 							}
 						}
 					}
-#line 3533 "pl_gram.c" /* yacc.c:1646  */
+#line 3535 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 113:
@@ -3617,7 +3619,7 @@ yyreduce:
 															   (yylsp[0]));
 						}
 					}
-#line 3569 "pl_gram.c" /* yacc.c:1646  */
+#line 3571 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 114:
@@ -3636,7 +3638,7 @@ yyreduce:
 						if (tok == ',')
 							word_is_not_variable(&((yyvsp[0].word)), (yylsp[0]));
 					}
-#line 3588 "pl_gram.c" /* yacc.c:1646  */
+#line 3590 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 115:
@@ -3645,7 +3647,7 @@ yyreduce:
 						/* just to give a better message than "syntax error" */
 						cword_is_not_variable(&((yyvsp[0].cword)), (yylsp[0]));
 					}
-#line 3597 "pl_gram.c" /* yacc.c:1646  */
+#line 3599 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 116:
@@ -3689,7 +3691,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *) new;
 					}
-#line 3641 "pl_gram.c" /* yacc.c:1646  */
+#line 3643 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 117:
@@ -3697,7 +3699,7 @@ yyreduce:
     {
 						(yyval.ival) = 0;
 					}
-#line 3649 "pl_gram.c" /* yacc.c:1646  */
+#line 3651 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 118:
@@ -3705,7 +3707,7 @@ yyreduce:
     {
 						(yyval.ival) = (yyvsp[0].ival);
 					}
-#line 3657 "pl_gram.c" /* yacc.c:1646  */
+#line 3659 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 119:
@@ -3759,7 +3761,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 3711 "pl_gram.c" /* yacc.c:1646  */
+#line 3713 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 120:
@@ -3767,7 +3769,7 @@ yyreduce:
     {
 						(yyval.boolean) = true;
 					}
-#line 3719 "pl_gram.c" /* yacc.c:1646  */
+#line 3721 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 121:
@@ -3775,7 +3777,7 @@ yyreduce:
     {
 						(yyval.boolean) = false;
 					}
-#line 3727 "pl_gram.c" /* yacc.c:1646  */
+#line 3729 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 122:
@@ -3803,7 +3805,7 @@ yyreduce:
 							(yyval.stmt) = make_return_stmt((yylsp[0]));
 						}
 					}
-#line 3755 "pl_gram.c" /* yacc.c:1646  */
+#line 3757 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 123:
@@ -3949,7 +3951,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 3901 "pl_gram.c" /* yacc.c:1646  */
+#line 3903 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 124:
@@ -3974,7 +3976,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *) new;
 					}
-#line 3926 "pl_gram.c" /* yacc.c:1646  */
+#line 3928 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 125:
@@ -3984,7 +3986,7 @@ yyreduce:
 						(yyval.loop_body).end_label = (yyvsp[-1].str);
 						(yyval.loop_body).end_label_location = (yylsp[-1]);
 					}
-#line 3936 "pl_gram.c" /* yacc.c:1646  */
+#line 3938 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 126:
@@ -3992,7 +3994,7 @@ yyreduce:
     {
 						(yyval.stmt) = make_execsql_stmt(K_IMPORT, (yylsp[0]));
 					}
-#line 3944 "pl_gram.c" /* yacc.c:1646  */
+#line 3946 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 127:
@@ -4000,7 +4002,7 @@ yyreduce:
     {
 						(yyval.stmt) = make_execsql_stmt(K_INSERT, (yylsp[0]));
 					}
-#line 3952 "pl_gram.c" /* yacc.c:1646  */
+#line 3954 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 128:
@@ -4014,7 +4016,7 @@ yyreduce:
 							word_is_not_variable(&((yyvsp[0].word)), (yylsp[0]));
 						(yyval.stmt) = make_execsql_stmt(T_WORD, (yylsp[0]));
 					}
-#line 3966 "pl_gram.c" /* yacc.c:1646  */
+#line 3968 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 129:
@@ -4028,7 +4030,7 @@ yyreduce:
 							cword_is_not_variable(&((yyvsp[0].cword)), (yylsp[0]));
 						(yyval.stmt) = make_execsql_stmt(T_CWORD, (yylsp[0]));
 					}
-#line 3980 "pl_gram.c" /* yacc.c:1646  */
+#line 3982 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 130:
@@ -4093,7 +4095,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 4045 "pl_gram.c" /* yacc.c:1646  */
+#line 4047 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 131:
@@ -4172,7 +4174,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 4124 "pl_gram.c" /* yacc.c:1646  */
+#line 4126 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 132:
@@ -4206,7 +4208,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)fetch;
 					}
-#line 4158 "pl_gram.c" /* yacc.c:1646  */
+#line 4160 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 133:
@@ -4220,7 +4222,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)fetch;
 					}
-#line 4172 "pl_gram.c" /* yacc.c:1646  */
+#line 4174 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 134:
@@ -4228,7 +4230,7 @@ yyreduce:
     {
 						(yyval.fetch) = read_fetch_direction();
 					}
-#line 4180 "pl_gram.c" /* yacc.c:1646  */
+#line 4182 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 135:
@@ -4243,7 +4245,7 @@ yyreduce:
 
 						(yyval.stmt) = (PLpgSQL_stmt *)new;
 					}
-#line 4195 "pl_gram.c" /* yacc.c:1646  */
+#line 4197 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 136:
@@ -4252,7 +4254,7 @@ yyreduce:
 						/* We do not bother building a node for NULL */
 						(yyval.stmt) = NULL;
 					}
-#line 4204 "pl_gram.c" /* yacc.c:1646  */
+#line 4206 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 137:
@@ -4278,7 +4280,7 @@ yyreduce:
 									 parser_errposition((yylsp[0]))));
 						(yyval.var) = (PLpgSQL_var *) (yyvsp[0].wdatum).datum;
 					}
-#line 4230 "pl_gram.c" /* yacc.c:1646  */
+#line 4232 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 138:
@@ -4287,7 +4289,7 @@ yyreduce:
 						/* just to give a better message than "syntax error" */
 						word_is_not_variable(&((yyvsp[0].word)), (yylsp[0]));
 					}
-#line 4239 "pl_gram.c" /* yacc.c:1646  */
+#line 4241 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 139:
@@ -4296,13 +4298,13 @@ yyreduce:
 						/* just to give a better message than "syntax error" */
 						cword_is_not_variable(&((yyvsp[0].cword)), (yylsp[0]));
 					}
-#line 4248 "pl_gram.c" /* yacc.c:1646  */
+#line 4250 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 140:
 #line 2212 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.exception_block) = NULL; }
-#line 4254 "pl_gram.c" /* yacc.c:1646  */
+#line 4256 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 141:
@@ -4337,7 +4339,7 @@ yyreduce:
 
 						(yyval.exception_block) = new;
 					}
-#line 4289 "pl_gram.c" /* yacc.c:1646  */
+#line 4291 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 142:
@@ -4348,7 +4350,7 @@ yyreduce:
 
 						(yyval.exception_block) = new;
 					}
-#line 4300 "pl_gram.c" /* yacc.c:1646  */
+#line 4302 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 143:
@@ -4356,7 +4358,7 @@ yyreduce:
     {
 							(yyval.list) = lappend((yyvsp[-1].list), (yyvsp[0].exception));
 						}
-#line 4308 "pl_gram.c" /* yacc.c:1646  */
+#line 4310 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 144:
@@ -4364,7 +4366,7 @@ yyreduce:
     {
 							(yyval.list) = list_make1((yyvsp[0].exception));
 						}
-#line 4316 "pl_gram.c" /* yacc.c:1646  */
+#line 4318 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 145:
@@ -4379,7 +4381,7 @@ yyreduce:
 
 						(yyval.exception) = new;
 					}
-#line 4331 "pl_gram.c" /* yacc.c:1646  */
+#line 4333 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 146:
@@ -4392,7 +4394,7 @@ yyreduce:
 							old->next = (yyvsp[0].condition);
 							(yyval.condition) = (yyvsp[-2].condition);
 						}
-#line 4344 "pl_gram.c" /* yacc.c:1646  */
+#line 4346 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 147:
@@ -4400,7 +4402,7 @@ yyreduce:
     {
 							(yyval.condition) = (yyvsp[0].condition);
 						}
-#line 4352 "pl_gram.c" /* yacc.c:1646  */
+#line 4354 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 148:
@@ -4438,31 +4440,31 @@ yyreduce:
 								(yyval.condition) = new;
 							}
 						}
-#line 4390 "pl_gram.c" /* yacc.c:1646  */
+#line 4392 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 149:
 #line 2328 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = read_sql_expression(';', ";"); }
-#line 4396 "pl_gram.c" /* yacc.c:1646  */
+#line 4398 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 150:
 #line 2332 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = read_sql_expression(']', "]"); }
-#line 4402 "pl_gram.c" /* yacc.c:1646  */
+#line 4404 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 151:
 #line 2336 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = read_sql_expression(K_THEN, "THEN"); }
-#line 4408 "pl_gram.c" /* yacc.c:1646  */
+#line 4410 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 152:
 #line 2340 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = read_sql_expression(K_LOOP, "LOOP"); }
-#line 4414 "pl_gram.c" /* yacc.c:1646  */
+#line 4416 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 153:
@@ -4471,7 +4473,7 @@ yyreduce:
 						plpgsql_ns_push(NULL, PLPGSQL_LABEL_BLOCK);
 						(yyval.str) = NULL;
 					}
-#line 4423 "pl_gram.c" /* yacc.c:1646  */
+#line 4425 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 154:
@@ -4480,7 +4482,7 @@ yyreduce:
 						plpgsql_ns_push((yyvsp[-1].str), PLPGSQL_LABEL_BLOCK);
 						(yyval.str) = (yyvsp[-1].str);
 					}
-#line 4432 "pl_gram.c" /* yacc.c:1646  */
+#line 4434 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 155:
@@ -4489,7 +4491,7 @@ yyreduce:
 						plpgsql_ns_push(NULL, PLPGSQL_LABEL_LOOP);
 						(yyval.str) = NULL;
 					}
-#line 4441 "pl_gram.c" /* yacc.c:1646  */
+#line 4443 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 156:
@@ -4498,7 +4500,7 @@ yyreduce:
 						plpgsql_ns_push((yyvsp[-1].str), PLPGSQL_LABEL_LOOP);
 						(yyval.str) = (yyvsp[-1].str);
 					}
-#line 4450 "pl_gram.c" /* yacc.c:1646  */
+#line 4452 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 157:
@@ -4506,7 +4508,7 @@ yyreduce:
     {
 						(yyval.str) = NULL;
 					}
-#line 4458 "pl_gram.c" /* yacc.c:1646  */
+#line 4460 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 158:
@@ -4515,19 +4517,19 @@ yyreduce:
 						/* label validity will be checked by outer production */
 						(yyval.str) = (yyvsp[0].str);
 					}
-#line 4467 "pl_gram.c" /* yacc.c:1646  */
+#line 4469 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 159:
 #line 2379 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = NULL; }
-#line 4473 "pl_gram.c" /* yacc.c:1646  */
+#line 4475 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 160:
 #line 2381 "pl_gram.y" /* yacc.c:1646  */
     { (yyval.expr) = (yyvsp[0].expr); }
-#line 4479 "pl_gram.c" /* yacc.c:1646  */
+#line 4481 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 161:
@@ -4535,7 +4537,7 @@ yyreduce:
     {
 						(yyval.str) = (yyvsp[0].word).ident;
 					}
-#line 4487 "pl_gram.c" /* yacc.c:1646  */
+#line 4489 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 162:
@@ -4543,7 +4545,7 @@ yyreduce:
     {
 						(yyval.str) = pstrdup((yyvsp[0].keyword));
 					}
-#line 4495 "pl_gram.c" /* yacc.c:1646  */
+#line 4497 "pl_gram.c" /* yacc.c:1646  */
     break;
 
   case 163:
@@ -4553,11 +4555,11 @@ yyreduce:
 							yyerror("syntax error");
 						(yyval.str) = (yyvsp[0].wdatum).ident;
 					}
-#line 4505 "pl_gram.c" /* yacc.c:1646  */
+#line 4507 "pl_gram.c" /* yacc.c:1646  */
     break;
 
 
-#line 4509 "pl_gram.c" /* yacc.c:1646  */
+#line 4511 "pl_gram.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
