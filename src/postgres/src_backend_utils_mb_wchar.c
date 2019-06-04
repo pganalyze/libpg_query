@@ -1,10 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - pg_verifymbstr
- * - pg_verify_mbstr_len
  * - pg_encoding_max_length
- * - report_invalid_encoding
- * - pg_encoding_mblen
  * - pg_wchar_table
  * - pg_utf_mblen
  * - pg_mule_mblen
@@ -67,6 +63,10 @@
  * - pg_johab_mblen
  * - pg_johab_dsplen
  * - pg_johab_verifier
+ * - pg_verifymbstr
+ * - pg_verify_mbstr_len
+ * - report_invalid_encoding
+ * - pg_encoding_mblen
  * - pg_database_encoding_max_length
  *--------------------------------------------------------------------
  */
@@ -1700,8 +1700,8 @@ int
 pg_encoding_mblen(int encoding, const char *mbstr)
 {
 	return (PG_VALID_ENCODING(encoding) ?
-			((*pg_wchar_table[encoding].mblen) ((const unsigned char *) mbstr)) :
-			((*pg_wchar_table[PG_SQL_ASCII].mblen) ((const unsigned char *) mbstr)));
+			pg_wchar_table[encoding].mblen((const unsigned char *) mbstr) :
+			pg_wchar_table[PG_SQL_ASCII].mblen((const unsigned char *) mbstr));
 }
 
 /*

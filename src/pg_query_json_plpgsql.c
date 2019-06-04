@@ -40,10 +40,12 @@
 #define WRITE_BLOCK_FIELD(fldname)  WRITE_OBJ_FIELD(fldname, dump_block)
 #define WRITE_RECORD_FIELD(fldname) WRITE_OBJ_FIELD(fldname, dump_record)
 #define WRITE_ROW_FIELD(fldname)    WRITE_OBJ_FIELD(fldname, dump_row)
+#define WRITE_VARIABLE_FIELD(fldname)    WRITE_OBJ_FIELD(fldname, dump_variable)
 #define WRITE_VAR_FIELD(fldname)    WRITE_OBJ_FIELD(fldname, dump_var)
 
 static void dump_record(StringInfo str, PLpgSQL_rec *stmt);
 static void dump_row(StringInfo str, PLpgSQL_row *stmt);
+static void dump_variable(StringInfo str, PLpgSQL_variable *stmt);
 static void dump_var(StringInfo str, PLpgSQL_var *stmt);
 static void dump_record_field(StringInfo str, PLpgSQL_recfield *node);
 static void dump_array_elem(StringInfo str, PLpgSQL_arrayelem *node);
@@ -316,8 +318,7 @@ dump_fors(StringInfo str, PLpgSQL_stmt_fors *node)
 
 	WRITE_INT_FIELD(lineno);
 	WRITE_STRING_FIELD(label);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(var);
 	WRITE_STATEMENTS_FIELD(body);
 	WRITE_EXPR_FIELD(query);
 }
@@ -329,8 +330,7 @@ dump_forc(StringInfo str, PLpgSQL_stmt_forc *node)
 
 	WRITE_INT_FIELD(lineno);
 	WRITE_STRING_FIELD(label);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(var);
 	WRITE_STATEMENTS_FIELD(body);
 	WRITE_INT_FIELD(curvar);
 	WRITE_EXPR_FIELD(argquery);
@@ -357,7 +357,6 @@ dump_open(StringInfo str, PLpgSQL_stmt_open *node)
 	WRITE_INT_FIELD(lineno);
 	WRITE_INT_FIELD(curvar);
 	WRITE_INT_FIELD(cursor_options);
-	WRITE_ROW_FIELD(returntype);
 	WRITE_EXPR_FIELD(argquery);
 	WRITE_EXPR_FIELD(query);
 	WRITE_EXPR_FIELD(dynquery);
@@ -370,8 +369,7 @@ dump_fetch(StringInfo str, PLpgSQL_stmt_fetch *node)
 	WRITE_NODE_TYPE("PLpgSQL_stmt_fetch");
 
 	WRITE_INT_FIELD(lineno);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(target);
 	WRITE_INT_FIELD(curvar);
 	WRITE_ENUM_FIELD(direction);
 	WRITE_LONG_FIELD(how_many);
@@ -472,8 +470,7 @@ dump_execsql(StringInfo str, PLpgSQL_stmt_execsql *node)
 	//WRITE_BOOL_FIELD(mod_stmt); // This is only populated when executing the function
 	WRITE_BOOL_FIELD(into);
 	WRITE_BOOL_FIELD(strict);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(target);
 }
 
 static void
@@ -485,8 +482,7 @@ dump_dynexecute(StringInfo str, PLpgSQL_stmt_dynexecute *node)
 	WRITE_EXPR_FIELD(query);
 	WRITE_BOOL_FIELD(into);
 	WRITE_BOOL_FIELD(strict);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(target);
 	WRITE_LIST_FIELD(params, PLpgSQL_expr, dump_expr);
 }
 
@@ -497,8 +493,7 @@ dump_dynfors(StringInfo str, PLpgSQL_stmt_dynfors *node)
 
 	WRITE_INT_FIELD(lineno);
 	WRITE_STRING_FIELD(label);
-	WRITE_RECORD_FIELD(rec);
-	WRITE_ROW_FIELD(row);
+	WRITE_VARIABLE_FIELD(var);
 	WRITE_STATEMENTS_FIELD(body);
 	WRITE_EXPR_FIELD(query);
 	WRITE_LIST_FIELD(params, PLpgSQL_expr, dump_expr);
@@ -574,6 +569,18 @@ dump_function(StringInfo str, PLpgSQL_function *node)
 	appendStringInfoString(str, "], ");
 
 	WRITE_BLOCK_FIELD(action);
+}
+
+static void
+dump_variable(StringInfo str, PLpgSQL_variable *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_variable");
+
+	WRITE_STRING_FIELD(refname);
+	WRITE_INT_FIELD(lineno);
+	WRITE_BOOL_FIELD(isconst);
+	WRITE_BOOL_FIELD(notnull);
+	WRITE_EXPR_FIELD(default_val);
 }
 
 static void

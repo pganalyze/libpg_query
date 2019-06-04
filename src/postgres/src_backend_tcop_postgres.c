@@ -16,7 +16,7 @@
  * postgres.c
  *	  POSTGRES C Backend Interface
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2018, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -55,6 +55,8 @@
 #include "catalog/pg_type.h"
 #include "commands/async.h"
 #include "commands/prepare.h"
+#include "executor/spi.h"
+#include "jit/jit.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "libpq/pqsignal.h"
@@ -162,6 +164,11 @@ char	   *register_stack_base_ptr = NULL;
 
 
 /*
+ * Flag to keep track of whether statement timeout timer is active.
+ */
+
+
+/*
  * If an unnamed prepared statement exists, it's stored here.
  * We keep it separate from the hashtable kept by commands/prepare.c
  * in order to reduce overhead for short-lived queries.
@@ -175,6 +182,10 @@ char	   *register_stack_base_ptr = NULL;
 
 /* whether or not, and why, we were canceled by conflict with recovery */
 
+
+
+
+/* reused buffer to pass to SendRowDescriptionMessage() */
 
 
 
@@ -200,6 +211,8 @@ static bool IsTransactionExitStmtList(List *pstmts);
 static bool IsTransactionStmtList(List *pstmts);
 static void drop_unnamed_stmt(void);
 static void log_disconnections(int code, Datum arg);
+static void enable_statement_timeout(void);
+static void disable_statement_timeout(void);
 
 
 /* ----------------------------------------------------------------
@@ -249,8 +262,9 @@ static void log_disconnections(int code, Datum arg);
 /*
  * ProcessClientReadInterrupt() - Process interrupts specific to client reads
  *
- * This is called just after low-level reads. That might be after the read
- * finished successfully, or it was interrupted via interrupt.
+ * This is called just before and after low-level reads.
+ * 'blocked' is true if no data was available to read and we plan to retry,
+ * false if about to read or done reading.
  *
  * Must preserve errno!
  */
@@ -259,9 +273,9 @@ static void log_disconnections(int code, Datum arg);
 /*
  * ProcessClientWriteInterrupt() - Process interrupts specific to client writes
  *
- * This is called just after low-level writes. That might be after the read
- * finished successfully, or it was interrupted via interrupt. 'blocked' tells
- * us whether the
+ * This is called just before and after low-level writes.
+ * 'blocked' is true if no data could be written and we plan to retry,
+ * false if about to write or done writing.
  *
  * Must preserve errno!
  */
@@ -380,7 +394,7 @@ static void log_disconnections(int code, Datum arg);
  * If logging is needed, the duration in msec is formatted into msec_str[],
  * which must be a 32-byte buffer.
  *
- * was_logged should be TRUE if caller already logged query details (this
+ * was_logged should be true if caller already logged query details (this
  * essentially prevents 2 from being returned).
  */
 
@@ -740,9 +754,26 @@ stack_is_too_deep(void)
 
 
 #if defined(HAVE_GETRUSAGE)
+#if defined(__darwin__)
+#else
+#endif
 #endif							/* HAVE_GETRUSAGE */
 
 /*
  * on_proc_exit handler to log end of session
+ */
+
+
+/*
+ * Start statement timeout timer, if enabled.
+ *
+ * If there's already a timeout running, don't restart the timer.  That
+ * enables compromises between accuracy of timeouts and cost of starting a
+ * timeout.
+ */
+
+
+/*
+ * Disable statement timeout, if active.
  */
 

@@ -484,6 +484,9 @@ case T_CreateStatsStmt:
 case T_AlterCollationStmt:
   _outAlterCollationStmt(str, obj);
   break;
+case T_CallStmt:
+  _outCallStmt(str, obj);
+  break;
 case T_A_Expr:
   _outA_Expr(str, obj);
   break;
@@ -628,14 +631,14 @@ case T_PartitionElem:
 case T_PartitionSpec:
   _outPartitionSpec(str, obj);
   break;
-case T_PartitionBoundSpec:
-  _outPartitionBoundSpec(str, obj);
-  break;
 case T_PartitionRangeDatum:
   _outPartitionRangeDatum(str, obj);
   break;
 case T_PartitionCmd:
   _outPartitionCmd(str, obj);
+  break;
+case T_VacuumRelation:
+  _outVacuumRelation(str, obj);
   break;
 case T_InlineCodeBlock:
   _outInlineCodeBlock(str, obj);

@@ -166,7 +166,7 @@ class Generator
     ['ClosePortalStmt', 'portalname'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
-  LONG_INT_TYPES = ['long']
+  LONG_INT_TYPES = ['long', 'uint64']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
   FLOAT_TYPES = ['Cost', 'double']
 

@@ -484,6 +484,9 @@ case T_CreateStatsStmt:
 case T_AlterCollationStmt:
   _fingerprintAlterCollationStmt(ctx, obj, parent, field_name, depth);
   break;
+case T_CallStmt:
+  _fingerprintCallStmt(ctx, obj, parent, field_name, depth);
+  break;
 case T_A_Expr:
   _fingerprintA_Expr(ctx, obj, parent, field_name, depth);
   break;
@@ -628,14 +631,14 @@ case T_PartitionElem:
 case T_PartitionSpec:
   _fingerprintPartitionSpec(ctx, obj, parent, field_name, depth);
   break;
-case T_PartitionBoundSpec:
-  _fingerprintPartitionBoundSpec(ctx, obj, parent, field_name, depth);
-  break;
 case T_PartitionRangeDatum:
   _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);
   break;
 case T_PartitionCmd:
   _fingerprintPartitionCmd(ctx, obj, parent, field_name, depth);
+  break;
+case T_VacuumRelation:
+  _fingerprintVacuumRelation(ctx, obj, parent, field_name, depth);
   break;
 case T_InlineCodeBlock:
   _fingerprintInlineCodeBlock(ctx, obj, parent, field_name, depth);

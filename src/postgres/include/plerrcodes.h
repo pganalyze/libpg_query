@@ -169,6 +169,10 @@
 },
 
 {
+	"invalid_preceding_or_following_size", ERRCODE_INVALID_PRECEDING_OR_FOLLOWING_SIZE
+},
+
+{
 	"invalid_regular_expression", ERRCODE_INVALID_REGULAR_EXPRESSION
 },
 

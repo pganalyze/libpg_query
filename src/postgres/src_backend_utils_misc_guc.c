@@ -14,7 +14,7 @@
  * See src/backend/utils/misc/README for more information.
  *
  *
- * Copyright (c) 2000-2017, PostgreSQL Global Development Group
+ * Copyright (c) 2000-2018, PostgreSQL Global Development Group
  * Written by Peter Eisentraut <peter_e@gmx.net>.
  *
  * IDENTIFICATION
@@ -50,8 +50,8 @@
 #include "commands/variable.h"
 #include "commands/trigger.h"
 #include "funcapi.h"
+#include "jit/jit.h"
 #include "libpq/auth.h"
-#include "libpq/be-fsstubs.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "miscadmin.h"
@@ -79,6 +79,7 @@
 #include "storage/dsm_impl.h"
 #include "storage/standby.h"
 #include "storage/fd.h"
+#include "storage/large_object.h"
 #include "storage/pg_shmem.h"
 #include "storage/proc.h"
 #include "storage/predicate.h"
@@ -171,6 +172,7 @@ static int	syslog_facility = 0;
 static void assign_syslog_facility(int newval, void *extra);
 static void assign_syslog_ident(const char *newval, void *extra);
 static void assign_session_replication_role(int newval, void *extra);
+static bool check_client_min_messages(int *newval, void **extra, GucSource source);
 static bool check_temp_buffers(int *newval, void **extra, GucSource source);
 static bool check_bonjour(bool *newval, void **extra, GucSource source);
 static bool check_ssl(bool *newval, void **extra, GucSource source);
@@ -199,6 +201,7 @@ static void assign_application_name(const char *newval, void *extra);
 static bool check_cluster_name(char **newval, void **extra, GucSource source);
 static const char *show_unix_socket_permissions(void);
 static const char *show_log_file_mode(void);
+static const char *show_data_directory_mode(void);
 
 /* Private functions in guc-file.l that need to be called from guc.c */
 static ConfigVariable *ProcessConfigFileInternal(GucContext context,
@@ -376,7 +379,6 @@ __thread int			client_min_messages = NOTICE;
 
 
 
-
 /* should be static, but commands/variable.c needs to get at this */
 
 
@@ -429,7 +431,7 @@ typedef struct
 	char		unit[MAX_UNIT_LEN + 1]; /* unit, as a string, like "kB" or
 										 * "min" */
 	int			base_unit;		/* GUC_UNIT_XXX */
-	int			multiplier;		/* If positive, multiply the value with this
+	int64		multiplier;		/* If positive, multiply the value with this
 								 * for unit -> base_unit conversion.  If
 								 * negative, divide (with the absolute value) */
 } unit_conversion;
@@ -440,9 +442,6 @@ typedef struct
 #endif
 #if XLOG_BLCKSZ < 1024 || XLOG_BLCKSZ > (1024*1024)
 #error XLOG_BLCKSZ must be between 1KB and 1MB
-#endif
-#if XLOG_SEG_SIZE < (1024*1024) || XLOG_SEG_SIZE > (1024*1024*1024)
-#error XLOG_SEG_SIZE must be between 1MB and 1GB
 #endif
 
 
@@ -552,9 +551,9 @@ typedef struct
 
 
 
-			/* TRUE if need to do commit/abort work */
+			/* true if need to do commit/abort work */
 
-	/* TRUE to enable GUC_REPORT */
+	/* true to enable GUC_REPORT */
 
 	/* 1 when in main transaction */
 
@@ -656,7 +655,7 @@ static void replace_auto_config_value(ConfigVariable **head_p, ConfigVariable **
 
 /*
  * Look up option NAME.  If it exists, return a pointer to its record,
- * else return NULL.  If create_placeholders is TRUE, we'll create a
+ * else return NULL.  If create_placeholders is true, we'll create a
  * placeholder record for a valid-looking custom variable name.
  */
 
@@ -818,7 +817,7 @@ static void replace_auto_config_value(ConfigVariable **head_p, ConfigVariable **
  * Lookup the value for an enum option with the selected name
  * (case-insensitive).
  * If the enum option is found, sets the retval value and returns
- * true. If it's not found, return FALSE and retval is set to 0.
+ * true. If it's not found, return false and retval is set to 0.
  */
 
 
@@ -1099,7 +1098,7 @@ static void replace_auto_config_value(ConfigVariable **head_p, ConfigVariable **
 /*
  * show_config_by_name_missing_ok - equiv to SHOW X command but implemented as
  * a function.  If X does not exist, suppress the error and just return NULL
- * if missing_ok is TRUE.
+ * if missing_ok is true.
  */
 
 
@@ -1489,7 +1488,7 @@ read_nondefault_variables(void)
  * or NULL for the Delete/Reset cases.  If skipIfNoPermissions is true, it's
  * not an error to have no permissions to set the option.
  *
- * Returns TRUE if OK, FALSE if skipIfNoPermissions is true and user does not
+ * Returns true if OK, false if skipIfNoPermissions is true and user does not
  * have permission to change this option (all other error cases result in an
  * error being thrown).
  */
@@ -1544,6 +1543,8 @@ read_nondefault_variables(void)
 
 #ifdef HAVE_SYSLOG
 #endif
+
+
 
 
 
@@ -1606,6 +1607,8 @@ read_nondefault_variables(void)
 
 #ifdef USE_PREFETCH
 #endif							/* USE_PREFETCH */
+
+
 
 
 

@@ -8,7 +8,7 @@
 #include <assert.h>
 
 #include <catalog/pg_type.h>
-#include <catalog/pg_proc_fn.h>
+#include <catalog/pg_proc.h>
 #include <nodes/parsenodes.h>
 #include <nodes/nodeFuncs.h>
 
@@ -215,11 +215,11 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 
 	if (is_trigger) {
 		/* Add the record for referencing NEW */
-		rec = plpgsql_build_record("new", 0, true);
+		rec = plpgsql_build_record("new", 0, NULL, RECORDOID, true);
 		function->new_varno = rec->dno;
 
 		/* Add the record for referencing OLD */
-		rec = plpgsql_build_record("old", 0, true);
+		rec = plpgsql_build_record("old", 0, NULL, RECORDOID, true);
 		function->old_varno = rec->dno;
 	}
 

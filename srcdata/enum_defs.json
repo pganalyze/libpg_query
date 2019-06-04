@@ -18,7 +18,7 @@
           "comment": null
         }
       ],
-      "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
+      "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2018, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
     },
     "QuerySource": {
       "values": [
@@ -194,11 +194,15 @@
           "comment": ""
         },
         {
-          "name": "CREATE_TABLE_LIKE_DEFAULTS",
+          "name": "CREATE_TABLE_LIKE_COMMENTS",
           "comment": null
         },
         {
           "name": "CREATE_TABLE_LIKE_CONSTRAINTS",
+          "comment": null
+        },
+        {
+          "name": "CREATE_TABLE_LIKE_DEFAULTS",
           "comment": null
         },
         {
@@ -210,11 +214,11 @@
           "comment": null
         },
         {
-          "name": "CREATE_TABLE_LIKE_STORAGE",
+          "name": "CREATE_TABLE_LIKE_STATISTICS",
           "comment": null
         },
         {
-          "name": "CREATE_TABLE_LIKE_COMMENTS",
+          "name": "CREATE_TABLE_LIKE_STORAGE",
           "comment": null
         },
         {
@@ -306,7 +310,7 @@
           "comment": "/* tuplestore, e.g. for AFTER triggers */"
         }
       ],
-      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is TRUE for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be FALSE for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
     },
     "WCOKind": {
       "values": [
@@ -502,6 +506,10 @@
           "comment": null
         },
         {
+          "name": "OBJECT_PROCEDURE",
+          "comment": null
+        },
+        {
           "name": "OBJECT_PUBLICATION",
           "comment": null
         },
@@ -511,6 +519,10 @@
         },
         {
           "name": "OBJECT_ROLE",
+          "comment": null
+        },
+        {
+          "name": "OBJECT_ROUTINE",
           "comment": null
         },
         {
@@ -671,6 +683,10 @@
         },
         {
           "name": "AT_ReAddConstraint",
+          "comment": "/* internal to commands/tablecmds.c */"
+        },
+        {
+          "name": "AT_ReAddDomainConstraint",
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
@@ -891,66 +907,6 @@
         }
       ],
       "comment": "/* ----------------------\n *\t\tGrant|Revoke Statement\n * ----------------------\n */\n"
-    },
-    "GrantObjectType": {
-      "values": [
-        {
-          "comment": ""
-        },
-        {
-          "name": "ACL_OBJECT_COLUMN",
-          "comment": "/* column */"
-        },
-        {
-          "name": "ACL_OBJECT_RELATION",
-          "comment": "/* table, view */"
-        },
-        {
-          "name": "ACL_OBJECT_SEQUENCE",
-          "comment": "/* sequence */"
-        },
-        {
-          "name": "ACL_OBJECT_DATABASE",
-          "comment": "/* database */"
-        },
-        {
-          "name": "ACL_OBJECT_DOMAIN",
-          "comment": "/* domain */"
-        },
-        {
-          "name": "ACL_OBJECT_FDW",
-          "comment": "/* foreign-data wrapper */"
-        },
-        {
-          "name": "ACL_OBJECT_FOREIGN_SERVER",
-          "comment": "/* foreign server */"
-        },
-        {
-          "name": "ACL_OBJECT_FUNCTION",
-          "comment": "/* function */"
-        },
-        {
-          "name": "ACL_OBJECT_LANGUAGE",
-          "comment": "/* procedural language */"
-        },
-        {
-          "name": "ACL_OBJECT_LARGEOBJECT",
-          "comment": "/* largeobject */"
-        },
-        {
-          "name": "ACL_OBJECT_NAMESPACE",
-          "comment": "/* namespace */"
-        },
-        {
-          "name": "ACL_OBJECT_TABLESPACE",
-          "comment": "/* tablespace */"
-        },
-        {
-          "name": "ACL_OBJECT_TYPE",
-          "comment": "/* type */"
-        }
-      ],
-      "comment": null
     },
     "VariableSetKind": {
       "values": [
@@ -1804,6 +1760,10 @@
           "comment": null
         },
         {
+          "name": "T_OnConflictSetState",
+          "comment": null
+        },
+        {
           "name": "T_ResultRelInfo",
           "comment": null
         },
@@ -1998,6 +1958,22 @@
         },
         {
           "name": "T_PlanRowMark",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionPruneInfo",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionedRelPruneInfo",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionPruneStepOp",
+          "comment": null
+        },
+        {
+          "name": "T_PartitionPruneStepCombine",
           "comment": null
         },
         {
@@ -2624,10 +2600,6 @@
           "comment": null
         },
         {
-          "name": "T_PartitionedChildRelInfo",
-          "comment": null
-        },
-        {
           "name": "T_PlaceHolderInfo",
           "comment": null
         },
@@ -2667,6 +2639,10 @@
         },
         {
           "name": "T_SlabContext",
+          "comment": null
+        },
+        {
+          "name": "T_GenerationContext",
           "comment": null
         },
         {
@@ -3186,6 +3162,10 @@
           "comment": null
         },
         {
+          "name": "T_CallStmt",
+          "comment": null
+        },
+        {
           "comment": ""
         },
         {
@@ -3396,6 +3376,10 @@
           "comment": null
         },
         {
+          "name": "T_VacuumRelation",
+          "comment": null
+        },
+        {
           "comment": ""
         },
         {
@@ -3474,6 +3458,10 @@
         {
           "name": "T_ForeignKeyCacheInfo",
           "comment": "/* in utils/rel.h */"
+        },
+        {
+          "name": "T_CallContext",
+          "comment": "/* in nodes/parsenodes.h */"
         }
       ],
       "comment": "/*\n * The first field of every node is NodeTag. Each node created (with makeNode)\n * will have one of the following tags as the value of its first field.\n *\n * Note that inserting or deleting node types changes the numbers of other\n * node types later in the list.  This is no problem during development, since\n * the node numbers are never stored on disk.  But don't do it in a released\n * branch, because that would represent an ABI break for extensions.\n */\n"

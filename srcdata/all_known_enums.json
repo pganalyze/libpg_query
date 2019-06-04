@@ -16,7 +16,6 @@
   "DropBehavior",
   "AlterTableType",
   "GrantTargetType",
-  "GrantObjectType",
   "VariableSetKind",
   "ConstrType",
   "ImportForeignSchemaType",

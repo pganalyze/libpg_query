@@ -10,7 +10,7 @@
  *	  Display type names "nicely".
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2018, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -34,9 +34,6 @@
 
 #define MAX_INT32_LEN 11
 
-static char *format_type_internal(Oid type_oid, int32 typemod,
-					 bool typemod_given, bool allow_invalid,
-					 bool force_qualify);
 static char *printTypmod(const char *typname, int32 typmod, Oid typmodout);
 
 
@@ -69,6 +66,30 @@ static char *printTypmod(const char *typname, int32 typmod, Oid typmodout);
 
 
 /*
+ * format_type_extended
+ *		Generate a possibly-qualified type name.
+ *
+ * The default behavior is to only qualify if the type is not in the search
+ * path, to ignore the given typmod, and to raise an error if a non-existent
+ * type_oid is given.
+ *
+ * The following bits in 'flags' modify the behavior:
+ * - FORMAT_TYPE_TYPEMOD_GIVEN
+ *			include the typmod in the output (typmod could still be -1 though)
+ * - FORMAT_TYPE_ALLOW_INVALID
+ *			if the type OID is invalid or unknown, return ??? or such instead
+ *			of failing
+ * - FORMAT_TYPE_FORCE_QUALIFY
+ *			always schema-qualify type names, regardless of search_path
+ *
+ * Note that TYPEMOD_GIVEN is not interchangeable with "typemod == -1";
+ * see the comments above for format_type().
+ *
+ * Returns a palloc'd string.
+ */
+
+
+/*
  * This version is for use within the backend in error messages, etc.
  * One difference is that it will fail for an invalid type.
  *
@@ -86,18 +107,6 @@ char * format_type_be(Oid type_oid) { return pstrdup("-"); }
 /*
  * This version allows a nondefault typemod to be specified.
  */
-
-
-/*
- * This version allows a nondefault typemod to be specified, and forces
- * qualification of normal type names.
- */
-
-
-/*
- * Common workhorse.
- */
-
 
 
 /*

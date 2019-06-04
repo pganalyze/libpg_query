@@ -23,10 +23,11 @@ MemoryContext pg_query_enter_memory_context(const char* ctx_name)
 	pg_query_init();
 
 	ctx = AllocSetContextCreate(TopMemoryContext,
-								ctx_name,
+								NULL,
 								ALLOCSET_DEFAULT_MINSIZE,
 								ALLOCSET_DEFAULT_INITSIZE,
 								ALLOCSET_DEFAULT_MAXSIZE);
+	MemoryContextSetIdentifier(ctx, ctx_name);
 	MemoryContextSwitchTo(ctx);
 
 	return ctx;

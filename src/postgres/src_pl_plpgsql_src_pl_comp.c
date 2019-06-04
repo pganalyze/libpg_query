@@ -12,9 +12,9 @@
  * - plpgsql_Datums
  * - datums_alloc
  * - plpgsql_build_record
- * - build_row_from_class
  * - plpgsql_build_datatype
  * - plpgsql_parse_tripword
+ * - plpgsql_build_recfield
  * - plpgsql_parse_dblword
  * - plpgsql_parse_word
  * - plpgsql_add_initdatums
@@ -39,7 +39,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2018, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -56,7 +56,6 @@
 #include "access/htup_details.h"
 #include "catalog/namespace.h"
 #include "catalog/pg_proc.h"
-#include "catalog/pg_proc_fn.h"
 #include "catalog/pg_type.h"
 #include "funcapi.h"
 #include "nodes/makefuncs.h"
@@ -68,6 +67,7 @@
 #include "utils/regproc.h"
 #include "utils/rel.h"
 #include "utils/syscache.h"
+#include "utils/typcache.h"
 
 #include "plpgsql.h"
 
@@ -150,7 +150,6 @@ static Node *plpgsql_param_ref(ParseState *pstate, ParamRef *pref);
 static Node *resolve_column_ref(ParseState *pstate, PLpgSQL_expr *expr,
 				   ColumnRef *cref, bool error_if_no_field);
 static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
-static PLpgSQL_row *build_row_from_class(Oid classOid);
 static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
 static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod, Oid collation);
 static void plpgsql_start_datums(void);
@@ -283,13 +282,15 @@ plpgsql_compile_inline(char *proc_source)
 	function->fn_rettype = VOIDOID;
 	function->fn_retset = false;
 	function->fn_retistuple = false;
+	function->fn_retisdomain = false;
+	function->fn_prokind = PROKIND_FUNCTION;
 	/* a bit of hardwired knowledge about type VOID here */
 	function->fn_retbyval = true;
 	function->fn_rettyplen = sizeof(int32);
 
 	/*
 	 * Remember if function is STABLE/IMMUTABLE.  XXX would it be better to
-	 * set this TRUE inside a read-only transaction?  Not clear.
+	 * set this true inside a read-only transaction?  Not clear.
 	 */
 	function->fn_readonly = false;
 
@@ -463,8 +464,8 @@ add_dummy_return(PLpgSQL_function *function)
  * yytxt is the original token text; we need this to check for quoting,
  * so that later checks for unreserved keywords work properly.
  *
- * If recognized as a variable, fill in *wdatum and return TRUE;
- * if not recognized, fill in *word and return FALSE.
+ * If recognized as a variable, fill in *wdatum and return true;
+ * if not recognized, fill in *word and return false.
  * (Note: those two pointers actually point to members of the same union,
  * but for notational reasons we pass them separately.)
  * ----------
@@ -494,7 +495,6 @@ plpgsql_parse_word(char *word1, const char *yytxt,
 			switch (ns->itemtype)
 			{
 				case PLPGSQL_NSTYPE_VAR:
-				case PLPGSQL_NSTYPE_ROW:
 				case PLPGSQL_NSTYPE_REC:
 					wdatum->datum = plpgsql_Datums[ns->itemno];
 					wdatum->ident = word1;
@@ -570,14 +570,11 @@ plpgsql_parse_dblword(char *word1, char *word2,
 						 * datum whether it is or not --- any error will be
 						 * detected later.
 						 */
+						PLpgSQL_rec *rec;
 						PLpgSQL_recfield *new;
 
-						new = palloc(sizeof(PLpgSQL_recfield));
-						new->dtype = PLPGSQL_DTYPE_RECFIELD;
-						new->fieldname = pstrdup(word2);
-						new->recparentno = ns->itemno;
-
-						plpgsql_adddatum((PLpgSQL_datum *) new);
+						rec = (PLpgSQL_rec *) (plpgsql_Datums[ns->itemno]);
+						new = plpgsql_build_recfield(rec, word2);
 
 						wdatum->datum = (PLpgSQL_datum *) new;
 					}
@@ -590,43 +587,6 @@ plpgsql_parse_dblword(char *word1, char *word2,
 					wdatum->quoted = false; /* not used */
 					wdatum->idents = idents;
 					return true;
-
-				case PLPGSQL_NSTYPE_ROW:
-					if (nnames == 1)
-					{
-						/*
-						 * First word is a row name, so second word could be a
-						 * field in this row.  Again, no error now if it
-						 * isn't.
-						 */
-						PLpgSQL_row *row;
-						int			i;
-
-						row = (PLpgSQL_row *) (plpgsql_Datums[ns->itemno]);
-						for (i = 0; i < row->nfields; i++)
-						{
-							if (row->fieldnames[i] &&
-								strcmp(row->fieldnames[i], word2) == 0)
-							{
-								wdatum->datum = plpgsql_Datums[row->varnos[i]];
-								wdatum->ident = NULL;
-								wdatum->quoted = false; /* not used */
-								wdatum->idents = idents;
-								return true;
-							}
-						}
-						/* fall through to return CWORD */
-					}
-					else
-					{
-						/* Block-qualified reference to row variable. */
-						wdatum->datum = plpgsql_Datums[ns->itemno];
-						wdatum->ident = NULL;
-						wdatum->quoted = false; /* not used */
-						wdatum->idents = idents;
-						return true;
-					}
-					break;
 
 				default:
 					break;
@@ -681,46 +641,17 @@ plpgsql_parse_tripword(char *word1, char *word2, char *word3,
 						 * words 1/2 are a record name, so third word could be
 						 * a field in this record.
 						 */
+						PLpgSQL_rec *rec;
 						PLpgSQL_recfield *new;
 
-						new = palloc(sizeof(PLpgSQL_recfield));
-						new->dtype = PLPGSQL_DTYPE_RECFIELD;
-						new->fieldname = pstrdup(word3);
-						new->recparentno = ns->itemno;
-
-						plpgsql_adddatum((PLpgSQL_datum *) new);
+						rec = (PLpgSQL_rec *) (plpgsql_Datums[ns->itemno]);
+						new = plpgsql_build_recfield(rec, word3);
 
 						wdatum->datum = (PLpgSQL_datum *) new;
 						wdatum->ident = NULL;
 						wdatum->quoted = false; /* not used */
 						wdatum->idents = idents;
 						return true;
-					}
-
-				case PLPGSQL_NSTYPE_ROW:
-					{
-						/*
-						 * words 1/2 are a row name, so third word could be a
-						 * field in this row.
-						 */
-						PLpgSQL_row *row;
-						int			i;
-
-						row = (PLpgSQL_row *) (plpgsql_Datums[ns->itemno]);
-						for (i = 0; i < row->nfields; i++)
-						{
-							if (row->fieldnames[i] &&
-								strcmp(row->fieldnames[i], word3) == 0)
-							{
-								wdatum->datum = plpgsql_Datums[row->varnos[i]];
-								wdatum->ident = NULL;
-								wdatum->quoted = false; /* not used */
-								wdatum->idents = idents;
-								return true;
-							}
-						}
-						/* fall through to return CWORD */
-						break;
 					}
 
 				default:
@@ -773,8 +704,8 @@ PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }
  * plpgsql_build_variable - build a datum-array entry of a given
  * datatype
  *
- * The returned struct may be a PLpgSQL_var, PLpgSQL_row, or
- * PLpgSQL_rec depending on the given datatype, and is allocated via
+ * The returned struct may be a PLpgSQL_var or PLpgSQL_rec
+ * depending on the given datatype, and is allocated via
  * palloc.  The struct is automatically added to the current datum
  * array, and optionally to the current namespace.
  */
@@ -796,7 +727,7 @@ plpgsql_build_variable(const char *refname, int lineno, PLpgSQL_type *dtype,
 				var->refname = pstrdup(refname);
 				var->lineno = lineno;
 				var->datatype = dtype;
-				/* other fields might be filled by caller */
+				/* other fields are left as 0, might be changed by caller */
 
 				/* preset to NULL */
 				var->value = 0;
@@ -811,31 +742,14 @@ plpgsql_build_variable(const char *refname, int lineno, PLpgSQL_type *dtype,
 				result = (PLpgSQL_variable *) var;
 				break;
 			}
-		case PLPGSQL_TTYPE_ROW:
-			{
-				/* Composite type -- build a row variable */
-				PLpgSQL_row *row;
-
-				row = build_row_from_class(dtype->typrelid);
-
-				row->dtype = PLPGSQL_DTYPE_ROW;
-				row->refname = pstrdup(refname);
-				row->lineno = lineno;
-
-				plpgsql_adddatum((PLpgSQL_datum *) row);
-				if (add2namespace)
-					plpgsql_ns_additem(PLPGSQL_NSTYPE_ROW,
-									   row->dno,
-									   refname);
-				result = (PLpgSQL_variable *) row;
-				break;
-			}
 		case PLPGSQL_TTYPE_REC:
 			{
-				/* "record" type -- build a record variable */
+				/* Composite type -- build a record variable */
 				PLpgSQL_rec *rec;
 
-				rec = plpgsql_build_record(refname, lineno, add2namespace);
+				rec = plpgsql_build_record(refname, lineno,
+										   dtype, dtype->typoid,
+										   add2namespace);
 				result = (PLpgSQL_variable *) rec;
 				break;
 			}
@@ -859,7 +773,9 @@ plpgsql_build_variable(const char *refname, int lineno, PLpgSQL_type *dtype,
  * Build empty named record variable, and optionally add it to namespace
  */
 PLpgSQL_rec *
-plpgsql_build_record(const char *refname, int lineno, bool add2namespace)
+plpgsql_build_record(const char *refname, int lineno,
+					 PLpgSQL_type *dtype, Oid rectypeid,
+					 bool add2namespace)
 {
 	PLpgSQL_rec *rec;
 
@@ -867,10 +783,11 @@ plpgsql_build_record(const char *refname, int lineno, bool add2namespace)
 	rec->dtype = PLPGSQL_DTYPE_REC;
 	rec->refname = pstrdup(refname);
 	rec->lineno = lineno;
-	rec->tup = NULL;
-	rec->tupdesc = NULL;
-	rec->freetup = false;
-	rec->freetupdesc = false;
+	/* other fields are left as 0, might be changed by caller */
+	rec->datatype = dtype;
+	rec->rectypeid = rectypeid;
+	rec->firstfield = -1;
+	rec->erh = NULL;
 	plpgsql_adddatum((PLpgSQL_datum *) rec);
 	if (add2namespace)
 		plpgsql_ns_additem(PLPGSQL_NSTYPE_REC, rec->dno, rec->refname);
@@ -879,15 +796,50 @@ plpgsql_build_record(const char *refname, int lineno, bool add2namespace)
 }
 
 /*
- * Build a row-variable data structure given the pg_class OID.
+ * Build a row-variable data structure given the component variables.
+ * Include a rowtupdesc, since we will need to materialize the row result.
  */
-static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }
 
 
 /*
- * Build a row-variable data structure given the component variables.
+ * Build a RECFIELD datum for the named field of the specified record variable
+ *
+ * If there's already such a datum, just return it; we don't need duplicates.
  */
+PLpgSQL_recfield *
+plpgsql_build_recfield(PLpgSQL_rec *rec, const char *fldname)
+{
+	PLpgSQL_recfield *recfield;
+	int			i;
 
+	/* search for an existing datum referencing this field */
+	i = rec->firstfield;
+	while (i >= 0)
+	{
+		PLpgSQL_recfield *fld = (PLpgSQL_recfield *) plpgsql_Datums[i];
+
+		Assert(fld->dtype == PLPGSQL_DTYPE_RECFIELD &&
+			   fld->recparentno == rec->dno);
+		if (strcmp(fld->fieldname, fldname) == 0)
+			return fld;
+		i = fld->nextfield;
+	}
+
+	/* nope, so make a new one */
+	recfield = palloc0(sizeof(PLpgSQL_recfield));
+	recfield->dtype = PLPGSQL_DTYPE_RECFIELD;
+	recfield->fieldname = pstrdup(fldname);
+	recfield->recparentno = rec->dno;
+	recfield->rectupledescid = INVALID_TUPLEDESC_IDENTIFIER;
+
+	plpgsql_adddatum((PLpgSQL_datum *) recfield);
+
+	/* now we can link it into the parent's chain */
+	recfield->nextfield = rec->firstfield;
+	rec->firstfield = recfield->dno;
+
+	return recfield;
+}
 
 /*
  * plpgsql_build_datatype
@@ -1030,15 +982,12 @@ plpgsql_adddatum(PLpgSQL_datum *new)
 
 /* ----------
  * plpgsql_finish_datums	Copy completed datum info into function struct.
- *
- * This is also responsible for building resettable_datums, a bitmapset
- * of the dnos of all ROW, REC, and RECFIELD datums in the function.
  * ----------
  */
 static void
 plpgsql_finish_datums(PLpgSQL_function *function)
 {
-	Bitmapset  *resettable_datums = NULL;
+	Size		copiable_size = 0;
 	int			i;
 
 	function->ndatums = plpgsql_nDatums;
@@ -1046,32 +995,35 @@ plpgsql_finish_datums(PLpgSQL_function *function)
 	for (i = 0; i < plpgsql_nDatums; i++)
 	{
 		function->datums[i] = plpgsql_Datums[i];
+
+		/* This must agree with copy_plpgsql_datums on what is copiable */
 		switch (function->datums[i]->dtype)
 		{
-			case PLPGSQL_DTYPE_ROW:
-			case PLPGSQL_DTYPE_REC:
-			case PLPGSQL_DTYPE_RECFIELD:
-				resettable_datums = bms_add_member(resettable_datums, i);
+			case PLPGSQL_DTYPE_VAR:
+			case PLPGSQL_DTYPE_PROMISE:
+				copiable_size += MAXALIGN(sizeof(PLpgSQL_var));
 				break;
-
+			case PLPGSQL_DTYPE_REC:
+				copiable_size += MAXALIGN(sizeof(PLpgSQL_rec));
+				break;
 			default:
 				break;
 		}
 	}
-	function->resettable_datums = resettable_datums;
+	function->copiable_size = copiable_size;
 }
 
 
 /* ----------
  * plpgsql_add_initdatums		Make an array of the datum numbers of
- *					all the simple VAR datums created since the last call
+ *					all the initializable datums created since the last call
  *					to this function.
  *
  * If varnos is NULL, we just forget any datum entries created since the
  * last call.
  *
- * This is used around a DECLARE section to create a list of the VARs
- * that have to be initialized at block entry.  Note that VARs can also
+ * This is used around a DECLARE section to create a list of the datums
+ * that have to be initialized at block entry.  Note that datums can also
  * be created elsewhere than DECLARE, eg by a FOR-loop, but it is then
  * the responsibility of special-purpose code to initialize them.
  * ----------
@@ -1082,11 +1034,16 @@ plpgsql_add_initdatums(int **varnos)
 	int			i;
 	int			n = 0;
 
+	/*
+	 * The set of dtypes recognized here must match what exec_stmt_block()
+	 * cares about (re)initializing at block entry.
+	 */
 	for (i = datums_last; i < plpgsql_nDatums; i++)
 	{
 		switch (plpgsql_Datums[i]->dtype)
 		{
 			case PLPGSQL_DTYPE_VAR:
+			case PLPGSQL_DTYPE_REC:
 				n++;
 				break;
 
@@ -1107,6 +1064,7 @@ plpgsql_add_initdatums(int **varnos)
 				switch (plpgsql_Datums[i]->dtype)
 				{
 					case PLPGSQL_DTYPE_VAR:
+					case PLPGSQL_DTYPE_REC:
 						(*varnos)[n++] = plpgsql_Datums[i]->dno;
 
 					default:

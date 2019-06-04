@@ -2,7 +2,7 @@
  * reorderbuffer.h
  *	  PostgreSQL logical replay/reorder buffer management.
  *
- * Copyright (c) 2012-2017, PostgreSQL Global Development Group
+ * Copyright (c) 2012-2018, PostgreSQL Global Development Group
  *
  * src/include/replication/reorderbuffer.h
  */
@@ -59,7 +59,8 @@ enum ReorderBufferChangeType
 	REORDER_BUFFER_CHANGE_INTERNAL_COMMAND_ID,
 	REORDER_BUFFER_CHANGE_INTERNAL_TUPLECID,
 	REORDER_BUFFER_CHANGE_INTERNAL_SPEC_INSERT,
-	REORDER_BUFFER_CHANGE_INTERNAL_SPEC_CONFIRM
+	REORDER_BUFFER_CHANGE_INTERNAL_SPEC_CONFIRM,
+	REORDER_BUFFER_CHANGE_TRUNCATE
 };
 
 /*
@@ -98,6 +99,18 @@ typedef struct ReorderBufferChange
 			/* valid for INSERT || UPDATE */
 			ReorderBufferTupleBuf *newtuple;
 		}			tp;
+
+		/*
+		 * Truncate data for REORDER_BUFFER_CHANGE_TRUNCATE representing one
+		 * set of relations to be truncated.
+		 */
+		struct
+		{
+			Size		nrelids;
+			bool		cascade;
+			bool		restart_seqs;
+			Oid		   *relids;
+		}			truncate;
 
 		/* Message with arbitrary data. */
 		struct
@@ -201,7 +214,7 @@ typedef struct ReorderBufferTXN
 	 */
 	Snapshot	base_snapshot;
 	XLogRecPtr	base_snapshot_lsn;
-	dlist_node	base_snapshot_node;	/* link in txns_by_base_snapshot_lsn */
+	dlist_node	base_snapshot_node; /* link in txns_by_base_snapshot_lsn */
 
 	/*
 	 * How many ReorderBufferChange's do we have in this txn.
@@ -285,6 +298,14 @@ typedef void (*ReorderBufferApplyChangeCB) (
 											Relation relation,
 											ReorderBufferChange *change);
 
+/* truncate callback signature */
+typedef void (*ReorderBufferApplyTruncateCB) (
+											  ReorderBuffer *rb,
+											  ReorderBufferTXN *txn,
+											  int nrelations,
+											  Relation relations[],
+											  ReorderBufferChange *change);
+
 /* begin callback signature */
 typedef void (*ReorderBufferBeginCB) (
 									  ReorderBuffer *rb,
@@ -339,6 +360,7 @@ struct ReorderBuffer
 	 */
 	ReorderBufferBeginCB begin;
 	ReorderBufferApplyChangeCB apply_change;
+	ReorderBufferApplyTruncateCB apply_truncate;
 	ReorderBufferCommitCB commit;
 	ReorderBufferMessageCB message;
 
@@ -346,6 +368,11 @@ struct ReorderBuffer
 	 * Pointer that will be passed untouched to the callbacks.
 	 */
 	void	   *private_data;
+
+	/*
+	 * Saved output plugin option
+	 */
+	bool		output_rewrites;
 
 	/*
 	 * Private memory context.
@@ -357,20 +384,7 @@ struct ReorderBuffer
 	 */
 	MemoryContext change_context;
 	MemoryContext txn_context;
-
-	/*
-	 * Data structure slab cache.
-	 *
-	 * We allocate/deallocate some structures very frequently, to avoid bigger
-	 * overhead we cache some unused ones here.
-	 *
-	 * The maximum number of cached entries is controlled by const variables
-	 * on top of reorderbuffer.c
-	 */
-
-	/* cached ReorderBufferTupleBufs */
-	slist_head	cached_tuplebufs;
-	Size		nr_cached_tuplebufs;
+	MemoryContext tup_context;
 
 	XLogRecPtr	current_restart_decoding_lsn;
 
@@ -387,6 +401,9 @@ ReorderBufferTupleBuf *ReorderBufferGetTupleBuf(ReorderBuffer *, Size tuple_len)
 void		ReorderBufferReturnTupleBuf(ReorderBuffer *, ReorderBufferTupleBuf *tuple);
 ReorderBufferChange *ReorderBufferGetChange(ReorderBuffer *);
 void		ReorderBufferReturnChange(ReorderBuffer *, ReorderBufferChange *);
+
+Oid * ReorderBufferGetRelids(ReorderBuffer *, int nrelids);
+void ReorderBufferReturnRelids(ReorderBuffer *, Oid *relids);
 
 void		ReorderBufferQueueChange(ReorderBuffer *, TransactionId, XLogRecPtr lsn, ReorderBufferChange *);
 void ReorderBufferQueueMessage(ReorderBuffer *, TransactionId, Snapshot snapshot, XLogRecPtr lsn,
