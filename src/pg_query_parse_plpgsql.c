@@ -77,6 +77,43 @@ static void plpgsql_compile_error_callback(void *arg)
 				   plpgsql_error_funcname, plpgsql_latest_lineno());
 }
 
+static void plpgsql_start_datums(void)
+{
+	datums_alloc = 128;
+	plpgsql_nDatums = 0;
+	/* This is short-lived, so needn't allocate in function's cxt */
+	plpgsql_Datums = MemoryContextAlloc(plpgsql_compile_tmp_cxt,
+										sizeof(PLpgSQL_datum *) * datums_alloc);
+	/* datums_last tracks what's been seen by plpgsql_add_initdatums() */
+	datums_last = 0;
+}
+
+static void plpgsql_finish_datums(PLpgSQL_function *function)
+{
+	Bitmapset  *resettable_datums = NULL;
+	int			i;
+
+	function->ndatums = plpgsql_nDatums;
+	function->datums = palloc(sizeof(PLpgSQL_datum *) * plpgsql_nDatums);
+	for (i = 0; i < plpgsql_nDatums; i++)
+	{
+		function->datums[i] = plpgsql_Datums[i];
+		switch (function->datums[i]->dtype)
+		{
+			case PLPGSQL_DTYPE_ROW:
+			case PLPGSQL_DTYPE_REC:
+			case PLPGSQL_DTYPE_RECFIELD:
+				resettable_datums = bms_add_member(resettable_datums, i);
+				break;
+
+			default:
+				break;
+		}
+	}
+	function->resettable_datums = resettable_datums;
+}
+
+
 static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 {
 	char *func_name;
@@ -183,11 +220,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	plpgsql_ns_init();
 	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
 	plpgsql_DumpExecTree = false;
-
-	datums_alloc = 128;
-	plpgsql_nDatums = 0;
-	plpgsql_Datums = palloc(sizeof(PLpgSQL_datum *) * datums_alloc);
-	datums_last = 0;
+	plpgsql_start_datums();
 
 	/* Set up as though in a function returning VOID */
 	function->fn_rettype = VOIDOID;
@@ -214,11 +247,11 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	function->found_varno = var->dno;
 
 	if (is_trigger) {
-		/* Add the record for referencing NEW */
+		/* Add the record for referencing NEW ROW */
 		rec = plpgsql_build_record("new", 0, true);
 		function->new_varno = rec->dno;
 
-		/* Add the record for referencing OLD */
+		/* Add the record for referencing OLD ROW */
 		rec = plpgsql_build_record("old", 0, true);
 		function->old_varno = rec->dno;
 	}
@@ -244,10 +277,8 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	 * Complete the function's info
 	 */
 	function->fn_nargs = 0;
-	function->ndatums = plpgsql_nDatums;
-	function->datums = palloc(sizeof(PLpgSQL_datum *) * plpgsql_nDatums);
-	for (i = 0; i < plpgsql_nDatums; i++)
-		function->datums[i] = plpgsql_Datums[i];
+
+	plpgsql_finish_datums(function);
 
 	/*
 	 * Pop the error context stack
