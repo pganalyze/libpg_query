@@ -635,6 +635,7 @@ dump_record(StringInfo str, PLpgSQL_rec *node) {
 	WRITE_NODE_TYPE("PLpgSQL_rec");
 
 	WRITE_STRING_FIELD(refname);
+	WRITE_INT_FIELD(dno);
 	WRITE_INT_FIELD(lineno);
 }
 
