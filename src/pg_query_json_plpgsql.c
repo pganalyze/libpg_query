@@ -538,6 +538,8 @@ dump_function(StringInfo str, PLpgSQL_function *node)
 	PLpgSQL_datum *d;
 
 	WRITE_NODE_TYPE("PLpgSQL_function");
+	WRITE_INT_FIELD(new_varno);
+	WRITE_INT_FIELD(old_varno);
 
 	appendStringInfoString(str, "\"datums\": ");
 	appendStringInfoChar(str, '[');
