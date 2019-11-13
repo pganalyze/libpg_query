@@ -1,6 +1,9 @@
 #ifndef PG_QUERY_H
 #define PG_QUERY_H
 
+#include "c.h"
+#include "lib/stringinfo.h"
+
 typedef struct {
 	char* message; // exception message
 	char* funcname; // source function of exception (e.g. SearchSysCache)
@@ -48,9 +51,9 @@ void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 
 // Postgres version information
-#define PG_VERSION "10.5"
-#define PG_MAJORVERSION "10"
-#define PG_VERSION_NUM 100005
+
+
+
 
 // Deprecated APIs below
 

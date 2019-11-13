@@ -1,0 +1,70 @@
+diff --git a/src/backend/Makefile b/src/backend/Makefile
+--- a/src/backend/Makefile
++++ b/src/backend/Makefile
+@@ -37,8 +37,21 @@
+ endif
+ endif
+ 
++LOCALOBJS += mock.o
++
+ OBJS = $(SUBDIROBJS) $(LOCALOBJS) $(top_builddir)/src/port/libpgport_srv.a \
+        $(top_builddir)/src/common/libpgcommon_srv.a
++PGLIBOBJS := $(call expand_subsys,$(OBJS))
++PGLIBOBJS += ../pl/plpgsql/src/*.o ../../contrib/pgcrypto/sha1.o
++
++TO_EXCLUDE=commands/% replication/% utils/fmgrtab.o utils/fmgr/fmgr.o utils/adt/rangetypes_typanalyze.o \
++					 access/heap/vacuumlazy.o ./utils/adt/array_typanalyze.o utils/cache/% utils/misc/rls.o \
++					 utils/adt/acl.o utils/misc/superuser.o catalog/aclchk.o catalog/heap.o
++
++PGLIBOBJS := $(filter-out $(TO_EXCLUDE), $(PGLIBOBJS))
++# Readd specific things excluded before
++PGLIBOBJS += commands/define.o
++
+ 
+ # We put libpgport and libpgcommon into OBJS, so remove it from LIBS; also add
+ # libldap and ICU
+@@ -59,9 +72,21 @@
+ ifneq ($(PORTNAME), win32)
+ ifneq ($(PORTNAME), aix)
+ 
++../pl/plpgsql/src/%.o:
++	cd ../pl/plpgsql/; make
++
+ postgres: $(OBJS)
+ 	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
+ 
++pglib.so: $(OBJS)
++	$(CC) $(CFLAGS) $(CPPFLAGS) -Wl,--gc-sections -shared $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
++
++pglib.mri: $(PGLIBOBJS)
++	bash ./gen_mri.sh $(call expand_subsys,$^) > $@
++
++pglib.a: pglib.mri
++	$(AR) -M  < pglib.mri
++
+ endif
+ endif
+ endif
+@@ -71,6 +96,7 @@
+ postgres: $(OBJS)
+ 	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) -Wl,--stack,$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@
+ 
++
+ # libpostgres.a is actually built in the preceding rule, but we need this to
+ # ensure it's newer than postgres; see notes in src/backend/parser/Makefile
+ libpostgres.a: postgres
+diff --git a/src/pl/plpgsql/src/Makefile b/src/pl/plpgsql/src/Makefile
+--- a/src/pl/plpgsql/src/Makefile
++++ b/src/pl/plpgsql/src/Makefile
+@@ -19,8 +19,8 @@
+ SHLIB_LINK = $(filter -lintl, $(LIBS))
+ rpath =
+ 
+-OBJS = pl_gram.o pl_handler.o pl_comp.o pl_exec.o \
+-	pl_funcs.o pl_scanner.o $(WIN32RES)
++OBJS = pl_gram.o pl_handler.o pl_comp.o  \
++	pl_funcs.o pl_scanner.o plmock.o $(WIN32RES)
+ 
+ DATA = plpgsql.control plpgsql--1.0.sql plpgsql--unpackaged--1.0.sql
+ 
+

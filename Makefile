@@ -5,64 +5,86 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 10.5
+PG_VERSION = 12.0
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c)
+SRC_FILES := $(wildcard src/*.c)
 OBJ_FILES := $(SRC_FILES:.c=.o)
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
 
-CFLAGS  = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+CFLAGS  = -I. -I $(PGDIR)/src/pl/plpgsql/src/ -I $(PGDIR)/contrib/pgcrypto -I$(PGDIR)/src/include  -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC -lm -ldl -lrt -pthread -flto -fvisibility=hidden -fdata-sections -ffunction-sections
 LIBPATH = -L.
+LDFLAGS = -Wl,--gc-sections,--as-needed
 
-PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
-PG_CFLAGS = -fPIC
+PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib --without-icu
+PG_CFLAGS = -fPIC -flto -fvisibility=hidden -fdata-sections -ffunction-sections -Os -pthread
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O0 -g
 	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
 else
-	CFLAGS += -O3 -g
-	PG_CFLAGS += -O3
+	CFLAGS += -g -Os
+	PG_CFLAGS += -Os
 endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2)
 
-AR = ar rs
+AR = ar
 RM = rm -f
 ECHO = echo
 
-CC ?= cc
 
 all: examples test build
 
+
 build: $(ARLIB)
 
+
+build_pg: $(PGDIR)
+	cd $(PGDIR); make -C src/backend/ generated-headers
+	cd $(PGDIR)/src/common/; make
+	cd $(PGDIR)/src/backend/; make
+	cd $(PGDIR)/contrib/pgcrypto/; make
+
+
+
 clean:
-	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES) $(TESTS)
+	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(EXAMPLES) $(TESTS)
 	-@ $(RM) -rf {test,examples}/*.dSYM
-	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
+	#-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
 
 .PHONY: all clean build extract_source examples test
 
-$(PGDIR):
+$(PGDIRBZ2):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
+
+$(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
-	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
-	cd $(PGDIR); make -C src/port pg_config_paths.h
-	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
+	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_visibility_marks.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_makefiles.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/04_mock.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_gen_mriscript.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_pl_gram.patch
+
+
+
+$(PGDIR)/src/backend/pglib.a:
+	cd $(PGDIR)/src/backend; make pglib.a
+
+
+libpg_query.so: $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -Wl,--gc-sections -shared $< $(LDFLAGS) -o $@
+
+prepare_pg: $(PGDIR)
 
 extract_source: $(PGDIR)
-	-@ $(RM) -rf ./src/postgres/
-	mkdir ./src/postgres
-	mkdir ./src/postgres/include
-	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
-	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
-	touch ./src/postgres/guc-file.c
+	#ruby ./scripts/extract_headers.rb $(PGDIR)
+	#ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
 	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
 	echo "#undef LOCALE_T_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
@@ -72,16 +94,19 @@ extract_source: $(PGDIR)
 	# Support gcc earlier than 4.6.0 without reconfiguring
 	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 
 .c.o:
 	@$(ECHO) compiling $(<)
-	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $< $(LDFLAGS)
 
-$(ARLIB): $(OBJ_FILES) Makefile
-	@$(AR) $@ $(OBJ_FILES)
+$(ARLIB): build_pg $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
+	rm $(root_dir)/tmp/objects/ -rf
+	mkdir -p $(root_dir)/tmp/objects/
+	cd $(root_dir)/tmp/objects/; $(AR) x $(PGDIR)/src/backend/pglib.a
+	@$(AR) rs $@ $(OBJ_FILES) $(root_dir)/tmp/objects/*.o
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
@@ -92,19 +117,19 @@ examples: $(EXAMPLES)
 	examples/simple_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g examples/simple.c $(ARLIB) $(LDFLAGS)
 
 examples/normalize: examples/normalize.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/normalize.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g examples/normalize.c $(ARLIB) $(LDFLAGS)
 
 examples/simple_error: examples/simple_error.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple_error.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g examples/simple_error.c $(ARLIB) $(LDFLAGS)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/normalize_error.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g examples/normalize_error.c $(ARLIB) $(LDFLAGS)
 
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple_plpgsql.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(LDFLAGS)
 
 TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql
 test: $(TESTS)
@@ -118,19 +143,19 @@ test: $(TESTS)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 
 test/complex: test/complex.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/complex.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -Isrc -o $@ -g test/complex.c $(ARLIB) $(LDFLAGS)
 
 test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -pthread -g test/concurrency.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -pthread -g test/concurrency.c $(ARLIB) $(LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB) $(LDFLAGS)
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/normalize.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -Isrc -o $@ -g test/normalize.c $(ARLIB) $(LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -g test/parse.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -g test/parse.c $(ARLIB) $(LDFLAGS)
 
 test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
-	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
+	$(CC) $(CFLAGS) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB) $(LDFLAGS)

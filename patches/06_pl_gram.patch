@@ -1,0 +1,95 @@
+diff --git a/src/pl/plpgsql/src/pg_gram.y b/src/pl/plpgsql/src/pl_gram.y
+--- a/src/pl/plpgsql/src/pl_gram.y
++++ b/src/pl/plpgsql/src/pl_gram.y
+@@ -3221,83 +3221,27 @@
+ {
+ 	PLpgSQL_stmt_return *new;
+ 
++  Assert(plpgsql_curr_compile->fn_rettype == VOIDOID);
++
+ 	new = palloc0(sizeof(PLpgSQL_stmt_return));
+ 	new->cmd_type = PLPGSQL_STMT_RETURN;
+ 	new->lineno   = plpgsql_location_to_lineno(location);
+-	new->stmtid	  = ++plpgsql_curr_compile->nstatements;
+ 	new->expr	  = NULL;
+ 	new->retvarno = -1;
+ 
+-	if (plpgsql_curr_compile->fn_retset)
+-	{
+-		if (yylex() != ';')
+-			ereport(ERROR,
+-					(errcode(ERRCODE_DATATYPE_MISMATCH),
+-					 errmsg("RETURN cannot have a parameter in function returning set"),
+-					 errhint("Use RETURN NEXT or RETURN QUERY."),
+-					 parser_errposition(yylloc)));
+-	}
+-	else if (plpgsql_curr_compile->fn_rettype == VOIDOID)
+-	{
+-		if (yylex() != ';')
+-		{
+-			if (plpgsql_curr_compile->fn_prokind == PROKIND_PROCEDURE)
+-				ereport(ERROR,
+-						(errcode(ERRCODE_SYNTAX_ERROR),
+-						 errmsg("RETURN cannot have a parameter in a procedure"),
+-						 parser_errposition(yylloc)));
+-			else
+-				ereport(ERROR,
+-						(errcode(ERRCODE_DATATYPE_MISMATCH),
+-						 errmsg("RETURN cannot have a parameter in function returning void"),
+-						 parser_errposition(yylloc)));
+-		}
+-	}
+-	else if (plpgsql_curr_compile->out_param_varno >= 0)
+-	{
+-		if (yylex() != ';')
+-			ereport(ERROR,
+-					(errcode(ERRCODE_DATATYPE_MISMATCH),
+-					 errmsg("RETURN cannot have a parameter in function with OUT parameters"),
+-					 parser_errposition(yylloc)));
+-		new->retvarno = plpgsql_curr_compile->out_param_varno;
+-	}
+-	else
++  int tok = yylex();
++
++  if (tok != ';')
+ 	{
+-		/*
+-		 * We want to special-case simple variable references for efficiency.
+-		 * So peek ahead to see if that's what we have.
+-		 */
+-		int		tok = yylex();
+-
+-		if (tok == T_DATUM && plpgsql_peek() == ';' &&
+-			(yylval.wdatum.datum->dtype == PLPGSQL_DTYPE_VAR ||
+-			 yylval.wdatum.datum->dtype == PLPGSQL_DTYPE_PROMISE ||
+-			 yylval.wdatum.datum->dtype == PLPGSQL_DTYPE_ROW ||
+-			 yylval.wdatum.datum->dtype == PLPGSQL_DTYPE_REC))
+-		{
+-			new->retvarno = yylval.wdatum.datum->dno;
+-			/* eat the semicolon token that we only peeked at above */
+-			tok = yylex();
+-			Assert(tok == ';');
+-		}
+-		else
+-		{
+-			/*
+-			 * Not (just) a variable name, so treat as expression.
+-			 *
+-			 * Note that a well-formed expression is _required_ here;
+-			 * anything else is a compile-time error.
+-			 */
+-			plpgsql_push_back_token(tok);
+-			new->expr = read_sql_expression(';', ";");
+-		}
++		plpgsql_push_back_token(tok);
++		new->expr = read_sql_expression(';', ";");
+ 	}
+ 
+ 	return (PLpgSQL_stmt *) new;
+ }
+ 
+ 
++
+ static PLpgSQL_stmt *
+ make_return_next_stmt(int location)
+ {

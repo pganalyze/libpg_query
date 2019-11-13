@@ -96,8 +96,8 @@ fill_in_constant_lengths(pgssConstLocations *jstate, const char *query)
 	/* initialize the flex scanner --- should match raw_parser() */
 	yyscanner = scanner_init(query,
 							 &yyextra,
-							 ScanKeywords,
-							 NumScanKeywords);
+							 &ScanKeywords,
+							 ScanKeywordTokens);
 
 	/* Search for each constant, in sequence */
 	for (i = 0; i < jstate->clocations_count; i++)

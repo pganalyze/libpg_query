@@ -8,7 +8,8 @@
 #include <assert.h>
 
 #include <catalog/pg_type.h>
-#include <catalog/pg_proc_fn.h>
+#include "catalog/objectaddress.h"
+#include "catalog/pg_proc.h"
 #include <nodes/parsenodes.h>
 #include <nodes/nodeFuncs.h>
 
@@ -20,8 +21,8 @@ typedef struct {
 static PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt* stmt);
 
 static int	datums_alloc;
-extern __thread int			plpgsql_nDatums;
-extern __thread PLpgSQL_datum **plpgsql_Datums;
+extern int			plpgsql_nDatums;
+extern PLpgSQL_datum **plpgsql_Datums;
 static int	datums_last = 0;
 
 static void add_dummy_return(PLpgSQL_function *function)
@@ -141,7 +142,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	/*
 	 * Setup error traceback support for ereport()
 	 */
-	plerrcontext.callback = plpgsql_compile_error_callback;
+	plerrcontext.callback = NULL;
 	plerrcontext.arg = proc_source;
 	plerrcontext.previous = error_context_stack;
 	error_context_stack = &plerrcontext;
@@ -209,17 +210,17 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	var = plpgsql_build_variable("found", 0,
 								 plpgsql_build_datatype(BOOLOID,
 														-1,
-														InvalidOid),
+														InvalidOid, NULL),
 								 true);
 	function->found_varno = var->dno;
 
 	if (is_trigger) {
 		/* Add the record for referencing NEW */
-		rec = plpgsql_build_record("new", 0, true);
+		rec = plpgsql_build_record("new", 0, NULL, RECORDOID, true);
 		function->new_varno = rec->dno;
 
 		/* Add the record for referencing OLD */
-		rec = plpgsql_build_record("old", 0, true);
+		rec = plpgsql_build_record("old", 0, NULL, RECORDOID, true);
 		function->old_varno = rec->dno;
 	}
 

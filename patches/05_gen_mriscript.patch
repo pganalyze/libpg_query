@@ -1,0 +1,15 @@
+diff --git --new-file a/src/backend/gen_mri.sh b/src/backend/gen_mri.sh
+--- a/src/backend/gen_mri.sh
++++ ./src/backend/gen_mri.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++echo create pglib.a
++for obj in $@; do
++  if [ ${obj: -2} == ".o" ]; then
++    echo ADDMOD $obj
++  else
++    echo ADDLIB $obj
++  fi;
++done;
++echo "save"
++echo "end"

@@ -1,0 +1,43 @@
+diff --git --new-file a/src/backend/mock.c b/src/backend/mock.c
+--- a/src/backend/mock.c
++++ ./src/backend/mock.c
+@@ -0,0 +1,16 @@
++#include <stdbool.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include "postgres.h"
++#include "postgres_ext.h"
++#include "libpq/libpq.h"
++
++bool function_parse_error_transpose(const char *prosrc) { return false; }
++Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
++char * format_type_be(Oid type_oid) { return pstrdup("-"); }
++void send_message_to_frontend(ErrorData *edata) {}
++void send_message_to_server_log(ErrorData *edata) {}
++void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); exit(1); }
++// PQcommMethods *PqCommMethods = NULL;
++void ProcessInterrupts(void) {}
++
+diff --git --new-file a/src/pl/plpgsql/src/plmock.c b/src/pl/plpgsql/src/plmock.c
+--- a/src/pl/plpgsql/src/plmock.c
++++ ./src/pl/plpgsql/src/plmock.c
+@@ -0,0 +1,19 @@
++#include <stdbool.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include "postgres.h"
++#include "postgres_ext.h"
++#include "libpq/libpq.h"
++#include "plpgsql.h"
++#define RECORDOID 2249
++
++PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
++PLpgSQL_type * build_datatype(HeapTuple typeTup, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
++
++PLpgSQL_type * parse_datatype(const char *string, int location) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup(string); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
++PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
++PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
++PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
++PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }
++bool type_is_rowtype(Oid typid) { return (typid == RECORDOID); }
++void free_expr(PLpgSQL_expr *expr) {}

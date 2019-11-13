@@ -1,0 +1,313 @@
+diff --git a/src/backend/catalog/namespace.c b/src/backend/catalog/namespace.c
+--- b/src/backend/catalog/namespace.c
++++ b/src/backend/catalog/namespace.c
+@@ -3560,6 +3560,7 @@
+  * Note that this will only find collations that work with the current
+  * database's encoding.
+  */
++__attribute__((weak))
+ Oid
+ get_collation_oid(List *name, bool missing_ok)
+ {
+diff --git a/src/backend/catalog/pg_proc.c b/src/backend/catalog/pg_proc.c
+--- b/src/backend/catalog/pg_proc.c
++++ b/src/backend/catalog/pg_proc.c
+@@ -985,6 +985,7 @@
+  *
+  * Returns true if a syntax error was processed, false if not.
+  */
++__attribute__((weak))
+ bool
+ function_parse_error_transpose(const char *prosrc)
+ {
+diff --git a/src/backend/nodes/bitmapset.c b/src/backend/nodes/bitmapset.c
+--- b/src/backend/nodes/bitmapset.c
++++ b/src/backend/nodes/bitmapset.c
+@@ -204,6 +204,7 @@
+  *
+  * Same as pfree except for allowing NULL input
+  */
++__attribute__((visibility("default")))
+ void
+ bms_free(Bitmapset *a)
+ {
+@@ -992,6 +993,7 @@
+  * CAUTION: this destroys the content of "inputset".  If the set must
+  * not be modified, use bms_next_member instead.
+  */
++__attribute__((visibility("default")))
+ int
+ bms_first_member(Bitmapset *a)
+ {
+diff --git a/src/backend/nodes/nodeFuncs.c b/src/backend/nodes/nodeFuncs.c
+--- b/src/backend/nodes/nodeFuncs.c
++++ b/src/backend/nodes/nodeFuncs.c
+@@ -3293,6 +3293,7 @@
+  * this is used mainly during analysis of CTEs, and only DML statements can
+  * appear in CTEs.
+  */
++__attribute__((visibility("default")))
+ bool
+ raw_expression_tree_walker(Node *node,
+ 						   bool (*walker) (),
+diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
+--- b/src/backend/parser/parser.c
++++ b/src/backend/parser/parser.c
+@@ -32,6 +32,7 @@
+  * Returns a list of raw (un-analyzed) parse trees.  The immediate elements
+  * of the list are always RawStmt nodes.
+  */
++__attribute__((visibility("default")))
+ List *
+ raw_parser(const char *str)
+ {
+diff --git a/src/backend/storage/ipc/ipc.c b/src/backend/storage/ipc/ipc.c
+--- b/src/backend/storage/ipc/ipc.c
++++ b/src/backend/storage/ipc/ipc.c
+@@ -100,6 +100,7 @@
+  *		an atexit callback that will make sure cleanup happens.
+  * ----------------------------------------------------------------
+  */
++__attribute__((weak))
+ void
+ proc_exit(int code)
+ {
+diff --git a/src/backend/tcop/postgres.c b/src/backend/tcop/postgres.c
+--- b/src/backend/tcop/postgres.c
++++ b/src/backend/tcop/postgres.c
+@@ -2948,6 +2948,7 @@
+  * then clear the flag and accept the interrupt.  Called only when
+  * InterruptPending is true.
+  */
++__attribute__((weak))
+ void
+ ProcessInterrupts(void)
+ {
+diff --git a/src/backend/utils/adt/format_type.c b/src/backend/utils/adt/format_type.c
+--- b/src/backend/utils/adt/format_type.c
++++ b/src/backend/utils/adt/format_type.c
+@@ -322,6 +322,7 @@
+  *
+  * The result is always a palloc'd string.
+  */
++__attribute__((weak))
+ char *
+ format_type_be(Oid type_oid)
+ {
+diff --git a/src/backend/utils/error/elog.c b/src/backend/utils/error/elog.c
+--- b/src/backend/utils/error/elog.c
++++ b/src/backend/utils/error/elog.c
+@@ -1480,6 +1480,7 @@
+  * current memory context, so callers should always switch away from
+  * ErrorContext first; otherwise it will be lost when FlushErrorState is done.
+  */
++__attribute__((visibility("default")))
+ ErrorData *
+ CopyErrorData(void)
+ {
+@@ -1570,6 +1571,7 @@
+  * do stuff that is likely to provoke another error.  You are not "out" of
+  * the error subsystem until you have done this.
+  */
++__attribute__((visibility("default")))
+ void
+ FlushErrorState(void)
+ {
+diff --git a/src/backend/utils/mb/mbutils.c b/src/backend/utils/mb/mbutils.c
+--- b/src/backend/utils/mb/mbutils.c
++++ b/src/backend/utils/mb/mbutils.c
+@@ -894,6 +894,7 @@
+ 	return l;
+ }
+ 
++__attribute__((visibility("default")))
+ void
+ SetDatabaseEncoding(int encoding)
+ {
+diff --git a/src/backend/utils/mmgr/aset.c b/src/backend/utils/mmgr/aset.c
+--- b/src/backend/utils/mmgr/aset.c
++++ b/src/backend/utils/mmgr/aset.c
+@@ -386,6 +386,7 @@
+  * Note: don't call this directly; go through the wrapper macro
+  * AllocSetContextCreate.
+  */
++__attribute__((visibility("default")))
+ MemoryContext
+ AllocSetContextCreateInternal(MemoryContext parent,
+ 							  const char *name,
+diff --git a/src/backend/utils/mmgr/mcxt.c b/src/backend/utils/mmgr/mcxt.c
+--- b/src/backend/utils/mmgr/mcxt.c
++++ b/src/backend/utils/mmgr/mcxt.c
+@@ -35,6 +35,7 @@
+  * CurrentMemoryContext
+  *		Default memory context for allocations.
+  */
++__attribute__((visibility("default")))
+ MemoryContext CurrentMemoryContext = NULL;
+ 
+ /*
+@@ -88,6 +89,7 @@
+  *
+  * In a standalone backend this must be called during backend startup.
+  */
++__attribute__((visibility("default")))
+ void
+ MemoryContextInit(void)
+ {
+@@ -207,6 +209,7 @@
+  * but we have to recurse to handle the children.
+  * We must also delink the context from its parent, if it has one.
+  */
++__attribute__((visibility("default")))
+ void
+ MemoryContextDelete(MemoryContext context)
+ {
+@@ -951,6 +954,7 @@
+ 	return ret;
+ }
+ 
++__attribute__((visibility("default")))
+ void *
+ palloc0(Size size)
+ {
+diff --git a/src/common/fe_memutils.c b/src/common/fe_memutils.c
+--- b/src/common/fe_memutils.c
++++ b/src/common/fe_memutils.c
+@@ -118,6 +118,7 @@
+ 	return pg_malloc_internal(size, 0);
+ }
+ 
++__attribute__((visibility("default")))
+ void *
+ palloc0(Size size)
+ {
+diff --git a/src/include/utils/palloc.h b/src/include/utils/palloc.h
+--- b/src/include/utils/palloc.h
++++ b/src/include/utils/palloc.h
+@@ -105,6 +105,7 @@
+  */
+ 
+ #ifndef FRONTEND
++__attribute__((visibility("default")))
+ static inline MemoryContext
+ MemoryContextSwitchTo(MemoryContext context)
+ {
+iff --git a/src/port/qsort.c b/src/port/qsort.c
+--- b/src/port/qsort.c
++++ b/src/port/qsort.c
+@@ -109,6 +109,7 @@
+ 		: (cmp(b, c) > 0 ? b : (cmp(a, c) < 0 ? a : c));
+ }
+ 
++__attribute__((visibility("default")))
+ void
+ pg_qsort(void *a, size_t n, size_t es, int (*cmp) (const void *, const void *))
+ {
+diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
+--- a/src/pl/plpgsql/src/pl_comp.c
++++ b/src/pl/plpgsql/src/pl_comp.c
+@@ -105,7 +105,7 @@
+ 								ColumnRef *cref, bool error_if_no_field);
+ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
+ static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
+-static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
++PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
+ 									Oid collation, TypeName *origtypname);
+ static void plpgsql_start_datums(void);
+ static void plpgsql_finish_datums(PLpgSQL_function *function);
+@@ -1588,6 +1588,7 @@
+  * Returns datatype struct, or NULL if no match found for word.
+  * ----------
+  */
++__attribute__((weak))
+ PLpgSQL_type *
+ plpgsql_parse_wordtype(char *ident)
+ {
+@@ -1654,6 +1655,7 @@
+  * plpgsql_parse_cwordtype		Same lookup for compositeword%TYPE
+  * ----------
+  */
++__attribute__((weak))
+ PLpgSQL_type *
+ plpgsql_parse_cwordtype(List *idents)
+ {
+@@ -1774,6 +1776,7 @@
+  *					So word must be a table name.
+  * ----------
+  */
++__attribute__((weak))
+ PLpgSQL_type *
+ plpgsql_parse_wordrowtype(char *ident)
+ {
+@@ -1802,6 +1805,7 @@
+  *			So word must be a namespace qualified table name.
+  * ----------
+  */
++__attribute__((weak))
+ PLpgSQL_type *
+ plpgsql_parse_cwordrowtype(List *idents)
+ {
+@@ -2045,6 +2049,7 @@
+  * It can be NULL if the type could not be a composite type, or if it was
+  * identified by OID to begin with (e.g., it's a function argument type).
+  */
++__attribute__((weak))
+ PLpgSQL_type *
+ plpgsql_build_datatype(Oid typeOid, int32 typmod,
+ 					   Oid collation, TypeName *origtypname)
+@@ -2067,7 +2072,8 @@
+  * Utility subroutine to make a PLpgSQL_type struct given a pg_type entry
+  * and additional details (see comments for plpgsql_build_datatype).
+  */
+-static PLpgSQL_type *
++__attribute__((weak))
++PLpgSQL_type *
+ build_datatype(HeapTuple typeTup, int32 typmod,
+ 			   Oid collation, TypeName *origtypname)
+ {
+diff --git a/src/pl/plpgsql/src/pl_funcs.c b/src/pl/plpgsql/src/pl_funcs.c
+--- a/src/pl/plpgsql/src/pl_funcs.c
++++ b/src/pl/plpgsql/src/pl_funcs.c
+@@ -373,7 +373,7 @@
+ static void free_commit(PLpgSQL_stmt_commit *stmt);
+ static void free_rollback(PLpgSQL_stmt_rollback *stmt);
+ static void free_set(PLpgSQL_stmt_set *stmt);
+-static void free_expr(PLpgSQL_expr *expr);
++void free_expr(PLpgSQL_expr *expr);
+ 
+ 
+ static void
+@@ -725,7 +725,8 @@
+ {
+ }
+ 
+-static void
++__attribute__((weak))
++void
+ free_expr(PLpgSQL_expr *expr)
+ {
+ 	if (expr && expr->plan)
+diff --git a/src/pl/plpgsql/src/pg_gram.y b/src/pl/plpgsql/src/pl_gram.y
+--- a/src/pl/plpgsql/src/pl_gram.y
++++ b/src/pl/plpgsql/src/pl_gram.y
+@@ -102,7 +102,7 @@
+ static	void			 check_sql_expr(const char *stmt, int location,
+ 										int leaderlen);
+ static	void			 plpgsql_sql_error_callback(void *arg);
+-static	PLpgSQL_type	*parse_datatype(const char *string, int location);
++__attribute__((weak))	PLpgSQL_type *parse_datatype(const char *string, int location);
+ static	void			 check_labels(const char *start_label,
+ 									  const char *end_label,
+ 									  int end_location);
+diff --git a/src/pl/plpgsql/src/pg_gram.y b/src/pl/plpgsql/src/pl_gram.y
+--- a/src/pl/plpgsql/src/pl_gram.y
++++ b/src/pl/plpgsql/src/pl_gram.y
+@@ -3652,7 +3652,7 @@
+  * This is handled the same as in check_sql_expr(), and we likewise
+  * expect that the given string is a copy from the source text.
+  */
+-static PLpgSQL_type *
++PLpgSQL_type *
+ parse_datatype(const char *string, int location)
+ {
+        TypeName   *typeName;

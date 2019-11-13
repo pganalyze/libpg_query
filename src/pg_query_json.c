@@ -5,8 +5,10 @@
 #include <ctype.h>
 
 #include "nodes/plannodes.h"
-#include "nodes/relation.h"
+#include "access/relation.h"
 #include "utils/datum.h"
+#include "nodes/value.h"
+#include "nodes/parsenodes.h"
 
 static void _outNode(StringInfo str, const void *obj);
 

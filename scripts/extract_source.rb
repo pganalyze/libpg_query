@@ -66,6 +66,15 @@ class Runner
     @mock[symbol] = code
   end
 
+ def dump_children(cursor)
+    cursor.visit_children do |child_cursor, parent|
+      puts "CHILD_CURSOR KIND"
+      puts child_cursor.kind
+      next :recurse
+    end
+  end
+
+
   def run
     files = Dir.glob(@basepath + 'src/backend/**/*.c') +
     Dir.glob(@basepath + 'src/common/**/*.c') +
@@ -112,7 +121,7 @@ class Runner
     Dir.glob(@basepath + 'src/backend/port/win32_*.c') -
     Dir.glob(@basepath + 'src/backend/snowball/**/*.c')
 
-    #files = [@basepath + 'src/backend/parser/keywords.c']
+    #files = [@basepath + 'src/backend/utils/mb/encnames.c']
 
     files.each do |file|
       if files == [file]
@@ -232,26 +241,33 @@ class Runner
 
             start_offset = cursor.extent.start.offset
             end_offset = cursor.extent.end.offset
-            end_offset += 1 if cursor.kind == :cursor_variable # The ";" isn't counted correctly by clang
 
-            if cursor.kind == :cursor_variable && (cursor.linkage == :external || cursor.linkage == :internal) &&
-              !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified?
+
+            if cursor.kind == :cursor_variable
+              cursor.visit_children do |child_cursor, parent|
+                end_offset = [end_offset, child_cursor.extent.end.offset].max
+              end
+            else
+              end_offset = cursor.extent.end.offset
+            end
+
+            if cursor.kind == :cursor_variable && (cursor.linkage == :external) &&
+              !cursor.type.const_qualified? && false
               analysis.external_variables << cursor.spelling
             end
 
             analysis.file_to_symbol_positions[cursor.location.file] ||= {}
             analysis.file_to_symbol_positions[cursor.location.file][cursor.spelling] = [start_offset, end_offset]
-
             cursor.visit_children do |child_cursor, parent|
               # Ignore variable definitions from the local scope
-              next :recurse if child_cursor.definition.semantic_parent == cursor
+              #next :recurse if child_cursor.definition.semantic_parent == cursor
 
-              if child_cursor.kind == :cursor_decl_ref_expr || child_cursor.kind == :cursor_call_expr
+              if child_cursor.kind == :cursor_decl_ref_expr || child_cursor.kind == :cursor_call_expr || child_cursor.kind == :cursor_unexposed_expr
                 analysis.references[cursor.spelling] ||= []
                 (analysis.references[cursor.spelling] << child_cursor.spelling).uniq!
               end
 
-              :recurse
+              next :recurse
             end
           end
         end
@@ -343,7 +359,6 @@ class Runner
 
   def write_out
     all_thread_local_variables = []
-
     @symbols_to_output.each do |filename, symbols|
       file_thread_local_variables = []
       dead_positions = (@file_to_method_and_pos[filename] || {}).dup
@@ -372,11 +387,8 @@ class Runner
       dead_positions.each do |symbol, pos|
         fail format("Position overrun for %s in %s, next_start_pos (%d) > file length (%d)", symbol, filename, next_start_pos, full_code.size) if next_start_pos > full_code.size
         fail format("Position overrun for %s in %s, dead position pos[0]-1 (%d) > file length (%d)", symbol, filename, pos[0]-1, full_code.size) if pos[0]-1 > full_code.size
-
         str += full_code[next_start_pos...(pos[0]-1)]
-
         skipped_code = full_code[(pos[0]-1)...pos[1]]
-
         if @mock.key?(symbol)
           str += "\n" + @mock[symbol] + "\n"
         elsif @external_variables.include?(symbol) && symbols.include?(symbol)
@@ -410,7 +422,6 @@ class Runner
 
       File.write(@out_path + out_name, str)
     end
-
     @include_files_to_output.each do |include_file|
       next if special_include_file?(include_file)
 
@@ -526,6 +537,7 @@ runner.deep_resolve('raw_expression_tree_walker')
 runner.deep_resolve('sha1_result')
 runner.deep_resolve('sha1_init')
 runner.deep_resolve('sha1_loop')
+runner.deep_resolve('is_encoding_supported_by_icu')
 
 runner.write_out
 

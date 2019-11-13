@@ -5,7 +5,7 @@
 
 const char* progname = "pg_query";
 
-__thread sig_atomic_t pg_query_initialized = 0;
+sig_atomic_t pg_query_initialized = 0;
 
 void pg_query_init(void)
 {
@@ -22,11 +22,9 @@ MemoryContext pg_query_enter_memory_context(const char* ctx_name)
 
 	pg_query_init();
 
-	ctx = AllocSetContextCreate(TopMemoryContext,
+	ctx = AllocSetContextCreateInternal(TopMemoryContext,
 								ctx_name,
-								ALLOCSET_DEFAULT_MINSIZE,
-								ALLOCSET_DEFAULT_INITSIZE,
-								ALLOCSET_DEFAULT_MAXSIZE);
+								ALLOCSET_DEFAULT_SIZES);
 	MemoryContextSwitchTo(ctx);
 
 	return ctx;
