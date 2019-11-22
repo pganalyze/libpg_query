@@ -23,8 +23,8 @@ ifeq ($(DEBUG),1)
 	CFLAGS += -O0 -g
 	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
 else
-	CFLAGS += -g -Os
-	PG_CFLAGS += -Os
+	CFLAGS += -g -Os -fno-inline
+	PG_CFLAGS += -Os -g
 endif
 
 CLEANLIBS = $(ARLIB)
@@ -40,14 +40,6 @@ all: examples test build
 
 
 build: $(ARLIB)
-
-
-build_pg: $(PGDIR)
-	cd $(PGDIR); make -C src/backend/ generated-headers
-	cd $(PGDIR)/src/common/; make
-	cd $(PGDIR)/src/backend/; make
-	cd $(PGDIR)/contrib/pgcrypto/; make
-
 
 
 clean:
@@ -66,10 +58,16 @@ $(PGDIR): $(PGDIRBZ2)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
 	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_visibility_marks.patch
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_makefiles.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/04_mock.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_gen_mriscript.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_pl_gram.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_thread_safety.patch
+	cd $(PGDIR); make -C src/backend/ generated-headers
+	cd $(PGDIR)/src/common/; make
+	cd $(PGDIR)/src/backend/; make
+	cd $(PGDIR)/contrib/pgcrypto/; make
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_makefiles.patch
+
 
 
 
@@ -102,7 +100,7 @@ extract_source: $(PGDIR)
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $< $(LDFLAGS)
 
-$(ARLIB): build_pg $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
+$(ARLIB): $(PGDIR) $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
 	rm $(root_dir)/tmp/objects/ -rf
 	mkdir -p $(root_dir)/tmp/objects/
 	cd $(root_dir)/tmp/objects/; $(AR) x $(PGDIR)/src/backend/pglib.a
