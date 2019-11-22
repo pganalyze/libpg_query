@@ -1,0 +1,35 @@
+diff --git a/src/backend/Makefile b/src/backend/Makefile
+index b03d5e510f..c64a9fde8c 100644
+--- a/src/backend/Makefile
++++ b/src/backend/Makefile
+@@ -60,7 +60,7 @@ ifneq ($(PORTNAME), win32)
+ ifneq ($(PORTNAME), aix)
+ 
+ postgres: $(OBJS)
+-	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
++	touch $@
+ 
+ endif
+ endif
+diff --git a/src/Makefile b/src/Makefile
+index bcdbd9588a..4d71ff5ca7 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -20,16 +20,11 @@ SUBDIRS = \
+ 	backend/utils/mb/conversion_procs \
+ 	backend/snowball \
+ 	include \
+-	interfaces \
+ 	backend/replication/libpqwalreceiver \
+ 	backend/replication/pgoutput \
+ 	fe_utils \
+-	bin \
+ 	pl \
+-	makefiles \
+-	test/regress \
+-	test/isolation \
+-	test/perl
++	makefiles
+ 
+ ifeq ($(with_llvm), yes)
+ SUBDIRS += backend/jit/llvm

@@ -16,7 +16,7 @@ CFLAGS  = -I. -I $(PGDIR)/src/pl/plpgsql/src/ -I $(PGDIR)/contrib/pgcrypto -I$(P
 LIBPATH = -L.
 LDFLAGS = -Wl,--gc-sections,--as-needed
 
-PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib --without-icu
+PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib --without-icu --with-system-tzdata=/usr/share/zoneinfo
 PG_CFLAGS = -fPIC -flto -fvisibility=hidden -fdata-sections -ffunction-sections -Os -pthread
 
 ifeq ($(DEBUG),1)
@@ -55,6 +55,7 @@ $(PGDIRBZ2):
 $(PGDIR): $(PGDIRBZ2)
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/00_disable_targets.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
 	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_visibility_marks.patch
@@ -100,11 +101,10 @@ extract_source: $(PGDIR)
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $< $(LDFLAGS)
 
+AR_LTO := $(shell dirname `$(CC) -print-libgcc-file-name`)
+
 $(ARLIB): $(PGDIR) $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
-	rm $(root_dir)/tmp/objects/ -rf
-	mkdir -p $(root_dir)/tmp/objects/
-	cd $(root_dir)/tmp/objects/; $(AR) x $(PGDIR)/src/backend/pglib.a
-	@$(AR) rs $@ $(OBJ_FILES) $(root_dir)/tmp/objects/*.o
+	$(AR) rsT --plugin $(AR_LTO)/liblto_plugin.so $@ $(OBJ_FILES) $(PGDIR)/src/backend/pglib.a 
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)

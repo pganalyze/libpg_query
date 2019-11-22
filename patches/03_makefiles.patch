@@ -1,7 +1,8 @@
 diff --git a/src/backend/Makefile b/src/backend/Makefile
+index b03d5e510f..8c8c53c3b8 100644
 --- a/src/backend/Makefile
 +++ b/src/backend/Makefile
-@@ -37,8 +37,21 @@
+@@ -37,8 +37,21 @@ LOCALOBJS += utils/probes.o
  endif
  endif
  
@@ -23,29 +24,33 @@ diff --git a/src/backend/Makefile b/src/backend/Makefile
  
  # We put libpgport and libpgcommon into OBJS, so remove it from LIBS; also add
  # libldap and ICU
-@@ -59,9 +72,21 @@
+@@ -53,14 +66,22 @@ endif
+ 
+ ##########################################################################
+ 
+-all: submake-libpgport submake-catalog-headers submake-utils-headers postgres $(POSTGRES_IMP)
++all: submake-libpgport submake-catalog-headers submake-utils-headers $(POSTGRES_IMP)
+ 
+ ifneq ($(PORTNAME), cygwin)
  ifneq ($(PORTNAME), win32)
  ifneq ($(PORTNAME), aix)
  
+-postgres: $(OBJS)
+-	touch $@
 +../pl/plpgsql/src/%.o:
 +	cd ../pl/plpgsql/; make
 +
- postgres: $(OBJS)
- 	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
- 
 +pglib.so: $(OBJS)
 +	$(CC) $(CFLAGS) $(CPPFLAGS) -Wl,--gc-sections -shared $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
 +
-+pglib.mri: $(PGLIBOBJS)
-+	bash ./gen_mri.sh $(call expand_subsys,$^) > $@
++AR_LTO := $(shell dirname `$(CC) -print-libgcc-file-name`)
 +
-+pglib.a: pglib.mri
-+	$(AR) -M  < pglib.mri
-+
++pglib.a: $(PGLIBOBJS)
++	$(AR) rT $@ --plugin $(AR_LTO)/liblto_plugin.so $(call expand_subsys,$^)
+ 
  endif
  endif
- endif
-@@ -71,6 +96,7 @@
+@@ -71,6 +93,7 @@ ifeq ($(PORTNAME), cygwin)
  postgres: $(OBJS)
  	$(CC) $(CFLAGS) $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) -Wl,--stack,$(WIN32_STACK_RLIMIT) -Wl,--export-all-symbols -Wl,--out-implib=libpostgres.a $(LIBS) -o $@
  
