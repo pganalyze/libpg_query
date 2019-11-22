@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 12.0
+PG_VERSION = 12.1
 
 SRC_FILES := $(wildcard src/*.c)
 OBJ_FILES := $(SRC_FILES:.c=.o)
