@@ -44,7 +44,7 @@ const char* tests[] = {
   "CREATE VIEW view_a (a, b) AS WITH RECURSIVE view_a (a, b) AS (SELECT * FROM a(1)) SELECT \"a\", \"b\" FROM \"view_a\"",
   "024666d87256b329fad0cc42ddb9688e111ed1107f",
   "VACUUM FULL my_table",
-  "026e33edee478fb8051ce69601bffb50e4f31cfc8d",
+  "026c6b5288edf489aa701f10251cf5d942954c6cf5",
   "SELECT * FROM x AS a, y AS b",
   "02e50dcae0f1a1e237231d9d8e411383ba7f25068c",
   "SELECT * FROM y AS a, x AS b",
@@ -72,9 +72,9 @@ const char* tests[] = {
   "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = ?",
   "02af9dd92089b870cdbb316f211da5700e0a65a084",
   "SAVEPOINT some_id",
-  "02af350f3cb116f536042f0ca82205cab64eae5098",
+  "024a0547565f90a4ad1a0862f01c543dcaa83f7831",
   "RELEASE some_id",
-  "028ff67731681e941af7b992d6e1129aed11b345f3",
+  "02f26a3576be09eb08ad62ea44fd50e410ee433e5f",
   "PREPARE TRANSACTION 'some_id'",
   "02780d78fc4001d7c7b221dafc6a5f71d2a60bb519",
   "START TRANSACTION READ WRITE",
@@ -96,7 +96,7 @@ const char* tests[] = {
   "CREATE TEMPORARY TABLE my_temp_table (test_id integer NOT NULL) ON COMMIT DROP",
   "0282b35175ec22cfdae1f954c7c0ceaee8bc74a0c1",
   "CREATE TEMPORARY TABLE my_temp_table AS SELECT 1",
-  "0257b59721145c9c48f37ca5466d756b902fb5fe9a",
+  "027e3130dc027fb32cf2125ed8fd5dfbb6f9330b4b",
 };
 
 size_t testsLength = __LINE__ - 4;
