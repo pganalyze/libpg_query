@@ -181,18 +181,7 @@ diff --git a/src/common/fe_memutils.c b/src/common/fe_memutils.c
  void *
  palloc0(Size size)
  {
-diff --git a/src/include/utils/palloc.h b/src/include/utils/palloc.h
---- b/src/include/utils/palloc.h
-+++ b/src/include/utils/palloc.h
-@@ -105,6 +105,7 @@
-  */
- 
- #ifndef FRONTEND
-+__attribute__((visibility("default")))
- static inline MemoryContext
- MemoryContextSwitchTo(MemoryContext context)
- {
-iff --git a/src/port/qsort.c b/src/port/qsort.c
+diff --git a/src/port/qsort.c b/src/port/qsort.c
 --- b/src/port/qsort.c
 +++ b/src/port/qsort.c
 @@ -109,6 +109,7 @@
