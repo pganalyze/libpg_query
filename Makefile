@@ -104,7 +104,8 @@ extract_source: $(PGDIR)
 AR_LTO := $(shell dirname `$(CC) -print-libgcc-file-name`)
 
 $(ARLIB): $(PGDIR) $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
-	$(AR) rsT --plugin $(AR_LTO)/liblto_plugin.so $@ $(OBJ_FILES) $(PGDIR)/src/backend/pglib.a 
+	rm $(ARLIB) -f
+	$(AR) rsT --plugin $(AR_LTO)/liblto_plugin.so $@ $(OBJ_FILES) $(PGDIR)/src/backend/pglib.a
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
