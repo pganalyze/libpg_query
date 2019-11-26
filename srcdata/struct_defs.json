@@ -1263,6 +1263,80 @@
       ],
       "comment": "/*\n * PartitionSpec - parse-time representation of a partition key specification\n *\n * This represents the key space we will be partitioning on.\n */\n"
     },
+    "PartitionBoundSpec": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "strategy",
+          "c_type": "char",
+          "comment": "/* see PARTITION_STRATEGY codes above */"
+        },
+        {
+          "name": "is_default",
+          "c_type": "bool",
+          "comment": "/* is it a default partition bound? */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for HASH strategy: */\n"
+        },
+        {
+          "name": "modulus",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "remainder",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for LIST strategy: */\n"
+        },
+        {
+          "name": "listdatums",
+          "c_type": "List*",
+          "comment": "/* List of Consts (or A_Consts in raw tree) */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for RANGE strategy: */\n"
+        },
+        {
+          "name": "lowerdatums",
+          "c_type": "List*",
+          "comment": "/* List of PartitionRangeDatums */"
+        },
+        {
+          "name": "upperdatums",
+          "c_type": "List*",
+          "comment": "/* List of PartitionRangeDatums */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * PartitionBoundSpec - a partition bound specification\n *\n * This represents the portion of the partition key space assigned to a\n * particular partition.  These are stored on disk in pg_class.relpartbound.\n */\n"
+    },
     "PartitionRangeDatum": {
       "fields": [
         {

@@ -123,7 +123,7 @@ static void
 _outInteger(StringInfo str, const Value *node)
 {
 	WRITE_NODE_TYPE("Integer");
-	appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
+	appendStringInfo(str, "\"ival\": %d, ", node->val.ival);
 }
 
 static void

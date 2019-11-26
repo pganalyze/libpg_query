@@ -631,6 +631,9 @@ case T_PartitionElem:
 case T_PartitionSpec:
   _outPartitionSpec(str, obj);
   break;
+case T_PartitionBoundSpec:
+  _outPartitionBoundSpec(str, obj);
+  break;
 case T_PartitionRangeDatum:
   _outPartitionRangeDatum(str, obj);
   break;
