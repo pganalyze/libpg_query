@@ -50,11 +50,6 @@ void pg_query_free_parse_result(PgQueryParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 
-// Postgres version information
-
-
-
-
 // Deprecated APIs below
 
 void pg_query_init(void); // Deprecated as of 9.5-1.4.1, this is now run automatically as needed

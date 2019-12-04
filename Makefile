@@ -47,7 +47,7 @@ clean:
 	-@ $(RM) -rf {test,examples}/*.dSYM
 	#-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
 
-.PHONY: all clean build extract_source examples test
+.PHONY: all clean build examples test
 
 $(PGDIRBZ2):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -80,22 +80,6 @@ libpg_query.so: $(OBJ_FILES)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -Wl,--gc-sections -shared $< $(LDFLAGS) -o $@
 
 prepare_pg: $(PGDIR)
-
-extract_source: $(PGDIR)
-	#ruby ./scripts/extract_headers.rb $(PGDIR)
-	#ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
-	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
-	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
-	echo "#undef LOCALE_T_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
-	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
-	# Support 32-bit systems without reconfiguring
-	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
-	# Support gcc earlier than 4.6.0 without reconfiguring
-	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
-	# Copy version information so its easily accessible
-	sed -i '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 
 .c.o:
 	@$(ECHO) compiling $(<)
