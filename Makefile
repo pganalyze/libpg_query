@@ -31,7 +31,7 @@ CLEANLIBS = $(ARLIB)
 CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2)
 
-AR = ar
+AR = gcc-ar
 RM = rm -f
 ECHO = echo
 
@@ -57,7 +57,7 @@ $(PGDIR): $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/00_disable_targets.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
-	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); AR="$(AR)" CFLAGS="$(PG_CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_visibility_marks.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/04_mock.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_gen_mriscript.patch
@@ -85,11 +85,9 @@ prepare_pg: $(PGDIR)
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $< $(LDFLAGS)
 
-AR_LTO := $(shell dirname `$(CC) -print-libgcc-file-name`)
-
 $(ARLIB): $(PGDIR) $(OBJ_FILES) Makefile $(PGDIR)/src/backend/pglib.a
 	rm $(ARLIB) -f
-	$(AR) rsT --plugin $(AR_LTO)/liblto_plugin.so $@ $(OBJ_FILES) $(PGDIR)/src/backend/pglib.a
+	$(AR) rsT $@ $(OBJ_FILES) $(PGDIR)/src/backend/pglib.a
 
 EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)

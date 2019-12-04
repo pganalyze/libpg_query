@@ -43,10 +43,10 @@ index b03d5e510f..8c8c53c3b8 100644
 +pglib.so: $(OBJS)
 +	$(CC) $(CFLAGS) $(CPPFLAGS) -Wl,--gc-sections -shared $(call expand_subsys,$^) $(LDFLAGS) $(LDFLAGS_EX) $(export_dynamic) $(LIBS) -o $@
 +
-+AR_LTO := $(shell dirname `$(CC) -print-libgcc-file-name`)
++
 +
 +pglib.a: $(PGLIBOBJS)
-+	$(AR) rT $@ --plugin $(AR_LTO)/liblto_plugin.so $(call expand_subsys,$^)
++	$(AR) rT $@ $(call expand_subsys,$^)
  
  endif
  endif
