@@ -147,6 +147,7 @@ pg_query wrappers in other languages:
 * Javascript (Node): [pg-query-parser](https://github.com/zhm/pg-query-parser)
 * Javascript (Browser): [pg-query-emscripten](https://github.com/lfittl/pg-query-emscripten)
 * Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
+* OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
 
 Products, tools and libraries built on pg_query:
 
