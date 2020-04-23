@@ -72,7 +72,7 @@ $(PGDIR): $(PGDIRBZ2)
 
 
 
-$(PGDIR)/src/backend/pglib.a:
+$(PGDIR)/src/backend/pglib.a: $(PGDIR)
 	cd $(PGDIR)/src/backend; make pglib.a
 
 
@@ -81,7 +81,7 @@ libpg_query.so: $(OBJ_FILES)
 
 prepare_pg: $(PGDIR)
 
-.c.o:
+%.o: %.c $(PGDIR)
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $< $(LDFLAGS)
 
