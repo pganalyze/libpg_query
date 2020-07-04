@@ -16,7 +16,7 @@
  * and implementing search-path-controlled searches.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -35,7 +35,6 @@
 #include "catalog/pg_authid.h"
 #include "catalog/pg_collation.h"
 #include "catalog/pg_conversion.h"
-#include "catalog/pg_conversion_fn.h"
 #include "catalog/pg_namespace.h"
 #include "catalog/pg_opclass.h"
 #include "catalog/pg_operator.h"
@@ -55,7 +54,7 @@
 #include "parser/parse_func.h"
 #include "storage/ipc.h"
 #include "storage/lmgr.h"
-#include "storage/sinval.h"
+#include "storage/sinvaladt.h"
 #include "utils/acl.h"
 #include "utils/builtins.h"
 #include "utils/catcache.h"
@@ -102,7 +101,7 @@
  * set up until the first attempt to create something in it.  (The reason for
  * klugery is that we can't create the temp namespace outside a transaction,
  * but initial GUC processing of search_path happens outside a transaction.)
- * activeTempCreationPending is TRUE if "pg_temp" appears first in the string
+ * activeTempCreationPending is true if "pg_temp" appears first in the string
  * but is not reflected in activeCreationNamespace because the namespace isn't
  * set up yet.
  *
@@ -143,7 +142,7 @@
 /* default place to create stuff; if InvalidOid, no default */
 
 
-/* if TRUE, activeCreationNamespace is wrong, it should be temp namespace */
+/* if true, activeCreationNamespace is wrong, it should be temp namespace */
 
 
 /* These variables are the values last derived from namespace_search_path: */
@@ -206,18 +205,28 @@ static void RemoveTempRelations(Oid tempNamespaceId);
 static void RemoveTempRelationsCallback(int code, Datum arg);
 static void NamespaceCallback(Datum arg, int cacheid, uint32 hashvalue);
 static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
-			   int **argnumbers);
+						   int **argnumbers);
 
 
 /*
- * RangeVarGetRelid
+ * RangeVarGetRelidExtended
  *		Given a RangeVar describing an existing relation,
  *		select the proper namespace and look up the relation OID.
  *
- * If the schema or relation is not found, return InvalidOid if missing_ok
- * = true, otherwise raise an error.
+ * If the schema or relation is not found, return InvalidOid if flags contains
+ * RVR_MISSING_OK, otherwise raise an error.
  *
- * If nowait = true, throw an error if we'd have to wait for a lock.
+ * If flags contains RVR_NOWAIT, throw an error if we'd have to wait for a
+ * lock.
+ *
+ * If flags contains RVR_SKIP_LOCKED, return InvalidOid if we'd have to wait
+ * for a lock.
+ *
+ * flags cannot contain both RVR_NOWAIT and RVR_SKIP_LOCKED.
+ *
+ * Note that if RVR_MISSING_OK and RVR_SKIP_LOCKED are both specified, a
+ * return value of InvalidOid could either mean the relation is missing or it
+ * could not be locked.
  *
  * Callback allows caller to check permissions or acquire additional locks
  * prior to grabbing the relation lock.
@@ -761,6 +770,23 @@ NameListToString(List *names)
  *
  * Note: for most purposes in the C code, this function is obsolete.  Use
  * RELATION_IS_OTHER_TEMP() instead to detect non-local temp relations.
+ */
+
+
+/*
+ * checkTempNamespaceStatus - is the given namespace owned and actively used
+ * by a backend?
+ *
+ * Note: this can be used while scanning relations in pg_class to detect
+ * orphaned temporary tables or namespaces with a backend connected to a
+ * given database.  The result may be out of date quickly, so the caller
+ * must be careful how to handle this information.
+ */
+
+
+/*
+ * isTempNamespaceInUse - oversimplified, deprecated version of
+ * checkTempNamespaceStatus
  */
 
 

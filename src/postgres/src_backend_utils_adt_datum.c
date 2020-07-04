@@ -11,7 +11,7 @@
  * datum.c
  *	  POSTGRES Datum (abstract data type) manipulation routines.
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -50,6 +50,8 @@
 
 #include "postgres.h"
 
+#include "access/tuptoaster.h"
+#include "fmgr.h"
 #include "utils/datum.h"
 #include "utils/expandeddatum.h"
 
@@ -249,6 +251,15 @@ datumIsEqual(Datum value1, Datum value2, bool typByVal, int typLen)
 	}
 	return res;
 }
+
+/*-------------------------------------------------------------------------
+ * datum_image_eq
+ *
+ * Compares two datums for identical contents, based on byte images.  Return
+ * true if the two datums are equal, false otherwise.
+ *-------------------------------------------------------------------------
+ */
+
 
 /*-------------------------------------------------------------------------
  * datumEstimateSpace

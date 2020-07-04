@@ -4,8 +4,10 @@
 
 #include <ctype.h>
 
+#include "access/relation.h"
+#include "nodes/parsenodes.h"
 #include "nodes/plannodes.h"
-#include "nodes/relation.h"
+#include "nodes/value.h"
 #include "utils/datum.h"
 
 static void _outNode(StringInfo str, const void *obj);
@@ -121,7 +123,7 @@ static void
 _outInteger(StringInfo str, const Value *node)
 {
 	WRITE_NODE_TYPE("Integer");
-	appendStringInfo(str, "\"ival\": %ld, ", node->val.ival);
+	appendStringInfo(str, "\"ival\": %d, ", node->val.ival);
 }
 
 static void

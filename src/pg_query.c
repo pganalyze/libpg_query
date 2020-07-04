@@ -71,9 +71,8 @@ MemoryContext pg_query_enter_memory_context()
 
 	pg_query_init();
 
-	Assert(CurrentMemoryContext == TopMemoryContext);
-	ctx = AllocSetContextCreate(TopMemoryContext,
-								"pg_query",
+	ctx = AllocSetContextCreateInternal(TopMemoryContext,
+								ctx_name,
 								ALLOCSET_DEFAULT_SIZES);
 	MemoryContextSwitchTo(ctx);
 

@@ -22,7 +22,7 @@
  *		Unlock a previously acquired lock.
  *
  *	bool S_LOCK_FREE(slock_t *lock)
- *		Tests if the lock is free. Returns TRUE if free, FALSE if locked.
+ *		Tests if the lock is free. Returns true if free, false if locked.
  *		This does *not* change the state of the lock.
  *
  *	void SPIN_DELAY(void)
@@ -86,7 +86,7 @@
  *	when using the SysV semaphore code.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *	  src/include/storage/s_lock.h
@@ -383,7 +383,7 @@ tas(volatile slock_t *lock)
 	register slock_t _res;
 
 	/*
-	 *	See comment in /pg/backend/port/tas/solaris_sparc.s for why this
+	 *	See comment in src/backend/port/tas/sunstudio_sparc.s for why this
 	 *	uses "ldstub", and that file uses "cas".  gcc currently generates
 	 *	sparcv7-targeted binaries, so "cas" use isn't possible.
 	 */
@@ -919,7 +919,7 @@ spin_delay(void)
 
 /* Blow up if we didn't have any way to do spinlocks */
 #ifndef HAS_TEST_AND_SET
-#error PostgreSQL does not have native spinlock support on this platform.  To continue the compilation, rerun configure using --disable-spinlocks.  However, performance will be poor.  Please report this to pgsql-bugs@postgresql.org.
+#error PostgreSQL does not have native spinlock support on this platform.  To continue the compilation, rerun configure using --disable-spinlocks.  However, performance will be poor.  Please report this to pgsql-bugs@lists.postgresql.org.
 #endif
 
 

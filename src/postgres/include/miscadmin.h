@@ -10,7 +10,7 @@
  *	  Over time, this has also become the preferred place for widely known
  *	  resource-limitation stuff, such as work_mem and check_stack_depth().
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/miscadmin.h
@@ -25,6 +25,7 @@
 
 #include <signal.h>
 
+#include "datatype/timestamp.h" /* for TimestampTZ */
 #include "pgtime.h"				/* for pg_time_t */
 
 
@@ -77,13 +78,13 @@
 
 /* in globals.c */
 /* these are marked volatile because they are set by signal handlers: */
-extern PGDLLIMPORT __thread volatile bool InterruptPending;
-extern PGDLLIMPORT volatile bool QueryCancelPending;
-extern PGDLLIMPORT volatile bool ProcDiePending;
-extern PGDLLIMPORT volatile bool IdleInTransactionSessionTimeoutPending;
+extern PGDLLIMPORT __thread volatile sig_atomic_t InterruptPending;
+extern PGDLLIMPORT volatile sig_atomic_t QueryCancelPending;
+extern PGDLLIMPORT volatile sig_atomic_t ProcDiePending;
+extern PGDLLIMPORT volatile sig_atomic_t IdleInTransactionSessionTimeoutPending;
 extern PGDLLIMPORT volatile sig_atomic_t ConfigReloadPending;
 
-extern volatile bool ClientConnectionLost;
+extern PGDLLIMPORT volatile sig_atomic_t ClientConnectionLost;
 
 /* these are marked volatile because they are examined by signal handlers: */
 extern PGDLLIMPORT __thread volatile uint32 InterruptHoldoffCount;
@@ -153,6 +154,7 @@ extern PGDLLIMPORT bool IsBinaryUpgrade;
 extern PGDLLIMPORT __thread  bool ExitOnAnyError;
 
 extern PGDLLIMPORT char *DataDir;
+extern PGDLLIMPORT int data_directory_mode;
 
 extern PGDLLIMPORT int NBuffers;
 extern PGDLLIMPORT int MaxBackends;
@@ -162,6 +164,7 @@ extern PGDLLIMPORT int max_parallel_workers;
 
 extern PGDLLIMPORT int MyProcPid;
 extern PGDLLIMPORT pg_time_t MyStartTime;
+extern PGDLLIMPORT TimestampTz MyStartTimestamp;
 extern PGDLLIMPORT struct Port *MyProcPort;
 extern PGDLLIMPORT struct Latch *MyLatch;
 extern int32 MyCancelKey;
@@ -241,13 +244,13 @@ extern bool enableFsync;
 extern PGDLLIMPORT bool allowSystemTableMods;
 extern PGDLLIMPORT int work_mem;
 extern PGDLLIMPORT int maintenance_work_mem;
-extern PGDLLIMPORT int replacement_sort_tuples;
+extern PGDLLIMPORT int max_parallel_maintenance_workers;
 
 extern int	VacuumCostPageHit;
 extern int	VacuumCostPageMiss;
 extern int	VacuumCostPageDirty;
 extern int	VacuumCostLimit;
-extern int	VacuumCostDelay;
+extern double VacuumCostDelay;
 
 extern int	VacuumPageHit;
 extern int	VacuumPageMiss;
@@ -255,6 +258,8 @@ extern int	VacuumPageDirty;
 
 extern int	VacuumCostBalance;
 extern bool VacuumCostActive;
+
+extern double vacuum_cleanup_index_scale_factor;
 
 
 /* in tcop/postgres.c */
@@ -321,6 +326,7 @@ extern void SetSessionAuthorization(Oid userid, bool is_superuser);
 extern Oid	GetCurrentRoleId(void);
 extern void SetCurrentRoleId(Oid roleid, bool is_superuser);
 
+extern void checkDataDir(void);
 extern void SetDataDir(const char *dir);
 extern void ChangeToDataDir(void);
 
@@ -419,7 +425,7 @@ extern AuxProcType MyAuxProcType;
 extern void pg_split_opts(char **argv, int *argcp, const char *optstr);
 extern void InitializeMaxBackends(void);
 extern void InitPostgres(const char *in_dbname, Oid dboid, const char *username,
-			 Oid useroid, char *out_dbname);
+						 Oid useroid, char *out_dbname, bool override_allow_connections);
 extern void BaseInit(void);
 
 /* in utils/init/miscinit.c */
@@ -431,7 +437,7 @@ extern char *local_preload_libraries_string;
 
 extern void CreateDataDirLockFile(bool amPostmaster);
 extern void CreateSocketLockFile(const char *socketfile, bool amPostmaster,
-					 const char *socketDir);
+								 const char *socketDir);
 extern void TouchSocketLockFiles(void);
 extern void AddToDataDirLockFile(int target_line, const char *str);
 extern bool RecheckDataDirLockFile(void);

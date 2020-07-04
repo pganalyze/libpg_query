@@ -15,7 +15,7 @@
  * exit-time cleanup for either a postmaster or a backend.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -45,6 +45,11 @@
  * of the exit procedure.  We do NOT want to go back to the idle loop...
  */
 __thread bool		proc_exit_inprogress = false;
+
+
+/*
+ * Set when shmem_exit() is in progress.
+ */
 
 
 /*
@@ -167,7 +172,7 @@ void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); e
 /* ----------------------------------------------------------------
  *		cancel_before_shmem_exit
  *
- *		this function removes a previously-registed before_shmem_exit
+ *		this function removes a previously-registered before_shmem_exit
  *		callback.  For simplicity, only the latest entry can be
  *		removed.  (We could work harder but there is no need for
  *		current uses.)

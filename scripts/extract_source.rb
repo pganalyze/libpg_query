@@ -98,14 +98,6 @@ class Runner
       @basepath + 'src/backend/utils/mb/win1251.c', # Win32 only
       @basepath + 'src/backend/utils/mb/iso.c', # Win32 only
       @basepath + 'src/port/dirent.c', # Win32 only
-      @basepath + 'src/port/getaddrinfo.c', # Win32 only
-      @basepath + 'src/port/getrusage.c', # Win32 only
-      @basepath + 'src/port/gettimeofday.c', # Win32 only
-      @basepath + 'src/port/strerror.c', # Win32 only
-      @basepath + 'src/port/strerror.c', # Win32 only
-      @basepath + 'src/port/strlcat.c', # Win32 only
-      @basepath + 'src/port/strlcpy.c', # Win32 only
-      @basepath + 'src/port/unsetenv.c', # Win32 only
       @basepath + 'src/port/win32error.c', # Win32 only
       @basepath + 'src/port/win32env.c', # Win32 only
       @basepath + 'src/port/win32security.c' # Win32 only
@@ -205,7 +197,7 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g', '-DUSE_ASSERT_CHECKING'])
+    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', '/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
     cursor = translation_unit.cursor
 
     func_cursor = nil
@@ -414,6 +406,8 @@ class Runner
       File.write(@out_path + out_name, str)
     end
 
+    #return
+
     @include_files_to_output.each do |include_file|
       next if special_include_file?(include_file)
 
@@ -450,7 +444,7 @@ runner.blocklist('pq_beginmessage')
 
 # Mocks REQUIRED for basic operations (error handling, memory management)
 runner.mock('ProcessInterrupts', 'void ProcessInterrupts(void) {}') # Required by errfinish
-runner.mock('PqCommMethods', 'PQcommMethods *PqCommMethods = NULL;') # Required by errfinish
+runner.mock('PqCommMethods', 'const PQcommMethods *PqCommMethods = NULL;') # Required by errfinish
 runner.mock('proc_exit', 'void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); exit(1); }') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
 runner.mock('send_message_to_server_log', 'static void send_message_to_server_log(ErrorData *edata) {}')
 runner.mock('send_message_to_frontend', 'static void send_message_to_frontend(ErrorData *edata) {}')
@@ -458,7 +452,7 @@ runner.mock('send_message_to_frontend', 'static void send_message_to_frontend(Er
 # Mocks REQUIRED for PL/pgSQL parsing
 runner.mock('format_type_be', 'char * format_type_be(Oid type_oid) { return pstrdup("-"); }')
 runner.mock('build_row_from_class', 'static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }')
-runner.mock('plpgsql_build_datatype', 'PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }')
+runner.mock('plpgsql_build_datatype', 'PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }')
 runner.mock('parse_datatype', 'static PLpgSQL_type * parse_datatype(const char *string, int location) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup(string); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }')
 runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return -1; }')
 runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
@@ -529,6 +523,9 @@ runner.deep_resolve('raw_expression_tree_walker')
 runner.deep_resolve('sha1_result')
 runner.deep_resolve('sha1_init')
 runner.deep_resolve('sha1_loop')
+
+# Other required functions
+runner.deep_resolve('pg_printf')
 
 runner.write_out
 

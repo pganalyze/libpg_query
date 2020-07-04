@@ -11,7 +11,7 @@
  * nodeFuncs.c
  *		Various general-purpose manipulations of Node trees
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -28,7 +28,7 @@
 #include "nodes/makefuncs.h"
 #include "nodes/execnodes.h"
 #include "nodes/nodeFuncs.h"
-#include "nodes/relation.h"
+#include "nodes/pathnodes.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
 
@@ -38,8 +38,8 @@ static int	leftmostLoc(int loc1, int loc2);
 static bool fix_opfuncids_walker(Node *node, void *context);
 static bool planstate_walk_subplans(List *plans, bool (*walker) (),
 									void *context);
-static bool planstate_walk_members(List *plans, PlanState **planstates,
-					   bool (*walker) (), void *context);
+static bool planstate_walk_members(PlanState **planstates, int nplans,
+								   bool (*walker) (), void *context);
 
 
 /*
@@ -94,7 +94,7 @@ static bool planstate_walk_members(List *plans, PlanState **planstates,
  *	  Test whether an expression returns a set result.
  *
  * Because we use expression_tree_walker(), this can also be applied to
- * whole targetlists; it'll produce TRUE if any one of the tlist items
+ * whole targetlists; it'll produce true if any one of the tlist items
  * returns a set.
  */
 
@@ -208,9 +208,9 @@ exprLocation(const Node *expr)
 			/* function name should always be the first thing */
 			loc = ((const WindowFunc *) expr)->location;
 			break;
-		case T_ArrayRef:
-			/* just use array argument's location */
-			loc = exprLocation((Node *) ((const ArrayRef *) expr)->refexpr);
+		case T_SubscriptingRef:
+			/* just use container argument's location */
+			loc = exprLocation((Node *) ((const SubscriptingRef *) expr)->refexpr);
 			break;
 		case T_FuncExpr:
 			{
@@ -594,9 +594,9 @@ leftmostLoc(int loc1, int loc2)
  *	check_functions_in_node -
  *	  apply checker() to each function OID contained in given expression node
  *
- * Returns TRUE if the checker() function does; for nodes representing more
- * than one function call, returns TRUE if the checker() function does so
- * for any of those functions.  Returns FALSE if node does not invoke any
+ * Returns true if the checker() function does; for nodes representing more
+ * than one function call, returns true if the checker() function does so
+ * for any of those functions.  Returns false if node does not invoke any
  * SQL-visible function.  Caller must not pass node == NULL.
  *
  * This function examines only the given node; it does not recurse into any
@@ -718,7 +718,7 @@ leftmostLoc(int loc1, int loc2)
  * Some callers want to suppress visitation of certain items in the sub-Query,
  * typically because they need to process them specially, or don't actually
  * want to recurse into subqueries.  This is supported by the flags argument,
- * which is the bitwise OR of flag values to suppress visitation of
+ * which is the bitwise OR of flag values to add or suppress visitation of
  * indicated items.  (More flag bits may be added as needed.)
  */
 
@@ -727,6 +727,11 @@ leftmostLoc(int loc1, int loc2)
  * range_table_walker is just the part of query_tree_walker that scans
  * a query's rangetable.  This is split out since it can be useful on
  * its own.
+ */
+
+
+/*
+ * Some callers even want to scan the expressions in individual RTEs.
  */
 
 
@@ -1343,8 +1348,5 @@ raw_expression_tree_walker(Node *node,
 /*
  * Walk the constituent plans of a ModifyTable, Append, MergeAppend,
  * BitmapAnd, or BitmapOr node.
- *
- * Note: we don't actually need to examine the Plan list members, but
- * we need the list in order to determine the length of the PlanState array.
  */
 

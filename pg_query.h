@@ -51,9 +51,9 @@ void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 void pg_query_exit(void);
 
 // Postgres version information
-#define PG_VERSION "10.16"
-#define PG_MAJORVERSION "10"
-#define PG_VERSION_NUM 100016
+#define PG_VERSION "12.3"
+#define PG_MAJORVERSION "12"
+#define PG_VERSION_NUM 120003
 
 // Deprecated APIs below
 

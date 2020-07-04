@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 10.16
+PG_VERSION = 12.3
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c)
 OBJ_FILES := $(SRC_FILES:.c=.o)
@@ -73,13 +73,14 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/port pg_config_paths.h
+	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
-	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
+	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics

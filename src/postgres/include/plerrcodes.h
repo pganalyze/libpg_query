@@ -169,6 +169,10 @@
 },
 
 {
+	"invalid_preceding_or_following_size", ERRCODE_INVALID_PRECEDING_OR_FOLLOWING_SIZE
+},
+
+{
 	"invalid_regular_expression", ERRCODE_INVALID_REGULAR_EXPRESSION
 },
 
@@ -278,6 +282,66 @@
 
 {
 	"invalid_xml_processing_instruction", ERRCODE_INVALID_XML_PROCESSING_INSTRUCTION
+},
+
+{
+	"duplicate_json_object_key_value", ERRCODE_DUPLICATE_JSON_OBJECT_KEY_VALUE
+},
+
+{
+	"invalid_json_text", ERRCODE_INVALID_JSON_TEXT
+},
+
+{
+	"invalid_sql_json_subscript", ERRCODE_INVALID_SQL_JSON_SUBSCRIPT
+},
+
+{
+	"more_than_one_sql_json_item", ERRCODE_MORE_THAN_ONE_SQL_JSON_ITEM
+},
+
+{
+	"no_sql_json_item", ERRCODE_NO_SQL_JSON_ITEM
+},
+
+{
+	"non_numeric_sql_json_item", ERRCODE_NON_NUMERIC_SQL_JSON_ITEM
+},
+
+{
+	"non_unique_keys_in_a_json_object", ERRCODE_NON_UNIQUE_KEYS_IN_A_JSON_OBJECT
+},
+
+{
+	"singleton_sql_json_item_required", ERRCODE_SINGLETON_SQL_JSON_ITEM_REQUIRED
+},
+
+{
+	"sql_json_array_not_found", ERRCODE_SQL_JSON_ARRAY_NOT_FOUND
+},
+
+{
+	"sql_json_member_not_found", ERRCODE_SQL_JSON_MEMBER_NOT_FOUND
+},
+
+{
+	"sql_json_number_not_found", ERRCODE_SQL_JSON_NUMBER_NOT_FOUND
+},
+
+{
+	"sql_json_object_not_found", ERRCODE_SQL_JSON_OBJECT_NOT_FOUND
+},
+
+{
+	"too_many_json_array_elements", ERRCODE_TOO_MANY_JSON_ARRAY_ELEMENTS
+},
+
+{
+	"too_many_json_object_members", ERRCODE_TOO_MANY_JSON_OBJECT_MEMBERS
+},
+
+{
+	"sql_json_scalar_required", ERRCODE_SQL_JSON_SCALAR_REQUIRED
 },
 
 {
@@ -722,6 +786,10 @@
 
 {
 	"lock_not_available", ERRCODE_LOCK_NOT_AVAILABLE
+},
+
+{
+	"unsafe_new_enum_value_usage", ERRCODE_UNSAFE_NEW_ENUM_VALUE_USAGE
 },
 
 {

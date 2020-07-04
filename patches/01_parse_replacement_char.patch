@@ -292,10 +292,10 @@ index 7d0de99baf..d6b87ebb4e 100644
   * Create a RoleSpec with the given type
   */
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index 634bfa512f..0c342d6f06 100644
+index e1cae859e8..6b6514c60c 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -253,6 +253,9 @@ xehexesc		[\\]x[0-9A-Fa-f]{1,2}
+@@ -273,6 +273,9 @@
  xeunicode		[\\](u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})
  xeunicodefail	[\\](u[0-9A-Fa-f]{0,3}|U[0-9A-Fa-f]{0,7})
  
@@ -305,7 +305,7 @@ index 634bfa512f..0c342d6f06 100644
  /* Extended quote
   * xqdouble implements embedded quote, ''''
   */
-@@ -328,8 +331,9 @@ xcinside		[^*/]+
+@@ -348,8 +351,9 @@
  digit			[0-9]
  ident_start		[A-Za-z\200-\377_]
  ident_cont		[A-Za-z\200-\377_0-9\$]
@@ -316,7 +316,7 @@ index 634bfa512f..0c342d6f06 100644
  
  /* Assorted special-case operators and operator-like tokens */
  typecast		"::"
-@@ -351,7 +355,7 @@ not_equals		"!="
+@@ -380,7 +384,7 @@
   * If you change either set, adjust the character lists appearing in the
   * rule for "operator"!
   */
@@ -325,7 +325,7 @@ index 634bfa512f..0c342d6f06 100644
  op_chars		[\~\!\@\#\^\&\|\`\?\+\-\*\/\%\<\>\=]
  operator		{op_chars}+
  
-@@ -804,6 +808,11 @@ other			.
+@@ -837,6 +841,11 @@
  					return IDENT;
  				}
  
@@ -337,8 +337,8 @@ index 634bfa512f..0c342d6f06 100644
  {typecast}		{
  					SET_YYLLOC();
  					return TYPECAST;
-@@ -897,6 +906,25 @@ other			.
- 						nchars--; /* else remove the +/-, and check again */
+@@ -943,6 +952,25 @@
+ 						}
  					}
  
 +          /* We don't accept leading ? in any multi-character operators
@@ -363,35 +363,33 @@ index 634bfa512f..0c342d6f06 100644
  					SET_YYLLOC();
  
  					if (nchars < yyleng)
-@@ -910,7 +938,7 @@ other			.
+@@ -956,7 +984,7 @@
  						 * that the "self" rule would have.
  						 */
  						if (nchars == 1 &&
 -							strchr(",()[].;:+-*/%^<>=", yytext[0]))
 +							strchr(",()[].;:+-*/%^<>=?", yytext[0]))
  							return yytext[0];
- 					}
- 
-@@ -977,15 +1005,21 @@ other			.
+ 						/*
+ 						 * Likewise, if what we have left is two chars, and
+@@ -1038,14 +1066,19 @@
  {identifier}	{
- 					const ScanKeyword *keyword;
+ 					int			kwnum;
  					char	   *ident;
-+          char       *keyword_text = pstrdup(yytext);
++					char *keyword_text = pstrdup(yytext);
  
  					SET_YYLLOC();
  
  					/* Is it a keyword? */
--					keyword = ScanKeywordLookup(yytext,
-+          if (yytext[yyleng - 1] == '?')
-+            keyword_text[yyleng - 1] = '\0';
-+
-+					keyword = ScanKeywordLookup(keyword_text,
- 												yyextra->keywords,
- 												yyextra->num_keywords);
- 					if (keyword != NULL)
+-					kwnum = ScanKeywordLookup(yytext,
++					if (yytext[yyleng - 1] == '?')
++					  keyword_text[yyleng - 1] = '\0';
++					kwnum = ScanKeywordLookup(keyword_text,
+ 											  yyextra->keywordlist);
+ 					if (kwnum >= 0)
  					{
-+            if (keyword_text[yyleng - 1] == '\0')
-+              yyless(yyleng - 1);
- 						yylval->keyword = keyword->name;
- 						return keyword->value;
- 					}
++						if (keyword_text[yyleng - 1] == '\0')
++						  yyless(yyleng - 1);
+ 						yylval->keyword = GetScanKeyword(kwnum,
+ 														 yyextra->keywordlist);
+ 						return yyextra->keyword_tokens[kwnum];

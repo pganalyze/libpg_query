@@ -1,12 +1,12 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - GetDatabaseEncoding
- * - DatabaseEncoding
- * - pg_get_client_encoding
- * - ClientEncoding
  * - pg_mbcliplen
  * - pg_encoding_mbcliplen
  * - cliplen
+ * - DatabaseEncoding
+ * - GetDatabaseEncoding
+ * - pg_get_client_encoding
+ * - ClientEncoding
  * - pg_mblen
  * - pg_mbstrlen_with_len
  * - SetDatabaseEncoding
@@ -38,7 +38,7 @@
  * the result is validly encoded according to the destination encoding.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -55,17 +55,6 @@
 #include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "utils/syscache.h"
-
-/*
- * When converting strings between different encodings, we assume that space
- * for converted result is 4-to-1 growth in the worst case. The rate for
- * currently supported encoding pairs are within 3 (SJIS JIS X0201 half width
- * kanna -> UTF8 is the worst case).  So "4" should be enough for the moment.
- *
- * Note that this is not the same as the maximum character width in any
- * particular encoding.
- */
-#define MAX_CONVERSION_GROWTH  4
 
 /*
  * We maintain a simple linked list caching the fmgr lookup info for the
@@ -114,7 +103,7 @@ static __thread const pg_enc2name *DatabaseEncoding = &pg_enc2name_tbl[PG_SQL_AS
 
 /* Internal functions */
 static char *perform_default_encoding_conversion(const char *src,
-									int len, bool is_client_to_server);
+												 int len, bool is_client_to_server);
 static int	cliplen(const char *str, int len, int limit);
 
 
@@ -265,7 +254,7 @@ pg_get_client_encoding(void)
 int
 pg_mblen(const char *mbstr)
 {
-	return ((*pg_wchar_table[DatabaseEncoding->encoding].mblen) ((const unsigned char *) mbstr));
+	return pg_wchar_table[DatabaseEncoding->encoding].mblen((const unsigned char *) mbstr);
 }
 
 /* returns the display length of a multibyte character */

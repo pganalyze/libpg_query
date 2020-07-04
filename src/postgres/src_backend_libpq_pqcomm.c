@@ -33,7 +33,7 @@
  * the backend's "backend/libpq" is quite separate from "interfaces/libpq".
  * All that remains is similarities of names to trap the unwary...
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *	src/backend/libpq/pqcomm.c
@@ -87,7 +87,6 @@
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif
-#include <arpa/inet.h>
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif
@@ -98,6 +97,7 @@
 #include "common/ip.h"
 #include "libpq/libpq.h"
 #include "miscadmin.h"
+#include "port/pg_bswap.h"
 #include "storage/ipc.h"
 #include "utils/guc.h"
 #include "utils/memutils.h"
@@ -178,7 +178,7 @@ static int	Setup_AF_UNIX(char *sock_path);
 
 
 
-PQcommMethods *PqCommMethods = NULL;
+const PQcommMethods *PqCommMethods = NULL;
 
 
 
@@ -338,7 +338,7 @@ PQcommMethods *PqCommMethods = NULL;
 /* --------------------------------
  *			  socket_set_nonblocking - set socket blocking/non-blocking
  *
- * Sets the socket non-blocking if nonblocking is TRUE, or sets it
+ * Sets the socket non-blocking if nonblocking is true, or sets it
  * blocking otherwise.
  * --------------------------------
  */
@@ -647,5 +647,13 @@ pq_setkeepaliveswin32(Port *port, int idle, int interval)
 #endif
 
 #ifdef TCP_KEEPCNT
+#else
+#endif
+
+#ifdef TCP_USER_TIMEOUT
+#else
+#endif
+
+#ifdef TCP_USER_TIMEOUT
 #else
 #endif

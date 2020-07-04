@@ -38,6 +38,10 @@
  * - free_fetch
  * - free_close
  * - free_perform
+ * - free_call
+ * - free_commit
+ * - free_rollback
+ * - free_set
  *--------------------------------------------------------------------
  */
 
@@ -46,7 +50,7 @@
  * pl_funcs.c		- Misc functions for the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -157,7 +161,7 @@ plpgsql_ns_additem(PLpgSQL_nsitem_type itemtype, int itemno, const char *name)
  *
  * Note that this only searches for variables, not labels.
  *
- * If localmode is TRUE, only the topmost block level is searched.
+ * If localmode is true, only the topmost block level is searched.
  *
  * name1 must be non-NULL.  Pass NULL for name2 and/or name3 if parsing a name
  * with fewer than three components.
@@ -286,8 +290,6 @@ plpgsql_getdiag_kindname(PLpgSQL_getdiag_kind kind)
 	{
 		case PLPGSQL_GETDIAG_ROW_COUNT:
 			return "ROW_COUNT";
-		case PLPGSQL_GETDIAG_RESULT_OID:
-			return "RESULT_OID";
 		case PLPGSQL_GETDIAG_CONTEXT:
 			return "PG_CONTEXT";
 		case PLPGSQL_GETDIAG_ERROR_CONTEXT:
@@ -350,6 +352,10 @@ static void free_open(PLpgSQL_stmt_open *stmt);
 static void free_fetch(PLpgSQL_stmt_fetch *stmt);
 static void free_close(PLpgSQL_stmt_close *stmt);
 static void free_perform(PLpgSQL_stmt_perform *stmt);
+static void free_call(PLpgSQL_stmt_call *stmt);
+static void free_commit(PLpgSQL_stmt_commit *stmt);
+static void free_rollback(PLpgSQL_stmt_rollback *stmt);
+static void free_set(PLpgSQL_stmt_set *stmt);
 static void free_expr(PLpgSQL_expr *expr);
 
 
@@ -429,6 +435,18 @@ free_stmt(PLpgSQL_stmt *stmt)
 			break;
 		case PLPGSQL_STMT_PERFORM:
 			free_perform((PLpgSQL_stmt_perform *) stmt);
+			break;
+		case PLPGSQL_STMT_CALL:
+			free_call((PLpgSQL_stmt_call *) stmt);
+			break;
+		case PLPGSQL_STMT_COMMIT:
+			free_commit((PLpgSQL_stmt_commit *) stmt);
+			break;
+		case PLPGSQL_STMT_ROLLBACK:
+			free_rollback((PLpgSQL_stmt_rollback *) stmt);
+			break;
+		case PLPGSQL_STMT_SET:
+			free_set((PLpgSQL_stmt_set *) stmt);
 			break;
 		default:
 			elog(ERROR, "unrecognized cmd_type: %d", stmt->cmd_type);
@@ -578,6 +596,28 @@ free_perform(PLpgSQL_stmt_perform *stmt)
 }
 
 static void
+free_call(PLpgSQL_stmt_call *stmt)
+{
+	free_expr(stmt->expr);
+}
+
+static void
+free_commit(PLpgSQL_stmt_commit *stmt)
+{
+}
+
+static void
+free_rollback(PLpgSQL_stmt_rollback *stmt)
+{
+}
+
+static void
+free_set(PLpgSQL_stmt_set *stmt)
+{
+	free_expr(stmt->expr);
+}
+
+static void
 free_exit(PLpgSQL_stmt_exit *stmt)
 {
 	free_expr(stmt->cond);
@@ -687,6 +727,7 @@ plpgsql_free_function_memory(PLpgSQL_function *func)
 		switch (d->dtype)
 		{
 			case PLPGSQL_DTYPE_VAR:
+			case PLPGSQL_DTYPE_PROMISE:
 				{
 					PLpgSQL_var *var = (PLpgSQL_var *) d;
 
@@ -697,6 +738,11 @@ plpgsql_free_function_memory(PLpgSQL_function *func)
 			case PLPGSQL_DTYPE_ROW:
 				break;
 			case PLPGSQL_DTYPE_REC:
+				{
+					PLpgSQL_rec *rec = (PLpgSQL_rec *) d;
+
+					free_expr(rec->default_val);
+				}
 				break;
 			case PLPGSQL_DTYPE_RECFIELD:
 				break;
@@ -757,7 +803,19 @@ static void dump_fetch(PLpgSQL_stmt_fetch *stmt);
 static void dump_cursor_direction(PLpgSQL_stmt_fetch *stmt);
 static void dump_close(PLpgSQL_stmt_close *stmt);
 static void dump_perform(PLpgSQL_stmt_perform *stmt);
+static void dump_call(PLpgSQL_stmt_call *stmt);
+static void dump_commit(PLpgSQL_stmt_commit *stmt);
+static void dump_rollback(PLpgSQL_stmt_rollback *stmt);
+static void dump_set(PLpgSQL_stmt_set *stmt);
 static void dump_expr(PLpgSQL_expr *expr);
+
+
+
+
+
+
+
+
 
 
 

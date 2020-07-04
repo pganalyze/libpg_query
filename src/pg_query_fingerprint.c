@@ -57,7 +57,7 @@ _fingerprintInteger(FingerprintContext *ctx, const Value *node)
 		_fingerprintString(ctx, "Integer");
 		_fingerprintString(ctx, "ival");
 		char buffer[50];
-		sprintf(buffer, "%ld", node->val.ival);
+		sprintf(buffer, "%d", node->val.ival);
 		_fingerprintString(ctx, buffer);
 	}
 }

@@ -42,7 +42,7 @@
  * function for such cases, but probably not any other acceleration method.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/sortsupport.h
@@ -184,8 +184,8 @@ typedef struct SortSupportData
 	/*
 	 * Full, authoritative comparator for key that an abbreviated
 	 * representation was generated for, used when an abbreviated comparison
-	 * was inconclusive (by calling ApplySortComparatorFull()), or used to
-	 * replace "comparator" when core system ultimately decides against
+	 * was inconclusive (by calling ApplySortAbbrevFullComparator()), or used
+	 * to replace "comparator" when core system ultimately decides against
 	 * abbreviation.
 	 */
 	int			(*abbrev_full_comparator) (Datum x, Datum y, SortSupport ssup);
@@ -221,7 +221,7 @@ ApplySortComparator(Datum datum1, bool isNull1,
 	}
 	else
 	{
-		compare = (*ssup->comparator) (datum1, datum2, ssup);
+		compare = ssup->comparator(datum1, datum2, ssup);
 		if (ssup->ssup_reverse)
 			INVERT_COMPARE_RESULT(compare);
 	}
@@ -259,7 +259,7 @@ ApplySortAbbrevFullComparator(Datum datum1, bool isNull1,
 	}
 	else
 	{
-		compare = (*ssup->abbrev_full_comparator) (datum1, datum2, ssup);
+		compare = ssup->abbrev_full_comparator(datum1, datum2, ssup);
 		if (ssup->ssup_reverse)
 			INVERT_COMPARE_RESULT(compare);
 	}
@@ -271,6 +271,6 @@ ApplySortAbbrevFullComparator(Datum datum1, bool isNull1,
 extern void PrepareSortSupportComparisonShim(Oid cmpFunc, SortSupport ssup);
 extern void PrepareSortSupportFromOrderingOp(Oid orderingOp, SortSupport ssup);
 extern void PrepareSortSupportFromIndexRel(Relation indexRel, int16 strategy,
-							   SortSupport ssup);
+										   SortSupport ssup);
 
 #endif							/* SORTSUPPORT_H */
