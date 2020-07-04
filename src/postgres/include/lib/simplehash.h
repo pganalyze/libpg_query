@@ -32,7 +32,7 @@
  *	  - SH_STORE_HASH - if defined the hash is stored in the elements
  *	  - SH_GET_HASH(tb, a) - return the field to store the hash in
  *
- *	  For examples of usage look at simplehash.c (file local definition) and
+ *	  For examples of usage look at tidbitmap.c (file local definition) and
  *	  execnodes.h/execGrouping.c (exposed declaration, file local
  *	  implementation).
  *
@@ -65,13 +65,14 @@
 /* type declarations */
 #define SH_TYPE SH_MAKE_NAME(hash)
 #define SH_STATUS SH_MAKE_NAME(status)
-#define SH_STATUS_EMPTY SH_MAKE_NAME(EMPTY)
-#define SH_STATUS_IN_USE SH_MAKE_NAME(IN_USE)
+#define SH_STATUS_EMPTY SH_MAKE_NAME(SH_EMPTY)
+#define SH_STATUS_IN_USE SH_MAKE_NAME(SH_IN_USE)
 #define SH_ITERATOR SH_MAKE_NAME(iterator)
 
 /* function declarations */
 #define SH_CREATE SH_MAKE_NAME(create)
 #define SH_DESTROY SH_MAKE_NAME(destroy)
+#define SH_RESET SH_MAKE_NAME(reset)
 #define SH_INSERT SH_MAKE_NAME(insert)
 #define SH_DELETE SH_MAKE_NAME(delete)
 #define SH_LOOKUP SH_MAKE_NAME(lookup)
@@ -138,8 +139,9 @@ typedef struct SH_ITERATOR
 
 /* externally visible function prototypes */
 SH_SCOPE	SH_TYPE *SH_CREATE(MemoryContext ctx, uint32 nelements,
-		  void *private_data);
+							   void *private_data);
 SH_SCOPE void SH_DESTROY(SH_TYPE * tb);
+SH_SCOPE void SH_RESET(SH_TYPE * tb);
 SH_SCOPE void SH_GROW(SH_TYPE * tb, uint32 newsize);
 SH_SCOPE	SH_ELEMENT_TYPE *SH_INSERT(SH_TYPE * tb, SH_KEY_TYPE key, bool *found);
 SH_SCOPE	SH_ELEMENT_TYPE *SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key);
@@ -185,6 +187,16 @@ SH_SCOPE void SH_STAT(SH_TYPE * tb);
 #define SH_COMPARE_KEYS(tb, ahash, akey, b) (SH_EQUAL(tb, b->SH_KEY, akey))
 #endif
 
+/*
+ * Wrap the following definitions in include guards, to avoid multiple
+ * definition errors if this header is included more than once.  The rest of
+ * the file deliberately has no include guards, because it can be included
+ * with different parameters to define functions and types with non-colliding
+ * names.
+ */
+#ifndef SIMPLEHASH_H
+#define SIMPLEHASH_H
+
 /* FIXME: can we move these to a central location? */
 
 /* calculate ceil(log base 2) of num */
@@ -205,6 +217,8 @@ sh_pow2(uint64 num)
 {
 	return ((uint64) 1) << sh_log2(num);
 }
+
+#endif
 
 /*
  * Compute sizing parameters for hashtable. Called when creating and growing
@@ -354,6 +368,14 @@ SH_DESTROY(SH_TYPE * tb)
 {
 	SH_FREE(tb, tb->data);
 	pfree(tb);
+}
+
+/* reset the contents of a previously created hash table */
+SH_SCOPE void
+SH_RESET(SH_TYPE * tb)
+{
+	memset(tb->data, 0, sizeof(SH_ELEMENT_TYPE) * tb->size);
+	tb->members = 0;
 }
 
 /*
@@ -924,6 +946,7 @@ SH_STAT(SH_TYPE * tb)
 #undef SH_GET_HASH
 #undef SH_STORE_HASH
 #undef SH_USE_NONDEFAULT_ALLOCATOR
+#undef SH_EQUAL
 
 /* undefine locally declared macros */
 #undef SH_MAKE_PREFIX
@@ -946,6 +969,7 @@ SH_STAT(SH_TYPE * tb)
 /* external function names */
 #undef SH_CREATE
 #undef SH_DESTROY
+#undef SH_RESET
 #undef SH_INSERT
 #undef SH_DELETE
 #undef SH_LOOKUP

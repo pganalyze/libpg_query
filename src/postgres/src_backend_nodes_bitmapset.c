@@ -3,10 +3,7 @@
  * - bms_copy
  * - bms_equal
  * - bms_is_empty
- * - bms_add_member
- * - bms_make_singleton
  * - bms_first_member
- * - rightmost_one_pos
  * - bms_free
  *--------------------------------------------------------------------
  */
@@ -24,7 +21,7 @@
  * bms_is_empty() in preference to testing for NULL.)
  *
  *
- * Copyright (c) 2003-2017, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2019, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/nodes/bitmapset.c
@@ -33,8 +30,10 @@
  */
 #include "postgres.h"
 
-#include "access/hash.h"
+#include "nodes/bitmapset.h"
 #include "nodes/pg_list.h"
+#include "port/pg_bitutils.h"
+#include "utils/hashutils.h"
 
 
 #define WORDNUM(x)	((x) / BITS_PER_BITMAPWORD)
@@ -64,40 +63,18 @@
 
 #define HAS_MULTIPLE_ONES(x)	((bitmapword) RIGHTMOST_ONE(x) != (x))
 
-
-/*
- * Lookup tables to avoid need for bit-by-bit groveling
- *
- * rightmost_one_pos[x] gives the bit number (0-7) of the rightmost one bit
- * in a nonzero byte value x.  The entry for x=0 is never used.
- *
- * number_of_ones[x] gives the number of one-bits (0-8) in a byte value x.
- *
- * We could make these tables larger and reduce the number of iterations
- * in the functions that use them, but bytewise shifts and masks are
- * especially fast on many machines, so working a byte at a time seems best.
- */
-
-static const uint8 rightmost_one_pos[256] = {
-	0, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-	4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0
-};
-
-
+/* Select appropriate bit-twiddling functions for bitmap word size */
+#if BITS_PER_BITMAPWORD == 32
+#define bmw_leftmost_one_pos(w)		pg_leftmost_one_pos32(w)
+#define bmw_rightmost_one_pos(w)	pg_rightmost_one_pos32(w)
+#define bmw_popcount(w)				pg_popcount32(w)
+#elif BITS_PER_BITMAPWORD == 64
+#define bmw_leftmost_one_pos(w)		pg_leftmost_one_pos64(w)
+#define bmw_rightmost_one_pos(w)	pg_rightmost_one_pos64(w)
+#define bmw_popcount(w)				pg_popcount64(w)
+#else
+#error "invalid BITS_PER_BITMAPWORD"
+#endif
 
 
 /*
@@ -169,24 +146,19 @@ bms_equal(const Bitmapset *a, const Bitmapset *b)
 }
 
 /*
+ * bms_compare - qsort-style comparator for bitmapsets
+ *
+ * This guarantees to report values as equal iff bms_equal would say they are
+ * equal.  Otherwise, the highest-numbered bit that is set in one value but
+ * not the other determines the result.  (This rule means that, for example,
+ * {6} is greater than {5}, which seems plausible.)
+ */
+
+
+/*
  * bms_make_singleton - build a bitmapset containing a single member
  */
-Bitmapset *
-bms_make_singleton(int x)
-{
-	Bitmapset  *result;
-	int			wordnum,
-				bitnum;
 
-	if (x < 0)
-		elog(ERROR, "negative bitmapset member not allowed");
-	wordnum = WORDNUM(x);
-	bitnum = BITNUM(x);
-	result = (Bitmapset *) palloc0(BITMAPSET_SIZE(wordnum + 1));
-	result->nwords = wordnum + 1;
-	result->words[wordnum] = ((bitmapword) 1 << bitnum);
-	return result;
-}
 
 /*
  * bms_free - free a bitmapset
@@ -240,6 +212,14 @@ bms_free(Bitmapset *a)
 
 
 /*
+ * bms_member_index
+ *		determine 0-based index of member x in the bitmap
+ *
+ * Returns (-1) when x is not a member.
+ */
+
+
+/*
  * bms_overlap - do sets overlap (ie, have a nonempty intersection)?
  */
 
@@ -265,8 +245,8 @@ bms_free(Bitmapset *a)
  * bms_get_singleton_member
  *
  * Test whether the given set is a singleton.
- * If so, set *member to the value of its sole member, and return TRUE.
- * If not, return FALSE, without changing *member.
+ * If so, set *member to the value of its sole member, and return true.
+ * If not, return false, without changing *member.
  *
  * This is more convenient and faster than calling bms_membership() and then
  * bms_singleton_member(), if we don't care about distinguishing empty sets
@@ -326,35 +306,7 @@ bms_is_empty(const Bitmapset *a)
  *
  * Input set is modified or recycled!
  */
-Bitmapset *
-bms_add_member(Bitmapset *a, int x)
-{
-	int			wordnum,
-				bitnum;
 
-	if (x < 0)
-		elog(ERROR, "negative bitmapset member not allowed");
-	if (a == NULL)
-		return bms_make_singleton(x);
-	wordnum = WORDNUM(x);
-	bitnum = BITNUM(x);
-
-	/* enlarge the set if necessary */
-	if (wordnum >= a->nwords)
-	{
-		int			oldnwords = a->nwords;
-		int			i;
-
-		a = (Bitmapset *) repalloc(a, BITMAPSET_SIZE(wordnum + 1));
-		a->nwords = wordnum + 1;
-		/* zero out the enlarged portion */
-		for (i = oldnwords; i < a->nwords; i++)
-			a->words[i] = 0;
-	}
-
-	a->words[wordnum] |= ((bitmapword) 1 << bitnum);
-	return a;
-}
 
 /*
  * bms_del_member - remove a specified member from set
@@ -367,6 +319,16 @@ bms_add_member(Bitmapset *a, int x)
 
 /*
  * bms_add_members - like bms_union, but left input is recycled
+ */
+
+
+/*
+ * bms_add_range
+ *		Add members in the range of 'lower' to 'upper' to the set.
+ *
+ * Note this could also be done by calling bms_add_member in a loop, however,
+ * using this function will be faster when the range is large as we work at
+ * the bitmapword level rather than at bit level.
  */
 
 
@@ -420,12 +382,7 @@ bms_first_member(Bitmapset *a)
 			a->words[wordnum] &= ~w;
 
 			result = wordnum * BITS_PER_BITMAPWORD;
-			while ((w & 255) == 0)
-			{
-				w >>= 8;
-				result += 8;
-			}
-			result += rightmost_one_pos[w & 255];
+			result += bmw_rightmost_one_pos(w);
 			return result;
 		}
 	}
@@ -451,6 +408,33 @@ bms_first_member(Bitmapset *a)
  * It makes no difference in simple loop usage, but complex iteration logic
  * might need such an ability.
  */
+
+
+/*
+ * bms_prev_member - find prev member of a set
+ *
+ * Returns largest member less than "prevbit", or -2 if there is none.
+ * "prevbit" must NOT be more than one above the highest possible bit that can
+ * be set at the Bitmapset at its current size.
+ *
+ * To ease finding the highest set bit for the initial loop, the special
+ * prevbit value of -1 can be passed to have the function find the highest
+ * valued member in the set.
+ *
+ * This is intended as support for iterating through the members of a set in
+ * reverse.  The typical pattern is
+ *
+ *			x = -1;
+ *			while ((x = bms_prev_member(inputset, x)) >= 0)
+ *				process member x;
+ *
+ * Notice that when there are no more members, we return -2, not -1 as you
+ * might expect.  The rationale for that is to allow distinguishing the
+ * loop-not-started state (x == -1) from the loop-completed state (x == -2).
+ * It makes no difference in simple loop usage, but complex iteration logic
+ * might need such an ability.
+ */
+
 
 
 /*

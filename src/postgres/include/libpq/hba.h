@@ -55,8 +55,17 @@ typedef enum ConnType
 	ctLocal,
 	ctHost,
 	ctHostSSL,
-	ctHostNoSSL
+	ctHostNoSSL,
+	ctHostGSS,
+	ctHostNoGSS,
 } ConnType;
+
+typedef enum ClientCertMode
+{
+	clientCertOff,
+	clientCertCA,
+	clientCertFull
+} ClientCertMode;
 
 typedef struct HbaLine
 {
@@ -75,16 +84,18 @@ typedef struct HbaLine
 	char	   *pamservice;
 	bool		pam_use_hostname;
 	bool		ldaptls;
+	char	   *ldapscheme;
 	char	   *ldapserver;
 	int			ldapport;
 	char	   *ldapbinddn;
 	char	   *ldapbindpasswd;
 	char	   *ldapsearchattribute;
+	char	   *ldapsearchfilter;
 	char	   *ldapbasedn;
 	int			ldapscope;
 	char	   *ldapprefix;
 	char	   *ldapsuffix;
-	bool		clientcert;
+	ClientCertMode clientcert;
 	char	   *krb_realm;
 	bool		include_realm;
 	bool		compat_realm;
@@ -115,9 +126,9 @@ typedef struct Port hbaPort;
 extern bool load_hba(void);
 extern bool load_ident(void);
 extern void hba_getauthmethod(hbaPort *port);
-extern int check_usermap(const char *usermap_name,
-			  const char *pg_role, const char *auth_user,
-			  bool case_sensitive);
+extern int	check_usermap(const char *usermap_name,
+						  const char *pg_role, const char *auth_user,
+						  bool case_sensitive);
 extern bool pg_isblank(const char c);
 
 #endif							/* HBA_H */

@@ -14,7 +14,7 @@
  * globals.c
  *	  global variable declarations
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -29,6 +29,7 @@
  */
 #include "postgres.h"
 
+#include "common/file_perm.h"
 #include "libpq/libpq-be.h"
 #include "libpq/pqcomm.h"
 #include "miscadmin.h"
@@ -37,7 +38,7 @@
 
 
 
-__thread volatile bool InterruptPending = false;
+__thread volatile sig_atomic_t InterruptPending = false;
 
 
 
@@ -49,6 +50,7 @@ __thread volatile uint32 InterruptHoldoffCount = 0;
 __thread volatile uint32 QueryCancelHoldoffCount = 0;
 
 __thread volatile uint32 CritSectionCount = 0;
+
 
 
 
@@ -71,6 +73,12 @@ __thread volatile uint32 CritSectionCount = 0;
  * Except during early startup, this is also the server's working directory;
  * most code therefore can simply use relative paths and not reference DataDir
  * explicitly.
+ */
+
+
+/*
+ * Mode of the data directory.  The default is 0700 but it may be changed in
+ * checkDataDir() to 0750 if the data directory actually has that mode.
  */
 
 
@@ -154,4 +162,6 @@ __thread bool		ExitOnAnyError = false;
 
 
 	/* working state for vacuum */
+
+
 

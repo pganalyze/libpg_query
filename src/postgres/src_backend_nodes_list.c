@@ -23,7 +23,7 @@
  *	  implementation for PostgreSQL generic linked list package
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -548,8 +548,11 @@ list_delete_cell(List *list, ListCell *cell, ListCell *prev)
  * via equal().
  *
  * This is almost the same functionality as list_union(), but list1 is
- * modified in-place rather than being copied.  Note also that list2's cells
- * are not inserted in list1, so the analogy to list_concat() isn't perfect.
+ * modified in-place rather than being copied. However, callers of this
+ * function may have strict ordering expectations -- i.e. that the relative
+ * order of those list2 elements that are not duplicates is preserved. Note
+ * also that list2's cells are not inserted in list1, so the analogy to
+ * list_concat() isn't perfect.
  */
 
 
@@ -713,6 +716,16 @@ list_copy_tail(const List *oldlist, int nskip)
 	check_list_invariants(newlist);
 	return newlist;
 }
+
+/*
+ * Sort a list as though by qsort.
+ *
+ * A new list is built and returned.  Like list_copy, this doesn't make
+ * fresh copies of any pointed-to data.
+ *
+ * The comparator function receives arguments of type ListCell **.
+ */
+
 
 /*
  * Temporary compatibility functions

@@ -63,7 +63,7 @@ class Extractor
 
     ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'c', 'postgres', 'postgres_ext',
-     'storage/block', 'access/sdir'].each do |group|
+     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar'].each do |group|
       @target_group = group
       @struct_defs[@target_group] = {}
       @enum_defs[@target_group] = {}
@@ -164,7 +164,6 @@ class Extractor
       'GrantStmt' => 'GrantTargetType',
       'RangeTblEntry' => 'RTEKind',
       'TransactionStmt' => 'TransactionStmtKind',
-      'VacuumStmt' => 'VacuumOption',
       'ViewStmt' => 'ViewCheckOption',
     },
     'nodes/primnodes' => {

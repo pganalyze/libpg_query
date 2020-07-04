@@ -9,7 +9,7 @@
  * pg_proc.c
  *	  routines to support manipulation of the pg_proc relation
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -21,14 +21,15 @@
 #include "postgres.h"
 
 #include "access/htup_details.h"
+#include "access/table.h"
 #include "access/xact.h"
+#include "catalog/catalog.h"
 #include "catalog/dependency.h"
 #include "catalog/indexing.h"
 #include "catalog/objectaccess.h"
 #include "catalog/pg_language.h"
 #include "catalog/pg_namespace.h"
 #include "catalog/pg_proc.h"
-#include "catalog/pg_proc_fn.h"
 #include "catalog/pg_transform.h"
 #include "catalog/pg_type.h"
 #include "commands/defrem.h"
@@ -55,10 +56,10 @@ typedef struct
 } parse_error_callback_arg;
 
 static void sql_function_parse_error_callback(void *arg);
-static int match_prosrc_to_query(const char *prosrc, const char *queryText,
-					  int cursorpos);
+static int	match_prosrc_to_query(const char *prosrc, const char *queryText,
+								  int cursorpos);
 static bool match_prosrc_to_literal(const char *prosrc, const char *literal,
-						int cursorpos, int *newcursorpos);
+									int cursorpos, int *newcursorpos);
 
 
 /* ----------------------------------------------------------------
@@ -66,7 +67,7 @@ static bool match_prosrc_to_literal(const char *prosrc, const char *literal,
  *
  * Note: allParameterTypes, parameterModes, parameterNames, trftypes, and proconfig
  * are either arrays of the proper types or NULL.  We declare them Datum,
- * not "ArrayType *", to avoid importing array.h into pg_proc_fn.h.
+ * not "ArrayType *", to avoid importing array.h into pg_proc.h.
  * ----------------------------------------------------------------
  */
 

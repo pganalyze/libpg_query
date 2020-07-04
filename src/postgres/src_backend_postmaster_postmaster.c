@@ -38,7 +38,7 @@
  *	  clients.
  *
  *
- * Portions Copyright (c) 1996-2017, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -80,8 +80,6 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <sys/param.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <netdb.h>
 #include <limits.h>
 
@@ -105,7 +103,9 @@
 #include "access/xlog.h"
 #include "bootstrap/bootstrap.h"
 #include "catalog/pg_control.h"
+#include "common/file_perm.h"
 #include "common/ip.h"
+#include "common/string.h"
 #include "lib/ilist.h"
 #include "libpq/auth.h"
 #include "libpq/libpq.h"
@@ -114,6 +114,7 @@
 #include "miscadmin.h"
 #include "pg_getopt.h"
 #include "pgstat.h"
+#include "port/pg_bswap.h"
 #include "postmaster/autovacuum.h"
 #include "postmaster/bgworker_internals.h"
 #include "postmaster/fork_process.h"
@@ -130,11 +131,11 @@
 #include "tcop/tcopprot.h"
 #include "utils/builtins.h"
 #include "utils/datetime.h"
-#include "utils/dynamic_loader.h"
 #include "utils/memutils.h"
 #include "utils/pidfile.h"
 #include "utils/ps_status.h"
 #include "utils/timeout.h"
+#include "utils/timestamp.h"
 #include "utils/varlena.h"
 
 #ifdef EXEC_BACKEND
@@ -209,9 +210,9 @@ static Backend *ShmemBackendArray;
 
 /*
  * ReservedBackends is the number of backends reserved for superuser use.
- * This number is taken out of the pool size given by MaxBackends so
+ * This number is taken out of the pool size given by MaxConnections so
  * number of backend slots available to non-superusers is
- * (MaxBackends - ReservedBackends).  Note what this really means is
+ * (MaxConnections - ReservedBackends).  Note what this really means is
  * "if there are <= ReservedBackends connections available, only superusers
  * can make new connections" --- pre-existing superuser connections don't
  * count against the limit.
@@ -373,16 +374,6 @@ __thread bool		ClientAuthInProgress = false;
 
 
 
-#ifndef HAVE_STRONG_RANDOM
-/*
- * State for assigning cancel keys.
- * Also, the global MyCancelKey passes the cancel key assigned to a given
- * backend from the postmaster to that backend (via fork).
- */
-static unsigned int random_seed = 0;
-static struct timeval random_start_time;
-#endif
-
 #ifdef USE_SSL
 /* Set when and if SSL has been initialized properly */
 static bool LoadedSSL = false;
@@ -398,7 +389,7 @@ static DNSServiceRef bonjour_sdref = NULL;
 static void CloseServerPorts(int status, Datum arg);
 static void unlink_external_pid_file(int status, Datum arg);
 static void getInstallationPaths(const char *argv0);
-static void checkDataDir(void);
+static void checkControlFile(void);
 static Port *ConnCreate(int serverFd);
 static void ConnFree(Port *port);
 static void reset_shared(int port);
@@ -413,19 +404,19 @@ static void CleanupBackend(int pid, int exitstatus);
 static bool CleanupBackgroundWorker(int pid, int exitstatus);
 static void HandleChildCrash(int pid, int exitstatus, const char *procname);
 static void LogChildExit(int lev, const char *procname,
-			 int pid, int exitstatus);
+						 int pid, int exitstatus);
 static void PostmasterStateMachine(void);
 static void BackendInitialize(Port *port);
 static void BackendRun(Port *port) pg_attribute_noreturn();
 static void ExitPostmaster(int status) pg_attribute_noreturn();
 static int	ServerLoop(void);
 static int	BackendStartup(Port *port);
-static int	ProcessStartupPacket(Port *port, bool SSLdone);
+static int	ProcessStartupPacket(Port *port, bool ssl_done, bool gss_done);
 static void SendNegotiateProtocolVersion(List *unrecognized_protocol_options);
 static void processCancelRequest(Port *port, void *pkt);
 static int	initMasks(fd_set *rmask);
 static void report_fork_failure_to_client(Port *port, int errnum);
-static CAC_state canAcceptConnections(void);
+static CAC_state canAcceptConnections(int backend_type);
 static bool RandomCancelKey(int32 *cancel_key);
 static void signal_child(pid_t pid, int signal);
 static bool SignalSomeChildren(int signal, int targets);
@@ -500,6 +491,7 @@ typedef struct
 #ifndef WIN32
 	unsigned long UsedShmemSegID;
 #else
+	void	   *ShmemProtectiveRegion;
 	HANDLE		UsedShmemSegID;
 #endif
 	void	   *UsedShmemSegAddr;
@@ -546,7 +538,7 @@ static void restore_backend_variables(BackendParameters *param, Port *port);
 static bool save_backend_variables(BackendParameters *param, Port *port);
 #else
 static bool save_backend_variables(BackendParameters *param, Port *port,
-					   HANDLE childProcess, pid_t childPid);
+								   HANDLE childProcess, pid_t childPid);
 #endif
 
 static void ShmemBackendArrayAdd(Backend *bn);
@@ -578,6 +570,10 @@ HANDLE		PostmasterHandle;
 /*
  * Postmaster main entry point
  */
+#ifdef SIGTTIN
+#endif
+#ifdef SIGTTOU
+#endif
 #ifdef SIGXFSZ
 #endif
 #ifdef HAVE_INT_OPTRESET
@@ -593,8 +589,6 @@ HANDLE		PostmasterHandle;
 #ifdef EXEC_BACKEND
 #endif
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
-#endif
-#ifndef HAVE_STRONG_RANDOM
 #endif
 
 
@@ -616,14 +610,13 @@ HANDLE		PostmasterHandle;
 #ifdef EXEC_BACKEND
 #endif
 
-
 /*
- * Validate the proposed data directory
+ * Check that pg_control exists in the correct location in the data directory.
+ *
+ * No attempt is made to validate the contents of pg_control here.  This is
+ * just a sanity check to see if we are looking at a real data directory.
  */
-#if !defined(WIN32) && !defined(__CYGWIN__)
-#endif
-#if !defined(WIN32) && !defined(__CYGWIN__)
-#endif
+
 
 /*
  * Determine how long should we let ServerLoop sleep.
@@ -661,11 +654,22 @@ HANDLE		PostmasterHandle;
  * if that's what you want.  Return STATUS_ERROR if you don't want to
  * send anything to the client, which would typically be appropriate
  * if we detect a communications failure.)
+ *
+ * Set ssl_done and/or gss_done when negotiation of an encrypted layer
+ * (currently, TLS or GSSAPI) is completed. A successful negotiation of either
+ * encryption layer sets both flags, but a rejected negotiation sets only the
+ * flag for that layer, since the client may wish to try the other one. We
+ * should make no assumption here about the order in which the client may make
+ * requests.
  */
 #ifdef USE_SSL
 #else
 #endif
 #ifdef USE_SSL
+#endif
+#ifdef ENABLE_GSS
+#endif
+#ifdef ENABLE_GSS
 #endif
 
 /*
@@ -694,9 +698,15 @@ HANDLE		PostmasterHandle;
 #ifndef EXEC_BACKEND
 #else
 #endif
+#ifndef EXEC_BACKEND			/* make GNU Emacs 26.1 see brace balance */
+#else
+#endif
 
 /*
- * canAcceptConnections --- check to see if database state allows connections.
+ * canAcceptConnections --- check to see if database state allows connections
+ * of the specified type.  backend_type can be BACKEND_TYPE_NORMAL,
+ * BACKEND_TYPE_AUTOVAC, or BACKEND_TYPE_BGWORKER.  (Note that we don't yet
+ * know whether a NORMAL connection might turn into a walsender.)
  */
 
 
@@ -736,6 +746,14 @@ HANDLE		PostmasterHandle;
 #endif
 #ifdef USE_BONJOUR
 #endif
+
+
+/*
+ * InitProcessGlobals -- set MyProcPid, MyStartTime[stamp], random seeds
+ *
+ * Called early in the postmaster and every backend.
+ */
+
 
 
 /*
@@ -898,8 +916,7 @@ HANDLE		PostmasterHandle;
  *		Shouldn't return at all.
  *		If PostgresMain() fails, return status.
  */
-#ifndef HAVE_STRONG_RANDOM
-#endif
+
 
 
 #ifdef EXEC_BACKEND
@@ -982,9 +999,9 @@ internal_forkexec(int argc, char *argv[], Port *port)
 	{
 		/*
 		 * As in OpenTemporaryFileInTablespace, try to make the temp-file
-		 * directory
+		 * directory, ignoring errors.
 		 */
-		mkdir(PG_TEMP_FILES_DIR, S_IRWXU);
+		(void) MakePGDirectory(PG_TEMP_FILES_DIR);
 
 		fp = AllocateFile(tmpfilename, PG_BINARY_W);
 		if (!fp)
@@ -1213,8 +1230,8 @@ retry:
 	}
 
 	/*
-	 * Queue a waiter for to signal when this child dies. The wait will be
-	 * handled automatically by an operating system thread pool.
+	 * Queue a waiter to signal when this child dies. The wait will be handled
+	 * automatically by an operating system thread pool.
 	 *
 	 * Note: use malloc instead of palloc, since it needs to be thread-safe.
 	 * Struct will be free():d from the callback function that runs on a
@@ -1350,6 +1367,20 @@ SubPostmasterMain(int argc, char *argv[])
 	read_nondefault_variables();
 
 	/*
+	 * Check that the data directory looks valid, which will also check the
+	 * privileges on the data directory and update our umask and file/group
+	 * variables for creating files later.  Note: this should really be done
+	 * before we create any files or directories.
+	 */
+	checkDataDir();
+
+	/*
+	 * (re-)read control file, as it contains config. The postmaster will
+	 * already have read this, but this process doesn't know about that.
+	 */
+	LocalProcessControlFile(false);
+
+	/*
 	 * Reload any libraries that were preloaded by the postmaster.  Since we
 	 * exec'd this process, those libraries didn't come along with us; but we
 	 * should load them into all child processes to be consistent with the
@@ -1403,7 +1434,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		/* And run the backend */
 		BackendRun(&port);		/* does not return */
@@ -1417,7 +1448,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitAuxiliaryProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AuxiliaryProcessMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1430,7 +1461,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AutoVacLauncherMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1443,7 +1474,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		AutoVacWorkerMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1461,7 +1492,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(false, 0);
+		CreateSharedMemoryAndSemaphores(0);
 
 		/* Fetch MyBgworkerEntry from shared memory */
 		shmem_slot = atoi(argv[1] + 15);
@@ -1541,9 +1572,7 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * Generate a random cancel key.
  */
-#ifdef HAVE_STRONG_RANDOM
-#else
-#endif
+
 
 /*
  * Count up number of child processes of specified types (dead_end children
@@ -1582,6 +1611,14 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * MaybeStartWalReceiver
  *		Start the WAL receiver process, if not running and our state allows.
+ *
+ * Note: if WalReceiverPID is already nonzero, it might seem that we should
+ * clear WalReceiverRequested.  However, there's a race condition if the
+ * walreceiver terminates and the startup process immediately requests a new
+ * one: it's quite possible to get the signal for the request before reaping
+ * the dead walreceiver process.  Better to risk launching an extra
+ * walreceiver than to miss launching one we need.  (The walreceiver code
+ * has logic to recognize that it should go away if not needed.)
  */
 
 
@@ -1715,7 +1752,7 @@ extern pg_time_t first_syslogger_file_time;
 #else
 static bool write_duplicated_handle(HANDLE *dest, HANDLE src, HANDLE child);
 static bool write_inheritable_socket(InheritableSocket *dest, SOCKET src,
-						 pid_t childPid);
+									 pid_t childPid);
 static void read_inheritable_socket(SOCKET *dest, InheritableSocket *src);
 #endif
 
@@ -1741,6 +1778,9 @@ save_backend_variables(BackendParameters *param, Port *port,
 	param->MyCancelKey = MyCancelKey;
 	param->MyPMChildSlot = MyPMChildSlot;
 
+#ifdef WIN32
+	param->ShmemProtectiveRegion = ShmemProtectiveRegion;
+#endif
 	param->UsedShmemSegID = UsedShmemSegID;
 	param->UsedShmemSegAddr = UsedShmemSegAddr;
 
@@ -1974,6 +2014,9 @@ restore_backend_variables(BackendParameters *param, Port *port)
 	MyCancelKey = param->MyCancelKey;
 	MyPMChildSlot = param->MyPMChildSlot;
 
+#ifdef WIN32
+	ShmemProtectiveRegion = param->ShmemProtectiveRegion;
+#endif
 	UsedShmemSegID = param->UsedShmemSegID;
 	UsedShmemSegAddr = param->UsedShmemSegAddr;
 

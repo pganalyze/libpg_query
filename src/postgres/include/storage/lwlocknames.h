@@ -43,8 +43,7 @@
 #define ReplicationOriginLock (&MainLWLockArray[40].lock)
 #define MultiXactTruncationLock (&MainLWLockArray[41].lock)
 #define OldSnapshotTimeMapLock (&MainLWLockArray[42].lock)
-#define BackendRandomLock (&MainLWLockArray[43].lock)
-#define LogicalRepWorkerLock (&MainLWLockArray[44].lock)
-#define CLogTruncationLock (&MainLWLockArray[45].lock)
+#define LogicalRepWorkerLock (&MainLWLockArray[43].lock)
+#define CLogTruncationLock (&MainLWLockArray[44].lock)
 
-#define NUM_INDIVIDUAL_LWLOCKS		46
+#define NUM_INDIVIDUAL_LWLOCKS		45
