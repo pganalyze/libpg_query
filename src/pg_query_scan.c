@@ -32,8 +32,8 @@ PgQueryScanResult pg_query_scan(const char* input)
   core_yy_extra_type yyextra;
   core_YYSTYPE yylval;
   YYLTYPE    yylloc;
-  Pgquery__ScanOutput output = PGQUERY__SCAN_OUTPUT__INIT;
-  Pgquery__ScanToken **output_tokens;
+  PgQuery__ScanOutput output = PG_QUERY__SCAN_OUTPUT__INIT;
+  PgQuery__ScanToken **output_tokens;
   size_t token_count = 0;
   size_t i;
 
@@ -77,7 +77,7 @@ PgQueryScanResult pg_query_scan(const char* input)
     }
     scanner_finish(yyscanner);
 
-    output_tokens = malloc(sizeof(Pgquery__ScanToken *) * token_count);
+    output_tokens = malloc(sizeof(PgQuery__ScanToken *) * token_count);
 
     /* initialize the flex scanner --- should match raw_parser() */
     yyscanner = scanner_init(input, &yyextra, &ScanKeywords, ScanKeywordTokens);
@@ -91,8 +91,8 @@ PgQueryScanResult pg_query_scan(const char* input)
       tok = core_yylex(&yylval, &yylloc, yyscanner);
       if (tok == 0) break;
 
-      output_tokens[i] = malloc(sizeof(Pgquery__ScanToken));
-      pgquery__scan_token__init(output_tokens[i]);
+      output_tokens[i] = malloc(sizeof(PgQuery__ScanToken));
+      pg_query__scan_token__init(output_tokens[i]);
       output_tokens[i]->start = yylloc;
       if (tok == SCONST || tok == BCONST || tok == XCONST || tok == IDENT || tok == C_COMMENT) {
         output_tokens[i]->end = yyextra.yyllocend;
@@ -112,9 +112,9 @@ PgQueryScanResult pg_query_scan(const char* input)
 
     output.n_tokens = token_count;
     output.tokens = output_tokens;
-    result.pbuf_len = pgquery__scan_output__get_packed_size(&output);
+    result.pbuf_len = pg_query__scan_output__get_packed_size(&output);
     result.pbuf = malloc(result.pbuf_len);
-    pgquery__scan_output__pack(&output, result.pbuf);
+    pg_query__scan_output__pack(&output, result.pbuf);
 
     for (i = 0; i < token_count; i++) {
       free(output_tokens[i]);

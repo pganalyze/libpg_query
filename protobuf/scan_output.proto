@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package pgquery;
+package pg_query;
 
 enum KeywordKind {
   NO_KEYWORD = 0;

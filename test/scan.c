@@ -13,8 +13,8 @@ int main() {
   size_t i;
   size_t j;
   bool ret_code = 0;
-  Pgquery__ScanOutput *scan_output;
-  Pgquery__ScanToken *scan_token;
+  PgQuery__ScanOutput *scan_output;
+  PgQuery__ScanToken *scan_token;
   const ProtobufCEnumValue *token_kind;
   const ProtobufCEnumValue *keyword_kind;
   PgQueryScanResult result;
@@ -29,18 +29,18 @@ int main() {
       ret_code = -1;
       printf("%s\n", result.error->message);
     } else {
-      scan_output = pgquery__scan_output__unpack(NULL, result.pbuf_len, result.pbuf);
+      scan_output = pg_query__scan_output__unpack(NULL, result.pbuf_len, result.pbuf);
 
       for (j = 0; j < scan_output->n_tokens; j++) {
         char buffer2[1024];
         scan_token = scan_output->tokens[j];
-        token_kind = protobuf_c_enum_descriptor_get_value(&pgquery__token__descriptor, scan_token->token);
-        keyword_kind = protobuf_c_enum_descriptor_get_value(&pgquery__keyword_kind__descriptor, scan_token->keyword_kind);
+        token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
+        keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
         sprintf(buffer2, "%.*s = %s, %s\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), token_kind->name, keyword_kind->name);
         strcat(buffer, buffer2);
       }
 
-      pgquery__scan_output__free_unpacked(scan_output, NULL);
+      pg_query__scan_output__free_unpacked(scan_output, NULL);
 
       if (strcmp(buffer, tests[i + 1]) == 0) {
         printf(".");
