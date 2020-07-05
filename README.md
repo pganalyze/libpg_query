@@ -53,6 +53,55 @@ This will output:
 [{"SelectStmt": {"targetList": [{"ResTarget": {"val": {"A_Const": {"val": {"Integer": {"ival": 1}}, "location": 7}}, "location": 7}}], "op": 0}}]
 ```
 
+## Usage: Scanning a query into its tokens using the PostgreSQL scanner/lexer
+
+pg_query also exposes the underlying scanner of Postgres, which is also used in
+the very first part in the parsing process. It can be useful on its own for e.g.
+syntax highlighting, where one is mostly concerned with differentiating keywords
+from identifiers and other parts of the query:
+
+```c
+#include <pg_query.h>
+#include <stdio.h>
+
+int main() {
+  PgQueryScanResult result;
+
+  result = pg_query_scan("SELECT update AS left /* comment */ FROM between");
+
+  printf("%s\n", result.scan_output);
+
+  pg_query_free_scan_result(result);
+}
+```
+
+This will output the following:
+
+```json
+[
+  [ 0, 6, 597, 3 ],
+  [ 7, 13, 597, 3 ],
+  [ 14, 20, 663, 0 ],
+  [ 21, 23, 290, 3 ],
+  [ 24, 28, 474, 2 ]
+  [ 43, 47, 417, 3 ],
+  [ 48, 55, 302, 1 ]
+]
+```
+
+Where the each element in the array represents a token and has the following fields:
+
+1. Start location in the source string
+2. End location in the source string
+3. Token value - see `protobuf/scan_output.proto`
+4. Keyword type:
+  `-1`: Not a keyword
+  `0`: Unreserved keyword (available for use as any kind of unescaped name)
+  `1`: Unreserved keyword (can be unescaped column/table/etc names, cannot be unescaped function or type name)
+  `2`: Reserved keyword (can be unescaped function or type name, cannot be unescaped column/table/etc names)
+  `3`: Reserved keyword (cannot be unescaped column/table/variable/type/function names)
+
+Note that whitespace does not show as tokens.
 
 ## Usage: Fingerprinting a query
 

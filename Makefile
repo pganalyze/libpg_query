@@ -7,7 +7,7 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 12.3
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c)
+SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/scan_output.pb-c.c
 OBJ_FILES := $(SRC_FILES:.c=.o)
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
@@ -69,9 +69,11 @@ $(PGDIR):
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parse_replacement_char.patch
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_make_memory_context_methods_const.patch
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_lexer_track_yyllocend.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_comment_scanner.patch
 	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
+	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
@@ -108,9 +110,13 @@ extract_source: $(PGDIR)
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
-EXAMPLES = examples/simple examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
+protobuf/scan_output.pb-c.c: protobuf/scan_output.proto
+	protoc --c_out=. protobuf/scan_output.proto
+
+EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
 	examples/simple
+	examples/scan
 	examples/normalize
 	examples/simple_error
 	examples/normalize_error
@@ -118,6 +124,9 @@ examples: $(EXAMPLES)
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
+
+examples/scan: examples/scan.c $(ARLIB)
+	$(CC) -I. -o $@ -g examples/scan.c $(ARLIB)
 
 examples/normalize: examples/normalize.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize.c $(ARLIB) $(TEST_LDFLAGS)
@@ -131,7 +140,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql
+TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql test/scan
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -148,6 +157,7 @@ else
 	test/fingerprint
 	test/normalize
 	test/parse
+	test/scan
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
@@ -170,5 +180,8 @@ test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
-test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
+	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
+
+test/scan: test/scan.c test/scan_tests.c $(ARLIB)
+	$(CC) -I. -o $@ -g test/scan.c $(ARLIB)
