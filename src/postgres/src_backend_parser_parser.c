@@ -125,6 +125,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
 		case WITH:
 			cur_token_length = 4;
 			break;
+		case SQL_COMMENT:
+		case C_COMMENT:
+			return base_yylex(lvalp, llocp, yyscanner);
 		default:
 			return cur_token;
 	}

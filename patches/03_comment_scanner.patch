@@ -1,0 +1,116 @@
+diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
+index 208b4a1f28..adf7da2ed9 100644
+--- a/src/backend/parser/gram.y
++++ b/src/backend/parser/gram.y
+@@ -603,6 +603,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+ %token <ival>	ICONST PARAM
+ %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
+ %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
++%token			SQL_COMMENT C_COMMENT
+ 
+ /*
+  * If you want to make any keyword changes, update the keyword table in
+diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
+index 4c0c258cd7..8f426d6f74 100644
+--- a/src/backend/parser/parser.c
++++ b/src/backend/parser/parser.c
+@@ -117,6 +117,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
+ 		case WITH:
+ 			cur_token_length = 4;
+ 			break;
++		case SQL_COMMENT:
++		case C_COMMENT:
++			return base_yylex(lvalp, llocp, yyscanner);
+ 		default:
+ 			return cur_token;
+ 	}
+diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
+index c75fbd8705..1f7a9675bc 100644
+--- a/src/backend/parser/scan.l
++++ b/src/backend/parser/scan.l
+@@ -218,7 +218,7 @@ non_newline		[^\n\r]
+ 
+ comment			("--"{non_newline}*)
+ 
+-whitespace		({space}+|{comment})
++whitespace		({space}+)
+ 
+ /*
+  * SQL requires at least one newline in the whitespace separating
+@@ -227,8 +227,8 @@ whitespace		({space}+|{comment})
+  * it, whereas {whitespace} should generally have a * after it...
+  */
+ 
+-special_whitespace		({space}+|{comment}{newline})
+-horiz_whitespace		({horiz_space}|{comment})
++special_whitespace		({space}+)
++horiz_whitespace		({horiz_space})
+ whitespace_with_newline	({horiz_whitespace}*{newline}{special_whitespace}*)
+ 
+ /*
+@@ -424,6 +424,11 @@ other			.
+ 					/* ignore */
+ 				}
+ 
++{comment}	{
++					SET_YYLLOC();
++					return SQL_COMMENT;
++				}
++
+ {xcstart}		{
+ 					/* Set location in case of syntax error in comment */
+ 					SET_YYLLOC();
+@@ -442,7 +447,11 @@ other			.
+ 
+ {xcstop}		{
+ 					if (yyextra->xcdepth <= 0)
++					{
+ 						BEGIN(INITIAL);
++						yyextra->yyllocend = yytext - yyextra->scanbuf + yyleng;
++						return C_COMMENT;
++					}
+ 					else
+ 						(yyextra->xcdepth)--;
+ 				}
+diff --git a/src/interfaces/ecpg/preproc/parser.c b/src/interfaces/ecpg/preproc/parser.c
+index abae89d51b..981e327c2e 100644
+--- a/src/interfaces/ecpg/preproc/parser.c
++++ b/src/interfaces/ecpg/preproc/parser.c
+@@ -84,6 +84,9 @@ filtered_base_yylex(void)
+ 		case WITH:
+ 			cur_token_length = 4;
+ 			break;
++		case SQL_COMMENT:
++		case C_COMMENT:
++			return filtered_base_yylex();
+ 		default:
+ 			return cur_token;
+ 	}
+diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
+index af63fe126f..31d7dbd0ec 100644
+--- a/src/pl/plpgsql/src/pl_gram.y
++++ b/src/pl/plpgsql/src/pl_gram.y
+@@ -236,6 +236,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
+ %token <ival>	ICONST PARAM
+ %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
+ %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
++%token			SQL_COMMENT C_COMMENT
+ 
+ /*
+  * Other tokens recognized by plpgsql's lexer interface layer (pl_scanner.c).
+diff --git a/src/pl/plpgsql/src/pl_scanner.c b/src/pl/plpgsql/src/pl_scanner.c
+index c260438d7d..7b8f55241f 100644
+--- a/src/pl/plpgsql/src/pl_scanner.c
++++ b/src/pl/plpgsql/src/pl_scanner.c
+@@ -342,6 +342,11 @@ internal_yylex(TokenAuxData *auxdata)
+ 		{
+ 			auxdata->lval.str = pstrdup(yytext);
+ 		}
++
++		else if (token == SQL_COMMENT || token == C_COMMENT)
++		{
++			token = internal_yylex(auxdata);
++		}
+ 	}
+ 
+ 	return token;
