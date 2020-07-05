@@ -108,7 +108,7 @@ struct ONEXIT
  *		an atexit callback that will make sure cleanup happens.
  * ----------------------------------------------------------------
  */
-void proc_exit(int code) { exit(1); }
+void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); exit(1); }
 
 
 /*
