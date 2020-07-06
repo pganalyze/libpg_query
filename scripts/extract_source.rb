@@ -51,15 +51,15 @@ class Runner
     @include_files_to_output = []
     @unresolved = []
 
-    @blacklist = []
+    @blocklist = []
     @mock = {}
 
     @basepath = File.absolute_path(ARGV[0]) + '/'
     @out_path = File.absolute_path(ARGV[1]) + '/'
   end
 
-  def blacklist(symbol)
-    @blacklist << symbol
+  def blocklist(symbol)
+    @blocklist << symbol
   end
 
   def mock(symbol, code)
@@ -73,7 +73,7 @@ class Runner
     Dir.glob(@basepath + 'src/timezone/**/*.c') +
     Dir.glob(@basepath + 'src/pl/plpgsql/src/*.c') +
     Dir.glob(@basepath + 'contrib/pgcrypto/*.c') -
-    [ # Blacklist
+    [ # blocklist
       @basepath + 'src/backend/libpq/be-secure-openssl.c', # OpenSSL include error
       @basepath + 'src/backend/utils/adt/levenshtein.c', # Built through varlena.c
       @basepath + 'src/backend/utils/adt/like_match.c', # Built through like.c
@@ -258,8 +258,8 @@ class Runner
   RESOLVE_MAX_DEPTH = 100
 
   def deep_resolve(method_name, depth: 0, trail: [], global_resolved_by_parent: [], static_resolved_by_parent: [], static_base_filename: nil)
-    if @blacklist.include?(method_name)
-      puts 'ERROR: Hit blacklist entry ' + method_name
+    if @blocklist.include?(method_name)
+      puts 'ERROR: Hit blocklist entry ' + method_name
       puts 'Trail: ' + trail.inspect
       exit 1
     end
@@ -428,16 +428,16 @@ end
 runner = Runner.new
 runner.run
 
-runner.blacklist('SearchSysCache')
-runner.blacklist('heap_open')
-runner.blacklist('relation_open')
-runner.blacklist('RelnameGetRelid')
-runner.blacklist('ProcessClientWriteInterrupt')
-runner.blacklist('typeStringToTypeName')
-runner.blacklist('LWLockAcquire')
-runner.blacklist('SPI_freeplan')
-runner.blacklist('get_ps_display')
-runner.blacklist('pq_beginmessage')
+runner.blocklist('SearchSysCache')
+runner.blocklist('heap_open')
+runner.blocklist('relation_open')
+runner.blocklist('RelnameGetRelid')
+runner.blocklist('ProcessClientWriteInterrupt')
+runner.blocklist('typeStringToTypeName')
+runner.blocklist('LWLockAcquire')
+runner.blocklist('SPI_freeplan')
+runner.blocklist('get_ps_display')
+runner.blocklist('pq_beginmessage')
 
 # Mocks REQUIRED for basic operations (error handling, memory management)
 runner.mock('ProcessInterrupts', 'void ProcessInterrupts(void) {}') # Required by errfinish
