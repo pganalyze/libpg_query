@@ -73,7 +73,7 @@ class Runner
     Dir.glob(@basepath + 'src/timezone/**/*.c') +
     Dir.glob(@basepath + 'src/pl/plpgsql/src/*.c') +
     Dir.glob(@basepath + 'contrib/pgcrypto/*.c') -
-    [ # Blocklist
+    [ # blocklist
       @basepath + 'src/backend/libpq/be-secure-openssl.c', # OpenSSL include error
       @basepath + 'src/backend/utils/adt/levenshtein.c', # Built through varlena.c
       @basepath + 'src/backend/utils/adt/like_match.c', # Built through like.c
