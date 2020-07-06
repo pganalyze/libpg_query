@@ -2,7 +2,7 @@
  * gin.h
  *	  Public header file for Generalized Inverted Index access method.
  *
- *	Copyright (c) 2006-2019, PostgreSQL Global Development Group
+ *	Copyright (c) 2006-2020, PostgreSQL Global Development Group
  *
  *	src/include/access/gin.h
  *--------------------------------------------------------------------------
@@ -25,7 +25,8 @@
 #define GIN_CONSISTENT_PROC			   4
 #define GIN_COMPARE_PARTIAL_PROC	   5
 #define GIN_TRICONSISTENT_PROC		   6
-#define GINNProcs					   6
+#define GIN_OPTIONS_PROC	   7
+#define GINNProcs					   7
 
 /*
  * searchMode settings for extractQueryFn.

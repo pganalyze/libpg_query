@@ -4,7 +4,7 @@
  *		Querytree manipulation subroutines for query rewriter.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/rewrite/rewriteManip.h
@@ -15,6 +15,8 @@
 #define REWRITEMANIP_H
 
 #include "nodes/parsenodes.h"
+
+struct AttrMap;					/* avoid including attmap.h here */
 
 
 typedef struct replace_rte_variables_context replace_rte_variables_context;
@@ -71,7 +73,7 @@ extern Node *replace_rte_variables_mutator(Node *node,
 
 extern Node *map_variable_attnos(Node *node,
 								 int target_varno, int sublevels_up,
-								 const AttrNumber *attno_map, int map_length,
+								 const struct AttrMap *attno_map,
 								 Oid to_rowtype, bool *found_whole_row);
 
 extern Node *ReplaceVarsFromTargetList(Node *node,

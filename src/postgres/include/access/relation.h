@@ -4,7 +4,7 @@
  *	  Generic relation related routines.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/access/relation.h
@@ -15,9 +15,8 @@
 #define ACCESS_RELATION_H
 
 #include "nodes/primnodes.h"
-#include "utils/relcache.h"
 #include "storage/lockdefs.h"
-
+#include "utils/relcache.h"
 
 extern Relation relation_open(Oid relationId, LOCKMODE lockmode);
 extern Relation try_relation_open(Oid relationId, LOCKMODE lockmode);

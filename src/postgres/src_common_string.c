@@ -10,7 +10,7 @@
  *		string handling helpers
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -70,5 +70,17 @@ strtoint(const char *pg_restrict str, char **pg_restrict endptr, int base)
  * all non-ASCII but perform more intelligent filtering which would allow UTF or
  * similar, but it's unclear exactly what we should allow, so stick to ASCII only
  * for now.
+ */
+
+
+
+/*
+ * pg_strip_crlf -- Remove any trailing newline and carriage return
+ *
+ * Removes any trailing newline and carriage return characters (\r on
+ * Windows) in the input string, zero-terminating it.
+ *
+ * The passed in string must be zero-terminated.  This function returns
+ * the new length of the string.
  */
 

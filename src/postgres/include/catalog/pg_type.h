@@ -4,7 +4,7 @@
  *	  definition of the "type" system catalog (pg_type)
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/pg_type.h
@@ -19,9 +19,8 @@
 #define PG_TYPE_H
 
 #include "catalog/genbki.h"
-#include "catalog/pg_type_d.h"
-
 #include "catalog/objectaddress.h"
+#include "catalog/pg_type_d.h"
 #include "nodes/nodes.h"
 
 /* ----------------
@@ -156,6 +155,7 @@ CATALOG(pg_type,1247,TypeRelationId) BKI_BOOTSTRAP BKI_ROWTYPE_OID(71,TypeRelati
 	 * 's' = SHORT alignment (2 bytes on most machines).
 	 * 'i' = INT alignment (4 bytes on most machines).
 	 * 'd' = DOUBLE alignment (8 bytes on many machines, but by no means all).
+	 * (Use the TYPALIGN macros below for these.)
 	 *
 	 * See include/access/tupmacs.h for the macros that compute these
 	 * alignment requirements.  Note also that we allow the nominal alignment
@@ -177,6 +177,10 @@ CATALOG(pg_type,1247,TypeRelationId) BKI_BOOTSTRAP BKI_ROWTYPE_OID(71,TypeRelati
 	 * 'e' EXTERNAL   external storage possible, don't try to compress
 	 * 'x' EXTENDED   try to compress and store external if required
 	 * 'm' MAIN		  like 'x' but try to keep in main tuple
+	 * (Use the TYPSTORAGE macros below for these.)
+	 *
+	 * Note that 'm' fields can also be moved out to secondary storage,
+	 * but only as a last resort ('e' and 'x' fields are moved first).
 	 * ----------------
 	 */
 	char		typstorage BKI_DEFAULT(p) BKI_ARRAY_DEFAULT(x);
@@ -279,13 +283,34 @@ typedef FormData_pg_type *Form_pg_type;
 #define  TYPCATEGORY_BITSTRING	'V' /* er ... "varbit"? */
 #define  TYPCATEGORY_UNKNOWN	'X'
 
+#define  TYPALIGN_CHAR			'c' /* char alignment (i.e. unaligned) */
+#define  TYPALIGN_SHORT			's' /* short alignment (typically 2 bytes) */
+#define  TYPALIGN_INT			'i' /* int alignment (typically 4 bytes) */
+#define  TYPALIGN_DOUBLE		'd' /* double alignment (often 8 bytes) */
+
+#define  TYPSTORAGE_PLAIN		'p' /* type not prepared for toasting */
+#define  TYPSTORAGE_EXTERNAL	'e' /* toastable, don't try to compress */
+#define  TYPSTORAGE_EXTENDED	'x' /* fully toastable */
+#define  TYPSTORAGE_MAIN		'm' /* like 'x' but try to store inline */
+
 /* Is a type OID a polymorphic pseudotype?	(Beware of multiple evaluation) */
 #define IsPolymorphicType(typid)  \
+	(IsPolymorphicTypeFamily1(typid) || \
+	 IsPolymorphicTypeFamily2(typid))
+
+/* Code not part of polymorphic type resolution should not use these macros: */
+#define IsPolymorphicTypeFamily1(typid)  \
 	((typid) == ANYELEMENTOID || \
 	 (typid) == ANYARRAYOID || \
 	 (typid) == ANYNONARRAYOID || \
 	 (typid) == ANYENUMOID || \
 	 (typid) == ANYRANGEOID)
+
+#define IsPolymorphicTypeFamily2(typid)  \
+	((typid) == ANYCOMPATIBLEOID || \
+	 (typid) == ANYCOMPATIBLEARRAYOID || \
+	 (typid) == ANYCOMPATIBLENONARRAYOID || \
+	 (typid) == ANYCOMPATIBLERANGEOID)
 
 #endif							/* EXPOSE_TO_CLIENT_CODE */
 
@@ -326,8 +351,8 @@ extern ObjectAddress TypeCreate(Oid newTypeOid,
 								bool typeNotNull,
 								Oid typeCollation);
 
-extern void GenerateTypeDependencies(Oid typeObjectId,
-									 Form_pg_type typeForm,
+extern void GenerateTypeDependencies(HeapTuple typeTuple,
+									 Relation typeCatalog,
 									 Node *defaultExpr,
 									 void *typacl,
 									 char relationKind, /* only for relation

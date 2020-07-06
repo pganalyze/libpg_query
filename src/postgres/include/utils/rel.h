@@ -4,7 +4,7 @@
  *	  POSTGRES relation descriptor (a/k/a relcache entry) definitions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/rel.h
@@ -19,8 +19,8 @@
 #include "catalog/pg_class.h"
 #include "catalog/pg_index.h"
 #include "catalog/pg_publication.h"
-#include "fmgr.h"
 #include "nodes/bitmapset.h"
+#include "partitioning/partdefs.h"
 #include "rewrite/prs2lock.h"
 #include "storage/block.h"
 #include "storage/relfilenode.h"
@@ -66,25 +66,45 @@ typedef struct RelationData
 
 	/*----------
 	 * rd_createSubid is the ID of the highest subtransaction the rel has
-	 * survived into; or zero if the rel was not created in the current top
-	 * transaction.  This can be now be relied on, whereas previously it could
-	 * be "forgotten" in earlier releases. Likewise, rd_newRelfilenodeSubid is
-	 * the ID of the highest subtransaction the relfilenode change has
-	 * survived into, or zero if not changed in the current transaction (or we
-	 * have forgotten changing it). rd_newRelfilenodeSubid can be forgotten
-	 * when a relation has multiple new relfilenodes within a single
-	 * transaction, with one of them occurring in a subsequently aborted
-	 * subtransaction, e.g.
+	 * survived into or zero if the rel or its rd_node was created before the
+	 * current top transaction.  (IndexStmt.oldNode leads to the case of a new
+	 * rel with an old rd_node.)  rd_firstRelfilenodeSubid is the ID of the
+	 * highest subtransaction an rd_node change has survived into or zero if
+	 * rd_node matches the value it had at the start of the current top
+	 * transaction.  (Rolling back the subtransaction that
+	 * rd_firstRelfilenodeSubid denotes would restore rd_node to the value it
+	 * had at the start of the current top transaction.  Rolling back any
+	 * lower subtransaction would not.)  Their accuracy is critical to
+	 * RelationNeedsWAL().
+	 *
+	 * rd_newRelfilenodeSubid is the ID of the highest subtransaction the
+	 * most-recent relfilenode change has survived into or zero if not changed
+	 * in the current transaction (or we have forgotten changing it).  This
+	 * field is accurate when non-zero, but it can be zero when a relation has
+	 * multiple new relfilenodes within a single transaction, with one of them
+	 * occurring in a subsequently aborted subtransaction, e.g.
 	 *		BEGIN;
 	 *		TRUNCATE t;
 	 *		SAVEPOINT save;
 	 *		TRUNCATE t;
 	 *		ROLLBACK TO save;
 	 *		-- rd_newRelfilenodeSubid is now forgotten
+	 *
+	 * If every rd_*Subid field is zero, they are read-only outside
+	 * relcache.c.  Files that trigger rd_node changes by updating
+	 * pg_class.reltablespace and/or pg_class.relfilenode call
+	 * RelationAssumeNewRelfilenode() to update rd_*Subid.
+	 *
+	 * rd_droppedSubid is the ID of the highest subtransaction that a drop of
+	 * the rel has survived into.  In entries visible outside relcache.c, this
+	 * is always zero.
 	 */
 	SubTransactionId rd_createSubid;	/* rel was created in current xact */
-	SubTransactionId rd_newRelfilenodeSubid;	/* new relfilenode assigned in
-												 * current xact */
+	SubTransactionId rd_newRelfilenodeSubid;	/* highest subxact changing
+												 * rd_node to current value */
+	SubTransactionId rd_firstRelfilenodeSubid;	/* highest subxact changing
+												 * rd_node to any value */
+	SubTransactionId rd_droppedSubid;	/* dropped with another Subid set */
 
 	Form_pg_class rd_rel;		/* RELATION tuple */
 	TupleDesc	rd_att;			/* tuple descriptor */
@@ -100,10 +120,15 @@ typedef struct RelationData
 	List	   *rd_fkeylist;	/* list of ForeignKeyCacheInfo (see below) */
 	bool		rd_fkeyvalid;	/* true if list has been computed */
 
-	struct PartitionKeyData *rd_partkey;	/* partition key, or NULL */
+	/* data managed by RelationGetPartitionKey: */
+	PartitionKey rd_partkey;	/* partition key, or NULL */
 	MemoryContext rd_partkeycxt;	/* private context for rd_partkey, if any */
-	struct PartitionDescData *rd_partdesc;	/* partitions, or NULL */
+
+	/* data managed by RelationGetPartitionDesc: */
+	PartitionDesc rd_partdesc;	/* partition descriptor, or NULL */
 	MemoryContext rd_pdcxt;		/* private context for rd_partdesc, if any */
+
+	/* data managed by RelationGetPartitionQual: */
 	List	   *rd_partcheck;	/* partition CHECK quals */
 	bool		rd_partcheckvalid;	/* true if list has been computed */
 	MemoryContext rd_partcheckcxt;	/* private cxt for rd_partcheck, if any */
@@ -164,7 +189,7 @@ typedef struct RelationData
 	Oid		   *rd_opfamily;	/* OIDs of op families for each index col */
 	Oid		   *rd_opcintype;	/* OIDs of opclass declared input data types */
 	RegProcedure *rd_support;	/* OIDs of support procedures */
-	FmgrInfo   *rd_supportinfo; /* lookup info for support procedures */
+	struct FmgrInfo *rd_supportinfo;	/* lookup info for support procedures */
 	int16	   *rd_indoption;	/* per-column AM-specific flags */
 	List	   *rd_indexprs;	/* index expression trees, if any */
 	List	   *rd_indpred;		/* index predicate tree, if any */
@@ -172,6 +197,7 @@ typedef struct RelationData
 	Oid		   *rd_exclprocs;	/* OIDs of exclusion ops' procs, if any */
 	uint16	   *rd_exclstrats;	/* exclusion ops' strategy numbers, if any */
 	Oid		   *rd_indcollation;	/* OIDs of index collations */
+	bytea	  **rd_opcoptions;	/* parsed opclass-specific options */
 
 	/*
 	 * rd_amcache is available for index and table AMs to cache private data
@@ -241,7 +267,7 @@ typedef struct ForeignKeyCacheInfo
 
 /*
  * StdRdOptions
- *		Standard contents of rd_options for heaps and generic indexes.
+ *		Standard contents of rd_options for heaps.
  *
  * RelationGetFillFactor() and RelationGetTargetPageFreeSpace() can only
  * be applied to relations that use this format or a superset for
@@ -252,6 +278,7 @@ typedef struct AutoVacOpts
 {
 	bool		enabled;
 	int			vacuum_threshold;
+	int			vacuum_ins_threshold;
 	int			analyze_threshold;
 	int			vacuum_cost_limit;
 	int			freeze_min_age;
@@ -263,6 +290,7 @@ typedef struct AutoVacOpts
 	int			log_min_duration;
 	float8		vacuum_cost_delay;
 	float8		vacuum_scale_factor;
+	float8		vacuum_ins_scale_factor;
 	float8		analyze_scale_factor;
 } AutoVacOpts;
 
@@ -271,7 +299,6 @@ typedef struct StdRdOptions
 	int32		vl_len_;		/* varlena header (do not touch directly!) */
 	int			fillfactor;		/* page fill factor in percent (0..100) */
 	/* fraction of newly inserted tuples prior to trigger index cleanup */
-	float8		vacuum_cleanup_index_scale_factor;
 	int			toast_tuple_target; /* target for tuple toasting */
 	AutoVacOpts autovacuum;		/* autovacuum-related options */
 	bool		user_catalog_table; /* use as an additional catalog relation */
@@ -333,6 +360,13 @@ typedef struct StdRdOptions
 	((relation)->rd_options ? \
 	 ((StdRdOptions *) (relation)->rd_options)->parallel_workers : (defaultpw))
 
+/* ViewOptions->check_option values */
+typedef enum ViewOptCheckOption
+{
+	VIEW_OPTION_CHECK_OPTION_NOT_SET,
+	VIEW_OPTION_CHECK_OPTION_LOCAL,
+	VIEW_OPTION_CHECK_OPTION_CASCADED
+} ViewOptCheckOption;
 
 /*
  * ViewOptions
@@ -342,7 +376,7 @@ typedef struct ViewOptions
 {
 	int32		vl_len_;		/* varlena header (do not touch directly!) */
 	bool		security_barrier;
-	int			check_option_offset;
+	ViewOptCheckOption check_option;
 } ViewOptions;
 
 /*
@@ -350,9 +384,10 @@ typedef struct ViewOptions
  *		Returns whether the relation is security view, or not.  Note multiple
  *		eval of argument!
  */
-#define RelationIsSecurityView(relation)	\
-	((relation)->rd_options ?				\
-	 ((ViewOptions *) (relation)->rd_options)->security_barrier : false)
+#define RelationIsSecurityView(relation)									\
+	(AssertMacro(relation->rd_rel->relkind == RELKIND_VIEW),				\
+	 (relation)->rd_options ?												\
+	  ((ViewOptions *) (relation)->rd_options)->security_barrier : false)
 
 /*
  * RelationHasCheckOption
@@ -360,8 +395,10 @@ typedef struct ViewOptions
  *		or the cascaded check option.  Note multiple eval of argument!
  */
 #define RelationHasCheckOption(relation)									\
-	((relation)->rd_options &&												\
-	 ((ViewOptions *) (relation)->rd_options)->check_option_offset != 0)
+	(AssertMacro(relation->rd_rel->relkind == RELKIND_VIEW),				\
+	 (relation)->rd_options &&												\
+	 ((ViewOptions *) (relation)->rd_options)->check_option !=				\
+	 VIEW_OPTION_CHECK_OPTION_NOT_SET)
 
 /*
  * RelationHasLocalCheckOption
@@ -369,11 +406,10 @@ typedef struct ViewOptions
  *		option.  Note multiple eval of argument!
  */
 #define RelationHasLocalCheckOption(relation)								\
-	((relation)->rd_options &&												\
-	 ((ViewOptions *) (relation)->rd_options)->check_option_offset != 0 ?	\
-	 strcmp((char *) (relation)->rd_options +								\
-			((ViewOptions *) (relation)->rd_options)->check_option_offset,	\
-			"local") == 0 : false)
+	(AssertMacro(relation->rd_rel->relkind == RELKIND_VIEW),				\
+	 (relation)->rd_options &&												\
+	 ((ViewOptions *) (relation)->rd_options)->check_option ==				\
+	 VIEW_OPTION_CHECK_OPTION_LOCAL)
 
 /*
  * RelationHasCascadedCheckOption
@@ -381,12 +417,10 @@ typedef struct ViewOptions
  *		option.  Note multiple eval of argument!
  */
 #define RelationHasCascadedCheckOption(relation)							\
-	((relation)->rd_options &&												\
-	 ((ViewOptions *) (relation)->rd_options)->check_option_offset != 0 ?	\
-	 strcmp((char *) (relation)->rd_options +								\
-			((ViewOptions *) (relation)->rd_options)->check_option_offset,	\
-			"cascaded") == 0 : false)
-
+	(AssertMacro(relation->rd_rel->relkind == RELKIND_VIEW),				\
+	 (relation)->rd_options &&												\
+	 ((ViewOptions *) (relation)->rd_options)->check_option ==				\
+	  VIEW_OPTION_CHECK_OPTION_CASCADED)
 
 /*
  * RelationIsValid
@@ -520,9 +554,16 @@ typedef struct ViewOptions
 /*
  * RelationNeedsWAL
  *		True if relation needs WAL.
+ *
+ * Returns false if wal_level = minimal and this relation is created or
+ * truncated in the current transaction.  See "Skipping WAL for New
+ * RelFileNode" in src/backend/access/transam/README.
  */
-#define RelationNeedsWAL(relation) \
-	((relation)->rd_rel->relpersistence == RELPERSISTENCE_PERMANENT)
+#define RelationNeedsWAL(relation)										\
+	((relation)->rd_rel->relpersistence == RELPERSISTENCE_PERMANENT &&	\
+	 (XLogIsNeeded() ||													\
+	  (relation->rd_createSubid == InvalidSubTransactionId &&			\
+	   relation->rd_firstRelfilenodeSubid == InvalidSubTransactionId)))
 
 /*
  * RelationUsesLocalBuffers
@@ -596,21 +637,8 @@ typedef struct ViewOptions
 	 RelationNeedsWAL(relation) && \
 	 !IsCatalogRelation(relation))
 
-/*
- * RelationGetPartitionKey
- *		Returns the PartitionKey of a relation
- */
-#define RelationGetPartitionKey(relation) ((relation)->rd_partkey)
-
-/*
- * RelationGetPartitionDesc
- *		Returns partition descriptor for a relation.
- */
-#define RelationGetPartitionDesc(relation) ((relation)->rd_partdesc)
-
 /* routines in utils/cache/relcache.c */
 extern void RelationIncrementReferenceCount(Relation rel);
 extern void RelationDecrementReferenceCount(Relation rel);
-extern List *RelationGetRepsetList(Relation rel);
 
 #endif							/* REL_H */

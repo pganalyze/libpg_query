@@ -3,7 +3,7 @@
  * pg_operator_d.h
  *    Macro definitions for pg_operator
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -43,13 +43,21 @@
 #define Int4EqualOperator 96
 #define Int4LessOperator 97
 #define TextEqualOperator 98
+#define NameEqualTextOperator 254
+#define NameLessTextOperator 255
+#define NameGreaterEqualTextOperator 257
 #define TIDEqualOperator 387
 #define TIDLessOperator 2799
 #define Int8LessOperator 412
 #define OID_NAME_REGEXEQ_OP 639
 #define OID_TEXT_REGEXEQ_OP 641
+#define TextLessOperator 664
+#define TextGreaterEqualOperator 667
 #define Float8LessOperator 672
+#define BpcharEqualOperator 1054
 #define OID_BPCHAR_REGEXEQ_OP 1055
+#define BpcharLessOperator 1058
+#define BpcharGreaterEqualOperator 1061
 #define ARRAY_EQ_OP 1070
 #define ARRAY_LT_OP 1072
 #define ARRAY_GT_OP 1073
@@ -67,7 +75,14 @@
 #define OID_NAME_ICLIKE_OP 1625
 #define OID_TEXT_ICLIKE_OP 1627
 #define OID_BPCHAR_ICLIKE_OP 1629
+#define ByteaEqualOperator 1955
+#define ByteaLessOperator 1957
+#define ByteaGreaterEqualOperator 1960
 #define OID_BYTEA_LIKE_OP 2016
+#define TextPatternLessOperator 2314
+#define TextPatternGreaterEqualOperator 2317
+#define BpcharPatternLessOperator 2326
+#define BpcharPatternGreaterEqualOperator 2329
 #define OID_ARRAY_OVERLAP_OP 2750
 #define OID_ARRAY_CONTAINS_OP 2751
 #define OID_ARRAY_CONTAINED_OP 2752

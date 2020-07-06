@@ -4,7 +4,7 @@
  *	  include file for the bootstrapping code
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/bootstrap/bootstrap.h
@@ -33,8 +33,6 @@ extern int	numattr;
 
 
 extern void AuxiliaryProcessMain(int argc, char *argv[]) pg_attribute_noreturn();
-
-extern void err_out(void);
 
 extern void closerel(char *name);
 extern void boot_openrel(char *name);

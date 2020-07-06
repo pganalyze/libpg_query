@@ -38,7 +38,7 @@
  *	  clients.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -364,7 +364,7 @@ __thread bool		ClientAuthInProgress = false;
 /* received START_AUTOVAC_LAUNCHER signal */
 
 
-/* the launcher needs to be signalled to communicate some condition */
+/* the launcher needs to be signaled to communicate some condition */
 
 
 /* received START_WALRECEIVER signal */
@@ -392,7 +392,7 @@ static void getInstallationPaths(const char *argv0);
 static void checkControlFile(void);
 static Port *ConnCreate(int serverFd);
 static void ConnFree(Port *port);
-static void reset_shared(int port);
+static void reset_shared(void);
 static void SIGHUP_handler(SIGNAL_ARGS);
 static void pmdie(SIGNAL_ARGS);
 static void reaper(SIGNAL_ARGS);
@@ -580,13 +580,13 @@ HANDLE		PostmasterHandle;
 #endif
 #ifdef USE_SSL
 #endif
-#ifdef USE_BONJOUR
-#endif
-#ifdef HAVE_UNIX_SOCKETS
-#endif
 #ifdef WIN32
 #endif
 #ifdef EXEC_BACKEND
+#endif
+#ifdef USE_BONJOUR
+#endif
+#ifdef HAVE_UNIX_SOCKETS
 #endif
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
 #endif
@@ -765,26 +765,38 @@ HANDLE		PostmasterHandle;
 /*
  * SIGHUP -- reread config files, and tell children to do same
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SSL
 #endif
 #ifdef EXEC_BACKEND
+#endif
+#ifdef WIN32
 #endif
 
 
 /*
  * pmdie -- signal handler for processing various postmaster signals.
  */
-#ifdef USE_SYSTEMD
+#ifdef WIN32
 #endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
  * Reaper -- signal handler to cleanup after a child process dies.
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
@@ -1139,6 +1151,8 @@ retry:
 	if (cmdLine[sizeof(cmdLine) - 2] != '\0')
 	{
 		elog(LOG, "subprocess command line too long");
+		UnmapViewOfFile(param);
+		CloseHandle(paramHandle);
 		return -1;
 	}
 
@@ -1155,6 +1169,8 @@ retry:
 	{
 		elog(LOG, "CreateProcess call failed: %m (error code %lu)",
 			 GetLastError());
+		UnmapViewOfFile(param);
+		CloseHandle(paramHandle);
 		return -1;
 	}
 
@@ -1170,6 +1186,8 @@ retry:
 									 GetLastError())));
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
+		UnmapViewOfFile(param);
+		CloseHandle(paramHandle);
 		return -1;				/* log made by save_backend_variables */
 	}
 
@@ -1303,11 +1321,6 @@ SubPostmasterMain(int argc, char *argv[])
 	ClosePostmasterPorts(strcmp(argv[1], "--forklog") == 0);
 
 	/*
-	 * Set reference point for stack-depth checking
-	 */
-	set_stack_base();
-
-	/*
 	 * Set up memory area for GSS information. Mirrors the code in ConnCreate
 	 * for the non-exec case.
 	 */
@@ -1434,7 +1447,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(0);
+		CreateSharedMemoryAndSemaphores();
 
 		/* And run the backend */
 		BackendRun(&port);		/* does not return */
@@ -1448,7 +1461,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitAuxiliaryProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(0);
+		CreateSharedMemoryAndSemaphores();
 
 		AuxiliaryProcessMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1461,7 +1474,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(0);
+		CreateSharedMemoryAndSemaphores();
 
 		AutoVacLauncherMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1474,7 +1487,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(0);
+		CreateSharedMemoryAndSemaphores();
 
 		AutoVacWorkerMain(argc - 2, argv + 2);	/* does not return */
 	}
@@ -1492,7 +1505,7 @@ SubPostmasterMain(int argc, char *argv[])
 		InitProcess();
 
 		/* Attach process to shared data structures */
-		CreateSharedMemoryAndSemaphores(0);
+		CreateSharedMemoryAndSemaphores();
 
 		/* Fetch MyBgworkerEntry from shared memory */
 		shmem_slot = atoi(argv[1] + 15);
@@ -1535,9 +1548,13 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * sigusr1_handler - handle signal conditions from child processes
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
@@ -2063,6 +2080,20 @@ restore_backend_variables(BackendParameters *param, Port *port)
 	strlcpy(pkglib_path, param->pkglib_path, MAXPGPATH);
 
 	strlcpy(ExtraOptions, param->ExtraOptions, MAXPGPATH);
+
+	/*
+	 * We need to restore fd.c's counts of externally-opened FDs; to avoid
+	 * confusion, be sure to do this after restoring max_safe_fds.  (Note:
+	 * BackendInitialize will handle this for port->sock.)
+	 */
+#ifndef WIN32
+	if (postmaster_alive_fds[0] >= 0)
+		ReserveExternalFD();
+	if (postmaster_alive_fds[1] >= 0)
+		ReserveExternalFD();
+#endif
+	if (pgStatSock != PGINVALID_SOCKET)
+		ReserveExternalFD();
 }
 
 

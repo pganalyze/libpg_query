@@ -3,7 +3,7 @@
  * objectaddress.h
  *	  functions for working with object addresses
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/objectaddress.h
@@ -13,9 +13,9 @@
 #ifndef OBJECTADDRESS_H
 #define OBJECTADDRESS_H
 
-#include "nodes/pg_list.h"
+#include "access/htup.h"
+#include "nodes/parsenodes.h"
 #include "storage/lockdefs.h"
-#include "utils/acl.h"
 #include "utils/relcache.h"
 
 /*
@@ -77,7 +77,7 @@ extern char *getObjectTypeDescription(const ObjectAddress *object);
 extern char *getObjectIdentity(const ObjectAddress *address);
 extern char *getObjectIdentityParts(const ObjectAddress *address,
 									List **objname, List **objargs);
-extern ArrayType *strlist_to_textarray(List *list);
+extern struct ArrayType *strlist_to_textarray(List *list);
 
 extern ObjectType get_relkind_objtype(char relkind);
 

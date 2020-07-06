@@ -2,14 +2,13 @@
  * slot.h
  *	   Replication slot management.
  *
- * Copyright (c) 2012-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2012-2020, PostgreSQL Global Development Group
  *
  *-------------------------------------------------------------------------
  */
 #ifndef SLOT_H
 #define SLOT_H
 
-#include "fmgr.h"
 #include "access/xlog.h"
 #include "access/xlogreader.h"
 #include "storage/condition_variable.h"
@@ -36,6 +35,14 @@ typedef enum ReplicationSlotPersistency
 	RS_EPHEMERAL,
 	RS_TEMPORARY
 } ReplicationSlotPersistency;
+
+/* For ReplicationSlotAcquire, q.v. */
+typedef enum SlotAcquireBehavior
+{
+	SAB_Error,
+	SAB_Block,
+	SAB_Inquire
+} SlotAcquireBehavior;
 
 /*
  * On-Disk data of a replication slot, preserved across restarts.
@@ -135,7 +142,7 @@ typedef struct ReplicationSlot
 	/* is somebody performing io on this slot? */
 	LWLock		io_in_progress_lock;
 
-	/* Condition variable signalled when active_pid changes */
+	/* Condition variable signaled when active_pid changes */
 	ConditionVariable active_cv;
 
 	/* all the remaining data is only used for logical slots */
@@ -151,8 +158,8 @@ typedef struct ReplicationSlot
 	XLogRecPtr	candidate_restart_lsn;
 } ReplicationSlot;
 
-#define SlotIsPhysical(slot) (slot->data.database == InvalidOid)
-#define SlotIsLogical(slot) (slot->data.database != InvalidOid)
+#define SlotIsPhysical(slot) ((slot)->data.database == InvalidOid)
+#define SlotIsLogical(slot) ((slot)->data.database != InvalidOid)
 
 /*
  * Shared memory control area for all of replication slots.
@@ -185,7 +192,7 @@ extern void ReplicationSlotCreate(const char *name, bool db_specific,
 extern void ReplicationSlotPersist(void);
 extern void ReplicationSlotDrop(const char *name, bool nowait);
 
-extern void ReplicationSlotAcquire(const char *name, bool nowait);
+extern int	ReplicationSlotAcquire(const char *name, SlotAcquireBehavior behavior);
 extern void ReplicationSlotRelease(void);
 extern void ReplicationSlotCleanup(void);
 extern void ReplicationSlotSave(void);
@@ -199,6 +206,7 @@ extern void ReplicationSlotsComputeRequiredLSN(void);
 extern XLogRecPtr ReplicationSlotsComputeLogicalRestartLSN(void);
 extern bool ReplicationSlotsCountDBSlots(Oid dboid, int *nslots, int *nactive);
 extern void ReplicationSlotsDropDBSlots(Oid dboid);
+extern void InvalidateObsoleteReplicationSlots(XLogSegNo oldestSegno);
 
 extern void StartupReplicationSlots(void);
 extern void CheckPointReplicationSlots(void);

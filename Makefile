@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 12.3
+PG_VERSION = 13beta2
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/scan_output.pb-c.c
 OBJ_FILES := $(SRC_FILES:.c=.o)
@@ -76,6 +76,9 @@ extract_source: $(PGDIR)
 	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
 	# Support gcc earlier than 4.6.0 without reconfiguring
 	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
+	# Avoid problems with static asserts
+	echo "#undef StaticAssertDecl" >> ./src/postgres/include/c.h
+	echo "#define StaticAssertDecl(condition, errmessage)" >> ./src/postgres/include/c.h
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h

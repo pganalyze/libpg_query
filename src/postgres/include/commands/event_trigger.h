@@ -3,7 +3,7 @@
  * event_trigger.h
  *	  Declarations for command trigger handling.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/commands/event_trigger.h
@@ -17,15 +17,16 @@
 #include "catalog/objectaddress.h"
 #include "catalog/pg_event_trigger.h"
 #include "nodes/parsenodes.h"
-#include "utils/aclchk_internal.h"
+#include "tcop/cmdtag.h"
 #include "tcop/deparse_utility.h"
+#include "utils/aclchk_internal.h"
 
 typedef struct EventTriggerData
 {
 	NodeTag		type;
 	const char *event;			/* event name */
 	Node	   *parsetree;		/* parse tree */
-	const char *tag;			/* command tag */
+	CommandTag	tag;
 } EventTriggerData;
 
 #define AT_REWRITE_ALTER_PERSISTENCE	0x01

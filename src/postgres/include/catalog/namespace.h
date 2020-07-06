@@ -4,7 +4,7 @@
  *	  prototypes for functions in backend/catalog/namespace.c
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/namespace.h
@@ -49,12 +49,17 @@ typedef enum TempNamespaceStatus
 
 /*
  *	Structure for xxxOverrideSearchPath functions
+ *
+ * The generation counter is private to namespace.c and shouldn't be touched
+ * by other code.  It can be initialized to zero if necessary (that means
+ * "not known equal to the current active path").
  */
 typedef struct OverrideSearchPath
 {
 	List	   *schemas;		/* OIDs of explicitly named schemas */
 	bool		addCatalog;		/* implicitly prepend pg_catalog? */
 	bool		addTemp;		/* implicitly prepend temp schema? */
+	uint64		generation;		/* for quick detection of equality to active */
 } OverrideSearchPath;
 
 /*
@@ -115,7 +120,7 @@ extern Oid	ConversionGetConid(const char *conname);
 extern bool ConversionIsVisible(Oid conid);
 
 extern Oid	get_statistics_object_oid(List *names, bool missing_ok);
-extern bool StatisticsObjIsVisible(Oid stxid);
+extern bool StatisticsObjIsVisible(Oid relid);
 
 extern Oid	get_ts_parser_oid(List *names, bool missing_ok);
 extern bool TSParserIsVisible(Oid prsId);
@@ -149,7 +154,6 @@ extern bool isTempOrTempToastNamespace(Oid namespaceId);
 extern bool isAnyTempNamespace(Oid namespaceId);
 extern bool isOtherTempNamespace(Oid namespaceId);
 extern TempNamespaceStatus checkTempNamespaceStatus(Oid namespaceId);
-extern bool isTempNamespaceInUse(Oid namespaceId);
 extern int	GetTempNamespaceBackendId(Oid namespaceId);
 extern Oid	GetTempToastNamespace(void);
 extern void GetTempNamespaceState(Oid *tempNamespaceId,

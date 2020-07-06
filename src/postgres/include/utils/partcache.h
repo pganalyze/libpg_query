@@ -2,7 +2,7 @@
  *
  * partcache.h
  *
- * Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Copyright (c) 1996-2020, PostgreSQL Global Development Group
  *
  * src/include/utils/partcache.h
  *
@@ -46,7 +46,8 @@ typedef struct PartitionKeyData
 	Oid		   *parttypcoll;
 }			PartitionKeyData;
 
-extern void RelationBuildPartitionKey(Relation relation);
+
+extern PartitionKey RelationGetPartitionKey(Relation rel);
 extern List *RelationGetPartitionQual(Relation rel);
 extern Expr *get_partition_qual_relid(Oid relid);
 

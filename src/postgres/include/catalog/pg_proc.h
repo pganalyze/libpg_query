@@ -3,7 +3,7 @@
  * pg_proc.h
  *	  definition of the "procedure" system catalog (pg_proc)
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/pg_proc.h
@@ -18,9 +18,8 @@
 #define PG_PROC_H
 
 #include "catalog/genbki.h"
-#include "catalog/pg_proc_d.h"
-
 #include "catalog/objectaddress.h"
+#include "catalog/pg_proc_d.h"
 #include "nodes/pg_list.h"
 
 /* ----------------

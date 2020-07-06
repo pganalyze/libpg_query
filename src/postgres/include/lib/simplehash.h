@@ -23,6 +23,8 @@
  *	  - SH_DEFINE - if defined function definitions are generated
  *	  - SH_SCOPE - in which scope (e.g. extern, static inline) do function
  *		declarations reside
+ *	  - SH_RAW_ALLOCATOR - if defined, memory contexts are not used; instead,
+ *	    use this to allocate bytes
  *	  - SH_USE_NONDEFAULT_ALLOCATOR - if defined no element allocator functions
  *		are defined, so you can supply your own
  *	  The following parameters are only relevant when SH_DEFINE is defined:
@@ -55,6 +57,8 @@
  *	  backwards, unless they're empty or already at their optimal position.
  */
 
+#include "port/pg_bitutils.h"
+
 /* helpers */
 #define SH_MAKE_PREFIX(a) CppConcat(a,_)
 #define SH_MAKE_NAME(name) SH_MAKE_NAME_(SH_MAKE_PREFIX(SH_PREFIX),name)
@@ -74,8 +78,10 @@
 #define SH_DESTROY SH_MAKE_NAME(destroy)
 #define SH_RESET SH_MAKE_NAME(reset)
 #define SH_INSERT SH_MAKE_NAME(insert)
+#define SH_INSERT_HASH SH_MAKE_NAME(insert_hash)
 #define SH_DELETE SH_MAKE_NAME(delete)
 #define SH_LOOKUP SH_MAKE_NAME(lookup)
+#define SH_LOOKUP_HASH SH_MAKE_NAME(lookup_hash)
 #define SH_GROW SH_MAKE_NAME(grow)
 #define SH_START_ITERATE SH_MAKE_NAME(start_iterate)
 #define SH_START_ITERATE_AT SH_MAKE_NAME(start_iterate_at)
@@ -91,6 +97,8 @@
 #define SH_DISTANCE_FROM_OPTIMAL SH_MAKE_NAME(distance)
 #define SH_INITIAL_BUCKET SH_MAKE_NAME(initial_bucket)
 #define SH_ENTRY_HASH SH_MAKE_NAME(entry_hash)
+#define SH_INSERT_HASH_INTERNAL SH_MAKE_NAME(insert_hash_internal)
+#define SH_LOOKUP_HASH_INTERNAL SH_MAKE_NAME(lookup_hash_internal)
 
 /* generate forward declarations necessary to use the hash table */
 #ifdef SH_DECLARE
@@ -117,8 +125,10 @@ typedef struct SH_TYPE
 	/* hash buckets */
 	SH_ELEMENT_TYPE *data;
 
+#ifndef SH_RAW_ALLOCATOR
 	/* memory context to use for allocations */
 	MemoryContext ctx;
+#endif
 
 	/* user defined data, useful for callbacks */
 	void	   *private_data;
@@ -138,13 +148,21 @@ typedef struct SH_ITERATOR
 }			SH_ITERATOR;
 
 /* externally visible function prototypes */
+#ifdef SH_RAW_ALLOCATOR
+SH_SCOPE	SH_TYPE *SH_CREATE(uint32 nelements, void *private_data);
+#else
 SH_SCOPE	SH_TYPE *SH_CREATE(MemoryContext ctx, uint32 nelements,
 							   void *private_data);
+#endif
 SH_SCOPE void SH_DESTROY(SH_TYPE * tb);
 SH_SCOPE void SH_RESET(SH_TYPE * tb);
 SH_SCOPE void SH_GROW(SH_TYPE * tb, uint32 newsize);
 SH_SCOPE	SH_ELEMENT_TYPE *SH_INSERT(SH_TYPE * tb, SH_KEY_TYPE key, bool *found);
+SH_SCOPE	SH_ELEMENT_TYPE *SH_INSERT_HASH(SH_TYPE * tb, SH_KEY_TYPE key,
+											uint32 hash, bool *found);
 SH_SCOPE	SH_ELEMENT_TYPE *SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key);
+SH_SCOPE	SH_ELEMENT_TYPE *SH_LOOKUP_HASH(SH_TYPE * tb, SH_KEY_TYPE key,
+											uint32 hash);
 SH_SCOPE bool SH_DELETE(SH_TYPE * tb, SH_KEY_TYPE key);
 SH_SCOPE void SH_START_ITERATE(SH_TYPE * tb, SH_ITERATOR * iter);
 SH_SCOPE void SH_START_ITERATE_AT(SH_TYPE * tb, SH_ITERATOR * iter, uint32 at);
@@ -157,7 +175,9 @@ SH_SCOPE void SH_STAT(SH_TYPE * tb);
 /* generate implementation of the hash table */
 #ifdef SH_DEFINE
 
+#ifndef SH_RAW_ALLOCATOR
 #include "utils/memutils.h"
+#endif
 
 /* max data array size,we allow up to PG_UINT32_MAX buckets, including 0 */
 #define SH_MAX_SIZE (((uint64) PG_UINT32_MAX) + 1)
@@ -197,26 +217,13 @@ SH_SCOPE void SH_STAT(SH_TYPE * tb);
 #ifndef SIMPLEHASH_H
 #define SIMPLEHASH_H
 
-/* FIXME: can we move these to a central location? */
-
-/* calculate ceil(log base 2) of num */
-static inline uint64
-sh_log2(uint64 num)
-{
-	int			i;
-	uint64		limit;
-
-	for (i = 0, limit = 1; limit < num; i++, limit <<= 1)
-		;
-	return i;
-}
-
-/* calculate first power of 2 >= num */
-static inline uint64
-sh_pow2(uint64 num)
-{
-	return ((uint64) 1) << sh_log2(num);
-}
+#ifdef FRONTEND
+#define sh_error(...) pg_log_error(__VA_ARGS__)
+#define sh_log(...) pg_log_info(__VA_ARGS__)
+#else
+#define sh_error(...) elog(ERROR, __VA_ARGS__)
+#define sh_log(...) elog(LOG, __VA_ARGS__)
+#endif
 
 #endif
 
@@ -233,15 +240,15 @@ SH_COMPUTE_PARAMETERS(SH_TYPE * tb, uint32 newsize)
 	size = Max(newsize, 2);
 
 	/* round up size to the next power of 2, that's how bucketing works */
-	size = sh_pow2(size);
+	size = pg_nextpower2_64(size);
 	Assert(size <= SH_MAX_SIZE);
 
 	/*
 	 * Verify that allocation of ->data is possible on this platform, without
 	 * overflowing Size.
 	 */
-	if ((((uint64) sizeof(SH_ELEMENT_TYPE)) * size) >= MaxAllocHugeSize)
-		elog(ERROR, "hash table too large");
+	if ((((uint64) sizeof(SH_ELEMENT_TYPE)) * size) >= SIZE_MAX / 2)
+		sh_error("hash table too large");
 
 	/* now set size */
 	tb->size = size;
@@ -320,8 +327,12 @@ static inline void SH_FREE(SH_TYPE * type, void *pointer);
 static inline void *
 SH_ALLOCATE(SH_TYPE * type, Size size)
 {
+#ifdef SH_RAW_ALLOCATOR
+	return SH_RAW_ALLOCATOR(size);
+#else
 	return MemoryContextAllocExtended(type->ctx, size,
 									  MCXT_ALLOC_HUGE | MCXT_ALLOC_ZERO);
+#endif
 }
 
 /* default memory free function */
@@ -342,14 +353,23 @@ SH_FREE(SH_TYPE * type, void *pointer)
  * Memory other than for the array of elements will still be allocated from
  * the passed-in context.
  */
+#ifdef SH_RAW_ALLOCATOR
+SH_SCOPE	SH_TYPE *
+SH_CREATE(uint32 nelements, void *private_data)
+#else
 SH_SCOPE	SH_TYPE *
 SH_CREATE(MemoryContext ctx, uint32 nelements, void *private_data)
+#endif
 {
 	SH_TYPE    *tb;
 	uint64		size;
 
+#ifdef SH_RAW_ALLOCATOR
+	tb = SH_RAW_ALLOCATOR(sizeof(SH_TYPE));
+#else
 	tb = MemoryContextAllocZero(ctx, sizeof(SH_TYPE));
 	tb->ctx = ctx;
+#endif
 	tb->private_data = private_data;
 
 	/* increase nelements by fillfactor, want to store nelements elements */
@@ -395,7 +415,7 @@ SH_GROW(SH_TYPE * tb, uint32 newsize)
 	uint32		startelem = 0;
 	uint32		copyelem;
 
-	Assert(oldsize == sh_pow2(oldsize));
+	Assert(oldsize == pg_nextpower2_64(oldsize));
 	Assert(oldsize != SH_MAX_SIZE);
 	Assert(oldsize < newsize);
 
@@ -492,14 +512,12 @@ SH_GROW(SH_TYPE * tb, uint32 newsize)
 }
 
 /*
- * Insert the key key into the hash-table, set *found to true if the key
- * already exists, false otherwise. Returns the hash-table entry in either
- * case.
+ * This is a separate static inline function, so it can be reliably be inlined
+ * into its wrapper functions even if SH_SCOPE is extern.
  */
-SH_SCOPE	SH_ELEMENT_TYPE *
-SH_INSERT(SH_TYPE * tb, SH_KEY_TYPE key, bool *found)
+static inline SH_ELEMENT_TYPE *
+SH_INSERT_HASH_INTERNAL(SH_TYPE * tb, SH_KEY_TYPE key, uint32 hash, bool *found)
 {
-	uint32		hash = SH_HASH_KEY(tb, key);
 	uint32		startelem;
 	uint32		curelem;
 	SH_ELEMENT_TYPE *data;
@@ -520,7 +538,7 @@ restart:
 	{
 		if (tb->size == SH_MAX_SIZE)
 		{
-			elog(ERROR, "hash table size exceeded");
+			sh_error("hash table size exceeded");
 		}
 
 		/*
@@ -615,7 +633,7 @@ restart:
 			/* shift forward, starting at last occupied element */
 
 			/*
-			 * TODO: This could be optimized to be one memcpy in may cases,
+			 * TODO: This could be optimized to be one memcpy in many cases,
 			 * excepting wrapping around at the end of ->data. Hasn't shown up
 			 * in profiles so far though.
 			 */
@@ -664,12 +682,36 @@ restart:
 }
 
 /*
- * Lookup up entry in hash table.  Returns NULL if key not present.
+ * Insert the key key into the hash-table, set *found to true if the key
+ * already exists, false otherwise. Returns the hash-table entry in either
+ * case.
  */
 SH_SCOPE	SH_ELEMENT_TYPE *
-SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key)
+SH_INSERT(SH_TYPE * tb, SH_KEY_TYPE key, bool *found)
 {
 	uint32		hash = SH_HASH_KEY(tb, key);
+
+	return SH_INSERT_HASH_INTERNAL(tb, key, hash, found);
+}
+
+/*
+ * Insert the key key into the hash-table using an already-calculated
+ * hash. Set *found to true if the key already exists, false
+ * otherwise. Returns the hash-table entry in either case.
+ */
+SH_SCOPE	SH_ELEMENT_TYPE *
+SH_INSERT_HASH(SH_TYPE * tb, SH_KEY_TYPE key, uint32 hash, bool *found)
+{
+	return SH_INSERT_HASH_INTERNAL(tb, key, hash, found);
+}
+
+/*
+ * This is a separate static inline function, so it can be reliably be inlined
+ * into its wrapper functions even if SH_SCOPE is extern.
+ */
+static inline SH_ELEMENT_TYPE *
+SH_LOOKUP_HASH_INTERNAL(SH_TYPE * tb, SH_KEY_TYPE key, uint32 hash)
+{
 	const uint32 startelem = SH_INITIAL_BUCKET(tb, hash);
 	uint32		curelem = startelem;
 
@@ -696,6 +738,28 @@ SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key)
 
 		curelem = SH_NEXT(tb, curelem, startelem);
 	}
+}
+
+/*
+ * Lookup up entry in hash table.  Returns NULL if key not present.
+ */
+SH_SCOPE	SH_ELEMENT_TYPE *
+SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key)
+{
+	uint32		hash = SH_HASH_KEY(tb, key);
+
+	return SH_LOOKUP_HASH_INTERNAL(tb, key, hash);
+}
+
+/*
+ * Lookup up entry in hash table using an already-calculated hash.
+ *
+ * Returns NULL if key not present.
+ */
+SH_SCOPE	SH_ELEMENT_TYPE *
+SH_LOOKUP_HASH(SH_TYPE * tb, SH_KEY_TYPE key, uint32 hash)
+{
+	return SH_LOOKUP_HASH_INTERNAL(tb, key, hash);
 }
 
 /*
@@ -926,9 +990,9 @@ SH_STAT(SH_TYPE * tb)
 		avg_collisions = 0;
 	}
 
-	elog(LOG, "size: " UINT64_FORMAT ", members: %u, filled: %f, total chain: %u, max chain: %u, avg chain: %f, total_collisions: %u, max_collisions: %i, avg_collisions: %f",
-		 tb->size, tb->members, fillfactor, total_chain_length, max_chain_length, avg_chain_length,
-		 total_collisions, max_collisions, avg_collisions);
+	sh_log("size: " UINT64_FORMAT ", members: %u, filled: %f, total chain: %u, max chain: %u, avg chain: %f, total_collisions: %u, max_collisions: %i, avg_collisions: %f",
+		   tb->size, tb->members, fillfactor, total_chain_length, max_chain_length, avg_chain_length,
+		   total_collisions, max_collisions, avg_collisions);
 }
 
 #endif							/* SH_DEFINE */
@@ -971,8 +1035,10 @@ SH_STAT(SH_TYPE * tb)
 #undef SH_DESTROY
 #undef SH_RESET
 #undef SH_INSERT
+#undef SH_INSERT_HASH
 #undef SH_DELETE
 #undef SH_LOOKUP
+#undef SH_LOOKUP_HASH
 #undef SH_GROW
 #undef SH_START_ITERATE
 #undef SH_START_ITERATE_AT
@@ -989,3 +1055,5 @@ SH_STAT(SH_TYPE * tb)
 #undef SH_PREV
 #undef SH_DISTANCE_FROM_OPTIMAL
 #undef SH_ENTRY_HASH
+#undef SH_INSERT_HASH_INTERNAL
+#undef SH_LOOKUP_HASH_INTERNAL

@@ -39,7 +39,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -60,6 +60,7 @@
 #include "funcapi.h"
 #include "nodes/makefuncs.h"
 #include "parser/parse_type.h"
+#include "plpgsql.h"
 #include "utils/builtins.h"
 #include "utils/guc.h"
 #include "utils/lsyscache.h"
@@ -68,9 +69,6 @@
 #include "utils/rel.h"
 #include "utils/syscache.h"
 #include "utils/typcache.h"
-
-#include "plpgsql.h"
-
 
 /* ----------
  * Our own local and global variables
@@ -1127,7 +1125,7 @@ plpgsql_add_initdatums(int **varnos)
  */
 
 
-/* exported so we can call it from plpgsql_init() */
+/* exported so we can call it from _PG_init() */
 
 
 

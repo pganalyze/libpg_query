@@ -289,6 +289,10 @@
 },
 
 {
+	"invalid_argument_for_sql_json_datetime_function", ERRCODE_INVALID_ARGUMENT_FOR_SQL_JSON_DATETIME_FUNCTION
+},
+
+{
 	"invalid_json_text", ERRCODE_INVALID_JSON_TEXT
 },
 

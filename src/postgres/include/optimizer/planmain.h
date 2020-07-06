@@ -4,7 +4,7 @@
  *	  prototypes for various files in optimizer/plan
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/optimizer/planmain.h
@@ -54,9 +54,12 @@ extern Sort *make_sort_from_sortclauses(List *sortcls, Plan *lefttree);
 extern Agg *make_agg(List *tlist, List *qual,
 					 AggStrategy aggstrategy, AggSplit aggsplit,
 					 int numGroupCols, AttrNumber *grpColIdx, Oid *grpOperators, Oid *grpCollations,
-					 List *groupingSets, List *chain,
-					 double dNumGroups, Plan *lefttree);
-extern Limit *make_limit(Plan *lefttree, Node *limitOffset, Node *limitCount);
+					 List *groupingSets, List *chain, double dNumGroups,
+					 Size transitionSpace, Plan *lefttree);
+extern Limit *make_limit(Plan *lefttree, Node *limitOffset, Node *limitCount,
+						 LimitOption limitOption, int uniqNumCols,
+						 AttrNumber *uniqColIdx, Oid *uniqOperators,
+						 Oid *uniqCollations);
 
 /*
  * prototypes for plan/initsplan.c

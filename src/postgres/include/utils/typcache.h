@@ -6,7 +6,7 @@
  * The type cache exists to speed lookup of certain information about data
  * types that is not directly available from a type's pg_type row.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/typcache.h
@@ -32,6 +32,8 @@ typedef struct TypeCacheEntry
 {
 	/* typeId is the hash lookup key and MUST BE FIRST */
 	Oid			type_id;		/* OID of the data type */
+
+	uint32		type_id_hash;	/* hashed value of the OID */
 
 	/* some subsidiary information copied from the pg_type row */
 	int16		typlen;

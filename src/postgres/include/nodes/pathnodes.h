@@ -4,7 +4,7 @@
  *	  Definitions for planner's internal data structures, especially Paths.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/nodes/pathnodes.h
@@ -15,7 +15,6 @@
 #define PATHNODES_H
 
 #include "access/sdir.h"
-#include "fmgr.h"
 #include "lib/stringinfo.h"
 #include "nodes/params.h"
 #include "nodes/parsenodes.h"
@@ -123,6 +122,8 @@ typedef struct PlannerGlobal
 
 	List	   *rootResultRelations;	/* "flat" list of integer RT indexes */
 
+	List	   *appendRelations;	/* "flat" list of AppendRelInfos */
+
 	List	   *relationOids;	/* OIDs of relations the plan depends on */
 
 	List	   *invalItems;		/* other dependencies, as PlanInvalItems */
@@ -204,17 +205,16 @@ struct PlannerInfo
 
 	/*
 	 * simple_rte_array is the same length as simple_rel_array and holds
-	 * pointers to the associated rangetable entries.  This lets us avoid
-	 * rt_fetch(), which can be a bit slow once large inheritance sets have
-	 * been expanded.
+	 * pointers to the associated rangetable entries.  Using this is a shade
+	 * faster than using rt_fetch(), mostly due to fewer indirections.
 	 */
 	RangeTblEntry **simple_rte_array;	/* rangetable as an array */
 
 	/*
 	 * append_rel_array is the same length as the above arrays, and holds
 	 * pointers to the corresponding AppendRelInfo entry indexed by
-	 * child_relid, or NULL if none.  The array itself is not allocated if
-	 * append_rel_list is empty.
+	 * child_relid, or NULL if the rel is not an appendrel child.  The array
+	 * itself is not allocated if append_rel_list is empty.
 	 */
 	struct AppendRelInfo **append_rel_array;
 
@@ -264,6 +264,8 @@ struct PlannerInfo
 									 * subquery outputs */
 
 	List	   *eq_classes;		/* list of active EquivalenceClasses */
+
+	bool		ec_merging_done;	/* set true once ECs are canonical */
 
 	List	   *canon_pathkeys; /* list of "canonical" PathKeys */
 
@@ -399,7 +401,7 @@ typedef struct PartitionSchemeData
 	bool	   *parttypbyval;
 
 	/* Cached information about partition comparison functions. */
-	FmgrInfo   *partsupfunc;
+	struct FmgrInfo *partsupfunc;
 }			PartitionSchemeData;
 
 typedef struct PartitionSchemeData *PartitionScheme;
@@ -505,6 +507,8 @@ typedef struct PartitionSchemeData *PartitionScheme;
  *		pages - number of disk pages in relation (zero if not a table)
  *		tuples - number of tuples in relation (not considering restrictions)
  *		allvisfrac - fraction of disk pages that are marked all-visible
+ *		eclass_indexes - EquivalenceClasses that mention this rel (filled
+ *						 only after EC merging is complete)
  *		subroot - PlannerInfo for subquery (NULL if it's not a subquery)
  *		subplan_params - list of PlannerParamItems to be passed to subquery
  *
@@ -570,28 +574,50 @@ typedef struct PartitionSchemeData *PartitionScheme;
  * we know we will need it at least once (to price the sequential scan)
  * and may need it multiple times to price index scans.
  *
+ * A join relation is considered to be partitioned if it is formed from a
+ * join of two relations that are partitioned, have matching partitioning
+ * schemes, and are joined on an equijoin of the partitioning columns.
+ * Under those conditions we can consider the join relation to be partitioned
+ * by either relation's partitioning keys, though some care is needed if
+ * either relation can be forced to null by outer-joining.  For example, an
+ * outer join like (A LEFT JOIN B ON A.a = B.b) may produce rows with B.b
+ * NULL.  These rows may not fit the partitioning conditions imposed on B.
+ * Hence, strictly speaking, the join is not partitioned by B.b and thus
+ * partition keys of an outer join should include partition key expressions
+ * from the non-nullable side only.  However, if a subsequent join uses
+ * strict comparison operators (and all commonly-used equijoin operators are
+ * strict), the presence of nulls doesn't cause a problem: such rows couldn't
+ * match anything on the other side and thus they don't create a need to do
+ * any cross-partition sub-joins.  Hence we can treat such values as still
+ * partitioning the join output for the purpose of additional partitionwise
+ * joining, so long as a strict join operator is used by the next join.
+ *
  * If the relation is partitioned, these fields will be set:
  *
  *		part_scheme - Partitioning scheme of the relation
  *		nparts - Number of partitions
  *		boundinfo - Partition bounds
+ *		partbounds_merged - true if partition bounds are merged ones
  *		partition_qual - Partition constraint if not the root
  *		part_rels - RelOptInfos for each partition
+ *		all_partrels - Relids set of all partition relids
  *		partexprs, nullable_partexprs - Partition key expressions
  *		partitioned_child_rels - RT indexes of unpruned partitions of
  *								 this relation that are partitioned tables
  *								 themselves, in hierarchical order
  *
- * Note: A base relation always has only one set of partition keys, but a join
- * relation may have as many sets of partition keys as the number of relations
- * being joined. partexprs and nullable_partexprs are arrays containing
- * part_scheme->partnatts elements each. Each of these elements is a list of
- * partition key expressions.  For a base relation each list in partexprs
- * contains only one expression and nullable_partexprs is not populated. For a
- * join relation, partexprs and nullable_partexprs contain partition key
- * expressions from non-nullable and nullable relations resp. Lists at any
- * given position in those arrays together contain as many elements as the
- * number of joining relations.
+ * The partexprs and nullable_partexprs arrays each contain
+ * part_scheme->partnatts elements.  Each of the elements is a list of
+ * partition key expressions.  For partitioned base relations, there is one
+ * expression in each partexprs element, and nullable_partexprs is empty.
+ * For partitioned join relations, each base relation within the join
+ * contributes one partition key expression per partitioning column;
+ * that expression goes in the partexprs[i] list if the base relation
+ * is not nullable by this join or any lower outer join, or in the
+ * nullable_partexprs[i] list if the base relation is nullable.
+ * Furthermore, FULL JOINs add extra nullable_partexprs expressions
+ * corresponding to COALESCE expressions of the left and right join columns,
+ * to simplify matching join clauses to those lists.
  *----------
  */
 typedef enum RelOptKind
@@ -678,6 +704,8 @@ typedef struct RelOptInfo
 	BlockNumber pages;			/* size estimates derived from pg_class */
 	double		tuples;
 	double		allvisfrac;
+	Bitmapset  *eclass_indexes; /* Indexes in PlannerInfo's eq_classes list of
+								 * ECs that mention this rel */
 	PlannerInfo *subroot;		/* if subquery */
 	List	   *subplan_params; /* if subquery */
 	int			rel_parallel_workers;	/* wanted number of parallel workers */
@@ -710,16 +738,21 @@ typedef struct RelOptInfo
 	Relids		top_parent_relids;	/* Relids of topmost parents (if "other"
 									 * rel) */
 
-	/* used for partitioned relations */
-	PartitionScheme part_scheme;	/* Partitioning scheme. */
-	int			nparts;			/* number of partitions */
+	/* used for partitioned relations: */
+	PartitionScheme part_scheme;	/* Partitioning scheme */
+	int			nparts;			/* Number of partitions; -1 if not yet set; in
+								 * case of a join relation 0 means it's
+								 * considered unpartitioned */
 	struct PartitionBoundInfoData *boundinfo;	/* Partition bounds */
-	List	   *partition_qual; /* partition constraint */
+	bool		partbounds_merged;	/* True if partition bounds were created
+									 * by partition_bounds_merge() */
+	List	   *partition_qual; /* Partition constraint, if not the root */
 	struct RelOptInfo **part_rels;	/* Array of RelOptInfos of partitions,
-									 * stored in the same order of bounds */
-	List	  **partexprs;		/* Non-nullable partition key expressions. */
-	List	  **nullable_partexprs; /* Nullable partition key expressions. */
-	List	   *partitioned_child_rels; /* List of RT indexes. */
+									 * stored in the same order as bounds */
+	Relids		all_partrels;	/* Relids set of all partition relids */
+	List	  **partexprs;		/* Non-nullable partition key expressions */
+	List	  **nullable_partexprs; /* Nullable partition key expressions */
+	List	   *partitioned_child_rels; /* List of RT indexes */
 } RelOptInfo;
 
 /*
@@ -802,6 +835,7 @@ struct IndexOptInfo
 	Oid		   *sortopfamily;	/* OIDs of btree opfamilies, if orderable */
 	bool	   *reverse_sort;	/* is sort order descending? */
 	bool	   *nulls_first;	/* do NULLs come first in the sort order? */
+	bytea	  **opclassoptions; /* opclass-specific options for columns */
 	bool	   *canreturn;		/* which index cols can be returned in an
 								 * index-only scan? */
 	Oid			relam;			/* OID of the access method (in pg_am) */
@@ -1615,6 +1649,15 @@ typedef struct SortPath
 } SortPath;
 
 /*
+ * IncrementalSortPath
+ */
+typedef struct IncrementalSortPath
+{
+	SortPath	spath;
+	int			nPresortedCols; /* number of presorted columns */
+} IncrementalSortPath;
+
+/*
  * GroupPath represents grouping (of presorted input)
  *
  * groupClause represents the columns to be grouped on; the input path
@@ -1657,6 +1700,7 @@ typedef struct AggPath
 	AggStrategy aggstrategy;	/* basic strategy, see nodes.h */
 	AggSplit	aggsplit;		/* agg-splitting mode, see nodes.h */
 	double		numGroups;		/* estimated number of groups in input */
+	uint64		transitionSpace;	/* for pass-by-ref transition data */
 	List	   *groupClause;	/* a list of SortGroupClause's */
 	List	   *qual;			/* quals (HAVING quals), if any */
 } AggPath;
@@ -1694,6 +1738,7 @@ typedef struct GroupingSetsPath
 	AggStrategy aggstrategy;	/* basic strategy */
 	List	   *rollups;		/* list of RollupData */
 	List	   *qual;			/* quals (HAVING quals), if any */
+	uint64		transitionSpace;	/* for pass-by-ref transition data */
 } GroupingSetsPath;
 
 /*
@@ -1789,6 +1834,7 @@ typedef struct LimitPath
 	Path	   *subpath;		/* path representing input source */
 	Node	   *limitOffset;	/* OFFSET parameter, or NULL if none */
 	Node	   *limitCount;		/* COUNT parameter, or NULL if none */
+	LimitOption limitOption;	/* FETCH FIRST with ties or exact number */
 } LimitPath;
 
 
@@ -2147,17 +2193,13 @@ struct SpecialJoinInfo
  * "append relation" (essentially, a list of child RTEs), we build an
  * AppendRelInfo for each child RTE.  The list of AppendRelInfos indicates
  * which child RTEs must be included when expanding the parent, and each node
- * carries information needed to translate Vars referencing the parent into
- * Vars referencing that child.
+ * carries information needed to translate between columns of the parent and
+ * columns of the child.
  *
- * These structs are kept in the PlannerInfo node's append_rel_list.
- * Note that we just throw all the structs into one list, and scan the
- * whole list when desiring to expand any one parent.  We could have used
- * a more complex data structure (eg, one list per parent), but this would
- * be harder to update during operations such as pulling up subqueries,
- * and not really any easier to scan.  Considering that typical queries
- * will not have many different append parents, it doesn't seem worthwhile
- * to complicate things.
+ * These structs are kept in the PlannerInfo node's append_rel_list, with
+ * append_rel_array[] providing a convenient lookup method for the struct
+ * associated with a particular child relid (there can be only one, though
+ * parent rels may have many entries in append_rel_list).
  *
  * Note: after completion of the planner prep phase, any given RTE is an
  * append parent having entries in append_rel_list if and only if its
@@ -2213,6 +2255,15 @@ typedef struct AppendRelInfo
 	 * when copying into a subquery.
 	 */
 	List	   *translated_vars;	/* Expressions in the child's Vars */
+
+	/*
+	 * This array simplifies translations in the reverse direction, from
+	 * child's column numbers to parent's.  The entry at [ccolno - 1] is the
+	 * 1-based parent column number for child column ccolno, or zero if that
+	 * child column is dropped or doesn't exist in the parent.
+	 */
+	int			num_child_cols; /* length of array */
+	AttrNumber *parent_colnos;	/* array of parent attnos, or zeroes */
 
 	/*
 	 * We store the parent table's OID here for inheritance, or InvalidOid for

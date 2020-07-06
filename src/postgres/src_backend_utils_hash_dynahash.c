@@ -59,7 +59,7 @@
  * function must be supplied; comparison defaults to memcmp() and key copying
  * to memcpy() when a user-defined hashing function is selected.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -104,6 +104,8 @@
 #include <limits.h>
 
 #include "access/xact.h"
+#include "common/hashfn.h"
+#include "port/pg_bitutils.h"
 #include "storage/shmem.h"
 #include "storage/spin.h"
 #include "utils/dynahash.h"
@@ -261,7 +263,7 @@ struct HTAB
  */
 #define MOD(x,y)			   ((x) & ((y)-1))
 
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 static long hash_accesses,
 			hash_collisions,
 			hash_expansions;
@@ -340,7 +342,7 @@ static __thread MemoryContext CurrentDynaHashCxt = NULL;
  * Compute derived fields of hctl and build the initial directory/segment
  * arrays
  */
-#if HASH_DEBUG
+#ifdef HASH_DEBUG
 #endif
 
 /*
@@ -375,7 +377,7 @@ static __thread MemoryContext CurrentDynaHashCxt = NULL;
 
 
 
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 #endif
 
 /*******************************SEARCH ROUTINES *****************************/
@@ -461,7 +463,7 @@ hash_search_with_hash_value(HTAB *hashp,
 	HASHBUCKET *prevBucketPtr;
 	HashCompareFunc match;
 
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 	hash_accesses++;
 	hctl->accesses++;
 #endif
@@ -516,7 +518,7 @@ hash_search_with_hash_value(HTAB *hashp,
 			break;
 		prevBucketPtr = &(currBucket->link);
 		currBucket = *prevBucketPtr;
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 		hash_collisions++;
 		hctl->collisions++;
 #endif
@@ -639,9 +641,9 @@ hash_search_with_hash_value(HTAB *hashp,
  * NB: for a partitioned hashtable, caller must hold lock on both relevant
  * partitions, if the new hash key would belong to a different partition.
  */
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 #endif
-#if HASH_STATISTICS
+#ifdef HASH_STATISTICS
 #endif
 
 /*
@@ -1003,7 +1005,9 @@ hash_corrupted(HTAB *hashp)
 }
 
 /* calculate ceil(log base 2) of num */
-
+#if SIZEOF_LONG < 8
+#else
+#endif
 
 /* calculate first power of 2 >= num, bounded to what will fit in a long */
 

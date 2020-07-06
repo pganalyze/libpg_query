@@ -12,7 +12,7 @@
  * identifying statement boundaries in multi-statement source strings.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/nodes/parsenodes.h
@@ -159,6 +159,7 @@ typedef struct Query
 
 	Node	   *limitOffset;	/* # of result tuples to skip (int8 expr) */
 	Node	   *limitCount;		/* # of result tuples to return (int8 expr) */
+	LimitOption limitOption;	/* limit type */
 
 	List	   *rowMarks;		/* a list of RowMarkClause's */
 
@@ -701,6 +702,7 @@ typedef struct IndexElem
 	char	   *indexcolname;	/* name for index column; NULL = default */
 	List	   *collation;		/* name of collation; NIL = default */
 	List	   *opclass;		/* name of desired opclass; NIL = default */
+	List	   *opclassopts;	/* opclass-specific options, or NIL */
 	SortByDir	ordering;		/* ASC/DESC/default */
 	SortByNulls nulls_ordering; /* FIRST/LAST/default */
 } IndexElem;
@@ -1020,14 +1022,35 @@ typedef struct RangeTblEntry
 	 * be a Var of one of the join's input relations, or such a Var with an
 	 * implicit coercion to the join's output column type, or a COALESCE
 	 * expression containing the two input column Vars (possibly coerced).
-	 * Within a Query loaded from a stored rule, it is also possible for
+	 * Elements beyond the first joinmergedcols entries are always just Vars,
+	 * and are never referenced from elsewhere in the query (that is, join
+	 * alias Vars are generated only for merged columns).  We keep these
+	 * entries only because they're needed in expandRTE() and similar code.
+	 *
+	 * Within a Query loaded from a stored rule, it is possible for non-merged
 	 * joinaliasvars items to be null pointers, which are placeholders for
 	 * (necessarily unreferenced) columns dropped since the rule was made.
 	 * Also, once planning begins, joinaliasvars items can be almost anything,
 	 * as a result of subquery-flattening substitutions.
+	 *
+	 * joinleftcols is an integer list of physical column numbers of the left
+	 * join input rel that are included in the join; likewise joinrighttcols
+	 * for the right join input rel.  (Which rels those are can be determined
+	 * from the associated JoinExpr.)  If the join is USING/NATURAL, then the
+	 * first joinmergedcols entries in each list identify the merged columns.
+	 * The merged columns come first in the join output, then remaining
+	 * columns of the left input, then remaining columns of the right.
+	 *
+	 * Note that input columns could have been dropped after creation of a
+	 * stored rule, if they are not referenced in the query (in particular,
+	 * merged columns could not be dropped); this is not accounted for in
+	 * joinleftcols/joinrighttcols.
 	 */
 	JoinType	jointype;		/* type of join */
+	int			joinmergedcols; /* number of merged (JOIN USING) columns */
 	List	   *joinaliasvars;	/* list of alias-var expansions */
+	List	   *joinleftcols;	/* left-side input column numbers */
+	List	   *joinrightcols;	/* right-side input column numbers */
 
 	/*
 	 * Fields valid for a function RTE (else NIL/zero):
@@ -1595,6 +1618,7 @@ typedef struct SelectStmt
 	List	   *sortClause;		/* sort clause (a list of SortBy's) */
 	Node	   *limitOffset;	/* # of result tuples to skip */
 	Node	   *limitCount;		/* # of result tuples to return */
+	LimitOption limitOption;	/* limit type */
 	List	   *lockingClause;	/* FOR UPDATE (list of LockingClause's) */
 	WithClause *withClause;		/* WITH clause */
 
@@ -1764,6 +1788,7 @@ typedef enum AlterTableType
 	AT_ColumnDefault,			/* alter column default */
 	AT_DropNotNull,				/* alter column drop not null */
 	AT_SetNotNull,				/* alter column set not null */
+	AT_DropExpression,			/* alter column drop expression */
 	AT_CheckNotNull,			/* check column is already marked not null */
 	AT_SetStatistics,			/* alter column set statistics */
 	AT_SetOptions,				/* alter column set ( options ) */
@@ -1780,8 +1805,6 @@ typedef enum AlterTableType
 	AT_AlterConstraint,			/* alter constraint */
 	AT_ValidateConstraint,		/* validate constraint */
 	AT_ValidateConstraintRecurse,	/* internal to commands/tablecmds.c */
-	AT_ProcessedConstraint,		/* pre-processed add constraint (local in
-								 * parser/parse_utilcmd.c) */
 	AT_AddIndexConstraint,		/* add constraint using existing index */
 	AT_DropConstraint,			/* drop constraint */
 	AT_DropConstraintRecurse,	/* internal to commands/tablecmds.c */
@@ -2762,6 +2785,9 @@ typedef struct IndexStmt
 	char	   *idxcomment;		/* comment to apply to index, or NULL */
 	Oid			indexOid;		/* OID of an existing index, if any */
 	Oid			oldNode;		/* relfilenode of existing storage, if any */
+	SubTransactionId oldCreateSubid;	/* rd_createSubid of oldNode */
+	SubTransactionId oldFirstRelfilenodeSubid;	/* rd_firstRelfilenodeSubid of
+												 * oldNode */
 	bool		unique;			/* is index unique? */
 	bool		primary;		/* is index a primary key? */
 	bool		isconstraint;	/* is it for a pkey/unique constraint? */
@@ -2788,6 +2814,18 @@ typedef struct CreateStatsStmt
 	char	   *stxcomment;		/* comment to apply to stats, or NULL */
 	bool		if_not_exists;	/* do nothing if stats name already exists */
 } CreateStatsStmt;
+
+/* ----------------------
+ *		Alter Statistics Statement
+ * ----------------------
+ */
+typedef struct AlterStatsStmt
+{
+	NodeTag		type;
+	List	   *defnames;		/* qualified name (list of Value strings) */
+	int			stxstattarget;	/* statistics target */
+	bool		missing_ok;		/* skip error if statistics object is missing */
+} AlterStatsStmt;
 
 /* ----------------------
  *		Create Function Statement
@@ -2898,6 +2936,7 @@ typedef struct AlterObjectDependsStmt
 	RangeVar   *relation;		/* in case a table is involved */
 	Node	   *object;			/* name of the object */
 	Value	   *extname;		/* extension name */
+	bool		remove;			/* set true to remove dep rather than add */
 } AlterObjectDependsStmt;
 
 /* ----------------------
@@ -2927,9 +2966,8 @@ typedef struct AlterOwnerStmt
 	RoleSpec   *newowner;		/* the new owner */
 } AlterOwnerStmt;
 
-
 /* ----------------------
- *		Alter Operator Set Restrict, Join
+ *		Alter Operator Set ( this-n-that )
  * ----------------------
  */
 typedef struct AlterOperatorStmt
@@ -2939,6 +2977,16 @@ typedef struct AlterOperatorStmt
 	List	   *options;		/* List of DefElem nodes */
 } AlterOperatorStmt;
 
+/* ------------------------
+ *		Alter Type Set ( this-n-that )
+ * ------------------------
+ */
+typedef struct AlterTypeStmt
+{
+	NodeTag		type;
+	List	   *typeName;		/* type name (possibly qualified) */
+	List	   *options;		/* List of DefElem nodes */
+} AlterTypeStmt;
 
 /* ----------------------
  *		Create Rule Statement
@@ -3133,6 +3181,7 @@ typedef struct DropdbStmt
 	NodeTag		type;
 	char	   *dbname;			/* database to drop */
 	bool		missing_ok;		/* skip error if db is missing? */
+	List	   *options;		/* currently only FORCE is supported */
 } DropdbStmt;
 
 /* ----------------------
@@ -3300,8 +3349,8 @@ typedef struct ConstraintsSetStmt
  */
 
 /* Reindex options */
-#define REINDEXOPT_VERBOSE (1 << 0)	/* print progress info */
-#define REINDEXOPT_REPORT_PROGRESS (1 << 1)	/* report pgstat progress */
+#define REINDEXOPT_VERBOSE (1 << 0) /* print progress info */
+#define REINDEXOPT_REPORT_PROGRESS (1 << 1) /* report pgstat progress */
 
 typedef enum ReindexObjectType
 {

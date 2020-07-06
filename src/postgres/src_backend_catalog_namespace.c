@@ -16,7 +16,7 @@
  * and implementing search-path-controlled searches.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -133,6 +133,11 @@
  * namespaceUser is the userid the path has been computed for.
  *
  * Note: all data pointed to by these List variables is in TopMemoryContext.
+ *
+ * activePathGeneration is incremented whenever the effective values of
+ * activeSearchPath/activeCreationNamespace/activeTempCreationPending change.
+ * This can be used to quickly detect whether any change has happened since
+ * a previous examination of the search path state.
  */
 
 /* These variables define the actually active state: */
@@ -143,6 +148,9 @@
 
 
 /* if true, activeCreationNamespace is wrong, it should be temp namespace */
+
+
+/* current generation counter; make sure this is never zero */
 
 
 /* These variables are the values last derived from namespace_search_path: */
@@ -252,9 +260,9 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  * permission on the target namespace, this function will instead signal
  * an ERROR.
  *
- * If non-NULL, *existing_oid is set to the OID of any existing relation with
- * the same name which already exists in that namespace, or to InvalidOid if
- * no such relation exists.
+ * If non-NULL, *existing_relation_id is set to the OID of any existing relation
+ * with the same name which already exists in that namespace, or to InvalidOid
+ * if no such relation exists.
  *
  * If lockmode != NoLock, the specified lock mode is acquired on the existing
  * relation, if any, provided that the current user owns the target relation.
@@ -572,7 +580,7 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 /*
  * get_ts_dict_oid - find a TS dictionary by possibly qualified name
  *
- * If not found, returns InvalidOid if failOK, else throws error
+ * If not found, returns InvalidOid if missing_ok, else throws error
  */
 
 
@@ -785,12 +793,6 @@ NameListToString(List *names)
 
 
 /*
- * isTempNamespaceInUse - oversimplified, deprecated version of
- * checkTempNamespaceStatus
- */
-
-
-/*
  * GetTempNamespaceBackendId - if the given namespace is a temporary-table
  * namespace (either my own, or another backend's), return the BackendId
  * that owns it.  Temporary-toast-table namespaces are included, too.
@@ -844,6 +846,11 @@ NameListToString(List *names)
 
 /*
  * OverrideSearchPathMatchesCurrent - does path match current setting?
+ *
+ * This is tested over and over in some common code paths, and in the typical
+ * scenario where the active search path seldom changes, it'll always succeed.
+ * We make that case fast by keeping a generation counter that is advanced
+ * whenever the active search path changes.
  */
 
 

@@ -5,7 +5,7 @@
  *	  parse trees.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/parser/parsetree.h
@@ -38,15 +38,7 @@
 extern char *get_rte_attribute_name(RangeTblEntry *rte, AttrNumber attnum);
 
 /*
- * Given an RTE and an attribute number, return the appropriate
- * type and typemod info for that attribute of that RTE.
- */
-extern void get_rte_attribute_type(RangeTblEntry *rte, AttrNumber attnum,
-								   Oid *vartype, int32 *vartypmod, Oid *varcollid);
-
-/*
- * Check whether an attribute of an RTE has been dropped (note that
- * get_rte_attribute_type will fail on such an attr)
+ * Check whether an attribute of an RTE has been dropped
  */
 extern bool get_rte_attribute_is_dropped(RangeTblEntry *rte,
 										 AttrNumber attnum);

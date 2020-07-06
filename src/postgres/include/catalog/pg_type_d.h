@@ -3,7 +3,7 @@
  * pg_type_d.h
  *    Macro definitions for pg_type
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -83,13 +83,34 @@
 #define  TYPCATEGORY_BITSTRING	'V' /* er ... "varbit"? */
 #define  TYPCATEGORY_UNKNOWN	'X'
 
+#define  TYPALIGN_CHAR			'c' /* char alignment (i.e. unaligned) */
+#define  TYPALIGN_SHORT			's' /* short alignment (typically 2 bytes) */
+#define  TYPALIGN_INT			'i' /* int alignment (typically 4 bytes) */
+#define  TYPALIGN_DOUBLE		'd' /* double alignment (often 8 bytes) */
+
+#define  TYPSTORAGE_PLAIN		'p' /* type not prepared for toasting */
+#define  TYPSTORAGE_EXTERNAL	'e' /* toastable, don't try to compress */
+#define  TYPSTORAGE_EXTENDED	'x' /* fully toastable */
+#define  TYPSTORAGE_MAIN		'm' /* like 'x' but try to store inline */
+
 /* Is a type OID a polymorphic pseudotype?	(Beware of multiple evaluation) */
 #define IsPolymorphicType(typid)  \
+	(IsPolymorphicTypeFamily1(typid) || \
+	 IsPolymorphicTypeFamily2(typid))
+
+/* Code not part of polymorphic type resolution should not use these macros: */
+#define IsPolymorphicTypeFamily1(typid)  \
 	((typid) == ANYELEMENTOID || \
 	 (typid) == ANYARRAYOID || \
 	 (typid) == ANYNONARRAYOID || \
 	 (typid) == ANYENUMOID || \
 	 (typid) == ANYRANGEOID)
+
+#define IsPolymorphicTypeFamily2(typid)  \
+	((typid) == ANYCOMPATIBLEOID || \
+	 (typid) == ANYCOMPATIBLEARRAYOID || \
+	 (typid) == ANYCOMPATIBLENONARRAYOID || \
+	 (typid) == ANYCOMPATIBLERANGEOID)
 
 #define BOOLOID 16
 #define BYTEAOID 17
@@ -113,6 +134,7 @@
 #define PGDEPENDENCIESOID 3402
 #define PGMCVLISTOID 5017
 #define PGDDLCOMMANDOID 32
+#define XID8OID 5069
 #define POINTOID 600
 #define LSEGOID 601
 #define PATHOID 602
@@ -145,6 +167,7 @@
 #define REGOPEROID 2203
 #define REGOPERATOROID 2204
 #define REGCLASSOID 2205
+#define REGCOLLATIONOID 4191
 #define REGTYPEOID 2206
 #define REGROLEOID 4096
 #define REGNAMESPACEOID 4089
@@ -158,6 +181,7 @@
 #define JSONBOID 3802
 #define JSONPATHOID 4072
 #define TXID_SNAPSHOTOID 2970
+#define PG_SNAPSHOTOID 5038
 #define INT4RANGEOID 3904
 #define NUMRANGEOID 3906
 #define TSRANGEOID 3908
@@ -174,7 +198,6 @@
 #define EVTTRIGGEROID 3838
 #define LANGUAGE_HANDLEROID 2280
 #define INTERNALOID 2281
-#define OPAQUEOID 2282
 #define ANYELEMENTOID 2283
 #define ANYNONARRAYOID 2776
 #define ANYENUMOID 3500
@@ -183,6 +206,10 @@
 #define TSM_HANDLEROID 3310
 #define TABLE_AM_HANDLEROID 269
 #define ANYRANGEOID 3831
+#define ANYCOMPATIBLEOID 5077
+#define ANYCOMPATIBLEARRAYOID 5078
+#define ANYCOMPATIBLENONARRAYOID 5079
+#define ANYCOMPATIBLERANGEOID 5080
 #define BOOLARRAYOID 1000
 #define BYTEAARRAYOID 1001
 #define CHARARRAYOID 1002
@@ -200,6 +227,7 @@
 #define OIDVECTORARRAYOID 1013
 #define JSONARRAYOID 199
 #define XMLARRAYOID 143
+#define XID8ARRAYOID 271
 #define POINTARRAYOID 1017
 #define LSEGARRAYOID 1018
 #define PATHARRAYOID 1019
@@ -231,6 +259,7 @@
 #define REGOPERARRAYOID 2208
 #define REGOPERATORARRAYOID 2209
 #define REGCLASSARRAYOID 2210
+#define REGCOLLATIONARRAYOID 4192
 #define REGTYPEARRAYOID 2211
 #define REGROLEARRAYOID 4097
 #define REGNAMESPACEARRAYOID 4090
@@ -244,6 +273,7 @@
 #define JSONBARRAYOID 3807
 #define JSONPATHARRAYOID 4073
 #define TXID_SNAPSHOTARRAYOID 2949
+#define PG_SNAPSHOTARRAYOID 5039
 #define INT4RANGEARRAYOID 3905
 #define NUMRANGEARRAYOID 3907
 #define TSRANGEARRAYOID 3909

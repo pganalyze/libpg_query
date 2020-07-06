@@ -30,7 +30,7 @@
  * Copyright (c) 1983, 1995, 1996 Eric P. Allman
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -1076,7 +1076,7 @@ fmtint(long long value, char type, int forcesign, int leftjust,
 	}
 
 	/* disable MSVC warning about applying unary minus to an unsigned value */
-#if _MSC_VER
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4146)
 #endif
@@ -1085,7 +1085,7 @@ fmtint(long long value, char type, int forcesign, int leftjust,
 		uvalue = -(unsigned long long) value;
 	else
 		uvalue = (unsigned long long) value;
-#if _MSC_VER
+#ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
@@ -1251,16 +1251,14 @@ fmtfloat(double value, char type, int forcesign, int leftjust,
 		{
 			/* pad before exponent */
 			dostr(convert, epos - convert, target);
-			if (zeropadlen > 0)
-				dopr_outchmulti('0', zeropadlen, target);
+			dopr_outchmulti('0', zeropadlen, target);
 			dostr(epos, vallen - (epos - convert), target);
 		}
 		else
 		{
 			/* no exponent, pad after the digits */
 			dostr(convert, vallen, target);
-			if (zeropadlen > 0)
-				dopr_outchmulti('0', zeropadlen, target);
+			dopr_outchmulti('0', zeropadlen, target);
 		}
 	}
 	else

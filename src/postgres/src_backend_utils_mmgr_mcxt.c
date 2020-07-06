@@ -42,7 +42,7 @@
  * context's MemoryContextMethods struct.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -446,6 +446,12 @@ MemoryContextAllowInCriticalSection(MemoryContext context, bool allow)
 
 
 /*
+ * Find the memory allocated to blocks for this memory context. If recurse is
+ * true, also include children.
+ */
+
+
+/*
  * MemoryContextStats
  *		Print statistics about the named context and all its descendants.
  *
@@ -696,6 +702,7 @@ MemoryContextCreate(MemoryContext node,
 	node->methods = methods;
 	node->parent = parent;
 	node->firstchild = NULL;
+	node->mem_allocated = 0;
 	node->prevchild = NULL;
 	node->name = name;
 	node->ident = NULL;

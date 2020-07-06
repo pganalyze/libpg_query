@@ -367,6 +367,9 @@ case T_AlterOwnerStmt:
 case T_AlterOperatorStmt:
   _outAlterOperatorStmt(str, obj);
   break;
+case T_AlterTypeStmt:
+  _outAlterTypeStmt(str, obj);
+  break;
 case T_DropOwnedStmt:
   _outDropOwnedStmt(str, obj);
   break;
@@ -486,6 +489,9 @@ case T_AlterCollationStmt:
   break;
 case T_CallStmt:
   _outCallStmt(str, obj);
+  break;
+case T_AlterStatsStmt:
+  _outAlterStatsStmt(str, obj);
   break;
 case T_A_Expr:
   _outA_Expr(str, obj);

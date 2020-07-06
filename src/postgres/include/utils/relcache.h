@@ -4,7 +4,7 @@
  *	  Relation descriptor cache definitions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/relcache.h
@@ -14,6 +14,7 @@
 #ifndef RELCACHE_H
 #define RELCACHE_H
 
+#include "postgres.h"
 #include "access/tupdesc.h"
 #include "nodes/bitmapset.h"
 
@@ -50,6 +51,8 @@ extern Oid	RelationGetReplicaIndex(Relation relation);
 extern List *RelationGetIndexExpressions(Relation relation);
 extern List *RelationGetDummyIndexExpressions(Relation relation);
 extern List *RelationGetIndexPredicate(Relation relation);
+extern Datum *RelationGetIndexRawAttOptions(Relation relation);
+extern bytea **RelationGetIndexAttOptions(Relation relation, bool copy);
 
 typedef enum IndexAttrBitmapKind
 {
@@ -60,7 +63,7 @@ typedef enum IndexAttrBitmapKind
 } IndexAttrBitmapKind;
 
 extern Bitmapset *RelationGetIndexAttrBitmap(Relation relation,
-											 IndexAttrBitmapKind keyAttrs);
+											 IndexAttrBitmapKind attrKind);
 
 extern void RelationGetExclusionInfo(Relation indexRelation,
 									 Oid **operators,
@@ -106,9 +109,10 @@ extern Relation RelationBuildLocalRelation(const char *relname,
 										   char relkind);
 
 /*
- * Routine to manage assignment of new relfilenode to a relation
+ * Routines to manage assignment of new relfilenode to a relation
  */
 extern void RelationSetNewRelfilenode(Relation relation, char persistence);
+extern void RelationAssumeNewRelfilenode(Relation relation);
 
 /*
  * Routines for flushing/rebuilding relcache entries in various scenarios
@@ -121,6 +125,11 @@ extern void RelationCacheInvalidate(void);
 
 extern void RelationCloseSmgrByOid(Oid relationId);
 
+#ifdef USE_ASSERT_CHECKING
+extern void AssertPendingSyncs_RelationCache(void);
+#else
+#define AssertPendingSyncs_RelationCache() do {} while (0)
+#endif
 extern void AtEOXact_RelationCache(bool isCommit);
 extern void AtEOSubXact_RelationCache(bool isCommit, SubTransactionId mySubid,
 									  SubTransactionId parentSubid);

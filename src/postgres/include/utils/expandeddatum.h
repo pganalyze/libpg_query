@@ -34,7 +34,7 @@
  * value if they fail partway through.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/expandeddatum.h
@@ -126,7 +126,7 @@ struct ExpandedObjectHeader
  */
 #define EOH_HEADER_MAGIC (-1)
 #define VARATT_IS_EXPANDED_HEADER(PTR) \
-	(((varattrib_4b *) (PTR))->va_4byte.va_header == EOH_HEADER_MAGIC)
+	(((varattrib_4b *) (PTR))->va_4byte.va_header == (uint32) EOH_HEADER_MAGIC)
 
 /*
  * Generic support functions for expanded objects.

@@ -4,7 +4,7 @@
  *	  definition of the "operator" system catalog (pg_operator)
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/catalog/pg_operator.h
@@ -19,9 +19,8 @@
 #define PG_OPERATOR_H
 
 #include "catalog/genbki.h"
-#include "catalog/pg_operator_d.h"
-
 #include "catalog/objectaddress.h"
+#include "catalog/pg_operator_d.h"
 #include "nodes/pg_list.h"
 
 /* ----------------

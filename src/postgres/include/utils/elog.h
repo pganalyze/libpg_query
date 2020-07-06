@@ -4,7 +4,7 @@
  *	  POSTGRES error reporting/logging definitions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/elog.h
@@ -63,7 +63,7 @@
 	(PGSIXBIT(ch1) + (PGSIXBIT(ch2) << 6) + (PGSIXBIT(ch3) << 12) + \
 	 (PGSIXBIT(ch4) << 18) + (PGSIXBIT(ch5) << 24))
 
-/* These macros depend on the fact that '0' becomes a zero in SIXBIT */
+/* These macros depend on the fact that '0' becomes a zero in PGSIXBIT */
 #define ERRCODE_TO_CATEGORY(ec)  ((ec) & ((1 << 12) - 1))
 #define ERRCODE_IS_CATEGORY(ec)  (((ec) & ~((1 << 12) - 1)) == 0)
 
@@ -124,8 +124,8 @@
 #define ereport_domain(elevel, domain, ...)	\
 	do { \
 		pg_prevent_errno_in_scope(); \
-		if (errstart(elevel, __FILE__, __LINE__, PG_FUNCNAME_MACRO, domain)) \
-			__VA_ARGS__, errfinish(0); \
+		if (errstart(elevel, domain)) \
+			__VA_ARGS__, errfinish(__FILE__, __LINE__, PG_FUNCNAME_MACRO); \
 		if (__builtin_constant_p(elevel) && (elevel) >= ERROR) \
 			pg_unreachable(); \
 	} while(0)
@@ -134,8 +134,8 @@
 	do { \
 		const int elevel_ = (elevel); \
 		pg_prevent_errno_in_scope(); \
-		if (errstart(elevel_, __FILE__, __LINE__, PG_FUNCNAME_MACRO, domain)) \
-			__VA_ARGS__, errfinish(0); \
+		if (errstart(elevel_, domain)) \
+			__VA_ARGS__, errfinish(__FILE__, __LINE__, PG_FUNCNAME_MACRO); \
 		if (elevel_ >= ERROR) \
 			pg_unreachable(); \
 	} while(0)
@@ -146,9 +146,8 @@
 
 #define TEXTDOMAIN NULL
 
-extern bool errstart(int elevel, const char *filename, int lineno,
-					 const char *funcname, const char *domain);
-extern void errfinish(int dummy,...);
+extern bool errstart(int elevel, const char *domain);
+extern void errfinish(const char *filename, int lineno, const char *funcname);
 
 extern int	errcode(int sqlerrcode);
 
@@ -192,6 +191,8 @@ extern int	errcontext_msg(const char *fmt,...) pg_attribute_printf(1, 2);
 extern int	errhidestmt(bool hide_stmt);
 extern int	errhidecontext(bool hide_ctx);
 
+extern int	errbacktrace(void);
+
 extern int	errfunction(const char *funcname);
 extern int	errposition(int cursorpos);
 
@@ -210,37 +211,8 @@ extern int	getinternalerrposition(void);
  *		elog(ERROR, "portal \"%s\" not found", stmt->portalname);
  *----------
  */
-/*
- * Using variadic macros, we can give the compiler a hint about the
- * call not returning when elevel >= ERROR.  See comments for ereport().
- * Note that historically elog() has called elog_start (which saves errno)
- * before evaluating "elevel", so we preserve that behavior here.
- */
-#ifdef HAVE__BUILTIN_CONSTANT_P
 #define elog(elevel, ...)  \
-	do { \
-		pg_prevent_errno_in_scope(); \
-		elog_start(__FILE__, __LINE__, PG_FUNCNAME_MACRO); \
-		elog_finish(elevel, __VA_ARGS__); \
-		if (__builtin_constant_p(elevel) && (elevel) >= ERROR) \
-			pg_unreachable(); \
-	} while(0)
-#else							/* !HAVE__BUILTIN_CONSTANT_P */
-#define elog(elevel, ...)  \
-	do { \
-		pg_prevent_errno_in_scope(); \
-		elog_start(__FILE__, __LINE__, PG_FUNCNAME_MACRO); \
-		{ \
-			const int elevel_ = (elevel); \
-			elog_finish(elevel_, __VA_ARGS__); \
-			if (elevel_ >= ERROR) \
-				pg_unreachable(); \
-		} \
-	} while(0)
-#endif							/* HAVE__BUILTIN_CONSTANT_P */
-
-extern void elog_start(const char *filename, int lineno, const char *funcname);
-extern void elog_finish(int elevel, const char *fmt,...) pg_attribute_printf(2, 3);
+	ereport(elevel, errmsg_internal(__VA_ARGS__))
 
 
 /* Support for constructing error strings separately from ereport() calls */
@@ -280,6 +252,25 @@ extern PGDLLIMPORT __thread  ErrorContextCallback *error_context_stack;
  * (sub)transaction abort. Failure to do so may leave the system in an
  * inconsistent state for further processing.
  *
+ * For the common case that the error recovery code and the cleanup in the
+ * normal code path are identical, the following can be used instead:
+ *
+ *		PG_TRY();
+ *		{
+ *			... code that might throw ereport(ERROR) ...
+ *		}
+ *		PG_FINALLY();
+ *		{
+ *			... cleanup code ...
+ *		}
+ *      PG_END_TRY();
+ *
+ * The cleanup code will be run in either case, and any error will be rethrown
+ * afterwards.
+ *
+ * You cannot use both PG_CATCH() and PG_FINALLY() in the same
+ * PG_TRY()/PG_END_TRY() block.
+ *
  * Note: while the system will correctly propagate any new ereport(ERROR)
  * occurring in the recovery section, there is a small limit on the number
  * of levels this will work for.  It's best to keep the error recovery
@@ -303,24 +294,35 @@ extern PGDLLIMPORT __thread  ErrorContextCallback *error_context_stack;
  */
 #define PG_TRY()  \
 	do { \
-		sigjmp_buf *save_exception_stack = PG_exception_stack; \
-		ErrorContextCallback *save_context_stack = error_context_stack; \
-		sigjmp_buf local_sigjmp_buf; \
-		if (sigsetjmp(local_sigjmp_buf, 0) == 0) \
+		sigjmp_buf *_save_exception_stack = PG_exception_stack; \
+		ErrorContextCallback *_save_context_stack = error_context_stack; \
+		sigjmp_buf _local_sigjmp_buf; \
+		bool _do_rethrow = false; \
+		if (sigsetjmp(_local_sigjmp_buf, 0) == 0) \
 		{ \
-			PG_exception_stack = &local_sigjmp_buf
+			PG_exception_stack = &_local_sigjmp_buf
 
 #define PG_CATCH()	\
 		} \
 		else \
 		{ \
-			PG_exception_stack = save_exception_stack; \
-			error_context_stack = save_context_stack
+			PG_exception_stack = _save_exception_stack; \
+			error_context_stack = _save_context_stack
+
+#define PG_FINALLY() \
+		} \
+		else \
+			_do_rethrow = true; \
+		{ \
+			PG_exception_stack = _save_exception_stack; \
+			error_context_stack = _save_context_stack
 
 #define PG_END_TRY()  \
 		} \
-		PG_exception_stack = save_exception_stack; \
-		error_context_stack = save_context_stack; \
+		if (_do_rethrow) \
+				PG_RE_THROW(); \
+		PG_exception_stack = _save_exception_stack; \
+		error_context_stack = _save_context_stack; \
 	} while (0)
 
 /*
@@ -365,6 +367,7 @@ typedef struct ErrorData
 	char	   *detail_log;		/* detail error message for server log only */
 	char	   *hint;			/* hint message */
 	char	   *context;		/* context message */
+	char	   *backtrace;		/* backtrace */
 	const char *message_id;		/* primary message's id (original string) */
 	char	   *schema_name;	/* name of schema */
 	char	   *table_name;		/* name of table */

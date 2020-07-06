@@ -4,18 +4,19 @@
  *--------------------------------------------------------------------
  */
 
-/*
- * Encoding names and routines for work with it. All
- * in this file is shared between FE and BE.
+/*-------------------------------------------------------------------------
  *
- * src/backend/utils/mb/encnames.c
+ * encnames.c
+ *	  Encoding names and routines for working with them.
+ *
+ * Portions Copyright (c) 2001-2020, PostgreSQL Global Development Group
+ *
+ * IDENTIFICATION
+ *	  src/common/encnames.c
+ *
+ *-------------------------------------------------------------------------
  */
-#ifdef FRONTEND
-#include "postgres_fe.h"
-#else
-#include "postgres.h"
-#include "utils/builtins.h"
-#endif
+#include "c.h"
 
 #include <ctype.h>
 #include <unistd.h>
@@ -53,6 +54,7 @@ typedef struct pg_encname
 #else
 #define DEF_ENC2NAME(name, codepage) { #name, PG_##name, codepage }
 #endif
+
 const pg_enc2name pg_enc2name_tbl[] =
 {
 	DEF_ENC2NAME(SQL_ASCII, 0),
@@ -108,10 +110,8 @@ const pg_enc2name pg_enc2name_tbl[] =
 
 
 
-#ifndef FRONTEND
-
 /*
- * Table of encoding names for ICU
+ * Table of encoding names for ICU (currently covers backend encodings only)
  *
  * Reference: <https://ssl.icu-project.org/icu-bin/convexp>
  *
@@ -120,10 +120,15 @@ const pg_enc2name pg_enc2name_tbl[] =
 
 
 
+/*
+ * Is this encoding supported by ICU?
+ */
 
 
+/*
+ * Returns ICU's name for encoding, or NULL if not supported
+ */
 
-#endif							/* not FRONTEND */
 
 
 /* ----------
@@ -136,29 +141,18 @@ const pg_enc2name pg_enc2name_tbl[] =
 
 
 
-/* ----------
- * Remove irrelevant chars from encoding name
- * ----------
+/*
+ * Remove irrelevant chars from encoding name, store at *newkey
+ *
+ * (Caller's responsibility to provide a large enough buffer)
  */
 
 
-/* ----------
+/*
  * Search encoding by encoding name
  *
- * Returns encoding ID, or -1 for error
- * ----------
+ * Returns encoding ID, or -1 if not recognized
  */
-#ifdef FRONTEND
-#else
-#endif
-
-#ifndef FRONTEND
-
-#endif
 
 
 
-#ifndef FRONTEND
-
-
-#endif

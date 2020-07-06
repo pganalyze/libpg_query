@@ -8,7 +8,7 @@
  * or call fmgr-callable functions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/fmgr.h
@@ -336,6 +336,10 @@ extern struct varlena *pg_detoast_datum_packed(struct varlena *datum);
 #define PG_GETARG_BPCHAR_P(n)		DatumGetBpCharP(PG_GETARG_DATUM(n))
 #define PG_GETARG_VARCHAR_P(n)		DatumGetVarCharP(PG_GETARG_DATUM(n))
 
+/* To access options from opclass support functions use this: */
+#define PG_HAS_OPCLASS_OPTIONS()	has_fn_opclass_options(fcinfo->flinfo)
+#define PG_GET_OPCLASS_OPTIONS()	get_fn_opclass_options(fcinfo->flinfo)
+
 /* To return a NULL do this: */
 #define PG_RETURN_NULL()  \
 	do { fcinfo->isnull = true; return (Datum) 0; } while (0)
@@ -451,7 +455,6 @@ typedef struct
 	int			funcmaxargs;	/* FUNC_MAX_ARGS */
 	int			indexmaxkeys;	/* INDEX_MAX_KEYS */
 	int			namedatalen;	/* NAMEDATALEN */
-	int			float4byval;	/* FLOAT4PASSBYVAL */
 	int			float8byval;	/* FLOAT8PASSBYVAL */
 } Pg_magic_struct;
 
@@ -463,7 +466,6 @@ typedef struct
 	FUNC_MAX_ARGS, \
 	INDEX_MAX_KEYS, \
 	NAMEDATALEN, \
-	FLOAT4PASSBYVAL, \
 	FLOAT8PASSBYVAL \
 }
 
@@ -494,7 +496,8 @@ extern int no_such_variable
 
 /* These are for invocation of a specifically named function with a
  * directly-computed parameter list.  Note that neither arguments nor result
- * are allowed to be NULL.
+ * are allowed to be NULL.  Also, the function cannot be one that needs to
+ * look at FmgrInfo, since there won't be any.
  */
 extern Datum DirectFunctionCall1Coll(PGFunction func, Oid collation,
 									 Datum arg1);
@@ -703,6 +706,9 @@ extern Oid	get_call_expr_argtype(fmNodePtr expr, int argnum);
 extern bool get_fn_expr_arg_stable(FmgrInfo *flinfo, int argnum);
 extern bool get_call_expr_arg_stable(fmNodePtr expr, int argnum);
 extern bool get_fn_expr_variadic(FmgrInfo *flinfo);
+extern bytea *get_fn_opclass_options(FmgrInfo *flinfo);
+extern bool has_fn_opclass_options(FmgrInfo *flinfo);
+extern void set_fn_opclass_options(FmgrInfo *flinfo, bytea *options);
 extern bool CheckFunctionValidatorAccess(Oid validatorOid, Oid functionOid);
 
 /*

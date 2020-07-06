@@ -18,7 +18,7 @@
           "comment": null
         }
       ],
-      "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
+      "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
     },
     "QuerySource": {
       "values": [
@@ -670,6 +670,10 @@
           "comment": "/* alter column set not null */"
         },
         {
+          "name": "AT_DropExpression",
+          "comment": "/* alter column drop expression */"
+        },
+        {
           "name": "AT_CheckNotNull",
           "comment": "/* check column is already marked not null */"
         },
@@ -732,10 +736,6 @@
         {
           "name": "AT_ValidateConstraintRecurse",
           "comment": "/* internal to commands/tablecmds.c */"
-        },
-        {
-          "name": "AT_ProcessedConstraint",
-          "comment": "/* pre-processed add constraint (local in\n\t\t\t\t\t\t\t\t * parser/parse_utilcmd.c) */\n"
         },
         {
           "name": "AT_AddIndexConstraint",
@@ -1950,6 +1950,10 @@
           "comment": null
         },
         {
+          "name": "T_IncrementalSort",
+          "comment": null
+        },
+        {
           "name": "T_Group",
           "comment": null
         },
@@ -2152,6 +2156,10 @@
         },
         {
           "name": "T_SortState",
+          "comment": null
+        },
+        {
+          "name": "T_IncrementalSortState",
           "comment": null
         },
         {
@@ -2558,6 +2566,10 @@
         },
         {
           "name": "T_SortPath",
+          "comment": null
+        },
+        {
+          "name": "T_IncrementalSortPath",
           "comment": null
         },
         {
@@ -3050,6 +3062,10 @@
           "comment": null
         },
         {
+          "name": "T_AlterTypeStmt",
+          "comment": null
+        },
+        {
           "name": "T_DropOwnedStmt",
           "comment": null
         },
@@ -3207,6 +3223,10 @@
         },
         {
           "name": "T_CallStmt",
+          "comment": null
+        },
+        {
+          "name": "T_AlterStatsStmt",
           "comment": null
         },
         {
@@ -3743,6 +3763,26 @@
         }
       ],
       "comment": "/*\n * OnConflictAction -\n *\t  \"ON CONFLICT\" clause type of query\n *\n * This is needed in both parsenodes.h and plannodes.h, so put it here...\n */\n"
+    },
+    "LimitOption": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "LIMIT_OPTION_COUNT",
+          "comment": "/* FETCH FIRST... ONLY */"
+        },
+        {
+          "name": "LIMIT_OPTION_WITH_TIES",
+          "comment": "/* FETCH FIRST... WITH TIES */"
+        },
+        {
+          "name": "LIMIT_OPTION_DEFAULT",
+          "comment": "/* No limit present */"
+        }
+      ],
+      "comment": "/*\n * LimitOption -\n *\tLIMIT option of query\n *\n * This is needed in both parsenodes.h and plannodes.h, so put it here...\n */\n"
     }
   },
   "nodes/params": {
@@ -4056,7 +4096,7 @@
           "comment": ""
         }
       ],
-      "comment": "/*\n * PostgreSQL encoding identifiers\n *\n * WARNING: the order of this enum must be same as order of entries\n *\t\t\tin the pg_enc2name_tbl[] array (in mb/encnames.c), and\n *\t\t\tin the pg_wchar_table[] array (in mb/wchar.c)!\n *\n *\t\t\tIf you add some encoding don't forget to check\n *\t\t\tPG_ENCODING_BE_LAST macro.\n *\n * PG_SQL_ASCII is default encoding and must be = 0.\n *\n * XXX\tWe must avoid renumbering any backend encoding until libpq's major\n * version number is increased beyond 5; it turns out that the backend\n * encoding IDs are effectively part of libpq's ABI as far as 8.2 initdb and\n * psql are concerned.\n */\n"
+      "comment": "/*\n * PostgreSQL encoding identifiers\n *\n * WARNING: the order of this enum must be same as order of entries\n *\t\t\tin the pg_enc2name_tbl[] array (in src/common/encnames.c), and\n *\t\t\tin the pg_wchar_table[] array (in src/common/wchar.c)!\n *\n *\t\t\tIf you add some encoding don't forget to check\n *\t\t\tPG_ENCODING_BE_LAST macro.\n *\n * PG_SQL_ASCII is default encoding and must be = 0.\n *\n * XXX\tWe must avoid renumbering any backend encoding until libpq's major\n * version number is increased beyond 5; it turns out that the backend\n * encoding IDs are effectively part of libpq's ABI as far as 8.2 initdb and\n * psql are concerned.\n */\n"
     }
   }
 }

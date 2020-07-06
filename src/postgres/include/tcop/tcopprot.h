@@ -4,7 +4,7 @@
  *	  prototypes for postgres.c.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/tcop/tcopprot.h
@@ -52,9 +52,11 @@ extern List *pg_analyze_and_rewrite_params(RawStmt *parsetree,
 										   ParserSetupHook parserSetup,
 										   void *parserSetupArg,
 										   QueryEnvironment *queryEnv);
-extern PlannedStmt *pg_plan_query(Query *querytree, int cursorOptions,
+extern PlannedStmt *pg_plan_query(Query *querytree, const char *query_string,
+								  int cursorOptions,
 								  ParamListInfo boundParams);
-extern List *pg_plan_queries(List *querytrees, int cursorOptions,
+extern List *pg_plan_queries(List *querytrees, const char *query_string,
+							 int cursorOptions,
 							 ParamListInfo boundParams);
 
 extern bool check_max_stack_depth(int *newval, void **extra, GucSource source);

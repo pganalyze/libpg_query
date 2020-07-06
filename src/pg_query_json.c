@@ -54,7 +54,7 @@ _outList(StringInfo str, const List *node)
 	{
 		_outNode(str, lfirst(lc));
 
-		if (lnext(lc))
+		if (lnext(node, lc))
 			appendStringInfoString(str, ", ");
 	}
 
@@ -74,7 +74,7 @@ _outIntList(StringInfo str, const List *node)
 	{
 		appendStringInfo(str, " %d", lfirst_int(lc));
 
-		if (lnext(lc))
+		if (lnext(node, lc))
 			appendStringInfoString(str, ", ");
 	}
 
@@ -95,7 +95,7 @@ _outOidList(StringInfo str, const List *node)
 	{
 		appendStringInfo(str, " %u", lfirst_oid(lc));
 
-		if (lnext(lc))
+		if (lnext(node, lc))
 			appendStringInfoString(str, ", ");
 	}
 

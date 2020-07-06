@@ -10,7 +10,7 @@
  *	  Display type names "nicely".
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -26,11 +26,11 @@
 #include "access/htup_details.h"
 #include "catalog/namespace.h"
 #include "catalog/pg_type.h"
+#include "mb/pg_wchar.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
 #include "utils/numeric.h"
 #include "utils/syscache.h"
-#include "mb/pg_wchar.h"
 
 static char *printTypmod(const char *typname, int32 typmod, Oid typmodout);
 
