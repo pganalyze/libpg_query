@@ -4,7 +4,7 @@
  *	  definitions for executor state nodes
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/nodes/execnodes.h
@@ -16,21 +16,21 @@
 
 #include "access/tupconvert.h"
 #include "executor/instrument.h"
+#include "fmgr.h"
 #include "lib/pairingheap.h"
 #include "nodes/params.h"
 #include "nodes/plannodes.h"
+#include "nodes/tidbitmap.h"
 #include "partitioning/partdefs.h"
+#include "storage/condition_variable.h"
 #include "utils/hsearch.h"
 #include "utils/queryenvironment.h"
 #include "utils/reltrigger.h"
 #include "utils/sharedtuplestore.h"
 #include "utils/snapshot.h"
 #include "utils/sortsupport.h"
-#include "utils/tuplestore.h"
 #include "utils/tuplesort.h"
-#include "nodes/tidbitmap.h"
-#include "storage/condition_variable.h"
-
+#include "utils/tuplestore.h"
 
 struct PlanState;				/* forward references in this file */
 struct PartitionRoutingInfo;
@@ -60,7 +60,7 @@ typedef Datum (*ExprStateEvalFunc) (struct ExprState *expression,
 
 typedef struct ExprState
 {
-	Node		tag;
+	NodeTag		tag;
 
 	uint8		flags;			/* bitmask of EEO_FLAG_* bits, see above */
 
@@ -104,6 +104,7 @@ typedef struct ExprState
 	int			steps_len;		/* number of steps currently */
 	int			steps_alloc;	/* allocated length of steps array */
 
+#define FIELDNO_EXPRSTATE_PARENT 11
 	struct PlanState *parent;	/* parent PlanState node, if any */
 	ParamListInfo ext_params;	/* for compiling PARAM_EXTERN nodes */
 
@@ -138,6 +139,7 @@ typedef struct ExprState
  *		UniqueProcs
  *		UniqueStrats
  *		Unique				is it a unique index?
+ *		OpclassOptions		opclass-specific options, or NULL if none
  *		ReadyForInserts		is it valid for inserts?
  *		Concurrent			are we doing a concurrent index build?
  *		BrokenHotChain		did we detect any broken HOT chains?
@@ -166,6 +168,7 @@ typedef struct IndexInfo
 	Oid		   *ii_UniqueOps;	/* array with one entry per column */
 	Oid		   *ii_UniqueProcs; /* array with one entry per column */
 	uint16	   *ii_UniqueStrats;	/* array with one entry per column */
+	Datum	   *ii_OpclassOptions;	/* array with one entry per column */
 	bool		ii_Unique;
 	bool		ii_ReadyForInserts;
 	bool		ii_Concurrent;
@@ -456,6 +459,9 @@ typedef struct ResultRelInfo
 	/* array of stored generated columns expr states */
 	ExprState **ri_GeneratedExprs;
 
+	/* number of stored generated columns we need to compute */
+	int			ri_NumGeneratedNeeded;
+
 	/* for removing junk attributes from tuples */
 	JunkFilter *ri_junkFilter;
 
@@ -502,7 +508,6 @@ typedef struct EState
 	Snapshot	es_snapshot;	/* time qual to use */
 	Snapshot	es_crosscheck_snapshot; /* crosscheck time qual for RI */
 	List	   *es_range_table; /* List of RangeTblEntry */
-	struct RangeTblEntry **es_range_table_array;	/* equivalent array */
 	Index		es_range_table_size;	/* size of the range table arrays */
 	Relation   *es_relations;	/* Array of per-range-table-entry Relation
 								 * pointers, or NULL if not yet opened */
@@ -588,7 +593,7 @@ typedef struct EState
 	 * and with which options.  es_jit is created on-demand when JITing is
 	 * performed.
 	 *
-	 * es_jit_combined_instr is the combined, on demand allocated,
+	 * es_jit_worker_instr is the combined, on demand allocated,
 	 * instrumentation from all workers. The leader's instrumentation is kept
 	 * separate, and is combined on demand by ExplainPrintJITSummary().
 	 */
@@ -862,7 +867,8 @@ typedef struct SubPlanState
 	MemoryContext hashtablecxt; /* memory context containing hash tables */
 	MemoryContext hashtempcxt;	/* temp memory context for hash tables */
 	ExprContext *innerecontext; /* econtext for computing inner tuples */
-	/* each of the following fields is an array of length numCols: */
+	int			numCols;		/* number of columns being hashed */
+	/* each of the remaining fields is an array of length numCols: */
 	AttrNumber *keyColIdx;		/* control data for hash tables */
 	Oid		   *tab_eq_funcoids;	/* equality func oids for table
 									 * datatype(s) */
@@ -1173,7 +1179,6 @@ typedef struct ModifyTableState
 	List	  **mt_arowmarks;	/* per-subplan ExecAuxRowMark lists */
 	EPQState	mt_epqstate;	/* for evaluating EvalPlanQual rechecks */
 	bool		fireBSTriggers; /* do we need to fire stmt triggers? */
-	List	   *mt_excludedtlist;	/* the excluded pseudo relation's tlist  */
 
 	/*
 	 * Slot for storing tuples in the root partitioned table's rowtype during
@@ -1237,8 +1242,6 @@ struct AppendState
  *		slots			current output tuple of each subplan
  *		heap			heap of active tuples
  *		initialized		true if we have fetched first tuple from each subplan
- *		noopscan		true if partition pruning proved that none of the
- *						mergeplans can contain a record to satisfy this query.
  *		prune_state		details required to allow partitions to be
  *						eliminated from the scan, or NULL if not possible.
  *		valid_subplans	for runtime pruning, valid mergeplans indexes to
@@ -1255,7 +1258,6 @@ typedef struct MergeAppendState
 	TupleTableSlot **ms_slots;	/* array of length ms_nplans */
 	struct binaryheap *ms_heap; /* binary heap of slot indices */
 	bool		ms_initialized; /* are subplans started? */
-	bool		ms_noopscan;
 	struct PartitionPruneState *ms_prune_state;
 	Bitmapset  *ms_valid_subplans;
 } MergeAppendState;
@@ -1698,10 +1700,9 @@ typedef struct ValuesScanState
 	ScanState	ss;				/* its first field is NodeTag */
 	ExprContext *rowcontext;
 	List	  **exprlists;
+	List	  **exprstatelists;
 	int			array_len;
 	int			curr_idx;
-	/* in back branches, put this at the end to avoid ABI break: */
-	List	  **exprstatelists;
 } ValuesScanState;
 
 /* ----------------
@@ -1983,6 +1984,21 @@ typedef struct MaterialState
 	Tuplestorestate *tuplestorestate;
 } MaterialState;
 
+
+/* ----------------
+ *	 When performing sorting by multiple keys, it's possible that the input
+ *	 dataset is already sorted on a prefix of those keys. We call these
+ *	 "presorted keys".
+ *	 PresortedKeyData represents information about one such key.
+ * ----------------
+ */
+typedef struct PresortedKeyData
+{
+	FmgrInfo	flinfo;			/* comparison function info */
+	FunctionCallInfo fcinfo;	/* comparison function call info */
+	OffsetNumber attno;			/* attribute number in tuple */
+} PresortedKeyData;
+
 /* ----------------
  *	 Shared memory container for per-worker sort information
  * ----------------
@@ -2011,6 +2027,71 @@ typedef struct SortState
 	SharedSortInfo *shared_info;	/* one entry per worker */
 } SortState;
 
+/* ----------------
+ *	 Instrumentation information for IncrementalSort
+ * ----------------
+ */
+typedef struct IncrementalSortGroupInfo
+{
+	int64		groupCount;
+	int64		maxDiskSpaceUsed;
+	int64		totalDiskSpaceUsed;
+	int64		maxMemorySpaceUsed;
+	int64		totalMemorySpaceUsed;
+	bits32		sortMethods;	/* bitmask of TuplesortMethod */
+} IncrementalSortGroupInfo;
+
+typedef struct IncrementalSortInfo
+{
+	IncrementalSortGroupInfo fullsortGroupInfo;
+	IncrementalSortGroupInfo prefixsortGroupInfo;
+} IncrementalSortInfo;
+
+/* ----------------
+ *	 Shared memory container for per-worker incremental sort information
+ * ----------------
+ */
+typedef struct SharedIncrementalSortInfo
+{
+	int			num_workers;
+	IncrementalSortInfo sinfo[FLEXIBLE_ARRAY_MEMBER];
+} SharedIncrementalSortInfo;
+
+/* ----------------
+ *	 IncrementalSortState information
+ * ----------------
+ */
+typedef enum
+{
+	INCSORT_LOADFULLSORT,
+	INCSORT_LOADPREFIXSORT,
+	INCSORT_READFULLSORT,
+	INCSORT_READPREFIXSORT,
+} IncrementalSortExecutionStatus;
+
+typedef struct IncrementalSortState
+{
+	ScanState	ss;				/* its first field is NodeTag */
+	bool		bounded;		/* is the result set bounded? */
+	int64		bound;			/* if bounded, how many tuples are needed */
+	bool		outerNodeDone;	/* finished fetching tuples from outer node */
+	int64		bound_Done;		/* value of bound we did the sort with */
+	IncrementalSortExecutionStatus execution_status;
+	int64		n_fullsort_remaining;
+	Tuplesortstate *fullsort_state; /* private state of tuplesort.c */
+	Tuplesortstate *prefixsort_state;	/* private state of tuplesort.c */
+	/* the keys by which the input path is already sorted */
+	PresortedKeyData *presorted_keys;
+
+	IncrementalSortInfo incsort_info;
+
+	/* slot for pivot tuple defining values of presorted keys within group */
+	TupleTableSlot *group_pivot;
+	TupleTableSlot *transfer_tuple;
+	bool		am_worker;		/* are we a worker? */
+	SharedIncrementalSortInfo *shared_info; /* one entry per worker */
+} IncrementalSortState;
+
 /* ---------------------
  *	GroupState information
  * ---------------------
@@ -2021,6 +2102,27 @@ typedef struct GroupState
 	ExprState  *eqfunction;		/* equality function */
 	bool		grp_done;		/* indicates completion of Group scan */
 } GroupState;
+
+/* ---------------------
+ *	per-worker aggregate information
+ * ---------------------
+ */
+typedef struct AggregateInstrumentation
+{
+	Size		hash_mem_peak;	/* peak hash table memory usage */
+	uint64		hash_disk_used; /* kB of disk space used */
+	int			hash_batches_used;	/* batches used during entire execution */
+} AggregateInstrumentation;
+
+/* ----------------
+ *	 Shared memory container for per-worker aggregate information
+ * ----------------
+ */
+typedef struct SharedAggInfo
+{
+	int			num_workers;
+	AggregateInstrumentation sinstrument[FLEXIBLE_ARRAY_MEMBER];
+} SharedAggInfo;
 
 /* ---------------------
  *	AggState information
@@ -2069,6 +2171,9 @@ typedef struct AggState
 	int			current_set;	/* The current grouping set being evaluated */
 	Bitmapset  *grouped_cols;	/* grouped cols in current projection */
 	List	   *all_grouped_cols;	/* list of all grouped cols in DESC order */
+	Bitmapset  *colnos_needed;	/* all columns needed from the outer plan */
+	int			max_colno_needed;	/* highest colno needed from outer plan */
+	bool		all_cols_needed;	/* are all cols from outer plan needed? */
 	/* These fields are for grouping set phase data */
 	int			maxsets;		/* The max number of sets in any phase */
 	AggStatePerPhase phases;	/* array of all phases */
@@ -2082,15 +2187,37 @@ typedef struct AggState
 	/* these fields are used in AGG_HASHED and AGG_MIXED modes: */
 	bool		table_filled;	/* hash table filled yet? */
 	int			num_hashes;
+	MemoryContext hash_metacxt; /* memory for hash table itself */
+	struct HashTapeInfo *hash_tapeinfo; /* metadata for spill tapes */
+	struct HashAggSpill *hash_spills;	/* HashAggSpill for each grouping set,
+										 * exists only during first pass */
+	TupleTableSlot *hash_spill_rslot;	/* for reading spill files */
+	TupleTableSlot *hash_spill_wslot;	/* for writing spill files */
+	List	   *hash_batches;	/* hash batches remaining to be processed */
+	bool		hash_ever_spilled;	/* ever spilled during this execution? */
+	bool		hash_spill_mode;	/* we hit a limit during the current batch
+									 * and we must not create new groups */
+	Size		hash_mem_limit; /* limit before spilling hash table */
+	uint64		hash_ngroups_limit; /* limit before spilling hash table */
+	int			hash_planned_partitions;	/* number of partitions planned
+											 * for first pass */
+	double		hashentrysize;	/* estimate revised during execution */
+	Size		hash_mem_peak;	/* peak hash table memory usage */
+	uint64		hash_ngroups_current;	/* number of groups currently in
+										 * memory in all hash tables */
+	uint64		hash_disk_used; /* kB of disk space used */
+	int			hash_batches_used;	/* batches used during entire execution */
+
 	AggStatePerHash perhash;	/* array of per-hashtable data */
 	AggStatePerGroup *hash_pergroup;	/* grouping set indexed array of
 										 * per-group pointers */
 
 	/* support for evaluation of agg input expressions: */
-#define FIELDNO_AGGSTATE_ALL_PERGROUPS 34
+#define FIELDNO_AGGSTATE_ALL_PERGROUPS 53
 	AggStatePerGroup *all_pergroups;	/* array of first ->pergroups, than
 										 * ->hash_pergroup */
 	ProjectionInfo *combinedproj;	/* projection machinery */
+	SharedAggInfo *shared_info; /* one entry per worker */
 } AggState;
 
 /* ----------------
@@ -2259,7 +2386,7 @@ typedef struct HashInstrumentation
 	int			nbuckets_original;	/* planned number of buckets */
 	int			nbatch;			/* number of batches at end of execution */
 	int			nbatch_original;	/* planned number of batches */
-	size_t		space_peak;		/* speak memory usage in bytes */
+	Size		space_peak;		/* peak memory usage in bytes */
 } HashInstrumentation;
 
 /* ----------------
@@ -2282,8 +2409,20 @@ typedef struct HashState
 	HashJoinTable hashtable;	/* hash table for the hashjoin */
 	List	   *hashkeys;		/* list of ExprState nodes */
 
-	SharedHashInfo *shared_info;	/* one entry per worker */
-	HashInstrumentation *hinstrument;	/* this worker's entry */
+	/*
+	 * In a parallelized hash join, the leader retains a pointer to the
+	 * shared-memory stats area in its shared_info field, and then copies the
+	 * shared-memory info back to local storage before DSM shutdown.  The
+	 * shared_info field remains NULL in workers, or in non-parallel joins.
+	 */
+	SharedHashInfo *shared_info;
+
+	/*
+	 * If we are collecting hash stats, this points to an initially-zeroed
+	 * collection area, which could be either local storage or in shared
+	 * memory; either way it's for just one process.
+	 */
+	HashInstrumentation *hinstrument;
 
 	/* Parallel hash state. */
 	struct ParallelHashJoinState *parallel_state;
@@ -2350,6 +2489,7 @@ typedef enum
 	LIMIT_RESCAN,				/* rescan after recomputing parameters */
 	LIMIT_EMPTY,				/* there are no returnable rows */
 	LIMIT_INWINDOW,				/* have returned a row in the window */
+	LIMIT_WINDOWEND_TIES,		/* have returned a tied row */
 	LIMIT_SUBPLANEOF,			/* at EOF of subplan (within window) */
 	LIMIT_WINDOWEND,			/* stepped off end of window */
 	LIMIT_WINDOWSTART			/* stepped off beginning of window */
@@ -2360,12 +2500,16 @@ typedef struct LimitState
 	PlanState	ps;				/* its first field is NodeTag */
 	ExprState  *limitOffset;	/* OFFSET parameter, or NULL if none */
 	ExprState  *limitCount;		/* COUNT parameter, or NULL if none */
+	LimitOption limitOption;	/* limit specification type */
 	int64		offset;			/* current OFFSET value */
 	int64		count;			/* current COUNT, if any */
 	bool		noCount;		/* if true, ignore count */
 	LimitStateCond lstate;		/* state machine status, as above */
 	int64		position;		/* 1-based index of last tuple returned */
 	TupleTableSlot *subSlot;	/* tuple last obtained from subplan */
+	ExprState  *eqfunction;		/* tuple equality qual in case of WITH TIES
+								 * option */
+	TupleTableSlot *last_slot;	/* slot for evaluation of ties */
 } LimitState;
 
 #endif							/* EXECNODES_H */

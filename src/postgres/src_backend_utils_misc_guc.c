@@ -2,6 +2,8 @@
  * Symbols referenced in this file:
  * - log_min_messages
  * - client_min_messages
+ * - backtrace_functions
+ * - backtrace_symbol_list
  * - check_function_bodies
  *--------------------------------------------------------------------
  */
@@ -14,7 +16,7 @@
  * See src/backend/utils/misc/README for more information.
  *
  *
- * Copyright (c) 2000-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2000-2020, PostgreSQL Global Development Group
  * Written by Peter Eisentraut <peter_e@gmx.net>.
  *
  * IDENTIFICATION
@@ -44,12 +46,13 @@
 #include "access/xlog_internal.h"
 #include "catalog/namespace.h"
 #include "catalog/pg_authid.h"
+#include "catalog/storage.h"
 #include "commands/async.h"
 #include "commands/prepare.h"
+#include "commands/trigger.h"
 #include "commands/user.h"
 #include "commands/vacuum.h"
 #include "commands/variable.h"
-#include "commands/trigger.h"
 #include "common/string.h"
 #include "funcapi.h"
 #include "jit/jit.h"
@@ -74,24 +77,26 @@
 #include "postmaster/syslogger.h"
 #include "postmaster/walwriter.h"
 #include "replication/logicallauncher.h"
+#include "replication/reorderbuffer.h"
 #include "replication/slot.h"
 #include "replication/syncrep.h"
 #include "replication/walreceiver.h"
 #include "replication/walsender.h"
 #include "storage/bufmgr.h"
 #include "storage/dsm_impl.h"
-#include "storage/standby.h"
 #include "storage/fd.h"
 #include "storage/large_object.h"
 #include "storage/pg_shmem.h"
-#include "storage/proc.h"
 #include "storage/predicate.h"
+#include "storage/proc.h"
+#include "storage/standby.h"
 #include "tcop/tcopprot.h"
 #include "tsearch/ts_cache.h"
+#include "utils/acl.h"
 #include "utils/builtins.h"
 #include "utils/bytea.h"
-#include "utils/guc_tables.h"
 #include "utils/float.h"
+#include "utils/guc_tables.h"
 #include "utils/memutils.h"
 #include "utils/pg_locale.h"
 #include "utils/pg_lsn.h"
@@ -130,6 +135,7 @@ extern int	CommitSiblings;
 extern char *default_tablespace;
 extern char *temp_tablespaces;
 extern bool ignore_checksum_failure;
+extern bool ignore_invalid_pages;
 extern bool synchronize_seqscans;
 
 #ifdef TRACE_SYNCSCAN
@@ -202,7 +208,7 @@ static bool check_autovacuum_max_workers(int *newval, void **extra, GucSource so
 static bool check_max_wal_senders(int *newval, void **extra, GucSource source);
 static bool check_autovacuum_work_mem(int *newval, void **extra, GucSource source);
 static bool check_effective_io_concurrency(int *newval, void **extra, GucSource source);
-static void assign_effective_io_concurrency(int newval, void *extra);
+static bool check_maintenance_io_concurrency(int *newval, void **extra, GucSource source);
 static void assign_pgstat_temp_directory(const char *newval, void *extra);
 static bool check_application_name(char **newval, void **extra, GucSource source);
 static void assign_application_name(const char *newval, void *extra);
@@ -210,6 +216,8 @@ static bool check_cluster_name(char **newval, void **extra, GucSource source);
 static const char *show_unix_socket_permissions(void);
 static const char *show_log_file_mode(void);
 static const char *show_data_directory_mode(void);
+static bool check_backtrace_functions(char **newval, void **extra, GucSource source);
+static void assign_backtrace_functions(const char *newval, void *extra);
 static bool check_recovery_target_timeline(char **newval, void **extra, GucSource source);
 static void assign_recovery_target_timeline(const char *newval, void *extra);
 static bool check_recovery_target(char **newval, void **extra, GucSource source);
@@ -238,6 +246,9 @@ static ConfigVariable *ProcessConfigFileInternal(GucContext context,
 
 
 
+StaticAssertDecl(lengthof(bytea_output_options) == (BYTEA_OUTPUT_HEX + 2),
+				 "array length mismatch");
+
 /*
  * We have different sets for client and server message level options because
  * they sort slightly different (see "log" level), and because "fatal"/"panic"
@@ -249,13 +260,25 @@ static ConfigVariable *ProcessConfigFileInternal(GucContext context,
 
 
 
+StaticAssertDecl(lengthof(intervalstyle_options) == (INTSTYLE_ISO_8601 + 2),
+				 "array length mismatch");
+
+
+
+StaticAssertDecl(lengthof(log_error_verbosity_options) == (PGERROR_VERBOSE + 2),
+				 "array length mismatch");
+
+
+
+StaticAssertDecl(lengthof(log_statement_options) == (LOGSTMT_ALL + 2),
+				 "array length mismatch");
 
 
 
 
 
-
-
+StaticAssertDecl(lengthof(session_replication_role_options) == (SESSION_REPLICATION_ROLE_LOCAL + 2),
+				 "array length mismatch");
 
 #ifdef HAVE_SYSLOG
 #else
@@ -263,9 +286,18 @@ static ConfigVariable *ProcessConfigFileInternal(GucContext context,
 
 
 
+StaticAssertDecl(lengthof(track_function_options) == (TRACK_FUNC_ALL + 2),
+				 "array length mismatch");
 
 
 
+StaticAssertDecl(lengthof(xmlbinary_options) == (XMLBINARY_HEX + 2),
+				 "array length mismatch");
+
+
+
+StaticAssertDecl(lengthof(xmloption_options) == (XMLOPTION_CONTENT + 2),
+				 "array length mismatch");
 
 /*
  * Although only "on", "off", and "safe_encoding" are documented, we
@@ -303,6 +335,9 @@ static ConfigVariable *ProcessConfigFileInternal(GucContext context,
 
 
 
+
+StaticAssertDecl(lengthof(ssl_protocol_versions_info) == (PG_TLS1_3_VERSION + 2),
+				 "array length mismatch");
 
 #ifndef WIN32
 #endif
@@ -356,6 +391,14 @@ __thread int			client_min_messages = NOTICE;
 
 
 
+
+
+
+
+
+__thread char	   *backtrace_functions;
+
+__thread char	   *backtrace_symbol_list;
 
 
 
@@ -437,6 +480,9 @@ __thread int			client_min_messages = NOTICE;
  */
 
 
+StaticAssertDecl(lengthof(GucContext_Names) == (PGC_USERSET + 1),
+				 "array length mismatch");
+
 /*
  * Displayable names for source types (enum GucSource)
  *
@@ -444,10 +490,16 @@ __thread int			client_min_messages = NOTICE;
  */
 
 
+StaticAssertDecl(lengthof(GucSource_Names) == (PGC_S_SESSION + 1),
+				 "array length mismatch");
+
 /*
  * Displayable names for the groupings defined in enum config_group
  */
 
+
+StaticAssertDecl(lengthof(config_group_names) == (DEVELOPER_OPTIONS + 2),
+				 "array length mismatch");
 
 /*
  * Displayable names for GUC variable types (enum config_type)
@@ -455,6 +507,9 @@ __thread int			client_min_messages = NOTICE;
  * Note: these strings are deliberately not localized.
  */
 
+
+StaticAssertDecl(lengthof(config_type_names) == (PGC_ENUM + 1),
+				 "array length mismatch");
 
 /*
  * Unit conversion tables.
@@ -552,6 +607,9 @@ typedef struct
 #ifdef USE_PREFETCH
 #else
 #endif
+#ifdef USE_PREFETCH
+#else
+#endif
 
 
 
@@ -563,7 +621,7 @@ typedef struct
 #ifdef USE_SSL
 #else
 #endif
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #else
 #endif
 #ifdef USE_SSL
@@ -1692,11 +1750,10 @@ read_nondefault_variables(void)
 
 
 
-#ifdef USE_PREFETCH
-#else
+#ifndef USE_PREFETCH
 #endif							/* USE_PREFETCH */
 
-#ifdef USE_PREFETCH
+#ifndef USE_PREFETCH
 #endif							/* USE_PREFETCH */
 
 
@@ -1709,6 +1766,18 @@ read_nondefault_variables(void)
 
 
 
+
+
+
+
+/*
+ * We split the input string, where commas separate function names
+ * and certain whitespace chars are ignored, into a \0-separated (and
+ * \0\0-terminated) list of function names.  This formulation allows
+ * easy scanning when an error is thrown while avoiding the use of
+ * non-reentrant strtok(), as well as keeping the output data in a
+ * single palloc() chunk.
+ */
 
 
 

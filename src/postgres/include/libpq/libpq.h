@@ -4,7 +4,7 @@
  *	  POSTGRES LIBPQ buffer structure definitions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/libpq/libpq.h
@@ -55,8 +55,8 @@ extern const PGDLLIMPORT PQcommMethods *PqCommMethods;
  */
 extern WaitEventSet *FeBeWaitSet;
 
-extern int	StreamServerPort(int family, char *hostName,
-							 unsigned short portNumber, char *unixSocketDir,
+extern int	StreamServerPort(int family, const char *hostName,
+							 unsigned short portNumber, const char *unixSocketDir,
 							 pgsocket ListenSocket[], int MaxListen);
 extern int	StreamConnection(pgsocket server_fd, Port *port);
 extern void StreamClose(pgsocket sock);
@@ -83,8 +83,8 @@ extern char *ssl_key_file;
 extern char *ssl_ca_file;
 extern char *ssl_crl_file;
 extern char *ssl_dh_params_file;
-extern char *ssl_passphrase_command;
-extern bool ssl_passphrase_command_supports_reload;
+extern PGDLLIMPORT char *ssl_passphrase_command;
+extern PGDLLIMPORT bool ssl_passphrase_command_supports_reload;
 #ifdef USE_SSL
 extern bool ssl_loaded_verify_locations;
 #endif

@@ -4,7 +4,7 @@
  *	  POSTGRES define and remove utility definitions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/commands/defrem.h
@@ -16,7 +16,7 @@
 
 #include "catalog/objectaddress.h"
 #include "nodes/params.h"
-#include "nodes/parsenodes.h"
+#include "parser/parse_node.h"
 #include "tcop/dest.h"
 #include "utils/array.h"
 
@@ -54,8 +54,6 @@ extern Oid	ResolveOpClass(List *opclass, Oid attrType,
 /* commands/functioncmds.c */
 extern ObjectAddress CreateFunction(ParseState *pstate, CreateFunctionStmt *stmt);
 extern void RemoveFunctionById(Oid funcOid);
-extern void SetFunctionReturnType(Oid funcOid, Oid newRetType);
-extern void SetFunctionArgType(Oid funcOid, int argIndex, Oid newArgType);
 extern ObjectAddress AlterFunction(ParseState *pstate, AlterFunctionStmt *stmt);
 extern ObjectAddress CreateCast(CreateCastStmt *stmt);
 extern void DropCastById(Oid castOid);
@@ -66,7 +64,6 @@ extern void IsThereFunctionInNamespace(const char *proname, int pronargs,
 extern void ExecuteDoStmt(DoStmt *stmt, bool atomic);
 extern void ExecuteCallStmt(CallStmt *stmt, ParamListInfo params, bool atomic, DestReceiver *dest);
 extern TupleDesc CallStmtResultDesc(CallStmt *stmt);
-extern Oid	get_cast_oid(Oid sourcetypeid, Oid targettypeid, bool missing_ok);
 extern Oid	get_transform_oid(Oid type_id, Oid lang_id, bool missing_ok);
 extern void interpret_function_parameter_list(ParseState *pstate,
 											  List *parameters,
@@ -87,6 +84,7 @@ extern ObjectAddress AlterOperator(AlterOperatorStmt *stmt);
 
 /* commands/statscmds.c */
 extern ObjectAddress CreateStatistics(CreateStatsStmt *stmt);
+extern ObjectAddress AlterStatistics(AlterStatsStmt *stmt);
 extern void RemoveStatisticsById(Oid statsOid);
 extern void UpdateStatisticsForTypeChange(Oid statsOid,
 										  Oid relationOid, int attnum,

@@ -3,7 +3,7 @@
  *
  *	Definitions for the PostgreSQL statistics collector daemon.
  *
- *	Copyright (c) 2001-2019, PostgreSQL Global Development Group
+ *	Copyright (c) 2001-2020, PostgreSQL Global Development Group
  *
  *	src/include/pgstat.h
  * ----------
@@ -12,8 +12,8 @@
 #define PGSTAT_H
 
 #include "datatype/timestamp.h"
-#include "fmgr.h"
 #include "libpq/pqcomm.h"
+#include "miscadmin.h"
 #include "port/atomics.h"
 #include "portability/instr_time.h"
 #include "postmaster/pgarch.h"
@@ -55,11 +55,13 @@ typedef enum StatMsgType
 	PGSTAT_MTYPE_RESETCOUNTER,
 	PGSTAT_MTYPE_RESETSHAREDCOUNTER,
 	PGSTAT_MTYPE_RESETSINGLECOUNTER,
+	PGSTAT_MTYPE_RESETSLRUCOUNTER,
 	PGSTAT_MTYPE_AUTOVAC_START,
 	PGSTAT_MTYPE_VACUUM,
 	PGSTAT_MTYPE_ANALYZE,
 	PGSTAT_MTYPE_ARCHIVER,
 	PGSTAT_MTYPE_BGWRITER,
+	PGSTAT_MTYPE_SLRU,
 	PGSTAT_MTYPE_FUNCSTAT,
 	PGSTAT_MTYPE_FUNCPURGE,
 	PGSTAT_MTYPE_RECOVERYCONFLICT,
@@ -344,6 +346,17 @@ typedef struct PgStat_MsgResetsinglecounter
 } PgStat_MsgResetsinglecounter;
 
 /* ----------
+ * PgStat_MsgResetslrucounter Sent by the backend to tell the collector
+ *								to reset a SLRU counter
+ * ----------
+ */
+typedef struct PgStat_MsgResetslrucounter
+{
+	PgStat_MsgHdr m_hdr;
+	int			m_index;
+} PgStat_MsgResetslrucounter;
+
+/* ----------
  * PgStat_MsgAutovacStart		Sent by the autovacuum daemon to signal
  *								that a database is going to be processed
  * ----------
@@ -422,6 +435,23 @@ typedef struct PgStat_MsgBgWriter
 	PgStat_Counter m_checkpoint_write_time; /* times in milliseconds */
 	PgStat_Counter m_checkpoint_sync_time;
 } PgStat_MsgBgWriter;
+
+/* ----------
+ * PgStat_MsgSLRU			Sent by a backend to update SLRU statistics.
+ * ----------
+ */
+typedef struct PgStat_MsgSLRU
+{
+	PgStat_MsgHdr m_hdr;
+	PgStat_Counter m_index;
+	PgStat_Counter m_blocks_zeroed;
+	PgStat_Counter m_blocks_hit;
+	PgStat_Counter m_blocks_read;
+	PgStat_Counter m_blocks_written;
+	PgStat_Counter m_blocks_exists;
+	PgStat_Counter m_flush;
+	PgStat_Counter m_truncate;
+} PgStat_MsgSLRU;
 
 /* ----------
  * PgStat_MsgRecoveryConflict	Sent by the backend upon recovery conflict
@@ -560,11 +590,13 @@ typedef union PgStat_Msg
 	PgStat_MsgResetcounter msg_resetcounter;
 	PgStat_MsgResetsharedcounter msg_resetsharedcounter;
 	PgStat_MsgResetsinglecounter msg_resetsinglecounter;
+	PgStat_MsgResetslrucounter msg_resetslrucounter;
 	PgStat_MsgAutovacStart msg_autovacuum_start;
 	PgStat_MsgVacuum msg_vacuum;
 	PgStat_MsgAnalyze msg_analyze;
 	PgStat_MsgArchiver msg_archiver;
 	PgStat_MsgBgWriter msg_bgwriter;
+	PgStat_MsgSLRU msg_slru;
 	PgStat_MsgFuncstat msg_funcstat;
 	PgStat_MsgFuncpurge msg_funcpurge;
 	PgStat_MsgRecoveryConflict msg_recoveryconflict;
@@ -647,6 +679,7 @@ typedef struct PgStat_StatTabEntry
 	PgStat_Counter n_live_tuples;
 	PgStat_Counter n_dead_tuples;
 	PgStat_Counter changes_since_analyze;
+	PgStat_Counter inserts_since_vacuum;
 
 	PgStat_Counter blocks_fetched;
 	PgStat_Counter blocks_hit;
@@ -712,24 +745,20 @@ typedef struct PgStat_GlobalStats
 	TimestampTz stat_reset_timestamp;
 } PgStat_GlobalStats;
 
-
-/* ----------
- * Backend types
- * ----------
+/*
+ * SLRU statistics kept in the stats collector
  */
-typedef enum BackendType
+typedef struct PgStat_SLRUStats
 {
-	B_AUTOVAC_LAUNCHER,
-	B_AUTOVAC_WORKER,
-	B_BACKEND,
-	B_BG_WORKER,
-	B_BG_WRITER,
-	B_CHECKPOINTER,
-	B_STARTUP,
-	B_WAL_RECEIVER,
-	B_WAL_SENDER,
-	B_WAL_WRITER
-} BackendType;
+	PgStat_Counter blocks_zeroed;
+	PgStat_Counter blocks_hit;
+	PgStat_Counter blocks_read;
+	PgStat_Counter blocks_written;
+	PgStat_Counter blocks_exists;
+	PgStat_Counter flush;
+	PgStat_Counter truncate;
+	TimestampTz stat_reset_timestamp;
+} PgStat_SLRUStats;
 
 
 /* ----------
@@ -780,7 +809,6 @@ typedef enum
 	WAIT_EVENT_LOGICAL_APPLY_MAIN,
 	WAIT_EVENT_LOGICAL_LAUNCHER_MAIN,
 	WAIT_EVENT_PGSTAT_MAIN,
-	WAIT_EVENT_RECOVERY_WAL_ALL,
 	WAIT_EVENT_RECOVERY_WAL_STREAM,
 	WAIT_EVENT_SYSLOGGER_MAIN,
 	WAIT_EVENT_WAL_RECEIVER_MAIN,
@@ -800,13 +828,13 @@ typedef enum
 {
 	WAIT_EVENT_CLIENT_READ = PG_WAIT_CLIENT,
 	WAIT_EVENT_CLIENT_WRITE,
+	WAIT_EVENT_GSS_OPEN_SERVER,
 	WAIT_EVENT_LIBPQWALRECEIVER_CONNECT,
 	WAIT_EVENT_LIBPQWALRECEIVER_RECEIVE,
 	WAIT_EVENT_SSL_OPEN_SERVER,
 	WAIT_EVENT_WAL_RECEIVER_WAIT_START,
 	WAIT_EVENT_WAL_SENDER_WAIT_WAL,
 	WAIT_EVENT_WAL_SENDER_WRITE_DATA,
-	WAIT_EVENT_GSS_OPEN_SERVER,
 } WaitEventClient;
 
 /* ----------
@@ -818,28 +846,28 @@ typedef enum
  */
 typedef enum
 {
-	WAIT_EVENT_BGWORKER_SHUTDOWN = PG_WAIT_IPC,
+	WAIT_EVENT_BACKUP_WAIT_WAL_ARCHIVE = PG_WAIT_IPC,
+	WAIT_EVENT_BGWORKER_SHUTDOWN,
 	WAIT_EVENT_BGWORKER_STARTUP,
 	WAIT_EVENT_BTREE_PAGE,
-	WAIT_EVENT_CLOG_GROUP_UPDATE,
 	WAIT_EVENT_CHECKPOINT_DONE,
 	WAIT_EVENT_CHECKPOINT_START,
 	WAIT_EVENT_EXECUTE_GATHER,
-	WAIT_EVENT_HASH_BATCH_ALLOCATING,
-	WAIT_EVENT_HASH_BATCH_ELECTING,
-	WAIT_EVENT_HASH_BATCH_LOADING,
-	WAIT_EVENT_HASH_BUILD_ALLOCATING,
-	WAIT_EVENT_HASH_BUILD_ELECTING,
-	WAIT_EVENT_HASH_BUILD_HASHING_INNER,
-	WAIT_EVENT_HASH_BUILD_HASHING_OUTER,
-	WAIT_EVENT_HASH_GROW_BATCHES_ALLOCATING,
-	WAIT_EVENT_HASH_GROW_BATCHES_DECIDING,
-	WAIT_EVENT_HASH_GROW_BATCHES_ELECTING,
-	WAIT_EVENT_HASH_GROW_BATCHES_FINISHING,
-	WAIT_EVENT_HASH_GROW_BATCHES_REPARTITIONING,
-	WAIT_EVENT_HASH_GROW_BUCKETS_ALLOCATING,
-	WAIT_EVENT_HASH_GROW_BUCKETS_ELECTING,
-	WAIT_EVENT_HASH_GROW_BUCKETS_REINSERTING,
+	WAIT_EVENT_HASH_BATCH_ALLOCATE,
+	WAIT_EVENT_HASH_BATCH_ELECT,
+	WAIT_EVENT_HASH_BATCH_LOAD,
+	WAIT_EVENT_HASH_BUILD_ALLOCATE,
+	WAIT_EVENT_HASH_BUILD_ELECT,
+	WAIT_EVENT_HASH_BUILD_HASH_INNER,
+	WAIT_EVENT_HASH_BUILD_HASH_OUTER,
+	WAIT_EVENT_HASH_GROW_BATCHES_ALLOCATE,
+	WAIT_EVENT_HASH_GROW_BATCHES_DECIDE,
+	WAIT_EVENT_HASH_GROW_BATCHES_ELECT,
+	WAIT_EVENT_HASH_GROW_BATCHES_FINISH,
+	WAIT_EVENT_HASH_GROW_BATCHES_REPARTITION,
+	WAIT_EVENT_HASH_GROW_BUCKETS_ALLOCATE,
+	WAIT_EVENT_HASH_GROW_BUCKETS_ELECT,
+	WAIT_EVENT_HASH_GROW_BUCKETS_REINSERT,
 	WAIT_EVENT_LOGICAL_SYNC_DATA,
 	WAIT_EVENT_LOGICAL_SYNC_STATE_CHANGE,
 	WAIT_EVENT_MQ_INTERNAL,
@@ -850,11 +878,16 @@ typedef enum
 	WAIT_EVENT_PARALLEL_CREATE_INDEX_SCAN,
 	WAIT_EVENT_PARALLEL_FINISH,
 	WAIT_EVENT_PROCARRAY_GROUP_UPDATE,
+	WAIT_EVENT_PROC_SIGNAL_BARRIER,
 	WAIT_EVENT_PROMOTE,
+	WAIT_EVENT_RECOVERY_CONFLICT_SNAPSHOT,
+	WAIT_EVENT_RECOVERY_CONFLICT_TABLESPACE,
+	WAIT_EVENT_RECOVERY_PAUSE,
 	WAIT_EVENT_REPLICATION_ORIGIN_DROP,
 	WAIT_EVENT_REPLICATION_SLOT_DROP,
 	WAIT_EVENT_SAFE_SNAPSHOT,
-	WAIT_EVENT_SYNC_REP
+	WAIT_EVENT_SYNC_REP,
+	WAIT_EVENT_XACT_GROUP_UPDATE
 } WaitEventIPC;
 
 /* ----------
@@ -867,7 +900,9 @@ typedef enum
 {
 	WAIT_EVENT_BASE_BACKUP_THROTTLE = PG_WAIT_TIMEOUT,
 	WAIT_EVENT_PG_SLEEP,
-	WAIT_EVENT_RECOVERY_APPLY_DELAY
+	WAIT_EVENT_RECOVERY_APPLY_DELAY,
+	WAIT_EVENT_RECOVERY_RETRIEVE_RETRY_INTERVAL,
+	WAIT_EVENT_VACUUM_DELAY
 } WaitEventTimeout;
 
 /* ----------
@@ -956,8 +991,10 @@ typedef enum ProgressCommandType
 {
 	PROGRESS_COMMAND_INVALID,
 	PROGRESS_COMMAND_VACUUM,
+	PROGRESS_COMMAND_ANALYZE,
 	PROGRESS_COMMAND_CLUSTER,
-	PROGRESS_COMMAND_CREATE_INDEX
+	PROGRESS_COMMAND_CREATE_INDEX,
+	PROGRESS_COMMAND_BASEBACKUP
 } ProgressCommandType;
 
 #define PGSTAT_NUM_PROGRESS_PARAM	20
@@ -1259,6 +1296,7 @@ extern void pgstat_clear_snapshot(void);
 extern void pgstat_reset_counters(void);
 extern void pgstat_reset_shared_counters(const char *);
 extern void pgstat_reset_single_counter(Oid objectid, PgStat_Single_Reset_Type type);
+extern void pgstat_reset_slru_counter(const char *);
 
 extern void pgstat_report_autovac(Oid dboid);
 extern void pgstat_report_vacuum(Oid tableoid, bool shared,
@@ -1284,7 +1322,6 @@ extern const char *pgstat_get_wait_event_type(uint32 wait_event_info);
 extern const char *pgstat_get_backend_current_activity(int pid, bool checkUser);
 extern const char *pgstat_get_crashed_backend_activity(int pid, char *buffer,
 													   int buflen);
-extern const char *pgstat_get_backend_desc(BackendType backendType);
 
 extern void pgstat_progress_start_command(ProgressCommandType cmdtype,
 										  Oid relid);
@@ -1402,7 +1439,8 @@ extern void pgstat_count_heap_delete(Relation rel);
 extern void pgstat_count_truncate(Relation rel);
 extern void pgstat_update_heap_dead_tuples(Relation rel, int delta);
 
-extern void pgstat_init_function_usage(FunctionCallInfo fcinfo,
+struct FunctionCallInfoBaseData;
+extern void pgstat_init_function_usage(struct FunctionCallInfoBaseData *fcinfo,
 									   PgStat_FunctionCallUsage *fcu);
 extern void pgstat_end_function_usage(PgStat_FunctionCallUsage *fcu,
 									  bool finalize);
@@ -1434,5 +1472,16 @@ extern PgStat_StatFuncEntry *pgstat_fetch_stat_funcentry(Oid funcid);
 extern int	pgstat_fetch_stat_numbackends(void);
 extern PgStat_ArchiverStats *pgstat_fetch_stat_archiver(void);
 extern PgStat_GlobalStats *pgstat_fetch_global(void);
+extern PgStat_SLRUStats *pgstat_fetch_slru(void);
+
+extern void pgstat_count_slru_page_zeroed(int slru_idx);
+extern void pgstat_count_slru_page_hit(int slru_idx);
+extern void pgstat_count_slru_page_read(int slru_idx);
+extern void pgstat_count_slru_page_written(int slru_idx);
+extern void pgstat_count_slru_page_exists(int slru_idx);
+extern void pgstat_count_slru_flush(int slru_idx);
+extern void pgstat_count_slru_truncate(int slru_idx);
+extern const char *pgstat_slru_name(int slru_idx);
+extern int	pgstat_slru_index(const char *name);
 
 #endif							/* PGSTAT_H */

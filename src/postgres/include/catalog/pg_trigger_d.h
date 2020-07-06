@@ -3,7 +3,7 @@
  * pg_trigger_d.h
  *    Macro definitions for pg_trigger
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -22,24 +22,25 @@
 
 #define Anum_pg_trigger_oid 1
 #define Anum_pg_trigger_tgrelid 2
-#define Anum_pg_trigger_tgname 3
-#define Anum_pg_trigger_tgfoid 4
-#define Anum_pg_trigger_tgtype 5
-#define Anum_pg_trigger_tgenabled 6
-#define Anum_pg_trigger_tgisinternal 7
-#define Anum_pg_trigger_tgconstrrelid 8
-#define Anum_pg_trigger_tgconstrindid 9
-#define Anum_pg_trigger_tgconstraint 10
-#define Anum_pg_trigger_tgdeferrable 11
-#define Anum_pg_trigger_tginitdeferred 12
-#define Anum_pg_trigger_tgnargs 13
-#define Anum_pg_trigger_tgattr 14
-#define Anum_pg_trigger_tgargs 15
-#define Anum_pg_trigger_tgqual 16
-#define Anum_pg_trigger_tgoldtable 17
-#define Anum_pg_trigger_tgnewtable 18
+#define Anum_pg_trigger_tgparentid 3
+#define Anum_pg_trigger_tgname 4
+#define Anum_pg_trigger_tgfoid 5
+#define Anum_pg_trigger_tgtype 6
+#define Anum_pg_trigger_tgenabled 7
+#define Anum_pg_trigger_tgisinternal 8
+#define Anum_pg_trigger_tgconstrrelid 9
+#define Anum_pg_trigger_tgconstrindid 10
+#define Anum_pg_trigger_tgconstraint 11
+#define Anum_pg_trigger_tgdeferrable 12
+#define Anum_pg_trigger_tginitdeferred 13
+#define Anum_pg_trigger_tgnargs 14
+#define Anum_pg_trigger_tgattr 15
+#define Anum_pg_trigger_tgargs 16
+#define Anum_pg_trigger_tgqual 17
+#define Anum_pg_trigger_tgoldtable 18
+#define Anum_pg_trigger_tgnewtable 19
 
-#define Natts_pg_trigger 18
+#define Natts_pg_trigger 19
 
 
 /* Bits within tgtype */

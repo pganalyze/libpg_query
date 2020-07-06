@@ -3,7 +3,7 @@
  * crypt.h
  *	  Interface to libpq/crypt.c
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/libpq/crypt.h
@@ -16,7 +16,7 @@
 #include "datatype/timestamp.h"
 
 /*
- * Types of password hashes or verifiers.
+ * Types of password hashes or secrets.
  *
  * Plaintext passwords can be passed in by the user, in a CREATE/ALTER USER
  * command. They will be encrypted to MD5 or SCRAM-SHA-256 format, before

@@ -11,7 +11,7 @@
  * datum.c
  *	  POSTGRES Datum (abstract data type) manipulation routines.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -50,8 +50,9 @@
 
 #include "postgres.h"
 
-#include "access/tuptoaster.h"
+#include "access/detoast.h"
 #include "fmgr.h"
+#include "utils/builtins.h"
 #include "utils/datum.h"
 #include "utils/expandeddatum.h"
 
@@ -257,6 +258,25 @@ datumIsEqual(Datum value1, Datum value2, bool typByVal, int typLen)
  *
  * Compares two datums for identical contents, based on byte images.  Return
  * true if the two datums are equal, false otherwise.
+ *-------------------------------------------------------------------------
+ */
+
+
+/*-------------------------------------------------------------------------
+ * btequalimage
+ *
+ * Generic "equalimage" support function.
+ *
+ * B-Tree operator classes whose equality function could safely be replaced by
+ * datum_image_eq() in all cases can use this as their "equalimage" support
+ * function.
+ *
+ * Currently, we unconditionally assume that any B-Tree operator class that
+ * registers btequalimage as its support function 4 must be able to safely use
+ * optimizations like deduplication (i.e. we return true unconditionally).  If
+ * it ever proved necessary to rescind support for an operator class, we could
+ * do that in a targeted fashion by doing something with the opcintype
+ * argument.
  *-------------------------------------------------------------------------
  */
 

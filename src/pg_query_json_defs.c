@@ -51,8 +51,8 @@ _outVar(StringInfo str, const Var *node)
   WRITE_INT_FIELD(vartypmod);
   WRITE_UINT_FIELD(varcollid);
   WRITE_UINT_FIELD(varlevelsup);
-  WRITE_UINT_FIELD(varnoold);
-  WRITE_INT_FIELD(varoattno);
+  WRITE_UINT_FIELD(varnosyn);
+  WRITE_INT_FIELD(varattnosyn);
   WRITE_INT_FIELD(location);
 }
 
@@ -686,6 +686,7 @@ _outQuery(StringInfo str, const Query *node)
   WRITE_NODE_PTR_FIELD(sortClause);
   WRITE_NODE_PTR_FIELD(limitOffset);
   WRITE_NODE_PTR_FIELD(limitCount);
+  WRITE_ENUM_FIELD(limitOption);
   WRITE_NODE_PTR_FIELD(rowMarks);
   WRITE_NODE_PTR_FIELD(setOperations);
   WRITE_NODE_PTR_FIELD(constraintDeps);
@@ -750,6 +751,7 @@ _outSelectStmt(StringInfo str, const SelectStmt *node)
   WRITE_NODE_PTR_FIELD(sortClause);
   WRITE_NODE_PTR_FIELD(limitOffset);
   WRITE_NODE_PTR_FIELD(limitCount);
+  WRITE_ENUM_FIELD(limitOption);
   WRITE_NODE_PTR_FIELD(lockingClause);
   WRITE_NODE_PTR_FIELD(withClause);
   WRITE_ENUM_FIELD(op);
@@ -974,6 +976,8 @@ _outIndexStmt(StringInfo str, const IndexStmt *node)
   WRITE_STRING_FIELD(idxcomment);
   WRITE_UINT_FIELD(indexOid);
   WRITE_UINT_FIELD(oldNode);
+  WRITE_ENUM_FIELD(oldCreateSubid);
+  WRITE_ENUM_FIELD(oldFirstRelfilenodeSubid);
   WRITE_BOOL_FIELD(unique);
   WRITE_BOOL_FIELD(primary);
   WRITE_BOOL_FIELD(isconstraint);
@@ -1130,6 +1134,7 @@ _outDropdbStmt(StringInfo str, const DropdbStmt *node)
 
   WRITE_STRING_FIELD(dbname);
   WRITE_BOOL_FIELD(missing_ok);
+  WRITE_NODE_PTR_FIELD(options);
 }
 
 static void
@@ -1476,6 +1481,7 @@ _outAlterObjectDependsStmt(StringInfo str, const AlterObjectDependsStmt *node)
   WRITE_NODE_PTR_FIELD(relation);
   WRITE_NODE_PTR_FIELD(object);
   WRITE_NODE_PTR_FIELD(extname);
+  WRITE_BOOL_FIELD(remove);
 }
 
 static void
@@ -1507,6 +1513,15 @@ _outAlterOperatorStmt(StringInfo str, const AlterOperatorStmt *node)
   WRITE_NODE_TYPE("AlterOperatorStmt");
 
   WRITE_NODE_PTR_FIELD(opername);
+  WRITE_NODE_PTR_FIELD(options);
+}
+
+static void
+_outAlterTypeStmt(StringInfo str, const AlterTypeStmt *node)
+{
+  WRITE_NODE_TYPE("AlterTypeStmt");
+
+  WRITE_NODE_PTR_FIELD(typeName);
   WRITE_NODE_PTR_FIELD(options);
 }
 
@@ -1934,6 +1949,16 @@ _outCallStmt(StringInfo str, const CallStmt *node)
 }
 
 static void
+_outAlterStatsStmt(StringInfo str, const AlterStatsStmt *node)
+{
+  WRITE_NODE_TYPE("AlterStatsStmt");
+
+  WRITE_NODE_PTR_FIELD(defnames);
+  WRITE_INT_FIELD(stxstattarget);
+  WRITE_BOOL_FIELD(missing_ok);
+}
+
+static void
 _outA_Expr(StringInfo str, const A_Expr *node)
 {
   WRITE_NODE_TYPE("A_Expr");
@@ -2204,6 +2229,7 @@ _outIndexElem(StringInfo str, const IndexElem *node)
   WRITE_STRING_FIELD(indexcolname);
   WRITE_NODE_PTR_FIELD(collation);
   WRITE_NODE_PTR_FIELD(opclass);
+  WRITE_NODE_PTR_FIELD(opclassopts);
   WRITE_ENUM_FIELD(ordering);
   WRITE_ENUM_FIELD(nulls_ordering);
 }
@@ -2268,7 +2294,10 @@ _outRangeTblEntry(StringInfo str, const RangeTblEntry *node)
   WRITE_NODE_PTR_FIELD(subquery);
   WRITE_BOOL_FIELD(security_barrier);
   WRITE_ENUM_FIELD(jointype);
+  WRITE_INT_FIELD(joinmergedcols);
   WRITE_NODE_PTR_FIELD(joinaliasvars);
+  WRITE_NODE_PTR_FIELD(joinleftcols);
+  WRITE_NODE_PTR_FIELD(joinrightcols);
   WRITE_NODE_PTR_FIELD(functions);
   WRITE_BOOL_FIELD(funcordinality);
   WRITE_NODE_PTR_FIELD(tablefunc);
@@ -2548,6 +2577,21 @@ _outPartitionSpec(StringInfo str, const PartitionSpec *node)
 
   WRITE_STRING_FIELD(strategy);
   WRITE_NODE_PTR_FIELD(partParams);
+  WRITE_INT_FIELD(location);
+}
+
+static void
+_outPartitionBoundSpec(StringInfo str, const PartitionBoundSpec *node)
+{
+  WRITE_NODE_TYPE("PartitionBoundSpec");
+
+  WRITE_CHAR_FIELD(strategy);
+  WRITE_BOOL_FIELD(is_default);
+  WRITE_INT_FIELD(modulus);
+  WRITE_INT_FIELD(remainder);
+  WRITE_NODE_PTR_FIELD(listdatums);
+  WRITE_NODE_PTR_FIELD(lowerdatums);
+  WRITE_NODE_PTR_FIELD(upperdatums);
   WRITE_INT_FIELD(location);
 }
 

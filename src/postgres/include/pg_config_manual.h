@@ -6,7 +6,7 @@
  * for developers.  If you edit any of these, be sure to do a *full*
  * rebuild (and an initdb if noted).
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/pg_config_manual.h
@@ -55,6 +55,19 @@
  * Maximum number of columns in a partition key
  */
 #define PARTITION_MAX_KEYS	32
+
+/*
+ * Decide whether built-in 8-byte types, including float8, int8, and
+ * timestamp, are passed by value.  This is on by default if sizeof(Datum) >=
+ * 8 (that is, on 64-bit platforms).  If sizeof(Datum) < 8 (32-bit platforms),
+ * this must be off.  We keep this here as an option so that it is easy to
+ * test the pass-by-reference code paths on 64-bit platforms.
+ *
+ * Changing this requires an initdb.
+ */
+#if SIZEOF_VOID_P >= 8
+#define USE_FLOAT8_BYVAL 1
+#endif
 
 /*
  * When we don't have native spinlocks, we use semaphores to simulate them.
@@ -110,17 +123,16 @@
 #define ALIGNOF_BUFFER	32
 
 /*
- * Disable UNIX sockets for certain operating systems.
+ * If EXEC_BACKEND is defined, the postmaster uses an alternative method for
+ * starting subprocesses: Instead of simply using fork(), as is standard on
+ * Unix platforms, it uses fork()+exec() or something equivalent on Windows,
+ * as well as lots of extra code to bring the required global state to those
+ * new processes.  This must be enabled on Windows (because there is no
+ * fork()).  On other platforms, it's only useful for verifying those
+ * otherwise Windows-specific code paths.
  */
-#if defined(WIN32)
-#undef HAVE_UNIX_SOCKETS
-#endif
-
-/*
- * Define this if your operating system supports link()
- */
-#if !defined(WIN32) && !defined(__CYGWIN__)
-#define HAVE_WORKING_LINK 1
+#if defined(WIN32) && !defined(__CYGWIN__)
+#define EXEC_BACKEND
 #endif
 
 /*
@@ -178,8 +190,21 @@
  * directory.  But if you just hate the idea of sockets in /tmp,
  * here's where to twiddle it.  You can also override this at runtime
  * with the postmaster's -k switch.
+ *
+ * If set to an empty string, then AF_UNIX sockets are not used by default: A
+ * server will not create an AF_UNIX socket unless the run-time configuration
+ * is changed, a client will connect via TCP/IP by default and will only use
+ * an AF_UNIX socket if one is explicitly specified.
+ *
+ * This is done by default on Windows because there is no good standard
+ * location for AF_UNIX sockets and many installations on Windows don't
+ * support them yet.
  */
+#ifndef WIN32
 #define DEFAULT_PGSOCKET_DIR  "/tmp"
+#else
+#define DEFAULT_PGSOCKET_DIR ""
+#endif
 
 /*
  * This is the default event source for Windows event log.
@@ -323,9 +348,3 @@
  * Enable tracing of syncscan operations (see also the trace_syncscan GUC var).
  */
 /* #define TRACE_SYNCSCAN */
-
-/*
- * Other debug #defines (documentation, anyone?)
- */
-/* #define HEAPDEBUGALL */
-/* #define ACLDEBUG */

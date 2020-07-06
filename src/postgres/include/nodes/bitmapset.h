@@ -11,7 +11,7 @@
  * bms_is_empty() in preference to testing for NULL.)
  *
  *
- * Copyright (c) 2003-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2020, PostgreSQL Global Development Group
  *
  * src/include/nodes/bitmapset.h
  *
@@ -116,5 +116,7 @@ extern int	bms_prev_member(const Bitmapset *a, int prevbit);
 
 /* support for hashtables using Bitmapsets as keys: */
 extern uint32 bms_hash_value(const Bitmapset *a);
+extern uint32 bitmap_hash(const void *key, Size keysize);
+extern int	bitmap_match(const void *key1, const void *key2, Size keysize);
 
 #endif							/* BITMAPSET_H */

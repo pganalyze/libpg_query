@@ -3,7 +3,7 @@
  * trigger.h
  *	  Declarations for trigger handling.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/commands/trigger.h
@@ -39,6 +39,7 @@ typedef struct TriggerData
 	TupleTableSlot *tg_newslot;
 	Tuplestorestate *tg_oldtable;
 	Tuplestorestate *tg_newtable;
+	const Bitmapset *tg_updatedcols;
 } TriggerData;
 
 /*

@@ -3,7 +3,7 @@
  * float.h
  *	  Definitions for the built-in floating-point types
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -66,7 +66,7 @@ extern int	float8_cmp_internal(float8 a, float8 b);
  * long lived bug in the Microsoft compilers.
  * See http://support.microsoft.com/kb/120968/en-us for details
  */
-#if (_MSC_VER >= 1800)
+#ifdef _MSC_VER
 #pragma warning(disable:4756)
 #endif
 static inline float4
@@ -76,7 +76,7 @@ get_float4_infinity(void)
 	/* C99 standard way */
 	return (float4) INFINITY;
 #else
-#if (_MSC_VER >= 1800)
+#ifdef _MSC_VER
 #pragma warning(default:4756)
 #endif
 
@@ -129,45 +129,6 @@ get_float8_nan(void)
 	/* Assume we can get a NaN via zero divide */
 	return (float8) (0.0 / 0.0);
 #endif
-}
-
-/*
- * Checks to see if a float4/8 val has underflowed or overflowed
- *
- * These subroutines are no longer used in the core code because of the
- * performance issues they cause, but they remain for now for backwards
- * compatibility for extensions.  Note that we can't rely on
- * float_over/underflow_error() to exist in v12, so don't call those here.
- */
-
-static inline void
-check_float4_val(const float4 val, const bool inf_is_valid,
-				 const bool zero_is_valid)
-{
-	if (unlikely(isinf(val)) && !inf_is_valid)
-		ereport(ERROR,
-				(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-				 errmsg("value out of range: overflow")));
-
-	if (unlikely(val == 0.0f) && !zero_is_valid)
-		ereport(ERROR,
-				(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-				 errmsg("value out of range: underflow")));
-}
-
-static inline void
-check_float8_val(const float8 val, const bool inf_is_valid,
-				 const bool zero_is_valid)
-{
-	if (unlikely(isinf(val)) && !inf_is_valid)
-		ereport(ERROR,
-				(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-				 errmsg("value out of range: overflow")));
-
-	if (unlikely(val == 0.0) && !zero_is_valid)
-		ereport(ERROR,
-				(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-				 errmsg("value out of range: underflow")));
 }
 
 /*

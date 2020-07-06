@@ -54,6 +54,7 @@
   "SetOpCmd",
   "SetOpStrategy",
   "OnConflictAction",
+  "LimitOption",
   "vartag_external",
   "VacuumOption",
   "VacOptTernaryValue",

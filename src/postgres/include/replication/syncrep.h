@@ -3,7 +3,7 @@
  * syncrep.h
  *	  Exports from replication/syncrep.c.
  *
- * Portions Copyright (c) 2010-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2010-2020, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *		src/include/replication/syncrep.h
@@ -93,9 +93,6 @@ extern void SyncRepReleaseWaiters(void);
 
 /* called by wal sender and user backend */
 extern int	SyncRepGetCandidateStandbys(SyncRepStandbyData **standbys);
-
-/* obsolete, do not use in new code */
-extern List *SyncRepGetSyncStandbys(bool *am_sync);
 
 /* called by checkpointer */
 extern void SyncRepUpdateSyncStandbysDefined(void);

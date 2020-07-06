@@ -4,7 +4,7 @@
  *	  Declarations for XML data type support.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/xml.h
@@ -15,10 +15,10 @@
 #ifndef XML_H
 #define XML_H
 
+#include "executor/tablefunc.h"
 #include "fmgr.h"
 #include "nodes/execnodes.h"
 #include "nodes/primnodes.h"
-#include "executor/tablefunc.h"
 
 typedef struct varlena xmltype;
 

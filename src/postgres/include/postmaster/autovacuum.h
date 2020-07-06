@@ -4,7 +4,7 @@
  *	  header file for integrated autovacuum daemon
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/postmaster/autovacuum.h
@@ -33,6 +33,8 @@ extern int	autovacuum_work_mem;
 extern int	autovacuum_naptime;
 extern int	autovacuum_vac_thresh;
 extern double autovacuum_vac_scale;
+extern int	autovacuum_vac_ins_thresh;
+extern double autovacuum_vac_ins_scale;
 extern int	autovacuum_anl_thresh;
 extern double autovacuum_anl_scale;
 extern int	autovacuum_freeze_max_age;

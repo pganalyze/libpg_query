@@ -11,7 +11,7 @@
  * nodeFuncs.c
  *		Various general-purpose manipulations of Node trees
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -25,13 +25,12 @@
 #include "catalog/pg_collation.h"
 #include "catalog/pg_type.h"
 #include "miscadmin.h"
-#include "nodes/makefuncs.h"
 #include "nodes/execnodes.h"
+#include "nodes/makefuncs.h"
 #include "nodes/nodeFuncs.h"
 #include "nodes/pathnodes.h"
 #include "utils/builtins.h"
 #include "utils/lsyscache.h"
-
 
 static bool expression_returns_set_walker(Node *node, void *context);
 static int	leftmostLoc(int loc1, int loc2);
@@ -69,12 +68,24 @@ static bool planstate_walk_members(PlanState **planstates, int nplans,
 
 
 /*
+ * applyRelabelType
+ *		Add a RelabelType node if needed to make the expression expose
+ *		the specified type, typmod, and collation.
+ *
+ * This is primarily intended to be used during planning.  Therefore, it must
+ * maintain the post-eval_const_expressions invariants that there are not
+ * adjacent RelabelTypes, and that the tree is fully const-folded (hence,
+ * we mustn't return a RelabelType atop a Const).  If we do find a Const,
+ * we'll modify it in-place if "overwrite_ok" is true; that should only be
+ * passed as true if caller knows the Const is newly generated.
+ */
+
+
+/*
  * relabel_to_typmod
  *		Add a RelabelType node that changes just the typmod of the expression.
  *
- * This is primarily intended to be used during planning.  Therefore, it
- * strips any existing RelabelType nodes to maintain the planner's invariant
- * that there are not adjacent RelabelTypes.
+ * Convenience function for a common usage of applyRelabelType.
  */
 
 

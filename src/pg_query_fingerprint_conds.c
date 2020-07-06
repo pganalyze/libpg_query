@@ -367,6 +367,9 @@ case T_AlterOwnerStmt:
 case T_AlterOperatorStmt:
   _fingerprintAlterOperatorStmt(ctx, obj, parent, field_name, depth);
   break;
+case T_AlterTypeStmt:
+  _fingerprintAlterTypeStmt(ctx, obj, parent, field_name, depth);
+  break;
 case T_DropOwnedStmt:
   _fingerprintDropOwnedStmt(ctx, obj, parent, field_name, depth);
   break;
@@ -486,6 +489,9 @@ case T_AlterCollationStmt:
   break;
 case T_CallStmt:
   _fingerprintCallStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterStatsStmt:
+  _fingerprintAlterStatsStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_A_Expr:
   _fingerprintA_Expr(ctx, obj, parent, field_name, depth);
@@ -630,6 +636,9 @@ case T_PartitionElem:
   break;
 case T_PartitionSpec:
   _fingerprintPartitionSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionBoundSpec:
+  _fingerprintPartitionBoundSpec(ctx, obj, parent, field_name, depth);
   break;
 case T_PartitionRangeDatum:
   _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);

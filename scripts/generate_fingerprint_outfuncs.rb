@@ -164,6 +164,8 @@ class Generator
     ['DeclareCursorStmt', 'portalname'] => :skip,
     ['FetchStmt', 'portalname'] => :skip,
     ['ClosePortalStmt', 'portalname'] => :skip,
+    ['IndexStmt', 'oldCreateSubid'] => :skip,
+    ['IndexStmt', 'oldFirstRelfilenodeSubid'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
   LONG_INT_TYPES = ['long', 'uint64']

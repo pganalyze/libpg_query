@@ -9,10 +9,10 @@
  * on the condition variable; and (3) broadcast, which wakes up every
  * process sleeping on the condition variable.  In our implementation,
  * condition variables put a process into an interruptible sleep (so it
- * can be cancelled prior to the fulfillment of the condition) and do not
+ * can be canceled prior to the fulfillment of the condition) and do not
  * use pointers internally (so that they are safe to use within DSMs).
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/storage/condition_variable.h
@@ -22,8 +22,8 @@
 #ifndef CONDITION_VARIABLE_H
 #define CONDITION_VARIABLE_H
 
-#include "storage/s_lock.h"
 #include "storage/proclist_types.h"
+#include "storage/s_lock.h"
 
 typedef struct
 {
@@ -43,6 +43,8 @@ extern void ConditionVariableInit(ConditionVariable *cv);
  * the condition variable.
  */
 extern void ConditionVariableSleep(ConditionVariable *cv, uint32 wait_event_info);
+extern bool ConditionVariableTimedSleep(ConditionVariable *cv, long timeout,
+										uint32 wait_event_info);
 extern void ConditionVariableCancelSleep(void);
 
 /*

@@ -4,7 +4,7 @@
  *	  Definitions for hot standby mode.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/storage/standby.h
@@ -14,10 +14,10 @@
 #ifndef STANDBY_H
 #define STANDBY_H
 
-#include "storage/standbydefs.h"
 #include "storage/lock.h"
 #include "storage/procsignal.h"
 #include "storage/relfilenode.h"
+#include "storage/standbydefs.h"
 
 /* User-settable GUC parameters */
 extern int	vacuum_defer_cleanup_age;

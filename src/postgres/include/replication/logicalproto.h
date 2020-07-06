@@ -3,7 +3,7 @@
  * logicalproto.h
  *		logical replication protocol
  *
- * Copyright (c) 2015-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2015-2020, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *		src/include/replication/logicalproto.h
@@ -19,8 +19,8 @@
 /*
  * Protocol capabilities
  *
- * LOGICAL_PROTO_VERSION_NUM is our native protocol and the greatest version
- * we can support. PGLOGICAL_PROTO_MIN_VERSION_NUM is the oldest version we
+ * LOGICALREP_PROTO_VERSION_NUM is our native protocol and the greatest version
+ * we can support. LOGICALREP_PROTO_MIN_VERSION_NUM is the oldest version we
  * have backwards compatibility for. The client requests protocol version at
  * connect time.
  */
@@ -49,6 +49,7 @@ typedef struct LogicalRepRelation
 	char	  **attnames;		/* column names */
 	Oid		   *atttyps;		/* column types */
 	char		replident;		/* replica identity */
+	char		relkind;		/* remote relation kind */
 	Bitmapset  *attkeys;		/* Bitmap of key columns */
 } LogicalRepRelation;
 
@@ -106,4 +107,4 @@ extern LogicalRepRelation *logicalrep_read_rel(StringInfo in);
 extern void logicalrep_write_typ(StringInfo out, Oid typoid);
 extern void logicalrep_read_typ(StringInfo out, LogicalRepTyp *ltyp);
 
-#endif							/* LOGICALREP_PROTO_H */
+#endif							/* LOGICAL_PROTO_H */

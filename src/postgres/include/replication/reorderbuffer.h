@@ -2,7 +2,7 @@
  * reorderbuffer.h
  *	  PostgreSQL logical replay/reorder buffer management.
  *
- * Copyright (c) 2012-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2012-2020, PostgreSQL Global Development Group
  *
  * src/include/replication/reorderbuffer.h
  */
@@ -16,6 +16,8 @@
 #include "utils/relcache.h"
 #include "utils/snapshot.h"
 #include "utils/timestamp.h"
+
+extern PGDLLIMPORT int logical_decoding_work_mem;
 
 /* an individual tuple, stored in one chunk of memory */
 typedef struct ReorderBufferTupleBuf
@@ -63,6 +65,9 @@ enum ReorderBufferChangeType
 	REORDER_BUFFER_CHANGE_TRUNCATE
 };
 
+/* forward declaration */
+struct ReorderBufferTXN;
+
 /*
  * a single 'change', can be an insert (with one tuple), an update (old, new),
  * or a delete (old).
@@ -76,6 +81,9 @@ typedef struct ReorderBufferChange
 
 	/* The type of change. */
 	enum ReorderBufferChangeType action;
+
+	/* Transaction this change belongs to. */
+	struct ReorderBufferTXN *txn;
 
 	RepOriginId origin_id;
 
@@ -150,18 +158,38 @@ typedef struct ReorderBufferChange
 	dlist_node	node;
 } ReorderBufferChange;
 
+/* ReorderBufferTXN txn_flags */
+#define RBTXN_HAS_CATALOG_CHANGES 0x0001
+#define RBTXN_IS_SUBXACT          0x0002
+#define RBTXN_IS_SERIALIZED       0x0004
+
+/* Does the transaction have catalog changes? */
+#define rbtxn_has_catalog_changes(txn) \
+( \
+	 ((txn)->txn_flags & RBTXN_HAS_CATALOG_CHANGES) != 0 \
+)
+
+/* Is the transaction known as a subxact? */
+#define rbtxn_is_known_subxact(txn) \
+( \
+	((txn)->txn_flags & RBTXN_IS_SUBXACT) != 0 \
+)
+
+/* Has this transaction been spilled to disk? */
+#define rbtxn_is_serialized(txn) \
+( \
+	((txn)->txn_flags & RBTXN_IS_SERIALIZED) != 0 \
+)
+
 typedef struct ReorderBufferTXN
 {
-	/*
-	 * The transactions transaction id, can be a toplevel or sub xid.
-	 */
+	/* See above */
+	bits32		txn_flags;
+
+	/* The transaction's transaction id, can be a toplevel or sub xid. */
 	TransactionId xid;
 
-	/* did the TX have catalog changes */
-	bool		has_catalog_changes;
-
-	/* Do we know this is a subxact?  Xid of top-level txn if so */
-	bool		is_known_as_subxact;
+	/* Xid of top-level transaction, if known */
 	TransactionId toplevel_xid;
 
 	/*
@@ -231,15 +259,6 @@ typedef struct ReorderBufferTXN
 	uint64		nentries_mem;
 
 	/*
-	 * Has this transaction been spilled to disk?  It's not always possible to
-	 * deduce that fact by comparing nentries with nentries_mem, because e.g.
-	 * subtransactions of a large transaction might get serialized together
-	 * with the parent - if they're restored to memory they'd have
-	 * nentries_mem == nentries.
-	 */
-	bool		serialized;
-
-	/*
 	 * List of ReorderBufferChange structs, including new Snapshots and new
 	 * CommandIds
 	 */
@@ -287,6 +306,10 @@ typedef struct ReorderBufferTXN
 	 */
 	dlist_node	node;
 
+	/*
+	 * Size of this transaction (changes currently in memory, in bytes).
+	 */
+	Size		size;
 } ReorderBufferTXN;
 
 /* so we can define the callbacks used inside struct ReorderBuffer itself */
@@ -387,6 +410,9 @@ struct ReorderBuffer
 	/* buffer for disk<->memory conversions */
 	char	   *outbuf;
 	Size		outbufsize;
+
+	/* memory accounting */
+	Size		size;
 };
 
 

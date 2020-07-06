@@ -4,7 +4,7 @@
  * External declarations pertaining to backend/utils/misc/guc.c and
  * backend/utils/misc/guc-file.l
  *
- * Copyright (c) 2000-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2000-2020, PostgreSQL Global Development Group
  * Written by Peter Eisentraut <peter_e@gmx.net>.
  *
  * src/include/utils/guc.h
@@ -233,7 +233,6 @@ typedef enum
 
 
 /* GUC vars that are actually declared in guc.c, rather than elsewhere */
-extern bool log_duration;
 extern bool Debug_print_plan;
 extern bool Debug_print_parse;
 extern bool Debug_print_rewritten;
@@ -248,12 +247,19 @@ extern bool log_btree_build_stats;
 extern PGDLLIMPORT __thread  bool check_function_bodies;
 extern bool session_auth_is_superuser;
 
+extern bool log_duration;
+extern int	log_parameter_max_length;
+extern int	log_parameter_max_length_on_error;
 extern int	log_min_error_statement;
 extern PGDLLIMPORT __thread  int log_min_messages;
 extern PGDLLIMPORT __thread  int client_min_messages;
+extern int	log_min_duration_sample;
 extern int	log_min_duration_statement;
 extern int	log_temp_files;
+extern double log_statement_sample_rate;
 extern double log_xact_sample_rate;
+extern __thread  char *backtrace_functions;
+extern __thread  char *backtrace_symbol_list;
 
 extern int	temp_file_limit;
 
@@ -365,7 +371,7 @@ extern int	set_config_option(const char *name, const char *value,
 							  GucContext context, GucSource source,
 							  GucAction action, bool changeVal, int elevel,
 							  bool is_reload);
-extern void AlterSystemSetConfigFile(AlterSystemStmt *setstmt);
+extern void AlterSystemSetConfigFile(AlterSystemStmt *altersysstmt);
 extern char *GetConfigOptionByName(const char *name, const char **varname,
 								   bool missing_ok);
 extern void GetConfigOptionByNum(int varnum, const char **values, bool *noshow);

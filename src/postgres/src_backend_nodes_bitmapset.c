@@ -21,7 +21,7 @@
  * bms_is_empty() in preference to testing for NULL.)
  *
  *
- * Copyright (c) 2003-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2020, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/nodes/bitmapset.c
@@ -30,10 +30,10 @@
  */
 #include "postgres.h"
 
+#include "common/hashfn.h"
 #include "nodes/bitmapset.h"
 #include "nodes/pg_list.h"
 #include "port/pg_bitutils.h"
-#include "utils/hashutils.h"
 
 
 #define WORDNUM(x)	((x) / BITS_PER_BITMAPWORD)
@@ -444,5 +444,17 @@ bms_first_member(Bitmapset *a)
  * hash to the same value; in practice this means that trailing all-zero
  * words must not affect the result.  Hence we strip those before applying
  * hash_any().
+ */
+
+
+/*
+ * bitmap_hash - hash function for keys that are (pointers to) Bitmapsets
+ *
+ * Note: don't forget to specify bitmap_match as the match function!
+ */
+
+
+/*
+ * bitmap_match - match function to use with bitmap_hash
  */
 

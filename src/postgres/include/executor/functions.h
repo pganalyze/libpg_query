@@ -4,7 +4,7 @@
  *		Declarations for execution of SQL-language functions.
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/executor/functions.h
@@ -29,12 +29,12 @@ extern SQLFunctionParseInfoPtr prepare_sql_fn_parse_info(HeapTuple procedureTupl
 extern void sql_fn_parser_setup(struct ParseState *pstate,
 								SQLFunctionParseInfoPtr pinfo);
 
-extern void check_sql_fn_statements(List *queryTreeList);
+extern void check_sql_fn_statements(List *queryTreeLists);
 
-extern bool check_sql_fn_retval(Oid func_id, Oid rettype,
-								List *queryTreeList,
-								bool *modifyTargetList,
-								JunkFilter **junkFilter);
+extern bool check_sql_fn_retval(List *queryTreeLists,
+								Oid rettype, TupleDesc rettupdesc,
+								bool insertDroppedCols,
+								List **resultTargetList);
 
 extern DestReceiver *CreateSQLFunctionDestReceiver(void);
 

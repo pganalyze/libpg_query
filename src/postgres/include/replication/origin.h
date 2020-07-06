@@ -2,7 +2,7 @@
  * origin.h
  *	   Exports from replication/logical/origin.c
  *
- * Copyright (c) 2013-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2013-2020, PostgreSQL Global Development Group
  *
  * src/include/replication/origin.h
  *-------------------------------------------------------------------------
@@ -10,7 +10,6 @@
 #ifndef PG_ORIGIN_H
 #define PG_ORIGIN_H
 
-#include "fmgr.h"
 #include "access/xlog.h"
 #include "access/xlogdefs.h"
 #include "access/xlogreader.h"

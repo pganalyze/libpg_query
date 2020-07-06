@@ -46,7 +46,7 @@
  * the probability of unintended failure) than to fix the total time
  * spent.
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -60,9 +60,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "storage/s_lock.h"
 #include "port/atomics.h"
-
+#include "storage/s_lock.h"
 
 #define MIN_SPINS_PER_DELAY 10
 #define MAX_SPINS_PER_DELAY 1000

@@ -218,6 +218,11 @@
           "comment": "/* # of result tuples to return (int8 expr) */"
         },
         {
+          "name": "limitOption",
+          "c_type": "LimitOption",
+          "comment": "/* limit type */"
+        },
+        {
           "comment": ""
         },
         {
@@ -1101,6 +1106,11 @@
           "comment": "/* name of desired opclass; NIL = default */"
         },
         {
+          "name": "opclassopts",
+          "c_type": "List*",
+          "comment": "/* opclass-specific options, or NIL */"
+        },
+        {
           "name": "ordering",
           "c_type": "SortByDir",
           "comment": "/* ASC/DESC/default */"
@@ -1263,6 +1273,80 @@
       ],
       "comment": "/*\n * PartitionSpec - parse-time representation of a partition key specification\n *\n * This represents the key space we will be partitioning on.\n */\n"
     },
+    "PartitionBoundSpec": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "strategy",
+          "c_type": "char",
+          "comment": "/* see PARTITION_STRATEGY codes above */"
+        },
+        {
+          "name": "is_default",
+          "c_type": "bool",
+          "comment": "/* is it a default partition bound? */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for HASH strategy: */\n"
+        },
+        {
+          "name": "modulus",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "remainder",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for LIST strategy: */\n"
+        },
+        {
+          "name": "listdatums",
+          "c_type": "List*",
+          "comment": "/* List of Consts (or A_Consts in raw tree) */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Partitioning info for RANGE strategy: */\n"
+        },
+        {
+          "name": "lowerdatums",
+          "c_type": "List*",
+          "comment": "/* List of PartitionRangeDatums */"
+        },
+        {
+          "name": "upperdatums",
+          "c_type": "List*",
+          "comment": "/* List of PartitionRangeDatums */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * PartitionBoundSpec - a partition bound specification\n *\n * This represents the portion of the partition key space assigned to a\n * particular partition.  These are stored on disk in pg_class.relpartbound.\n */\n"
+    },
     "PartitionRangeDatum": {
       "fields": [
         {
@@ -1381,7 +1465,7 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * Fields valid for a join RTE (else NULL/zero):\n\t *\n\t * joinaliasvars is a list of (usually) Vars corresponding to the columns\n\t * of the join result.  An alias Var referencing column K of the join\n\t * result can be replaced by the K'th element of joinaliasvars --- but to\n\t * simplify the task of reverse-listing aliases correctly, we do not do\n\t * that until planning time.  In detail: an element of joinaliasvars can\n\t * be a Var of one of the join's input relations, or such a Var with an\n\t * implicit coercion to the join's output column type, or a COALESCE\n\t * expression containing the two input column Vars (possibly coerced).\n\t * Within a Query loaded from a stored rule, it is also possible for\n\t * joinaliasvars items to be null pointers, which are placeholders for\n\t * (necessarily unreferenced) columns dropped since the rule was made.\n\t * Also, once planning begins, joinaliasvars items can be almost anything,\n\t * as a result of subquery-flattening substitutions.\n\t */\n"
+          "comment": "\t/*\n\t * Fields valid for a join RTE (else NULL/zero):\n\t *\n\t * joinaliasvars is a list of (usually) Vars corresponding to the columns\n\t * of the join result.  An alias Var referencing column K of the join\n\t * result can be replaced by the K'th element of joinaliasvars --- but to\n\t * simplify the task of reverse-listing aliases correctly, we do not do\n\t * that until planning time.  In detail: an element of joinaliasvars can\n\t * be a Var of one of the join's input relations, or such a Var with an\n\t * implicit coercion to the join's output column type, or a COALESCE\n\t * expression containing the two input column Vars (possibly coerced).\n\t * Elements beyond the first joinmergedcols entries are always just Vars,\n\t * and are never referenced from elsewhere in the query (that is, join\n\t * alias Vars are generated only for merged columns).  We keep these\n\t * entries only because they're needed in expandRTE() and similar code.\n\t *\n\t * Within a Query loaded from a stored rule, it is possible for non-merged\n\t * joinaliasvars items to be null pointers, which are placeholders for\n\t * (necessarily unreferenced) columns dropped since the rule was made.\n\t * Also, once planning begins, joinaliasvars items can be almost anything,\n\t * as a result of subquery-flattening substitutions.\n\t *\n\t * joinleftcols is an integer list of physical column numbers of the left\n\t * join input rel that are included in the join; likewise joinrighttcols\n\t * for the right join input rel.  (Which rels those are can be determined\n\t * from the associated JoinExpr.)  If the join is USING/NATURAL, then the\n\t * first joinmergedcols entries in each list identify the merged columns.\n\t * The merged columns come first in the join output, then remaining\n\t * columns of the left input, then remaining columns of the right.\n\t *\n\t * Note that input columns could have been dropped after creation of a\n\t * stored rule, if they are not referenced in the query (in particular,\n\t * merged columns could not be dropped); this is not accounted for in\n\t * joinleftcols/joinrighttcols.\n\t */\n"
         },
         {
           "name": "jointype",
@@ -1389,9 +1473,24 @@
           "comment": "/* type of join */"
         },
         {
+          "name": "joinmergedcols",
+          "c_type": "int",
+          "comment": "/* number of merged (JOIN USING) columns */"
+        },
+        {
           "name": "joinaliasvars",
           "c_type": "List*",
           "comment": "/* list of alias-var expansions */"
+        },
+        {
+          "name": "joinleftcols",
+          "c_type": "List*",
+          "comment": "/* left-side input column numbers */"
+        },
+        {
+          "name": "joinrightcols",
+          "c_type": "List*",
+          "comment": "/* right-side input column numbers */"
         },
         {
           "comment": ""
@@ -1556,7 +1655,7 @@
           "comment": "/* security barrier quals to apply, if any */"
         }
       ],
-      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  updatedCols is also used in some other places, for example, to determine\n *\t  which triggers to fire and in FDWs to know which changed columns they\n *\t  need to ship off.  Generated columns that are caused to be updated by an\n *\t  update to a base column are collected in extraUpdatedCols.  This is not\n *\t  considered for permission checking, but it is useful in those places\n *\t  that want to know the full set of columns being updated as opposed to\n *\t  only the ones the user explicitly mentioned in the query.  (There is\n *\t  currently no need for an extraInsertedCols, but it could exist.)\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  updatedCols is also used in some other places, for example, to determine\n *\t  which triggers to fire and in FDWs to know which changed columns they\n *\t  need to ship off.\n *\n *\t  Generated columns that are caused to be updated by an update to a base\n *\t  column are listed in extraUpdatedCols.  This is not considered for\n *\t  permission checking, but it is useful in those places that want to know\n *\t  the full set of columns being updated as opposed to only the ones the\n *\t  user explicitly mentioned in the query.  (There is currently no need for\n *\t  an extraInsertedCols, but it could exist.)  Note that extraUpdatedCols\n *\t  is populated during query rewrite, NOT in the parser, since generated\n *\t  columns could be added after a rule has been parsed and stored.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
     },
     "RangeTblFunction": {
       "fields": [
@@ -2257,6 +2356,11 @@
           "name": "limitCount",
           "c_type": "Node*",
           "comment": "/* # of result tuples to return */"
+        },
+        {
+          "name": "limitOption",
+          "c_type": "LimitOption",
+          "comment": "/* limit type */"
         },
         {
           "name": "lockingClause",
@@ -4416,6 +4520,16 @@
           "comment": "/* relfilenode of existing storage, if any */"
         },
         {
+          "name": "oldCreateSubid",
+          "c_type": "SubTransactionId",
+          "comment": "/* rd_createSubid of oldNode */"
+        },
+        {
+          "name": "oldFirstRelfilenodeSubid",
+          "c_type": "SubTransactionId",
+          "comment": "/* rd_firstRelfilenodeSubid of\n\t\t\t\t\t\t\t\t\t\t\t\t * oldNode */\n"
+        },
+        {
           "name": "unique",
           "c_type": "bool",
           "comment": "/* is index unique? */"
@@ -4502,6 +4616,31 @@
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Statistics Statement\n * ----------------------\n */\n"
+    },
+    "AlterStatsStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "defnames",
+          "c_type": "List*",
+          "comment": "/* qualified name (list of Value strings) */"
+        },
+        {
+          "name": "stxstattarget",
+          "c_type": "int",
+          "comment": "/* statistics target */"
+        },
+        {
+          "name": "missing_ok",
+          "c_type": "bool",
+          "comment": "/* skip error if statistics object is missing */"
+        }
+      ],
+      "comment": "/* ----------------------\n *\t\tAlter Statistics Statement\n * ----------------------\n */\n"
     },
     "CreateFunctionStmt": {
       "fields": [
@@ -4754,6 +4893,11 @@
           "name": "extname",
           "c_type": "Value*",
           "comment": "/* extension name */"
+        },
+        {
+          "name": "remove",
+          "c_type": "bool",
+          "comment": "/* set true to remove dep rather than add */"
         }
       ],
       "comment": "/* ----------------------\n * ALTER object DEPENDS ON EXTENSION extname\n * ----------------------\n */\n"
@@ -4841,7 +4985,27 @@
           "comment": "/* List of DefElem nodes */"
         }
       ],
-      "comment": "/* ----------------------\n *\t\tAlter Operator Set Restrict, Join\n * ----------------------\n */\n"
+      "comment": "/* ----------------------\n *\t\tAlter Operator Set ( this-n-that )\n * ----------------------\n */\n"
+    },
+    "AlterTypeStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "typeName",
+          "c_type": "List*",
+          "comment": "/* type name (possibly qualified) */"
+        },
+        {
+          "name": "options",
+          "c_type": "List*",
+          "comment": "/* List of DefElem nodes */"
+        }
+      ],
+      "comment": "/* ------------------------\n *\t\tAlter Type Set ( this-n-that )\n * ------------------------\n */\n"
     },
     "RuleStmt": {
       "fields": [
@@ -5204,6 +5368,11 @@
           "name": "missing_ok",
           "c_type": "bool",
           "comment": "/* skip error if db is missing? */"
+        },
+        {
+          "name": "options",
+          "c_type": "List*",
+          "comment": "/* currently only FORCE is supported */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tDropdb Statement\n * ----------------------\n */\n"
@@ -6172,14 +6341,14 @@
           "comment": "/* for subquery variables referencing outer\n\t\t\t\t\t\t\t\t * relations; 0 in a normal var, >0 means N\n\t\t\t\t\t\t\t\t * levels up */\n"
         },
         {
-          "name": "varnoold",
+          "name": "varnosyn",
           "c_type": "Index",
-          "comment": "/* original value of varno, for debugging */"
+          "comment": "/* syntactic relation index (0 if unknown) */"
         },
         {
-          "name": "varoattno",
+          "name": "varattnosyn",
           "c_type": "AttrNumber",
-          "comment": "/* original value of varattno */"
+          "comment": "/* syntactic attribute number */"
         },
         {
           "name": "location",
@@ -7993,6 +8162,11 @@
           "comment": null
         },
         {
+          "name": "paramValuesStr",
+          "c_type": "char*",
+          "comment": "/* params as a single string for errors */"
+        },
+        {
           "name": "numParams",
           "c_type": "int",
           "comment": "/* nominal/maximum # of Params represented */"
@@ -8025,6 +8199,21 @@
         }
       ],
       "comment": "/* ----------------\n *\t  ParamExecData\n *\n *\t  ParamExecData entries are used for executor internal parameters\n *\t  (that is, values being passed into or out of a sub-query).  The\n *\t  paramid of a PARAM_EXEC Param is a (zero-based) index into an\n *\t  array of ParamExecData records, which is referenced through\n *\t  es_param_exec_vals or ecxt_param_exec_vals.\n *\n *\t  If execPlan is not NULL, it points to a SubPlanState node that needs\n *\t  to be executed to produce the value.  (This is done so that we can have\n *\t  lazy evaluation of InitPlans: they aren't executed until/unless a\n *\t  result value is needed.)\tOtherwise the value is assumed to be valid\n *\t  when needed.\n * ----------------\n */\n"
+    },
+    "ParamsErrorCbData": {
+      "fields": [
+        {
+          "name": "portalName",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "params",
+          "c_type": "ParamListInfo",
+          "comment": null
+        }
+      ],
+      "comment": "/* type of argument for ParamsErrorCallback */\n"
     }
   },
   "access/attnum": {
@@ -8320,6 +8509,17 @@
           "name": "truncate",
           "c_type": "VacOptTernaryValue",
           "comment": "/* Truncate empty pages at the end,\n\t\t\t\t\t\t\t\t\t * default value depends on reloptions */\n"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * The number of parallel vacuum workers.  0 by default which means choose\n\t * based on the number of indexes.  -1 indicates parallel vacuum is\n\t * disabled.\n\t */\n"
+        },
+        {
+          "name": "nworkers",
+          "c_type": "int",
+          "comment": null
         }
       ],
       "comment": "/*\n * Parameters customizing behavior of VACUUM and ANALYZE.\n *\n * Note that at least one of VACOPT_VACUUM and VACOPT_ANALYZE must be set\n * in options.\n */\n"

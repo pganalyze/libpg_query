@@ -16,7 +16,7 @@
  * postgres.c
  *	  POSTGRES C Backend Interface
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -60,15 +60,18 @@
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "libpq/pqsignal.h"
+#include "mb/pg_wchar.h"
+#include "mb/stringinfo_mb.h"
 #include "miscadmin.h"
 #include "nodes/print.h"
 #include "optimizer/optimizer.h"
-#include "pgstat.h"
-#include "pg_trace.h"
 #include "parser/analyze.h"
 #include "parser/parser.h"
 #include "pg_getopt.h"
+#include "pg_trace.h"
+#include "pgstat.h"
 #include "postmaster/autovacuum.h"
+#include "postmaster/interrupt.h"
 #include "postmaster/postmaster.h"
 #include "replication/logicallauncher.h"
 #include "replication/logicalworker.h"
@@ -90,8 +93,6 @@
 #include "utils/snapmgr.h"
 #include "utils/timeout.h"
 #include "utils/timestamp.h"
-#include "mb/pg_wchar.h"
-
 
 /* ----------------
  *		global variables
@@ -161,11 +162,6 @@ char	   *register_stack_base_ptr = NULL;
  * the extended query protocol.
  */
 
-
-
-/*
- * Flag to keep track of whether statement timeout timer is active.
- */
 
 
 /*
@@ -419,6 +415,8 @@ static void disable_statement_timeout(void);
  * errdetail_params
  *
  * Add an errdetail() line showing bind-parameter data, if available.
+ * Note that this is only used for statement logging, so it is controlled
+ * by log_parameter_max_length not log_parameter_max_length_on_error.
  */
 
 
@@ -486,7 +484,7 @@ static void disable_statement_timeout(void);
  */
 
 /*
- * quickdie() occurs when signalled SIGQUIT by the postmaster.
+ * quickdie() occurs when signaled SIGQUIT by the postmaster.
  *
  * Some backend has bought the farm,
  * so we need to stop what we're doing and exit.
@@ -506,15 +504,6 @@ static void disable_statement_timeout(void);
 
 
 /* signal handler for floating point exception */
-
-
-/*
- * SIGHUP: set flag to re-read config file at next convenient time.
- *
- * Sets the ConfigReloadPending flag, which should be checked at convenient
- * places inside main loops. (Better than doing the reading in the signal
- * handler, ey?)
- */
 
 
 /*

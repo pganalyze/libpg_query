@@ -4,7 +4,7 @@
  *	  POSTGRES low-level lock mechanism
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/storage/lock.h
@@ -18,11 +18,10 @@
 #error "lock.h may not be included from frontend code"
 #endif
 
-#include "storage/lockdefs.h"
 #include "storage/backendid.h"
+#include "storage/lockdefs.h"
 #include "storage/lwlock.h"
 #include "storage/shmem.h"
-
 
 /* struct PGPROC is declared in proc.h, but must forward-reference it */
 typedef struct PGPROC PGPROC;
@@ -140,6 +139,7 @@ typedef enum LockTagType
 {
 	LOCKTAG_RELATION,			/* whole relation */
 	LOCKTAG_RELATION_EXTEND,	/* the right to extend a relation */
+	LOCKTAG_DATABASE_FROZEN_IDS,	/* pg_database.datfrozenxid */
 	LOCKTAG_PAGE,				/* one page of a relation */
 	LOCKTAG_TUPLE,				/* one physical tuple */
 	LOCKTAG_TRANSACTION,		/* transaction (for waiting for xact done) */
@@ -196,6 +196,15 @@ typedef struct LOCKTAG
 	 (locktag).locktag_field3 = 0, \
 	 (locktag).locktag_field4 = 0, \
 	 (locktag).locktag_type = LOCKTAG_RELATION_EXTEND, \
+	 (locktag).locktag_lockmethodid = DEFAULT_LOCKMETHOD)
+
+/* ID info for frozen IDs is DB OID */
+#define SET_LOCKTAG_DATABASE_FROZEN_IDS(locktag,dboid) \
+	((locktag).locktag_field1 = (dboid), \
+	 (locktag).locktag_field2 = 0, \
+	 (locktag).locktag_field3 = 0, \
+	 (locktag).locktag_field4 = 0, \
+	 (locktag).locktag_type = LOCKTAG_DATABASE_FROZEN_IDS, \
 	 (locktag).locktag_lockmethodid = DEFAULT_LOCKMETHOD)
 
 /* ID info for a page is RELATION info + BlockNumber */
@@ -305,6 +314,7 @@ typedef struct LOCK
 } LOCK;
 
 #define LOCK_LOCKMETHOD(lock) ((LOCKMETHODID) (lock).tag.locktag_lockmethodid)
+#define LOCK_LOCKTAG(lock) ((LockTagType) (lock).tag.locktag_type)
 
 
 /*
@@ -423,6 +433,7 @@ typedef struct LOCALLOCK
 } LOCALLOCK;
 
 #define LOCALLOCK_LOCKMETHOD(llock) ((llock).tag.lock.locktag_lockmethodid)
+#define LOCALLOCK_LOCKTAG(llock) ((LockTagType) (llock).tag.lock.locktag_type)
 
 
 /*
@@ -548,13 +559,16 @@ extern void LockReleaseSession(LOCKMETHODID lockmethodid);
 extern void LockReleaseCurrentOwner(LOCALLOCK **locallocks, int nlocks);
 extern void LockReassignCurrentOwner(LOCALLOCK **locallocks, int nlocks);
 extern bool LockHeldByMe(const LOCKTAG *locktag, LOCKMODE lockmode);
+#ifdef USE_ASSERT_CHECKING
+extern HTAB *GetLockMethodLocalHash(void);
+#endif
 extern bool LockHasWaiters(const LOCKTAG *locktag,
 						   LOCKMODE lockmode, bool sessionLock);
 extern VirtualTransactionId *GetLockConflicts(const LOCKTAG *locktag,
 											  LOCKMODE lockmode, int *countp);
 extern void AtPrepare_Locks(void);
 extern void PostPrepare_Locks(TransactionId xid);
-extern int	LockCheckConflicts(LockMethod lockMethodTable,
+extern bool LockCheckConflicts(LockMethod lockMethodTable,
 							   LOCKMODE lockmode,
 							   LOCK *lock, PROCLOCK *proclock);
 extern void GrantLock(LOCK *lock, PROCLOCK *proclock, LOCKMODE lockmode);
@@ -597,4 +611,4 @@ extern void VirtualXactLockTableInsert(VirtualTransactionId vxid);
 extern void VirtualXactLockTableCleanup(void);
 extern bool VirtualXactLock(VirtualTransactionId vxid, bool wait);
 
-#endif							/* LOCK_H */
+#endif							/* LOCK_H_ */

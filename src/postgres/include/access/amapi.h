@@ -3,7 +3,7 @@
  * amapi.h
  *	  API for Postgres index access methods.
  *
- * Copyright (c) 2015-2019, PostgreSQL Global Development Group
+ * Copyright (c) 2015-2020, PostgreSQL Global Development Group
  *
  * src/include/access/amapi.h
  *
@@ -171,6 +171,8 @@ typedef struct IndexAmRoutine
 	uint16		amstrategies;
 	/* total number of support functions that this AM uses */
 	uint16		amsupport;
+	/* opclass options support function number or 0 */
+	uint16		amoptsprocnum;
 	/* does AM support ORDER BY indexed column's value? */
 	bool		amcanorder;
 	/* does AM support ORDER BY result of an operator on indexed column? */
@@ -197,6 +199,10 @@ typedef struct IndexAmRoutine
 	bool		amcanparallel;
 	/* does AM support columns included with clause INCLUDE? */
 	bool		amcaninclude;
+	/* does AM use maintenance_work_mem? */
+	bool		amusemaintenanceworkmem;
+	/* OR of parallel vacuum flags.  See vacuum.h for flags. */
+	uint8		amparallelvacuumoptions;
 	/* type of data stored in index, or InvalidOid if variable */
 	Oid			amkeytype;
 

@@ -9,7 +9,7 @@
  *	  polluting the namespace with lots of stuff...
  *
  *
- * Portions Copyright (c) 1996-2019, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/c.h
@@ -64,9 +64,7 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
 #include <sys/types.h>
 #include <errno.h>
 #if defined(WIN32) || defined(__CYGWIN__)
@@ -101,8 +99,8 @@
  * GCC: https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html
  * GCC: https://gcc.gnu.org/onlinedocs/gcc/Type-Attributes.html
  * Sunpro: https://docs.oracle.com/cd/E18659_01/html/821-1384/gjzke.html
- * XLC: http://www-01.ibm.com/support/knowledgecenter/SSGH2K_11.1.0/com.ibm.xlc111.aix.doc/language_ref/function_attributes.html
- * XLC: http://www-01.ibm.com/support/knowledgecenter/SSGH2K_11.1.0/com.ibm.xlc111.aix.doc/language_ref/type_attrib.html
+ * XLC: https://www.ibm.com/support/knowledgecenter/SSGH2K_13.1.2/com.ibm.xlc131.aix.doc/language_ref/function_attributes.html
+ * XLC: https://www.ibm.com/support/knowledgecenter/SSGH2K_13.1.2/com.ibm.xlc131.aix.doc/language_ref/type_attrib.html
  */
 
 /* only GCC supports the unused attribute */
@@ -267,6 +265,16 @@
 #define dummyret	char
 #endif
 
+/*
+ * We require C99, hence the compiler should understand flexible array
+ * members.  However, for documentation purposes we still consider it to be
+ * project style to write "field[FLEXIBLE_ARRAY_MEMBER]" not just "field[]".
+ * When computing the size of such an object, use "offsetof(struct s, f)"
+ * for portability.  Don't use "offsetof(struct s, f[0])", as this doesn't
+ * work with MSVC and with C++ compilers.
+ */
+#define FLEXIBLE_ARRAY_MEMBER	/* empty */
+
 /* Which __func__ symbol do we have, if any? */
 #ifdef HAVE_FUNCNAME__FUNC
 #define PG_FUNCNAME_MACRO	__func__
@@ -288,20 +296,21 @@
  * bool
  *		Boolean value, either true or false.
  *
- * Use stdbool.h if available and its bool has size 1.  That's useful for
+ * We use stdbool.h if available and its bool has size 1.  That's useful for
  * better compiler and debugger output and for compatibility with third-party
  * libraries.  But PostgreSQL currently cannot deal with bool of other sizes;
  * there are static assertions around the code to prevent that.
  *
  * For C++ compilers, we assume the compiler has a compatible built-in
  * definition of bool.
+ *
+ * See also the version of this code in src/interfaces/ecpg/include/ecpglib.h.
  */
 
 #ifndef __cplusplus
 
-#if defined(HAVE_STDBOOL_H) && SIZEOF_BOOL == 1
+#ifdef PG_USE_STDBOOL
 #include <stdbool.h>
-#define USE_STDBOOL 1
 #else
 
 #ifndef bool
@@ -316,7 +325,7 @@ typedef unsigned char bool;
 #define false	((bool) 0)
 #endif
 
-#endif
+#endif							/* not PG_USE_STDBOOL */
 #endif							/* not C++ */
 
 
@@ -428,8 +437,8 @@ typedef unsigned PG_INT128_TYPE uint128
 #endif
 
 /*
- * stdint.h limits aren't guaranteed to be present and aren't guaranteed to
- * have compatible types with our fixed width types. So just define our own.
+ * stdint.h limits aren't guaranteed to have compatible types with our fixed
+ * width types. So just define our own.
  */
 #define PG_INT8_MIN		(-0x7F-1)
 #define PG_INT8_MAX		(0x7F)
@@ -443,15 +452,6 @@ typedef unsigned PG_INT128_TYPE uint128
 #define PG_INT64_MIN	(-INT64CONST(0x7FFFFFFFFFFFFFFF) - 1)
 #define PG_INT64_MAX	INT64CONST(0x7FFFFFFFFFFFFFFF)
 #define PG_UINT64_MAX	UINT64CONST(0xFFFFFFFFFFFFFFFF)
-
-/* Max value of size_t might also be missing if we don't have stdint.h */
-#ifndef SIZE_MAX
-#if SIZEOF_SIZE_T == 8
-#define SIZE_MAX PG_UINT64_MAX
-#else
-#define SIZE_MAX PG_UINT32_MAX
-#endif
-#endif
 
 /*
  * We now always use int64 timestamps, but keep this symbol defined for the
@@ -489,6 +489,12 @@ typedef signed int Offset;
  */
 typedef float float4;
 typedef double float8;
+
+#ifdef USE_FLOAT8_BYVAL
+#define FLOAT8PASSBYVAL true
+#else
+#define FLOAT8PASSBYVAL false
+#endif
 
 /*
  * Oid, RegProcedure, TransactionId, SubTransactionId, MultiXactId,
@@ -755,7 +761,7 @@ typedef NameData *Name;
 #define Trap(condition, errorType) \
 	do { \
 		if (condition) \
-			ExceptionalCondition(CppAsString(condition), (errorType), \
+			ExceptionalCondition(#condition, (errorType), \
 								 __FILE__, __LINE__); \
 	} while (0)
 
@@ -768,20 +774,34 @@ typedef NameData *Name;
  */
 #define TrapMacro(condition, errorType) \
 	((bool) (! (condition) || \
-			 (ExceptionalCondition(CppAsString(condition), (errorType), \
+			 (ExceptionalCondition(#condition, (errorType), \
 								   __FILE__, __LINE__), 0)))
 
 #define Assert(condition) \
-		Trap(!(condition), "FailedAssertion")
+	do { \
+		if (!(condition)) \
+			ExceptionalCondition(#condition, "FailedAssertion", \
+								 __FILE__, __LINE__); \
+	} while (0)
 
 #define AssertMacro(condition) \
-		((void) TrapMacro(!(condition), "FailedAssertion"))
+	((void) ((condition) || \
+			 (ExceptionalCondition(#condition, "FailedAssertion", \
+								   __FILE__, __LINE__), 0)))
 
 #define AssertArg(condition) \
-		Trap(!(condition), "BadArgument")
+	do { \
+		if (!(condition)) \
+			ExceptionalCondition(#condition, "BadArgument", \
+								 __FILE__, __LINE__); \
+	} while (0)
 
 #define AssertState(condition) \
-		Trap(!(condition), "BadState")
+	do { \
+		if (!(condition)) \
+			ExceptionalCondition(#condition, "BadState", \
+								 __FILE__, __LINE__); \
+	} while (0)
 
 /*
  * Check that `ptr' is `bndr' aligned.
@@ -811,8 +831,10 @@ extern void ExceptionalCondition(const char *conditionName,
  * throw a compile error using the "errmessage" (a string literal).
  *
  * gcc 4.6 and up supports _Static_assert(), but there are bizarre syntactic
- * placement restrictions.  These macros make it safe to use as a statement
- * or in an expression, respectively.
+ * placement restrictions.  Macros StaticAssertStmt() and StaticAssertExpr()
+ * make it safe to use as a statement or in an expression, respectively.
+ * The macro StaticAssertDecl() is suitable for use at file scope (outside of
+ * any function).
  *
  * Otherwise we fall back on a kluge that assumes the compiler will complain
  * about a negative width for a struct bit-field.  This will not include a
@@ -824,11 +846,15 @@ extern void ExceptionalCondition(const char *conditionName,
 	do { _Static_assert(condition, errmessage); } while(0)
 #define StaticAssertExpr(condition, errmessage) \
 	((void) ({ StaticAssertStmt(condition, errmessage); true; }))
+#define StaticAssertDecl(condition, errmessage) \
+	_Static_assert(condition, errmessage)
 #else							/* !HAVE__STATIC_ASSERT */
 #define StaticAssertStmt(condition, errmessage) \
 	((void) sizeof(struct { int static_assert_failure : (condition) ? 1 : -1; }))
 #define StaticAssertExpr(condition, errmessage) \
 	StaticAssertStmt(condition, errmessage)
+#define StaticAssertDecl(condition, errmessage) \
+	extern void static_assert_func(int static_assert_failure[(condition) ? 1 : -1])
 #endif							/* HAVE__STATIC_ASSERT */
 #else							/* C++ */
 #if defined(__cpp_static_assert) && __cpp_static_assert >= 200410
@@ -836,12 +862,16 @@ extern void ExceptionalCondition(const char *conditionName,
 	static_assert(condition, errmessage)
 #define StaticAssertExpr(condition, errmessage) \
 	({ static_assert(condition, errmessage); })
-#else
+#define StaticAssertDecl(condition, errmessage) \
+	static_assert(condition, errmessage)
+#else							/* !__cpp_static_assert */
 #define StaticAssertStmt(condition, errmessage) \
 	do { struct static_assert_struct { int static_assert_failure : (condition) ? 1 : -1; }; } while(0)
 #define StaticAssertExpr(condition, errmessage) \
 	((void) ({ StaticAssertStmt(condition, errmessage); }))
-#endif
+#define StaticAssertDecl(condition, errmessage) \
+	extern void static_assert_func(int static_assert_failure[(condition) ? 1 : -1])
+#endif							/* __cpp_static_assert */
 #endif							/* C++ */
 
 
@@ -1046,6 +1076,10 @@ extern void ExceptionalCondition(const char *conditionName,
  * ----------------------------------------------------------------
  */
 
+#ifdef HAVE_STRUCT_SOCKADDR_UN
+#define HAVE_UNIX_SOCKETS 1
+#endif
+
 /*
  * Invert the sign of a qsort-style comparison result, ie, exchange negative
  * and positive integer values, being careful not to get the wrong answer
@@ -1099,7 +1133,6 @@ typedef union PGAlignedXLogBlock
 #define STATUS_OK				(0)
 #define STATUS_ERROR			(-1)
 #define STATUS_EOF				(-2)
-#define STATUS_FOUND			(1)
 #define STATUS_WAITING			(2)
 
 /*
@@ -1213,7 +1246,6 @@ typedef union PGAlignedXLogBlock
 extern int	fdatasync(int fildes);
 #endif
 
-#ifdef HAVE_LONG_LONG_INT
 /* Older platforms may provide strto[u]ll functionality under other names */
 #if !defined(HAVE_STRTOLL) && defined(HAVE___STRTOLL)
 #define strtoll __strtoll
@@ -1241,11 +1273,6 @@ extern long long strtoll(const char *str, char **endptr, int base);
 
 #if defined(HAVE_STRTOULL) && !HAVE_DECL_STRTOULL
 extern unsigned long long strtoull(const char *str, char **endptr, int base);
-#endif
-#endif							/* HAVE_LONG_LONG_INT */
-
-#if !defined(HAVE_MEMMOVE) && !defined(memmove)
-#define memmove(d, s, c)		bcopy(s, d, c)
 #endif
 
 /* no special DLL markers on most ports */
