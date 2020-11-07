@@ -773,7 +773,7 @@
 #define PG_VERSION_NUM 100005
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 10.5 on x86_64-apple-darwin17.4.0, compiled by Apple LLVM version 9.1.0 (clang-902.0.39.2), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 10.5 on x86_64-apple-darwin19.6.0, compiled by Apple clang version 12.0.0 (clang-1200.0.32.21), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
