@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.3
+
+* Update to latest Postgres 10 patch release (10.14)
+* Add support for ARM builds by explicitly copying ARM header file
+* Ignore return value of asprintf without compiler warnings [@herwinw](https://github.com/herwinw)
+* Free stderr_buffer when parsing plpgsql [@herwinw](https://github.com/herwinw)
+
+
 ## 10-1.0.2
 
 * Avoid compiler warning due to unused result in pg_query_parse_plpgsql
