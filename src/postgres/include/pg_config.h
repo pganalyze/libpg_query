@@ -159,10 +159,6 @@
    don't. */
 #define HAVE_DECL_STRTOULL 1
 
-/* Define to 1 if you have the declaration of `sys_siglist', and to 0 if you
-   don't. */
-#define HAVE_DECL_SYS_SIGLIST 1
-
 /* Define to 1 if you have the declaration of `vsnprintf', and to 0 if you
    don't. */
 #define HAVE_DECL_VSNPRINTF 1
@@ -512,6 +508,9 @@
 /* Define to use have a strong random number source */
 #define HAVE_STRONG_RANDOM 1
 
+/* Define to 1 if you have the `strsignal' function. */
+#define HAVE_STRSIGNAL 1
+
 /* Define to 1 if you have the `strtoll' function. */
 #define HAVE_STRTOLL 1
 
@@ -645,6 +644,9 @@
 /* Define to 1 if the system has the type `unsigned long long int'. */
 #define HAVE_UNSIGNED_LONG_LONG_INT 1
 
+/* Define to 1 if you have the `uselocale' function. */
+#define HAVE_USELOCALE 1
+
 /* Define to 1 if you have the `utime' function. */
 #define HAVE_UTIME 1
 
@@ -702,6 +704,9 @@
 /* Define to 1 if your compiler understands __builtin_unreachable. */
 #define HAVE__BUILTIN_UNREACHABLE 1
 
+/* Define to 1 if you have the `_configthreadlocale' function. */
+/* #undef HAVE__CONFIGTHREADLOCALE */
+
 /* Define to 1 if you have __cpuid. */
 /* #undef HAVE__CPUID */
 
@@ -739,7 +744,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 10.5"
+#define PACKAGE_STRING "PostgreSQL 10.14"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -748,7 +753,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "10.5"
+#define PACKAGE_VERSION "10.14"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -767,13 +772,13 @@
 #define PG_PRINTF_ATTRIBUTE printf
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "10.5"
+#define PG_VERSION "10.14"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 100005
+#define PG_VERSION_NUM 100014
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 10.5 on x86_64-apple-darwin19.6.0, compiled by Apple clang version 12.0.0 (clang-1200.0.32.21), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 10.14 on x86_64-apple-darwin19.6.0, compiled by Apple clang version 12.0.0 (clang-1200.0.32.21), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -811,7 +816,7 @@
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
-/* Define to 1 if strerror_r() returns a int. */
+/* Define to 1 if strerror_r() returns int. */
 #define STRERROR_R_INT 1
 
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */

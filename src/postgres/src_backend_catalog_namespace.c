@@ -200,6 +200,7 @@ typedef struct
 
 /* Local functions */
 static void recomputeNamespacePath(void);
+static void AccessTempTableNamespace(bool force);
 static void InitTempTableNamespace(void);
 static void RemoveTempRelations(Oid tempNamespaceId);
 static void RemoveTempRelationsCallback(int code, Datum arg);
@@ -287,6 +288,12 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 /*
  * TypenameGetTypid
+ *		Wrapper for binary compatibility.
+ */
+
+
+/*
+ * TypenameGetTypidExtended
  *		Try to resolve an unqualified datatype name.
  *		Returns OID if type found in search path, else InvalidOid.
  *
@@ -867,6 +874,16 @@ Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
 
 
 /*
+ * AccessTempTableNamespace
+ *		Provide access to a temporary namespace, potentially creating it
+ *		if not present yet.  This routine registers if the namespace gets
+ *		in use in this transaction.  'force' can be set to true to allow
+ *		the caller to enforce the creation of the temporary namespace for
+ *		use in this backend, which happens if its creation is pending.
+ */
+
+
+/*
  * InitTempTableNamespace
  *		Initialize temp table namespace on first use in a particular backend
  */
@@ -904,6 +921,9 @@ Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
 
 /*
  * Remove all temp tables from the temporary namespace.
+ *
+ * If we haven't set up one yet, but one exists from a previous crashed
+ * backend, clean that one; but only do this once in a session's life.
  */
 
 

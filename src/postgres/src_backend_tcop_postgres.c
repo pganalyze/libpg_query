@@ -249,8 +249,9 @@ static void log_disconnections(int code, Datum arg);
 /*
  * ProcessClientReadInterrupt() - Process interrupts specific to client reads
  *
- * This is called just after low-level reads. That might be after the read
- * finished successfully, or it was interrupted via interrupt.
+ * This is called just before and after low-level reads.
+ * 'blocked' is true if no data was available to read and we plan to retry,
+ * false if about to read or done reading.
  *
  * Must preserve errno!
  */
@@ -259,9 +260,9 @@ static void log_disconnections(int code, Datum arg);
 /*
  * ProcessClientWriteInterrupt() - Process interrupts specific to client writes
  *
- * This is called just after low-level writes. That might be after the read
- * finished successfully, or it was interrupted via interrupt. 'blocked' tells
- * us whether the
+ * This is called just before and after low-level writes.
+ * 'blocked' is true if no data could be written and we plan to retry,
+ * false if about to write or done writing.
  *
  * Must preserve errno!
  */

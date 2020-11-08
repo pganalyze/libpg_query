@@ -776,7 +776,8 @@ typedef struct PLpgSQL_func_hashkey
 {
 	Oid			funcOid;
 
-	bool		isTrigger;		/* true if called as a trigger */
+	bool		isTrigger;		/* true if called as a DML trigger */
+	bool		isEventTrigger; /* true if called as an event trigger */
 
 	/* be careful that pad bytes in this struct get zeroed! */
 
@@ -784,7 +785,7 @@ typedef struct PLpgSQL_func_hashkey
 	 * For a trigger function, the OID of the trigger is part of the hash key
 	 * --- we want to compile the trigger function separately for each trigger
 	 * it is used with, in case the rowtype or transition table names are
-	 * different.  Zero if not called as a trigger.
+	 * different.  Zero if not called as a DML trigger.
 	 */
 	Oid			trigOid;
 
@@ -1077,7 +1078,7 @@ extern PLpgSQL_rec *plpgsql_build_record(const char *refname, int lineno,
 extern int plpgsql_recognize_err_condition(const char *condname,
 								bool allow_sqlstate);
 extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
-extern void plpgsql_adddatum(PLpgSQL_datum *new);
+extern void plpgsql_adddatum(PLpgSQL_datum *newdatum);
 extern int	plpgsql_add_initdatums(int **varnos);
 extern void plpgsql_HashTableInit(void);
 
@@ -1103,7 +1104,7 @@ extern Oid plpgsql_exec_get_datum_type(PLpgSQL_execstate *estate,
 							PLpgSQL_datum *datum);
 extern void plpgsql_exec_get_datum_type_info(PLpgSQL_execstate *estate,
 								 PLpgSQL_datum *datum,
-								 Oid *typeid, int32 *typmod, Oid *collation);
+								 Oid *typeId, int32 *typMod, Oid *collation);
 
 /*
  * Functions for namespace handling in pl_funcs.c

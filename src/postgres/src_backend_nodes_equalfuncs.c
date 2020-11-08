@@ -258,6 +258,7 @@
 
 #include "postgres.h"
 
+#include "miscadmin.h"
 #include "nodes/extensible.h"
 #include "nodes/relation.h"
 #include "utils/datum.h"
@@ -2768,7 +2769,6 @@ _equalColumnDef(const ColumnDef *a, const ColumnDef *b)
 	COMPARE_SCALAR_FIELD(is_local);
 	COMPARE_SCALAR_FIELD(is_not_null);
 	COMPARE_SCALAR_FIELD(is_from_type);
-	COMPARE_SCALAR_FIELD(is_from_parent);
 	COMPARE_SCALAR_FIELD(storage);
 	COMPARE_NODE_FIELD(raw_default);
 	COMPARE_NODE_FIELD(cooked_default);
@@ -3207,6 +3207,9 @@ equal(const void *a, const void *b)
 	 */
 	if (nodeTag(a) != nodeTag(b))
 		return false;
+
+	/* Guard against stack overflow due to overly complex expressions */
+	check_stack_depth();
 
 	switch (nodeTag(a))
 	{

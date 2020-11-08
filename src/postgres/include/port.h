@@ -205,6 +205,9 @@ extern char *pgwin32_setlocale(int category, const char *locale);
 #define setlocale(a,b) pgwin32_setlocale(a,b)
 #endif							/* WIN32 */
 
+/* Wrap strsignal(), or provide our own version if necessary */
+extern const char *pg_strsignal(int signum);
+
 /* Portable prompt handling */
 extern void simple_prompt(const char *prompt, char *destination, size_t destlen,
 			  bool echo);
@@ -481,7 +484,9 @@ extern pqsigfunc pqsignal_no_restart(int signo, pqsigfunc func);
 /* port/quotes.c */
 extern char *escape_single_quotes_ascii(const char *src);
 
-/* port/wait_error.c */
+/* common/wait_error.c */
 extern char *wait_result_to_str(int exit_status);
+extern bool wait_result_is_signal(int exit_status, int signum);
+extern bool wait_result_is_any_signal(int exit_status, bool include_command_not_found);
 
 #endif							/* PG_PORT_H */
