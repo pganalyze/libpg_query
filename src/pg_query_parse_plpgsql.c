@@ -434,9 +434,15 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 			func_json = plpgsqlToJSON(func_and_error.func);
 			plpgsql_free_function_memory(func_and_error.func);
 
-			(void)asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
-			free(result.plpgsql_funcs);
-			result.plpgsql_funcs = new_out;
+			int err = asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
+			if (err == -1) {
+				PgQueryError* error = malloc(sizeof(PgQueryError));
+				error->message = strdup("Failed to output PL/pgSQL functions due to asprintf failure");
+				result.error = error;
+			} else {
+				free(result.plpgsql_funcs);
+				result.plpgsql_funcs = new_out;
+			}
 
 			pfree(func_json);
 		}
