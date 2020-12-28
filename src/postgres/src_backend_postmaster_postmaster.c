@@ -153,8 +153,6 @@
 #define BACKEND_TYPE_BGWORKER	0x0008	/* bgworker process */
 #define BACKEND_TYPE_ALL		0x000F	/* OR of all the above */
 
-#define BACKEND_TYPE_WORKER		(BACKEND_TYPE_AUTOVAC | BACKEND_TYPE_BGWORKER)
-
 /*
  * List of active backends (or child processes anyway; we don't actually
  * know whether a given child has become a backend or is still in the
@@ -305,8 +303,7 @@ typedef enum
  * and we switch to PM_RUN state.
  *
  * Normal child backends can only be launched when we are in PM_RUN or
- * PM_HOT_STANDBY state.  (We also allow launch of normal
- * child backends in PM_WAIT_BACKUP state, but only for superusers.)
+ * PM_HOT_STANDBY state.  (connsAllowed can also restrict launching.)
  * In other states we handle connection requests by launching "dead_end"
  * child processes, which will simply send the client an error message and
  * quit.  (We track these in the BackendList so that we can know when they
@@ -320,10 +317,10 @@ typedef enum
  *
  * Notice that this state variable does not distinguish *why* we entered
  * states later than PM_RUN --- Shutdown and FatalError must be consulted
- * to find that out.  FatalError is never true in PM_RECOVERY_* or PM_RUN
- * states, nor in PM_SHUTDOWN states (because we don't enter those states
- * when trying to recover from a crash).  It can be true in PM_STARTUP state,
- * because we don't clear it until we've successfully started WAL redo.
+ * to find that out.  FatalError is never true in PM_RECOVERY, PM_HOT_STANDBY,
+ * or PM_RUN states, nor in PM_SHUTDOWN states (because we don't enter those
+ * states when trying to recover from a crash).  It can be true in PM_STARTUP
+ * state, because we don't clear it until we've successfully started WAL redo.
  */
 typedef enum
 {
@@ -332,8 +329,7 @@ typedef enum
 	PM_RECOVERY,				/* in archive recovery mode */
 	PM_HOT_STANDBY,				/* in hot standby mode */
 	PM_RUN,						/* normal "database is alive" state */
-	PM_WAIT_BACKUP,				/* waiting for online backup mode to end */
-	PM_WAIT_READONLY,			/* waiting for read only backends to exit */
+	PM_STOP_BACKENDS,			/* need to stop remaining backends */
 	PM_WAIT_BACKENDS,			/* waiting for live backends to exit */
 	PM_SHUTDOWN,				/* waiting for checkpointer to do shutdown
 								 * ckpt */
@@ -342,6 +338,21 @@ typedef enum
 	PM_WAIT_DEAD_END,			/* waiting for dead_end children to exit */
 	PM_NO_CHILDREN				/* all important children have exited */
 } PMState;
+
+
+
+/*
+ * While performing a "smart shutdown", we restrict new connections but stay
+ * in PM_RUN or PM_HOT_STANDBY state until all the client backends are gone.
+ * connsAllowed is a sub-state indicator showing the active restriction.
+ * It is of no interest unless pmState is PM_RUN or PM_HOT_STANDBY.
+ */
+typedef enum
+{
+	ALLOW_ALL_CONNS,			/* normal not-shutting-down state */
+	ALLOW_SUPERUSER_CONNS,		/* only superusers can connect */
+	ALLOW_NO_CONNS				/* no new connections allowed, period */
+} ConnsAllowedState;
 
 
 
@@ -406,7 +417,8 @@ static void SIGHUP_handler(SIGNAL_ARGS);
 static void pmdie(SIGNAL_ARGS);
 static void reaper(SIGNAL_ARGS);
 static void sigusr1_handler(SIGNAL_ARGS);
-static void startup_die(SIGNAL_ARGS);
+static void process_startup_packet_die(SIGNAL_ARGS);
+static void process_startup_packet_quickdie(SIGNAL_ARGS);
 static void dummy_handler(SIGNAL_ARGS);
 static void StartupPacketTimeoutHandler(void);
 static void CleanupBackend(int pid, int exitstatus);
@@ -751,26 +763,38 @@ HANDLE		PostmasterHandle;
 /*
  * SIGHUP -- reread config files, and tell children to do same
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SSL
 #endif
 #ifdef EXEC_BACKEND
+#endif
+#ifdef WIN32
 #endif
 
 
 /*
  * pmdie -- signal handler for processing various postmaster signals.
  */
-#ifdef USE_SYSTEMD
+#ifdef WIN32
 #endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
  * Reaper -- signal handler to cleanup after a child process dies.
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
@@ -1508,19 +1532,37 @@ SubPostmasterMain(int argc, char *argv[])
 /*
  * sigusr1_handler - handle signal conditions from child processes
  */
+#ifdef WIN32
+#endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
+#endif
+#ifdef WIN32
 #endif
 
 /*
- * SIGTERM or SIGQUIT while processing startup packet.
+ * SIGTERM while processing startup packet.
  * Clean up and exit(1).
  *
- * XXX: possible future improvement: try to send a message indicating
- * why we are disconnecting.  Problem is to be sure we don't block while
- * doing so, nor mess up SSL initialization.  In practice, if the client
- * has wedged here, it probably couldn't do anything with the message anyway.
+ * Running proc_exit() from a signal handler is pretty unsafe, since we
+ * can't know what code we've interrupted.  But the alternative of using
+ * _exit(2) is also unpalatable, since it'd mean that a "fast shutdown"
+ * would cause a database crash cycle (forcing WAL replay at restart)
+ * if any sessions are in authentication.  So we live with it for now.
+ *
+ * One might be tempted to try to send a message indicating why we are
+ * disconnecting.  However, that would make this even more unsafe.  Also,
+ * it seems undesirable to provide clues about the database's state to
+ * a client that has not yet completed authentication.
+ */
+
+
+/*
+ * SIGQUIT while processing startup packet.
+ *
+ * Some backend has bought the farm,
+ * so we need to stop what we're doing and exit.
  */
 
 
@@ -1537,7 +1579,11 @@ SubPostmasterMain(int argc, char *argv[])
 
 /*
  * Timeout while processing startup packet.
- * As for startup_die(), we clean up and exit(1).
+ * As for process_startup_packet_die(), we clean up and exit(1).
+ *
+ * This is theoretically just as hazardous as in process_startup_packet_die(),
+ * although in practice we're almost certainly waiting for client input,
+ * which greatly reduces the risk.
  */
 
 

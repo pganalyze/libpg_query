@@ -160,10 +160,12 @@ typedef enum LockTagType
 	 * Also, we use DB OID = 0 for shared objects such as tablespaces.
 	 */
 	LOCKTAG_USERLOCK,			/* reserved for old contrib/userlock code */
-	LOCKTAG_ADVISORY			/* advisory user locks */
+	LOCKTAG_ADVISORY,			/* advisory user locks */
+	LOCKTAG_DATABASE_FROZEN_IDS	/* pg_database.datfrozenxid */
+	/* ID info for frozen IDs is DB OID */
 } LockTagType;
 
-#define LOCKTAG_LAST_TYPE	LOCKTAG_ADVISORY
+#define LOCKTAG_LAST_TYPE	LOCKTAG_DATABASE_FROZEN_IDS
 
 extern const char *const LockTagTypeNames[];
 
@@ -204,6 +206,14 @@ typedef struct LOCKTAG
 	 (locktag).locktag_field3 = 0, \
 	 (locktag).locktag_field4 = 0, \
 	 (locktag).locktag_type = LOCKTAG_RELATION_EXTEND, \
+	 (locktag).locktag_lockmethodid = DEFAULT_LOCKMETHOD)
+
+#define SET_LOCKTAG_DATABASE_FROZEN_IDS(locktag,dboid) \
+	((locktag).locktag_field1 = (dboid), \
+	 (locktag).locktag_field2 = 0, \
+	 (locktag).locktag_field3 = 0, \
+	 (locktag).locktag_field4 = 0, \
+	 (locktag).locktag_type = LOCKTAG_DATABASE_FROZEN_IDS, \
 	 (locktag).locktag_lockmethodid = DEFAULT_LOCKMETHOD)
 
 #define SET_LOCKTAG_PAGE(locktag,dboid,reloid,blocknum) \
