@@ -144,7 +144,7 @@ pg_query wrappers in other languages:
 
 * Ruby: [pg_query](https://github.com/lfittl/pg_query)
 * Go: [pg_query_go](https://github.com/lfittl/pg_query_go)
-* Javascript (Node): [pg-query-parser](https://github.com/zhm/pg-query-parser)
+* Javascript (Node): [pgsql-parser](https://github.com/pyramation/pgsql-parser)
 * Javascript (Browser): [pg-query-emscripten](https://github.com/lfittl/pg-query-emscripten)
 * Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
