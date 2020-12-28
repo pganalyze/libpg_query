@@ -46,5 +46,7 @@
 #define BackendRandomLock (&MainLWLockArray[43].lock)
 #define LogicalRepWorkerLock (&MainLWLockArray[44].lock)
 #define CLogTruncationLock (&MainLWLockArray[45].lock)
+#define WrapLimitsVacuumLock (&MainLWLockArray[46].lock)
+#define NotifyQueueTailLock (&MainLWLockArray[47].lock)
 
-#define NUM_INDIVIDUAL_LWLOCKS		46
+#define NUM_INDIVIDUAL_LWLOCKS		48
