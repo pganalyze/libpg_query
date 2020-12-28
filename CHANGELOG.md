@@ -2,6 +2,12 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.4
+
+* Update to latest Postgres 10 patch release (10.15)
+* PL/pgSQL parsing: Handle asprintf failures (and prevent compiler warning)
+
+
 ## 10-1.0.3
 
 * Update to latest Postgres 10 patch release (10.14)
