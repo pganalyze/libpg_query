@@ -87,6 +87,7 @@ extract_source: $(PGDIR)
 	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
+	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
 	touch ./src/postgres/guc-file.c
 	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
 	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
