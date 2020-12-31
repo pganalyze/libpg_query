@@ -45,5 +45,7 @@
 #define OldSnapshotTimeMapLock (&MainLWLockArray[42].lock)
 #define LogicalRepWorkerLock (&MainLWLockArray[43].lock)
 #define XactTruncationLock (&MainLWLockArray[44].lock)
+#define WrapLimitsVacuumLock (&MainLWLockArray[46].lock)
+#define NotifyQueueTailLock (&MainLWLockArray[47].lock)
 
-#define NUM_INDIVIDUAL_LWLOCKS		45
+#define NUM_INDIVIDUAL_LWLOCKS		48

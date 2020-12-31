@@ -637,6 +637,9 @@ case T_PartitionElem:
 case T_PartitionSpec:
   _fingerprintPartitionSpec(ctx, obj, parent, field_name, depth);
   break;
+case T_PartitionBoundSpec:
+  _fingerprintPartitionBoundSpec(ctx, obj, parent, field_name, depth);
+  break;
 case T_PartitionRangeDatum:
   _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);
   break;

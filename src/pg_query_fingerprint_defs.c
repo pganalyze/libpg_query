@@ -7874,6 +7874,58 @@ _fingerprintPartitionSpec(FingerprintContext *ctx, const PartitionSpec *node, co
 }
 
 static void
+_fingerprintPartitionBoundSpec(FingerprintContext *ctx, const PartitionBoundSpec *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  _fingerprintString(ctx, "PartitionBoundSpec");
+
+  if (node->is_default) {
+    _fingerprintString(ctx, "is_default");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (node->listdatums != NULL && node->listdatums->length > 0) {
+    FingerprintContext subCtx;
+    _fingerprintInitForTokens(&subCtx);
+    _fingerprintNode(&subCtx, node->listdatums, node, "listdatums", depth + 1);
+    _fingerprintCopyTokens(&subCtx, ctx, "listdatums");
+  }
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->lowerdatums != NULL && node->lowerdatums->length > 0) {
+    FingerprintContext subCtx;
+    _fingerprintInitForTokens(&subCtx);
+    _fingerprintNode(&subCtx, node->lowerdatums, node, "lowerdatums", depth + 1);
+    _fingerprintCopyTokens(&subCtx, ctx, "lowerdatums");
+  }
+  if (node->modulus != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->modulus);
+    _fingerprintString(ctx, "modulus");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->remainder != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->remainder);
+    _fingerprintString(ctx, "remainder");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->strategy != 0) {
+    char buffer[2] = {node->strategy, '\0'};
+    _fingerprintString(ctx, "strategy");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->upperdatums != NULL && node->upperdatums->length > 0) {
+    FingerprintContext subCtx;
+    _fingerprintInitForTokens(&subCtx);
+    _fingerprintNode(&subCtx, node->upperdatums, node, "upperdatums", depth + 1);
+    _fingerprintCopyTokens(&subCtx, ctx, "upperdatums");
+  }
+}
+
+static void
 _fingerprintPartitionRangeDatum(FingerprintContext *ctx, const PartitionRangeDatum *node, const void *parent, const char *field_name, unsigned int depth)
 {
   _fingerprintString(ctx, "PartitionRangeDatum");

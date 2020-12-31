@@ -57,9 +57,9 @@ void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 
 // Postgres version information
-#define PG_VERSION "13beta2"
+#define PG_VERSION "13.1"
 #define PG_MAJORVERSION "13"
-#define PG_VERSION_NUM 130000
+#define PG_VERSION_NUM 130001
 
 // Deprecated APIs below
 
