@@ -75,9 +75,9 @@ class Extractor
           handle_struct(line)
         elsif !@current_enum_def.nil?
           handle_enum(line)
-        elsif line[/^typedef struct ([A-z]+)\s*(\/\*.+)?$/]
-          next if IGNORE_LIST.include?($1)
-          @current_struct_def = { fields: [], comment: @open_comment_text }
+        elsif line[/^(typedef )?struct ([A-z]+)\s*(\/\*.+)?$/]
+          next if IGNORE_LIST.include?($2)
+          @current_struct_def = { name: $2, fields: [], comment: @open_comment_text }
           @open_comment_text = nil
         elsif line[/^typedef enum( [A-z]+)?\s*(\/\*.+)?$/]
           next if IGNORE_LIST.include?($1)
@@ -108,8 +108,9 @@ class Extractor
       @current_struct_def[:fields] << { name: name, c_type: c_type, comment: comment }
 
       @open_comment = line.include?('/*') && !line.include?('*/')
-    elsif line[/^\}\s+([A-z]+);/]
-      @struct_defs[@target_group][$1] = @current_struct_def
+    elsif line[/^\}(\s+([A-z]+))?;/]
+      name = @current_struct_def.delete(:name)
+      @struct_defs[@target_group][name] = @current_struct_def
       @current_struct_def = nil
     elsif line.strip.start_with?('/*')
       @current_struct_def[:fields] << { comment: line }
