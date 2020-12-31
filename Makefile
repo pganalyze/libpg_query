@@ -7,9 +7,9 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 13.1
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/scan_output.pb-c.c
+SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/scan_output.pb-c.c protobuf/parse_tree.pb-c.c
 OBJ_FILES := $(SRC_FILES:.c=.o)
-NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
+NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/pg_query_protobuf_defs.o src/pg_query_protobuf_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
 
 CFLAGS = -g -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
@@ -110,8 +110,13 @@ extract_source: $(PGDIR)
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
-protobuf/scan_output.pb-c.c: protobuf/scan_output.proto
+protobuf/scan_output.pb-c.c protobuf/scan_output.pb-c.h: protobuf/scan_output.proto
 	protoc --c_out=. protobuf/scan_output.proto
+
+protobuf/parse_tree.pb-c.c protobuf/parse_tree.pb-c.h: protobuf/parse_tree.proto
+	protoc --c_out=. protobuf/parse_tree.proto
+
+src/pg_query_protobuf.c: protobuf/parse_tree.pb-c.h
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
@@ -157,6 +162,7 @@ else
 	test/fingerprint
 	test/normalize
 	test/parse
+	test/parse_protobuf
 	test/scan
 	# Output-based tests
 	test/parse_plpgsql
@@ -180,8 +186,11 @@ test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
-test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
+test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
+
+test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
+	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_protobuf.c $(ARLIB)
 
 test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 	$(CC) -I. -o $@ -g test/scan.c $(ARLIB)
