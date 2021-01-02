@@ -7,15 +7,13 @@
         },
         {
           "name": "OVERRIDING_NOT_SET",
-          "comment": null
+          "value": 0
         },
         {
-          "name": "OVERRIDING_USER_VALUE",
-          "comment": null
+          "name": "OVERRIDING_USER_VALUE"
         },
         {
-          "name": "OVERRIDING_SYSTEM_VALUE",
-          "comment": null
+          "name": "OVERRIDING_SYSTEM_VALUE"
         }
       ],
       "comment": "/*-------------------------------------------------------------------------\n *\n * parsenodes.h\n *\t  definitions for parse tree nodes\n *\n * Many of the node types used in parsetrees include a \"location\" field.\n * This is a byte (not character) offset in the original source text, to be\n * used for positioning an error cursor when there is an error related to\n * the node.  Access to the original source text is needed to make use of\n * the location.  At the topmost (statement) level, we also provide a\n * statement length, likewise measured in bytes, for convenience in\n * identifying statement boundaries in multi-statement source strings.\n *\n *\n * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/parsenodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
@@ -54,16 +52,13 @@
           "comment": ""
         },
         {
-          "name": "SORTBY_DEFAULT",
-          "comment": null
+          "name": "SORTBY_DEFAULT"
         },
         {
-          "name": "SORTBY_ASC",
-          "comment": null
+          "name": "SORTBY_ASC"
         },
         {
-          "name": "SORTBY_DESC",
-          "comment": null
+          "name": "SORTBY_DESC"
         },
         {
           "name": "SORTBY_USING",
@@ -78,16 +73,13 @@
           "comment": ""
         },
         {
-          "name": "SORTBY_NULLS_DEFAULT",
-          "comment": null
+          "name": "SORTBY_NULLS_DEFAULT"
         },
         {
-          "name": "SORTBY_NULLS_FIRST",
-          "comment": null
+          "name": "SORTBY_NULLS_FIRST"
         },
         {
-          "name": "SORTBY_NULLS_LAST",
-          "comment": null
+          "name": "SORTBY_NULLS_LAST"
         }
       ],
       "comment": null
@@ -195,39 +187,39 @@
         },
         {
           "name": "CREATE_TABLE_LIKE_COMMENTS",
-          "comment": null
+          "value": 1
         },
         {
           "name": "CREATE_TABLE_LIKE_CONSTRAINTS",
-          "comment": null
+          "value": 2
         },
         {
           "name": "CREATE_TABLE_LIKE_DEFAULTS",
-          "comment": null
+          "value": 4
         },
         {
           "name": "CREATE_TABLE_LIKE_GENERATED",
-          "comment": null
+          "value": 8
         },
         {
           "name": "CREATE_TABLE_LIKE_IDENTITY",
-          "comment": null
+          "value": 16
         },
         {
           "name": "CREATE_TABLE_LIKE_INDEXES",
-          "comment": null
+          "value": 32
         },
         {
           "name": "CREATE_TABLE_LIKE_STATISTICS",
-          "comment": null
+          "value": 64
         },
         {
           "name": "CREATE_TABLE_LIKE_STORAGE",
-          "comment": null
+          "value": 128
         },
         {
           "name": "CREATE_TABLE_LIKE_ALL",
-          "comment": null
+          "value": 2147483647
         }
       ],
       "comment": null
@@ -242,16 +234,13 @@
           "comment": "/* no action given */"
         },
         {
-          "name": "DEFELEM_SET",
-          "comment": null
+          "name": "DEFELEM_SET"
         },
         {
-          "name": "DEFELEM_ADD",
-          "comment": null
+          "name": "DEFELEM_ADD"
         },
         {
-          "name": "DEFELEM_DROP",
-          "comment": null
+          "name": "DEFELEM_DROP"
         }
       ],
       "comment": "/*\n * DefElem - a generic \"name = value\" option definition\n *\n * In some contexts the name can be qualified.  Also, certain SQL commands\n * allow a SET/ADD/DROP action to be attached to option settings, so it's\n * convenient to carry a field for that too.  (Note: currently, it is our\n * practice that the grammar allows namespace and action only in statements\n * where they are relevant; C code can just ignore those fields in other\n * statements.)\n */\n"
@@ -262,16 +251,17 @@
           "comment": ""
         },
         {
-          "name": "PARTITION_RANGE_DATUM_MINVALUE",
-          "comment": null
+          "name": "PARTITION_RANGE_DATUM_MINVALUE"
         },
         {
           "name": "PARTITION_RANGE_DATUM_VALUE",
-          "comment": null
+          "value": 0,
+          "comment": "/* a specific (bounded) value */"
         },
         {
           "name": "PARTITION_RANGE_DATUM_MAXVALUE",
-          "comment": null
+          "value": 1,
+          "comment": "/* greater than any other value */"
         }
       ],
       "comment": "/*\n * PartitionRangeDatum - one of the values in a range partition bound\n *\n * This can be MINVALUE, MAXVALUE or a specific bounded value.\n */\n"
@@ -350,24 +340,19 @@
           "comment": ""
         },
         {
-          "name": "GROUPING_SET_EMPTY",
-          "comment": null
+          "name": "GROUPING_SET_EMPTY"
         },
         {
-          "name": "GROUPING_SET_SIMPLE",
-          "comment": null
+          "name": "GROUPING_SET_SIMPLE"
         },
         {
-          "name": "GROUPING_SET_ROLLUP",
-          "comment": null
+          "name": "GROUPING_SET_ROLLUP"
         },
         {
-          "name": "GROUPING_SET_CUBE",
-          "comment": null
+          "name": "GROUPING_SET_CUBE"
         },
         {
-          "name": "GROUPING_SET_SETS",
-          "comment": null
+          "name": "GROUPING_SET_SETS"
         }
       ],
       "comment": "/*\n * GroupingSet -\n *\t\trepresentation of CUBE, ROLLUP and GROUPING SETS clauses\n *\n * In a Query with grouping sets, the groupClause contains a flat list of\n * SortGroupClause nodes for each distinct expression used.  The actual\n * structure of the GROUP BY clause is given by the groupingSets tree.\n *\n * In the raw parser output, GroupingSet nodes (of all types except SIMPLE\n * which is not used) are potentially mixed in with the expressions in the\n * groupClause of the SelectStmt.  (An expression can't contain a GroupingSet,\n * but a list may mix GroupingSet and expression nodes.)  At this stage, the\n * content of each node is a list of expressions, some of which may be RowExprs\n * which represent sublists rather than actual row constructors, and nested\n * GroupingSet nodes where legal in the grammar.  The structure directly\n * reflects the query syntax.\n *\n * In parse analysis, the transformed expressions are used to build the tlist\n * and groupClause list (of SortGroupClause nodes), and the groupingSets tree\n * is eventually reduced to a fixed format:\n *\n * EMPTY nodes represent (), and obviously have no content\n *\n * SIMPLE nodes represent a list of one or more expressions to be treated as an\n * atom by the enclosing structure; the content is an integer list of\n * ressortgroupref values (see SortGroupClause)\n *\n * CUBE and ROLLUP nodes contain a list of one or more SIMPLE nodes.\n *\n * SETS nodes contain a list of EMPTY, SIMPLE, CUBE or ROLLUP nodes, but after\n * parse analysis they cannot contain more SETS nodes; enough of the syntactic\n * transforms of the spec have been applied that we no longer have arbitrarily\n * deep nesting (though we still preserve the use of cube/rollup).\n *\n * Note that if the groupingSets tree contains no SIMPLE nodes (only EMPTY\n * nodes at the leaves), then the groupClause will be empty, but this is still\n * an aggregation query (similar to using aggs or HAVING without GROUP BY).\n *\n * As an example, the following clause:\n *\n * GROUP BY GROUPING SETS ((a,b), CUBE(c,(d,e)))\n *\n * looks like this after raw parsing:\n *\n * SETS( RowExpr(a,b) , CUBE( c, RowExpr(d,e) ) )\n *\n * and parse analysis converts it to:\n *\n * SETS( SIMPLE(1,2), CUBE( SIMPLE(3), SIMPLE(4,5) ) )\n */\n"
@@ -399,19 +384,16 @@
         },
         {
           "name": "SETOP_NONE",
-          "comment": null
+          "value": 0
         },
         {
-          "name": "SETOP_UNION",
-          "comment": null
+          "name": "SETOP_UNION"
         },
         {
-          "name": "SETOP_INTERSECT",
-          "comment": null
+          "name": "SETOP_INTERSECT"
         },
         {
-          "name": "SETOP_EXCEPT",
-          "comment": null
+          "name": "SETOP_EXCEPT"
         }
       ],
       "comment": "/* ----------------------\n *\t\tSelect Statement\n *\n * A \"simple\" SELECT is represented in the output of gram.y by a single\n * SelectStmt node; so is a VALUES construct.  A query containing set\n * operators (UNION, INTERSECT, EXCEPT) is represented by a tree of SelectStmt\n * nodes, in which the leaf nodes are component SELECTs and the internal nodes\n * represent UNION, INTERSECT, or EXCEPT operators.  Using the same node\n * type for both leaf and internal nodes allows gram.y to stick ORDER BY,\n * LIMIT, etc, clause values into a SELECT statement without worrying\n * whether it is a simple or compound SELECT.\n * ----------------------\n */\n"
@@ -422,204 +404,155 @@
           "comment": ""
         },
         {
-          "name": "OBJECT_ACCESS_METHOD",
-          "comment": null
+          "name": "OBJECT_ACCESS_METHOD"
         },
         {
-          "name": "OBJECT_AGGREGATE",
-          "comment": null
+          "name": "OBJECT_AGGREGATE"
         },
         {
-          "name": "OBJECT_AMOP",
-          "comment": null
+          "name": "OBJECT_AMOP"
         },
         {
-          "name": "OBJECT_AMPROC",
-          "comment": null
+          "name": "OBJECT_AMPROC"
         },
         {
           "name": "OBJECT_ATTRIBUTE",
           "comment": "/* type's attribute, when distinct from column */"
         },
         {
-          "name": "OBJECT_CAST",
-          "comment": null
+          "name": "OBJECT_CAST"
         },
         {
-          "name": "OBJECT_COLUMN",
-          "comment": null
+          "name": "OBJECT_COLUMN"
         },
         {
-          "name": "OBJECT_COLLATION",
-          "comment": null
+          "name": "OBJECT_COLLATION"
         },
         {
-          "name": "OBJECT_CONVERSION",
-          "comment": null
+          "name": "OBJECT_CONVERSION"
         },
         {
-          "name": "OBJECT_DATABASE",
-          "comment": null
+          "name": "OBJECT_DATABASE"
         },
         {
-          "name": "OBJECT_DEFAULT",
-          "comment": null
+          "name": "OBJECT_DEFAULT"
         },
         {
-          "name": "OBJECT_DEFACL",
-          "comment": null
+          "name": "OBJECT_DEFACL"
         },
         {
-          "name": "OBJECT_DOMAIN",
-          "comment": null
+          "name": "OBJECT_DOMAIN"
         },
         {
-          "name": "OBJECT_DOMCONSTRAINT",
-          "comment": null
+          "name": "OBJECT_DOMCONSTRAINT"
         },
         {
-          "name": "OBJECT_EVENT_TRIGGER",
-          "comment": null
+          "name": "OBJECT_EVENT_TRIGGER"
         },
         {
-          "name": "OBJECT_EXTENSION",
-          "comment": null
+          "name": "OBJECT_EXTENSION"
         },
         {
-          "name": "OBJECT_FDW",
-          "comment": null
+          "name": "OBJECT_FDW"
         },
         {
-          "name": "OBJECT_FOREIGN_SERVER",
-          "comment": null
+          "name": "OBJECT_FOREIGN_SERVER"
         },
         {
-          "name": "OBJECT_FOREIGN_TABLE",
-          "comment": null
+          "name": "OBJECT_FOREIGN_TABLE"
         },
         {
-          "name": "OBJECT_FUNCTION",
-          "comment": null
+          "name": "OBJECT_FUNCTION"
         },
         {
-          "name": "OBJECT_INDEX",
-          "comment": null
+          "name": "OBJECT_INDEX"
         },
         {
-          "name": "OBJECT_LANGUAGE",
-          "comment": null
+          "name": "OBJECT_LANGUAGE"
         },
         {
-          "name": "OBJECT_LARGEOBJECT",
-          "comment": null
+          "name": "OBJECT_LARGEOBJECT"
         },
         {
-          "name": "OBJECT_MATVIEW",
-          "comment": null
+          "name": "OBJECT_MATVIEW"
         },
         {
-          "name": "OBJECT_OPCLASS",
-          "comment": null
+          "name": "OBJECT_OPCLASS"
         },
         {
-          "name": "OBJECT_OPERATOR",
-          "comment": null
+          "name": "OBJECT_OPERATOR"
         },
         {
-          "name": "OBJECT_OPFAMILY",
-          "comment": null
+          "name": "OBJECT_OPFAMILY"
         },
         {
-          "name": "OBJECT_POLICY",
-          "comment": null
+          "name": "OBJECT_POLICY"
         },
         {
-          "name": "OBJECT_PROCEDURE",
-          "comment": null
+          "name": "OBJECT_PROCEDURE"
         },
         {
-          "name": "OBJECT_PUBLICATION",
-          "comment": null
+          "name": "OBJECT_PUBLICATION"
         },
         {
-          "name": "OBJECT_PUBLICATION_REL",
-          "comment": null
+          "name": "OBJECT_PUBLICATION_REL"
         },
         {
-          "name": "OBJECT_ROLE",
-          "comment": null
+          "name": "OBJECT_ROLE"
         },
         {
-          "name": "OBJECT_ROUTINE",
-          "comment": null
+          "name": "OBJECT_ROUTINE"
         },
         {
-          "name": "OBJECT_RULE",
-          "comment": null
+          "name": "OBJECT_RULE"
         },
         {
-          "name": "OBJECT_SCHEMA",
-          "comment": null
+          "name": "OBJECT_SCHEMA"
         },
         {
-          "name": "OBJECT_SEQUENCE",
-          "comment": null
+          "name": "OBJECT_SEQUENCE"
         },
         {
-          "name": "OBJECT_SUBSCRIPTION",
-          "comment": null
+          "name": "OBJECT_SUBSCRIPTION"
         },
         {
-          "name": "OBJECT_STATISTIC_EXT",
-          "comment": null
+          "name": "OBJECT_STATISTIC_EXT"
         },
         {
-          "name": "OBJECT_TABCONSTRAINT",
-          "comment": null
+          "name": "OBJECT_TABCONSTRAINT"
         },
         {
-          "name": "OBJECT_TABLE",
-          "comment": null
+          "name": "OBJECT_TABLE"
         },
         {
-          "name": "OBJECT_TABLESPACE",
-          "comment": null
+          "name": "OBJECT_TABLESPACE"
         },
         {
-          "name": "OBJECT_TRANSFORM",
-          "comment": null
+          "name": "OBJECT_TRANSFORM"
         },
         {
-          "name": "OBJECT_TRIGGER",
-          "comment": null
+          "name": "OBJECT_TRIGGER"
         },
         {
-          "name": "OBJECT_TSCONFIGURATION",
-          "comment": null
+          "name": "OBJECT_TSCONFIGURATION"
         },
         {
-          "name": "OBJECT_TSDICTIONARY",
-          "comment": null
+          "name": "OBJECT_TSDICTIONARY"
         },
         {
-          "name": "OBJECT_TSPARSER",
-          "comment": null
+          "name": "OBJECT_TSPARSER"
         },
         {
-          "name": "OBJECT_TSTEMPLATE",
-          "comment": null
+          "name": "OBJECT_TSTEMPLATE"
         },
         {
-          "name": "OBJECT_TYPE",
-          "comment": null
+          "name": "OBJECT_TYPE"
         },
         {
-          "name": "OBJECT_USER_MAPPING",
-          "comment": null
+          "name": "OBJECT_USER_MAPPING"
         },
         {
-          "name": "OBJECT_VIEW",
-          "comment": null
+          "name": "OBJECT_VIEW"
         }
       ],
       "comment": "/*\n * When a command can act on several kinds of objects with only one\n * parse structure required, use these constants to designate the\n * object type.  Note that commands typically don't support all the types.\n */\n"
@@ -978,56 +911,44 @@
           "comment": "/* not standard SQL, but a lot of people\n\t\t\t\t\t\t\t\t * expect it */\n"
         },
         {
-          "name": "CONSTR_NOTNULL",
-          "comment": null
+          "name": "CONSTR_NOTNULL"
         },
         {
-          "name": "CONSTR_DEFAULT",
-          "comment": null
+          "name": "CONSTR_DEFAULT"
         },
         {
-          "name": "CONSTR_IDENTITY",
-          "comment": null
+          "name": "CONSTR_IDENTITY"
         },
         {
-          "name": "CONSTR_GENERATED",
-          "comment": null
+          "name": "CONSTR_GENERATED"
         },
         {
-          "name": "CONSTR_CHECK",
-          "comment": null
+          "name": "CONSTR_CHECK"
         },
         {
-          "name": "CONSTR_PRIMARY",
-          "comment": null
+          "name": "CONSTR_PRIMARY"
         },
         {
-          "name": "CONSTR_UNIQUE",
-          "comment": null
+          "name": "CONSTR_UNIQUE"
         },
         {
-          "name": "CONSTR_EXCLUSION",
-          "comment": null
+          "name": "CONSTR_EXCLUSION"
         },
         {
-          "name": "CONSTR_FOREIGN",
-          "comment": null
+          "name": "CONSTR_FOREIGN"
         },
         {
           "name": "CONSTR_ATTR_DEFERRABLE",
           "comment": "/* attributes for previous constraint node */"
         },
         {
-          "name": "CONSTR_ATTR_NOT_DEFERRABLE",
-          "comment": null
+          "name": "CONSTR_ATTR_NOT_DEFERRABLE"
         },
         {
-          "name": "CONSTR_ATTR_DEFERRED",
-          "comment": null
+          "name": "CONSTR_ATTR_DEFERRED"
         },
         {
-          "name": "CONSTR_ATTR_IMMEDIATE",
-          "comment": null
+          "name": "CONSTR_ATTR_IMMEDIATE"
         }
       ],
       "comment": "/* ----------\n * Definitions for constraints in CreateStmt\n *\n * Note that column defaults are treated as a type of constraint,\n * even though that's a bit odd semantically.\n *\n * For constraints that use expressions (CONSTR_CHECK, CONSTR_DEFAULT)\n * we may have the expression in either \"raw\" form (an untransformed\n * parse tree) or \"cooked\" form (the nodeToString representation of\n * an executable expression tree), depending on how this Constraint\n * node was created (by parsing, or by inheritance from an existing\n * relation).  We should never have both in the same node!\n *\n * FKCONSTR_ACTION_xxx values are stored into pg_constraint.confupdtype\n * and pg_constraint.confdeltype columns; FKCONSTR_MATCH_xxx values are\n * stored into pg_constraint.confmatchtype.  Changing the code values may\n * require an initdb!\n *\n * If skip_validation is true then we skip checking that the existing rows\n * in the table satisfy the constraint, and just install the catalog entries\n * for the constraint.  A new FK constraint is marked as valid iff\n * initially_valid is true.  (Usually skip_validation and initially_valid\n * are inverses, but we can set both true if the table is known empty.)\n *\n * Constraint attributes (DEFERRABLE etc) are initially represented as\n * separate Constraint nodes for simplicity of parsing.  parse_utilcmd.c makes\n * a pass through the constraints list to insert the info into the appropriate\n * Constraint node.\n * ----------\n */\n"
@@ -1058,16 +979,13 @@
           "comment": ""
         },
         {
-          "name": "ROLESTMT_ROLE",
-          "comment": null
+          "name": "ROLESTMT_ROLE"
         },
         {
-          "name": "ROLESTMT_USER",
-          "comment": null
+          "name": "ROLESTMT_USER"
         },
         {
-          "name": "ROLESTMT_GROUP",
-          "comment": null
+          "name": "ROLESTMT_GROUP"
         }
       ],
       "comment": "/* ----------------------\n *\tCreate/Alter/Drop Role Statements\n *\n * Note: these node types are also used for the backwards-compatible\n * Create/Alter/Drop User/Group statements.  In the ALTER and DROP cases\n * there's really no need to distinguish what the original spelling was,\n * but for CREATE we mark the type because the defaults vary.\n * ----------------------\n */\n"
@@ -1081,23 +999,19 @@
           "comment": "\t/* for these, howMany is how many rows to fetch; FETCH_ALL means ALL */\n"
         },
         {
-          "name": "FETCH_FORWARD",
-          "comment": null
+          "name": "FETCH_FORWARD"
         },
         {
-          "name": "FETCH_BACKWARD",
-          "comment": null
+          "name": "FETCH_BACKWARD"
         },
         {
           "comment": "\t/* for these, howMany indicates a position; only one row is fetched */\n"
         },
         {
-          "name": "FETCH_ABSOLUTE",
-          "comment": null
+          "name": "FETCH_ABSOLUTE"
         },
         {
-          "name": "FETCH_RELATIVE",
-          "comment": null
+          "name": "FETCH_RELATIVE"
         }
       ],
       "comment": "/* ----------------------\n *\t\tFetch Statement (also Move)\n * ----------------------\n */\n"
@@ -1111,24 +1025,19 @@
           "comment": "\t/* the assigned enum values appear in pg_proc, don't change 'em! */\n"
         },
         {
-          "name": "FUNC_PARAM_IN",
-          "comment": null
+          "name": "FUNC_PARAM_IN"
         },
         {
-          "name": "FUNC_PARAM_OUT",
-          "comment": null
+          "name": "FUNC_PARAM_OUT"
         },
         {
-          "name": "FUNC_PARAM_INOUT",
-          "comment": null
+          "name": "FUNC_PARAM_INOUT"
         },
         {
-          "name": "FUNC_PARAM_VARIADIC",
-          "comment": null
+          "name": "FUNC_PARAM_VARIADIC"
         },
         {
-          "name": "FUNC_PARAM_TABLE",
-          "comment": null
+          "name": "FUNC_PARAM_TABLE"
         }
       ],
       "comment": null
@@ -1139,44 +1048,35 @@
           "comment": ""
         },
         {
-          "name": "TRANS_STMT_BEGIN",
-          "comment": null
+          "name": "TRANS_STMT_BEGIN"
         },
         {
           "name": "TRANS_STMT_START",
           "comment": "/* semantically identical to BEGIN */"
         },
         {
-          "name": "TRANS_STMT_COMMIT",
-          "comment": null
+          "name": "TRANS_STMT_COMMIT"
         },
         {
-          "name": "TRANS_STMT_ROLLBACK",
-          "comment": null
+          "name": "TRANS_STMT_ROLLBACK"
         },
         {
-          "name": "TRANS_STMT_SAVEPOINT",
-          "comment": null
+          "name": "TRANS_STMT_SAVEPOINT"
         },
         {
-          "name": "TRANS_STMT_RELEASE",
-          "comment": null
+          "name": "TRANS_STMT_RELEASE"
         },
         {
-          "name": "TRANS_STMT_ROLLBACK_TO",
-          "comment": null
+          "name": "TRANS_STMT_ROLLBACK_TO"
         },
         {
-          "name": "TRANS_STMT_PREPARE",
-          "comment": null
+          "name": "TRANS_STMT_PREPARE"
         },
         {
-          "name": "TRANS_STMT_COMMIT_PREPARED",
-          "comment": null
+          "name": "TRANS_STMT_COMMIT_PREPARED"
         },
         {
-          "name": "TRANS_STMT_ROLLBACK_PREPARED",
-          "comment": null
+          "name": "TRANS_STMT_ROLLBACK_PREPARED"
         }
       ],
       "comment": "/* ----------------------\n *\t\t{Begin|Commit|Rollback} Transaction Statement\n * ----------------------\n */\n"
@@ -1187,16 +1087,13 @@
           "comment": ""
         },
         {
-          "name": "NO_CHECK_OPTION",
-          "comment": null
+          "name": "NO_CHECK_OPTION"
         },
         {
-          "name": "LOCAL_CHECK_OPTION",
-          "comment": null
+          "name": "LOCAL_CHECK_OPTION"
         },
         {
-          "name": "CASCADED_CHECK_OPTION",
-          "comment": null
+          "name": "CASCADED_CHECK_OPTION"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate View Statement\n * ----------------------\n */\n"
@@ -1208,11 +1105,13 @@
         },
         {
           "name": "CLUOPT_RECHECK",
-          "comment": null
+          "value": 1,
+          "comment": "/* recheck relation state */"
         },
         {
           "name": "CLUOPT_VERBOSE",
-          "comment": null
+          "value": 2,
+          "comment": "/* print progress info */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCluster Statement (support pbrown's cluster index implementation)\n * ----------------------\n */\n"
@@ -1223,20 +1122,16 @@
           "comment": ""
         },
         {
-          "name": "DISCARD_ALL",
-          "comment": null
+          "name": "DISCARD_ALL"
         },
         {
-          "name": "DISCARD_PLANS",
-          "comment": null
+          "name": "DISCARD_PLANS"
         },
         {
-          "name": "DISCARD_SEQUENCES",
-          "comment": null
+          "name": "DISCARD_SEQUENCES"
         },
         {
-          "name": "DISCARD_TEMP",
-          "comment": null
+          "name": "DISCARD_TEMP"
         }
       ],
       "comment": "/* ----------------------\n * Discard Statement\n * ----------------------\n */\n"
@@ -1275,24 +1170,19 @@
           "comment": ""
         },
         {
-          "name": "ALTER_TSCONFIG_ADD_MAPPING",
-          "comment": null
+          "name": "ALTER_TSCONFIG_ADD_MAPPING"
         },
         {
-          "name": "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN",
-          "comment": null
+          "name": "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN"
         },
         {
-          "name": "ALTER_TSCONFIG_REPLACE_DICT",
-          "comment": null
+          "name": "ALTER_TSCONFIG_REPLACE_DICT"
         },
         {
-          "name": "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN",
-          "comment": null
+          "name": "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN"
         },
         {
-          "name": "ALTER_TSCONFIG_DROP_MAPPING",
-          "comment": null
+          "name": "ALTER_TSCONFIG_DROP_MAPPING"
         }
       ],
       "comment": "/*\n * TS Configuration stmts: DefineStmt, RenameStmt and DropStmt are default\n */\n"
@@ -1303,24 +1193,19 @@
           "comment": ""
         },
         {
-          "name": "ALTER_SUBSCRIPTION_OPTIONS",
-          "comment": null
+          "name": "ALTER_SUBSCRIPTION_OPTIONS"
         },
         {
-          "name": "ALTER_SUBSCRIPTION_CONNECTION",
-          "comment": null
+          "name": "ALTER_SUBSCRIPTION_CONNECTION"
         },
         {
-          "name": "ALTER_SUBSCRIPTION_PUBLICATION",
-          "comment": null
+          "name": "ALTER_SUBSCRIPTION_PUBLICATION"
         },
         {
-          "name": "ALTER_SUBSCRIPTION_REFRESH",
-          "comment": null
+          "name": "ALTER_SUBSCRIPTION_REFRESH"
         },
         {
-          "name": "ALTER_SUBSCRIPTION_ENABLED",
-          "comment": null
+          "name": "ALTER_SUBSCRIPTION_ENABLED"
         }
       ],
       "comment": null
@@ -1357,20 +1242,16 @@
           "comment": ""
         },
         {
-          "name": "PARAM_EXTERN",
-          "comment": null
+          "name": "PARAM_EXTERN"
         },
         {
-          "name": "PARAM_EXEC",
-          "comment": null
+          "name": "PARAM_EXEC"
         },
         {
-          "name": "PARAM_SUBLINK",
-          "comment": null
+          "name": "PARAM_SUBLINK"
         },
         {
-          "name": "PARAM_MULTIEXPR",
-          "comment": null
+          "name": "PARAM_MULTIEXPR"
         }
       ],
       "comment": "/*\n * Param\n *\n *\t\tparamkind specifies the kind of parameter. The possible values\n *\t\tfor this field are:\n *\n *\t\tPARAM_EXTERN:  The parameter value is supplied from outside the plan.\n *\t\t\t\tSuch parameters are numbered from 1 to n.\n *\n *\t\tPARAM_EXEC:  The parameter is an internal executor parameter, used\n *\t\t\t\tfor passing values into and out of sub-queries or from\n *\t\t\t\tnestloop joins to their inner scans.\n *\t\t\t\tFor historical reasons, such parameters are numbered from 0.\n *\t\t\t\tThese numbers are independent of PARAM_EXTERN numbers.\n *\n *\t\tPARAM_SUBLINK:\tThe parameter represents an output column of a SubLink\n *\t\t\t\tnode's sub-select.  The column number is contained in the\n *\t\t\t\t`paramid' field.  (This type of Param is converted to\n *\t\t\t\tPARAM_EXEC during planning.)\n *\n *\t\tPARAM_MULTIEXPR:  Like PARAM_SUBLINK, the parameter represents an\n *\t\t\t\toutput column of a SubLink node's sub-select, but here, the\n *\t\t\t\tSubLink is always a MULTIEXPR SubLink.  The high-order 16 bits\n *\t\t\t\tof the `paramid' field contain the SubLink's subLinkId, and\n *\t\t\t\tthe low-order 16 bits contain the column number.  (This type\n *\t\t\t\tof Param is also converted to PARAM_EXEC during planning.)\n */\n"
@@ -1421,8 +1302,7 @@
           "comment": ""
         },
         {
-          "name": "AND_EXPR",
-          "comment": null
+          "name": "AND_EXPR"
         },
         {
           "name": "OR_EXPR"
@@ -1436,32 +1316,25 @@
           "comment": ""
         },
         {
-          "name": "EXISTS_SUBLINK",
-          "comment": null
+          "name": "EXISTS_SUBLINK"
         },
         {
-          "name": "ALL_SUBLINK",
-          "comment": null
+          "name": "ALL_SUBLINK"
         },
         {
-          "name": "ANY_SUBLINK",
-          "comment": null
+          "name": "ANY_SUBLINK"
         },
         {
-          "name": "ROWCOMPARE_SUBLINK",
-          "comment": null
+          "name": "ROWCOMPARE_SUBLINK"
         },
         {
-          "name": "EXPR_SUBLINK",
-          "comment": null
+          "name": "EXPR_SUBLINK"
         },
         {
-          "name": "MULTIEXPR_SUBLINK",
-          "comment": null
+          "name": "MULTIEXPR_SUBLINK"
         },
         {
-          "name": "ARRAY_SUBLINK",
-          "comment": null
+          "name": "ARRAY_SUBLINK"
         },
         {
           "name": "CTE_SUBLINK",
@@ -1480,27 +1353,33 @@
         },
         {
           "name": "ROWCOMPARE_LT",
-          "comment": null
+          "value": 1,
+          "comment": "/* BTLessStrategyNumber */"
         },
         {
           "name": "ROWCOMPARE_LE",
-          "comment": null
+          "value": 2,
+          "comment": "/* BTLessEqualStrategyNumber */"
         },
         {
           "name": "ROWCOMPARE_EQ",
-          "comment": null
+          "value": 3,
+          "comment": "/* BTEqualStrategyNumber */"
         },
         {
           "name": "ROWCOMPARE_GE",
-          "comment": null
+          "value": 4,
+          "comment": "/* BTGreaterEqualStrategyNumber */"
         },
         {
           "name": "ROWCOMPARE_GT",
-          "comment": null
+          "value": 5,
+          "comment": "/* BTGreaterStrategyNumber */"
         },
         {
           "name": "ROWCOMPARE_NE",
-          "comment": null
+          "value": 6,
+          "comment": "/* no such btree strategy */"
         }
       ],
       "comment": "/*\n * RowCompareExpr - row-wise comparison, such as (a, b) <= (1, 2)\n *\n * We support row comparison for any operator that can be determined to\n * act like =, <>, <, <=, >, or >= (we determine this by looking for the\n * operator in btree opfamilies).  Note that the same operator name might\n * map to a different operator for each pair of row elements, since the\n * element datatypes can vary.\n *\n * A RowCompareExpr node is only generated for the < <= > >= cases;\n * the = and <> cases are translated to simple AND or OR combinations\n * of the pairwise comparisons.  However, we include = and <> in the\n * RowCompareType enum for the convenience of parser logic.\n */\n"
@@ -1511,12 +1390,10 @@
           "comment": ""
         },
         {
-          "name": "IS_GREATEST",
-          "comment": null
+          "name": "IS_GREATEST"
         },
         {
-          "name": "IS_LEAST",
-          "comment": null
+          "name": "IS_LEAST"
         }
       ],
       "comment": "/*\n * MinMaxExpr - a GREATEST or LEAST function\n */\n"
@@ -1527,64 +1404,49 @@
           "comment": ""
         },
         {
-          "name": "SVFOP_CURRENT_DATE",
-          "comment": null
+          "name": "SVFOP_CURRENT_DATE"
         },
         {
-          "name": "SVFOP_CURRENT_TIME",
-          "comment": null
+          "name": "SVFOP_CURRENT_TIME"
         },
         {
-          "name": "SVFOP_CURRENT_TIME_N",
-          "comment": null
+          "name": "SVFOP_CURRENT_TIME_N"
         },
         {
-          "name": "SVFOP_CURRENT_TIMESTAMP",
-          "comment": null
+          "name": "SVFOP_CURRENT_TIMESTAMP"
         },
         {
-          "name": "SVFOP_CURRENT_TIMESTAMP_N",
-          "comment": null
+          "name": "SVFOP_CURRENT_TIMESTAMP_N"
         },
         {
-          "name": "SVFOP_LOCALTIME",
-          "comment": null
+          "name": "SVFOP_LOCALTIME"
         },
         {
-          "name": "SVFOP_LOCALTIME_N",
-          "comment": null
+          "name": "SVFOP_LOCALTIME_N"
         },
         {
-          "name": "SVFOP_LOCALTIMESTAMP",
-          "comment": null
+          "name": "SVFOP_LOCALTIMESTAMP"
         },
         {
-          "name": "SVFOP_LOCALTIMESTAMP_N",
-          "comment": null
+          "name": "SVFOP_LOCALTIMESTAMP_N"
         },
         {
-          "name": "SVFOP_CURRENT_ROLE",
-          "comment": null
+          "name": "SVFOP_CURRENT_ROLE"
         },
         {
-          "name": "SVFOP_CURRENT_USER",
-          "comment": null
+          "name": "SVFOP_CURRENT_USER"
         },
         {
-          "name": "SVFOP_USER",
-          "comment": null
+          "name": "SVFOP_USER"
         },
         {
-          "name": "SVFOP_SESSION_USER",
-          "comment": null
+          "name": "SVFOP_SESSION_USER"
         },
         {
-          "name": "SVFOP_CURRENT_CATALOG",
-          "comment": null
+          "name": "SVFOP_CURRENT_CATALOG"
         },
         {
-          "name": "SVFOP_CURRENT_SCHEMA",
-          "comment": null
+          "name": "SVFOP_CURRENT_SCHEMA"
         }
       ],
       "comment": "/*\n * SQLValueFunction - parameterless functions with special grammar productions\n *\n * The SQL standard categorizes some of these as <datetime value function>\n * and others as <general value specification>.  We call 'em SQLValueFunctions\n * for lack of a better term.  We store type and typmod of the result so that\n * some code doesn't need to know each function individually, and because\n * we would need to store typmod anyway for some of the datetime functions.\n * Note that currently, all variants return non-collating datatypes, so we do\n * not need a collation field; also, all these functions are stable.\n */\n"
@@ -1635,12 +1497,10 @@
           "comment": ""
         },
         {
-          "name": "XMLOPTION_DOCUMENT",
-          "comment": null
+          "name": "XMLOPTION_DOCUMENT"
         },
         {
-          "name": "XMLOPTION_CONTENT",
-          "comment": null
+          "name": "XMLOPTION_CONTENT"
         }
       ],
       "comment": null
@@ -1651,8 +1511,7 @@
           "comment": ""
         },
         {
-          "name": "IS_NULL",
-          "comment": null
+          "name": "IS_NULL"
         },
         {
           "name": "IS_NOT_NULL"
@@ -1666,8 +1525,7 @@
           "comment": ""
         },
         {
-          "name": "IS_TRUE",
-          "comment": null
+          "name": "IS_TRUE"
         },
         {
           "name": "IS_NOT_TRUE"
@@ -1714,22 +1572,19 @@
           "comment": "\t/* Wait for the lock to become available (default behavior) */\n"
         },
         {
-          "name": "LockWaitBlock",
-          "comment": null
+          "name": "LockWaitBlock"
         },
         {
           "comment": "\t/* Skip rows that can't be locked (SKIP LOCKED) */\n"
         },
         {
-          "name": "LockWaitSkip",
-          "comment": null
+          "name": "LockWaitSkip"
         },
         {
           "comment": "\t/* Raise an error if a row cannot be locked (NOWAIT) */\n"
         },
         {
-          "name": "LockWaitError",
-          "comment": null
+          "name": "LockWaitError"
         }
       ],
       "comment": "/*\n * This enum controls how to deal with rows being locked by FOR UPDATE/SHARE\n * clauses (i.e., it represents the NOWAIT and SKIP LOCKED options).\n * The ordering here is important, because the highest numerical value takes\n * precedence when a RTE is specified multiple ways.  See applyLockingClause.\n */\n"
@@ -1743,29 +1598,25 @@
           "comment": "\t/* SELECT FOR KEY SHARE */\n"
         },
         {
-          "name": "LockTupleKeyShare",
-          "comment": null
+          "name": "LockTupleKeyShare"
         },
         {
           "comment": "\t/* SELECT FOR SHARE */\n"
         },
         {
-          "name": "LockTupleShare",
-          "comment": null
+          "name": "LockTupleShare"
         },
         {
           "comment": "\t/* SELECT FOR NO KEY UPDATE, and UPDATEs that don't modify key columns */\n"
         },
         {
-          "name": "LockTupleNoKeyExclusive",
-          "comment": null
+          "name": "LockTupleNoKeyExclusive"
         },
         {
           "comment": "\t/* SELECT FOR UPDATE, UPDATEs that modify key columns, and DELETE */\n"
         },
         {
-          "name": "LockTupleExclusive",
-          "comment": null
+          "name": "LockTupleExclusive"
         }
       ],
       "comment": "/*\n * Possible lock modes for a tuple.\n */\n"
@@ -1779,7 +1630,7 @@
         },
         {
           "name": "T_Invalid",
-          "comment": null
+          "value": 0
         },
         {
           "comment": ""
@@ -1788,36 +1639,28 @@
           "comment": "\t/*\n\t * TAGS FOR EXECUTOR NODES (execnodes.h)\n\t */\n"
         },
         {
-          "name": "T_IndexInfo",
-          "comment": null
+          "name": "T_IndexInfo"
         },
         {
-          "name": "T_ExprContext",
-          "comment": null
+          "name": "T_ExprContext"
         },
         {
-          "name": "T_ProjectionInfo",
-          "comment": null
+          "name": "T_ProjectionInfo"
         },
         {
-          "name": "T_JunkFilter",
-          "comment": null
+          "name": "T_JunkFilter"
         },
         {
-          "name": "T_OnConflictSetState",
-          "comment": null
+          "name": "T_OnConflictSetState"
         },
         {
-          "name": "T_ResultRelInfo",
-          "comment": null
+          "name": "T_ResultRelInfo"
         },
         {
-          "name": "T_EState",
-          "comment": null
+          "name": "T_EState"
         },
         {
-          "name": "T_TupleTableSlot",
-          "comment": null
+          "name": "T_TupleTableSlot"
         },
         {
           "comment": ""
@@ -1826,207 +1669,157 @@
           "comment": "\t/*\n\t * TAGS FOR PLAN NODES (plannodes.h)\n\t */\n"
         },
         {
-          "name": "T_Plan",
-          "comment": null
+          "name": "T_Plan"
         },
         {
-          "name": "T_Result",
-          "comment": null
+          "name": "T_Result"
         },
         {
-          "name": "T_ProjectSet",
-          "comment": null
+          "name": "T_ProjectSet"
         },
         {
-          "name": "T_ModifyTable",
-          "comment": null
+          "name": "T_ModifyTable"
         },
         {
-          "name": "T_Append",
-          "comment": null
+          "name": "T_Append"
         },
         {
-          "name": "T_MergeAppend",
-          "comment": null
+          "name": "T_MergeAppend"
         },
         {
-          "name": "T_RecursiveUnion",
-          "comment": null
+          "name": "T_RecursiveUnion"
         },
         {
-          "name": "T_BitmapAnd",
-          "comment": null
+          "name": "T_BitmapAnd"
         },
         {
-          "name": "T_BitmapOr",
-          "comment": null
+          "name": "T_BitmapOr"
         },
         {
-          "name": "T_Scan",
-          "comment": null
+          "name": "T_Scan"
         },
         {
-          "name": "T_SeqScan",
-          "comment": null
+          "name": "T_SeqScan"
         },
         {
-          "name": "T_SampleScan",
-          "comment": null
+          "name": "T_SampleScan"
         },
         {
-          "name": "T_IndexScan",
-          "comment": null
+          "name": "T_IndexScan"
         },
         {
-          "name": "T_IndexOnlyScan",
-          "comment": null
+          "name": "T_IndexOnlyScan"
         },
         {
-          "name": "T_BitmapIndexScan",
-          "comment": null
+          "name": "T_BitmapIndexScan"
         },
         {
-          "name": "T_BitmapHeapScan",
-          "comment": null
+          "name": "T_BitmapHeapScan"
         },
         {
-          "name": "T_TidScan",
-          "comment": null
+          "name": "T_TidScan"
         },
         {
-          "name": "T_SubqueryScan",
-          "comment": null
+          "name": "T_SubqueryScan"
         },
         {
-          "name": "T_FunctionScan",
-          "comment": null
+          "name": "T_FunctionScan"
         },
         {
-          "name": "T_ValuesScan",
-          "comment": null
+          "name": "T_ValuesScan"
         },
         {
-          "name": "T_TableFuncScan",
-          "comment": null
+          "name": "T_TableFuncScan"
         },
         {
-          "name": "T_CteScan",
-          "comment": null
+          "name": "T_CteScan"
         },
         {
-          "name": "T_NamedTuplestoreScan",
-          "comment": null
+          "name": "T_NamedTuplestoreScan"
         },
         {
-          "name": "T_WorkTableScan",
-          "comment": null
+          "name": "T_WorkTableScan"
         },
         {
-          "name": "T_ForeignScan",
-          "comment": null
+          "name": "T_ForeignScan"
         },
         {
-          "name": "T_CustomScan",
-          "comment": null
+          "name": "T_CustomScan"
         },
         {
-          "name": "T_Join",
-          "comment": null
+          "name": "T_Join"
         },
         {
-          "name": "T_NestLoop",
-          "comment": null
+          "name": "T_NestLoop"
         },
         {
-          "name": "T_MergeJoin",
-          "comment": null
+          "name": "T_MergeJoin"
         },
         {
-          "name": "T_HashJoin",
-          "comment": null
+          "name": "T_HashJoin"
         },
         {
-          "name": "T_Material",
-          "comment": null
+          "name": "T_Material"
         },
         {
-          "name": "T_Sort",
-          "comment": null
+          "name": "T_Sort"
         },
         {
-          "name": "T_IncrementalSort",
-          "comment": null
+          "name": "T_IncrementalSort"
         },
         {
-          "name": "T_Group",
-          "comment": null
+          "name": "T_Group"
         },
         {
-          "name": "T_Agg",
-          "comment": null
+          "name": "T_Agg"
         },
         {
-          "name": "T_WindowAgg",
-          "comment": null
+          "name": "T_WindowAgg"
         },
         {
-          "name": "T_Unique",
-          "comment": null
+          "name": "T_Unique"
         },
         {
-          "name": "T_Gather",
-          "comment": null
+          "name": "T_Gather"
         },
         {
-          "name": "T_GatherMerge",
-          "comment": null
+          "name": "T_GatherMerge"
         },
         {
-          "name": "T_Hash",
-          "comment": null
+          "name": "T_Hash"
         },
         {
-          "name": "T_SetOp",
-          "comment": null
+          "name": "T_SetOp"
         },
         {
-          "name": "T_LockRows",
-          "comment": null
+          "name": "T_LockRows"
         },
         {
-          "name": "T_Limit",
-          "comment": null
+          "name": "T_Limit"
         },
         {
           "comment": "\t/* these aren't subclasses of Plan: */\n"
         },
         {
-          "name": "T_NestLoopParam",
-          "comment": null
+          "name": "T_NestLoopParam"
         },
         {
-          "name": "T_PlanRowMark",
-          "comment": null
+          "name": "T_PlanRowMark"
         },
         {
-          "name": "T_PartitionPruneInfo",
-          "comment": null
+          "name": "T_PartitionPruneInfo"
         },
         {
-          "name": "T_PartitionedRelPruneInfo",
-          "comment": null
+          "name": "T_PartitionedRelPruneInfo"
         },
         {
-          "name": "T_PartitionPruneStepOp",
-          "comment": null
+          "name": "T_PartitionPruneStepOp"
         },
         {
-          "name": "T_PartitionPruneStepCombine",
-          "comment": null
+          "name": "T_PartitionPruneStepCombine"
         },
         {
-          "name": "T_PlanInvalItem",
-          "comment": null
+          "name": "T_PlanInvalItem"
         },
         {
           "comment": ""
@@ -2035,176 +1828,133 @@
           "comment": "\t/*\n\t * TAGS FOR PLAN STATE NODES (execnodes.h)\n\t *\n\t * These should correspond one-to-one with Plan node types.\n\t */\n"
         },
         {
-          "name": "T_PlanState",
-          "comment": null
+          "name": "T_PlanState"
         },
         {
-          "name": "T_ResultState",
-          "comment": null
+          "name": "T_ResultState"
         },
         {
-          "name": "T_ProjectSetState",
-          "comment": null
+          "name": "T_ProjectSetState"
         },
         {
-          "name": "T_ModifyTableState",
-          "comment": null
+          "name": "T_ModifyTableState"
         },
         {
-          "name": "T_AppendState",
-          "comment": null
+          "name": "T_AppendState"
         },
         {
-          "name": "T_MergeAppendState",
-          "comment": null
+          "name": "T_MergeAppendState"
         },
         {
-          "name": "T_RecursiveUnionState",
-          "comment": null
+          "name": "T_RecursiveUnionState"
         },
         {
-          "name": "T_BitmapAndState",
-          "comment": null
+          "name": "T_BitmapAndState"
         },
         {
-          "name": "T_BitmapOrState",
-          "comment": null
+          "name": "T_BitmapOrState"
         },
         {
-          "name": "T_ScanState",
-          "comment": null
+          "name": "T_ScanState"
         },
         {
-          "name": "T_SeqScanState",
-          "comment": null
+          "name": "T_SeqScanState"
         },
         {
-          "name": "T_SampleScanState",
-          "comment": null
+          "name": "T_SampleScanState"
         },
         {
-          "name": "T_IndexScanState",
-          "comment": null
+          "name": "T_IndexScanState"
         },
         {
-          "name": "T_IndexOnlyScanState",
-          "comment": null
+          "name": "T_IndexOnlyScanState"
         },
         {
-          "name": "T_BitmapIndexScanState",
-          "comment": null
+          "name": "T_BitmapIndexScanState"
         },
         {
-          "name": "T_BitmapHeapScanState",
-          "comment": null
+          "name": "T_BitmapHeapScanState"
         },
         {
-          "name": "T_TidScanState",
-          "comment": null
+          "name": "T_TidScanState"
         },
         {
-          "name": "T_SubqueryScanState",
-          "comment": null
+          "name": "T_SubqueryScanState"
         },
         {
-          "name": "T_FunctionScanState",
-          "comment": null
+          "name": "T_FunctionScanState"
         },
         {
-          "name": "T_TableFuncScanState",
-          "comment": null
+          "name": "T_TableFuncScanState"
         },
         {
-          "name": "T_ValuesScanState",
-          "comment": null
+          "name": "T_ValuesScanState"
         },
         {
-          "name": "T_CteScanState",
-          "comment": null
+          "name": "T_CteScanState"
         },
         {
-          "name": "T_NamedTuplestoreScanState",
-          "comment": null
+          "name": "T_NamedTuplestoreScanState"
         },
         {
-          "name": "T_WorkTableScanState",
-          "comment": null
+          "name": "T_WorkTableScanState"
         },
         {
-          "name": "T_ForeignScanState",
-          "comment": null
+          "name": "T_ForeignScanState"
         },
         {
-          "name": "T_CustomScanState",
-          "comment": null
+          "name": "T_CustomScanState"
         },
         {
-          "name": "T_JoinState",
-          "comment": null
+          "name": "T_JoinState"
         },
         {
-          "name": "T_NestLoopState",
-          "comment": null
+          "name": "T_NestLoopState"
         },
         {
-          "name": "T_MergeJoinState",
-          "comment": null
+          "name": "T_MergeJoinState"
         },
         {
-          "name": "T_HashJoinState",
-          "comment": null
+          "name": "T_HashJoinState"
         },
         {
-          "name": "T_MaterialState",
-          "comment": null
+          "name": "T_MaterialState"
         },
         {
-          "name": "T_SortState",
-          "comment": null
+          "name": "T_SortState"
         },
         {
-          "name": "T_IncrementalSortState",
-          "comment": null
+          "name": "T_IncrementalSortState"
         },
         {
-          "name": "T_GroupState",
-          "comment": null
+          "name": "T_GroupState"
         },
         {
-          "name": "T_AggState",
-          "comment": null
+          "name": "T_AggState"
         },
         {
-          "name": "T_WindowAggState",
-          "comment": null
+          "name": "T_WindowAggState"
         },
         {
-          "name": "T_UniqueState",
-          "comment": null
+          "name": "T_UniqueState"
         },
         {
-          "name": "T_GatherState",
-          "comment": null
+          "name": "T_GatherState"
         },
         {
-          "name": "T_GatherMergeState",
-          "comment": null
+          "name": "T_GatherMergeState"
         },
         {
-          "name": "T_HashState",
-          "comment": null
+          "name": "T_HashState"
         },
         {
-          "name": "T_SetOpState",
-          "comment": null
+          "name": "T_SetOpState"
         },
         {
-          "name": "T_LockRowsState",
-          "comment": null
+          "name": "T_LockRowsState"
         },
         {
-          "name": "T_LimitState",
-          "comment": null
+          "name": "T_LimitState"
         },
         {
           "comment": ""
@@ -2213,212 +1963,160 @@
           "comment": "\t/*\n\t * TAGS FOR PRIMITIVE NODES (primnodes.h)\n\t */\n"
         },
         {
-          "name": "T_Alias",
-          "comment": null
+          "name": "T_Alias"
         },
         {
-          "name": "T_RangeVar",
-          "comment": null
+          "name": "T_RangeVar"
         },
         {
-          "name": "T_TableFunc",
-          "comment": null
+          "name": "T_TableFunc"
         },
         {
-          "name": "T_Expr",
-          "comment": null
+          "name": "T_Expr"
         },
         {
-          "name": "T_Var",
-          "comment": null
+          "name": "T_Var"
         },
         {
-          "name": "T_Const",
-          "comment": null
+          "name": "T_Const"
         },
         {
-          "name": "T_Param",
-          "comment": null
+          "name": "T_Param"
         },
         {
-          "name": "T_Aggref",
-          "comment": null
+          "name": "T_Aggref"
         },
         {
-          "name": "T_GroupingFunc",
-          "comment": null
+          "name": "T_GroupingFunc"
         },
         {
-          "name": "T_WindowFunc",
-          "comment": null
+          "name": "T_WindowFunc"
         },
         {
-          "name": "T_SubscriptingRef",
-          "comment": null
+          "name": "T_SubscriptingRef"
         },
         {
-          "name": "T_FuncExpr",
-          "comment": null
+          "name": "T_FuncExpr"
         },
         {
-          "name": "T_NamedArgExpr",
-          "comment": null
+          "name": "T_NamedArgExpr"
         },
         {
-          "name": "T_OpExpr",
-          "comment": null
+          "name": "T_OpExpr"
         },
         {
-          "name": "T_DistinctExpr",
-          "comment": null
+          "name": "T_DistinctExpr"
         },
         {
-          "name": "T_NullIfExpr",
-          "comment": null
+          "name": "T_NullIfExpr"
         },
         {
-          "name": "T_ScalarArrayOpExpr",
-          "comment": null
+          "name": "T_ScalarArrayOpExpr"
         },
         {
-          "name": "T_BoolExpr",
-          "comment": null
+          "name": "T_BoolExpr"
         },
         {
-          "name": "T_SubLink",
-          "comment": null
+          "name": "T_SubLink"
         },
         {
-          "name": "T_SubPlan",
-          "comment": null
+          "name": "T_SubPlan"
         },
         {
-          "name": "T_AlternativeSubPlan",
-          "comment": null
+          "name": "T_AlternativeSubPlan"
         },
         {
-          "name": "T_FieldSelect",
-          "comment": null
+          "name": "T_FieldSelect"
         },
         {
-          "name": "T_FieldStore",
-          "comment": null
+          "name": "T_FieldStore"
         },
         {
-          "name": "T_RelabelType",
-          "comment": null
+          "name": "T_RelabelType"
         },
         {
-          "name": "T_CoerceViaIO",
-          "comment": null
+          "name": "T_CoerceViaIO"
         },
         {
-          "name": "T_ArrayCoerceExpr",
-          "comment": null
+          "name": "T_ArrayCoerceExpr"
         },
         {
-          "name": "T_ConvertRowtypeExpr",
-          "comment": null
+          "name": "T_ConvertRowtypeExpr"
         },
         {
-          "name": "T_CollateExpr",
-          "comment": null
+          "name": "T_CollateExpr"
         },
         {
-          "name": "T_CaseExpr",
-          "comment": null
+          "name": "T_CaseExpr"
         },
         {
-          "name": "T_CaseWhen",
-          "comment": null
+          "name": "T_CaseWhen"
         },
         {
-          "name": "T_CaseTestExpr",
-          "comment": null
+          "name": "T_CaseTestExpr"
         },
         {
-          "name": "T_ArrayExpr",
-          "comment": null
+          "name": "T_ArrayExpr"
         },
         {
-          "name": "T_RowExpr",
-          "comment": null
+          "name": "T_RowExpr"
         },
         {
-          "name": "T_RowCompareExpr",
-          "comment": null
+          "name": "T_RowCompareExpr"
         },
         {
-          "name": "T_CoalesceExpr",
-          "comment": null
+          "name": "T_CoalesceExpr"
         },
         {
-          "name": "T_MinMaxExpr",
-          "comment": null
+          "name": "T_MinMaxExpr"
         },
         {
-          "name": "T_SQLValueFunction",
-          "comment": null
+          "name": "T_SQLValueFunction"
         },
         {
-          "name": "T_XmlExpr",
-          "comment": null
+          "name": "T_XmlExpr"
         },
         {
-          "name": "T_NullTest",
-          "comment": null
+          "name": "T_NullTest"
         },
         {
-          "name": "T_BooleanTest",
-          "comment": null
+          "name": "T_BooleanTest"
         },
         {
-          "name": "T_CoerceToDomain",
-          "comment": null
+          "name": "T_CoerceToDomain"
         },
         {
-          "name": "T_CoerceToDomainValue",
-          "comment": null
+          "name": "T_CoerceToDomainValue"
         },
         {
-          "name": "T_SetToDefault",
-          "comment": null
+          "name": "T_SetToDefault"
         },
         {
-          "name": "T_CurrentOfExpr",
-          "comment": null
+          "name": "T_CurrentOfExpr"
         },
         {
-          "name": "T_NextValueExpr",
-          "comment": null
+          "name": "T_NextValueExpr"
         },
         {
-          "name": "T_InferenceElem",
-          "comment": null
+          "name": "T_InferenceElem"
         },
         {
-          "name": "T_TargetEntry",
-          "comment": null
+          "name": "T_TargetEntry"
         },
         {
-          "name": "T_RangeTblRef",
-          "comment": null
+          "name": "T_RangeTblRef"
         },
         {
-          "name": "T_JoinExpr",
-          "comment": null
+          "name": "T_JoinExpr"
         },
         {
-          "name": "T_FromExpr",
-          "comment": null
+          "name": "T_FromExpr"
         },
         {
-          "name": "T_OnConflictExpr",
-          "comment": null
+          "name": "T_OnConflictExpr"
         },
         {
-          "name": "T_IntoClause",
-          "comment": null
+          "name": "T_IntoClause"
         },
         {
           "comment": ""
@@ -2427,32 +2125,25 @@
           "comment": "\t/*\n\t * TAGS FOR EXPRESSION STATE NODES (execnodes.h)\n\t *\n\t * ExprState represents the evaluation state for a whole expression tree.\n\t * Most Expr-based plan nodes do not have a corresponding expression state\n\t * node, they're fully handled within execExpr* - but sometimes the state\n\t * needs to be shared with other parts of the executor, as for example\n\t * with AggrefExprState, which nodeAgg.c has to modify.\n\t */\n"
         },
         {
-          "name": "T_ExprState",
-          "comment": null
+          "name": "T_ExprState"
         },
         {
-          "name": "T_AggrefExprState",
-          "comment": null
+          "name": "T_AggrefExprState"
         },
         {
-          "name": "T_WindowFuncExprState",
-          "comment": null
+          "name": "T_WindowFuncExprState"
         },
         {
-          "name": "T_SetExprState",
-          "comment": null
+          "name": "T_SetExprState"
         },
         {
-          "name": "T_SubPlanState",
-          "comment": null
+          "name": "T_SubPlanState"
         },
         {
-          "name": "T_AlternativeSubPlanState",
-          "comment": null
+          "name": "T_AlternativeSubPlanState"
         },
         {
-          "name": "T_DomainConstraintState",
-          "comment": null
+          "name": "T_DomainConstraintState"
         },
         {
           "comment": ""
@@ -2461,227 +2152,172 @@
           "comment": "\t/*\n\t * TAGS FOR PLANNER NODES (pathnodes.h)\n\t */\n"
         },
         {
-          "name": "T_PlannerInfo",
-          "comment": null
+          "name": "T_PlannerInfo"
         },
         {
-          "name": "T_PlannerGlobal",
-          "comment": null
+          "name": "T_PlannerGlobal"
         },
         {
-          "name": "T_RelOptInfo",
-          "comment": null
+          "name": "T_RelOptInfo"
         },
         {
-          "name": "T_IndexOptInfo",
-          "comment": null
+          "name": "T_IndexOptInfo"
         },
         {
-          "name": "T_ForeignKeyOptInfo",
-          "comment": null
+          "name": "T_ForeignKeyOptInfo"
         },
         {
-          "name": "T_ParamPathInfo",
-          "comment": null
+          "name": "T_ParamPathInfo"
         },
         {
-          "name": "T_Path",
-          "comment": null
+          "name": "T_Path"
         },
         {
-          "name": "T_IndexPath",
-          "comment": null
+          "name": "T_IndexPath"
         },
         {
-          "name": "T_BitmapHeapPath",
-          "comment": null
+          "name": "T_BitmapHeapPath"
         },
         {
-          "name": "T_BitmapAndPath",
-          "comment": null
+          "name": "T_BitmapAndPath"
         },
         {
-          "name": "T_BitmapOrPath",
-          "comment": null
+          "name": "T_BitmapOrPath"
         },
         {
-          "name": "T_TidPath",
-          "comment": null
+          "name": "T_TidPath"
         },
         {
-          "name": "T_SubqueryScanPath",
-          "comment": null
+          "name": "T_SubqueryScanPath"
         },
         {
-          "name": "T_ForeignPath",
-          "comment": null
+          "name": "T_ForeignPath"
         },
         {
-          "name": "T_CustomPath",
-          "comment": null
+          "name": "T_CustomPath"
         },
         {
-          "name": "T_NestPath",
-          "comment": null
+          "name": "T_NestPath"
         },
         {
-          "name": "T_MergePath",
-          "comment": null
+          "name": "T_MergePath"
         },
         {
-          "name": "T_HashPath",
-          "comment": null
+          "name": "T_HashPath"
         },
         {
-          "name": "T_AppendPath",
-          "comment": null
+          "name": "T_AppendPath"
         },
         {
-          "name": "T_MergeAppendPath",
-          "comment": null
+          "name": "T_MergeAppendPath"
         },
         {
-          "name": "T_GroupResultPath",
-          "comment": null
+          "name": "T_GroupResultPath"
         },
         {
-          "name": "T_MaterialPath",
-          "comment": null
+          "name": "T_MaterialPath"
         },
         {
-          "name": "T_UniquePath",
-          "comment": null
+          "name": "T_UniquePath"
         },
         {
-          "name": "T_GatherPath",
-          "comment": null
+          "name": "T_GatherPath"
         },
         {
-          "name": "T_GatherMergePath",
-          "comment": null
+          "name": "T_GatherMergePath"
         },
         {
-          "name": "T_ProjectionPath",
-          "comment": null
+          "name": "T_ProjectionPath"
         },
         {
-          "name": "T_ProjectSetPath",
-          "comment": null
+          "name": "T_ProjectSetPath"
         },
         {
-          "name": "T_SortPath",
-          "comment": null
+          "name": "T_SortPath"
         },
         {
-          "name": "T_IncrementalSortPath",
-          "comment": null
+          "name": "T_IncrementalSortPath"
         },
         {
-          "name": "T_GroupPath",
-          "comment": null
+          "name": "T_GroupPath"
         },
         {
-          "name": "T_UpperUniquePath",
-          "comment": null
+          "name": "T_UpperUniquePath"
         },
         {
-          "name": "T_AggPath",
-          "comment": null
+          "name": "T_AggPath"
         },
         {
-          "name": "T_GroupingSetsPath",
-          "comment": null
+          "name": "T_GroupingSetsPath"
         },
         {
-          "name": "T_MinMaxAggPath",
-          "comment": null
+          "name": "T_MinMaxAggPath"
         },
         {
-          "name": "T_WindowAggPath",
-          "comment": null
+          "name": "T_WindowAggPath"
         },
         {
-          "name": "T_SetOpPath",
-          "comment": null
+          "name": "T_SetOpPath"
         },
         {
-          "name": "T_RecursiveUnionPath",
-          "comment": null
+          "name": "T_RecursiveUnionPath"
         },
         {
-          "name": "T_LockRowsPath",
-          "comment": null
+          "name": "T_LockRowsPath"
         },
         {
-          "name": "T_ModifyTablePath",
-          "comment": null
+          "name": "T_ModifyTablePath"
         },
         {
-          "name": "T_LimitPath",
-          "comment": null
+          "name": "T_LimitPath"
         },
         {
           "comment": "\t/* these aren't subclasses of Path: */\n"
         },
         {
-          "name": "T_EquivalenceClass",
-          "comment": null
+          "name": "T_EquivalenceClass"
         },
         {
-          "name": "T_EquivalenceMember",
-          "comment": null
+          "name": "T_EquivalenceMember"
         },
         {
-          "name": "T_PathKey",
-          "comment": null
+          "name": "T_PathKey"
         },
         {
-          "name": "T_PathTarget",
-          "comment": null
+          "name": "T_PathTarget"
         },
         {
-          "name": "T_RestrictInfo",
-          "comment": null
+          "name": "T_RestrictInfo"
         },
         {
-          "name": "T_IndexClause",
-          "comment": null
+          "name": "T_IndexClause"
         },
         {
-          "name": "T_PlaceHolderVar",
-          "comment": null
+          "name": "T_PlaceHolderVar"
         },
         {
-          "name": "T_SpecialJoinInfo",
-          "comment": null
+          "name": "T_SpecialJoinInfo"
         },
         {
-          "name": "T_AppendRelInfo",
-          "comment": null
+          "name": "T_AppendRelInfo"
         },
         {
-          "name": "T_PlaceHolderInfo",
-          "comment": null
+          "name": "T_PlaceHolderInfo"
         },
         {
-          "name": "T_MinMaxAggInfo",
-          "comment": null
+          "name": "T_MinMaxAggInfo"
         },
         {
-          "name": "T_PlannerParamItem",
-          "comment": null
+          "name": "T_PlannerParamItem"
         },
         {
-          "name": "T_RollupData",
-          "comment": null
+          "name": "T_RollupData"
         },
         {
-          "name": "T_GroupingSetData",
-          "comment": null
+          "name": "T_GroupingSetData"
         },
         {
-          "name": "T_StatisticExtInfo",
-          "comment": null
+          "name": "T_StatisticExtInfo"
         },
         {
           "comment": ""
@@ -2690,20 +2326,16 @@
           "comment": "\t/*\n\t * TAGS FOR MEMORY NODES (memnodes.h)\n\t */\n"
         },
         {
-          "name": "T_MemoryContext",
-          "comment": null
+          "name": "T_MemoryContext"
         },
         {
-          "name": "T_AllocSetContext",
-          "comment": null
+          "name": "T_AllocSetContext"
         },
         {
-          "name": "T_SlabContext",
-          "comment": null
+          "name": "T_SlabContext"
         },
         {
-          "name": "T_GenerationContext",
-          "comment": null
+          "name": "T_GenerationContext"
         },
         {
           "comment": ""
@@ -2712,28 +2344,22 @@
           "comment": "\t/*\n\t * TAGS FOR VALUE NODES (value.h)\n\t */\n"
         },
         {
-          "name": "T_Value",
-          "comment": null
+          "name": "T_Value"
         },
         {
-          "name": "T_Integer",
-          "comment": null
+          "name": "T_Integer"
         },
         {
-          "name": "T_Float",
-          "comment": null
+          "name": "T_Float"
         },
         {
-          "name": "T_String",
-          "comment": null
+          "name": "T_String"
         },
         {
-          "name": "T_BitString",
-          "comment": null
+          "name": "T_BitString"
         },
         {
-          "name": "T_Null",
-          "comment": null
+          "name": "T_Null"
         },
         {
           "comment": ""
@@ -2742,16 +2368,13 @@
           "comment": "\t/*\n\t * TAGS FOR LIST NODES (pg_list.h)\n\t */\n"
         },
         {
-          "name": "T_List",
-          "comment": null
+          "name": "T_List"
         },
         {
-          "name": "T_IntList",
-          "comment": null
+          "name": "T_IntList"
         },
         {
-          "name": "T_OidList",
-          "comment": null
+          "name": "T_OidList"
         },
         {
           "comment": ""
@@ -2760,8 +2383,7 @@
           "comment": "\t/*\n\t * TAGS FOR EXTENSIBLE NODES (extensible.h)\n\t */\n"
         },
         {
-          "name": "T_ExtensibleNode",
-          "comment": null
+          "name": "T_ExtensibleNode"
         },
         {
           "comment": ""
@@ -2770,468 +2392,352 @@
           "comment": "\t/*\n\t * TAGS FOR STATEMENT NODES (mostly in parsenodes.h)\n\t */\n"
         },
         {
-          "name": "T_RawStmt",
-          "comment": null
+          "name": "T_RawStmt"
         },
         {
-          "name": "T_Query",
-          "comment": null
+          "name": "T_Query"
         },
         {
-          "name": "T_PlannedStmt",
-          "comment": null
+          "name": "T_PlannedStmt"
         },
         {
-          "name": "T_InsertStmt",
-          "comment": null
+          "name": "T_InsertStmt"
         },
         {
-          "name": "T_DeleteStmt",
-          "comment": null
+          "name": "T_DeleteStmt"
         },
         {
-          "name": "T_UpdateStmt",
-          "comment": null
+          "name": "T_UpdateStmt"
         },
         {
-          "name": "T_SelectStmt",
-          "comment": null
+          "name": "T_SelectStmt"
         },
         {
-          "name": "T_AlterTableStmt",
-          "comment": null
+          "name": "T_AlterTableStmt"
         },
         {
-          "name": "T_AlterTableCmd",
-          "comment": null
+          "name": "T_AlterTableCmd"
         },
         {
-          "name": "T_AlterDomainStmt",
-          "comment": null
+          "name": "T_AlterDomainStmt"
         },
         {
-          "name": "T_SetOperationStmt",
-          "comment": null
+          "name": "T_SetOperationStmt"
         },
         {
-          "name": "T_GrantStmt",
-          "comment": null
+          "name": "T_GrantStmt"
         },
         {
-          "name": "T_GrantRoleStmt",
-          "comment": null
+          "name": "T_GrantRoleStmt"
         },
         {
-          "name": "T_AlterDefaultPrivilegesStmt",
-          "comment": null
+          "name": "T_AlterDefaultPrivilegesStmt"
         },
         {
-          "name": "T_ClosePortalStmt",
-          "comment": null
+          "name": "T_ClosePortalStmt"
         },
         {
-          "name": "T_ClusterStmt",
-          "comment": null
+          "name": "T_ClusterStmt"
         },
         {
-          "name": "T_CopyStmt",
-          "comment": null
+          "name": "T_CopyStmt"
         },
         {
-          "name": "T_CreateStmt",
-          "comment": null
+          "name": "T_CreateStmt"
         },
         {
-          "name": "T_DefineStmt",
-          "comment": null
+          "name": "T_DefineStmt"
         },
         {
-          "name": "T_DropStmt",
-          "comment": null
+          "name": "T_DropStmt"
         },
         {
-          "name": "T_TruncateStmt",
-          "comment": null
+          "name": "T_TruncateStmt"
         },
         {
-          "name": "T_CommentStmt",
-          "comment": null
+          "name": "T_CommentStmt"
         },
         {
-          "name": "T_FetchStmt",
-          "comment": null
+          "name": "T_FetchStmt"
         },
         {
-          "name": "T_IndexStmt",
-          "comment": null
+          "name": "T_IndexStmt"
         },
         {
-          "name": "T_CreateFunctionStmt",
-          "comment": null
+          "name": "T_CreateFunctionStmt"
         },
         {
-          "name": "T_AlterFunctionStmt",
-          "comment": null
+          "name": "T_AlterFunctionStmt"
         },
         {
-          "name": "T_DoStmt",
-          "comment": null
+          "name": "T_DoStmt"
         },
         {
-          "name": "T_RenameStmt",
-          "comment": null
+          "name": "T_RenameStmt"
         },
         {
-          "name": "T_RuleStmt",
-          "comment": null
+          "name": "T_RuleStmt"
         },
         {
-          "name": "T_NotifyStmt",
-          "comment": null
+          "name": "T_NotifyStmt"
         },
         {
-          "name": "T_ListenStmt",
-          "comment": null
+          "name": "T_ListenStmt"
         },
         {
-          "name": "T_UnlistenStmt",
-          "comment": null
+          "name": "T_UnlistenStmt"
         },
         {
-          "name": "T_TransactionStmt",
-          "comment": null
+          "name": "T_TransactionStmt"
         },
         {
-          "name": "T_ViewStmt",
-          "comment": null
+          "name": "T_ViewStmt"
         },
         {
-          "name": "T_LoadStmt",
-          "comment": null
+          "name": "T_LoadStmt"
         },
         {
-          "name": "T_CreateDomainStmt",
-          "comment": null
+          "name": "T_CreateDomainStmt"
         },
         {
-          "name": "T_CreatedbStmt",
-          "comment": null
+          "name": "T_CreatedbStmt"
         },
         {
-          "name": "T_DropdbStmt",
-          "comment": null
+          "name": "T_DropdbStmt"
         },
         {
-          "name": "T_VacuumStmt",
-          "comment": null
+          "name": "T_VacuumStmt"
         },
         {
-          "name": "T_ExplainStmt",
-          "comment": null
+          "name": "T_ExplainStmt"
         },
         {
-          "name": "T_CreateTableAsStmt",
-          "comment": null
+          "name": "T_CreateTableAsStmt"
         },
         {
-          "name": "T_CreateSeqStmt",
-          "comment": null
+          "name": "T_CreateSeqStmt"
         },
         {
-          "name": "T_AlterSeqStmt",
-          "comment": null
+          "name": "T_AlterSeqStmt"
         },
         {
-          "name": "T_VariableSetStmt",
-          "comment": null
+          "name": "T_VariableSetStmt"
         },
         {
-          "name": "T_VariableShowStmt",
-          "comment": null
+          "name": "T_VariableShowStmt"
         },
         {
-          "name": "T_DiscardStmt",
-          "comment": null
+          "name": "T_DiscardStmt"
         },
         {
-          "name": "T_CreateTrigStmt",
-          "comment": null
+          "name": "T_CreateTrigStmt"
         },
         {
-          "name": "T_CreatePLangStmt",
-          "comment": null
+          "name": "T_CreatePLangStmt"
         },
         {
-          "name": "T_CreateRoleStmt",
-          "comment": null
+          "name": "T_CreateRoleStmt"
         },
         {
-          "name": "T_AlterRoleStmt",
-          "comment": null
+          "name": "T_AlterRoleStmt"
         },
         {
-          "name": "T_DropRoleStmt",
-          "comment": null
+          "name": "T_DropRoleStmt"
         },
         {
-          "name": "T_LockStmt",
-          "comment": null
+          "name": "T_LockStmt"
         },
         {
-          "name": "T_ConstraintsSetStmt",
-          "comment": null
+          "name": "T_ConstraintsSetStmt"
         },
         {
-          "name": "T_ReindexStmt",
-          "comment": null
+          "name": "T_ReindexStmt"
         },
         {
-          "name": "T_CheckPointStmt",
-          "comment": null
+          "name": "T_CheckPointStmt"
         },
         {
-          "name": "T_CreateSchemaStmt",
-          "comment": null
+          "name": "T_CreateSchemaStmt"
         },
         {
-          "name": "T_AlterDatabaseStmt",
-          "comment": null
+          "name": "T_AlterDatabaseStmt"
         },
         {
-          "name": "T_AlterDatabaseSetStmt",
-          "comment": null
+          "name": "T_AlterDatabaseSetStmt"
         },
         {
-          "name": "T_AlterRoleSetStmt",
-          "comment": null
+          "name": "T_AlterRoleSetStmt"
         },
         {
-          "name": "T_CreateConversionStmt",
-          "comment": null
+          "name": "T_CreateConversionStmt"
         },
         {
-          "name": "T_CreateCastStmt",
-          "comment": null
+          "name": "T_CreateCastStmt"
         },
         {
-          "name": "T_CreateOpClassStmt",
-          "comment": null
+          "name": "T_CreateOpClassStmt"
         },
         {
-          "name": "T_CreateOpFamilyStmt",
-          "comment": null
+          "name": "T_CreateOpFamilyStmt"
         },
         {
-          "name": "T_AlterOpFamilyStmt",
-          "comment": null
+          "name": "T_AlterOpFamilyStmt"
         },
         {
-          "name": "T_PrepareStmt",
-          "comment": null
+          "name": "T_PrepareStmt"
         },
         {
-          "name": "T_ExecuteStmt",
-          "comment": null
+          "name": "T_ExecuteStmt"
         },
         {
-          "name": "T_DeallocateStmt",
-          "comment": null
+          "name": "T_DeallocateStmt"
         },
         {
-          "name": "T_DeclareCursorStmt",
-          "comment": null
+          "name": "T_DeclareCursorStmt"
         },
         {
-          "name": "T_CreateTableSpaceStmt",
-          "comment": null
+          "name": "T_CreateTableSpaceStmt"
         },
         {
-          "name": "T_DropTableSpaceStmt",
-          "comment": null
+          "name": "T_DropTableSpaceStmt"
         },
         {
-          "name": "T_AlterObjectDependsStmt",
-          "comment": null
+          "name": "T_AlterObjectDependsStmt"
         },
         {
-          "name": "T_AlterObjectSchemaStmt",
-          "comment": null
+          "name": "T_AlterObjectSchemaStmt"
         },
         {
-          "name": "T_AlterOwnerStmt",
-          "comment": null
+          "name": "T_AlterOwnerStmt"
         },
         {
-          "name": "T_AlterOperatorStmt",
-          "comment": null
+          "name": "T_AlterOperatorStmt"
         },
         {
-          "name": "T_AlterTypeStmt",
-          "comment": null
+          "name": "T_AlterTypeStmt"
         },
         {
-          "name": "T_DropOwnedStmt",
-          "comment": null
+          "name": "T_DropOwnedStmt"
         },
         {
-          "name": "T_ReassignOwnedStmt",
-          "comment": null
+          "name": "T_ReassignOwnedStmt"
         },
         {
-          "name": "T_CompositeTypeStmt",
-          "comment": null
+          "name": "T_CompositeTypeStmt"
         },
         {
-          "name": "T_CreateEnumStmt",
-          "comment": null
+          "name": "T_CreateEnumStmt"
         },
         {
-          "name": "T_CreateRangeStmt",
-          "comment": null
+          "name": "T_CreateRangeStmt"
         },
         {
-          "name": "T_AlterEnumStmt",
-          "comment": null
+          "name": "T_AlterEnumStmt"
         },
         {
-          "name": "T_AlterTSDictionaryStmt",
-          "comment": null
+          "name": "T_AlterTSDictionaryStmt"
         },
         {
-          "name": "T_AlterTSConfigurationStmt",
-          "comment": null
+          "name": "T_AlterTSConfigurationStmt"
         },
         {
-          "name": "T_CreateFdwStmt",
-          "comment": null
+          "name": "T_CreateFdwStmt"
         },
         {
-          "name": "T_AlterFdwStmt",
-          "comment": null
+          "name": "T_AlterFdwStmt"
         },
         {
-          "name": "T_CreateForeignServerStmt",
-          "comment": null
+          "name": "T_CreateForeignServerStmt"
         },
         {
-          "name": "T_AlterForeignServerStmt",
-          "comment": null
+          "name": "T_AlterForeignServerStmt"
         },
         {
-          "name": "T_CreateUserMappingStmt",
-          "comment": null
+          "name": "T_CreateUserMappingStmt"
         },
         {
-          "name": "T_AlterUserMappingStmt",
-          "comment": null
+          "name": "T_AlterUserMappingStmt"
         },
         {
-          "name": "T_DropUserMappingStmt",
-          "comment": null
+          "name": "T_DropUserMappingStmt"
         },
         {
-          "name": "T_AlterTableSpaceOptionsStmt",
-          "comment": null
+          "name": "T_AlterTableSpaceOptionsStmt"
         },
         {
-          "name": "T_AlterTableMoveAllStmt",
-          "comment": null
+          "name": "T_AlterTableMoveAllStmt"
         },
         {
-          "name": "T_SecLabelStmt",
-          "comment": null
+          "name": "T_SecLabelStmt"
         },
         {
-          "name": "T_CreateForeignTableStmt",
-          "comment": null
+          "name": "T_CreateForeignTableStmt"
         },
         {
-          "name": "T_ImportForeignSchemaStmt",
-          "comment": null
+          "name": "T_ImportForeignSchemaStmt"
         },
         {
-          "name": "T_CreateExtensionStmt",
-          "comment": null
+          "name": "T_CreateExtensionStmt"
         },
         {
-          "name": "T_AlterExtensionStmt",
-          "comment": null
+          "name": "T_AlterExtensionStmt"
         },
         {
-          "name": "T_AlterExtensionContentsStmt",
-          "comment": null
+          "name": "T_AlterExtensionContentsStmt"
         },
         {
-          "name": "T_CreateEventTrigStmt",
-          "comment": null
+          "name": "T_CreateEventTrigStmt"
         },
         {
-          "name": "T_AlterEventTrigStmt",
-          "comment": null
+          "name": "T_AlterEventTrigStmt"
         },
         {
-          "name": "T_RefreshMatViewStmt",
-          "comment": null
+          "name": "T_RefreshMatViewStmt"
         },
         {
-          "name": "T_ReplicaIdentityStmt",
-          "comment": null
+          "name": "T_ReplicaIdentityStmt"
         },
         {
-          "name": "T_AlterSystemStmt",
-          "comment": null
+          "name": "T_AlterSystemStmt"
         },
         {
-          "name": "T_CreatePolicyStmt",
-          "comment": null
+          "name": "T_CreatePolicyStmt"
         },
         {
-          "name": "T_AlterPolicyStmt",
-          "comment": null
+          "name": "T_AlterPolicyStmt"
         },
         {
-          "name": "T_CreateTransformStmt",
-          "comment": null
+          "name": "T_CreateTransformStmt"
         },
         {
-          "name": "T_CreateAmStmt",
-          "comment": null
+          "name": "T_CreateAmStmt"
         },
         {
-          "name": "T_CreatePublicationStmt",
-          "comment": null
+          "name": "T_CreatePublicationStmt"
         },
         {
-          "name": "T_AlterPublicationStmt",
-          "comment": null
+          "name": "T_AlterPublicationStmt"
         },
         {
-          "name": "T_CreateSubscriptionStmt",
-          "comment": null
+          "name": "T_CreateSubscriptionStmt"
         },
         {
-          "name": "T_AlterSubscriptionStmt",
-          "comment": null
+          "name": "T_AlterSubscriptionStmt"
         },
         {
-          "name": "T_DropSubscriptionStmt",
-          "comment": null
+          "name": "T_DropSubscriptionStmt"
         },
         {
-          "name": "T_CreateStatsStmt",
-          "comment": null
+          "name": "T_CreateStatsStmt"
         },
         {
-          "name": "T_AlterCollationStmt",
-          "comment": null
+          "name": "T_AlterCollationStmt"
         },
         {
-          "name": "T_CallStmt",
-          "comment": null
+          "name": "T_CallStmt"
         },
         {
-          "name": "T_AlterStatsStmt",
-          "comment": null
+          "name": "T_AlterStatsStmt"
         },
         {
           "comment": ""
@@ -3240,212 +2746,160 @@
           "comment": "\t/*\n\t * TAGS FOR PARSE TREE NODES (parsenodes.h)\n\t */\n"
         },
         {
-          "name": "T_A_Expr",
-          "comment": null
+          "name": "T_A_Expr"
         },
         {
-          "name": "T_ColumnRef",
-          "comment": null
+          "name": "T_ColumnRef"
         },
         {
-          "name": "T_ParamRef",
-          "comment": null
+          "name": "T_ParamRef"
         },
         {
-          "name": "T_A_Const",
-          "comment": null
+          "name": "T_A_Const"
         },
         {
-          "name": "T_FuncCall",
-          "comment": null
+          "name": "T_FuncCall"
         },
         {
-          "name": "T_A_Star",
-          "comment": null
+          "name": "T_A_Star"
         },
         {
-          "name": "T_A_Indices",
-          "comment": null
+          "name": "T_A_Indices"
         },
         {
-          "name": "T_A_Indirection",
-          "comment": null
+          "name": "T_A_Indirection"
         },
         {
-          "name": "T_A_ArrayExpr",
-          "comment": null
+          "name": "T_A_ArrayExpr"
         },
         {
-          "name": "T_ResTarget",
-          "comment": null
+          "name": "T_ResTarget"
         },
         {
-          "name": "T_MultiAssignRef",
-          "comment": null
+          "name": "T_MultiAssignRef"
         },
         {
-          "name": "T_TypeCast",
-          "comment": null
+          "name": "T_TypeCast"
         },
         {
-          "name": "T_CollateClause",
-          "comment": null
+          "name": "T_CollateClause"
         },
         {
-          "name": "T_SortBy",
-          "comment": null
+          "name": "T_SortBy"
         },
         {
-          "name": "T_WindowDef",
-          "comment": null
+          "name": "T_WindowDef"
         },
         {
-          "name": "T_RangeSubselect",
-          "comment": null
+          "name": "T_RangeSubselect"
         },
         {
-          "name": "T_RangeFunction",
-          "comment": null
+          "name": "T_RangeFunction"
         },
         {
-          "name": "T_RangeTableSample",
-          "comment": null
+          "name": "T_RangeTableSample"
         },
         {
-          "name": "T_RangeTableFunc",
-          "comment": null
+          "name": "T_RangeTableFunc"
         },
         {
-          "name": "T_RangeTableFuncCol",
-          "comment": null
+          "name": "T_RangeTableFuncCol"
         },
         {
-          "name": "T_TypeName",
-          "comment": null
+          "name": "T_TypeName"
         },
         {
-          "name": "T_ColumnDef",
-          "comment": null
+          "name": "T_ColumnDef"
         },
         {
-          "name": "T_IndexElem",
-          "comment": null
+          "name": "T_IndexElem"
         },
         {
-          "name": "T_Constraint",
-          "comment": null
+          "name": "T_Constraint"
         },
         {
-          "name": "T_DefElem",
-          "comment": null
+          "name": "T_DefElem"
         },
         {
-          "name": "T_RangeTblEntry",
-          "comment": null
+          "name": "T_RangeTblEntry"
         },
         {
-          "name": "T_RangeTblFunction",
-          "comment": null
+          "name": "T_RangeTblFunction"
         },
         {
-          "name": "T_TableSampleClause",
-          "comment": null
+          "name": "T_TableSampleClause"
         },
         {
-          "name": "T_WithCheckOption",
-          "comment": null
+          "name": "T_WithCheckOption"
         },
         {
-          "name": "T_SortGroupClause",
-          "comment": null
+          "name": "T_SortGroupClause"
         },
         {
-          "name": "T_GroupingSet",
-          "comment": null
+          "name": "T_GroupingSet"
         },
         {
-          "name": "T_WindowClause",
-          "comment": null
+          "name": "T_WindowClause"
         },
         {
-          "name": "T_ObjectWithArgs",
-          "comment": null
+          "name": "T_ObjectWithArgs"
         },
         {
-          "name": "T_AccessPriv",
-          "comment": null
+          "name": "T_AccessPriv"
         },
         {
-          "name": "T_CreateOpClassItem",
-          "comment": null
+          "name": "T_CreateOpClassItem"
         },
         {
-          "name": "T_TableLikeClause",
-          "comment": null
+          "name": "T_TableLikeClause"
         },
         {
-          "name": "T_FunctionParameter",
-          "comment": null
+          "name": "T_FunctionParameter"
         },
         {
-          "name": "T_LockingClause",
-          "comment": null
+          "name": "T_LockingClause"
         },
         {
-          "name": "T_RowMarkClause",
-          "comment": null
+          "name": "T_RowMarkClause"
         },
         {
-          "name": "T_XmlSerialize",
-          "comment": null
+          "name": "T_XmlSerialize"
         },
         {
-          "name": "T_WithClause",
-          "comment": null
+          "name": "T_WithClause"
         },
         {
-          "name": "T_InferClause",
-          "comment": null
+          "name": "T_InferClause"
         },
         {
-          "name": "T_OnConflictClause",
-          "comment": null
+          "name": "T_OnConflictClause"
         },
         {
-          "name": "T_CommonTableExpr",
-          "comment": null
+          "name": "T_CommonTableExpr"
         },
         {
-          "name": "T_RoleSpec",
-          "comment": null
+          "name": "T_RoleSpec"
         },
         {
-          "name": "T_TriggerTransition",
-          "comment": null
+          "name": "T_TriggerTransition"
         },
         {
-          "name": "T_PartitionElem",
-          "comment": null
+          "name": "T_PartitionElem"
         },
         {
-          "name": "T_PartitionSpec",
-          "comment": null
+          "name": "T_PartitionSpec"
         },
         {
-          "name": "T_PartitionBoundSpec",
-          "comment": null
+          "name": "T_PartitionBoundSpec"
         },
         {
-          "name": "T_PartitionRangeDatum",
-          "comment": null
+          "name": "T_PartitionRangeDatum"
         },
         {
-          "name": "T_PartitionCmd",
-          "comment": null
+          "name": "T_PartitionCmd"
         },
         {
-          "name": "T_VacuumRelation",
-          "comment": null
+          "name": "T_VacuumRelation"
         },
         {
           "comment": ""
@@ -3454,32 +2908,25 @@
           "comment": "\t/*\n\t * TAGS FOR REPLICATION GRAMMAR PARSE NODES (replnodes.h)\n\t */\n"
         },
         {
-          "name": "T_IdentifySystemCmd",
-          "comment": null
+          "name": "T_IdentifySystemCmd"
         },
         {
-          "name": "T_BaseBackupCmd",
-          "comment": null
+          "name": "T_BaseBackupCmd"
         },
         {
-          "name": "T_CreateReplicationSlotCmd",
-          "comment": null
+          "name": "T_CreateReplicationSlotCmd"
         },
         {
-          "name": "T_DropReplicationSlotCmd",
-          "comment": null
+          "name": "T_DropReplicationSlotCmd"
         },
         {
-          "name": "T_StartReplicationCmd",
-          "comment": null
+          "name": "T_StartReplicationCmd"
         },
         {
-          "name": "T_TimeLineHistoryCmd",
-          "comment": null
+          "name": "T_TimeLineHistoryCmd"
         },
         {
-          "name": "T_SQLCmd",
-          "comment": null
+          "name": "T_SQLCmd"
         },
         {
           "comment": ""
@@ -3564,8 +3011,7 @@
           "comment": ""
         },
         {
-          "name": "CMD_UNKNOWN",
-          "comment": null
+          "name": "CMD_UNKNOWN"
         },
         {
           "name": "CMD_SELECT",
@@ -3580,8 +3026,7 @@
           "comment": "/* insert stmt */"
         },
         {
-          "name": "CMD_DELETE",
-          "comment": null
+          "name": "CMD_DELETE"
         },
         {
           "name": "CMD_UTILITY",
@@ -3689,21 +3134,19 @@
         },
         {
           "name": "AGGSPLIT_SIMPLE",
-          "comment": null
+          "value": 0
         },
         {
           "comment": "\t/* Initial phase of partial aggregation, with serialization: */\n"
         },
         {
-          "name": "AGGSPLIT_INITIAL_SERIAL",
-          "comment": null
+          "name": "AGGSPLIT_INITIAL_SERIAL"
         },
         {
           "comment": "\t/* Final phase of partial aggregation, with deserialization: */\n"
         },
         {
-          "name": "AGGSPLIT_FINAL_DESERIAL",
-          "comment": null
+          "name": "AGGSPLIT_FINAL_DESERIAL"
         }
       ],
       "comment": "/* Supported operating modes (i.e., useful combinations of these options): */\n"
@@ -3714,20 +3157,16 @@
           "comment": ""
         },
         {
-          "name": "SETOPCMD_INTERSECT",
-          "comment": null
+          "name": "SETOPCMD_INTERSECT"
         },
         {
-          "name": "SETOPCMD_INTERSECT_ALL",
-          "comment": null
+          "name": "SETOPCMD_INTERSECT_ALL"
         },
         {
-          "name": "SETOPCMD_EXCEPT",
-          "comment": null
+          "name": "SETOPCMD_EXCEPT"
         },
         {
-          "name": "SETOPCMD_EXCEPT_ALL",
-          "comment": null
+          "name": "SETOPCMD_EXCEPT_ALL"
         }
       ],
       "comment": "/*\n * SetOpCmd and SetOpStrategy -\n *\t  overall semantics and execution strategies for SetOp plan nodes\n *\n * This is needed in both pathnodes.h and plannodes.h, so put it here...\n */\n"
@@ -3803,19 +3242,19 @@
         },
         {
           "name": "VARTAG_INDIRECT",
-          "comment": null
+          "value": 1
         },
         {
           "name": "VARTAG_EXPANDED_RO",
-          "comment": null
+          "value": 2
         },
         {
           "name": "VARTAG_EXPANDED_RW",
-          "comment": null
+          "value": 3
         },
         {
           "name": "VARTAG_ONDISK",
-          "comment": null
+          "value": 18
         }
       ],
       "comment": "/*\n * Type tag for the various sorts of \"TOAST pointer\" datums.  The peculiar\n * value for VARTAG_ONDISK comes from a requirement for on-disk compatibility\n * with a previous notion that the tag field was the pointer datum's length.\n */\n"
@@ -3831,35 +3270,43 @@
         },
         {
           "name": "VACOPT_VACUUM",
-          "comment": null
+          "value": 1,
+          "comment": "/* do VACUUM */"
         },
         {
           "name": "VACOPT_ANALYZE",
-          "comment": null
+          "value": 2,
+          "comment": "/* do ANALYZE */"
         },
         {
           "name": "VACOPT_VERBOSE",
-          "comment": null
+          "value": 4,
+          "comment": "/* print progress info */"
         },
         {
           "name": "VACOPT_FREEZE",
-          "comment": null
+          "value": 8,
+          "comment": "/* FREEZE option */"
         },
         {
           "name": "VACOPT_FULL",
-          "comment": null
+          "value": 16,
+          "comment": "/* FULL (non-concurrent) vacuum */"
         },
         {
           "name": "VACOPT_SKIP_LOCKED",
-          "comment": null
+          "value": 32,
+          "comment": "/* skip if cannot get lock */"
         },
         {
           "name": "VACOPT_SKIPTOAST",
-          "comment": null
+          "value": 64,
+          "comment": "/* don't process the TOAST table, if any */"
         },
         {
           "name": "VACOPT_DISABLE_PAGE_SKIPPING",
-          "comment": null
+          "value": 128,
+          "comment": "/* don't skip any pages */"
         }
       ],
       "comment": null
@@ -3871,15 +3318,13 @@
         },
         {
           "name": "VACOPT_TERNARY_DEFAULT",
-          "comment": null
+          "value": 0
         },
         {
-          "name": "VACOPT_TERNARY_DISABLED",
-          "comment": null
+          "name": "VACOPT_TERNARY_DISABLED"
         },
         {
-          "name": "VACOPT_TERNARY_ENABLED",
-          "comment": null
+          "name": "VACOPT_TERNARY_ENABLED"
         }
       ],
       "comment": "/*\n * A ternary value used by vacuum parameters.\n *\n * DEFAULT value is used to determine the value based on other\n * configurations, e.g. reloptions.\n */\n"
@@ -3894,16 +3339,15 @@
           "comment": ""
         },
         {
-          "name": "BackwardScanDirection",
-          "comment": null
+          "name": "BackwardScanDirection"
         },
         {
           "name": "NoMovementScanDirection",
-          "comment": null
+          "value": 0
         },
         {
           "name": "ForwardScanDirection",
-          "comment": null
+          "value": 1
         }
       ],
       "comment": "/*\n * ScanDirection was an int8 for no apparent reason. I kept the original\n * values because I'm not sure if I'll break anything otherwise.  -ay 2/95\n */\n"
@@ -3917,7 +3361,8 @@
         },
         {
           "name": "PG_SQL_ASCII",
-          "comment": null
+          "value": 0,
+          "comment": "/* SQL/ASCII */"
         },
         {
           "name": "PG_EUC_JP",
@@ -4101,6 +3546,1909 @@
         }
       ],
       "comment": "/*\n * PostgreSQL encoding identifiers\n *\n * WARNING: the order of this enum must be same as order of entries\n *\t\t\tin the pg_enc2name_tbl[] array (in src/common/encnames.c), and\n *\t\t\tin the pg_wchar_table[] array (in src/common/wchar.c)!\n *\n *\t\t\tIf you add some encoding don't forget to check\n *\t\t\tPG_ENCODING_BE_LAST macro.\n *\n * PG_SQL_ASCII is default encoding and must be = 0.\n *\n * XXX\tWe must avoid renumbering any backend encoding until libpq's major\n * version number is increased beyond 5; it turns out that the backend\n * encoding IDs are effectively part of libpq's ABI as far as 8.2 initdb and\n * psql are concerned.\n */\n"
+    }
+  },
+  "../backend/parser/gram": {
+    "yytokentype": {
+      "values": [
+        {
+          "name": "IDENT",
+          "value": 258
+        },
+        {
+          "name": "UIDENT",
+          "value": 259
+        },
+        {
+          "name": "FCONST",
+          "value": 260
+        },
+        {
+          "name": "SCONST",
+          "value": 261
+        },
+        {
+          "name": "USCONST",
+          "value": 262
+        },
+        {
+          "name": "BCONST",
+          "value": 263
+        },
+        {
+          "name": "XCONST",
+          "value": 264
+        },
+        {
+          "name": "Op",
+          "value": 265
+        },
+        {
+          "name": "ICONST",
+          "value": 266
+        },
+        {
+          "name": "PARAM",
+          "value": 267
+        },
+        {
+          "name": "TYPECAST",
+          "value": 268
+        },
+        {
+          "name": "DOT_DOT",
+          "value": 269
+        },
+        {
+          "name": "COLON_EQUALS",
+          "value": 270
+        },
+        {
+          "name": "EQUALS_GREATER",
+          "value": 271
+        },
+        {
+          "name": "LESS_EQUALS",
+          "value": 272
+        },
+        {
+          "name": "GREATER_EQUALS",
+          "value": 273
+        },
+        {
+          "name": "NOT_EQUALS",
+          "value": 274
+        },
+        {
+          "name": "SQL_COMMENT",
+          "value": 275
+        },
+        {
+          "name": "C_COMMENT",
+          "value": 276
+        },
+        {
+          "name": "ABORT_P",
+          "value": 277
+        },
+        {
+          "name": "ABSOLUTE_P",
+          "value": 278
+        },
+        {
+          "name": "ACCESS",
+          "value": 279
+        },
+        {
+          "name": "ACTION",
+          "value": 280
+        },
+        {
+          "name": "ADD_P",
+          "value": 281
+        },
+        {
+          "name": "ADMIN",
+          "value": 282
+        },
+        {
+          "name": "AFTER",
+          "value": 283
+        },
+        {
+          "name": "AGGREGATE",
+          "value": 284
+        },
+        {
+          "name": "ALL",
+          "value": 285
+        },
+        {
+          "name": "ALSO",
+          "value": 286
+        },
+        {
+          "name": "ALTER",
+          "value": 287
+        },
+        {
+          "name": "ALWAYS",
+          "value": 288
+        },
+        {
+          "name": "ANALYSE",
+          "value": 289
+        },
+        {
+          "name": "ANALYZE",
+          "value": 290
+        },
+        {
+          "name": "AND",
+          "value": 291
+        },
+        {
+          "name": "ANY",
+          "value": 292
+        },
+        {
+          "name": "ARRAY",
+          "value": 293
+        },
+        {
+          "name": "AS",
+          "value": 294
+        },
+        {
+          "name": "ASC",
+          "value": 295
+        },
+        {
+          "name": "ASSERTION",
+          "value": 296
+        },
+        {
+          "name": "ASSIGNMENT",
+          "value": 297
+        },
+        {
+          "name": "ASYMMETRIC",
+          "value": 298
+        },
+        {
+          "name": "AT",
+          "value": 299
+        },
+        {
+          "name": "ATTACH",
+          "value": 300
+        },
+        {
+          "name": "ATTRIBUTE",
+          "value": 301
+        },
+        {
+          "name": "AUTHORIZATION",
+          "value": 302
+        },
+        {
+          "name": "BACKWARD",
+          "value": 303
+        },
+        {
+          "name": "BEFORE",
+          "value": 304
+        },
+        {
+          "name": "BEGIN_P",
+          "value": 305
+        },
+        {
+          "name": "BETWEEN",
+          "value": 306
+        },
+        {
+          "name": "BIGINT",
+          "value": 307
+        },
+        {
+          "name": "BINARY",
+          "value": 308
+        },
+        {
+          "name": "BIT",
+          "value": 309
+        },
+        {
+          "name": "BOOLEAN_P",
+          "value": 310
+        },
+        {
+          "name": "BOTH",
+          "value": 311
+        },
+        {
+          "name": "BY",
+          "value": 312
+        },
+        {
+          "name": "CACHE",
+          "value": 313
+        },
+        {
+          "name": "CALL",
+          "value": 314
+        },
+        {
+          "name": "CALLED",
+          "value": 315
+        },
+        {
+          "name": "CASCADE",
+          "value": 316
+        },
+        {
+          "name": "CASCADED",
+          "value": 317
+        },
+        {
+          "name": "CASE",
+          "value": 318
+        },
+        {
+          "name": "CAST",
+          "value": 319
+        },
+        {
+          "name": "CATALOG_P",
+          "value": 320
+        },
+        {
+          "name": "CHAIN",
+          "value": 321
+        },
+        {
+          "name": "CHAR_P",
+          "value": 322
+        },
+        {
+          "name": "CHARACTER",
+          "value": 323
+        },
+        {
+          "name": "CHARACTERISTICS",
+          "value": 324
+        },
+        {
+          "name": "CHECK",
+          "value": 325
+        },
+        {
+          "name": "CHECKPOINT",
+          "value": 326
+        },
+        {
+          "name": "CLASS",
+          "value": 327
+        },
+        {
+          "name": "CLOSE",
+          "value": 328
+        },
+        {
+          "name": "CLUSTER",
+          "value": 329
+        },
+        {
+          "name": "COALESCE",
+          "value": 330
+        },
+        {
+          "name": "COLLATE",
+          "value": 331
+        },
+        {
+          "name": "COLLATION",
+          "value": 332
+        },
+        {
+          "name": "COLUMN",
+          "value": 333
+        },
+        {
+          "name": "COLUMNS",
+          "value": 334
+        },
+        {
+          "name": "COMMENT",
+          "value": 335
+        },
+        {
+          "name": "COMMENTS",
+          "value": 336
+        },
+        {
+          "name": "COMMIT",
+          "value": 337
+        },
+        {
+          "name": "COMMITTED",
+          "value": 338
+        },
+        {
+          "name": "CONCURRENTLY",
+          "value": 339
+        },
+        {
+          "name": "CONFIGURATION",
+          "value": 340
+        },
+        {
+          "name": "CONFLICT",
+          "value": 341
+        },
+        {
+          "name": "CONNECTION",
+          "value": 342
+        },
+        {
+          "name": "CONSTRAINT",
+          "value": 343
+        },
+        {
+          "name": "CONSTRAINTS",
+          "value": 344
+        },
+        {
+          "name": "CONTENT_P",
+          "value": 345
+        },
+        {
+          "name": "CONTINUE_P",
+          "value": 346
+        },
+        {
+          "name": "CONVERSION_P",
+          "value": 347
+        },
+        {
+          "name": "COPY",
+          "value": 348
+        },
+        {
+          "name": "COST",
+          "value": 349
+        },
+        {
+          "name": "CREATE",
+          "value": 350
+        },
+        {
+          "name": "CROSS",
+          "value": 351
+        },
+        {
+          "name": "CSV",
+          "value": 352
+        },
+        {
+          "name": "CUBE",
+          "value": 353
+        },
+        {
+          "name": "CURRENT_P",
+          "value": 354
+        },
+        {
+          "name": "CURRENT_CATALOG",
+          "value": 355
+        },
+        {
+          "name": "CURRENT_DATE",
+          "value": 356
+        },
+        {
+          "name": "CURRENT_ROLE",
+          "value": 357
+        },
+        {
+          "name": "CURRENT_SCHEMA",
+          "value": 358
+        },
+        {
+          "name": "CURRENT_TIME",
+          "value": 359
+        },
+        {
+          "name": "CURRENT_TIMESTAMP",
+          "value": 360
+        },
+        {
+          "name": "CURRENT_USER",
+          "value": 361
+        },
+        {
+          "name": "CURSOR",
+          "value": 362
+        },
+        {
+          "name": "CYCLE",
+          "value": 363
+        },
+        {
+          "name": "DATA_P",
+          "value": 364
+        },
+        {
+          "name": "DATABASE",
+          "value": 365
+        },
+        {
+          "name": "DAY_P",
+          "value": 366
+        },
+        {
+          "name": "DEALLOCATE",
+          "value": 367
+        },
+        {
+          "name": "DEC",
+          "value": 368
+        },
+        {
+          "name": "DECIMAL_P",
+          "value": 369
+        },
+        {
+          "name": "DECLARE",
+          "value": 370
+        },
+        {
+          "name": "DEFAULT",
+          "value": 371
+        },
+        {
+          "name": "DEFAULTS",
+          "value": 372
+        },
+        {
+          "name": "DEFERRABLE",
+          "value": 373
+        },
+        {
+          "name": "DEFERRED",
+          "value": 374
+        },
+        {
+          "name": "DEFINER",
+          "value": 375
+        },
+        {
+          "name": "DELETE_P",
+          "value": 376
+        },
+        {
+          "name": "DELIMITER",
+          "value": 377
+        },
+        {
+          "name": "DELIMITERS",
+          "value": 378
+        },
+        {
+          "name": "DEPENDS",
+          "value": 379
+        },
+        {
+          "name": "DESC",
+          "value": 380
+        },
+        {
+          "name": "DETACH",
+          "value": 381
+        },
+        {
+          "name": "DICTIONARY",
+          "value": 382
+        },
+        {
+          "name": "DISABLE_P",
+          "value": 383
+        },
+        {
+          "name": "DISCARD",
+          "value": 384
+        },
+        {
+          "name": "DISTINCT",
+          "value": 385
+        },
+        {
+          "name": "DO",
+          "value": 386
+        },
+        {
+          "name": "DOCUMENT_P",
+          "value": 387
+        },
+        {
+          "name": "DOMAIN_P",
+          "value": 388
+        },
+        {
+          "name": "DOUBLE_P",
+          "value": 389
+        },
+        {
+          "name": "DROP",
+          "value": 390
+        },
+        {
+          "name": "EACH",
+          "value": 391
+        },
+        {
+          "name": "ELSE",
+          "value": 392
+        },
+        {
+          "name": "ENABLE_P",
+          "value": 393
+        },
+        {
+          "name": "ENCODING",
+          "value": 394
+        },
+        {
+          "name": "ENCRYPTED",
+          "value": 395
+        },
+        {
+          "name": "END_P",
+          "value": 396
+        },
+        {
+          "name": "ENUM_P",
+          "value": 397
+        },
+        {
+          "name": "ESCAPE",
+          "value": 398
+        },
+        {
+          "name": "EVENT",
+          "value": 399
+        },
+        {
+          "name": "EXCEPT",
+          "value": 400
+        },
+        {
+          "name": "EXCLUDE",
+          "value": 401
+        },
+        {
+          "name": "EXCLUDING",
+          "value": 402
+        },
+        {
+          "name": "EXCLUSIVE",
+          "value": 403
+        },
+        {
+          "name": "EXECUTE",
+          "value": 404
+        },
+        {
+          "name": "EXISTS",
+          "value": 405
+        },
+        {
+          "name": "EXPLAIN",
+          "value": 406
+        },
+        {
+          "name": "EXPRESSION",
+          "value": 407
+        },
+        {
+          "name": "EXTENSION",
+          "value": 408
+        },
+        {
+          "name": "EXTERNAL",
+          "value": 409
+        },
+        {
+          "name": "EXTRACT",
+          "value": 410
+        },
+        {
+          "name": "FALSE_P",
+          "value": 411
+        },
+        {
+          "name": "FAMILY",
+          "value": 412
+        },
+        {
+          "name": "FETCH",
+          "value": 413
+        },
+        {
+          "name": "FILTER",
+          "value": 414
+        },
+        {
+          "name": "FIRST_P",
+          "value": 415
+        },
+        {
+          "name": "FLOAT_P",
+          "value": 416
+        },
+        {
+          "name": "FOLLOWING",
+          "value": 417
+        },
+        {
+          "name": "FOR",
+          "value": 418
+        },
+        {
+          "name": "FORCE",
+          "value": 419
+        },
+        {
+          "name": "FOREIGN",
+          "value": 420
+        },
+        {
+          "name": "FORWARD",
+          "value": 421
+        },
+        {
+          "name": "FREEZE",
+          "value": 422
+        },
+        {
+          "name": "FROM",
+          "value": 423
+        },
+        {
+          "name": "FULL",
+          "value": 424
+        },
+        {
+          "name": "FUNCTION",
+          "value": 425
+        },
+        {
+          "name": "FUNCTIONS",
+          "value": 426
+        },
+        {
+          "name": "GENERATED",
+          "value": 427
+        },
+        {
+          "name": "GLOBAL",
+          "value": 428
+        },
+        {
+          "name": "GRANT",
+          "value": 429
+        },
+        {
+          "name": "GRANTED",
+          "value": 430
+        },
+        {
+          "name": "GREATEST",
+          "value": 431
+        },
+        {
+          "name": "GROUP_P",
+          "value": 432
+        },
+        {
+          "name": "GROUPING",
+          "value": 433
+        },
+        {
+          "name": "GROUPS",
+          "value": 434
+        },
+        {
+          "name": "HANDLER",
+          "value": 435
+        },
+        {
+          "name": "HAVING",
+          "value": 436
+        },
+        {
+          "name": "HEADER_P",
+          "value": 437
+        },
+        {
+          "name": "HOLD",
+          "value": 438
+        },
+        {
+          "name": "HOUR_P",
+          "value": 439
+        },
+        {
+          "name": "IDENTITY_P",
+          "value": 440
+        },
+        {
+          "name": "IF_P",
+          "value": 441
+        },
+        {
+          "name": "ILIKE",
+          "value": 442
+        },
+        {
+          "name": "IMMEDIATE",
+          "value": 443
+        },
+        {
+          "name": "IMMUTABLE",
+          "value": 444
+        },
+        {
+          "name": "IMPLICIT_P",
+          "value": 445
+        },
+        {
+          "name": "IMPORT_P",
+          "value": 446
+        },
+        {
+          "name": "IN_P",
+          "value": 447
+        },
+        {
+          "name": "INCLUDE",
+          "value": 448
+        },
+        {
+          "name": "INCLUDING",
+          "value": 449
+        },
+        {
+          "name": "INCREMENT",
+          "value": 450
+        },
+        {
+          "name": "INDEX",
+          "value": 451
+        },
+        {
+          "name": "INDEXES",
+          "value": 452
+        },
+        {
+          "name": "INHERIT",
+          "value": 453
+        },
+        {
+          "name": "INHERITS",
+          "value": 454
+        },
+        {
+          "name": "INITIALLY",
+          "value": 455
+        },
+        {
+          "name": "INLINE_P",
+          "value": 456
+        },
+        {
+          "name": "INNER_P",
+          "value": 457
+        },
+        {
+          "name": "INOUT",
+          "value": 458
+        },
+        {
+          "name": "INPUT_P",
+          "value": 459
+        },
+        {
+          "name": "INSENSITIVE",
+          "value": 460
+        },
+        {
+          "name": "INSERT",
+          "value": 461
+        },
+        {
+          "name": "INSTEAD",
+          "value": 462
+        },
+        {
+          "name": "INT_P",
+          "value": 463
+        },
+        {
+          "name": "INTEGER",
+          "value": 464
+        },
+        {
+          "name": "INTERSECT",
+          "value": 465
+        },
+        {
+          "name": "INTERVAL",
+          "value": 466
+        },
+        {
+          "name": "INTO",
+          "value": 467
+        },
+        {
+          "name": "INVOKER",
+          "value": 468
+        },
+        {
+          "name": "IS",
+          "value": 469
+        },
+        {
+          "name": "ISNULL",
+          "value": 470
+        },
+        {
+          "name": "ISOLATION",
+          "value": 471
+        },
+        {
+          "name": "JOIN",
+          "value": 472
+        },
+        {
+          "name": "KEY",
+          "value": 473
+        },
+        {
+          "name": "LABEL",
+          "value": 474
+        },
+        {
+          "name": "LANGUAGE",
+          "value": 475
+        },
+        {
+          "name": "LARGE_P",
+          "value": 476
+        },
+        {
+          "name": "LAST_P",
+          "value": 477
+        },
+        {
+          "name": "LATERAL_P",
+          "value": 478
+        },
+        {
+          "name": "LEADING",
+          "value": 479
+        },
+        {
+          "name": "LEAKPROOF",
+          "value": 480
+        },
+        {
+          "name": "LEAST",
+          "value": 481
+        },
+        {
+          "name": "LEFT",
+          "value": 482
+        },
+        {
+          "name": "LEVEL",
+          "value": 483
+        },
+        {
+          "name": "LIKE",
+          "value": 484
+        },
+        {
+          "name": "LIMIT",
+          "value": 485
+        },
+        {
+          "name": "LISTEN",
+          "value": 486
+        },
+        {
+          "name": "LOAD",
+          "value": 487
+        },
+        {
+          "name": "LOCAL",
+          "value": 488
+        },
+        {
+          "name": "LOCALTIME",
+          "value": 489
+        },
+        {
+          "name": "LOCALTIMESTAMP",
+          "value": 490
+        },
+        {
+          "name": "LOCATION",
+          "value": 491
+        },
+        {
+          "name": "LOCK_P",
+          "value": 492
+        },
+        {
+          "name": "LOCKED",
+          "value": 493
+        },
+        {
+          "name": "LOGGED",
+          "value": 494
+        },
+        {
+          "name": "MAPPING",
+          "value": 495
+        },
+        {
+          "name": "MATCH",
+          "value": 496
+        },
+        {
+          "name": "MATERIALIZED",
+          "value": 497
+        },
+        {
+          "name": "MAXVALUE",
+          "value": 498
+        },
+        {
+          "name": "METHOD",
+          "value": 499
+        },
+        {
+          "name": "MINUTE_P",
+          "value": 500
+        },
+        {
+          "name": "MINVALUE",
+          "value": 501
+        },
+        {
+          "name": "MODE",
+          "value": 502
+        },
+        {
+          "name": "MONTH_P",
+          "value": 503
+        },
+        {
+          "name": "MOVE",
+          "value": 504
+        },
+        {
+          "name": "NAME_P",
+          "value": 505
+        },
+        {
+          "name": "NAMES",
+          "value": 506
+        },
+        {
+          "name": "NATIONAL",
+          "value": 507
+        },
+        {
+          "name": "NATURAL",
+          "value": 508
+        },
+        {
+          "name": "NCHAR",
+          "value": 509
+        },
+        {
+          "name": "NEW",
+          "value": 510
+        },
+        {
+          "name": "NEXT",
+          "value": 511
+        },
+        {
+          "name": "NFC",
+          "value": 512
+        },
+        {
+          "name": "NFD",
+          "value": 513
+        },
+        {
+          "name": "NFKC",
+          "value": 514
+        },
+        {
+          "name": "NFKD",
+          "value": 515
+        },
+        {
+          "name": "NO",
+          "value": 516
+        },
+        {
+          "name": "NONE",
+          "value": 517
+        },
+        {
+          "name": "NORMALIZE",
+          "value": 518
+        },
+        {
+          "name": "NORMALIZED",
+          "value": 519
+        },
+        {
+          "name": "NOT",
+          "value": 520
+        },
+        {
+          "name": "NOTHING",
+          "value": 521
+        },
+        {
+          "name": "NOTIFY",
+          "value": 522
+        },
+        {
+          "name": "NOTNULL",
+          "value": 523
+        },
+        {
+          "name": "NOWAIT",
+          "value": 524
+        },
+        {
+          "name": "NULL_P",
+          "value": 525
+        },
+        {
+          "name": "NULLIF",
+          "value": 526
+        },
+        {
+          "name": "NULLS_P",
+          "value": 527
+        },
+        {
+          "name": "NUMERIC",
+          "value": 528
+        },
+        {
+          "name": "OBJECT_P",
+          "value": 529
+        },
+        {
+          "name": "OF",
+          "value": 530
+        },
+        {
+          "name": "OFF",
+          "value": 531
+        },
+        {
+          "name": "OFFSET",
+          "value": 532
+        },
+        {
+          "name": "OIDS",
+          "value": 533
+        },
+        {
+          "name": "OLD",
+          "value": 534
+        },
+        {
+          "name": "ON",
+          "value": 535
+        },
+        {
+          "name": "ONLY",
+          "value": 536
+        },
+        {
+          "name": "OPERATOR",
+          "value": 537
+        },
+        {
+          "name": "OPTION",
+          "value": 538
+        },
+        {
+          "name": "OPTIONS",
+          "value": 539
+        },
+        {
+          "name": "OR",
+          "value": 540
+        },
+        {
+          "name": "ORDER",
+          "value": 541
+        },
+        {
+          "name": "ORDINALITY",
+          "value": 542
+        },
+        {
+          "name": "OTHERS",
+          "value": 543
+        },
+        {
+          "name": "OUT_P",
+          "value": 544
+        },
+        {
+          "name": "OUTER_P",
+          "value": 545
+        },
+        {
+          "name": "OVER",
+          "value": 546
+        },
+        {
+          "name": "OVERLAPS",
+          "value": 547
+        },
+        {
+          "name": "OVERLAY",
+          "value": 548
+        },
+        {
+          "name": "OVERRIDING",
+          "value": 549
+        },
+        {
+          "name": "OWNED",
+          "value": 550
+        },
+        {
+          "name": "OWNER",
+          "value": 551
+        },
+        {
+          "name": "PARALLEL",
+          "value": 552
+        },
+        {
+          "name": "PARSER",
+          "value": 553
+        },
+        {
+          "name": "PARTIAL",
+          "value": 554
+        },
+        {
+          "name": "PARTITION",
+          "value": 555
+        },
+        {
+          "name": "PASSING",
+          "value": 556
+        },
+        {
+          "name": "PASSWORD",
+          "value": 557
+        },
+        {
+          "name": "PLACING",
+          "value": 558
+        },
+        {
+          "name": "PLANS",
+          "value": 559
+        },
+        {
+          "name": "POLICY",
+          "value": 560
+        },
+        {
+          "name": "POSITION",
+          "value": 561
+        },
+        {
+          "name": "PRECEDING",
+          "value": 562
+        },
+        {
+          "name": "PRECISION",
+          "value": 563
+        },
+        {
+          "name": "PRESERVE",
+          "value": 564
+        },
+        {
+          "name": "PREPARE",
+          "value": 565
+        },
+        {
+          "name": "PREPARED",
+          "value": 566
+        },
+        {
+          "name": "PRIMARY",
+          "value": 567
+        },
+        {
+          "name": "PRIOR",
+          "value": 568
+        },
+        {
+          "name": "PRIVILEGES",
+          "value": 569
+        },
+        {
+          "name": "PROCEDURAL",
+          "value": 570
+        },
+        {
+          "name": "PROCEDURE",
+          "value": 571
+        },
+        {
+          "name": "PROCEDURES",
+          "value": 572
+        },
+        {
+          "name": "PROGRAM",
+          "value": 573
+        },
+        {
+          "name": "PUBLICATION",
+          "value": 574
+        },
+        {
+          "name": "QUOTE",
+          "value": 575
+        },
+        {
+          "name": "RANGE",
+          "value": 576
+        },
+        {
+          "name": "READ",
+          "value": 577
+        },
+        {
+          "name": "REAL",
+          "value": 578
+        },
+        {
+          "name": "REASSIGN",
+          "value": 579
+        },
+        {
+          "name": "RECHECK",
+          "value": 580
+        },
+        {
+          "name": "RECURSIVE",
+          "value": 581
+        },
+        {
+          "name": "REF",
+          "value": 582
+        },
+        {
+          "name": "REFERENCES",
+          "value": 583
+        },
+        {
+          "name": "REFERENCING",
+          "value": 584
+        },
+        {
+          "name": "REFRESH",
+          "value": 585
+        },
+        {
+          "name": "REINDEX",
+          "value": 586
+        },
+        {
+          "name": "RELATIVE_P",
+          "value": 587
+        },
+        {
+          "name": "RELEASE",
+          "value": 588
+        },
+        {
+          "name": "RENAME",
+          "value": 589
+        },
+        {
+          "name": "REPEATABLE",
+          "value": 590
+        },
+        {
+          "name": "REPLACE",
+          "value": 591
+        },
+        {
+          "name": "REPLICA",
+          "value": 592
+        },
+        {
+          "name": "RESET",
+          "value": 593
+        },
+        {
+          "name": "RESTART",
+          "value": 594
+        },
+        {
+          "name": "RESTRICT",
+          "value": 595
+        },
+        {
+          "name": "RETURNING",
+          "value": 596
+        },
+        {
+          "name": "RETURNS",
+          "value": 597
+        },
+        {
+          "name": "REVOKE",
+          "value": 598
+        },
+        {
+          "name": "RIGHT",
+          "value": 599
+        },
+        {
+          "name": "ROLE",
+          "value": 600
+        },
+        {
+          "name": "ROLLBACK",
+          "value": 601
+        },
+        {
+          "name": "ROLLUP",
+          "value": 602
+        },
+        {
+          "name": "ROUTINE",
+          "value": 603
+        },
+        {
+          "name": "ROUTINES",
+          "value": 604
+        },
+        {
+          "name": "ROW",
+          "value": 605
+        },
+        {
+          "name": "ROWS",
+          "value": 606
+        },
+        {
+          "name": "RULE",
+          "value": 607
+        },
+        {
+          "name": "SAVEPOINT",
+          "value": 608
+        },
+        {
+          "name": "SCHEMA",
+          "value": 609
+        },
+        {
+          "name": "SCHEMAS",
+          "value": 610
+        },
+        {
+          "name": "SCROLL",
+          "value": 611
+        },
+        {
+          "name": "SEARCH",
+          "value": 612
+        },
+        {
+          "name": "SECOND_P",
+          "value": 613
+        },
+        {
+          "name": "SECURITY",
+          "value": 614
+        },
+        {
+          "name": "SELECT",
+          "value": 615
+        },
+        {
+          "name": "SEQUENCE",
+          "value": 616
+        },
+        {
+          "name": "SEQUENCES",
+          "value": 617
+        },
+        {
+          "name": "SERIALIZABLE",
+          "value": 618
+        },
+        {
+          "name": "SERVER",
+          "value": 619
+        },
+        {
+          "name": "SESSION",
+          "value": 620
+        },
+        {
+          "name": "SESSION_USER",
+          "value": 621
+        },
+        {
+          "name": "SET",
+          "value": 622
+        },
+        {
+          "name": "SETS",
+          "value": 623
+        },
+        {
+          "name": "SETOF",
+          "value": 624
+        },
+        {
+          "name": "SHARE",
+          "value": 625
+        },
+        {
+          "name": "SHOW",
+          "value": 626
+        },
+        {
+          "name": "SIMILAR",
+          "value": 627
+        },
+        {
+          "name": "SIMPLE",
+          "value": 628
+        },
+        {
+          "name": "SKIP",
+          "value": 629
+        },
+        {
+          "name": "SMALLINT",
+          "value": 630
+        },
+        {
+          "name": "SNAPSHOT",
+          "value": 631
+        },
+        {
+          "name": "SOME",
+          "value": 632
+        },
+        {
+          "name": "SQL_P",
+          "value": 633
+        },
+        {
+          "name": "STABLE",
+          "value": 634
+        },
+        {
+          "name": "STANDALONE_P",
+          "value": 635
+        },
+        {
+          "name": "START",
+          "value": 636
+        },
+        {
+          "name": "STATEMENT",
+          "value": 637
+        },
+        {
+          "name": "STATISTICS",
+          "value": 638
+        },
+        {
+          "name": "STDIN",
+          "value": 639
+        },
+        {
+          "name": "STDOUT",
+          "value": 640
+        },
+        {
+          "name": "STORAGE",
+          "value": 641
+        },
+        {
+          "name": "STORED",
+          "value": 642
+        },
+        {
+          "name": "STRICT_P",
+          "value": 643
+        },
+        {
+          "name": "STRIP_P",
+          "value": 644
+        },
+        {
+          "name": "SUBSCRIPTION",
+          "value": 645
+        },
+        {
+          "name": "SUBSTRING",
+          "value": 646
+        },
+        {
+          "name": "SUPPORT",
+          "value": 647
+        },
+        {
+          "name": "SYMMETRIC",
+          "value": 648
+        },
+        {
+          "name": "SYSID",
+          "value": 649
+        },
+        {
+          "name": "SYSTEM_P",
+          "value": 650
+        },
+        {
+          "name": "TABLE",
+          "value": 651
+        },
+        {
+          "name": "TABLES",
+          "value": 652
+        },
+        {
+          "name": "TABLESAMPLE",
+          "value": 653
+        },
+        {
+          "name": "TABLESPACE",
+          "value": 654
+        },
+        {
+          "name": "TEMP",
+          "value": 655
+        },
+        {
+          "name": "TEMPLATE",
+          "value": 656
+        },
+        {
+          "name": "TEMPORARY",
+          "value": 657
+        },
+        {
+          "name": "TEXT_P",
+          "value": 658
+        },
+        {
+          "name": "THEN",
+          "value": 659
+        },
+        {
+          "name": "TIES",
+          "value": 660
+        },
+        {
+          "name": "TIME",
+          "value": 661
+        },
+        {
+          "name": "TIMESTAMP",
+          "value": 662
+        },
+        {
+          "name": "TO",
+          "value": 663
+        },
+        {
+          "name": "TRAILING",
+          "value": 664
+        },
+        {
+          "name": "TRANSACTION",
+          "value": 665
+        },
+        {
+          "name": "TRANSFORM",
+          "value": 666
+        },
+        {
+          "name": "TREAT",
+          "value": 667
+        },
+        {
+          "name": "TRIGGER",
+          "value": 668
+        },
+        {
+          "name": "TRIM",
+          "value": 669
+        },
+        {
+          "name": "TRUE_P",
+          "value": 670
+        },
+        {
+          "name": "TRUNCATE",
+          "value": 671
+        },
+        {
+          "name": "TRUSTED",
+          "value": 672
+        },
+        {
+          "name": "TYPE_P",
+          "value": 673
+        },
+        {
+          "name": "TYPES_P",
+          "value": 674
+        },
+        {
+          "name": "UESCAPE",
+          "value": 675
+        },
+        {
+          "name": "UNBOUNDED",
+          "value": 676
+        },
+        {
+          "name": "UNCOMMITTED",
+          "value": 677
+        },
+        {
+          "name": "UNENCRYPTED",
+          "value": 678
+        },
+        {
+          "name": "UNION",
+          "value": 679
+        },
+        {
+          "name": "UNIQUE",
+          "value": 680
+        },
+        {
+          "name": "UNKNOWN",
+          "value": 681
+        },
+        {
+          "name": "UNLISTEN",
+          "value": 682
+        },
+        {
+          "name": "UNLOGGED",
+          "value": 683
+        },
+        {
+          "name": "UNTIL",
+          "value": 684
+        },
+        {
+          "name": "UPDATE",
+          "value": 685
+        },
+        {
+          "name": "USER",
+          "value": 686
+        },
+        {
+          "name": "USING",
+          "value": 687
+        },
+        {
+          "name": "VACUUM",
+          "value": 688
+        },
+        {
+          "name": "VALID",
+          "value": 689
+        },
+        {
+          "name": "VALIDATE",
+          "value": 690
+        },
+        {
+          "name": "VALIDATOR",
+          "value": 691
+        },
+        {
+          "name": "VALUE_P",
+          "value": 692
+        },
+        {
+          "name": "VALUES",
+          "value": 693
+        },
+        {
+          "name": "VARCHAR",
+          "value": 694
+        },
+        {
+          "name": "VARIADIC",
+          "value": 695
+        },
+        {
+          "name": "VARYING",
+          "value": 696
+        },
+        {
+          "name": "VERBOSE",
+          "value": 697
+        },
+        {
+          "name": "VERSION_P",
+          "value": 698
+        },
+        {
+          "name": "VIEW",
+          "value": 699
+        },
+        {
+          "name": "VIEWS",
+          "value": 700
+        },
+        {
+          "name": "VOLATILE",
+          "value": 701
+        },
+        {
+          "name": "WHEN",
+          "value": 702
+        },
+        {
+          "name": "WHERE",
+          "value": 703
+        },
+        {
+          "name": "WHITESPACE_P",
+          "value": 704
+        },
+        {
+          "name": "WINDOW",
+          "value": 705
+        },
+        {
+          "name": "WITH",
+          "value": 706
+        },
+        {
+          "name": "WITHIN",
+          "value": 707
+        },
+        {
+          "name": "WITHOUT",
+          "value": 708
+        },
+        {
+          "name": "WORK",
+          "value": 709
+        },
+        {
+          "name": "WRAPPER",
+          "value": 710
+        },
+        {
+          "name": "WRITE",
+          "value": 711
+        },
+        {
+          "name": "XML_P",
+          "value": 712
+        },
+        {
+          "name": "XMLATTRIBUTES",
+          "value": 713
+        },
+        {
+          "name": "XMLCONCAT",
+          "value": 714
+        },
+        {
+          "name": "XMLELEMENT",
+          "value": 715
+        },
+        {
+          "name": "XMLEXISTS",
+          "value": 716
+        },
+        {
+          "name": "XMLFOREST",
+          "value": 717
+        },
+        {
+          "name": "XMLNAMESPACES",
+          "value": 718
+        },
+        {
+          "name": "XMLPARSE",
+          "value": 719
+        },
+        {
+          "name": "XMLPI",
+          "value": 720
+        },
+        {
+          "name": "XMLROOT",
+          "value": 721
+        },
+        {
+          "name": "XMLSERIALIZE",
+          "value": 722
+        },
+        {
+          "name": "XMLTABLE",
+          "value": 723
+        },
+        {
+          "name": "YEAR_P",
+          "value": 724
+        },
+        {
+          "name": "YES_P",
+          "value": 725
+        },
+        {
+          "name": "ZONE",
+          "value": 726
+        },
+        {
+          "name": "NOT_LA",
+          "value": 727
+        },
+        {
+          "name": "NULLS_LA",
+          "value": 728
+        },
+        {
+          "name": "WITH_LA",
+          "value": 729
+        },
+        {
+          "name": "POSTFIXOP",
+          "value": 730
+        },
+        {
+          "name": "UMINUS",
+          "value": 731
+        }
+      ],
+      "comment": "   /* Put the tokens into the symbol table, so that GDB and other debuggers\n      know about them.  */\n"
     }
   }
 }

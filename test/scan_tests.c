@@ -62,7 +62,9 @@ const char* tests[] = {
     "- = ASCII_45, NO_KEYWORD\n"
     "Infinity = IDENT, NO_KEYWORD\n"
     ", = ASCII_44, NO_KEYWORD\n"
-    "U&\"d!0061t!+000061\" UESCAPE '!' = IDENT, NO_KEYWORD\n",
+    "U = UIDENT, NO_KEYWORD\n"
+    "UESCAPE = UESCAPE, UNRESERVED_KEYWORD\n"
+    "'!' = SCONST, NO_KEYWORD\n",
 };
 
 size_t testsCount = 10;

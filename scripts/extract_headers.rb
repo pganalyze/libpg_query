@@ -48,7 +48,7 @@ class Extractor
   end
 
   IGNORE_LIST = [
-    'Node', 'NodeTag', 'varlena', 'IntArray', 'nameData', 'bool',
+    'Node', 'varlena', 'IntArray', 'nameData', 'bool',
     'sig_atomic_t', 'size_t', 'varatt_indirect',
   ]
 
@@ -63,7 +63,7 @@ class Extractor
 
     ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'c', 'postgres', 'postgres_ext',
-     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar'].each do |group|
+     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram'].each do |group|
       @target_group = group
       @struct_defs[@target_group] = {}
       @enum_defs[@target_group] = {}
@@ -75,13 +75,13 @@ class Extractor
           handle_struct(line)
         elsif !@current_enum_def.nil?
           handle_enum(line)
-        elsif line[/^(typedef )?struct ([A-z]+)\s*(\/\*.+)?$/]
-          next if IGNORE_LIST.include?($2)
-          @current_struct_def = { name: $2, fields: [], comment: @open_comment_text }
-          @open_comment_text = nil
-        elsif line[/^typedef enum( [A-z]+)?\s*(\/\*.+)?$/]
+        elsif line[/^(?:typedef )?struct ([A-z]+)\s*(\/\*.+)?$/]
           next if IGNORE_LIST.include?($1)
-          @current_enum_def = { values: [], comment: @open_comment_text }
+          @current_struct_def = { name: $1, fields: [], comment: @open_comment_text }
+          @open_comment_text = nil
+        elsif line[/^\s*(?:typedef )?enum\s*([A-z]+)?\s*(\/\*.+)?(?: {)?$/]
+          next if IGNORE_LIST.include?($1)
+          @current_enum_def = { name: $1, values: [], comment: @open_comment_text }
           @open_comment_text = nil
         elsif line[/^typedef( struct)? ([A-z0-9\s_]+) \*?([A-z]+);/]
           next if IGNORE_LIST.include?($2) || IGNORE_LIST.include?($3)
@@ -125,18 +125,25 @@ class Extractor
   end
 
   def handle_enum(line)
-    if line[/^\s+([A-z0-9_]+),?\s*([A-z0-9_]+)?(\/\*.+)?/]
-      name = $1
-      other_name = $2
-      comment = $3
+    puts line.inspect
+    if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)))?,?\s*([A-z0-9_]+)?(\/\*.+)?/]
+      primary_value = { name: $1 }
+      primary_value[:value] = ($3 ? ($2.to_i << $3.to_i) : $2.to_i) if $2
+      primary_value[:value] = 0x7FFFFFFF if $4 == 'PG_INT32_MAX'
+      primary_value[:comment] = $6 if $6
+      @current_enum_def[:values] << primary_value
 
-      @current_enum_def[:values] << { name: name, comment: comment }
-      @current_enum_def[:values] << { name: other_name } if other_name
+      if $5
+        secondary_value = { name: $5 }
+        secondary_value[:comment] = $6 if $6
+        @current_enum_def[:values] << secondary_value
+      end
 
       @open_comment = line.include?('/*') && !line.include?('*/')
-    elsif line[/^\}\s+([A-z]+);/]
-      @all_known_enums << $1
-      @enum_defs[@target_group][$1] = @current_enum_def
+    elsif line[/^\s*\}\s*([A-z]+)?;/]
+      name = @current_enum_def.delete(:name) || $1
+      @all_known_enums << name
+      @enum_defs[@target_group][name] = @current_enum_def
       @current_enum_def = nil
     elsif line.strip.start_with?('/*')
       @current_enum_def[:values] << { comment: line }
