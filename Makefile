@@ -118,6 +118,8 @@ protobuf/parse_tree.pb-c.c protobuf/parse_tree.pb-c.h: protobuf/parse_tree.proto
 
 src/pg_query_protobuf.c: protobuf/parse_tree.pb-c.h
 
+src/pg_query_scan.c: protobuf/scan_output.pb-c.h
+
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
 	examples/simple

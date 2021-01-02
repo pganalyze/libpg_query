@@ -59,5 +59,6 @@
   "VacuumOption",
   "VacOptTernaryValue",
   "ScanDirection",
-  "pg_enc"
+  "pg_enc",
+  "yytokentype"
 ]
