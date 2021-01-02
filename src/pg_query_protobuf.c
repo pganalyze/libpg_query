@@ -32,10 +32,11 @@
 	out_node->outname = node->fldname; \
 	}
 
-// FIXME: Memory management
 #define WRITE_CHAR_FIELD(outname, fldname) \
 	if (node->fldname != 0) { \
-	out_node->outname = node->fldname; \
+	out_node->outname = malloc(sizeof(char) * 2); \
+	out_node->outname[0] = node->fldname; \
+	out_node->outname[1] = '\0'; \
 	}
 
 #define WRITE_ENUM_FIELD(typename, outname, fldname) \
@@ -47,10 +48,9 @@
 #define WRITE_BOOL_FIELD(outname, fldname) \
 	out_node->outname = node->fldname; \
 
-// FIXME: Memory management
 #define WRITE_STRING_FIELD(outname, fldname) \
 	if (node->fldname != NULL) { \
-	  out_node->outname = node->fldname; \
+	  out_node->outname = strdup(node->fldname); \
 	}
 
 #define WRITE_LIST_FIELD(outname, fldname) \
