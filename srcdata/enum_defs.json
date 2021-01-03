@@ -1306,6 +1306,9 @@
         },
         {
           "name": "OR_EXPR"
+        },
+        {
+          "name": "NOT_EXPR"
         }
       ],
       "comment": "/*\n * BoolExpr - expression node for the basic Boolean operators AND, OR, NOT\n *\n * Notice the arguments are given as a List.  For NOT, of course the list\n * must always have exactly one element.  For AND and OR, there can be two\n * or more arguments.\n */\n"
@@ -1529,6 +1532,18 @@
         },
         {
           "name": "IS_NOT_TRUE"
+        },
+        {
+          "name": "IS_FALSE"
+        },
+        {
+          "name": "IS_NOT_FALSE"
+        },
+        {
+          "name": "IS_UNKNOWN"
+        },
+        {
+          "name": "IS_NOT_UNKNOWN"
         }
       ],
       "comment": "/*\n * BooleanTest\n *\n * BooleanTest represents the operation of determining whether a boolean\n * is TRUE, FALSE, or UNKNOWN (ie, NULL).  All six meaningful combinations\n * are supported.  Note that a NULL input does *not* cause a NULL result.\n * The appropriate test is performed and returned as a boolean Datum.\n */\n"
