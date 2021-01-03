@@ -125,8 +125,7 @@ class Extractor
   end
 
   def handle_enum(line)
-    puts line.inspect
-    if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)))?,?\s*([A-z0-9_]+)?(\/\*.+)?/]
+    if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)))?,?\s*((?:[A-z0-9_]+,?\s*)+)?(\/\*.+)?/]
       primary_value = { name: $1 }
       primary_value[:value] = ($3 ? ($2.to_i << $3.to_i) : $2.to_i) if $2
       primary_value[:value] = 0x7FFFFFFF if $4 == 'PG_INT32_MAX'
@@ -134,9 +133,11 @@ class Extractor
       @current_enum_def[:values] << primary_value
 
       if $5
-        secondary_value = { name: $5 }
-        secondary_value[:comment] = $6 if $6
-        @current_enum_def[:values] << secondary_value
+        $5.split(',').map(&:strip).each do |name|
+          secondary_value = { name: name }
+          secondary_value[:comment] = $6 if $6
+          @current_enum_def[:values] << secondary_value
+        end
       end
 
       @open_comment = line.include?('/*') && !line.include?('*/')
@@ -239,6 +240,11 @@ class Extractor
     File.write('./srcdata/enum_defs.json', JSON.pretty_generate(@enum_defs))
     File.write('./srcdata/typedefs.json', JSON.pretty_generate(@typedefs))
   end
+end
+
+if !ARGV[0]
+  puts 'ERROR: You need to specify Postgres source directory as the first argument'
+  return
 end
 
 Extractor.new(ARGV[0]).extract!

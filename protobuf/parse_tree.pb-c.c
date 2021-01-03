@@ -35403,17 +35403,19 @@ const ProtobufCEnumDescriptor pg_query__coercion_form__descriptor =
   pg_query__coercion_form__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__bool_expr_type__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__bool_expr_type__enum_values_by_number[3] =
 {
   { "AND_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__AND_EXPR", 0 },
   { "OR_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__OR_EXPR", 1 },
+  { "NOT_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__NOT_EXPR", 2 },
 };
 static const ProtobufCIntRange pg_query__bool_expr_type__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__bool_expr_type__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__bool_expr_type__enum_values_by_name[3] =
 {
   { "AND_EXPR", 0 },
+  { "NOT_EXPR", 2 },
   { "OR_EXPR", 1 },
 };
 const ProtobufCEnumDescriptor pg_query__bool_expr_type__descriptor =
@@ -35423,9 +35425,9 @@ const ProtobufCEnumDescriptor pg_query__bool_expr_type__descriptor =
   "BoolExprType",
   "PgQuery__BoolExprType",
   "pg_query",
-  2,
+  3,
   pg_query__bool_expr_type__enum_values_by_number,
-  2,
+  3,
   pg_query__bool_expr_type__enum_values_by_name,
   1,
   pg_query__bool_expr_type__value_ranges,
@@ -35685,18 +35687,26 @@ const ProtobufCEnumDescriptor pg_query__null_test_type__descriptor =
   pg_query__null_test_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__bool_test_type__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__bool_test_type__enum_values_by_number[6] =
 {
   { "IS_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_TRUE", 0 },
   { "IS_NOT_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_TRUE", 1 },
+  { "IS_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_FALSE", 2 },
+  { "IS_NOT_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_FALSE", 3 },
+  { "IS_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_UNKNOWN", 4 },
+  { "IS_NOT_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_UNKNOWN", 5 },
 };
 static const ProtobufCIntRange pg_query__bool_test_type__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__bool_test_type__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__bool_test_type__enum_values_by_name[6] =
 {
+  { "IS_FALSE", 2 },
+  { "IS_NOT_FALSE", 3 },
   { "IS_NOT_TRUE", 1 },
+  { "IS_NOT_UNKNOWN", 5 },
   { "IS_TRUE", 0 },
+  { "IS_UNKNOWN", 4 },
 };
 const ProtobufCEnumDescriptor pg_query__bool_test_type__descriptor =
 {
@@ -35705,9 +35715,9 @@ const ProtobufCEnumDescriptor pg_query__bool_test_type__descriptor =
   "BoolTestType",
   "PgQuery__BoolTestType",
   "pg_query",
-  2,
+  6,
   pg_query__bool_test_type__enum_values_by_number,
-  2,
+  6,
   pg_query__bool_test_type__enum_values_by_name,
   1,
   pg_query__bool_test_type__value_ranges,

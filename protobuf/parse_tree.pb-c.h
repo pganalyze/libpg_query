@@ -636,7 +636,8 @@ typedef enum _PgQuery__CoercionForm {
 } PgQuery__CoercionForm;
 typedef enum _PgQuery__BoolExprType {
   PG_QUERY__BOOL_EXPR_TYPE__AND_EXPR = 0,
-  PG_QUERY__BOOL_EXPR_TYPE__OR_EXPR = 1
+  PG_QUERY__BOOL_EXPR_TYPE__OR_EXPR = 1,
+  PG_QUERY__BOOL_EXPR_TYPE__NOT_EXPR = 2
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__BOOL_EXPR_TYPE)
 } PgQuery__BoolExprType;
 typedef enum _PgQuery__SubLinkType {
@@ -705,7 +706,11 @@ typedef enum _PgQuery__NullTestType {
 } PgQuery__NullTestType;
 typedef enum _PgQuery__BoolTestType {
   PG_QUERY__BOOL_TEST_TYPE__IS_TRUE = 0,
-  PG_QUERY__BOOL_TEST_TYPE__IS_NOT_TRUE = 1
+  PG_QUERY__BOOL_TEST_TYPE__IS_NOT_TRUE = 1,
+  PG_QUERY__BOOL_TEST_TYPE__IS_FALSE = 2,
+  PG_QUERY__BOOL_TEST_TYPE__IS_NOT_FALSE = 3,
+  PG_QUERY__BOOL_TEST_TYPE__IS_UNKNOWN = 4,
+  PG_QUERY__BOOL_TEST_TYPE__IS_NOT_UNKNOWN = 5
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__BOOL_TEST_TYPE)
 } PgQuery__BoolTestType;
 typedef enum _PgQuery__CmdType {
