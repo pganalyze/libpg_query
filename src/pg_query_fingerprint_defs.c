@@ -3584,10 +3584,7 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
 
   // Intentionally ignoring node->options for fingerprinting
 
-  if (node->savepoint_name != NULL) {
-    _fingerprintString(ctx, "savepoint_name");
-    _fingerprintString(ctx, node->savepoint_name);
-  }
+  // Intentionally ignoring node->savepoint_name for fingerprinting
 
 }
 
