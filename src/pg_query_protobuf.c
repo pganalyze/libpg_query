@@ -10,92 +10,97 @@
 
 #include "protobuf/parse_tree.pb-c.h"
 
+#define OUT_TYPE(typename) PgQuery__##typename*
+
 #define OUT_NODE(typename, typename_underscore, typename_cast, fldname) \
   { \
-    PgQuery__##typename *fldname = malloc(sizeof(PgQuery__##typename)); \
-	pg_query__##typename_underscore##__init(fldname); \
-    _out##typename(fldname, (const typename_cast *) obj); \
+    PgQuery__##typename *__node = malloc(sizeof(PgQuery__##typename)); \
+	pg_query__##typename_underscore##__init(__node); \
+    _out##typename(__node, (const typename_cast *) obj); \
+	out->fldname = __node; \
   }
 
-#define WRITE_INT_FIELD(outname, fldname) \
+#define WRITE_INT_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-	out_node->outname = node->fldname; \
+	out->outname = node->fldname; \
 	}
 
-#define WRITE_UINT_FIELD(outname, fldname) \
+#define WRITE_UINT_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-	out_node->outname = node->fldname; \
+	out->outname = node->fldname; \
 	}
 
-#define WRITE_LONG_FIELD(outname, fldname) \
+#define WRITE_LONG_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-	out_node->outname = node->fldname; \
+	out->outname = node->fldname; \
 	}
 
-#define WRITE_CHAR_FIELD(outname, fldname) \
+#define WRITE_CHAR_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-	out_node->outname = malloc(sizeof(char) * 2); \
-	out_node->outname[0] = node->fldname; \
-	out_node->outname[1] = '\0'; \
+	out->outname = malloc(sizeof(char) * 2); \
+	out->outname[0] = node->fldname; \
+	out->outname[1] = '\0'; \
 	}
 
-#define WRITE_ENUM_FIELD(typename, outname, fldname) \
-	out_node->outname = (int) node->fldname;
+#define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
+	out->outname = _enumToInt##typename(node->fldname);
 
-#define WRITE_FLOAT_FIELD(outname, fldname) \
-	out_node->outname = node->fldname; \
+#define WRITE_FLOAT_FIELD(outname, outname_json, fldname) \
+	out->outname = node->fldname; \
 
-#define WRITE_BOOL_FIELD(outname, fldname) \
-	out_node->outname = node->fldname; \
+#define WRITE_BOOL_FIELD(outname, outname_json, fldname) \
+	out->outname = node->fldname; \
 
-#define WRITE_STRING_FIELD(outname, fldname) \
+#define WRITE_STRING_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-	  out_node->outname = strdup(node->fldname); \
+	  out->outname = strdup(node->fldname); \
 	}
 
-#define WRITE_LIST_FIELD(outname, fldname) \
+#define WRITE_LIST_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-	  out_node->n_##outname = list_length(node->fldname); \
-	  out_node->outname = malloc(sizeof(PgQuery__Node*) * out_node->n_##outname); \
-	  for (int i = 0; i < out_node->n_##outname; i++) \
+	  out->n_##outname = list_length(node->fldname); \
+	  out->outname = malloc(sizeof(PgQuery__Node*) * out->n_##outname); \
+	  for (int i = 0; i < out->n_##outname; i++) \
       { \
 	    PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
 	    pg_query__node__init(__node); \
-	    out_node->outname[i] = __node; \
-	    _outNode(out_node->outname[i], list_nth(node->fldname, i)); \
+	    out->outname[i] = __node; \
+	    _outNode(out->outname[i], list_nth(node->fldname, i)); \
       } \
     }
 
-#define WRITE_BITMAPSET_FIELD(outname, fldname) // FIXME
+#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) // FIXME
 
-#define WRITE_NODE_FIELD(outname, fldname) \
+#define WRITE_NODE_FIELD(outname, outname_json, fldname) \
 	if (true) { \
 	  PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
 	  pg_query__node__init(__node); \
-	  out_node->outname = __node; \
-      _outNode(out_node->outname, &node->fldname); \
+	  out->outname = __node; \
+      _outNode(out->outname, &node->fldname); \
   	}
 
-#define WRITE_NODE_PTR_FIELD(outname, fldname) \
+#define WRITE_NODE_PTR_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 	  PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
 	  pg_query__node__init(__node); \
-	  out_node->outname = __node; \
-      _outNode(out_node->outname, node->fldname); \
+	  out->outname = __node; \
+      _outNode(out->outname, node->fldname); \
 	}
 
-#define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, fldname) \
+#define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
   { \
-    PgQuery__##typename *outname = malloc(sizeof(typename)); \
-    pg_query__##typename_underscore##__init(outname); \
-    _out##typename(outname, &node->fldname); \
+    PgQuery__##typename *__node = malloc(sizeof(typename)); \
+    pg_query__##typename_underscore##__init(__node); \
+    _out##typename(__node, &node->fldname); \
+	out->outname = __node; \
   }
 
-#define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, fldname) \
+#define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
     if (node->fldname != NULL) { \
-	  PgQuery__##typename *outname = malloc(sizeof(typename)); \
-      pg_query__##typename_underscore##__init(outname); \
-      _out##typename(outname, node->fldname); \
+	  PgQuery__##typename *__node = malloc(sizeof(typename)); \
+      pg_query__##typename_underscore##__init(__node); \
+      _out##typename(__node, node->fldname); \
+	  out->outname = __node; \
 	}
 
 static void _outNode(PgQuery__Node*, const void *);
@@ -120,52 +125,52 @@ pg_query_nodes_to_protobuf(const void *obj)
   return protobuf;
 }
 
-#include "pg_query_protobuf_defs.c"
+#include "pg_query_outfuncs_defs.c"
 
 static void
-_outList(PgQuery__List* out_node, const List *node)
+_outList(PgQuery__List* out, const List *node)
 {
 	const ListCell *lc;
 	int i = 0;
-	out_node->n_items = list_length(node);
-	out_node->items = malloc(sizeof(PgQuery__Node*) * out_node->n_items);
+	out->n_items = list_length(node);
+	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out_node->items[i] = malloc(sizeof(PgQuery__Node));
-		pg_query__node__init(out_node->items[i]);
-	    _outNode(out_node->items[i], lfirst(lc));
+		out->items[i] = malloc(sizeof(PgQuery__Node));
+		pg_query__node__init(out->items[i]);
+	    _outNode(out->items[i], lfirst(lc));
 		i++;
     }
 }
 
 static void
-_outIntList(PgQuery__IntList* out_node, const List *node)
+_outIntList(PgQuery__IntList* out, const List *node)
 {
 	const ListCell *lc;
 	int i = 0;
-	out_node->n_items = list_length(node);
-	out_node->items = malloc(sizeof(PgQuery__Node*) * out_node->n_items);
+	out->n_items = list_length(node);
+	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out_node->items[i] = malloc(sizeof(PgQuery__Node));
-		pg_query__node__init(out_node->items[i]);
-	    _outNode(out_node->items[i], lfirst(lc));
+		out->items[i] = malloc(sizeof(PgQuery__Node));
+		pg_query__node__init(out->items[i]);
+	    _outNode(out->items[i], lfirst(lc));
 		i++;
     }
 }
 
 static void
-_outOidList(PgQuery__OidList* out_node, const List *node)
+_outOidList(PgQuery__OidList* out, const List *node)
 {
 	const ListCell *lc;
 	int i = 0;
-	out_node->n_items = list_length(node);
-	out_node->items = malloc(sizeof(PgQuery__Node*) * out_node->n_items);
+	out->n_items = list_length(node);
+	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out_node->items[i] = malloc(sizeof(PgQuery__Node));
-		pg_query__node__init(out_node->items[i]);
-	    _outNode(out_node->items[i], lfirst(lc));
+		out->items[i] = malloc(sizeof(PgQuery__Node));
+		pg_query__node__init(out->items[i]);
+	    _outNode(out->items[i], lfirst(lc));
 		i++;
     }
 }
@@ -173,31 +178,31 @@ _outOidList(PgQuery__OidList* out_node, const List *node)
 // TODO: Add Bitmapset
 
 static void
-_outInteger(PgQuery__Integer* out_node, const Value *node)
+_outInteger(PgQuery__Integer* out, const Value *node)
 {
-  out_node->ival = node->val.ival;
+  out->ival = node->val.ival;
 }
 
 static void
-_outFloat(PgQuery__Float* out_node, const Value *node)
+_outFloat(PgQuery__Float* out, const Value *node)
 {
-  out_node->str = node->val.str;
+  out->str = node->val.str;
 }
 
 static void
-_outString(PgQuery__String* out_node, const Value *node)
+_outString(PgQuery__String* out, const Value *node)
 {
-  out_node->str = node->val.str;
+  out->str = node->val.str;
 }
 
 static void
-_outBitString(PgQuery__BitString* out_node, const Value *node)
+_outBitString(PgQuery__BitString* out, const Value *node)
 {
-  out_node->str = node->val.str;
+  out->str = node->val.str;
 }
 
 static void
-_outNull(PgQuery__Null* out_node, const Value *node)
+_outNull(PgQuery__Null* out, const Value *node)
 {
   // Null has no fields
 }
@@ -239,7 +244,7 @@ _outNode(PgQuery__Node* out, const void *obj)
         OUT_NODE(OidList, oid_list, List, oid_list);
 				break;
 
-			#include "pg_query_protobuf_conds.c"
+			#include "pg_query_outfuncs_conds.c"
 
 			default:
         printf("could not dump unrecognized node type: %d", (int) nodeTag(obj));

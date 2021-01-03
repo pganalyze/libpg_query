@@ -36,6 +36,8 @@ class Generator
     @protobuf_messages = {}
     @protobuf_enums = {}
     @scan_protobuf_tokens = []
+    @enum_to_strings = {}
+    @enum_to_ints = {}
 
     ['nodes/parsenodes', 'nodes/primnodes'].each do |group|
       @struct_defs[group].each do |node_type, struct_def|
@@ -53,56 +55,57 @@ class Generator
 
           type = TYPE_OVERRIDES[[node_type, name]] || orig_type
           outname = OUTNAME_OVERRIDES[[node_type, name]] || underscore(name)
+          outname_json = name
 
           if type == :skip
             # Ignore
           elsif type == 'NodeTag'
             # Nothing
           elsif ['char'].include?(type)
-            @outmethods[node_type] += format("  WRITE_CHAR_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_CHAR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['bool'].include?(type)
-            @outmethods[node_type] += format("  WRITE_BOOL_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  bool %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['long'].include?(type)
-            @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['int', 'int16', 'int32', 'AttrNumber'].include?(type)
-            @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['uint', 'uint16', 'uint32', 'Index', 'bits32', 'Oid', 'AclMode', 'SubTransactionId'].include?(type)
-            @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type == 'char*'
-            @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['float', 'double', 'Cost', 'Selectivity'].include?(type)
-            @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  double %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Bitmapset*', 'Relids'].include?(type)
-            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s);\n", outname, name) # FIXME
+            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name) # FIXME
             # FIXME: Add to protobuf
           elsif ['Value'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Value', 'Value*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['List*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  repeated Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Node*', 'Expr*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s);\n", outname, name)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Expr'].include?(type)
@@ -110,17 +113,17 @@ class Generator
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['CreateStmt'].include?(type)
-            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_FIELD(%s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, name)
+            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif @nodetypes.include?(type[0..-2])
-            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, name)
+            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum
-            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s, %s);\n", type, outname, name)
+            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s, %s, %s);\n", type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type, outname, protobuf_field_count, name)
             protobuf_field_count += 1
           end
@@ -132,14 +135,22 @@ class Generator
       @enum_defs[group].each do |enum_type, enum_def|
         next if enum_type == 'NodeTag'
 
-        @protobuf_enums[enum_type] = ''
-        enum_field_count = 0
+        @protobuf_enums[enum_type] = format("enum %s\n{\n", enum_type)
+        @enum_to_strings[enum_type] = format("static const char*\n_enumToString%s(%s value) {\n  switch(value) {\n", enum_type, enum_type)
+        @enum_to_ints[enum_type] = format("static int\n_enumToInt%s(%s value) {\n  switch(value) {\n", enum_type, enum_type)
+        protobuf_field = 0
         enum_def['values'].each do |value|
           next unless value['name']
 
-          @protobuf_enums[enum_type] += format("  %s = %d;\n", value['name'], enum_field_count)
-          enum_field_count += 1
+          @protobuf_enums[enum_type] += format("  %s = %d;\n", value['name'], protobuf_field)
+          @enum_to_strings[enum_type] += format("    case %s: return \"%s\";\n", value['name'], value['name'])
+          @enum_to_ints[enum_type] += format("    case %s: return %d;\n", value['name'], protobuf_field)
+          protobuf_field += 1
         end
+
+        @protobuf_enums[enum_type] += "}"
+        @enum_to_strings[enum_type] += "  }\n  return NULL;\n}"
+        @enum_to_ints[enum_type] += "  }\n  return -1;\n}"
       end
     end
 
@@ -177,10 +188,10 @@ class Generator
 
       out_type = type.gsub(/_/, '')
 
-      defs += format("static void _out%s(%s * out_node, const %s *node);\n", out_type, 'PgQuery__' + out_type, type)
+      defs += format("static void _out%s(OUT_TYPE(%s) out_node, const %s *node);\n", out_type, out_type, type)
 
       impls += "static void\n"
-      impls += format("_out%s(%s * out_node, const %s *node)\n", out_type, 'PgQuery__' + out_type, type)
+      impls += format("_out%s(OUT_TYPE(%s) out, const %s *node)\n", out_type, out_type, type)
       impls += "{\n"
       impls += outmethod
       impls += "}\n"
@@ -201,11 +212,10 @@ class Generator
       protobuf_nodes << format("%s %s = %d [json_name=\"%s\"];", type, underscore(type), protobuf_nodes.size + 1, type)
     end
 
-    @protobuf_enums.each do |type, out|
-      protobuf += format("enum %s\n{\n", type)
-      protobuf += out
-      protobuf += "}\n\n"
-    end
+    protobuf += @protobuf_enums.values.join("\n\n")
+
+    File.write('./src/pg_query_outfuncs_defs.c', defs + @enum_to_strings.values.join("\n\n") + @enum_to_ints.values.join("\n\n") + impls)
+    File.write('./src/pg_query_outfuncs_conds.c', conds)
 
     protobuf_header = "// This file is autogenerated by ./scripts/generate_protobuf/outfuncs.rb
 
@@ -261,8 +271,6 @@ message IntList
 
 "
 
-    File.write('./src/pg_query_protobuf_defs.c', defs + impls)
-    File.write('./src/pg_query_protobuf_conds.c', conds)
     File.write('./protobuf/parse_tree.proto', protobuf_header + protobuf)
 
     scan_protobuf = "// This file is autogenerated by ./scripts/generate_protobuf/outfuncs.rb
