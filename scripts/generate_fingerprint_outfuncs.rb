@@ -159,6 +159,7 @@ class Generator
     ['DeallocateStmt', 'name'] => :skip,
     ['TransactionStmt', 'options'] => :skip,
     ['TransactionStmt', 'gid'] => :skip,
+    ['TransactionStmt', 'savepoint_name'] => :skip,
     ['RawStmt', 'stmt_len'] => :skip,
     ['RawStmt', 'stmt_location'] => :skip,
     ['DeclareCursorStmt', 'portalname'] => :skip,
