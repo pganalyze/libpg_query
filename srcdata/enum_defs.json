@@ -3228,16 +3228,16 @@
           "comment": ""
         },
         {
+          "name": "LIMIT_OPTION_DEFAULT",
+          "comment": "/* No limit present */"
+        },
+        {
           "name": "LIMIT_OPTION_COUNT",
           "comment": "/* FETCH FIRST... ONLY */"
         },
         {
           "name": "LIMIT_OPTION_WITH_TIES",
           "comment": "/* FETCH FIRST... WITH TIES */"
-        },
-        {
-          "name": "LIMIT_OPTION_DEFAULT",
-          "comment": "/* No limit present */"
         }
       ],
       "comment": "/*\n * LimitOption -\n *\tLIMIT option of query\n *\n * This is needed in both parsenodes.h and plannodes.h, so put it here...\n */\n"

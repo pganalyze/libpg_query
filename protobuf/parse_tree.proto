@@ -2876,9 +2876,9 @@ enum OnConflictAction
 
 enum LimitOption
 {
-  LIMIT_OPTION_COUNT = 0;
-  LIMIT_OPTION_WITH_TIES = 1;
-  LIMIT_OPTION_DEFAULT = 2;
+  LIMIT_OPTION_DEFAULT = 0;
+  LIMIT_OPTION_COUNT = 1;
+  LIMIT_OPTION_WITH_TIES = 2;
 }
 
 enum LockClauseStrength
