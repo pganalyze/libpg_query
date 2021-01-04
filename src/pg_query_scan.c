@@ -5,7 +5,7 @@
 #include "parser/gramparse.h"
 #include "lib/stringinfo.h"
 
-#include "protobuf/scan_output.pb-c.h"
+#include "protobuf/pg_query.pb-c.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -32,7 +32,7 @@ PgQueryScanResult pg_query_scan(const char* input)
   core_yy_extra_type yyextra;
   core_YYSTYPE yylval;
   YYLTYPE    yylloc;
-  PgQuery__ScanOutput output = PG_QUERY__SCAN_OUTPUT__INIT;
+  PgQuery__ScanResult scan_result = PG_QUERY__SCAN_RESULT__INIT;
   PgQuery__ScanToken **output_tokens;
   size_t token_count = 0;
   size_t i;
@@ -110,11 +110,12 @@ PgQueryScanResult pg_query_scan(const char* input)
 
     scanner_finish(yyscanner);
 
-    output.n_tokens = token_count;
-    output.tokens = output_tokens;
-    result.pbuf_len = pg_query__scan_output__get_packed_size(&output);
+    scan_result.version = PG_VERSION_NUM;
+    scan_result.n_tokens = token_count;
+    scan_result.tokens = output_tokens;
+    result.pbuf_len = pg_query__scan_result__get_packed_size(&scan_result);
     result.pbuf = malloc(result.pbuf_len);
-    pg_query__scan_output__pack(&output, result.pbuf);
+    pg_query__scan_result__pack(&scan_result, result.pbuf);
 
     for (i = 0; i < token_count; i++) {
       free(output_tokens[i]);

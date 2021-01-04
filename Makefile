@@ -7,7 +7,7 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 13.1
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/scan_output.pb-c.c protobuf/parse_tree.pb-c.c
+SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/pg_query.pb-c.c
 OBJ_FILES := $(SRC_FILES:.c=.o)
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
@@ -112,15 +112,10 @@ extract_source: $(PGDIR)
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
-protobuf/scan_output.pb-c.c protobuf/scan_output.pb-c.h: protobuf/scan_output.proto
-	protoc --c_out=. protobuf/scan_output.proto
+protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
+	protoc --c_out=. protobuf/pg_query.proto
 
-protobuf/parse_tree.pb-c.c protobuf/parse_tree.pb-c.h: protobuf/parse_tree.proto
-	protoc --c_out=. protobuf/parse_tree.proto
-
-src/pg_query_protobuf.c: protobuf/parse_tree.pb-c.h
-
-src/pg_query_scan.c: protobuf/scan_output.pb-c.h
+src/pg_query_protobuf.c src/pg_query_scan.c: protobuf/pg_query.pb-c.h
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)

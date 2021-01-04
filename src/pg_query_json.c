@@ -16,10 +16,10 @@ static void _outNode(StringInfo str, const void *obj);
 
 #define OUT_TYPE(typename) StringInfo
 
-#define OUT_NODE(typename, typename_underscore, typename_cast, fldname) \
+#define OUT_NODE(typename, typename_c, typename_underscore, typename_cast, fldname) \
   { \
-    WRITE_NODE_TYPE(CppAsString(typename_cast)); \
-    _out##typename(out, (const typename_cast *) obj); \
+    WRITE_NODE_TYPE(CppAsString(typename)); \
+    _out##typename_c(out, (const typename_cast *) obj); \
   }
 
 /* Write the label for the node type */
@@ -118,9 +118,12 @@ static void _outNode(StringInfo str, const void *obj);
 	}
 
 #define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
-	(appendStringInfo(out, "\"" CppAsString(outname_json) "\": "), \
-	 _outBitmapset(out, node->fldname), \
-	 appendStringInfo(out, ", "))
+	{ \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\": "); \
+		_outBitmapset(out, node->fldname); \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, ", "); \
+	}
 
 
 static void
@@ -128,7 +131,7 @@ _outList(StringInfo out, const List *node)
 {
 	const ListCell *lc;
 
-	// Simple lists are frequent structures - we don't make them into full nodes to avoid super-verbose output
+	appendStringInfo(out, "\"items\": ");
 	appendStringInfoChar(out, '[');
 
 	foreach(lc, node)
@@ -140,6 +143,7 @@ _outList(StringInfo out, const List *node)
 	}
 
 	appendStringInfoChar(out, ']');
+	appendStringInfo(out, ", ");
 }
 
 static void
@@ -147,7 +151,6 @@ _outIntList(StringInfo out, const List *node)
 {
 	const ListCell *lc;
 
-	WRITE_NODE_TYPE("IntList");
 	appendStringInfo(out, "\"items\": ");
 	appendStringInfoChar(out, '[');
 
@@ -168,7 +171,6 @@ _outOidList(StringInfo out, const List *node)
 {
 	const ListCell *lc;
 
-	WRITE_NODE_TYPE("OidList");
 	appendStringInfo(out, "\"items\": ");
 	appendStringInfoChar(out, '[');
 
@@ -185,32 +187,14 @@ _outOidList(StringInfo out, const List *node)
 }
 
 static void
-_outBitmapset(StringInfo out, const Bitmapset *bms)
-{
-	Bitmapset	*tmpset;
-	int			x;
-
-	appendStringInfoChar(out, '[');
-	/*appendStringInfoChar(out, 'b');*/
-	tmpset = bms_copy(bms);
-	while ((x = bms_first_member(tmpset)) >= 0)
-		appendStringInfo(out, "%d, ", x);
-	bms_free(tmpset);
-	removeTrailingDelimiter(out);
-	appendStringInfoChar(out, ']');
-}
-
-static void
 _outInteger(StringInfo out, const Value *node)
 {
-	WRITE_NODE_TYPE("Integer");
 	appendStringInfo(out, "\"ival\": %d, ", node->val.ival);
 }
 
 static void
 _outFloat(StringInfo out, const Value *node)
 {
-	WRITE_NODE_TYPE("Float");
 	appendStringInfo(out, "\"str\": ");
 	_outToken(out, node->val.str);
 	appendStringInfo(out, ", ");
@@ -219,7 +203,6 @@ _outFloat(StringInfo out, const Value *node)
 static void
 _outString(StringInfo out, const Value *node)
 {
-	WRITE_NODE_TYPE("String");
 	appendStringInfo(out, "\"str\": ");
 	_outToken(out, node->val.str);
 	appendStringInfo(out, ", ");
@@ -228,7 +211,6 @@ _outString(StringInfo out, const Value *node)
 static void
 _outBitString(StringInfo out, const Value *node)
 {
-	WRITE_NODE_TYPE("BitString");
 	appendStringInfo(out, "\"str\": ");
 	_outToken(out, node->val.str);
 	appendStringInfo(out, ", ");
@@ -237,7 +219,25 @@ _outBitString(StringInfo out, const Value *node)
 static void
 _outNull(StringInfo out, const Value *node)
 {
-	WRITE_NODE_TYPE("Null");
+	// No fields
+}
+
+static void
+_outBitmapset(StringInfo out, const Bitmapset *bms)
+{
+	Bitmapset	*tmpset;
+	int			x;
+
+	WRITE_NODE_TYPE("Bitmapset");
+	appendStringInfo(out, "\"words\": ");
+	appendStringInfoChar(out, '[');
+	tmpset = bms_copy(bms);
+	while ((x = bms_first_member(tmpset)) >= 0)
+		appendStringInfo(out, "%d, ", x);
+	bms_free(tmpset);
+	removeTrailingDelimiter(out);
+	appendStringInfoChar(out, ']');
+	appendStringInfo(out, ", ");
 }
 
 #include "pg_query_outfuncs_defs.c"
@@ -249,37 +249,11 @@ _outNode(StringInfo out, const void *obj)
 	{
 		appendStringInfoString(out, "null");
 	}
-	else if (IsA(obj, List))
-	{
-		_outList(out, obj);
-	}
 	else
 	{
 		appendStringInfoChar(out, '{');
 		switch (nodeTag(obj))
 		{
-			case T_Integer:
-				_outInteger(out, obj);
-				break;
-			case T_Float:
-				_outFloat(out, obj);
-				break;
-			case T_String:
-				_outString(out, obj);
-				break;
-			case T_BitString:
-				_outBitString(out, obj);
-				break;
-			case T_Null:
-				_outNull(out, obj);
-				break;
-			case T_IntList:
-				_outIntList(out, obj);
-				break;
-			case T_OidList:
-				_outOidList(out, obj);
-				break;
-
 			#include "pg_query_outfuncs_conds.c"
 
 			default:
@@ -298,13 +272,35 @@ char *
 pg_query_nodes_to_json(const void *obj)
 {
 	StringInfoData out;
+	const ListCell *lc;
 
 	initStringInfo(&out);
 
 	if (obj == NULL) /* Make sure we generate valid JSON for empty queries */
+	{
 		appendStringInfoString(&out, "[]");
+	}
 	else
-		_outNode(&out, obj);
+	{
+		appendStringInfoString(&out, "{");
+		appendStringInfo(&out, "\"version\": %d, ", PG_VERSION_NUM);
+		appendStringInfoString(&out, "\"stmts\": ");
+		appendStringInfoChar(&out, '[');
+
+		foreach(lc, obj)
+		{
+			appendStringInfoChar(&out, '{');
+			_outRawStmt(&out, lfirst(lc));
+			removeTrailingDelimiter(&out);
+			appendStringInfoChar(&out, '}');
+
+			if (lnext(obj, lc))
+				appendStringInfoString(&out, ", ");
+		}
+
+		appendStringInfoChar(&out, ']');
+		appendStringInfoString(&out, "}");
+	}
 
 	return out.data;
 }
