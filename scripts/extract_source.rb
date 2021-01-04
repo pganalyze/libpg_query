@@ -77,6 +77,7 @@ class Runner
       @basepath + 'src/backend/libpq/be-secure-openssl.c', # OpenSSL include error
       @basepath + 'src/backend/utils/adt/levenshtein.c', # Built through varlena.c
       @basepath + 'src/backend/utils/adt/like_match.c', # Built through like.c
+      @basepath + 'src/backend/utils/adt/jsonpath_scan.c', # Built through jsonpath.c
       @basepath + 'src/backend/utils/misc/guc-file.c', # Built through guc.c
       @basepath + 'src/backend/utils/sort/qsort_tuple.c', # Built through tuplesort.c
       @basepath + 'src/backend/bootstrap/bootscanner.c', # Built through bootparse.c
@@ -88,8 +89,8 @@ class Runner
       @basepath + 'src/backend/regex/regc_nfa.c', # Built through regcomp.c
       @basepath + 'src/backend/regex/rege_dfa.c', # Built through regexec.c
       @basepath + 'src/backend/replication/repl_scanner.c', # Built through repl_gram.c
-      @basepath + 'src/backend/replication/libpqwalreceiver/libpqwalreceiver.c',
-      @basepath + 'src/backend/replication/syncrep_scanner.c',
+      @basepath + 'src/backend/replication/libpqwalreceiver/libpqwalreceiver.c', # Dynamic module
+      @basepath + 'src/backend/replication/syncrep_scanner.c', # Built through syncrep.c
       @basepath + 'src/backend/port/posix_sema.c', # Linux only
       @basepath + 'src/common/fe_memutils.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/restricted_token.c', # This file is not expected to be compiled for backend code
@@ -100,7 +101,20 @@ class Runner
       @basepath + 'src/port/dirent.c', # Win32 only
       @basepath + 'src/port/win32error.c', # Win32 only
       @basepath + 'src/port/win32env.c', # Win32 only
-      @basepath + 'src/port/win32security.c' # Win32 only
+      @basepath + 'src/port/win32security.c', # Win32 only
+      @basepath + 'src/port/gettimeofday.c', # Win32 only
+      @basepath + 'src/port/strlcpy.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/strlcat.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/unsetenv.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/getaddrinfo.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/getrusage.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/pg_crc32c_armv8.c', # Can't be parsed outside of ARMv8 compatible environments
+      @basepath + 'src/port/pg_crc32c_armv8_choose.c', # Can't be parsed outside of ARMv8 compatible environments
+      @basepath + 'src/backend/jit/llvm/llvmjit_expr.c', # Requires LLVM-C library (which we don't want to require)
+      @basepath + 'src/backend/jit/llvm/llvmjit_deform.c', # Requires LLVM-C library (which we don't want to require)
+      @basepath + 'src/backend/jit/llvm/llvmjit.c', # Requires LLVM-C library (which we don't want to require)
+      @basepath + 'src/backend/libpq/be-secure-gssapi.c', # Requires GSSAPI (which we don't want to require)
+      @basepath + 'src/common/protocol_openssl.c', # Requires OpenSSL (which we don't want to require)
     ] -
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -
