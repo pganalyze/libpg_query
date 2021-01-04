@@ -197,7 +197,7 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', '/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
+    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
     cursor = translation_unit.cursor
 
     func_cursor = nil
