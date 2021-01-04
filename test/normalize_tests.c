@@ -5,6 +5,8 @@ const char* tests[] = {
 	"SELECT $1, $2",
   "ALTER ROLE postgres LOGIN SUPERUSER PASSWORD 'xyz'",
   "ALTER ROLE postgres LOGIN SUPERUSER PASSWORD $1",
+  "CREATE ROLE postgres ENCRYPTED PASSWORD 'xyz'",
+  "CREATE ROLE postgres ENCRYPTED PASSWORD $1",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
