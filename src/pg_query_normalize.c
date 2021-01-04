@@ -32,6 +32,10 @@ typedef struct pgssConstLocations
 
 	/* highest Param id we've seen, in order to start normalization correctly */
 	int			highest_extern_param_id;
+
+	/* query text */
+	const char * query;
+	int			query_len;
 } pgssConstLocations;
 
 /*
@@ -192,10 +196,10 @@ fill_in_constant_lengths(pgssConstLocations *jstate, const char *query)
  * Returns a palloc'd string.
  */
 static char *
-generate_normalized_query(pgssConstLocations *jstate, const char *query,
-						  int query_loc, int *query_len_p, int encoding)
+generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_len_p, int encoding)
 {
 	char	   *norm_query;
+	const char *query = jstate->query;
 	int			query_len = *query_len_p;
 	int			i,
 				norm_query_buflen,		/* Space allowed for norm_query */
@@ -311,6 +315,13 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	}
 	else if (IsA(node, DefElem))
 	{
+		DefElem * defElem = (DefElem *) node;
+		if (defElem->arg != NULL && IsA(defElem->arg, String)) {
+			for (int i = defElem->location; i < jstate->query_len; i++) {
+				if (jstate->query[i] == '\'')
+					RecordConstLocation(jstate, i);
+			}
+		}
 		return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
 	}
 	else if (IsA(node, RawStmt))
@@ -328,6 +339,10 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	else if (IsA(node, ExplainStmt))
 	{
 		return const_record_walker((Node *) ((ExplainStmt *) node)->query, jstate);
+	}
+	else if (IsA(node, CreateRoleStmt))
+	{
+		return const_record_walker((Node *) ((CreateRoleStmt *) node)->options, jstate);
 	}
 	else if (IsA(node, AlterRoleStmt))
 	{
@@ -369,19 +384,22 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		/* Parse query */
 		tree = raw_parser(input);
 
+		query_len = (int) strlen(input);
+
 		/* Set up workspace for constant recording */
 		jstate.clocations_buf_size = 32;
 		jstate.clocations = (pgssLocationLen *)
 			palloc(jstate.clocations_buf_size * sizeof(pgssLocationLen));
 		jstate.clocations_count = 0;
 		jstate.highest_extern_param_id = 0;
+		jstate.query = input;
+		jstate.query_len = query_len;
 
 		/* Walk tree and record const locations */
 		const_record_walker((Node *) tree, &jstate);
 
 		/* Normalize query */
-		query_len = (int) strlen(input);
-		result.normalized_query = strdup(generate_normalized_query(&jstate, input, 0, &query_len, PG_UTF8));
+		result.normalized_query = strdup(generate_normalized_query(&jstate, 0, &query_len, PG_UTF8));
 	}
 	PG_CATCH();
 	{
