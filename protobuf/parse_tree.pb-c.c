@@ -35955,18 +35955,18 @@ const ProtobufCEnumDescriptor pg_query__on_conflict_action__descriptor =
 };
 static const ProtobufCEnumValue pg_query__limit_option__enum_values_by_number[3] =
 {
-  { "LIMIT_OPTION_COUNT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_COUNT", 0 },
-  { "LIMIT_OPTION_WITH_TIES", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_WITH_TIES", 1 },
-  { "LIMIT_OPTION_DEFAULT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_DEFAULT", 2 },
+  { "LIMIT_OPTION_DEFAULT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_DEFAULT", 0 },
+  { "LIMIT_OPTION_COUNT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_COUNT", 1 },
+  { "LIMIT_OPTION_WITH_TIES", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_WITH_TIES", 2 },
 };
 static const ProtobufCIntRange pg_query__limit_option__value_ranges[] = {
 {0, 0},{0, 3}
 };
 static const ProtobufCEnumValueIndex pg_query__limit_option__enum_values_by_name[3] =
 {
-  { "LIMIT_OPTION_COUNT", 0 },
-  { "LIMIT_OPTION_DEFAULT", 2 },
-  { "LIMIT_OPTION_WITH_TIES", 1 },
+  { "LIMIT_OPTION_COUNT", 1 },
+  { "LIMIT_OPTION_DEFAULT", 0 },
+  { "LIMIT_OPTION_WITH_TIES", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__limit_option__descriptor =
 {

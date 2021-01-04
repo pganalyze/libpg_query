@@ -942,9 +942,9 @@ _enumToStringOnConflictAction(OnConflictAction value) {
 static const char*
 _enumToStringLimitOption(LimitOption value) {
   switch(value) {
+    case LIMIT_OPTION_DEFAULT: return "LIMIT_OPTION_DEFAULT";
     case LIMIT_OPTION_COUNT: return "LIMIT_OPTION_COUNT";
     case LIMIT_OPTION_WITH_TIES: return "LIMIT_OPTION_WITH_TIES";
-    case LIMIT_OPTION_DEFAULT: return "LIMIT_OPTION_DEFAULT";
   }
   return NULL;
 }
@@ -1704,9 +1704,9 @@ _enumToIntOnConflictAction(OnConflictAction value) {
 static int
 _enumToIntLimitOption(LimitOption value) {
   switch(value) {
-    case LIMIT_OPTION_COUNT: return 0;
-    case LIMIT_OPTION_WITH_TIES: return 1;
-    case LIMIT_OPTION_DEFAULT: return 2;
+    case LIMIT_OPTION_DEFAULT: return 0;
+    case LIMIT_OPTION_COUNT: return 1;
+    case LIMIT_OPTION_WITH_TIES: return 2;
   }
   return -1;
 }

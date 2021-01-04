@@ -5508,9 +5508,9 @@ case 46:
 YY_RULE_SETUP
 #line 836 "scan.l"
 {
-          /* ignore E */
-          return yytext[1];
-        }
+					/* ignore E */
+					return yytext[1];
+				}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
@@ -5648,24 +5648,25 @@ YY_RULE_SETUP
 						}
 					}
 
-          /* We don't accept leading ? in any multi-character operators
-           * except for those in use by hstore, JSON and geometric operators.
-           *
-           * We don't accept contained or trailing ? in any
-           * multi-character operators.
-           *
-           * This is necessary in order to support normalized queries without
-           * spacing between ? as a substition character and a simple operator (e.g. "?=?")
-           */
-          if (yytext[0] == '?' &&
-              strcmp(yytext, "?|") != 0 && strcmp(yytext, "?&") != 0 &&
-              strcmp(yytext, "?#") != 0 && strcmp(yytext, "?-") != 0 &&
-              strcmp(yytext, "?-|") != 0 && strcmp(yytext, "?||") != 0)
-            nchars = 1;
+					/* We don't accept leading ? in any multi-character operators
+					 * except for those in use by hstore, JSON and geometric operators.
+					 *
+					 * We don't accept contained or trailing ? in any
+					 * multi-character operators, except for those in use by JSON operators.
+					 *
+					 * This is necessary in order to support normalized queries without
+					 * spacing between ? as a substition character and a simple operator (e.g. "?=?")
+					 */
+					if (yytext[0] == '?' &&
+					  strcmp(yytext, "?|") != 0 && strcmp(yytext, "?&") != 0 &&
+					  strcmp(yytext, "?#") != 0 && strcmp(yytext, "?-") != 0 &&
+					  strcmp(yytext, "?-|") != 0 && strcmp(yytext, "?||") != 0)
+						nchars = 1;
 
-          if (yytext[0] != '?' && strchr(yytext, '?'))
-            /* Lex up to just before the ? character */
-            nchars = strchr(yytext, '?') - yytext;
+					if (yytext[0] != '?' && strchr(yytext, '?') &&
+					  strcmp(yytext, "@?") != 0)
+						/* Lex up to just before the ? character */
+						nchars = strchr(yytext, '?') - yytext;
 
 					SET_YYLLOC();
 
@@ -5718,7 +5719,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 1015 "scan.l"
+#line 1016 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->ival = atol(yytext + 1);
@@ -5727,7 +5728,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 1021 "scan.l"
+#line 1022 "scan.l"
 {
 					SET_YYLLOC();
 					return process_integer_literal(yytext, yylval);
@@ -5735,7 +5736,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 1025 "scan.l"
+#line 1026 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->str = pstrdup(yytext);
@@ -5744,7 +5745,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 1030 "scan.l"
+#line 1031 "scan.l"
 {
 					/* throw back the .., and treat as integer */
 					yyless(yyleng - 2);
@@ -5754,7 +5755,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 1036 "scan.l"
+#line 1037 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->str = pstrdup(yytext);
@@ -5763,7 +5764,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 1041 "scan.l"
+#line 1042 "scan.l"
 {
 					/*
 					 * throw back the [Ee], and figure out whether what
@@ -5776,7 +5777,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 1050 "scan.l"
+#line 1051 "scan.l"
 {
 					/* throw back the [Ee][+-], and proceed as above */
 					yyless(yyleng - 2);
@@ -5786,7 +5787,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 1058 "scan.l"
+#line 1059 "scan.l"
 {
 					int			kwnum;
 					char	   *ident;
@@ -5820,14 +5821,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 1089 "scan.l"
+#line 1090 "scan.l"
 {
 					SET_YYLLOC();
 					return yytext[0];
 				}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 1094 "scan.l"
+#line 1095 "scan.l"
 {
 					SET_YYLLOC();
 					yyterminate();
@@ -5835,10 +5836,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 1099 "scan.l"
+#line 1100 "scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 5793 "scan.c"
+#line 5794 "scan.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -6707,7 +6708,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 1099 "scan.l"
+#line 1100 "scan.l"
 
 
 
