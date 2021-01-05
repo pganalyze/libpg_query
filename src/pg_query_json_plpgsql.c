@@ -5,64 +5,64 @@
 
 /* Write the label for the node type */
 #define WRITE_NODE_TYPE(nodelabel) \
-	appendStringInfoString(out, "\"" nodelabel "\": {")
+	appendStringInfoString(out, "\"" nodelabel "\":{")
 
 /* Write an integer field */
 #define WRITE_INT_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\": %d, ", node->fldname); \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%d,", node->fldname); \
 	}
 
 /* Write a long-integer field */
 #define WRITE_LONG_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\": %ld, ", node->fldname); \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%ld,", node->fldname); \
 	}
 
 /* Write an enumerated-type field as an integer code */
 #define WRITE_ENUM_FIELD(outname, outname_json, fldname) \
-	appendStringInfo(out, "\"" CppAsString(outname_json) "\": %d, ", \
+	appendStringInfo(out, "\"" CppAsString(outname_json) "\":%d,", \
 					 (int) node->fldname)
 
 /* Write a boolean field */
 #define WRITE_BOOL_FIELD(outname, outname_json, fldname) \
 	if (node->fldname) { \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\": %s, ", \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%s,", \
 						booltostr(node->fldname)); \
 	}
 
 /* Write a character-string (possibly NULL) field */
 #define WRITE_STRING_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\": "); \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 		_outToken(out, node->fldname); \
-		appendStringInfo(out, ", "); \
+		appendStringInfo(out, ","); \
 	}
 
 #define WRITE_INT_VALUE(fldname, value) \
 	if (value != 0) { \
-		appendStringInfo(out, "\"" CppAsString(fldname) "\": %d, ", value); \
+		appendStringInfo(out, "\"" CppAsString(fldname) "\":%d,", value); \
 	}
 
 #define WRITE_STRING_VALUE(fldname, value) \
 	if (true) { \
-		appendStringInfo(out, "\"" CppAsString(fldname) "\": "); \
+		appendStringInfo(out, "\"" CppAsString(fldname) "\":"); \
 		_outToken(out, value); \
-		appendStringInfo(out, ", "); \
+		appendStringInfo(out, ","); \
 	}
 
 #define WRITE_OBJ_FIELD(fldname, outfunc) \
 	if (node->fldname != NULL) { \
-		 appendStringInfo(out, "\"" CppAsString(fldname) "\": {"); \
+		 appendStringInfo(out, "\"" CppAsString(fldname) "\":{"); \
 		 outfunc(out, node->fldname); \
 		 removeTrailingDelimiter(out); \
-		 appendStringInfo(out, "}}, "); \
+		 appendStringInfo(out, "}},"); \
 	}
 
 #define WRITE_LIST_FIELD(fldname, fldtype, outfunc) \
 	if (node->fldname != NULL) { \
 		ListCell *lc; \
-		appendStringInfo(out, "\"" CppAsString(fldname) "\": ["); \
+		appendStringInfo(out, "\"" CppAsString(fldname) "\":["); \
 		foreach(lc, node->fldname) { \
 			appendStringInfoString(out, "{"); \
 			outfunc(out, (fldtype *) lfirst(lc)); \
@@ -70,13 +70,13 @@
 			appendStringInfoString(out, "}},"); \
 		} \
 		removeTrailingDelimiter(out); \
-		appendStringInfoString(out, "], "); \
+		appendStringInfoString(out, "],"); \
   }
 
   #define WRITE_STATEMENTS_FIELD(fldname) \
 	if (node->fldname != NULL) { \
 		ListCell *lc; \
-		appendStringInfo(out, "\"" CppAsString(fldname) "\": ["); \
+		appendStringInfo(out, "\"" CppAsString(fldname) "\":["); \
 		foreach(lc, node->fldname) { \
 			dump_stmt(out, (PLpgSQL_stmt *) lfirst(lc)); \
 		} \
@@ -212,7 +212,7 @@ dump_stmt(StringInfo out, PLpgSQL_stmt *node)
 			break;
 	}
 	removeTrailingDelimiter(out);
-	appendStringInfoString(out, "}}, ");
+	appendStringInfoString(out, "}},");
 }
 
 static void
@@ -243,7 +243,7 @@ dump_exception(StringInfo out, PLpgSQL_exception *node)
 
 	WRITE_NODE_TYPE("PLpgSQL_exception");
 
-	appendStringInfo(out, "\"conditions\": [");
+	appendStringInfo(out, "\"conditions\":[");
 	for (cond = node->conditions; cond; cond = cond->next)
 	{
 		appendStringInfoString(out, "{");
@@ -252,7 +252,7 @@ dump_exception(StringInfo out, PLpgSQL_exception *node)
 		appendStringInfoString(out, "}},");
 	}
 	removeTrailingDelimiter(out);
-	appendStringInfoString(out, "], ");
+	appendStringInfoString(out, "],");
 
 	WRITE_STATEMENTS_FIELD(action);
 }
@@ -582,7 +582,7 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 
 	WRITE_NODE_TYPE("PLpgSQL_function");
 
-	appendStringInfoString(out, "\"datums\": ");
+	appendStringInfoString(out, "\"datums\":");
 	appendStringInfoChar(out, '[');
 	for (i = 0; i < node->ndatums; i++)
 	{
@@ -611,10 +611,10 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 					 (int) d->dtype);
 		}
 		removeTrailingDelimiter(out);
-		appendStringInfoString(out, "}}, ");
+		appendStringInfoString(out, "}},");
 	}
 	removeTrailingDelimiter(out);
-	appendStringInfoString(out, "], ");
+	appendStringInfoString(out, "],");
 
 	WRITE_BLOCK_FIELD(action);
 }
@@ -673,7 +673,7 @@ dump_row(StringInfo out, PLpgSQL_row *node)
 	WRITE_STRING_FIELD(refname, refname, refname);
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 
-	appendStringInfoString(out, "\"fields\": ");
+	appendStringInfoString(out, "\"fields\":");
 	appendStringInfoChar(out, '[');
 
 	for (i = 0; i < node->nfields; i++)
@@ -683,14 +683,14 @@ dump_row(StringInfo out, PLpgSQL_row *node)
 			WRITE_STRING_VALUE(name, node->fieldnames[i]);
 			WRITE_INT_VALUE(varno, node->varnos[i]);
 			removeTrailingDelimiter(out);
-			appendStringInfoString(out, "}, ");
+			appendStringInfoString(out, "},");
 		} else {
-			appendStringInfoString(out, "null, ");
+			appendStringInfoString(out, "null,");
 		}
 	}
 	removeTrailingDelimiter(out);
 
-	appendStringInfoString(out, "], ");
+	appendStringInfoString(out, "],");
 }
 
 static void

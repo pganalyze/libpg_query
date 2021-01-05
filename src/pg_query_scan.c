@@ -1,6 +1,5 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
-#include "pg_query_json.h"
 
 #include "parser/gramparse.h"
 #include "lib/stringinfo.h"
