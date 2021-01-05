@@ -5,10 +5,7 @@
 static void
 removeTrailingDelimiter(StringInfo str)
 {
-	if (str->len >= 2 && str->data[str->len - 2] == ',' && str->data[str->len - 1] == ' ') {
-		str->len -= 2;
-		str->data[str->len] = '\0';
-	} else if (str->len >= 1 && str->data[str->len - 1] == ',') {
+	if (str->len >= 1 && str->data[str->len - 1] == ',') {
 		str->len -= 1;
 		str->data[str->len] = '\0';
 	}
@@ -53,7 +50,7 @@ _outToken(StringInfo buf, const char *str)
 				appendStringInfoString(buf, "\\\\");
 				break;
 			default:
-				if ((unsigned char) *p < ' ')
+				if ((unsigned char) *p < ' ' || *p == '<' || *p == '>')
 					appendStringInfo(buf, "\\u%04x", (int) *p);
 				else
 					appendStringInfoCharMacro(buf, *p);

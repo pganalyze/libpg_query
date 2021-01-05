@@ -1,223 +1,225 @@
-static void _outAlias(OUT_TYPE(Alias) out_node, const Alias *node);
-static void _outRangeVar(OUT_TYPE(RangeVar) out_node, const RangeVar *node);
-static void _outTableFunc(OUT_TYPE(TableFunc) out_node, const TableFunc *node);
-static void _outExpr(OUT_TYPE(Expr) out_node, const Expr *node);
-static void _outVar(OUT_TYPE(Var) out_node, const Var *node);
-static void _outParam(OUT_TYPE(Param) out_node, const Param *node);
-static void _outAggref(OUT_TYPE(Aggref) out_node, const Aggref *node);
-static void _outGroupingFunc(OUT_TYPE(GroupingFunc) out_node, const GroupingFunc *node);
-static void _outWindowFunc(OUT_TYPE(WindowFunc) out_node, const WindowFunc *node);
-static void _outSubscriptingRef(OUT_TYPE(SubscriptingRef) out_node, const SubscriptingRef *node);
-static void _outFuncExpr(OUT_TYPE(FuncExpr) out_node, const FuncExpr *node);
-static void _outNamedArgExpr(OUT_TYPE(NamedArgExpr) out_node, const NamedArgExpr *node);
-static void _outOpExpr(OUT_TYPE(OpExpr) out_node, const OpExpr *node);
-static void _outDistinctExpr(OUT_TYPE(DistinctExpr) out_node, const DistinctExpr *node);
-static void _outNullIfExpr(OUT_TYPE(NullIfExpr) out_node, const NullIfExpr *node);
-static void _outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr) out_node, const ScalarArrayOpExpr *node);
-static void _outBoolExpr(OUT_TYPE(BoolExpr) out_node, const BoolExpr *node);
-static void _outSubLink(OUT_TYPE(SubLink) out_node, const SubLink *node);
-static void _outSubPlan(OUT_TYPE(SubPlan) out_node, const SubPlan *node);
-static void _outAlternativeSubPlan(OUT_TYPE(AlternativeSubPlan) out_node, const AlternativeSubPlan *node);
-static void _outFieldSelect(OUT_TYPE(FieldSelect) out_node, const FieldSelect *node);
-static void _outFieldStore(OUT_TYPE(FieldStore) out_node, const FieldStore *node);
-static void _outRelabelType(OUT_TYPE(RelabelType) out_node, const RelabelType *node);
-static void _outCoerceViaIO(OUT_TYPE(CoerceViaIO) out_node, const CoerceViaIO *node);
-static void _outArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr) out_node, const ArrayCoerceExpr *node);
-static void _outConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr) out_node, const ConvertRowtypeExpr *node);
-static void _outCollateExpr(OUT_TYPE(CollateExpr) out_node, const CollateExpr *node);
-static void _outCaseExpr(OUT_TYPE(CaseExpr) out_node, const CaseExpr *node);
-static void _outCaseWhen(OUT_TYPE(CaseWhen) out_node, const CaseWhen *node);
-static void _outCaseTestExpr(OUT_TYPE(CaseTestExpr) out_node, const CaseTestExpr *node);
-static void _outArrayExpr(OUT_TYPE(ArrayExpr) out_node, const ArrayExpr *node);
-static void _outRowExpr(OUT_TYPE(RowExpr) out_node, const RowExpr *node);
-static void _outRowCompareExpr(OUT_TYPE(RowCompareExpr) out_node, const RowCompareExpr *node);
-static void _outCoalesceExpr(OUT_TYPE(CoalesceExpr) out_node, const CoalesceExpr *node);
-static void _outMinMaxExpr(OUT_TYPE(MinMaxExpr) out_node, const MinMaxExpr *node);
-static void _outSQLValueFunction(OUT_TYPE(SQLValueFunction) out_node, const SQLValueFunction *node);
-static void _outXmlExpr(OUT_TYPE(XmlExpr) out_node, const XmlExpr *node);
-static void _outNullTest(OUT_TYPE(NullTest) out_node, const NullTest *node);
-static void _outBooleanTest(OUT_TYPE(BooleanTest) out_node, const BooleanTest *node);
-static void _outCoerceToDomain(OUT_TYPE(CoerceToDomain) out_node, const CoerceToDomain *node);
-static void _outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue) out_node, const CoerceToDomainValue *node);
-static void _outSetToDefault(OUT_TYPE(SetToDefault) out_node, const SetToDefault *node);
-static void _outCurrentOfExpr(OUT_TYPE(CurrentOfExpr) out_node, const CurrentOfExpr *node);
-static void _outNextValueExpr(OUT_TYPE(NextValueExpr) out_node, const NextValueExpr *node);
-static void _outInferenceElem(OUT_TYPE(InferenceElem) out_node, const InferenceElem *node);
-static void _outTargetEntry(OUT_TYPE(TargetEntry) out_node, const TargetEntry *node);
-static void _outRangeTblRef(OUT_TYPE(RangeTblRef) out_node, const RangeTblRef *node);
-static void _outJoinExpr(OUT_TYPE(JoinExpr) out_node, const JoinExpr *node);
-static void _outFromExpr(OUT_TYPE(FromExpr) out_node, const FromExpr *node);
-static void _outOnConflictExpr(OUT_TYPE(OnConflictExpr) out_node, const OnConflictExpr *node);
-static void _outIntoClause(OUT_TYPE(IntoClause) out_node, const IntoClause *node);
-static void _outRawStmt(OUT_TYPE(RawStmt) out_node, const RawStmt *node);
-static void _outQuery(OUT_TYPE(Query) out_node, const Query *node);
-static void _outInsertStmt(OUT_TYPE(InsertStmt) out_node, const InsertStmt *node);
-static void _outDeleteStmt(OUT_TYPE(DeleteStmt) out_node, const DeleteStmt *node);
-static void _outUpdateStmt(OUT_TYPE(UpdateStmt) out_node, const UpdateStmt *node);
-static void _outSelectStmt(OUT_TYPE(SelectStmt) out_node, const SelectStmt *node);
-static void _outAlterTableStmt(OUT_TYPE(AlterTableStmt) out_node, const AlterTableStmt *node);
-static void _outAlterTableCmd(OUT_TYPE(AlterTableCmd) out_node, const AlterTableCmd *node);
-static void _outAlterDomainStmt(OUT_TYPE(AlterDomainStmt) out_node, const AlterDomainStmt *node);
-static void _outSetOperationStmt(OUT_TYPE(SetOperationStmt) out_node, const SetOperationStmt *node);
-static void _outGrantStmt(OUT_TYPE(GrantStmt) out_node, const GrantStmt *node);
-static void _outGrantRoleStmt(OUT_TYPE(GrantRoleStmt) out_node, const GrantRoleStmt *node);
-static void _outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt) out_node, const AlterDefaultPrivilegesStmt *node);
-static void _outClosePortalStmt(OUT_TYPE(ClosePortalStmt) out_node, const ClosePortalStmt *node);
-static void _outClusterStmt(OUT_TYPE(ClusterStmt) out_node, const ClusterStmt *node);
-static void _outCopyStmt(OUT_TYPE(CopyStmt) out_node, const CopyStmt *node);
-static void _outCreateStmt(OUT_TYPE(CreateStmt) out_node, const CreateStmt *node);
-static void _outDefineStmt(OUT_TYPE(DefineStmt) out_node, const DefineStmt *node);
-static void _outDropStmt(OUT_TYPE(DropStmt) out_node, const DropStmt *node);
-static void _outTruncateStmt(OUT_TYPE(TruncateStmt) out_node, const TruncateStmt *node);
-static void _outCommentStmt(OUT_TYPE(CommentStmt) out_node, const CommentStmt *node);
-static void _outFetchStmt(OUT_TYPE(FetchStmt) out_node, const FetchStmt *node);
-static void _outIndexStmt(OUT_TYPE(IndexStmt) out_node, const IndexStmt *node);
-static void _outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt) out_node, const CreateFunctionStmt *node);
-static void _outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt) out_node, const AlterFunctionStmt *node);
-static void _outDoStmt(OUT_TYPE(DoStmt) out_node, const DoStmt *node);
-static void _outRenameStmt(OUT_TYPE(RenameStmt) out_node, const RenameStmt *node);
-static void _outRuleStmt(OUT_TYPE(RuleStmt) out_node, const RuleStmt *node);
-static void _outNotifyStmt(OUT_TYPE(NotifyStmt) out_node, const NotifyStmt *node);
-static void _outListenStmt(OUT_TYPE(ListenStmt) out_node, const ListenStmt *node);
-static void _outUnlistenStmt(OUT_TYPE(UnlistenStmt) out_node, const UnlistenStmt *node);
-static void _outTransactionStmt(OUT_TYPE(TransactionStmt) out_node, const TransactionStmt *node);
-static void _outViewStmt(OUT_TYPE(ViewStmt) out_node, const ViewStmt *node);
-static void _outLoadStmt(OUT_TYPE(LoadStmt) out_node, const LoadStmt *node);
-static void _outCreateDomainStmt(OUT_TYPE(CreateDomainStmt) out_node, const CreateDomainStmt *node);
-static void _outCreatedbStmt(OUT_TYPE(CreatedbStmt) out_node, const CreatedbStmt *node);
-static void _outDropdbStmt(OUT_TYPE(DropdbStmt) out_node, const DropdbStmt *node);
-static void _outVacuumStmt(OUT_TYPE(VacuumStmt) out_node, const VacuumStmt *node);
-static void _outExplainStmt(OUT_TYPE(ExplainStmt) out_node, const ExplainStmt *node);
-static void _outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt) out_node, const CreateTableAsStmt *node);
-static void _outCreateSeqStmt(OUT_TYPE(CreateSeqStmt) out_node, const CreateSeqStmt *node);
-static void _outAlterSeqStmt(OUT_TYPE(AlterSeqStmt) out_node, const AlterSeqStmt *node);
-static void _outVariableSetStmt(OUT_TYPE(VariableSetStmt) out_node, const VariableSetStmt *node);
-static void _outVariableShowStmt(OUT_TYPE(VariableShowStmt) out_node, const VariableShowStmt *node);
-static void _outDiscardStmt(OUT_TYPE(DiscardStmt) out_node, const DiscardStmt *node);
-static void _outCreateTrigStmt(OUT_TYPE(CreateTrigStmt) out_node, const CreateTrigStmt *node);
-static void _outCreatePLangStmt(OUT_TYPE(CreatePLangStmt) out_node, const CreatePLangStmt *node);
-static void _outCreateRoleStmt(OUT_TYPE(CreateRoleStmt) out_node, const CreateRoleStmt *node);
-static void _outAlterRoleStmt(OUT_TYPE(AlterRoleStmt) out_node, const AlterRoleStmt *node);
-static void _outDropRoleStmt(OUT_TYPE(DropRoleStmt) out_node, const DropRoleStmt *node);
-static void _outLockStmt(OUT_TYPE(LockStmt) out_node, const LockStmt *node);
-static void _outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt) out_node, const ConstraintsSetStmt *node);
-static void _outReindexStmt(OUT_TYPE(ReindexStmt) out_node, const ReindexStmt *node);
-static void _outCheckPointStmt(OUT_TYPE(CheckPointStmt) out_node, const CheckPointStmt *node);
-static void _outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt) out_node, const CreateSchemaStmt *node);
-static void _outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt) out_node, const AlterDatabaseStmt *node);
-static void _outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt) out_node, const AlterDatabaseSetStmt *node);
-static void _outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt) out_node, const AlterRoleSetStmt *node);
-static void _outCreateConversionStmt(OUT_TYPE(CreateConversionStmt) out_node, const CreateConversionStmt *node);
-static void _outCreateCastStmt(OUT_TYPE(CreateCastStmt) out_node, const CreateCastStmt *node);
-static void _outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt) out_node, const CreateOpClassStmt *node);
-static void _outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt) out_node, const CreateOpFamilyStmt *node);
-static void _outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt) out_node, const AlterOpFamilyStmt *node);
-static void _outPrepareStmt(OUT_TYPE(PrepareStmt) out_node, const PrepareStmt *node);
-static void _outExecuteStmt(OUT_TYPE(ExecuteStmt) out_node, const ExecuteStmt *node);
-static void _outDeallocateStmt(OUT_TYPE(DeallocateStmt) out_node, const DeallocateStmt *node);
-static void _outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt) out_node, const DeclareCursorStmt *node);
-static void _outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt) out_node, const CreateTableSpaceStmt *node);
-static void _outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt) out_node, const DropTableSpaceStmt *node);
-static void _outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt) out_node, const AlterObjectDependsStmt *node);
-static void _outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt) out_node, const AlterObjectSchemaStmt *node);
-static void _outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt) out_node, const AlterOwnerStmt *node);
-static void _outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt) out_node, const AlterOperatorStmt *node);
-static void _outAlterTypeStmt(OUT_TYPE(AlterTypeStmt) out_node, const AlterTypeStmt *node);
-static void _outDropOwnedStmt(OUT_TYPE(DropOwnedStmt) out_node, const DropOwnedStmt *node);
-static void _outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt) out_node, const ReassignOwnedStmt *node);
-static void _outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt) out_node, const CompositeTypeStmt *node);
-static void _outCreateEnumStmt(OUT_TYPE(CreateEnumStmt) out_node, const CreateEnumStmt *node);
-static void _outCreateRangeStmt(OUT_TYPE(CreateRangeStmt) out_node, const CreateRangeStmt *node);
-static void _outAlterEnumStmt(OUT_TYPE(AlterEnumStmt) out_node, const AlterEnumStmt *node);
-static void _outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt) out_node, const AlterTSDictionaryStmt *node);
-static void _outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt) out_node, const AlterTSConfigurationStmt *node);
-static void _outCreateFdwStmt(OUT_TYPE(CreateFdwStmt) out_node, const CreateFdwStmt *node);
-static void _outAlterFdwStmt(OUT_TYPE(AlterFdwStmt) out_node, const AlterFdwStmt *node);
-static void _outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt) out_node, const CreateForeignServerStmt *node);
-static void _outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt) out_node, const AlterForeignServerStmt *node);
-static void _outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt) out_node, const CreateUserMappingStmt *node);
-static void _outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt) out_node, const AlterUserMappingStmt *node);
-static void _outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt) out_node, const DropUserMappingStmt *node);
-static void _outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt) out_node, const AlterTableSpaceOptionsStmt *node);
-static void _outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt) out_node, const AlterTableMoveAllStmt *node);
-static void _outSecLabelStmt(OUT_TYPE(SecLabelStmt) out_node, const SecLabelStmt *node);
-static void _outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt) out_node, const CreateForeignTableStmt *node);
-static void _outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt) out_node, const ImportForeignSchemaStmt *node);
-static void _outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt) out_node, const CreateExtensionStmt *node);
-static void _outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt) out_node, const AlterExtensionStmt *node);
-static void _outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt) out_node, const AlterExtensionContentsStmt *node);
-static void _outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt) out_node, const CreateEventTrigStmt *node);
-static void _outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt) out_node, const AlterEventTrigStmt *node);
-static void _outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt) out_node, const RefreshMatViewStmt *node);
-static void _outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt) out_node, const ReplicaIdentityStmt *node);
-static void _outAlterSystemStmt(OUT_TYPE(AlterSystemStmt) out_node, const AlterSystemStmt *node);
-static void _outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt) out_node, const CreatePolicyStmt *node);
-static void _outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt) out_node, const AlterPolicyStmt *node);
-static void _outCreateTransformStmt(OUT_TYPE(CreateTransformStmt) out_node, const CreateTransformStmt *node);
-static void _outCreateAmStmt(OUT_TYPE(CreateAmStmt) out_node, const CreateAmStmt *node);
-static void _outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt) out_node, const CreatePublicationStmt *node);
-static void _outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt) out_node, const AlterPublicationStmt *node);
-static void _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt) out_node, const CreateSubscriptionStmt *node);
-static void _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt) out_node, const AlterSubscriptionStmt *node);
-static void _outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt) out_node, const DropSubscriptionStmt *node);
-static void _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt) out_node, const CreateStatsStmt *node);
-static void _outAlterCollationStmt(OUT_TYPE(AlterCollationStmt) out_node, const AlterCollationStmt *node);
-static void _outCallStmt(OUT_TYPE(CallStmt) out_node, const CallStmt *node);
-static void _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt) out_node, const AlterStatsStmt *node);
-static void _outAExpr(OUT_TYPE(AExpr) out_node, const A_Expr *node);
-static void _outColumnRef(OUT_TYPE(ColumnRef) out_node, const ColumnRef *node);
-static void _outParamRef(OUT_TYPE(ParamRef) out_node, const ParamRef *node);
-static void _outAConst(OUT_TYPE(AConst) out_node, const A_Const *node);
-static void _outFuncCall(OUT_TYPE(FuncCall) out_node, const FuncCall *node);
-static void _outAStar(OUT_TYPE(AStar) out_node, const A_Star *node);
-static void _outAIndices(OUT_TYPE(AIndices) out_node, const A_Indices *node);
-static void _outAIndirection(OUT_TYPE(AIndirection) out_node, const A_Indirection *node);
-static void _outAArrayExpr(OUT_TYPE(AArrayExpr) out_node, const A_ArrayExpr *node);
-static void _outResTarget(OUT_TYPE(ResTarget) out_node, const ResTarget *node);
-static void _outMultiAssignRef(OUT_TYPE(MultiAssignRef) out_node, const MultiAssignRef *node);
-static void _outTypeCast(OUT_TYPE(TypeCast) out_node, const TypeCast *node);
-static void _outCollateClause(OUT_TYPE(CollateClause) out_node, const CollateClause *node);
-static void _outSortBy(OUT_TYPE(SortBy) out_node, const SortBy *node);
-static void _outWindowDef(OUT_TYPE(WindowDef) out_node, const WindowDef *node);
-static void _outRangeSubselect(OUT_TYPE(RangeSubselect) out_node, const RangeSubselect *node);
-static void _outRangeFunction(OUT_TYPE(RangeFunction) out_node, const RangeFunction *node);
-static void _outRangeTableSample(OUT_TYPE(RangeTableSample) out_node, const RangeTableSample *node);
-static void _outRangeTableFunc(OUT_TYPE(RangeTableFunc) out_node, const RangeTableFunc *node);
-static void _outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol) out_node, const RangeTableFuncCol *node);
-static void _outTypeName(OUT_TYPE(TypeName) out_node, const TypeName *node);
-static void _outColumnDef(OUT_TYPE(ColumnDef) out_node, const ColumnDef *node);
-static void _outIndexElem(OUT_TYPE(IndexElem) out_node, const IndexElem *node);
-static void _outConstraint(OUT_TYPE(Constraint) out_node, const Constraint *node);
-static void _outDefElem(OUT_TYPE(DefElem) out_node, const DefElem *node);
-static void _outRangeTblEntry(OUT_TYPE(RangeTblEntry) out_node, const RangeTblEntry *node);
-static void _outRangeTblFunction(OUT_TYPE(RangeTblFunction) out_node, const RangeTblFunction *node);
-static void _outTableSampleClause(OUT_TYPE(TableSampleClause) out_node, const TableSampleClause *node);
-static void _outWithCheckOption(OUT_TYPE(WithCheckOption) out_node, const WithCheckOption *node);
-static void _outSortGroupClause(OUT_TYPE(SortGroupClause) out_node, const SortGroupClause *node);
-static void _outGroupingSet(OUT_TYPE(GroupingSet) out_node, const GroupingSet *node);
-static void _outWindowClause(OUT_TYPE(WindowClause) out_node, const WindowClause *node);
-static void _outObjectWithArgs(OUT_TYPE(ObjectWithArgs) out_node, const ObjectWithArgs *node);
-static void _outAccessPriv(OUT_TYPE(AccessPriv) out_node, const AccessPriv *node);
-static void _outCreateOpClassItem(OUT_TYPE(CreateOpClassItem) out_node, const CreateOpClassItem *node);
-static void _outTableLikeClause(OUT_TYPE(TableLikeClause) out_node, const TableLikeClause *node);
-static void _outFunctionParameter(OUT_TYPE(FunctionParameter) out_node, const FunctionParameter *node);
-static void _outLockingClause(OUT_TYPE(LockingClause) out_node, const LockingClause *node);
-static void _outRowMarkClause(OUT_TYPE(RowMarkClause) out_node, const RowMarkClause *node);
-static void _outXmlSerialize(OUT_TYPE(XmlSerialize) out_node, const XmlSerialize *node);
-static void _outWithClause(OUT_TYPE(WithClause) out_node, const WithClause *node);
-static void _outInferClause(OUT_TYPE(InferClause) out_node, const InferClause *node);
-static void _outOnConflictClause(OUT_TYPE(OnConflictClause) out_node, const OnConflictClause *node);
-static void _outCommonTableExpr(OUT_TYPE(CommonTableExpr) out_node, const CommonTableExpr *node);
-static void _outRoleSpec(OUT_TYPE(RoleSpec) out_node, const RoleSpec *node);
-static void _outTriggerTransition(OUT_TYPE(TriggerTransition) out_node, const TriggerTransition *node);
-static void _outPartitionElem(OUT_TYPE(PartitionElem) out_node, const PartitionElem *node);
-static void _outPartitionSpec(OUT_TYPE(PartitionSpec) out_node, const PartitionSpec *node);
-static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
-static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
-static void _outPartitionCmd(OUT_TYPE(PartitionCmd) out_node, const PartitionCmd *node);
-static void _outVacuumRelation(OUT_TYPE(VacuumRelation) out_node, const VacuumRelation *node);
-static void _outInlineCodeBlock(OUT_TYPE(InlineCodeBlock) out_node, const InlineCodeBlock *node);
-static void _outCallContext(OUT_TYPE(CallContext) out_node, const CallContext *node);
+// This file is autogenerated by ./scripts/generate_protobuf_and_outfuncs.rb
+
+static void _outAlias(OUT_TYPE(Alias, Alias) out_node, const Alias *node);
+static void _outRangeVar(OUT_TYPE(RangeVar, RangeVar) out_node, const RangeVar *node);
+static void _outTableFunc(OUT_TYPE(TableFunc, TableFunc) out_node, const TableFunc *node);
+static void _outExpr(OUT_TYPE(Expr, Expr) out_node, const Expr *node);
+static void _outVar(OUT_TYPE(Var, Var) out_node, const Var *node);
+static void _outParam(OUT_TYPE(Param, Param) out_node, const Param *node);
+static void _outAggref(OUT_TYPE(Aggref, Aggref) out_node, const Aggref *node);
+static void _outGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) out_node, const GroupingFunc *node);
+static void _outWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) out_node, const WindowFunc *node);
+static void _outSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) out_node, const SubscriptingRef *node);
+static void _outFuncExpr(OUT_TYPE(FuncExpr, FuncExpr) out_node, const FuncExpr *node);
+static void _outNamedArgExpr(OUT_TYPE(NamedArgExpr, NamedArgExpr) out_node, const NamedArgExpr *node);
+static void _outOpExpr(OUT_TYPE(OpExpr, OpExpr) out_node, const OpExpr *node);
+static void _outDistinctExpr(OUT_TYPE(DistinctExpr, DistinctExpr) out_node, const DistinctExpr *node);
+static void _outNullIfExpr(OUT_TYPE(NullIfExpr, NullIfExpr) out_node, const NullIfExpr *node);
+static void _outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) out_node, const ScalarArrayOpExpr *node);
+static void _outBoolExpr(OUT_TYPE(BoolExpr, BoolExpr) out_node, const BoolExpr *node);
+static void _outSubLink(OUT_TYPE(SubLink, SubLink) out_node, const SubLink *node);
+static void _outSubPlan(OUT_TYPE(SubPlan, SubPlan) out_node, const SubPlan *node);
+static void _outAlternativeSubPlan(OUT_TYPE(AlternativeSubPlan, AlternativeSubPlan) out_node, const AlternativeSubPlan *node);
+static void _outFieldSelect(OUT_TYPE(FieldSelect, FieldSelect) out_node, const FieldSelect *node);
+static void _outFieldStore(OUT_TYPE(FieldStore, FieldStore) out_node, const FieldStore *node);
+static void _outRelabelType(OUT_TYPE(RelabelType, RelabelType) out_node, const RelabelType *node);
+static void _outCoerceViaIO(OUT_TYPE(CoerceViaIO, CoerceViaIO) out_node, const CoerceViaIO *node);
+static void _outArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr, ArrayCoerceExpr) out_node, const ArrayCoerceExpr *node);
+static void _outConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr, ConvertRowtypeExpr) out_node, const ConvertRowtypeExpr *node);
+static void _outCollateExpr(OUT_TYPE(CollateExpr, CollateExpr) out_node, const CollateExpr *node);
+static void _outCaseExpr(OUT_TYPE(CaseExpr, CaseExpr) out_node, const CaseExpr *node);
+static void _outCaseWhen(OUT_TYPE(CaseWhen, CaseWhen) out_node, const CaseWhen *node);
+static void _outCaseTestExpr(OUT_TYPE(CaseTestExpr, CaseTestExpr) out_node, const CaseTestExpr *node);
+static void _outArrayExpr(OUT_TYPE(ArrayExpr, ArrayExpr) out_node, const ArrayExpr *node);
+static void _outRowExpr(OUT_TYPE(RowExpr, RowExpr) out_node, const RowExpr *node);
+static void _outRowCompareExpr(OUT_TYPE(RowCompareExpr, RowCompareExpr) out_node, const RowCompareExpr *node);
+static void _outCoalesceExpr(OUT_TYPE(CoalesceExpr, CoalesceExpr) out_node, const CoalesceExpr *node);
+static void _outMinMaxExpr(OUT_TYPE(MinMaxExpr, MinMaxExpr) out_node, const MinMaxExpr *node);
+static void _outSQLValueFunction(OUT_TYPE(SQLValueFunction, SQLValueFunction) out_node, const SQLValueFunction *node);
+static void _outXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) out_node, const XmlExpr *node);
+static void _outNullTest(OUT_TYPE(NullTest, NullTest) out_node, const NullTest *node);
+static void _outBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) out_node, const BooleanTest *node);
+static void _outCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) out_node, const CoerceToDomain *node);
+static void _outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue, CoerceToDomainValue) out_node, const CoerceToDomainValue *node);
+static void _outSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) out_node, const SetToDefault *node);
+static void _outCurrentOfExpr(OUT_TYPE(CurrentOfExpr, CurrentOfExpr) out_node, const CurrentOfExpr *node);
+static void _outNextValueExpr(OUT_TYPE(NextValueExpr, NextValueExpr) out_node, const NextValueExpr *node);
+static void _outInferenceElem(OUT_TYPE(InferenceElem, InferenceElem) out_node, const InferenceElem *node);
+static void _outTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) out_node, const TargetEntry *node);
+static void _outRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) out_node, const RangeTblRef *node);
+static void _outJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) out_node, const JoinExpr *node);
+static void _outFromExpr(OUT_TYPE(FromExpr, FromExpr) out_node, const FromExpr *node);
+static void _outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out_node, const OnConflictExpr *node);
+static void _outIntoClause(OUT_TYPE(IntoClause, IntoClause) out_node, const IntoClause *node);
+static void _outRawStmt(OUT_TYPE(RawStmt, RawStmt) out_node, const RawStmt *node);
+static void _outQuery(OUT_TYPE(Query, Query) out_node, const Query *node);
+static void _outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out_node, const InsertStmt *node);
+static void _outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out_node, const DeleteStmt *node);
+static void _outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out_node, const UpdateStmt *node);
+static void _outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out_node, const SelectStmt *node);
+static void _outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out_node, const AlterTableStmt *node);
+static void _outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out_node, const AlterTableCmd *node);
+static void _outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out_node, const AlterDomainStmt *node);
+static void _outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out_node, const SetOperationStmt *node);
+static void _outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out_node, const GrantStmt *node);
+static void _outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out_node, const GrantRoleStmt *node);
+static void _outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out_node, const AlterDefaultPrivilegesStmt *node);
+static void _outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out_node, const ClosePortalStmt *node);
+static void _outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out_node, const ClusterStmt *node);
+static void _outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out_node, const CopyStmt *node);
+static void _outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out_node, const CreateStmt *node);
+static void _outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out_node, const DefineStmt *node);
+static void _outDropStmt(OUT_TYPE(DropStmt, DropStmt) out_node, const DropStmt *node);
+static void _outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out_node, const TruncateStmt *node);
+static void _outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out_node, const CommentStmt *node);
+static void _outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out_node, const FetchStmt *node);
+static void _outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out_node, const IndexStmt *node);
+static void _outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out_node, const CreateFunctionStmt *node);
+static void _outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out_node, const AlterFunctionStmt *node);
+static void _outDoStmt(OUT_TYPE(DoStmt, DoStmt) out_node, const DoStmt *node);
+static void _outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out_node, const RenameStmt *node);
+static void _outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out_node, const RuleStmt *node);
+static void _outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out_node, const NotifyStmt *node);
+static void _outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out_node, const ListenStmt *node);
+static void _outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out_node, const UnlistenStmt *node);
+static void _outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out_node, const TransactionStmt *node);
+static void _outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out_node, const ViewStmt *node);
+static void _outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out_node, const LoadStmt *node);
+static void _outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out_node, const CreateDomainStmt *node);
+static void _outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out_node, const CreatedbStmt *node);
+static void _outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out_node, const DropdbStmt *node);
+static void _outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out_node, const VacuumStmt *node);
+static void _outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out_node, const ExplainStmt *node);
+static void _outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out_node, const CreateTableAsStmt *node);
+static void _outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out_node, const CreateSeqStmt *node);
+static void _outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out_node, const AlterSeqStmt *node);
+static void _outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out_node, const VariableSetStmt *node);
+static void _outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out_node, const VariableShowStmt *node);
+static void _outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out_node, const DiscardStmt *node);
+static void _outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out_node, const CreateTrigStmt *node);
+static void _outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out_node, const CreatePLangStmt *node);
+static void _outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out_node, const CreateRoleStmt *node);
+static void _outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out_node, const AlterRoleStmt *node);
+static void _outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out_node, const DropRoleStmt *node);
+static void _outLockStmt(OUT_TYPE(LockStmt, LockStmt) out_node, const LockStmt *node);
+static void _outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out_node, const ConstraintsSetStmt *node);
+static void _outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out_node, const ReindexStmt *node);
+static void _outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out_node, const CheckPointStmt *node);
+static void _outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out_node, const CreateSchemaStmt *node);
+static void _outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out_node, const AlterDatabaseStmt *node);
+static void _outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out_node, const AlterDatabaseSetStmt *node);
+static void _outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out_node, const AlterRoleSetStmt *node);
+static void _outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out_node, const CreateConversionStmt *node);
+static void _outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out_node, const CreateCastStmt *node);
+static void _outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out_node, const CreateOpClassStmt *node);
+static void _outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out_node, const CreateOpFamilyStmt *node);
+static void _outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out_node, const AlterOpFamilyStmt *node);
+static void _outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out_node, const PrepareStmt *node);
+static void _outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out_node, const ExecuteStmt *node);
+static void _outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out_node, const DeallocateStmt *node);
+static void _outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out_node, const DeclareCursorStmt *node);
+static void _outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out_node, const CreateTableSpaceStmt *node);
+static void _outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out_node, const DropTableSpaceStmt *node);
+static void _outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out_node, const AlterObjectDependsStmt *node);
+static void _outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out_node, const AlterObjectSchemaStmt *node);
+static void _outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out_node, const AlterOwnerStmt *node);
+static void _outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out_node, const AlterOperatorStmt *node);
+static void _outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out_node, const AlterTypeStmt *node);
+static void _outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out_node, const DropOwnedStmt *node);
+static void _outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out_node, const ReassignOwnedStmt *node);
+static void _outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out_node, const CompositeTypeStmt *node);
+static void _outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out_node, const CreateEnumStmt *node);
+static void _outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out_node, const CreateRangeStmt *node);
+static void _outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out_node, const AlterEnumStmt *node);
+static void _outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out_node, const AlterTSDictionaryStmt *node);
+static void _outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out_node, const AlterTSConfigurationStmt *node);
+static void _outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out_node, const CreateFdwStmt *node);
+static void _outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out_node, const AlterFdwStmt *node);
+static void _outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out_node, const CreateForeignServerStmt *node);
+static void _outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out_node, const AlterForeignServerStmt *node);
+static void _outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out_node, const CreateUserMappingStmt *node);
+static void _outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out_node, const AlterUserMappingStmt *node);
+static void _outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out_node, const DropUserMappingStmt *node);
+static void _outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out_node, const AlterTableSpaceOptionsStmt *node);
+static void _outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out_node, const AlterTableMoveAllStmt *node);
+static void _outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out_node, const SecLabelStmt *node);
+static void _outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out_node, const CreateForeignTableStmt *node);
+static void _outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out_node, const ImportForeignSchemaStmt *node);
+static void _outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out_node, const CreateExtensionStmt *node);
+static void _outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out_node, const AlterExtensionStmt *node);
+static void _outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out_node, const AlterExtensionContentsStmt *node);
+static void _outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out_node, const CreateEventTrigStmt *node);
+static void _outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out_node, const AlterEventTrigStmt *node);
+static void _outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out_node, const RefreshMatViewStmt *node);
+static void _outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out_node, const ReplicaIdentityStmt *node);
+static void _outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out_node, const AlterSystemStmt *node);
+static void _outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out_node, const CreatePolicyStmt *node);
+static void _outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out_node, const AlterPolicyStmt *node);
+static void _outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out_node, const CreateTransformStmt *node);
+static void _outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out_node, const CreateAmStmt *node);
+static void _outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out_node, const CreatePublicationStmt *node);
+static void _outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out_node, const AlterPublicationStmt *node);
+static void _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out_node, const CreateSubscriptionStmt *node);
+static void _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out_node, const AlterSubscriptionStmt *node);
+static void _outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out_node, const DropSubscriptionStmt *node);
+static void _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out_node, const CreateStatsStmt *node);
+static void _outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out_node, const AlterCollationStmt *node);
+static void _outCallStmt(OUT_TYPE(CallStmt, CallStmt) out_node, const CallStmt *node);
+static void _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out_node, const AlterStatsStmt *node);
+static void _outAExpr(OUT_TYPE(A_Expr, AExpr) out_node, const A_Expr *node);
+static void _outColumnRef(OUT_TYPE(ColumnRef, ColumnRef) out_node, const ColumnRef *node);
+static void _outParamRef(OUT_TYPE(ParamRef, ParamRef) out_node, const ParamRef *node);
+static void _outAConst(OUT_TYPE(A_Const, AConst) out_node, const A_Const *node);
+static void _outFuncCall(OUT_TYPE(FuncCall, FuncCall) out_node, const FuncCall *node);
+static void _outAStar(OUT_TYPE(A_Star, AStar) out_node, const A_Star *node);
+static void _outAIndices(OUT_TYPE(A_Indices, AIndices) out_node, const A_Indices *node);
+static void _outAIndirection(OUT_TYPE(A_Indirection, AIndirection) out_node, const A_Indirection *node);
+static void _outAArrayExpr(OUT_TYPE(A_ArrayExpr, AArrayExpr) out_node, const A_ArrayExpr *node);
+static void _outResTarget(OUT_TYPE(ResTarget, ResTarget) out_node, const ResTarget *node);
+static void _outMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) out_node, const MultiAssignRef *node);
+static void _outTypeCast(OUT_TYPE(TypeCast, TypeCast) out_node, const TypeCast *node);
+static void _outCollateClause(OUT_TYPE(CollateClause, CollateClause) out_node, const CollateClause *node);
+static void _outSortBy(OUT_TYPE(SortBy, SortBy) out_node, const SortBy *node);
+static void _outWindowDef(OUT_TYPE(WindowDef, WindowDef) out_node, const WindowDef *node);
+static void _outRangeSubselect(OUT_TYPE(RangeSubselect, RangeSubselect) out_node, const RangeSubselect *node);
+static void _outRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) out_node, const RangeFunction *node);
+static void _outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out_node, const RangeTableSample *node);
+static void _outRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) out_node, const RangeTableFunc *node);
+static void _outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) out_node, const RangeTableFuncCol *node);
+static void _outTypeName(OUT_TYPE(TypeName, TypeName) out_node, const TypeName *node);
+static void _outColumnDef(OUT_TYPE(ColumnDef, ColumnDef) out_node, const ColumnDef *node);
+static void _outIndexElem(OUT_TYPE(IndexElem, IndexElem) out_node, const IndexElem *node);
+static void _outConstraint(OUT_TYPE(Constraint, Constraint) out_node, const Constraint *node);
+static void _outDefElem(OUT_TYPE(DefElem, DefElem) out_node, const DefElem *node);
+static void _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out_node, const RangeTblEntry *node);
+static void _outRangeTblFunction(OUT_TYPE(RangeTblFunction, RangeTblFunction) out_node, const RangeTblFunction *node);
+static void _outTableSampleClause(OUT_TYPE(TableSampleClause, TableSampleClause) out_node, const TableSampleClause *node);
+static void _outWithCheckOption(OUT_TYPE(WithCheckOption, WithCheckOption) out_node, const WithCheckOption *node);
+static void _outSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) out_node, const SortGroupClause *node);
+static void _outGroupingSet(OUT_TYPE(GroupingSet, GroupingSet) out_node, const GroupingSet *node);
+static void _outWindowClause(OUT_TYPE(WindowClause, WindowClause) out_node, const WindowClause *node);
+static void _outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out_node, const ObjectWithArgs *node);
+static void _outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out_node, const AccessPriv *node);
+static void _outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out_node, const CreateOpClassItem *node);
+static void _outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out_node, const TableLikeClause *node);
+static void _outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out_node, const FunctionParameter *node);
+static void _outLockingClause(OUT_TYPE(LockingClause, LockingClause) out_node, const LockingClause *node);
+static void _outRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) out_node, const RowMarkClause *node);
+static void _outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out_node, const XmlSerialize *node);
+static void _outWithClause(OUT_TYPE(WithClause, WithClause) out_node, const WithClause *node);
+static void _outInferClause(OUT_TYPE(InferClause, InferClause) out_node, const InferClause *node);
+static void _outOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) out_node, const OnConflictClause *node);
+static void _outCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) out_node, const CommonTableExpr *node);
+static void _outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out_node, const RoleSpec *node);
+static void _outTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) out_node, const TriggerTransition *node);
+static void _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out_node, const PartitionElem *node);
+static void _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out_node, const PartitionSpec *node);
+static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
+static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
+static void _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out_node, const PartitionCmd *node);
+static void _outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out_node, const VacuumRelation *node);
+static void _outInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) out_node, const InlineCodeBlock *node);
+static void _outCallContext(OUT_TYPE(CallContext, CallContext) out_node, const CallContext *node);
 static const char*
 _enumToStringOverridingKind(OverridingKind value) {
   switch(value) {
@@ -1742,15 +1744,17 @@ _enumToIntLockTupleMode(LockTupleMode value) {
     case LockTupleExclusive: return 3;
   }
   return -1;
-}static void
-_outAlias(OUT_TYPE(Alias) out, const Alias *node)
+}
+
+static void
+_outAlias(OUT_TYPE(Alias, Alias) out, const Alias *node)
 {
   WRITE_STRING_FIELD(aliasname, aliasname, aliasname);
   WRITE_LIST_FIELD(colnames, colnames, colnames);
 }
 
 static void
-_outRangeVar(OUT_TYPE(RangeVar) out, const RangeVar *node)
+_outRangeVar(OUT_TYPE(RangeVar, RangeVar) out, const RangeVar *node)
 {
   WRITE_STRING_FIELD(catalogname, catalogname, catalogname);
   WRITE_STRING_FIELD(schemaname, schemaname, schemaname);
@@ -1762,7 +1766,7 @@ _outRangeVar(OUT_TYPE(RangeVar) out, const RangeVar *node)
 }
 
 static void
-_outTableFunc(OUT_TYPE(TableFunc) out, const TableFunc *node)
+_outTableFunc(OUT_TYPE(TableFunc, TableFunc) out, const TableFunc *node)
 {
   WRITE_LIST_FIELD(ns_uris, ns_uris, ns_uris);
   WRITE_LIST_FIELD(ns_names, ns_names, ns_names);
@@ -1780,12 +1784,12 @@ _outTableFunc(OUT_TYPE(TableFunc) out, const TableFunc *node)
 }
 
 static void
-_outExpr(OUT_TYPE(Expr) out, const Expr *node)
+_outExpr(OUT_TYPE(Expr, Expr) out, const Expr *node)
 {
 }
 
 static void
-_outVar(OUT_TYPE(Var) out, const Var *node)
+_outVar(OUT_TYPE(Var, Var) out, const Var *node)
 {
   WRITE_UINT_FIELD(varno, varno, varno);
   WRITE_INT_FIELD(varattno, varattno, varattno);
@@ -1799,7 +1803,7 @@ _outVar(OUT_TYPE(Var) out, const Var *node)
 }
 
 static void
-_outParam(OUT_TYPE(Param) out, const Param *node)
+_outParam(OUT_TYPE(Param, Param) out, const Param *node)
 {
   WRITE_ENUM_FIELD(ParamKind, paramkind, paramkind, paramkind);
   WRITE_INT_FIELD(paramid, paramid, paramid);
@@ -1810,7 +1814,7 @@ _outParam(OUT_TYPE(Param) out, const Param *node)
 }
 
 static void
-_outAggref(OUT_TYPE(Aggref) out, const Aggref *node)
+_outAggref(OUT_TYPE(Aggref, Aggref) out, const Aggref *node)
 {
   WRITE_UINT_FIELD(aggfnoid, aggfnoid, aggfnoid);
   WRITE_UINT_FIELD(aggtype, aggtype, aggtype);
@@ -1832,7 +1836,7 @@ _outAggref(OUT_TYPE(Aggref) out, const Aggref *node)
 }
 
 static void
-_outGroupingFunc(OUT_TYPE(GroupingFunc) out, const GroupingFunc *node)
+_outGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) out, const GroupingFunc *node)
 {
   WRITE_LIST_FIELD(args, args, args);
   WRITE_LIST_FIELD(refs, refs, refs);
@@ -1842,7 +1846,7 @@ _outGroupingFunc(OUT_TYPE(GroupingFunc) out, const GroupingFunc *node)
 }
 
 static void
-_outWindowFunc(OUT_TYPE(WindowFunc) out, const WindowFunc *node)
+_outWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) out, const WindowFunc *node)
 {
   WRITE_UINT_FIELD(winfnoid, winfnoid, winfnoid);
   WRITE_UINT_FIELD(wintype, wintype, wintype);
@@ -1857,7 +1861,7 @@ _outWindowFunc(OUT_TYPE(WindowFunc) out, const WindowFunc *node)
 }
 
 static void
-_outSubscriptingRef(OUT_TYPE(SubscriptingRef) out, const SubscriptingRef *node)
+_outSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) out, const SubscriptingRef *node)
 {
   WRITE_UINT_FIELD(refcontainertype, refcontainertype, refcontainertype);
   WRITE_UINT_FIELD(refelemtype, refelemtype, refelemtype);
@@ -1870,7 +1874,7 @@ _outSubscriptingRef(OUT_TYPE(SubscriptingRef) out, const SubscriptingRef *node)
 }
 
 static void
-_outFuncExpr(OUT_TYPE(FuncExpr) out, const FuncExpr *node)
+_outFuncExpr(OUT_TYPE(FuncExpr, FuncExpr) out, const FuncExpr *node)
 {
   WRITE_UINT_FIELD(funcid, funcid, funcid);
   WRITE_UINT_FIELD(funcresulttype, funcresulttype, funcresulttype);
@@ -1884,7 +1888,7 @@ _outFuncExpr(OUT_TYPE(FuncExpr) out, const FuncExpr *node)
 }
 
 static void
-_outNamedArgExpr(OUT_TYPE(NamedArgExpr) out, const NamedArgExpr *node)
+_outNamedArgExpr(OUT_TYPE(NamedArgExpr, NamedArgExpr) out, const NamedArgExpr *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_STRING_FIELD(name, name, name);
@@ -1893,7 +1897,7 @@ _outNamedArgExpr(OUT_TYPE(NamedArgExpr) out, const NamedArgExpr *node)
 }
 
 static void
-_outOpExpr(OUT_TYPE(OpExpr) out, const OpExpr *node)
+_outOpExpr(OUT_TYPE(OpExpr, OpExpr) out, const OpExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
   WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
@@ -1906,7 +1910,7 @@ _outOpExpr(OUT_TYPE(OpExpr) out, const OpExpr *node)
 }
 
 static void
-_outDistinctExpr(OUT_TYPE(DistinctExpr) out, const DistinctExpr *node)
+_outDistinctExpr(OUT_TYPE(DistinctExpr, DistinctExpr) out, const DistinctExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
   WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
@@ -1919,7 +1923,7 @@ _outDistinctExpr(OUT_TYPE(DistinctExpr) out, const DistinctExpr *node)
 }
 
 static void
-_outNullIfExpr(OUT_TYPE(NullIfExpr) out, const NullIfExpr *node)
+_outNullIfExpr(OUT_TYPE(NullIfExpr, NullIfExpr) out, const NullIfExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
   WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
@@ -1932,7 +1936,7 @@ _outNullIfExpr(OUT_TYPE(NullIfExpr) out, const NullIfExpr *node)
 }
 
 static void
-_outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr) out, const ScalarArrayOpExpr *node)
+_outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) out, const ScalarArrayOpExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
   WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
@@ -1943,7 +1947,7 @@ _outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr) out, const ScalarArrayOpExpr *
 }
 
 static void
-_outBoolExpr(OUT_TYPE(BoolExpr) out, const BoolExpr *node)
+_outBoolExpr(OUT_TYPE(BoolExpr, BoolExpr) out, const BoolExpr *node)
 {
   WRITE_ENUM_FIELD(BoolExprType, boolop, boolop, boolop);
   WRITE_LIST_FIELD(args, args, args);
@@ -1951,7 +1955,7 @@ _outBoolExpr(OUT_TYPE(BoolExpr) out, const BoolExpr *node)
 }
 
 static void
-_outSubLink(OUT_TYPE(SubLink) out, const SubLink *node)
+_outSubLink(OUT_TYPE(SubLink, SubLink) out, const SubLink *node)
 {
   WRITE_ENUM_FIELD(SubLinkType, sub_link_type, subLinkType, subLinkType);
   WRITE_INT_FIELD(sub_link_id, subLinkId, subLinkId);
@@ -1962,7 +1966,7 @@ _outSubLink(OUT_TYPE(SubLink) out, const SubLink *node)
 }
 
 static void
-_outSubPlan(OUT_TYPE(SubPlan) out, const SubPlan *node)
+_outSubPlan(OUT_TYPE(SubPlan, SubPlan) out, const SubPlan *node)
 {
   WRITE_ENUM_FIELD(SubLinkType, sub_link_type, subLinkType, subLinkType);
   WRITE_NODE_PTR_FIELD(testexpr, testexpr, testexpr);
@@ -1983,13 +1987,13 @@ _outSubPlan(OUT_TYPE(SubPlan) out, const SubPlan *node)
 }
 
 static void
-_outAlternativeSubPlan(OUT_TYPE(AlternativeSubPlan) out, const AlternativeSubPlan *node)
+_outAlternativeSubPlan(OUT_TYPE(AlternativeSubPlan, AlternativeSubPlan) out, const AlternativeSubPlan *node)
 {
   WRITE_LIST_FIELD(subplans, subplans, subplans);
 }
 
 static void
-_outFieldSelect(OUT_TYPE(FieldSelect) out, const FieldSelect *node)
+_outFieldSelect(OUT_TYPE(FieldSelect, FieldSelect) out, const FieldSelect *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_INT_FIELD(fieldnum, fieldnum, fieldnum);
@@ -1999,7 +2003,7 @@ _outFieldSelect(OUT_TYPE(FieldSelect) out, const FieldSelect *node)
 }
 
 static void
-_outFieldStore(OUT_TYPE(FieldStore) out, const FieldStore *node)
+_outFieldStore(OUT_TYPE(FieldStore, FieldStore) out, const FieldStore *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_LIST_FIELD(newvals, newvals, newvals);
@@ -2008,7 +2012,7 @@ _outFieldStore(OUT_TYPE(FieldStore) out, const FieldStore *node)
 }
 
 static void
-_outRelabelType(OUT_TYPE(RelabelType) out, const RelabelType *node)
+_outRelabelType(OUT_TYPE(RelabelType, RelabelType) out, const RelabelType *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_UINT_FIELD(resulttype, resulttype, resulttype);
@@ -2019,7 +2023,7 @@ _outRelabelType(OUT_TYPE(RelabelType) out, const RelabelType *node)
 }
 
 static void
-_outCoerceViaIO(OUT_TYPE(CoerceViaIO) out, const CoerceViaIO *node)
+_outCoerceViaIO(OUT_TYPE(CoerceViaIO, CoerceViaIO) out, const CoerceViaIO *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_UINT_FIELD(resulttype, resulttype, resulttype);
@@ -2029,7 +2033,7 @@ _outCoerceViaIO(OUT_TYPE(CoerceViaIO) out, const CoerceViaIO *node)
 }
 
 static void
-_outArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr) out, const ArrayCoerceExpr *node)
+_outArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr, ArrayCoerceExpr) out, const ArrayCoerceExpr *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_NODE_PTR_FIELD(elemexpr, elemexpr, elemexpr);
@@ -2041,7 +2045,7 @@ _outArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr) out, const ArrayCoerceExpr *node)
 }
 
 static void
-_outConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr) out, const ConvertRowtypeExpr *node)
+_outConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr, ConvertRowtypeExpr) out, const ConvertRowtypeExpr *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_UINT_FIELD(resulttype, resulttype, resulttype);
@@ -2050,7 +2054,7 @@ _outConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr) out, const ConvertRowtypeExp
 }
 
 static void
-_outCollateExpr(OUT_TYPE(CollateExpr) out, const CollateExpr *node)
+_outCollateExpr(OUT_TYPE(CollateExpr, CollateExpr) out, const CollateExpr *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_UINT_FIELD(coll_oid, collOid, collOid);
@@ -2058,7 +2062,7 @@ _outCollateExpr(OUT_TYPE(CollateExpr) out, const CollateExpr *node)
 }
 
 static void
-_outCaseExpr(OUT_TYPE(CaseExpr) out, const CaseExpr *node)
+_outCaseExpr(OUT_TYPE(CaseExpr, CaseExpr) out, const CaseExpr *node)
 {
   WRITE_UINT_FIELD(casetype, casetype, casetype);
   WRITE_UINT_FIELD(casecollid, casecollid, casecollid);
@@ -2069,7 +2073,7 @@ _outCaseExpr(OUT_TYPE(CaseExpr) out, const CaseExpr *node)
 }
 
 static void
-_outCaseWhen(OUT_TYPE(CaseWhen) out, const CaseWhen *node)
+_outCaseWhen(OUT_TYPE(CaseWhen, CaseWhen) out, const CaseWhen *node)
 {
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
   WRITE_NODE_PTR_FIELD(result, result, result);
@@ -2077,7 +2081,7 @@ _outCaseWhen(OUT_TYPE(CaseWhen) out, const CaseWhen *node)
 }
 
 static void
-_outCaseTestExpr(OUT_TYPE(CaseTestExpr) out, const CaseTestExpr *node)
+_outCaseTestExpr(OUT_TYPE(CaseTestExpr, CaseTestExpr) out, const CaseTestExpr *node)
 {
   WRITE_UINT_FIELD(type_id, typeId, typeId);
   WRITE_INT_FIELD(type_mod, typeMod, typeMod);
@@ -2085,7 +2089,7 @@ _outCaseTestExpr(OUT_TYPE(CaseTestExpr) out, const CaseTestExpr *node)
 }
 
 static void
-_outArrayExpr(OUT_TYPE(ArrayExpr) out, const ArrayExpr *node)
+_outArrayExpr(OUT_TYPE(ArrayExpr, ArrayExpr) out, const ArrayExpr *node)
 {
   WRITE_UINT_FIELD(array_typeid, array_typeid, array_typeid);
   WRITE_UINT_FIELD(array_collid, array_collid, array_collid);
@@ -2096,7 +2100,7 @@ _outArrayExpr(OUT_TYPE(ArrayExpr) out, const ArrayExpr *node)
 }
 
 static void
-_outRowExpr(OUT_TYPE(RowExpr) out, const RowExpr *node)
+_outRowExpr(OUT_TYPE(RowExpr, RowExpr) out, const RowExpr *node)
 {
   WRITE_LIST_FIELD(args, args, args);
   WRITE_UINT_FIELD(row_typeid, row_typeid, row_typeid);
@@ -2106,7 +2110,7 @@ _outRowExpr(OUT_TYPE(RowExpr) out, const RowExpr *node)
 }
 
 static void
-_outRowCompareExpr(OUT_TYPE(RowCompareExpr) out, const RowCompareExpr *node)
+_outRowCompareExpr(OUT_TYPE(RowCompareExpr, RowCompareExpr) out, const RowCompareExpr *node)
 {
   WRITE_ENUM_FIELD(RowCompareType, rctype, rctype, rctype);
   WRITE_LIST_FIELD(opnos, opnos, opnos);
@@ -2117,7 +2121,7 @@ _outRowCompareExpr(OUT_TYPE(RowCompareExpr) out, const RowCompareExpr *node)
 }
 
 static void
-_outCoalesceExpr(OUT_TYPE(CoalesceExpr) out, const CoalesceExpr *node)
+_outCoalesceExpr(OUT_TYPE(CoalesceExpr, CoalesceExpr) out, const CoalesceExpr *node)
 {
   WRITE_UINT_FIELD(coalescetype, coalescetype, coalescetype);
   WRITE_UINT_FIELD(coalescecollid, coalescecollid, coalescecollid);
@@ -2126,7 +2130,7 @@ _outCoalesceExpr(OUT_TYPE(CoalesceExpr) out, const CoalesceExpr *node)
 }
 
 static void
-_outMinMaxExpr(OUT_TYPE(MinMaxExpr) out, const MinMaxExpr *node)
+_outMinMaxExpr(OUT_TYPE(MinMaxExpr, MinMaxExpr) out, const MinMaxExpr *node)
 {
   WRITE_UINT_FIELD(minmaxtype, minmaxtype, minmaxtype);
   WRITE_UINT_FIELD(minmaxcollid, minmaxcollid, minmaxcollid);
@@ -2137,7 +2141,7 @@ _outMinMaxExpr(OUT_TYPE(MinMaxExpr) out, const MinMaxExpr *node)
 }
 
 static void
-_outSQLValueFunction(OUT_TYPE(SQLValueFunction) out, const SQLValueFunction *node)
+_outSQLValueFunction(OUT_TYPE(SQLValueFunction, SQLValueFunction) out, const SQLValueFunction *node)
 {
   WRITE_ENUM_FIELD(SQLValueFunctionOp, op, op, op);
   WRITE_UINT_FIELD(type, type, type);
@@ -2146,7 +2150,7 @@ _outSQLValueFunction(OUT_TYPE(SQLValueFunction) out, const SQLValueFunction *nod
 }
 
 static void
-_outXmlExpr(OUT_TYPE(XmlExpr) out, const XmlExpr *node)
+_outXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) out, const XmlExpr *node)
 {
   WRITE_ENUM_FIELD(XmlExprOp, op, op, op);
   WRITE_STRING_FIELD(name, name, name);
@@ -2160,7 +2164,7 @@ _outXmlExpr(OUT_TYPE(XmlExpr) out, const XmlExpr *node)
 }
 
 static void
-_outNullTest(OUT_TYPE(NullTest) out, const NullTest *node)
+_outNullTest(OUT_TYPE(NullTest, NullTest) out, const NullTest *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_ENUM_FIELD(NullTestType, nulltesttype, nulltesttype, nulltesttype);
@@ -2169,7 +2173,7 @@ _outNullTest(OUT_TYPE(NullTest) out, const NullTest *node)
 }
 
 static void
-_outBooleanTest(OUT_TYPE(BooleanTest) out, const BooleanTest *node)
+_outBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) out, const BooleanTest *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_ENUM_FIELD(BoolTestType, booltesttype, booltesttype, booltesttype);
@@ -2177,7 +2181,7 @@ _outBooleanTest(OUT_TYPE(BooleanTest) out, const BooleanTest *node)
 }
 
 static void
-_outCoerceToDomain(OUT_TYPE(CoerceToDomain) out, const CoerceToDomain *node)
+_outCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) out, const CoerceToDomain *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_UINT_FIELD(resulttype, resulttype, resulttype);
@@ -2188,7 +2192,7 @@ _outCoerceToDomain(OUT_TYPE(CoerceToDomain) out, const CoerceToDomain *node)
 }
 
 static void
-_outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue) out, const CoerceToDomainValue *node)
+_outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue, CoerceToDomainValue) out, const CoerceToDomainValue *node)
 {
   WRITE_UINT_FIELD(type_id, typeId, typeId);
   WRITE_INT_FIELD(type_mod, typeMod, typeMod);
@@ -2197,7 +2201,7 @@ _outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue) out, const CoerceToDomainV
 }
 
 static void
-_outSetToDefault(OUT_TYPE(SetToDefault) out, const SetToDefault *node)
+_outSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) out, const SetToDefault *node)
 {
   WRITE_UINT_FIELD(type_id, typeId, typeId);
   WRITE_INT_FIELD(type_mod, typeMod, typeMod);
@@ -2206,7 +2210,7 @@ _outSetToDefault(OUT_TYPE(SetToDefault) out, const SetToDefault *node)
 }
 
 static void
-_outCurrentOfExpr(OUT_TYPE(CurrentOfExpr) out, const CurrentOfExpr *node)
+_outCurrentOfExpr(OUT_TYPE(CurrentOfExpr, CurrentOfExpr) out, const CurrentOfExpr *node)
 {
   WRITE_UINT_FIELD(cvarno, cvarno, cvarno);
   WRITE_STRING_FIELD(cursor_name, cursor_name, cursor_name);
@@ -2214,14 +2218,14 @@ _outCurrentOfExpr(OUT_TYPE(CurrentOfExpr) out, const CurrentOfExpr *node)
 }
 
 static void
-_outNextValueExpr(OUT_TYPE(NextValueExpr) out, const NextValueExpr *node)
+_outNextValueExpr(OUT_TYPE(NextValueExpr, NextValueExpr) out, const NextValueExpr *node)
 {
   WRITE_UINT_FIELD(seqid, seqid, seqid);
   WRITE_UINT_FIELD(type_id, typeId, typeId);
 }
 
 static void
-_outInferenceElem(OUT_TYPE(InferenceElem) out, const InferenceElem *node)
+_outInferenceElem(OUT_TYPE(InferenceElem, InferenceElem) out, const InferenceElem *node)
 {
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
   WRITE_UINT_FIELD(infercollid, infercollid, infercollid);
@@ -2229,7 +2233,7 @@ _outInferenceElem(OUT_TYPE(InferenceElem) out, const InferenceElem *node)
 }
 
 static void
-_outTargetEntry(OUT_TYPE(TargetEntry) out, const TargetEntry *node)
+_outTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) out, const TargetEntry *node)
 {
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
   WRITE_INT_FIELD(resno, resno, resno);
@@ -2241,13 +2245,13 @@ _outTargetEntry(OUT_TYPE(TargetEntry) out, const TargetEntry *node)
 }
 
 static void
-_outRangeTblRef(OUT_TYPE(RangeTblRef) out, const RangeTblRef *node)
+_outRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) out, const RangeTblRef *node)
 {
   WRITE_INT_FIELD(rtindex, rtindex, rtindex);
 }
 
 static void
-_outJoinExpr(OUT_TYPE(JoinExpr) out, const JoinExpr *node)
+_outJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) out, const JoinExpr *node)
 {
   WRITE_ENUM_FIELD(JoinType, jointype, jointype, jointype);
   WRITE_BOOL_FIELD(is_natural, isNatural, isNatural);
@@ -2260,14 +2264,14 @@ _outJoinExpr(OUT_TYPE(JoinExpr) out, const JoinExpr *node)
 }
 
 static void
-_outFromExpr(OUT_TYPE(FromExpr) out, const FromExpr *node)
+_outFromExpr(OUT_TYPE(FromExpr, FromExpr) out, const FromExpr *node)
 {
   WRITE_LIST_FIELD(fromlist, fromlist, fromlist);
   WRITE_NODE_PTR_FIELD(quals, quals, quals);
 }
 
 static void
-_outOnConflictExpr(OUT_TYPE(OnConflictExpr) out, const OnConflictExpr *node)
+_outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out, const OnConflictExpr *node)
 {
   WRITE_ENUM_FIELD(OnConflictAction, action, action, action);
   WRITE_LIST_FIELD(arbiter_elems, arbiterElems, arbiterElems);
@@ -2280,7 +2284,7 @@ _outOnConflictExpr(OUT_TYPE(OnConflictExpr) out, const OnConflictExpr *node)
 }
 
 static void
-_outIntoClause(OUT_TYPE(IntoClause) out, const IntoClause *node)
+_outIntoClause(OUT_TYPE(IntoClause, IntoClause) out, const IntoClause *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, rel, rel, rel);
   WRITE_LIST_FIELD(col_names, colNames, colNames);
@@ -2293,7 +2297,7 @@ _outIntoClause(OUT_TYPE(IntoClause) out, const IntoClause *node)
 }
 
 static void
-_outRawStmt(OUT_TYPE(RawStmt) out, const RawStmt *node)
+_outRawStmt(OUT_TYPE(RawStmt, RawStmt) out, const RawStmt *node)
 {
   WRITE_NODE_PTR_FIELD(stmt, stmt, stmt);
   WRITE_INT_FIELD(stmt_location, stmt_location, stmt_location);
@@ -2301,7 +2305,7 @@ _outRawStmt(OUT_TYPE(RawStmt) out, const RawStmt *node)
 }
 
 static void
-_outQuery(OUT_TYPE(Query) out, const Query *node)
+_outQuery(OUT_TYPE(Query, Query) out, const Query *node)
 {
   WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
   WRITE_ENUM_FIELD(QuerySource, query_source, querySource, querySource);
@@ -2342,7 +2346,7 @@ _outQuery(OUT_TYPE(Query) out, const Query *node)
 }
 
 static void
-_outInsertStmt(OUT_TYPE(InsertStmt) out, const InsertStmt *node)
+_outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out, const InsertStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_LIST_FIELD(cols, cols, cols);
@@ -2354,7 +2358,7 @@ _outInsertStmt(OUT_TYPE(InsertStmt) out, const InsertStmt *node)
 }
 
 static void
-_outDeleteStmt(OUT_TYPE(DeleteStmt) out, const DeleteStmt *node)
+_outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out, const DeleteStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_LIST_FIELD(using_clause, usingClause, usingClause);
@@ -2364,7 +2368,7 @@ _outDeleteStmt(OUT_TYPE(DeleteStmt) out, const DeleteStmt *node)
 }
 
 static void
-_outUpdateStmt(OUT_TYPE(UpdateStmt) out, const UpdateStmt *node)
+_outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out, const UpdateStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_LIST_FIELD(target_list, targetList, targetList);
@@ -2375,7 +2379,7 @@ _outUpdateStmt(OUT_TYPE(UpdateStmt) out, const UpdateStmt *node)
 }
 
 static void
-_outSelectStmt(OUT_TYPE(SelectStmt) out, const SelectStmt *node)
+_outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out, const SelectStmt *node)
 {
   WRITE_LIST_FIELD(distinct_clause, distinctClause, distinctClause);
   WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into_clause, intoClause, intoClause);
@@ -2399,7 +2403,7 @@ _outSelectStmt(OUT_TYPE(SelectStmt) out, const SelectStmt *node)
 }
 
 static void
-_outAlterTableStmt(OUT_TYPE(AlterTableStmt) out, const AlterTableStmt *node)
+_outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out, const AlterTableStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_LIST_FIELD(cmds, cmds, cmds);
@@ -2408,7 +2412,7 @@ _outAlterTableStmt(OUT_TYPE(AlterTableStmt) out, const AlterTableStmt *node)
 }
 
 static void
-_outAlterTableCmd(OUT_TYPE(AlterTableCmd) out, const AlterTableCmd *node)
+_outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out, const AlterTableCmd *node)
 {
   WRITE_ENUM_FIELD(AlterTableType, subtype, subtype, subtype);
   WRITE_STRING_FIELD(name, name, name);
@@ -2420,7 +2424,7 @@ _outAlterTableCmd(OUT_TYPE(AlterTableCmd) out, const AlterTableCmd *node)
 }
 
 static void
-_outAlterDomainStmt(OUT_TYPE(AlterDomainStmt) out, const AlterDomainStmt *node)
+_outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out, const AlterDomainStmt *node)
 {
   WRITE_CHAR_FIELD(subtype, subtype, subtype);
   WRITE_LIST_FIELD(type_name, typeName, typeName);
@@ -2431,7 +2435,7 @@ _outAlterDomainStmt(OUT_TYPE(AlterDomainStmt) out, const AlterDomainStmt *node)
 }
 
 static void
-_outSetOperationStmt(OUT_TYPE(SetOperationStmt) out, const SetOperationStmt *node)
+_outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out, const SetOperationStmt *node)
 {
   WRITE_ENUM_FIELD(SetOperation, op, op, op);
   WRITE_BOOL_FIELD(all, all, all);
@@ -2444,7 +2448,7 @@ _outSetOperationStmt(OUT_TYPE(SetOperationStmt) out, const SetOperationStmt *nod
 }
 
 static void
-_outGrantStmt(OUT_TYPE(GrantStmt) out, const GrantStmt *node)
+_outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out, const GrantStmt *node)
 {
   WRITE_BOOL_FIELD(is_grant, is_grant, is_grant);
   WRITE_ENUM_FIELD(GrantTargetType, targtype, targtype, targtype);
@@ -2457,7 +2461,7 @@ _outGrantStmt(OUT_TYPE(GrantStmt) out, const GrantStmt *node)
 }
 
 static void
-_outGrantRoleStmt(OUT_TYPE(GrantRoleStmt) out, const GrantRoleStmt *node)
+_outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out, const GrantRoleStmt *node)
 {
   WRITE_LIST_FIELD(granted_roles, granted_roles, granted_roles);
   WRITE_LIST_FIELD(grantee_roles, grantee_roles, grantee_roles);
@@ -2468,20 +2472,20 @@ _outGrantRoleStmt(OUT_TYPE(GrantRoleStmt) out, const GrantRoleStmt *node)
 }
 
 static void
-_outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt) out, const AlterDefaultPrivilegesStmt *node)
+_outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out, const AlterDefaultPrivilegesStmt *node)
 {
   WRITE_LIST_FIELD(options, options, options);
   WRITE_SPECIFIC_NODE_PTR_FIELD(GrantStmt, grant_stmt, action, action, action);
 }
 
 static void
-_outClosePortalStmt(OUT_TYPE(ClosePortalStmt) out, const ClosePortalStmt *node)
+_outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out, const ClosePortalStmt *node)
 {
   WRITE_STRING_FIELD(portalname, portalname, portalname);
 }
 
 static void
-_outClusterStmt(OUT_TYPE(ClusterStmt) out, const ClusterStmt *node)
+_outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out, const ClusterStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_STRING_FIELD(indexname, indexname, indexname);
@@ -2489,7 +2493,7 @@ _outClusterStmt(OUT_TYPE(ClusterStmt) out, const ClusterStmt *node)
 }
 
 static void
-_outCopyStmt(OUT_TYPE(CopyStmt) out, const CopyStmt *node)
+_outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out, const CopyStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_NODE_PTR_FIELD(query, query, query);
@@ -2502,7 +2506,7 @@ _outCopyStmt(OUT_TYPE(CopyStmt) out, const CopyStmt *node)
 }
 
 static void
-_outCreateStmt(OUT_TYPE(CreateStmt) out, const CreateStmt *node)
+_outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out, const CreateStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_LIST_FIELD(table_elts, tableElts, tableElts);
@@ -2519,7 +2523,7 @@ _outCreateStmt(OUT_TYPE(CreateStmt) out, const CreateStmt *node)
 }
 
 static void
-_outDefineStmt(OUT_TYPE(DefineStmt) out, const DefineStmt *node)
+_outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out, const DefineStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, kind, kind, kind);
   WRITE_BOOL_FIELD(oldstyle, oldstyle, oldstyle);
@@ -2531,7 +2535,7 @@ _outDefineStmt(OUT_TYPE(DefineStmt) out, const DefineStmt *node)
 }
 
 static void
-_outDropStmt(OUT_TYPE(DropStmt) out, const DropStmt *node)
+_outDropStmt(OUT_TYPE(DropStmt, DropStmt) out, const DropStmt *node)
 {
   WRITE_LIST_FIELD(objects, objects, objects);
   WRITE_ENUM_FIELD(ObjectType, remove_type, removeType, removeType);
@@ -2541,7 +2545,7 @@ _outDropStmt(OUT_TYPE(DropStmt) out, const DropStmt *node)
 }
 
 static void
-_outTruncateStmt(OUT_TYPE(TruncateStmt) out, const TruncateStmt *node)
+_outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out, const TruncateStmt *node)
 {
   WRITE_LIST_FIELD(relations, relations, relations);
   WRITE_BOOL_FIELD(restart_seqs, restart_seqs, restart_seqs);
@@ -2549,7 +2553,7 @@ _outTruncateStmt(OUT_TYPE(TruncateStmt) out, const TruncateStmt *node)
 }
 
 static void
-_outCommentStmt(OUT_TYPE(CommentStmt) out, const CommentStmt *node)
+_outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out, const CommentStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
   WRITE_NODE_PTR_FIELD(object, object, object);
@@ -2557,7 +2561,7 @@ _outCommentStmt(OUT_TYPE(CommentStmt) out, const CommentStmt *node)
 }
 
 static void
-_outFetchStmt(OUT_TYPE(FetchStmt) out, const FetchStmt *node)
+_outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out, const FetchStmt *node)
 {
   WRITE_ENUM_FIELD(FetchDirection, direction, direction, direction);
   WRITE_LONG_FIELD(how_many, howMany, howMany);
@@ -2566,7 +2570,7 @@ _outFetchStmt(OUT_TYPE(FetchStmt) out, const FetchStmt *node)
 }
 
 static void
-_outIndexStmt(OUT_TYPE(IndexStmt) out, const IndexStmt *node)
+_outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out, const IndexStmt *node)
 {
   WRITE_STRING_FIELD(idxname, idxname, idxname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -2594,7 +2598,7 @@ _outIndexStmt(OUT_TYPE(IndexStmt) out, const IndexStmt *node)
 }
 
 static void
-_outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt) out, const CreateFunctionStmt *node)
+_outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out, const CreateFunctionStmt *node)
 {
   WRITE_BOOL_FIELD(is_procedure, is_procedure, is_procedure);
   WRITE_BOOL_FIELD(replace, replace, replace);
@@ -2605,7 +2609,7 @@ _outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt) out, const CreateFunctionStm
 }
 
 static void
-_outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt) out, const AlterFunctionStmt *node)
+_outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out, const AlterFunctionStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
   WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
@@ -2613,13 +2617,13 @@ _outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt) out, const AlterFunctionStmt *
 }
 
 static void
-_outDoStmt(OUT_TYPE(DoStmt) out, const DoStmt *node)
+_outDoStmt(OUT_TYPE(DoStmt, DoStmt) out, const DoStmt *node)
 {
   WRITE_LIST_FIELD(args, args, args);
 }
 
 static void
-_outRenameStmt(OUT_TYPE(RenameStmt) out, const RenameStmt *node)
+_outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out, const RenameStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, rename_type, renameType, renameType);
   WRITE_ENUM_FIELD(ObjectType, relation_type, relationType, relationType);
@@ -2632,7 +2636,7 @@ _outRenameStmt(OUT_TYPE(RenameStmt) out, const RenameStmt *node)
 }
 
 static void
-_outRuleStmt(OUT_TYPE(RuleStmt) out, const RuleStmt *node)
+_outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out, const RuleStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_STRING_FIELD(rulename, rulename, rulename);
@@ -2644,26 +2648,26 @@ _outRuleStmt(OUT_TYPE(RuleStmt) out, const RuleStmt *node)
 }
 
 static void
-_outNotifyStmt(OUT_TYPE(NotifyStmt) out, const NotifyStmt *node)
+_outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out, const NotifyStmt *node)
 {
   WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
   WRITE_STRING_FIELD(payload, payload, payload);
 }
 
 static void
-_outListenStmt(OUT_TYPE(ListenStmt) out, const ListenStmt *node)
+_outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out, const ListenStmt *node)
 {
   WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
 }
 
 static void
-_outUnlistenStmt(OUT_TYPE(UnlistenStmt) out, const UnlistenStmt *node)
+_outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out, const UnlistenStmt *node)
 {
   WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
 }
 
 static void
-_outTransactionStmt(OUT_TYPE(TransactionStmt) out, const TransactionStmt *node)
+_outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out, const TransactionStmt *node)
 {
   WRITE_ENUM_FIELD(TransactionStmtKind, kind, kind, kind);
   WRITE_LIST_FIELD(options, options, options);
@@ -2673,7 +2677,7 @@ _outTransactionStmt(OUT_TYPE(TransactionStmt) out, const TransactionStmt *node)
 }
 
 static void
-_outViewStmt(OUT_TYPE(ViewStmt) out, const ViewStmt *node)
+_outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out, const ViewStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, view, view, view);
   WRITE_LIST_FIELD(aliases, aliases, aliases);
@@ -2684,13 +2688,13 @@ _outViewStmt(OUT_TYPE(ViewStmt) out, const ViewStmt *node)
 }
 
 static void
-_outLoadStmt(OUT_TYPE(LoadStmt) out, const LoadStmt *node)
+_outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out, const LoadStmt *node)
 {
   WRITE_STRING_FIELD(filename, filename, filename);
 }
 
 static void
-_outCreateDomainStmt(OUT_TYPE(CreateDomainStmt) out, const CreateDomainStmt *node)
+_outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out, const CreateDomainStmt *node)
 {
   WRITE_LIST_FIELD(domainname, domainname, domainname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
@@ -2699,14 +2703,14 @@ _outCreateDomainStmt(OUT_TYPE(CreateDomainStmt) out, const CreateDomainStmt *nod
 }
 
 static void
-_outCreatedbStmt(OUT_TYPE(CreatedbStmt) out, const CreatedbStmt *node)
+_outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out, const CreatedbStmt *node)
 {
   WRITE_STRING_FIELD(dbname, dbname, dbname);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outDropdbStmt(OUT_TYPE(DropdbStmt) out, const DropdbStmt *node)
+_outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out, const DropdbStmt *node)
 {
   WRITE_STRING_FIELD(dbname, dbname, dbname);
   WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
@@ -2714,7 +2718,7 @@ _outDropdbStmt(OUT_TYPE(DropdbStmt) out, const DropdbStmt *node)
 }
 
 static void
-_outVacuumStmt(OUT_TYPE(VacuumStmt) out, const VacuumStmt *node)
+_outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out, const VacuumStmt *node)
 {
   WRITE_LIST_FIELD(options, options, options);
   WRITE_LIST_FIELD(rels, rels, rels);
@@ -2722,14 +2726,14 @@ _outVacuumStmt(OUT_TYPE(VacuumStmt) out, const VacuumStmt *node)
 }
 
 static void
-_outExplainStmt(OUT_TYPE(ExplainStmt) out, const ExplainStmt *node)
+_outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out, const ExplainStmt *node)
 {
   WRITE_NODE_PTR_FIELD(query, query, query);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt) out, const CreateTableAsStmt *node)
+_outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out, const CreateTableAsStmt *node)
 {
   WRITE_NODE_PTR_FIELD(query, query, query);
   WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
@@ -2739,7 +2743,7 @@ _outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt) out, const CreateTableAsStmt *
 }
 
 static void
-_outCreateSeqStmt(OUT_TYPE(CreateSeqStmt) out, const CreateSeqStmt *node)
+_outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out, const CreateSeqStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
   WRITE_LIST_FIELD(options, options, options);
@@ -2749,7 +2753,7 @@ _outCreateSeqStmt(OUT_TYPE(CreateSeqStmt) out, const CreateSeqStmt *node)
 }
 
 static void
-_outAlterSeqStmt(OUT_TYPE(AlterSeqStmt) out, const AlterSeqStmt *node)
+_outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out, const AlterSeqStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
   WRITE_LIST_FIELD(options, options, options);
@@ -2758,7 +2762,7 @@ _outAlterSeqStmt(OUT_TYPE(AlterSeqStmt) out, const AlterSeqStmt *node)
 }
 
 static void
-_outVariableSetStmt(OUT_TYPE(VariableSetStmt) out, const VariableSetStmt *node)
+_outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out, const VariableSetStmt *node)
 {
   WRITE_ENUM_FIELD(VariableSetKind, kind, kind, kind);
   WRITE_STRING_FIELD(name, name, name);
@@ -2767,19 +2771,19 @@ _outVariableSetStmt(OUT_TYPE(VariableSetStmt) out, const VariableSetStmt *node)
 }
 
 static void
-_outVariableShowStmt(OUT_TYPE(VariableShowStmt) out, const VariableShowStmt *node)
+_outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out, const VariableShowStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
 }
 
 static void
-_outDiscardStmt(OUT_TYPE(DiscardStmt) out, const DiscardStmt *node)
+_outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out, const DiscardStmt *node)
 {
   WRITE_ENUM_FIELD(DiscardMode, target, target, target);
 }
 
 static void
-_outCreateTrigStmt(OUT_TYPE(CreateTrigStmt) out, const CreateTrigStmt *node)
+_outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out, const CreateTrigStmt *node)
 {
   WRITE_STRING_FIELD(trigname, trigname, trigname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -2798,7 +2802,7 @@ _outCreateTrigStmt(OUT_TYPE(CreateTrigStmt) out, const CreateTrigStmt *node)
 }
 
 static void
-_outCreatePLangStmt(OUT_TYPE(CreatePLangStmt) out, const CreatePLangStmt *node)
+_outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out, const CreatePLangStmt *node)
 {
   WRITE_BOOL_FIELD(replace, replace, replace);
   WRITE_STRING_FIELD(plname, plname, plname);
@@ -2809,7 +2813,7 @@ _outCreatePLangStmt(OUT_TYPE(CreatePLangStmt) out, const CreatePLangStmt *node)
 }
 
 static void
-_outCreateRoleStmt(OUT_TYPE(CreateRoleStmt) out, const CreateRoleStmt *node)
+_outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out, const CreateRoleStmt *node)
 {
   WRITE_ENUM_FIELD(RoleStmtType, stmt_type, stmt_type, stmt_type);
   WRITE_STRING_FIELD(role, role, role);
@@ -2817,7 +2821,7 @@ _outCreateRoleStmt(OUT_TYPE(CreateRoleStmt) out, const CreateRoleStmt *node)
 }
 
 static void
-_outAlterRoleStmt(OUT_TYPE(AlterRoleStmt) out, const AlterRoleStmt *node)
+_outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out, const AlterRoleStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
   WRITE_LIST_FIELD(options, options, options);
@@ -2825,14 +2829,14 @@ _outAlterRoleStmt(OUT_TYPE(AlterRoleStmt) out, const AlterRoleStmt *node)
 }
 
 static void
-_outDropRoleStmt(OUT_TYPE(DropRoleStmt) out, const DropRoleStmt *node)
+_outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out, const DropRoleStmt *node)
 {
   WRITE_LIST_FIELD(roles, roles, roles);
   WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
 }
 
 static void
-_outLockStmt(OUT_TYPE(LockStmt) out, const LockStmt *node)
+_outLockStmt(OUT_TYPE(LockStmt, LockStmt) out, const LockStmt *node)
 {
   WRITE_LIST_FIELD(relations, relations, relations);
   WRITE_INT_FIELD(mode, mode, mode);
@@ -2840,14 +2844,14 @@ _outLockStmt(OUT_TYPE(LockStmt) out, const LockStmt *node)
 }
 
 static void
-_outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt) out, const ConstraintsSetStmt *node)
+_outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out, const ConstraintsSetStmt *node)
 {
   WRITE_LIST_FIELD(constraints, constraints, constraints);
   WRITE_BOOL_FIELD(deferred, deferred, deferred);
 }
 
 static void
-_outReindexStmt(OUT_TYPE(ReindexStmt) out, const ReindexStmt *node)
+_outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out, const ReindexStmt *node)
 {
   WRITE_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -2857,12 +2861,12 @@ _outReindexStmt(OUT_TYPE(ReindexStmt) out, const ReindexStmt *node)
 }
 
 static void
-_outCheckPointStmt(OUT_TYPE(CheckPointStmt) out, const CheckPointStmt *node)
+_outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out, const CheckPointStmt *node)
 {
 }
 
 static void
-_outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt) out, const CreateSchemaStmt *node)
+_outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out, const CreateSchemaStmt *node)
 {
   WRITE_STRING_FIELD(schemaname, schemaname, schemaname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, authrole, authrole, authrole);
@@ -2871,21 +2875,21 @@ _outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt) out, const CreateSchemaStmt *nod
 }
 
 static void
-_outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt) out, const AlterDatabaseStmt *node)
+_outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out, const AlterDatabaseStmt *node)
 {
   WRITE_STRING_FIELD(dbname, dbname, dbname);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt) out, const AlterDatabaseSetStmt *node)
+_outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out, const AlterDatabaseSetStmt *node)
 {
   WRITE_STRING_FIELD(dbname, dbname, dbname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
 }
 
 static void
-_outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt) out, const AlterRoleSetStmt *node)
+_outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out, const AlterRoleSetStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
   WRITE_STRING_FIELD(database, database, database);
@@ -2893,7 +2897,7 @@ _outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt) out, const AlterRoleSetStmt *nod
 }
 
 static void
-_outCreateConversionStmt(OUT_TYPE(CreateConversionStmt) out, const CreateConversionStmt *node)
+_outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out, const CreateConversionStmt *node)
 {
   WRITE_LIST_FIELD(conversion_name, conversion_name, conversion_name);
   WRITE_STRING_FIELD(for_encoding_name, for_encoding_name, for_encoding_name);
@@ -2903,7 +2907,7 @@ _outCreateConversionStmt(OUT_TYPE(CreateConversionStmt) out, const CreateConvers
 }
 
 static void
-_outCreateCastStmt(OUT_TYPE(CreateCastStmt) out, const CreateCastStmt *node)
+_outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out, const CreateCastStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, sourcetype, sourcetype, sourcetype);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, targettype, targettype, targettype);
@@ -2913,7 +2917,7 @@ _outCreateCastStmt(OUT_TYPE(CreateCastStmt) out, const CreateCastStmt *node)
 }
 
 static void
-_outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt) out, const CreateOpClassStmt *node)
+_outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out, const CreateOpClassStmt *node)
 {
   WRITE_LIST_FIELD(opclassname, opclassname, opclassname);
   WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
@@ -2924,14 +2928,14 @@ _outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt) out, const CreateOpClassStmt *
 }
 
 static void
-_outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt) out, const CreateOpFamilyStmt *node)
+_outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out, const CreateOpFamilyStmt *node)
 {
   WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
   WRITE_STRING_FIELD(amname, amname, amname);
 }
 
 static void
-_outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt) out, const AlterOpFamilyStmt *node)
+_outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out, const AlterOpFamilyStmt *node)
 {
   WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
   WRITE_STRING_FIELD(amname, amname, amname);
@@ -2940,7 +2944,7 @@ _outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt) out, const AlterOpFamilyStmt *
 }
 
 static void
-_outPrepareStmt(OUT_TYPE(PrepareStmt) out, const PrepareStmt *node)
+_outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out, const PrepareStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_LIST_FIELD(argtypes, argtypes, argtypes);
@@ -2948,20 +2952,20 @@ _outPrepareStmt(OUT_TYPE(PrepareStmt) out, const PrepareStmt *node)
 }
 
 static void
-_outExecuteStmt(OUT_TYPE(ExecuteStmt) out, const ExecuteStmt *node)
+_outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out, const ExecuteStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_LIST_FIELD(params, params, params);
 }
 
 static void
-_outDeallocateStmt(OUT_TYPE(DeallocateStmt) out, const DeallocateStmt *node)
+_outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out, const DeallocateStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
 }
 
 static void
-_outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt) out, const DeclareCursorStmt *node)
+_outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out, const DeclareCursorStmt *node)
 {
   WRITE_STRING_FIELD(portalname, portalname, portalname);
   WRITE_INT_FIELD(options, options, options);
@@ -2969,7 +2973,7 @@ _outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt) out, const DeclareCursorStmt *
 }
 
 static void
-_outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt) out, const CreateTableSpaceStmt *node)
+_outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out, const CreateTableSpaceStmt *node)
 {
   WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, owner, owner, owner);
@@ -2978,14 +2982,14 @@ _outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt) out, const CreateTableSp
 }
 
 static void
-_outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt) out, const DropTableSpaceStmt *node)
+_outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out, const DropTableSpaceStmt *node)
 {
   WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
   WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
 }
 
 static void
-_outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt) out, const AlterObjectDependsStmt *node)
+_outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out, const AlterObjectDependsStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -2995,7 +2999,7 @@ _outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt) out, const AlterObje
 }
 
 static void
-_outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt) out, const AlterObjectSchemaStmt *node)
+_outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out, const AlterObjectSchemaStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -3005,7 +3009,7 @@ _outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt) out, const AlterObject
 }
 
 static void
-_outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt) out, const AlterOwnerStmt *node)
+_outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out, const AlterOwnerStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
@@ -3014,56 +3018,56 @@ _outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt) out, const AlterOwnerStmt *node)
 }
 
 static void
-_outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt) out, const AlterOperatorStmt *node)
+_outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out, const AlterOperatorStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, opername, opername, opername);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outAlterTypeStmt(OUT_TYPE(AlterTypeStmt) out, const AlterTypeStmt *node)
+_outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out, const AlterTypeStmt *node)
 {
   WRITE_LIST_FIELD(type_name, typeName, typeName);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outDropOwnedStmt(OUT_TYPE(DropOwnedStmt) out, const DropOwnedStmt *node)
+_outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out, const DropOwnedStmt *node)
 {
   WRITE_LIST_FIELD(roles, roles, roles);
   WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
 }
 
 static void
-_outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt) out, const ReassignOwnedStmt *node)
+_outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out, const ReassignOwnedStmt *node)
 {
   WRITE_LIST_FIELD(roles, roles, roles);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newrole, newrole, newrole);
 }
 
 static void
-_outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt) out, const CompositeTypeStmt *node)
+_outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out, const CompositeTypeStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, typevar, typevar, typevar);
   WRITE_LIST_FIELD(coldeflist, coldeflist, coldeflist);
 }
 
 static void
-_outCreateEnumStmt(OUT_TYPE(CreateEnumStmt) out, const CreateEnumStmt *node)
+_outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out, const CreateEnumStmt *node)
 {
   WRITE_LIST_FIELD(type_name, typeName, typeName);
   WRITE_LIST_FIELD(vals, vals, vals);
 }
 
 static void
-_outCreateRangeStmt(OUT_TYPE(CreateRangeStmt) out, const CreateRangeStmt *node)
+_outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out, const CreateRangeStmt *node)
 {
   WRITE_LIST_FIELD(type_name, typeName, typeName);
   WRITE_LIST_FIELD(params, params, params);
 }
 
 static void
-_outAlterEnumStmt(OUT_TYPE(AlterEnumStmt) out, const AlterEnumStmt *node)
+_outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out, const AlterEnumStmt *node)
 {
   WRITE_LIST_FIELD(type_name, typeName, typeName);
   WRITE_STRING_FIELD(old_val, oldVal, oldVal);
@@ -3074,14 +3078,14 @@ _outAlterEnumStmt(OUT_TYPE(AlterEnumStmt) out, const AlterEnumStmt *node)
 }
 
 static void
-_outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt) out, const AlterTSDictionaryStmt *node)
+_outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out, const AlterTSDictionaryStmt *node)
 {
   WRITE_LIST_FIELD(dictname, dictname, dictname);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt) out, const AlterTSConfigurationStmt *node)
+_outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out, const AlterTSConfigurationStmt *node)
 {
   WRITE_ENUM_FIELD(AlterTSConfigType, kind, kind, kind);
   WRITE_LIST_FIELD(cfgname, cfgname, cfgname);
@@ -3093,7 +3097,7 @@ _outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt) out, const Alter
 }
 
 static void
-_outCreateFdwStmt(OUT_TYPE(CreateFdwStmt) out, const CreateFdwStmt *node)
+_outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out, const CreateFdwStmt *node)
 {
   WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
   WRITE_LIST_FIELD(func_options, func_options, func_options);
@@ -3101,7 +3105,7 @@ _outCreateFdwStmt(OUT_TYPE(CreateFdwStmt) out, const CreateFdwStmt *node)
 }
 
 static void
-_outAlterFdwStmt(OUT_TYPE(AlterFdwStmt) out, const AlterFdwStmt *node)
+_outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out, const AlterFdwStmt *node)
 {
   WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
   WRITE_LIST_FIELD(func_options, func_options, func_options);
@@ -3109,7 +3113,7 @@ _outAlterFdwStmt(OUT_TYPE(AlterFdwStmt) out, const AlterFdwStmt *node)
 }
 
 static void
-_outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt) out, const CreateForeignServerStmt *node)
+_outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out, const CreateForeignServerStmt *node)
 {
   WRITE_STRING_FIELD(servername, servername, servername);
   WRITE_STRING_FIELD(servertype, servertype, servertype);
@@ -3120,7 +3124,7 @@ _outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt) out, const CreateF
 }
 
 static void
-_outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt) out, const AlterForeignServerStmt *node)
+_outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out, const AlterForeignServerStmt *node)
 {
   WRITE_STRING_FIELD(servername, servername, servername);
   WRITE_STRING_FIELD(version, version, version);
@@ -3129,7 +3133,7 @@ _outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt) out, const AlterFore
 }
 
 static void
-_outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt) out, const CreateUserMappingStmt *node)
+_outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out, const CreateUserMappingStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
   WRITE_STRING_FIELD(servername, servername, servername);
@@ -3138,7 +3142,7 @@ _outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt) out, const CreateUserM
 }
 
 static void
-_outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt) out, const AlterUserMappingStmt *node)
+_outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out, const AlterUserMappingStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
   WRITE_STRING_FIELD(servername, servername, servername);
@@ -3146,7 +3150,7 @@ _outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt) out, const AlterUserMapp
 }
 
 static void
-_outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt) out, const DropUserMappingStmt *node)
+_outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out, const DropUserMappingStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
   WRITE_STRING_FIELD(servername, servername, servername);
@@ -3154,7 +3158,7 @@ _outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt) out, const DropUserMapping
 }
 
 static void
-_outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt) out, const AlterTableSpaceOptionsStmt *node)
+_outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out, const AlterTableSpaceOptionsStmt *node)
 {
   WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
   WRITE_LIST_FIELD(options, options, options);
@@ -3162,7 +3166,7 @@ _outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt) out, const A
 }
 
 static void
-_outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt) out, const AlterTableMoveAllStmt *node)
+_outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out, const AlterTableMoveAllStmt *node)
 {
   WRITE_STRING_FIELD(orig_tablespacename, orig_tablespacename, orig_tablespacename);
   WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
@@ -3172,7 +3176,7 @@ _outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt) out, const AlterTableM
 }
 
 static void
-_outSecLabelStmt(OUT_TYPE(SecLabelStmt) out, const SecLabelStmt *node)
+_outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out, const SecLabelStmt *node)
 {
   WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
   WRITE_NODE_PTR_FIELD(object, object, object);
@@ -3181,7 +3185,7 @@ _outSecLabelStmt(OUT_TYPE(SecLabelStmt) out, const SecLabelStmt *node)
 }
 
 static void
-_outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt) out, const CreateForeignTableStmt *node)
+_outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out, const CreateForeignTableStmt *node)
 {
   WRITE_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
   WRITE_STRING_FIELD(servername, servername, servername);
@@ -3189,7 +3193,7 @@ _outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt) out, const CreateFor
 }
 
 static void
-_outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt) out, const ImportForeignSchemaStmt *node)
+_outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out, const ImportForeignSchemaStmt *node)
 {
   WRITE_STRING_FIELD(server_name, server_name, server_name);
   WRITE_STRING_FIELD(remote_schema, remote_schema, remote_schema);
@@ -3200,7 +3204,7 @@ _outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt) out, const ImportF
 }
 
 static void
-_outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt) out, const CreateExtensionStmt *node)
+_outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out, const CreateExtensionStmt *node)
 {
   WRITE_STRING_FIELD(extname, extname, extname);
   WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
@@ -3208,14 +3212,14 @@ _outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt) out, const CreateExtension
 }
 
 static void
-_outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt) out, const AlterExtensionStmt *node)
+_outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out, const AlterExtensionStmt *node)
 {
   WRITE_STRING_FIELD(extname, extname, extname);
   WRITE_LIST_FIELD(options, options, options);
 }
 
 static void
-_outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt) out, const AlterExtensionContentsStmt *node)
+_outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out, const AlterExtensionContentsStmt *node)
 {
   WRITE_STRING_FIELD(extname, extname, extname);
   WRITE_INT_FIELD(action, action, action);
@@ -3224,7 +3228,7 @@ _outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt) out, const A
 }
 
 static void
-_outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt) out, const CreateEventTrigStmt *node)
+_outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out, const CreateEventTrigStmt *node)
 {
   WRITE_STRING_FIELD(trigname, trigname, trigname);
   WRITE_STRING_FIELD(eventname, eventname, eventname);
@@ -3233,14 +3237,14 @@ _outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt) out, const CreateEventTrig
 }
 
 static void
-_outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt) out, const AlterEventTrigStmt *node)
+_outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out, const AlterEventTrigStmt *node)
 {
   WRITE_STRING_FIELD(trigname, trigname, trigname);
   WRITE_CHAR_FIELD(tgenabled, tgenabled, tgenabled);
 }
 
 static void
-_outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt) out, const RefreshMatViewStmt *node)
+_outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out, const RefreshMatViewStmt *node)
 {
   WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
   WRITE_BOOL_FIELD(skip_data, skipData, skipData);
@@ -3248,20 +3252,20 @@ _outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt) out, const RefreshMatViewStm
 }
 
 static void
-_outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt) out, const ReplicaIdentityStmt *node)
+_outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out, const ReplicaIdentityStmt *node)
 {
   WRITE_CHAR_FIELD(identity_type, identity_type, identity_type);
   WRITE_STRING_FIELD(name, name, name);
 }
 
 static void
-_outAlterSystemStmt(OUT_TYPE(AlterSystemStmt) out, const AlterSystemStmt *node)
+_outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out, const AlterSystemStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
 }
 
 static void
-_outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt) out, const CreatePolicyStmt *node)
+_outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out, const CreatePolicyStmt *node)
 {
   WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
@@ -3273,7 +3277,7 @@ _outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt) out, const CreatePolicyStmt *nod
 }
 
 static void
-_outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt) out, const AlterPolicyStmt *node)
+_outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out, const AlterPolicyStmt *node)
 {
   WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
@@ -3283,7 +3287,7 @@ _outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt) out, const AlterPolicyStmt *node)
 }
 
 static void
-_outCreateTransformStmt(OUT_TYPE(CreateTransformStmt) out, const CreateTransformStmt *node)
+_outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out, const CreateTransformStmt *node)
 {
   WRITE_BOOL_FIELD(replace, replace, replace);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, type_name, type_name);
@@ -3293,7 +3297,7 @@ _outCreateTransformStmt(OUT_TYPE(CreateTransformStmt) out, const CreateTransform
 }
 
 static void
-_outCreateAmStmt(OUT_TYPE(CreateAmStmt) out, const CreateAmStmt *node)
+_outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out, const CreateAmStmt *node)
 {
   WRITE_STRING_FIELD(amname, amname, amname);
   WRITE_LIST_FIELD(handler_name, handler_name, handler_name);
@@ -3301,7 +3305,7 @@ _outCreateAmStmt(OUT_TYPE(CreateAmStmt) out, const CreateAmStmt *node)
 }
 
 static void
-_outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt) out, const CreatePublicationStmt *node)
+_outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out, const CreatePublicationStmt *node)
 {
   WRITE_STRING_FIELD(pubname, pubname, pubname);
   WRITE_LIST_FIELD(options, options, options);
@@ -3310,7 +3314,7 @@ _outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt) out, const CreatePubli
 }
 
 static void
-_outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt) out, const AlterPublicationStmt *node)
+_outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out, const AlterPublicationStmt *node)
 {
   WRITE_STRING_FIELD(pubname, pubname, pubname);
   WRITE_LIST_FIELD(options, options, options);
@@ -3320,7 +3324,7 @@ _outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt) out, const AlterPublicat
 }
 
 static void
-_outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt) out, const CreateSubscriptionStmt *node)
+_outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out, const CreateSubscriptionStmt *node)
 {
   WRITE_STRING_FIELD(subname, subname, subname);
   WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
@@ -3329,7 +3333,7 @@ _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt) out, const CreateSub
 }
 
 static void
-_outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt) out, const AlterSubscriptionStmt *node)
+_outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out, const AlterSubscriptionStmt *node)
 {
   WRITE_ENUM_FIELD(AlterSubscriptionType, kind, kind, kind);
   WRITE_STRING_FIELD(subname, subname, subname);
@@ -3339,7 +3343,7 @@ _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt) out, const AlterSubscr
 }
 
 static void
-_outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt) out, const DropSubscriptionStmt *node)
+_outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out, const DropSubscriptionStmt *node)
 {
   WRITE_STRING_FIELD(subname, subname, subname);
   WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
@@ -3347,7 +3351,7 @@ _outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt) out, const DropSubscript
 }
 
 static void
-_outCreateStatsStmt(OUT_TYPE(CreateStatsStmt) out, const CreateStatsStmt *node)
+_outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out, const CreateStatsStmt *node)
 {
   WRITE_LIST_FIELD(defnames, defnames, defnames);
   WRITE_LIST_FIELD(stat_types, stat_types, stat_types);
@@ -3358,20 +3362,20 @@ _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt) out, const CreateStatsStmt *node)
 }
 
 static void
-_outAlterCollationStmt(OUT_TYPE(AlterCollationStmt) out, const AlterCollationStmt *node)
+_outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out, const AlterCollationStmt *node)
 {
   WRITE_LIST_FIELD(collname, collname, collname);
 }
 
 static void
-_outCallStmt(OUT_TYPE(CallStmt) out, const CallStmt *node)
+_outCallStmt(OUT_TYPE(CallStmt, CallStmt) out, const CallStmt *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
   WRITE_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
 }
 
 static void
-_outAlterStatsStmt(OUT_TYPE(AlterStatsStmt) out, const AlterStatsStmt *node)
+_outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out, const AlterStatsStmt *node)
 {
   WRITE_LIST_FIELD(defnames, defnames, defnames);
   WRITE_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
@@ -3379,7 +3383,7 @@ _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt) out, const AlterStatsStmt *node)
 }
 
 static void
-_outAExpr(OUT_TYPE(AExpr) out, const A_Expr *node)
+_outAExpr(OUT_TYPE(A_Expr, AExpr) out, const A_Expr *node)
 {
   WRITE_ENUM_FIELD(A_Expr_Kind, kind, kind, kind);
   WRITE_LIST_FIELD(name, name, name);
@@ -3389,28 +3393,28 @@ _outAExpr(OUT_TYPE(AExpr) out, const A_Expr *node)
 }
 
 static void
-_outColumnRef(OUT_TYPE(ColumnRef) out, const ColumnRef *node)
+_outColumnRef(OUT_TYPE(ColumnRef, ColumnRef) out, const ColumnRef *node)
 {
   WRITE_LIST_FIELD(fields, fields, fields);
   WRITE_INT_FIELD(location, location, location);
 }
 
 static void
-_outParamRef(OUT_TYPE(ParamRef) out, const ParamRef *node)
+_outParamRef(OUT_TYPE(ParamRef, ParamRef) out, const ParamRef *node)
 {
   WRITE_INT_FIELD(number, number, number);
   WRITE_INT_FIELD(location, location, location);
 }
 
 static void
-_outAConst(OUT_TYPE(AConst) out, const A_Const *node)
+_outAConst(OUT_TYPE(A_Const, AConst) out, const A_Const *node)
 {
   WRITE_NODE_FIELD(val, val, val);
   WRITE_INT_FIELD(location, location, location);
 }
 
 static void
-_outFuncCall(OUT_TYPE(FuncCall) out, const FuncCall *node)
+_outFuncCall(OUT_TYPE(FuncCall, FuncCall) out, const FuncCall *node)
 {
   WRITE_LIST_FIELD(funcname, funcname, funcname);
   WRITE_LIST_FIELD(args, args, args);
@@ -3425,12 +3429,12 @@ _outFuncCall(OUT_TYPE(FuncCall) out, const FuncCall *node)
 }
 
 static void
-_outAStar(OUT_TYPE(AStar) out, const A_Star *node)
+_outAStar(OUT_TYPE(A_Star, AStar) out, const A_Star *node)
 {
 }
 
 static void
-_outAIndices(OUT_TYPE(AIndices) out, const A_Indices *node)
+_outAIndices(OUT_TYPE(A_Indices, AIndices) out, const A_Indices *node)
 {
   WRITE_BOOL_FIELD(is_slice, is_slice, is_slice);
   WRITE_NODE_PTR_FIELD(lidx, lidx, lidx);
@@ -3438,21 +3442,21 @@ _outAIndices(OUT_TYPE(AIndices) out, const A_Indices *node)
 }
 
 static void
-_outAIndirection(OUT_TYPE(AIndirection) out, const A_Indirection *node)
+_outAIndirection(OUT_TYPE(A_Indirection, AIndirection) out, const A_Indirection *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_LIST_FIELD(indirection, indirection, indirection);
 }
 
 static void
-_outAArrayExpr(OUT_TYPE(AArrayExpr) out, const A_ArrayExpr *node)
+_outAArrayExpr(OUT_TYPE(A_ArrayExpr, AArrayExpr) out, const A_ArrayExpr *node)
 {
   WRITE_LIST_FIELD(elements, elements, elements);
   WRITE_INT_FIELD(location, location, location);
 }
 
 static void
-_outResTarget(OUT_TYPE(ResTarget) out, const ResTarget *node)
+_outResTarget(OUT_TYPE(ResTarget, ResTarget) out, const ResTarget *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_LIST_FIELD(indirection, indirection, indirection);
@@ -3461,7 +3465,7 @@ _outResTarget(OUT_TYPE(ResTarget) out, const ResTarget *node)
 }
 
 static void
-_outMultiAssignRef(OUT_TYPE(MultiAssignRef) out, const MultiAssignRef *node)
+_outMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) out, const MultiAssignRef *node)
 {
   WRITE_NODE_PTR_FIELD(source, source, source);
   WRITE_INT_FIELD(colno, colno, colno);
@@ -3469,7 +3473,7 @@ _outMultiAssignRef(OUT_TYPE(MultiAssignRef) out, const MultiAssignRef *node)
 }
 
 static void
-_outTypeCast(OUT_TYPE(TypeCast) out, const TypeCast *node)
+_outTypeCast(OUT_TYPE(TypeCast, TypeCast) out, const TypeCast *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
@@ -3477,7 +3481,7 @@ _outTypeCast(OUT_TYPE(TypeCast) out, const TypeCast *node)
 }
 
 static void
-_outCollateClause(OUT_TYPE(CollateClause) out, const CollateClause *node)
+_outCollateClause(OUT_TYPE(CollateClause, CollateClause) out, const CollateClause *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_LIST_FIELD(collname, collname, collname);
@@ -3485,7 +3489,7 @@ _outCollateClause(OUT_TYPE(CollateClause) out, const CollateClause *node)
 }
 
 static void
-_outSortBy(OUT_TYPE(SortBy) out, const SortBy *node)
+_outSortBy(OUT_TYPE(SortBy, SortBy) out, const SortBy *node)
 {
   WRITE_NODE_PTR_FIELD(node, node, node);
   WRITE_ENUM_FIELD(SortByDir, sortby_dir, sortby_dir, sortby_dir);
@@ -3495,7 +3499,7 @@ _outSortBy(OUT_TYPE(SortBy) out, const SortBy *node)
 }
 
 static void
-_outWindowDef(OUT_TYPE(WindowDef) out, const WindowDef *node)
+_outWindowDef(OUT_TYPE(WindowDef, WindowDef) out, const WindowDef *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_STRING_FIELD(refname, refname, refname);
@@ -3508,7 +3512,7 @@ _outWindowDef(OUT_TYPE(WindowDef) out, const WindowDef *node)
 }
 
 static void
-_outRangeSubselect(OUT_TYPE(RangeSubselect) out, const RangeSubselect *node)
+_outRangeSubselect(OUT_TYPE(RangeSubselect, RangeSubselect) out, const RangeSubselect *node)
 {
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
   WRITE_NODE_PTR_FIELD(subquery, subquery, subquery);
@@ -3516,7 +3520,7 @@ _outRangeSubselect(OUT_TYPE(RangeSubselect) out, const RangeSubselect *node)
 }
 
 static void
-_outRangeFunction(OUT_TYPE(RangeFunction) out, const RangeFunction *node)
+_outRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) out, const RangeFunction *node)
 {
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
   WRITE_BOOL_FIELD(ordinality, ordinality, ordinality);
@@ -3527,7 +3531,7 @@ _outRangeFunction(OUT_TYPE(RangeFunction) out, const RangeFunction *node)
 }
 
 static void
-_outRangeTableSample(OUT_TYPE(RangeTableSample) out, const RangeTableSample *node)
+_outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out, const RangeTableSample *node)
 {
   WRITE_NODE_PTR_FIELD(relation, relation, relation);
   WRITE_LIST_FIELD(method, method, method);
@@ -3537,7 +3541,7 @@ _outRangeTableSample(OUT_TYPE(RangeTableSample) out, const RangeTableSample *nod
 }
 
 static void
-_outRangeTableFunc(OUT_TYPE(RangeTableFunc) out, const RangeTableFunc *node)
+_outRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) out, const RangeTableFunc *node)
 {
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
   WRITE_NODE_PTR_FIELD(docexpr, docexpr, docexpr);
@@ -3549,7 +3553,7 @@ _outRangeTableFunc(OUT_TYPE(RangeTableFunc) out, const RangeTableFunc *node)
 }
 
 static void
-_outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol) out, const RangeTableFuncCol *node)
+_outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) out, const RangeTableFuncCol *node)
 {
   WRITE_STRING_FIELD(colname, colname, colname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
@@ -3561,7 +3565,7 @@ _outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol) out, const RangeTableFuncCol *
 }
 
 static void
-_outTypeName(OUT_TYPE(TypeName) out, const TypeName *node)
+_outTypeName(OUT_TYPE(TypeName, TypeName) out, const TypeName *node)
 {
   WRITE_LIST_FIELD(names, names, names);
   WRITE_UINT_FIELD(type_oid, typeOid, typeOid);
@@ -3574,7 +3578,7 @@ _outTypeName(OUT_TYPE(TypeName) out, const TypeName *node)
 }
 
 static void
-_outColumnDef(OUT_TYPE(ColumnDef) out, const ColumnDef *node)
+_outColumnDef(OUT_TYPE(ColumnDef, ColumnDef) out, const ColumnDef *node)
 {
   WRITE_STRING_FIELD(colname, colname, colname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
@@ -3596,7 +3600,7 @@ _outColumnDef(OUT_TYPE(ColumnDef) out, const ColumnDef *node)
 }
 
 static void
-_outIndexElem(OUT_TYPE(IndexElem) out, const IndexElem *node)
+_outIndexElem(OUT_TYPE(IndexElem, IndexElem) out, const IndexElem *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
@@ -3609,7 +3613,7 @@ _outIndexElem(OUT_TYPE(IndexElem) out, const IndexElem *node)
 }
 
 static void
-_outConstraint(OUT_TYPE(Constraint) out, const Constraint *node)
+_outConstraint(OUT_TYPE(Constraint, Constraint) out, const Constraint *node)
 {
   WRITE_ENUM_FIELD(ConstrType, contype, contype, contype);
   WRITE_STRING_FIELD(conname, conname, conname);
@@ -3642,7 +3646,7 @@ _outConstraint(OUT_TYPE(Constraint) out, const Constraint *node)
 }
 
 static void
-_outDefElem(OUT_TYPE(DefElem) out, const DefElem *node)
+_outDefElem(OUT_TYPE(DefElem, DefElem) out, const DefElem *node)
 {
   WRITE_STRING_FIELD(defnamespace, defnamespace, defnamespace);
   WRITE_STRING_FIELD(defname, defname, defname);
@@ -3652,7 +3656,7 @@ _outDefElem(OUT_TYPE(DefElem) out, const DefElem *node)
 }
 
 static void
-_outRangeTblEntry(OUT_TYPE(RangeTblEntry) out, const RangeTblEntry *node)
+_outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntry *node)
 {
   WRITE_ENUM_FIELD(RTEKind, rtekind, rtekind, rtekind);
   WRITE_UINT_FIELD(relid, relid, relid);
@@ -3693,7 +3697,7 @@ _outRangeTblEntry(OUT_TYPE(RangeTblEntry) out, const RangeTblEntry *node)
 }
 
 static void
-_outRangeTblFunction(OUT_TYPE(RangeTblFunction) out, const RangeTblFunction *node)
+_outRangeTblFunction(OUT_TYPE(RangeTblFunction, RangeTblFunction) out, const RangeTblFunction *node)
 {
   WRITE_NODE_PTR_FIELD(funcexpr, funcexpr, funcexpr);
   WRITE_INT_FIELD(funccolcount, funccolcount, funccolcount);
@@ -3705,7 +3709,7 @@ _outRangeTblFunction(OUT_TYPE(RangeTblFunction) out, const RangeTblFunction *nod
 }
 
 static void
-_outTableSampleClause(OUT_TYPE(TableSampleClause) out, const TableSampleClause *node)
+_outTableSampleClause(OUT_TYPE(TableSampleClause, TableSampleClause) out, const TableSampleClause *node)
 {
   WRITE_UINT_FIELD(tsmhandler, tsmhandler, tsmhandler);
   WRITE_LIST_FIELD(args, args, args);
@@ -3713,7 +3717,7 @@ _outTableSampleClause(OUT_TYPE(TableSampleClause) out, const TableSampleClause *
 }
 
 static void
-_outWithCheckOption(OUT_TYPE(WithCheckOption) out, const WithCheckOption *node)
+_outWithCheckOption(OUT_TYPE(WithCheckOption, WithCheckOption) out, const WithCheckOption *node)
 {
   WRITE_ENUM_FIELD(WCOKind, kind, kind, kind);
   WRITE_STRING_FIELD(relname, relname, relname);
@@ -3723,7 +3727,7 @@ _outWithCheckOption(OUT_TYPE(WithCheckOption) out, const WithCheckOption *node)
 }
 
 static void
-_outSortGroupClause(OUT_TYPE(SortGroupClause) out, const SortGroupClause *node)
+_outSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) out, const SortGroupClause *node)
 {
   WRITE_UINT_FIELD(tle_sort_group_ref, tleSortGroupRef, tleSortGroupRef);
   WRITE_UINT_FIELD(eqop, eqop, eqop);
@@ -3733,7 +3737,7 @@ _outSortGroupClause(OUT_TYPE(SortGroupClause) out, const SortGroupClause *node)
 }
 
 static void
-_outGroupingSet(OUT_TYPE(GroupingSet) out, const GroupingSet *node)
+_outGroupingSet(OUT_TYPE(GroupingSet, GroupingSet) out, const GroupingSet *node)
 {
   WRITE_ENUM_FIELD(GroupingSetKind, kind, kind, kind);
   WRITE_LIST_FIELD(content, content, content);
@@ -3741,7 +3745,7 @@ _outGroupingSet(OUT_TYPE(GroupingSet) out, const GroupingSet *node)
 }
 
 static void
-_outWindowClause(OUT_TYPE(WindowClause) out, const WindowClause *node)
+_outWindowClause(OUT_TYPE(WindowClause, WindowClause) out, const WindowClause *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_STRING_FIELD(refname, refname, refname);
@@ -3760,7 +3764,7 @@ _outWindowClause(OUT_TYPE(WindowClause) out, const WindowClause *node)
 }
 
 static void
-_outObjectWithArgs(OUT_TYPE(ObjectWithArgs) out, const ObjectWithArgs *node)
+_outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out, const ObjectWithArgs *node)
 {
   WRITE_LIST_FIELD(objname, objname, objname);
   WRITE_LIST_FIELD(objargs, objargs, objargs);
@@ -3768,14 +3772,14 @@ _outObjectWithArgs(OUT_TYPE(ObjectWithArgs) out, const ObjectWithArgs *node)
 }
 
 static void
-_outAccessPriv(OUT_TYPE(AccessPriv) out, const AccessPriv *node)
+_outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out, const AccessPriv *node)
 {
   WRITE_STRING_FIELD(priv_name, priv_name, priv_name);
   WRITE_LIST_FIELD(cols, cols, cols);
 }
 
 static void
-_outCreateOpClassItem(OUT_TYPE(CreateOpClassItem) out, const CreateOpClassItem *node)
+_outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out, const CreateOpClassItem *node)
 {
   WRITE_INT_FIELD(itemtype, itemtype, itemtype);
   WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, name, name, name);
@@ -3786,14 +3790,14 @@ _outCreateOpClassItem(OUT_TYPE(CreateOpClassItem) out, const CreateOpClassItem *
 }
 
 static void
-_outTableLikeClause(OUT_TYPE(TableLikeClause) out, const TableLikeClause *node)
+_outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out, const TableLikeClause *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_UINT_FIELD(options, options, options);
 }
 
 static void
-_outFunctionParameter(OUT_TYPE(FunctionParameter) out, const FunctionParameter *node)
+_outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out, const FunctionParameter *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
@@ -3802,7 +3806,7 @@ _outFunctionParameter(OUT_TYPE(FunctionParameter) out, const FunctionParameter *
 }
 
 static void
-_outLockingClause(OUT_TYPE(LockingClause) out, const LockingClause *node)
+_outLockingClause(OUT_TYPE(LockingClause, LockingClause) out, const LockingClause *node)
 {
   WRITE_LIST_FIELD(locked_rels, lockedRels, lockedRels);
   WRITE_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
@@ -3810,7 +3814,7 @@ _outLockingClause(OUT_TYPE(LockingClause) out, const LockingClause *node)
 }
 
 static void
-_outRowMarkClause(OUT_TYPE(RowMarkClause) out, const RowMarkClause *node)
+_outRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) out, const RowMarkClause *node)
 {
   WRITE_UINT_FIELD(rti, rti, rti);
   WRITE_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
@@ -3819,7 +3823,7 @@ _outRowMarkClause(OUT_TYPE(RowMarkClause) out, const RowMarkClause *node)
 }
 
 static void
-_outXmlSerialize(OUT_TYPE(XmlSerialize) out, const XmlSerialize *node)
+_outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out, const XmlSerialize *node)
 {
   WRITE_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
@@ -3828,7 +3832,7 @@ _outXmlSerialize(OUT_TYPE(XmlSerialize) out, const XmlSerialize *node)
 }
 
 static void
-_outWithClause(OUT_TYPE(WithClause) out, const WithClause *node)
+_outWithClause(OUT_TYPE(WithClause, WithClause) out, const WithClause *node)
 {
   WRITE_LIST_FIELD(ctes, ctes, ctes);
   WRITE_BOOL_FIELD(recursive, recursive, recursive);
@@ -3836,7 +3840,7 @@ _outWithClause(OUT_TYPE(WithClause) out, const WithClause *node)
 }
 
 static void
-_outInferClause(OUT_TYPE(InferClause) out, const InferClause *node)
+_outInferClause(OUT_TYPE(InferClause, InferClause) out, const InferClause *node)
 {
   WRITE_LIST_FIELD(index_elems, indexElems, indexElems);
   WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
@@ -3845,7 +3849,7 @@ _outInferClause(OUT_TYPE(InferClause) out, const InferClause *node)
 }
 
 static void
-_outOnConflictClause(OUT_TYPE(OnConflictClause) out, const OnConflictClause *node)
+_outOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) out, const OnConflictClause *node)
 {
   WRITE_ENUM_FIELD(OnConflictAction, action, action, action);
   WRITE_SPECIFIC_NODE_PTR_FIELD(InferClause, infer_clause, infer, infer, infer);
@@ -3855,7 +3859,7 @@ _outOnConflictClause(OUT_TYPE(OnConflictClause) out, const OnConflictClause *nod
 }
 
 static void
-_outCommonTableExpr(OUT_TYPE(CommonTableExpr) out, const CommonTableExpr *node)
+_outCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) out, const CommonTableExpr *node)
 {
   WRITE_STRING_FIELD(ctename, ctename, ctename);
   WRITE_LIST_FIELD(aliascolnames, aliascolnames, aliascolnames);
@@ -3871,7 +3875,7 @@ _outCommonTableExpr(OUT_TYPE(CommonTableExpr) out, const CommonTableExpr *node)
 }
 
 static void
-_outRoleSpec(OUT_TYPE(RoleSpec) out, const RoleSpec *node)
+_outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out, const RoleSpec *node)
 {
   WRITE_ENUM_FIELD(RoleSpecType, roletype, roletype, roletype);
   WRITE_STRING_FIELD(rolename, rolename, rolename);
@@ -3879,7 +3883,7 @@ _outRoleSpec(OUT_TYPE(RoleSpec) out, const RoleSpec *node)
 }
 
 static void
-_outTriggerTransition(OUT_TYPE(TriggerTransition) out, const TriggerTransition *node)
+_outTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) out, const TriggerTransition *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_BOOL_FIELD(is_new, isNew, isNew);
@@ -3887,7 +3891,7 @@ _outTriggerTransition(OUT_TYPE(TriggerTransition) out, const TriggerTransition *
 }
 
 static void
-_outPartitionElem(OUT_TYPE(PartitionElem) out, const PartitionElem *node)
+_outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out, const PartitionElem *node)
 {
   WRITE_STRING_FIELD(name, name, name);
   WRITE_NODE_PTR_FIELD(expr, expr, expr);
@@ -3897,7 +3901,7 @@ _outPartitionElem(OUT_TYPE(PartitionElem) out, const PartitionElem *node)
 }
 
 static void
-_outPartitionSpec(OUT_TYPE(PartitionSpec) out, const PartitionSpec *node)
+_outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out, const PartitionSpec *node)
 {
   WRITE_STRING_FIELD(strategy, strategy, strategy);
   WRITE_LIST_FIELD(part_params, partParams, partParams);
@@ -3905,7 +3909,7 @@ _outPartitionSpec(OUT_TYPE(PartitionSpec) out, const PartitionSpec *node)
 }
 
 static void
-_outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec) out, const PartitionBoundSpec *node)
+_outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out, const PartitionBoundSpec *node)
 {
   WRITE_CHAR_FIELD(strategy, strategy, strategy);
   WRITE_BOOL_FIELD(is_default, is_default, is_default);
@@ -3918,7 +3922,7 @@ _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec) out, const PartitionBoundSpe
 }
 
 static void
-_outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum) out, const PartitionRangeDatum *node)
+_outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out, const PartitionRangeDatum *node)
 {
   WRITE_ENUM_FIELD(PartitionRangeDatumKind, kind, kind, kind);
   WRITE_NODE_PTR_FIELD(value, value, value);
@@ -3926,14 +3930,14 @@ _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum) out, const PartitionRangeD
 }
 
 static void
-_outPartitionCmd(OUT_TYPE(PartitionCmd) out, const PartitionCmd *node)
+_outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out, const PartitionCmd *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
   WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
 }
 
 static void
-_outVacuumRelation(OUT_TYPE(VacuumRelation) out, const VacuumRelation *node)
+_outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out, const VacuumRelation *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_UINT_FIELD(oid, oid, oid);
@@ -3941,7 +3945,7 @@ _outVacuumRelation(OUT_TYPE(VacuumRelation) out, const VacuumRelation *node)
 }
 
 static void
-_outInlineCodeBlock(OUT_TYPE(InlineCodeBlock) out, const InlineCodeBlock *node)
+_outInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) out, const InlineCodeBlock *node)
 {
   WRITE_STRING_FIELD(source_text, source_text, source_text);
   WRITE_UINT_FIELD(lang_oid, langOid, langOid);
@@ -3950,7 +3954,7 @@ _outInlineCodeBlock(OUT_TYPE(InlineCodeBlock) out, const InlineCodeBlock *node)
 }
 
 static void
-_outCallContext(OUT_TYPE(CallContext) out, const CallContext *node)
+_outCallContext(OUT_TYPE(CallContext, CallContext) out, const CallContext *node)
 {
   WRITE_BOOL_FIELD(atomic, atomic, atomic);
 }

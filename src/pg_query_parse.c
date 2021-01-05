@@ -1,7 +1,6 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
-#include "pg_query_json.h"
-#include "pg_query_protobuf.h"
+#include "pg_query_outfuncs.h"
 
 #include "parser/parser.h"
 #include "parser/scanner.h"
