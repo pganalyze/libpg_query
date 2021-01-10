@@ -4,6 +4,7 @@
  * - new_list
  * - new_tail_cell
  * - enlarge_list
+ * - check_list_invariants
  * - list_make1_impl
  * - list_make2_impl
  * - list_concat

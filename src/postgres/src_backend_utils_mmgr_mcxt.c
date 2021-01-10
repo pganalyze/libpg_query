@@ -14,7 +14,6 @@
  * - MemoryContextStatsDetail
  * - MemoryContextStatsInternal
  * - MemoryContextStatsPrint
- * - TopMemoryContext
  * - pfree
  * - pstrdup
  * - MemoryContextStrdup
@@ -630,12 +629,6 @@ MemoryContextStatsPrint(MemoryContext context, void *passthru,
  */
 #ifdef MEMORY_CONTEXT_CHECKING
 
-	AssertArg(MemoryContextIsValid(context));
-
-	context->methods->check(context);
-	for (child = context->firstchild; child != NULL; child = child->nextchild)
-		MemoryContextCheck(child);
-}
 #endif
 
 /*

@@ -12,6 +12,7 @@
  * - AllocSetGetChunkSpace
  * - AllocSetIsEmpty
  * - AllocSetStats
+ * - AllocSetCheck
  *--------------------------------------------------------------------
  */
 
