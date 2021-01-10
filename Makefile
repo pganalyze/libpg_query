@@ -6,24 +6,35 @@ PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 13.1
+PROTOC_VERSION = 3.14.0
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/pg_query.pb-c.c
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o))
 
-CFLAGS  = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
-TEST_CFLAGS = -I.
-TEST_LDFLAGS = # Only used for CPP builds
+CFLAGS = -g -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+
+TEST_CFLAGS = -I. -g
+TEST_LDFLAGS = -pthread
 
 PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
-PG_CFLAGS = -fPIC
+
+CFLAGS_OPT_LEVEL = -O3
+ifeq ($(DEBUG),1)
+	CFLAGS_OPT_LEVEL = -O0
+endif
+ifeq ($(VALGRIND),1)
+	CFLAGS_OPT_LEVEL = -O0
+endif
+CFLAGS += $(CFLAGS_OPT_LEVEL)
 
 ifeq ($(DEBUG),1)
-	CFLAGS += -O0 -g
-	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
-else
-	CFLAGS += -O3 -g
-	PG_CFLAGS += -O3
+	# We always add -g, so this only has to enable assertion checking
+	CFLAGS += -D USE_ASSERT_CHECKING
+endif
+ifeq ($(VALGRIND),1)
+	CFLAGS += -DUSE_VALGRIND
+	TEST_CFLAGS += -DUSE_VALGRIND
 endif
 
 CLEANLIBS = $(ARLIB)
@@ -33,6 +44,12 @@ CLEANFILES = $(PGDIRBZ2)
 AR = ar rs
 RM = rm -f
 ECHO = echo
+
+VALGRIND_MEMCHECK = valgrind --leak-check=full --gen-suppressions=all \
+  --suppressions=test/valgrind.supp --time-stamp=yes \
+  --error-markers=VALGRINDERROR-BEGIN,VALGRINDERROR-END \
+  --log-file=test/valgrind.log --trace-children=yes --show-leak-kinds=all \
+  --error-exitcode=1 --errors-for-leak-kinds=all
 
 CC ?= cc
 
@@ -45,12 +62,11 @@ ifeq ($(USE_PROTOBUF_CPP),1)
 	else
 		CXXFLAGS += -O3 -g
 	endif
-	TEST_LDFLAGS = `pkg-config --libs protobuf` -lstdc++
+	TEST_LDFLAGS += `pkg-config --libs protobuf` -lstdc++
 
 	# Don't use regular Protobuf-C or JSON implementation (instead implement the same methods using the C++ library)
 	SRC_FILES := $(filter-out src/pg_query_outfuncs_json.c src/pg_query_outfuncs_protobuf.c, $(SRC_FILES))
 	OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o)) $(CXX_SRC_FILES:.cc=.o)
-
 else
 	# Make sure we always clean C++ object files
 	CLEANOBJS += $(CXX_SRC_FILES:.cc=.o)
@@ -78,7 +94,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_limit_option_enum_value_default.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_alloc_set_delete_free_list.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
-	cd $(PGDIR); CFLAGS="$(PG_CFLAGS)" ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -122,14 +138,21 @@ $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
+ifneq ($(shell which protoc-gen-c), )
 	protoc --c_out=. protobuf/pg_query.proto
+else
+	@echo 'Warning: protoc-gen-c not found, skipping protocol buffer regeneration'
+endif
 
 src/pg_query_protobuf.c src/pg_query_scan.c: protobuf/pg_query.pb-c.h
 
 # Only used when USE_PROTOBUF_CPP is used (experimental for testing only)
 src/pg_query_outfuncs_protobuf_cpp.cc: protobuf/pg_query.pb.cc
 protobuf/pg_query.pb.cc: protobuf/pg_query.proto
-		protoc --cpp_out=. protobuf/pg_query.proto
+ifneq ($(shell protoc --version 2>/dev/null | cut -f2 -d" "), $(PROTOC_VERSION))
+	$(error "ERROR - Wrong protobuf compiler version, need $(PROTOC_VERSION)")
+endif
+	protoc --cpp_out=. protobuf/pg_query.proto
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
@@ -160,6 +183,18 @@ examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 
 TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan
 test: $(TESTS)
+ifeq ($(VALGRIND),1)
+	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
+	# Output-based tests
+	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
+	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+else
 	test/complex
 	test/concurrency
 	test/fingerprint
@@ -170,27 +205,30 @@ test: $(TESTS)
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+endif
 
 test/complex: test/complex.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/complex.c $(ARLIB) $(TEST_LDFLAGS)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/complex.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -pthread -g test/concurrency.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/concurrency.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g test/parse.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/scan: test/scan.c test/scan_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g test/scan.c $(ARLIB) $(TEST_LDFLAGS)
+	$(CC) $(TEST_CFLAGS) -o $@ test/scan.c $(ARLIB) $(TEST_LDFLAGS)
