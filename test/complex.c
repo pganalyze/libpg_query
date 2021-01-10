@@ -10352,7 +10352,5 @@ int main() {
 
     pg_query_exit();
 
-    pg_query_exit();
-
     return ret_code;
 }
