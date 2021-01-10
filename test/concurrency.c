@@ -8,7 +8,11 @@
 
 #include "parse_tests.c"
 
+#ifdef USE_VALGRIND
+#define THREAD_COUNT 50
+#else
 #define THREAD_COUNT 500
+#endif
 
 void* test_runner(void*);
 

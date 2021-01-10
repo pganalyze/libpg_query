@@ -14,7 +14,7 @@
 
 #define OUT_NODE(typename, typename_c, typename_underscore, typename_cast, fldname) \
   { \
-    PgQuery__##typename_c *__node = malloc(sizeof(PgQuery__##typename_c)); \
+    PgQuery__##typename_c *__node = palloc(sizeof(PgQuery__##typename_c)); \
 	pg_query__##typename_underscore##__init(__node); \
     _out##typename_c(__node, (const typename_cast *) obj); \
 	out->fldname = __node; \
@@ -28,13 +28,13 @@
 
 #define WRITE_CHAR_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
-		out->outname = malloc(sizeof(char) * 2); \
+		out->outname = palloc(sizeof(char) * 2); \
 		out->outname[0] = node->fldname; \
 		out->outname[1] = '\0'; \
 	}
 #define WRITE_STRING_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-		out->outname = strdup(node->fldname); \
+		out->outname = pstrdup(node->fldname); \
 	}
 
 #define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
@@ -43,10 +43,10 @@
 #define WRITE_LIST_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 	  out->n_##outname = list_length(node->fldname); \
-	  out->outname = malloc(sizeof(PgQuery__Node*) * out->n_##outname); \
+	  out->outname = palloc(sizeof(PgQuery__Node*) * out->n_##outname); \
 	  for (int i = 0; i < out->n_##outname; i++) \
       { \
-	    PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
+	    PgQuery__Node *__node = palloc(sizeof(PgQuery__Node)); \
 	    pg_query__node__init(__node); \
 	    out->outname[i] = __node; \
 	    _outNode(out->outname[i], list_nth(node->fldname, i)); \
@@ -57,7 +57,7 @@
 
 #define WRITE_NODE_FIELD(outname, outname_json, fldname) \
 	{ \
-		PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
+		PgQuery__Node *__node = palloc(sizeof(PgQuery__Node)); \
 		pg_query__node__init(__node); \
 		out->outname = __node; \
 		_outNode(out->outname, &node->fldname); \
@@ -65,7 +65,7 @@
 
 #define WRITE_NODE_PTR_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-		PgQuery__Node *__node = malloc(sizeof(PgQuery__Node)); \
+		PgQuery__Node *__node = palloc(sizeof(PgQuery__Node)); \
 		pg_query__node__init(__node); \
 		out->outname = __node; \
 		_outNode(out->outname, node->fldname); \
@@ -73,7 +73,7 @@
 
 #define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	{ \
-		PgQuery__##typename *__node = malloc(sizeof(typename)); \
+		PgQuery__##typename *__node = palloc(sizeof(PgQuery__##typename)); \
 		pg_query__##typename_underscore##__init(__node); \
 		_out##typename(__node, &node->fldname); \
 		out->outname = __node; \
@@ -81,7 +81,7 @@
 
 #define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-		PgQuery__##typename *__node = malloc(sizeof(typename)); \
+		PgQuery__##typename *__node = palloc(sizeof(PgQuery__##typename)); \
 		pg_query__##typename_underscore##__init(__node); \
 		_out##typename(__node, node->fldname); \
 		out->outname = __node; \
@@ -95,10 +95,10 @@ _outList(PgQuery__List* out, const List *node)
 	const ListCell *lc;
 	int i = 0;
 	out->n_items = list_length(node);
-	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
+	out->items = palloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out->items[i] = malloc(sizeof(PgQuery__Node));
+		out->items[i] = palloc(sizeof(PgQuery__Node));
 		pg_query__node__init(out->items[i]);
 	    _outNode(out->items[i], lfirst(lc));
 		i++;
@@ -111,10 +111,10 @@ _outIntList(PgQuery__IntList* out, const List *node)
 	const ListCell *lc;
 	int i = 0;
 	out->n_items = list_length(node);
-	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
+	out->items = palloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out->items[i] = malloc(sizeof(PgQuery__Node));
+		out->items[i] = palloc(sizeof(PgQuery__Node));
 		pg_query__node__init(out->items[i]);
 	    _outNode(out->items[i], lfirst(lc));
 		i++;
@@ -127,10 +127,10 @@ _outOidList(PgQuery__OidList* out, const List *node)
 	const ListCell *lc;
 	int i = 0;
 	out->n_items = list_length(node);
-	out->items = malloc(sizeof(PgQuery__Node*) * out->n_items);
+	out->items = palloc(sizeof(PgQuery__Node*) * out->n_items);
     foreach(lc, node)
     {
-		out->items[i] = malloc(sizeof(PgQuery__Node));
+		out->items[i] = palloc(sizeof(PgQuery__Node));
 		pg_query__node__init(out->items[i]);
 	    _outNode(out->items[i], lfirst(lc));
 		i++;
@@ -206,16 +206,17 @@ pg_query_nodes_to_protobuf(const void *obj)
 
 	parse_result.version = PG_VERSION_NUM;
 	parse_result.n_stmts = list_length(obj);
-	parse_result.stmts = malloc(sizeof(PgQuery__RawStmt*) * parse_result.n_stmts);
+	parse_result.stmts = palloc(sizeof(PgQuery__RawStmt*) * parse_result.n_stmts);
 	foreach(lc, obj)
 	{
-		parse_result.stmts[i] = malloc(sizeof(PgQuery__RawStmt));
+		parse_result.stmts[i] = palloc(sizeof(PgQuery__RawStmt));
 		pg_query__raw_stmt__init(parse_result.stmts[i]);
 		_outRawStmt(parse_result.stmts[i], lfirst(lc));
 		i++;
 	}
 
 	protobuf.len = pg_query__parse_result__get_packed_size(&parse_result);
+	// Note: This is intentionally malloc so exiting the memory context doesn't free this
 	protobuf.data = malloc(sizeof(char) * protobuf.len);
 	pg_query__parse_result__pack(&parse_result, (void*) protobuf.data); 
 
