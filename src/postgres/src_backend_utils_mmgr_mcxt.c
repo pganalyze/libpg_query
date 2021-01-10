@@ -27,6 +27,7 @@
  * - MemoryContextAllowInCriticalSection
  * - CurrentMemoryContext
  * - MemoryContextDelete
+ * - MemoryContextDeleteTopLevel
  * - palloc0
  *--------------------------------------------------------------------
  */
@@ -269,6 +270,63 @@ MemoryContextDelete(MemoryContext context)
 	context->methods->delete_context(context);
 
 	VALGRIND_DESTROY_MEMPOOL(context);
+}
+
+/*
+ * MemoryContextDeleteTopLevel
+ *		Delete the top-level memory context, its descendants and
+ *		release all space allocated therein.
+ *
+ * After this is called, you would have to re-initialize the top-level
+ * memory context by calling MemoryContextInit() again. Only to be used
+ * in special circumstances (e.g. Postgres-based libraries that need all
+ * memory to be freed after running through Postgres code).
+ */
+void
+MemoryContextDeleteTopLevel(void)
+{
+	MemoryContext context = TopMemoryContext;
+	AssertArg(MemoryContextIsValid(context));
+
+	/*
+	 * After this, no memory contexts are valid anymore, so ensure that
+	 * the current context is the top-level context.
+	 */
+	Assert(TopMemoryContext == CurrentMemoryContext);
+
+	/* save a function call in common case where there are no children */
+	if (context->firstchild != NULL)
+		MemoryContextDeleteChildren(context);
+
+	/*
+	 * It's not entirely clear whether 'tis better to do this before or after
+	 * delinking the context; but an error in a callback will likely result in
+	 * leaking the whole context (if it's not a root context) if we do it
+	 * after, so let's do it before.
+	 */
+	MemoryContextCallResetCallbacks(context);
+
+	/*
+	 * Also reset the context's ident pointer, in case it points into the
+	 * context.  This would only matter if someone tries to get stats on the
+	 * (already unlinked) context, which is unlikely, but let's be safe.
+	 */
+	context->ident = NULL;
+
+	/* Clean up the aset.c freelist, to leave no unused context behind */
+	AllocSetDeleteFreeList(context);
+
+	context->methods->delete_context(context);
+
+	VALGRIND_DESTROY_MEMPOOL(context);
+
+	/* Without this, Valgrind will complain */
+	free(context);
+
+	/* Reset pointers */
+	TopMemoryContext = NULL;
+	CurrentMemoryContext = NULL;
+	ErrorContext = NULL;
 }
 
 /*

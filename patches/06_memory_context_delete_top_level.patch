@@ -1,0 +1,141 @@
+commit 9e554cf914b2ed1dee7f0e4ff6877bc614a672a0
+Author: Lukas Fittl <lukas@fittl.com>
+Date:   Sat Jan 9 23:42:42 2021 -0800
+
+    Add MemoryContextDeleteTopLevel method to free all memory
+    
+    This is required for programs/libraries that utilize the Postgres
+    source code, but want to cleanup fully after having initialized the
+    top-level memory context using MemoryContextInit(). The regular
+    MemoryContextDelete method does not support deleting the top-level
+    context, since this is not required in regular Postgres operations.
+    
+    To support this use case, also introduce AllocSetDeleteFreeList,
+    which cleans up the aset.c freelist of memory contexts that are kept
+    for future allocations. This behaves similar to changing aset.c's
+    MAX_FREE_CONTEXTS to 0, but only does the cleanup when called, and
+    allows the freelist approach to be used during Postgres operations.
+    
+    With these changes, an external program utilizing Postgres source, that
+    is initialized with MemoryContextInit, which calls
+    MemoryContextDeleteTopLevel at exit, is able to achieve a clean Valgrind
+    leak check run without any Valgrind suppressions.
+
+diff --git a/src/backend/utils/mmgr/aset.c b/src/backend/utils/mmgr/aset.c
+index 60a761caba..43c3974bed 100644
+--- a/src/backend/utils/mmgr/aset.c
++++ b/src/backend/utils/mmgr/aset.c
+@@ -1516,3 +1516,25 @@ AllocSetCheck(MemoryContext context)
+ }
+ 
+ #endif							/* MEMORY_CONTEXT_CHECKING */
++
++void
++AllocSetDeleteFreeList(MemoryContext context)
++{
++	AllocSet set = (AllocSet) context;
++	if (set->freeListIndex >= 0)
++	{
++		AllocSetFreeList *freelist = &context_freelists[set->freeListIndex];
++
++		while (freelist->first_free != NULL)
++		{
++			AllocSetContext *oldset = freelist->first_free;
++
++			freelist->first_free = (AllocSetContext *) oldset->header.nextchild;
++			freelist->num_free--;
++
++			/* All that remains is to free the header/initial block */
++			free(oldset);
++		}
++		Assert(freelist->num_free == 0);
++	}
++}
+diff --git a/src/backend/utils/mmgr/mcxt.c b/src/backend/utils/mmgr/mcxt.c
+index abda22fa57..569ccfd65b 100644
+--- a/src/backend/utils/mmgr/mcxt.c
++++ b/src/backend/utils/mmgr/mcxt.c
+@@ -247,6 +247,63 @@ MemoryContextDelete(MemoryContext context)
+ 	VALGRIND_DESTROY_MEMPOOL(context);
+ }
+ 
++/*
++ * MemoryContextDeleteTopLevel
++ *		Delete the top-level memory context, its descendants and
++ *		release all space allocated therein.
++ *
++ * After this is called, you would have to re-initialize the top-level
++ * memory context by calling MemoryContextInit() again. Only to be used
++ * in special circumstances (e.g. Postgres-based libraries that need all
++ * memory to be freed after running through Postgres code).
++ */
++void
++MemoryContextDeleteTopLevel(void)
++{
++	MemoryContext context = TopMemoryContext;
++	AssertArg(MemoryContextIsValid(context));
++
++	/*
++	 * After this, no memory contexts are valid anymore, so ensure that
++	 * the current context is the top-level context.
++	 */
++	Assert(TopMemoryContext == CurrentMemoryContext);
++
++	/* save a function call in common case where there are no children */
++	if (context->firstchild != NULL)
++		MemoryContextDeleteChildren(context);
++
++	/*
++	 * It's not entirely clear whether 'tis better to do this before or after
++	 * delinking the context; but an error in a callback will likely result in
++	 * leaking the whole context (if it's not a root context) if we do it
++	 * after, so let's do it before.
++	 */
++	MemoryContextCallResetCallbacks(context);
++
++	/*
++	 * Also reset the context's ident pointer, in case it points into the
++	 * context.  This would only matter if someone tries to get stats on the
++	 * (already unlinked) context, which is unlikely, but let's be safe.
++	 */
++	context->ident = NULL;
++
++	/* Clean up the aset.c freelist, to leave no unused context behind */
++	AllocSetDeleteFreeList(context);
++
++	context->methods->delete_context(context);
++
++	VALGRIND_DESTROY_MEMPOOL(context);
++
++	/* Without this, Valgrind will complain */
++	free(context);
++
++	/* Reset pointers */
++	TopMemoryContext = NULL;
++	CurrentMemoryContext = NULL;
++	ErrorContext = NULL;
++}
++
+ /*
+  * MemoryContextDeleteChildren
+  *		Delete all the descendants of the named context and release all
+diff --git a/src/include/utils/memutils.h b/src/include/utils/memutils.h
+index 909bc2e988..df287834c5 100644
+--- a/src/include/utils/memutils.h
++++ b/src/include/utils/memutils.h
+@@ -73,6 +73,7 @@ extern PGDLLIMPORT MemoryContext PortalContext;
+ extern void MemoryContextInit(void);
+ extern void MemoryContextReset(MemoryContext context);
+ extern void MemoryContextDelete(MemoryContext context);
++extern void MemoryContextDeleteTopLevel(void);
+ extern void MemoryContextResetOnly(MemoryContext context);
+ extern void MemoryContextResetChildren(MemoryContext context);
+ extern void MemoryContextDeleteChildren(MemoryContext context);
+@@ -155,6 +156,7 @@ extern MemoryContext AllocSetContextCreateInternal(MemoryContext parent,
+ 												   Size minContextSize,
+ 												   Size initBlockSize,
+ 												   Size maxBlockSize);
++extern void AllocSetDeleteFreeList(MemoryContext context);
+ 
+ /*
+  * This wrapper macro exists to check for non-constant strings used as context
