@@ -519,6 +519,7 @@ runner.deep_resolve('AllocSetContextCreate')
 runner.deep_resolve('MemoryContextSwitchTo')
 runner.deep_resolve('CurrentMemoryContext')
 runner.deep_resolve('MemoryContextDelete')
+runner.deep_resolve('MemoryContextDeleteTopLevel')
 runner.deep_resolve('palloc0')
 
 # Error handling needed to call parser

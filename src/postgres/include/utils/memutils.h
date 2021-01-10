@@ -73,6 +73,7 @@ extern PGDLLIMPORT MemoryContext PortalContext;
 extern void MemoryContextInit(void);
 extern void MemoryContextReset(MemoryContext context);
 extern void MemoryContextDelete(MemoryContext context);
+extern void MemoryContextDeleteTopLevel(void);
 extern void MemoryContextResetOnly(MemoryContext context);
 extern void MemoryContextResetChildren(MemoryContext context);
 extern void MemoryContextDeleteChildren(MemoryContext context);
@@ -155,6 +156,7 @@ extern MemoryContext AllocSetContextCreateInternal(MemoryContext parent,
 												   Size minContextSize,
 												   Size initBlockSize,
 												   Size maxBlockSize);
+extern void AllocSetDeleteFreeList(MemoryContext context);
 
 /*
  * This wrapper macro exists to check for non-constant strings used as context
