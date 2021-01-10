@@ -12,9 +12,8 @@ NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o))
 
 CFLAGS  = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
-LIBPATH = -L.
-
 TEST_CFLAGS = -I.
+TEST_LDFLAGS = # Only used for CPP builds
 
 PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
 PG_CFLAGS = -fPIC
@@ -46,7 +45,7 @@ ifeq ($(USE_PROTOBUF_CPP),1)
 	else
 		CXXFLAGS += -O3 -g
 	endif
-	TEST_CFLAGS += `pkg-config --libs protobuf` -lstdc++
+	TEST_LDFLAGS = `pkg-config --libs protobuf` -lstdc++
 
 	# Don't use regular Protobuf-C or JSON implementation (instead implement the same methods using the C++ library)
 	SRC_FILES := $(filter-out src/pg_query_outfuncs_json.c src/pg_query_outfuncs_protobuf.c, $(SRC_FILES))
@@ -142,24 +141,24 @@ examples: $(EXAMPLES)
 	examples/simple_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/scan: examples/scan.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/scan.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/scan.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/normalize: examples/normalize.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/simple_error: examples/simple_error.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_error.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_error.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize_error.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize_error.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql test/scan
+TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan
 test: $(TESTS)
 	test/complex
 	test/concurrency
@@ -173,25 +172,25 @@ test: $(TESTS)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 
 test/complex: test/complex.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/complex.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/complex.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -pthread -g test/concurrency.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -pthread -g test/concurrency.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/normalize.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -Isrc -o $@ -g test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g test/parse.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_protobuf.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -I./src -I./src/postgres/include -g test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/scan: test/scan.c test/scan_tests.c $(ARLIB)
-	$(CC) $(TEST_CFLAGS) -o $@ -g test/scan.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g test/scan.c $(ARLIB) $(TEST_LDFLAGS)
