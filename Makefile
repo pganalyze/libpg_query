@@ -54,7 +54,7 @@ CC ?= cc
 # Experimental use of Protobuf C++ library, primarily used to validate JSON output matches Protobuf JSON mapping
 CXX_SRC_FILES := src/pg_query_outfuncs_protobuf_cpp.cc protobuf/pg_query.pb.cc
 ifeq ($(USE_PROTOBUF_CPP),1)
-	CXXFLAGS = `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++11 -Wall -pedantic -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
+	CXXFLAGS = `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++11 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
 	ifeq ($(DEBUG),1)
 		CXXFLAGS += -O0 -g
 	else
