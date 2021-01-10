@@ -151,8 +151,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
 static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
 static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
 									Oid collation, TypeName *origtypname);
-static void plpgsql_start_datums(void);
-static void plpgsql_finish_datums(PLpgSQL_function *function);
 static void compute_function_hashkey(FunctionCallInfo fcinfo,
 									 Form_pg_proc procStruct,
 									 PLpgSQL_func_hashkey *hashkey,
