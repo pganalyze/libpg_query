@@ -69,6 +69,9 @@ void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 
+// Optional, cleans up the top-level memory context (automatically done for threads that exit)
+void pg_query_exit(void);
+
 // Postgres version information
 #define PG_VERSION "13.1"
 #define PG_MAJORVERSION "13"

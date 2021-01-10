@@ -36,7 +36,7 @@ PgQueryScanResult pg_query_scan(const char* input)
   size_t token_count = 0;
   size_t i;
 
-  ctx = pg_query_enter_memory_context("pg_query_scan");
+  ctx = pg_query_enter_memory_context();
 
   MemoryContext parse_context = CurrentMemoryContext;
 

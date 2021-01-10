@@ -30,5 +30,7 @@ int main() {
 
   printf("\n");
 
+  pg_query_exit();
+
   return ret_code;
 }

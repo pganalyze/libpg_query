@@ -244,7 +244,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 	PgQueryInternalParsetreeAndError parsetree_and_error;
 	PgQueryFingerprintResult result = {0};
 
-	ctx = pg_query_enter_memory_context("pg_query_fingerprint");
+	ctx = pg_query_enter_memory_context();
 
 	parsetree_and_error = pg_query_raw_parse(input);
 
