@@ -6,11 +6,13 @@
  * - plpgsql_curr_compile
  * - plpgsql_compile_tmp_cxt
  * - plpgsql_DumpExecTree
- * - plpgsql_build_variable
- * - plpgsql_adddatum
+ * - plpgsql_start_datums
  * - plpgsql_nDatums
  * - plpgsql_Datums
  * - datums_alloc
+ * - datums_last
+ * - plpgsql_build_variable
+ * - plpgsql_adddatum
  * - plpgsql_build_record
  * - plpgsql_build_datatype
  * - plpgsql_parse_tripword
@@ -18,7 +20,6 @@
  * - plpgsql_parse_dblword
  * - plpgsql_parse_word
  * - plpgsql_add_initdatums
- * - datums_last
  * - plpgsql_recognize_err_condition
  * - exception_label_map
  * - plpgsql_parse_err_condition
@@ -27,10 +28,9 @@
  * - plpgsql_parse_cwordtype
  * - plpgsql_parse_cwordrowtype
  * - plpgsql_parse_result
- * - plpgsql_compile_error_callback
- * - plpgsql_start_datums
- * - add_dummy_return
  * - plpgsql_finish_datums
+ * - plpgsql_compile_error_callback
+ * - add_dummy_return
  *--------------------------------------------------------------------
  */
 
@@ -151,8 +151,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
 static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
 static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
 									Oid collation, TypeName *origtypname);
-static void plpgsql_start_datums(void);
-static void plpgsql_finish_datums(PLpgSQL_function *function);
 static void compute_function_hashkey(FunctionCallInfo fcinfo,
 									 Form_pg_proc procStruct,
 									 PLpgSQL_func_hashkey *hashkey,
@@ -963,7 +961,7 @@ plpgsql_parse_err_condition(char *condname)
  * plpgsql_start_datums			Initialize datum list at compile startup.
  * ----------
  */
-static void
+void
 plpgsql_start_datums(void)
 {
 	datums_alloc = 128;
@@ -997,7 +995,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
  * plpgsql_finish_datums	Copy completed datum info into function struct.
  * ----------
  */
-static void
+void
 plpgsql_finish_datums(PLpgSQL_function *function)
 {
 	Size		copiable_size = 0;
