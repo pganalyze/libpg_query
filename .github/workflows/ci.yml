@@ -1,0 +1,23 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        compiler: [clang, gcc]
+        flags:
+        - ""
+        - VALGRIND=1 DEBUG=1
+        - USE_PROTOBUF_CPP=1
+        - USE_PROTOBUF_CPP=1 VALGRIND=1 DEBUG=1
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install Valgrind
+      run: sudo apt install -y valgrind
+    - name: Build and run tests
+      run: make ${{ matrix.flags }} CC=${{ matrix.compiler }} CXX=${{ matrix.compiler }}
