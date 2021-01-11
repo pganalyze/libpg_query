@@ -178,28 +178,28 @@ class Generator
     defs = ''
     impls = ''
     conds = "case T_Integer:
-  OUT_NODE(Integer, Integer, integer, Value, integer);
+  OUT_NODE(Integer, Integer, integer, INTEGER, Value, integer);
   break;
 case T_Float:
-  OUT_NODE(Float, Float, float, Value, float_);
+  OUT_NODE(Float, Float, float, FLOAT, Value, float_);
   break;
 case T_String:
-  OUT_NODE(String, String, string, Value, string);
+  OUT_NODE(String, String, string, STRING, Value, string);
   break;
 case T_BitString:
-  OUT_NODE(BitString, BitString, bit_string, Value, bit_string);
+  OUT_NODE(BitString, BitString, bit_string, BIT_STRING, Value, bit_string);
   break;
 case T_Null:
-  OUT_NODE(Null, Null, null, Value, null);
+  OUT_NODE(Null, Null, null, NULL, Value, null);
   break;
 case T_List:
-  OUT_NODE(List, List, list, List, list);
+  OUT_NODE(List, List, list, LIST, List, list);
   break;
 case T_IntList:
-  OUT_NODE(IntList, IntList, int_list, List, int_list);
+  OUT_NODE(IntList, IntList, int_list, INT_LIST, List, int_list);
   break;
 case T_OidList:
-  OUT_NODE(OidList, OidList, oid_list, List, oid_list);
+  OUT_NODE(OidList, OidList, oid_list, OID_LIST, List, oid_list);
   break;
 "
     protobuf_messages = ''
@@ -222,7 +222,7 @@ case T_OidList:
       impls += "\n"
 
       conds += format("case T_%s:\n", type)
-      conds += format("  OUT_NODE(%s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), type, underscore(type))
+      conds += format("  OUT_NODE(%s, %s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), underscore(c_type).upcase.gsub('__', '_'), type, underscore(type))
       conds += "  break;\n"
 
       protobuf_messages += format("message %s\n{\n", type)

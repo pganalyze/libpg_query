@@ -14,7 +14,7 @@
 
 #define OUT_TYPE(typename, typename_c) StringInfo
 
-#define OUT_NODE(typename, typename_c, typename_underscore, typename_cast, fldname) \
+#define OUT_NODE(typename, typename_c, typename_underscore, typename_underscore_upcase, typename_cast, fldname) \
   { \
     WRITE_NODE_TYPE(CppAsString(typename)); \
     _out##typename_c(out, (const typename_cast *) obj); \

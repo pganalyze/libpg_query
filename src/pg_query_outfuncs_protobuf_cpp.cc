@@ -23,7 +23,7 @@ extern "C"
 
 #define OUT_TYPE(typename, typename_c) pg_query::typename*
 
-#define OUT_NODE(typename, typename_c, typename_underscore, typename_cast, fldname) \
+#define OUT_NODE(typename, typename_c, typename_underscore, typename_underscore_upcase, typename_cast, fldname) \
 	{ \
 		pg_query::typename *fldname = new pg_query::typename(); \
 		out->set_allocated_##fldname(fldname); \

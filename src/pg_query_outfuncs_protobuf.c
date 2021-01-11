@@ -12,12 +12,13 @@
 
 #define OUT_TYPE(typename, typename_c) PgQuery__##typename_c*
 
-#define OUT_NODE(typename, typename_c, typename_underscore, typename_cast, fldname) \
+#define OUT_NODE(typename, typename_c, typename_underscore, typename_underscore_upcase, typename_cast, fldname) \
   { \
     PgQuery__##typename_c *__node = palloc(sizeof(PgQuery__##typename_c)); \
 	pg_query__##typename_underscore##__init(__node); \
     _out##typename_c(__node, (const typename_cast *) obj); \
 	out->fldname = __node; \
+	out->node_case = PG_QUERY__NODE__NODE_##typename_underscore_upcase; \
   }
 
 #define WRITE_INT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
