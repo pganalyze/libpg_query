@@ -3,6 +3,7 @@
  * - makeString
  * - makeInteger
  * - makeFloat
+ * - makeBitString
  *--------------------------------------------------------------------
  */
 
@@ -72,4 +73,12 @@ makeString(char *str)
  *
  * Caller is responsible for passing a palloc'd string.
  */
+Value *
+makeBitString(char *str)
+{
+	Value	   *v = makeNode(Value);
 
+	v->type = T_BitString;
+	v->val.str = str;
+	return v;
+}

@@ -529,6 +529,8 @@ runner.deep_resolve('FlushErrorState')
 # Needed for output funcs
 runner.deep_resolve('bms_first_member')
 runner.deep_resolve('bms_free')
+runner.deep_resolve('makeBitString')
+
 
 # Needed for normalize
 runner.deep_resolve('pg_qsort')

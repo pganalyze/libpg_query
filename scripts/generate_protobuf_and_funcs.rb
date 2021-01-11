@@ -33,6 +33,7 @@ class Generator
 
   def generate_outmethods!
     @outmethods = {}
+    @readmethods = {}
     @protobuf_messages = {}
     @protobuf_enums = {}
     @scan_protobuf_tokens = []
@@ -42,6 +43,7 @@ class Generator
     ['nodes/parsenodes', 'nodes/primnodes'].each do |group|
       @struct_defs[group].each do |node_type, struct_def|
         @outmethods[node_type] = ''
+        @readmethods[node_type] = ''
         @protobuf_messages[node_type] = ''
         protobuf_field_count = 1
 
@@ -63,49 +65,66 @@ class Generator
             # Nothing
           elsif ['char'].include?(type)
             @outmethods[node_type] += format("  WRITE_CHAR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_CHAR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['bool'].include?(type)
             @outmethods[node_type] += format("  WRITE_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  bool %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['long'].include?(type)
             @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['int', 'int16', 'int32', 'AttrNumber'].include?(type)
             @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['uint', 'uint16', 'uint32', 'Index', 'bits32', 'Oid', 'AclMode', 'SubTransactionId'].include?(type)
             @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type == 'char*'
             @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['float', 'double', 'Cost', 'Selectivity'].include?(type)
             @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  double %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Bitmapset*', 'Relids'].include?(type)
-            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name) # FIXME
+            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             # FIXME: Add to protobuf
           elsif ['Value'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_VALUE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['Value', 'Value*'].include?(type)
+          elsif ['Value*'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_VALUE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['List*'].include?(type)
             @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_LIST_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  repeated Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['Node*', 'Expr*'].include?(type)
+          elsif ['Node*'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            protobuf_field_count += 1
+          elsif ['Expr*'].include?(type)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_EXPR_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Expr'].include?(type)
@@ -114,16 +133,19 @@ class Generator
             protobuf_field_count += 1
           elsif ['CreateStmt'].include?(type)
             @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif @nodetypes.include?(type[0..-2])
             @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum
             @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s, %s, %s);\n", type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_ENUM_FIELD(%s, %s, %s, %s);\n", type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type, outname, protobuf_field_count, name)
             protobuf_field_count += 1
           end
@@ -164,6 +186,7 @@ class Generator
       next unless @outmethods[typedef['source_type']]
 
       @outmethods[typedef['new_type_name']] = @outmethods[typedef['source_type']]
+      @readmethods[typedef['new_type_name']] = @readmethods[typedef['source_type']]
       @protobuf_messages[typedef['new_type_name']] = @protobuf_messages[typedef['source_type']]
     end
   end
@@ -175,9 +198,9 @@ class Generator
   def generate!
     generate_outmethods!
 
-    defs = ''
-    impls = ''
-    conds = "case T_Integer:
+    out_defs = ''
+    out_impls = ''
+    out_conds = "case T_Integer:
   OUT_NODE(Integer, Integer, integer, INTEGER, Value, integer);
   break;
 case T_Float:
@@ -202,28 +225,45 @@ case T_OidList:
   OUT_NODE(OidList, OidList, oid_list, OID_LIST, List, oid_list);
   break;
 "
+    read_defs = ''
+    read_impls = ''
+    read_conds = ''
     protobuf_messages = ''
     protobuf_nodes = []
 
     @nodetypes.each do |type|
       next if IGNORE_LIST.include?(type)
       outmethod = @outmethods[type]
-      next unless outmethod
+      readmethod = @readmethods[type]
+      next unless outmethod && readmethod
 
       c_type = type.gsub(/_/, '')
 
-      defs += format("static void _out%s(OUT_TYPE(%s, %s) out_node, const %s *node);\n", c_type, type, c_type, type)
+      out_defs += format("static void _out%s(OUT_TYPE(%s, %s) out_node, const %s *node);\n", c_type, type, c_type, type)
 
-      impls += "static void\n"
-      impls += format("_out%s(OUT_TYPE(%s, %s) out, const %s *node)\n", c_type, type, c_type, type)
-      impls += "{\n"
-      impls += outmethod
-      impls += "}\n"
-      impls += "\n"
+      out_impls += "static void\n"
+      out_impls += format("_out%s(OUT_TYPE(%s, %s) out, const %s *node)\n", c_type, type, c_type, type)
+      out_impls += "{\n"
+      out_impls += outmethod
+      out_impls += "}\n"
+      out_impls += "\n"
 
-      conds += format("case T_%s:\n", type)
-      conds += format("  OUT_NODE(%s, %s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), underscore(c_type).upcase.gsub('__', '_'), type, underscore(type))
-      conds += "  break;\n"
+      out_conds += format("case T_%s:\n", type)
+      out_conds += format("  OUT_NODE(%s, %s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), underscore(c_type).upcase.gsub('__', '_'), type, underscore(type))
+      out_conds += "  break;\n"
+
+      read_defs += format("static %s * _read%s(OUT_TYPE(%s, %s) msg);\n", type, c_type, type, c_type)
+
+      read_impls += format("static %s *\n", type)
+      read_impls += format("_read%s(OUT_TYPE(%s, %s) msg)\n", c_type, type, c_type)
+      read_impls += "{\n"
+      read_impls += format("  %s *node = makeNode(%s);\n", type, type)
+      read_impls += readmethod
+      read_impls += "  return node;\n"
+      read_impls += "}\n"
+      read_impls += "\n"
+
+      read_conds += format("  READ_COND(%s, %s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), underscore(c_type).upcase.gsub('__', '_'), type, underscore(type))
 
       protobuf_messages += format("message %s\n{\n", type)
       protobuf_messages += @protobuf_messages[type] || ''
@@ -238,12 +278,17 @@ case T_OidList:
 
     protobuf_messages += @protobuf_enums.values.join("\n\n")
 
-    File.write('./src/pg_query_outfuncs_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_outfuncs.rb\n\n" +
-      defs + @enum_to_strings.values.join("\n\n") + @enum_to_ints.values.join("\n\n") + "\n\n" + impls)
+    File.write('./src/pg_query_outfuncs_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" +
+      out_defs + @enum_to_strings.values.join("\n\n") + @enum_to_ints.values.join("\n\n") + "\n\n" + out_impls)
 
-    File.write('./src/pg_query_outfuncs_conds.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_outfuncs.rb\n\n" + conds)
+    File.write('./src/pg_query_outfuncs_conds.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" + out_conds)
 
-    protobuf = "// This file is autogenerated by ./scripts/generate_protobuf_and_outfuncs.rb
+    File.write('./src/pg_query_readfuncs_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" +
+      read_defs + "\n\n" + read_impls)
+
+    File.write('./src/pg_query_readfuncs_conds.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" + read_conds)
+
+    protobuf = "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb
 
 syntax = \"proto3\";
 
