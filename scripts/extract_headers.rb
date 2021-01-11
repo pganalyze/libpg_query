@@ -127,8 +127,16 @@ class Extractor
   def handle_enum(line)
     if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)))?,?\s*((?:[A-z0-9_]+,?\s*)+)?(\/\*.+)?/]
       primary_value = { name: $1 }
-      primary_value[:value] = ($3 ? ($2.to_i << $3.to_i) : $2.to_i) if $2
-      primary_value[:value] = 0x7FFFFFFF if $4 == 'PG_INT32_MAX'
+      previous_line_values = @current_enum_def[:values].map {|v| v[:value] }.compact
+      primary_value[:value] = if $2
+                                ($3 ? ($2.to_i << $3.to_i) : $2.to_i)
+                              elsif $4 == 'PG_INT32_MAX'
+                                0x7FFFFFFF
+                              elsif previous_line_values.size > 0
+                                previous_line_values[-1] + 1
+                              else
+                                0
+                              end
       primary_value[:comment] = $6 if $6
       @current_enum_def[:values] << primary_value
 
