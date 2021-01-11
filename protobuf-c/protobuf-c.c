@@ -312,10 +312,9 @@ int32_size(int32_t v)
 static inline uint32_t
 zigzag32(int32_t v)
 {
-	if (v < 0)
-		return (-(uint32_t)v) * 2 - 1;
-	else
-		return (uint32_t)(v) * 2;
+	// Note:  the right-shift must be arithmetic
+	// Note:  left shift must be unsigned because of overflow
+	return ((uint32_t)(v) << 1) ^ (uint32_t)(v >> 31);
 }
 
 /**
@@ -377,10 +376,9 @@ uint64_size(uint64_t v)
 static inline uint64_t
 zigzag64(int64_t v)
 {
-	if (v < 0)
-		return (-(uint64_t)v) * 2 - 1;
-	else
-		return (uint64_t)(v) * 2;
+	// Note:  the right-shift must be arithmetic
+	// Note:  left shift must be unsigned because of overflow
+	return ((uint64_t)(v) << 1) ^ (uint64_t)(v >> 63);
 }
 
 /**
@@ -2072,6 +2070,11 @@ parse_tag_and_wiretype(size_t len,
 	unsigned shift = 4;
 	unsigned rv;
 
+	/* 0 is not a valid tag value */
+	if ((data[0] & 0xf8) == 0) {
+		return 0;
+	}
+
 	*wiretype_out = data[0] & 7;
 	if ((data[0] & 0x80) == 0) {
 		*tag_out = tag;
@@ -2103,18 +2106,18 @@ struct _ScannedMember {
 	const uint8_t *data;       /**< Pointer to field data. */
 };
 
-static inline uint32_t
+static inline size_t
 scan_length_prefixed_data(size_t len, const uint8_t *data,
 			  size_t *prefix_len_out)
 {
 	unsigned hdr_max = len < 5 ? len : 5;
 	unsigned hdr_len;
-	uint32_t val = 0;
+	size_t val = 0;
 	unsigned i;
 	unsigned shift = 0;
 
 	for (i = 0; i < hdr_max; i++) {
-		val |= (data[i] & 0x7f) << shift;
+		val |= ((size_t)data[i] & 0x7f) << shift;
 		shift += 7;
 		if ((data[i] & 0x80) == 0)
 			break;
@@ -2125,8 +2128,15 @@ scan_length_prefixed_data(size_t len, const uint8_t *data,
 	}
 	hdr_len = i + 1;
 	*prefix_len_out = hdr_len;
+	if (val > INT_MAX) {
+		// Protobuf messages should always be less than 2 GiB in size.
+		// We also want to return early here so that hdr_len + val does
+		// not overflow on 32-bit systems.
+		PROTOBUF_C_UNPACK_ERROR("length prefix of %lu is too large", val);
+		return 0;
+	}
 	if (hdr_len + val > len) {
-		PROTOBUF_C_UNPACK_ERROR("data too short after length-prefix of %u", val);
+		PROTOBUF_C_UNPACK_ERROR("data too short after length-prefix of %lu", val);
 		return 0;
 	}
 	return hdr_len + val;
@@ -2239,6 +2249,8 @@ merge_messages(ProtobufCMessage *earlier_msg,
 							latter_msg->descriptor
 							->field_ranges,
 							*earlier_case_p);
+					if (field_index < 0)
+						return FALSE;
 					field = latter_msg->descriptor->fields +
 						field_index;
 				} else {
@@ -2409,10 +2421,8 @@ parse_int32(unsigned len, const uint8_t *data)
 static inline int32_t
 unzigzag32(uint32_t v)
 {
-	if (v & 1)
-		return -(v >> 1) - 1;
-	else
-		return v >> 1;
+	// Note:  Using unsigned types prevents undefined behavior
+	return (int32_t)((v >> 1) ^ (~(v & 1) + 1));
 }
 
 static inline uint32_t
@@ -2453,10 +2463,8 @@ parse_uint64(unsigned len, const uint8_t *data)
 static inline int64_t
 unzigzag64(uint64_t v)
 {
-	if (v & 1)
-		return -(v >> 1) - 1;
-	else
-		return v >> 1;
+	// Note:  Using unsigned types prevents undefined behavior
+	return (int64_t)((v >> 1) ^ (~(v & 1) + 1));
 }
 
 static inline uint64_t
@@ -2627,14 +2635,17 @@ parse_oneof_member (ScannedMember *scanned_member,
 
 	/* If we have already parsed a member of this oneof, free it. */
 	if (*oneof_case != 0) {
+		const ProtobufCFieldDescriptor *old_field;
+		size_t el_size;
 		/* lookup field */
 		int field_index =
 			int_range_lookup(message->descriptor->n_field_ranges,
 					 message->descriptor->field_ranges,
 					 *oneof_case);
-		const ProtobufCFieldDescriptor *old_field =
-			message->descriptor->fields + field_index;
-		size_t el_size = sizeof_elt_in_repeated_array(old_field->type);
+		if (field_index < 0)
+			return FALSE;
+		old_field = message->descriptor->fields + field_index;
+		el_size = sizeof_elt_in_repeated_array(old_field->type);
 
 		switch (old_field->type) {
 	        case PROTOBUF_C_TYPE_STRING: {
@@ -3410,6 +3421,13 @@ protobuf_c_message_check(const ProtobufCMessage *message)
 		ProtobufCType type = f->type;
 		ProtobufCLabel label = f->label;
 		void *field = STRUCT_MEMBER_P (message, f->offset);
+
+		if (f->flags & PROTOBUF_C_FIELD_FLAG_ONEOF) {
+			const uint32_t *oneof_case = STRUCT_MEMBER_P (message, f->quantifier_offset);
+			if (f->id != *oneof_case) {
+				continue; //Do not check if it is an unpopulated oneof member.
+			}
+		}
 
 		if (label == PROTOBUF_C_LABEL_REPEATED) {
 			size_t *quantity = STRUCT_MEMBER_P (message, f->quantifier_offset);
