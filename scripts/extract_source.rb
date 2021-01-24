@@ -531,6 +531,8 @@ runner.deep_resolve('bms_first_member')
 runner.deep_resolve('bms_free')
 runner.deep_resolve('makeBitString')
 
+# Needed for deparse
+runner.deep_resolve('pg_toupper')
 
 # Needed for normalize
 runner.deep_resolve('pg_qsort')

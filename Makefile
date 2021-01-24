@@ -181,11 +181,12 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
@@ -197,6 +198,7 @@ ifeq ($(VALGRIND),1)
 else
 	test/complex
 	test/concurrency
+	test/deparse
 	test/fingerprint
 	test/normalize
 	test/parse
@@ -213,6 +215,9 @@ test/complex: test/complex.c $(ARLIB)
 
 test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/concurrency.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/deparse: test/deparse.c test/deparse_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/deparse.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
