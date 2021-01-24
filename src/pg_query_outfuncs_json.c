@@ -80,7 +80,10 @@
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 		appendStringInfoChar(out, '['); \
 		foreach(lc, node->fldname) { \
-			_outNode(out, lfirst(lc)); \
+			if (lfirst(lc) == NULL) \
+				appendStringInfoString(out, "{}"); \
+			else \
+				_outNode(out, lfirst(lc)); \
 			if (lnext(node->fldname, lc)) \
 				appendStringInfoString(out, ","); \
 		} \
@@ -137,7 +140,10 @@ _outList(StringInfo out, const List *node)
 
 	foreach(lc, node)
 	{
-		_outNode(out, lfirst(lc));
+		if (lfirst(lc) == NULL)
+			appendStringInfoString(out, "{}");
+		else
+			_outNode(out, lfirst(lc));
 
 		if (lnext(node, lc))
 			appendStringInfoString(out, ",");
