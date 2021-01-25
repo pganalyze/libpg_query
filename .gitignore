@@ -12,6 +12,8 @@ test/*
 !test/*.sql
 !test/*.expected.json
 !test/valgrind.supp
+!test/**/
+test/*.dSYM
 
 tmp/*
 !tmp/.gitkeep

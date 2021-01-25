@@ -125,6 +125,9 @@ extract_source: $(PGDIR)
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	# Copy regress SQL files so we can use them in tests
+	rm -f ./test/sql/postgres_regress/*.sql
+	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
 
 .c.o:
 	@$(ECHO) compiling $(<)
