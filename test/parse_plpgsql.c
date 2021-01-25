@@ -36,6 +36,7 @@ int main() {
 		close(fd);
 	} else {
 		printf("Could not mmap samples file\n");
+		close(fd);
 		return EXIT_FAILURE;
 	}
 
