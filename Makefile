@@ -184,7 +184,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan test/split
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -195,6 +195,7 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/split || (cat test/valgrind.log && false)
 	# Output-based tests
 	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
@@ -207,6 +208,7 @@ else
 	test/parse
 	test/parse_protobuf
 	test/scan
+	test/split
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
@@ -240,3 +242,6 @@ test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 
 test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/scan.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/split: test/split.c test/split_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/split.c $(ARLIB) $(TEST_LDFLAGS)

@@ -35,6 +35,18 @@ typedef struct {
 } PgQueryProtobufParseResult;
 
 typedef struct {
+  int stmt_location;
+  int stmt_len;
+} PgQuerySplitStmt;
+
+typedef struct {
+  PgQuerySplitStmt **stmts;
+  int n_stmts;
+  char* stderr_buffer;
+  PgQueryError* error;
+} PgQuerySplitResult;
+
+typedef struct {
   char* query;
   PgQueryError* error;
 } PgQueryDeparseResult;
@@ -67,11 +79,14 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
 
+PgQuerySplitResult pg_query_split(const char *input);
+
 PgQueryDeparseResult pg_query_deparse_protobuf(PgQueryProtobuf parse_tree);
 
 void pg_query_free_normalize_result(PgQueryNormalizeResult result);
 void pg_query_free_scan_result(PgQueryScanResult result);
 void pg_query_free_parse_result(PgQueryParseResult result);
+void pg_query_free_split_result(PgQuerySplitResult result);
 void pg_query_free_deparse_result(PgQueryDeparseResult result);
 void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
