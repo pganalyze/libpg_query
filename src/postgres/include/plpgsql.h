@@ -1078,6 +1078,8 @@ extern PLpgSQL_rec *plpgsql_build_record(const char *refname, int lineno,
 extern int plpgsql_recognize_err_condition(const char *condname,
 								bool allow_sqlstate);
 extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
+extern void plpgsql_start_datums(void);
+extern void plpgsql_finish_datums(PLpgSQL_function *function);
 extern void plpgsql_adddatum(PLpgSQL_datum *newdatum);
 extern int	plpgsql_add_initdatums(int **varnos);
 extern void plpgsql_HashTableInit(void);
