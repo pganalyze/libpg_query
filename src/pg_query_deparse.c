@@ -20,6 +20,8 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_UPDATE,
 	DEPARSE_NODE_CONTEXT_RETURNING,
 	DEPARSE_NODE_CONTEXT_A_EXPR,
+	DEPARSE_NODE_CONTEXT_EXPLAIN,
+	DEPARSE_NODE_CONTEXT_CREATE_FUNCTION,
 	// Identifier vs constant context
 	DEPARSE_NODE_CONTEXT_IDENTIFIER,
 	DEPARSE_NODE_CONTEXT_CONSTANT
@@ -231,20 +233,24 @@ static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 			}
 			break;
 		case SETOP_UNION:
-			if (list_length(stmt->larg->sortClause) > 0)
-				appendStringInfoChar(str, '(');
-			deparseSelectStmt(str, stmt->larg);
-			if (list_length(stmt->larg->sortClause) > 0)
-				appendStringInfoChar(str, ')');
-			appendStringInfoString(str, " UNION ");
-			if (stmt->all)
-				appendStringInfoString(str, "ALL ");
-			if (list_length(stmt->rarg->sortClause) > 0)
-				appendStringInfoChar(str, '(');
-			deparseSelectStmt(str, stmt->rarg);
-			if (list_length(stmt->rarg->sortClause) > 0)
-				appendStringInfoChar(str, ')');
-			appendStringInfoChar(str, ' ');
+			{
+				bool need_larg_parens = list_length(stmt->larg->sortClause) > 0 || stmt->larg->op != SETOP_NONE;
+				bool need_rarg_parens = list_length(stmt->rarg->sortClause) > 0 || stmt->rarg->op != SETOP_NONE;
+				if (need_larg_parens)
+					appendStringInfoChar(str, '(');
+				deparseSelectStmt(str, stmt->larg);
+				if (need_larg_parens)
+					appendStringInfoChar(str, ')');
+				appendStringInfoString(str, " UNION ");
+				if (stmt->all)
+					appendStringInfoString(str, "ALL ");
+				if (need_rarg_parens)
+					appendStringInfoChar(str, '(');
+				deparseSelectStmt(str, stmt->rarg);
+				if (need_rarg_parens)
+					appendStringInfoChar(str, ')');
+				appendStringInfoChar(str, ' ');
+			}
 			break;
 		case SETOP_INTERSECT:
 			deparseSelectStmt(str, stmt->larg);
@@ -650,12 +656,22 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			appendStringInfoChar(str, ')');
 			return;
 		case AEXPR_DISTINCT: /* IS DISTINCT FROM - name must be "=" */
-			// TODO
-			Assert(false);
+			Assert(list_length(a_expr->name) == 1);
+			Assert(IsA(linitial(a_expr->name), String));
+			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
+
+			deparseNode(str, a_expr->lexpr, DEPARSE_NODE_CONTEXT_NONE);
+			appendStringInfoString(str, " IS DISTINCT FROM ");
+			deparseNode(str, a_expr->rexpr, DEPARSE_NODE_CONTEXT_NONE);
 			return;
 		case AEXPR_NOT_DISTINCT: /* IS NOT DISTINCT FROM - name must be "=" */
-			// TODO
-			Assert(false);
+			Assert(list_length(a_expr->name) == 1);
+			Assert(IsA(linitial(a_expr->name), String));
+			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
+
+			deparseNode(str, a_expr->lexpr, DEPARSE_NODE_CONTEXT_NONE);
+			appendStringInfoString(str, " IS NOT DISTINCT FROM ");
+			deparseNode(str, a_expr->rexpr, DEPARSE_NODE_CONTEXT_NONE);
 			return;
 		case AEXPR_NULLIF: /* NULLIF - name must be "=" */
 			Assert(list_length(a_expr->name) == 1);
@@ -830,6 +846,8 @@ static void deparseCollateClause(StringInfo str, CollateClause* collate_clause)
 
 static void deparseSortBy(StringInfo str, SortBy* sort_by)
 {
+	ListCell *lc;
+
 	deparseNode(str, sort_by->node, DEPARSE_NODE_CONTEXT_NONE);
 	appendStringInfoChar(str, ' ');
 
@@ -844,8 +862,14 @@ static void deparseSortBy(StringInfo str, SortBy* sort_by)
 			appendStringInfoString(str, "DESC ");
 			break;
 		case SORTBY_USING:
-			// TODO: Handle USING [operator] syntax
-			Assert(false);
+			appendStringInfoString(str, "USING ");
+			foreach(lc, sort_by->useOp) {
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(sort_by->useOp, lc))
+					appendStringInfoString(str, ".");
+				else
+					appendStringInfoChar(str, ' ');
+			}
 			break;
 	}
 
@@ -1118,7 +1142,21 @@ static void deparseRowExpr(StringInfo str, RowExpr *row_expr)
 {
 	ListCell *lc;
 
-	appendStringInfoString(str, "ROW(");
+	switch (row_expr->row_format)
+	{
+		case COERCE_EXPLICIT_CALL:
+			appendStringInfoString(str, "ROW");
+			break;
+		case COERCE_EXPLICIT_CAST:
+			// TODO
+			Assert(false);
+			break;
+		case COERCE_IMPLICIT_CAST:
+			// No prefix
+			break;
+	}
+
+	appendStringInfoString(str, "(");
 	foreach(lc, row_expr->args) {
 		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
 		if (lnext(row_expr->args, lc))
@@ -1619,8 +1657,84 @@ static void deparseOnConflictClause(StringInfo str, OnConflictClause *on_conflic
 
 static void deparseIndexElem(StringInfo str, IndexElem* index_elem)
 {
-	appendStringInfoString(str, quote_identifier(index_elem->name));
-	// TODO: Support other columns
+	ListCell *lc;
+
+	if (index_elem->name != NULL)
+	{
+		appendStringInfoString(str, quote_identifier(index_elem->name));
+		appendStringInfoChar(str, ' ');
+	}
+	else if (index_elem->expr != NULL)
+	{
+		deparseNode(str, index_elem->expr, DEPARSE_NODE_CONTEXT_NONE);
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (list_length(index_elem->collation) > 0)
+	{
+		appendStringInfoString(str, "COLLATE ");
+		foreach(lc, index_elem->collation)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(index_elem->collation, lc))
+				appendStringInfoChar(str, '.');
+		}
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (list_length(index_elem->opclass) > 0)
+	{
+		foreach(lc, index_elem->opclass)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_IDENTIFIER);
+			if (lnext(index_elem->opclass, lc))
+				appendStringInfoChar(str, '.');
+		}
+		appendStringInfoChar(str, ' ');
+
+		if (list_length(index_elem->opclassopts) > 0)
+		{
+			foreach(lc, index_elem->opclassopts)
+			{
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(index_elem->opclassopts, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoChar(str, ' ');
+		}
+	}
+
+	switch (index_elem->ordering)
+	{
+		case SORTBY_DEFAULT:
+			// Default
+			break;
+		case SORTBY_ASC:
+			appendStringInfoString(str, "ASC ");
+			break;
+		case SORTBY_DESC:
+			appendStringInfoString(str, "DESC ");
+			break;
+		case SORTBY_USING:
+			// Not allowed in CREATE INDEX
+			Assert(false);
+			break;
+	}
+
+	switch (index_elem->nulls_ordering)
+	{
+		case SORTBY_NULLS_DEFAULT:
+			// Default
+			break;
+		case SORTBY_NULLS_FIRST:
+			appendStringInfoString(str, "NULLS FIRST ");
+			break;
+		case SORTBY_NULLS_LAST:
+			appendStringInfoString(str, "NULLS LAST ");
+			break;
+	}
+
+	removeTrailingSpace(str);
 }
 
 static void deparseUpdateStmt(StringInfo str, UpdateStmt *update_stmt)
@@ -1905,7 +2019,8 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 			appendStringInfoString(str, "EXCLUSION ");
 			break;
 		case CONSTR_FOREIGN:
-			appendStringInfoString(str, "FOREIGN KEY ");
+			if (list_length(constraint->fk_attrs) > 0)
+				appendStringInfoString(str, "FOREIGN KEY ");
 			break;
 		case CONSTR_ATTR_DEFERRABLE:
 		case CONSTR_ATTR_NOT_DEFERRABLE:
@@ -2010,7 +2125,7 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 
 	foreach(lc, create_function_stmt->options)
 	{
-		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_CREATE_FUNCTION);
 		appendStringInfoChar(str, ' ');
 	}
 
@@ -2019,11 +2134,48 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 
 static void deparseFunctionParameter(StringInfo str, FunctionParameter *function_parameter)
 {
+	switch (function_parameter->mode)
+	{
+		case FUNC_PARAM_IN: /* input only */
+			// Default
+			break;
+		case FUNC_PARAM_OUT: /* output only */
+			appendStringInfoString(str, "OUT ");
+			break;
+		case FUNC_PARAM_INOUT: /* both */
+			appendStringInfoString(str, "INOUT ");
+			break;
+		case FUNC_PARAM_VARIADIC: /* variadic (always input) */
+			appendStringInfoString(str, "VARIADIC ");
+			break;
+		case FUNC_PARAM_TABLE: /* table function output column */
+			// TODO
+			Assert(false);
+			break;
+		default:
+			// Default
+			break;
+	}
+
+	if (function_parameter->name != NULL)
+	{
+		appendStringInfoString(str, function_parameter->name);
+		appendStringInfoChar(str, ' ');
+	}
+
 	deparseTypeName(str, function_parameter->argType);
-	// TODO: Review additional FunctionParameter fields
+	appendStringInfoChar(str, ' ');
+
+	if (function_parameter->defexpr != NULL)
+	{
+		appendStringInfoString(str, "DEFAULT ");
+		deparseNode(str, function_parameter->defexpr, DEPARSE_NODE_CONTEXT_NONE);
+	}
+
+	removeTrailingSpace(str);
 }
 
-static void deparseDefElem(StringInfo str, DefElem *def_elem)
+static void deparseDefElem(StringInfo str, DefElem *def_elem, DeparseNodeContext context)
 {
 	ListCell *lc;
 	if (strcmp(def_elem->defname, "as") == 0)
@@ -2082,6 +2234,26 @@ static void deparseDefElem(StringInfo str, DefElem *def_elem)
 	else if (strcmp(def_elem->defname, "transaction_deferrable") == 0 && intVal(&castNode(A_Const, def_elem->arg)->val) == 0)
 	{
 		appendStringInfoString(str, "NOT DEFERRABLE");
+	}
+	else if (context == DEPARSE_NODE_CONTEXT_EXPLAIN || context == DEPARSE_NODE_CONTEXT_CREATE_FUNCTION)
+	{
+		Assert(def_elem->defname != NULL);
+		char *defname = pstrdup(def_elem->defname);
+		for (unsigned char *p = (unsigned char *) defname; *p; p++)
+			*p = pg_toupper(*p);
+		appendStringInfoString(str, defname);
+		if (def_elem->arg != NULL)
+		{
+			appendStringInfoChar(str, ' ');
+			if (IsA(def_elem->arg, String)) {
+				char *parallel = pstrdup(strVal(def_elem->arg));
+				for (unsigned char *p = (unsigned char *) parallel; *p; p++)
+					*p = pg_toupper(*p);
+				appendStringInfoString(str, parallel);
+			} else {
+				deparseNode(str, def_elem->arg, DEPARSE_NODE_CONTEXT_NONE);
+			}
+		}
 	}
 	else
 	{
@@ -2146,6 +2318,110 @@ static void deparseRoleSpec(StringInfo str, RoleSpec *role_spec)
 	}
 }
 
+static void deparsePartitionSpec(StringInfo str, PartitionSpec *partition_spec)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "PARTITION BY ");
+	appendStringInfoString(str, partition_spec->strategy);
+
+	appendStringInfoChar(str, '(');
+	foreach(lc, partition_spec->partParams)
+	{
+		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+		if (lnext(partition_spec->partParams, lc))
+			appendStringInfoString(str, ", ");
+	}
+	appendStringInfoChar(str, ')');
+}
+
+static void deparsePartitionElem(StringInfo str, PartitionElem *partition_elem)
+{
+	ListCell *lc;
+
+	if (partition_elem->name != NULL)
+	{
+		appendStringInfoString(str, quote_identifier(partition_elem->name));
+		appendStringInfoChar(str, ' ');
+	}
+	else if (partition_elem->expr != NULL)
+	{
+		deparseNode(str, partition_elem->expr, DEPARSE_NODE_CONTEXT_NONE);
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (list_length(partition_elem->collation) > 0)
+	{
+		appendStringInfoString(str, "COLLATE ");
+		foreach(lc, partition_elem->collation)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(partition_elem->collation, lc))
+				appendStringInfoChar(str, '.');
+		}
+		appendStringInfoChar(str, ' ');
+	}
+
+	foreach(lc, partition_elem->opclass)
+	{
+		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+		if (lnext(partition_elem->opclass, lc))
+			appendStringInfoChar(str, '.');
+	}
+
+	removeTrailingSpace(str);
+}
+
+static void deparsePartitionBoundSpec(StringInfo str, PartitionBoundSpec *partition_bound_spec)
+{
+	ListCell *lc;
+
+	if (partition_bound_spec->is_default)
+	{
+		appendStringInfoString(str, "DEFAULT");
+		return;
+	}
+
+	appendStringInfoString(str, "FOR VALUES ");
+
+	switch (partition_bound_spec->strategy)
+	{
+		case PARTITION_STRATEGY_HASH:
+			appendStringInfo(str, "WITH (MODULUS %d, REMAINDER %d)", partition_bound_spec->modulus, partition_bound_spec->remainder);
+			break;
+		case PARTITION_STRATEGY_LIST:
+			appendStringInfoString(str, "IN (");
+			foreach(lc, partition_bound_spec->listdatums)
+			{
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(partition_bound_spec->listdatums, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoChar(str, ')');
+			break;
+		case PARTITION_STRATEGY_RANGE:
+			appendStringInfoString(str, "FROM (");
+			foreach(lc, partition_bound_spec->lowerdatums)
+			{
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(partition_bound_spec->lowerdatums, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoString(str, ") TO (");
+			foreach(lc, partition_bound_spec->upperdatums)
+			{
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(partition_bound_spec->upperdatums, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoChar(str, ')');
+			break;
+		default:
+			Assert(false);
+			break;
+	}
+}
+
 static void deparseCreateStmt(StringInfo str, CreateStmt *create_stmt)
 {
 	ListCell *lc;
@@ -2173,16 +2449,36 @@ static void deparseCreateStmt(StringInfo str, CreateStmt *create_stmt)
 		appendStringInfoString(str, "IF NOT EXISTS ");
 
 	deparseRangeVar(str, create_stmt->relation);
-	appendStringInfoString(str, " (");
-	foreach(lc, create_stmt->tableElts)
-	{
-		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
-		if (lnext(create_stmt->tableElts, lc))
-			appendStringInfoString(str, ", ");
-	}
-	appendStringInfoString(str, ") ");
+	appendStringInfoChar(str, ' ');
 
-	if (list_length(create_stmt->inhRelations) > 0)
+	if (create_stmt->ofTypename != NULL)
+	{
+		appendStringInfoString(str, "OF ");
+		deparseTypeName(str, create_stmt->ofTypename);
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (list_length(create_stmt->tableElts) > 0)
+	{
+		appendStringInfoChar(str, '(');
+		foreach(lc, create_stmt->tableElts)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(create_stmt->tableElts, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+
+	if (create_stmt->partbound != NULL && list_length(create_stmt->inhRelations) == 1)
+	{
+		appendStringInfoString(str, "PARTITION OF ");
+		deparseNode(str, linitial(create_stmt->inhRelations), DEPARSE_NODE_CONTEXT_IDENTIFIER);
+		appendStringInfoChar(str, ' ');
+		deparsePartitionBoundSpec(str, create_stmt->partbound);
+		appendStringInfoChar(str, ' ');
+	}
+	else if (list_length(create_stmt->inhRelations) > 0)
 	{
 		appendStringInfoString(str, "INHERITS (");
 		foreach(lc, create_stmt->inhRelations)
@@ -2193,6 +2489,54 @@ static void deparseCreateStmt(StringInfo str, CreateStmt *create_stmt)
 		}
 		appendStringInfoString(str, ") ");
 	}
+
+	if (create_stmt->partspec != NULL)
+	{
+		deparsePartitionSpec(str, create_stmt->partspec);
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (create_stmt->accessMethod != NULL)
+	{
+		appendStringInfoString(str, "USING ");
+		appendStringInfoString(str, create_stmt->accessMethod);
+	}
+
+	if (list_length(create_stmt->options) > 0)
+	{
+		appendStringInfoString(str, "WITH (");
+		foreach(lc, create_stmt->options)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(create_stmt->options, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+
+	switch (create_stmt->oncommit)
+	{
+		case ONCOMMIT_NOOP:
+			// No ON COMMIT clause
+			break;
+		case ONCOMMIT_PRESERVE_ROWS:
+			appendStringInfoString(str, "ON COMMIT PRESERVE ROWS ");
+			break;
+		case ONCOMMIT_DELETE_ROWS:
+			appendStringInfoString(str, "ON COMMIT DELETE ROWS ");
+			break;
+		case ONCOMMIT_DROP:
+			appendStringInfoString(str, "ON COMMIT DROP ");
+			break;
+	}
+
+	if (create_stmt->tablespacename != NULL)
+	{
+		appendStringInfoString(str, "TABLESPACE ");
+		appendStringInfoString(str, quote_identifier(create_stmt->tablespacename));
+	}
+
+	// TODO: constraints (list of Constraint nodes)
 
 	removeTrailingSpace(str);
 }
@@ -2279,6 +2623,18 @@ static void deparseViewStmt(StringInfo str, ViewStmt *view_stmt)
 		{
 			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
 			if (lnext(view_stmt->aliases, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+
+	if (list_length(view_stmt->options) > 0)
+	{
+		appendStringInfoString(str, "WITH (");
+		foreach(lc, view_stmt->options)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(view_stmt->options, lc))
 				appendStringInfoString(str, ", ");
 		}
 		appendStringInfoString(str, ") ");
@@ -2657,72 +3013,265 @@ static void deparseAlterTableStmt(StringInfo str, AlterTableStmt *alter_table_st
 static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd)
 {
 	const char *options = NULL;
+	bool def_parens = false;
 
 	switch (alter_table_cmd->subtype)
 	{
-		case AT_AddColumn:
+		case AT_AddColumn: /* add column */
 			appendStringInfoString(str, "ADD COLUMN ");
 			break;
-		case AT_ColumnDefault:
+		case AT_AddColumnRecurse: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AddColumnToView: /* implicitly via CREATE OR REPLACE VIEW */
+			// TODO
+			Assert(false);
+			break;
+		case AT_ColumnDefault: /* alter column default */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			if (alter_table_cmd->def != NULL)
 				options = "SET DEFAULT";
 			else
 				options = "DROP DEFAULT";
 			break;
-		case AT_DropNotNull:
+		case AT_CookedColumnDefault: /* add a pre-cooked column default */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropNotNull: /* alter column drop not null */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "DROP NOT NULL";
 			break;
-		case AT_SetNotNull:
+		case AT_SetNotNull: /* alter column set not null */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "SET NOT NULL";
 			break;
-		case AT_SetStatistics:
+		case AT_DropExpression: /* alter column drop expression */
+			// TODO
+			Assert(false);
+			break;
+		case AT_CheckNotNull: /* check column is already marked not null */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetStatistics: /* alter column set statistics */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "SET STATISTICS";
 			break;
-		case AT_SetOptions:
+		case AT_SetOptions: /* alter column set ( options ) */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "SET";
 			break;
-		case AT_ResetOptions:
+		case AT_ResetOptions: /* alter column reset ( options ) */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "RESET";
 			break;
-		case AT_SetStorage:
+		case AT_SetStorage: /* alter column set storage */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "SET STORAGE";
 			break;
-		case AT_DropColumn:
+		case AT_DropColumn: /* drop column */
 			appendStringInfoString(str, "DROP ");
 			break;
-		case AT_AddIndex:
+		case AT_DropColumnRecurse: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AddIndex: /* add index */
 			appendStringInfoString(str, "ADD INDEX ");
 			break;
-		case AT_AddConstraint:
+		case AT_ReAddIndex: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AddConstraint: /* add constraint */
 			appendStringInfoString(str, "ADD ");
 			break;
-		case AT_AlterConstraint:
+		case AT_AddConstraintRecurse: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_ReAddConstraint: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_ReAddDomainConstraint: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AlterConstraint: /* alter constraint */
 			appendStringInfoString(str, "ALTER CONSTRAINT ");
 			break;
-		case AT_ValidateConstraint:
+		case AT_ValidateConstraint: /* validate constraint */
 			appendStringInfoString(str, "VALIDATE CONSTRAINT ");
 			break;
-		case AT_DropConstraint:
+		case AT_ValidateConstraintRecurse: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AddIndexConstraint: /* add constraint using existing index */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropConstraint: /* drop constraint */
 			appendStringInfoString(str, "DROP CONSTRAINT ");
 			break;
-		case AT_AlterColumnType:
+		case AT_DropConstraintRecurse: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_ReAddComment: /* internal to commands/tablecmds.c */
+			Assert(false);
+			break;
+		case AT_AlterColumnType: /* alter column type */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "TYPE";
 			break;
-		case AT_AlterColumnGenericOptions:
+		case AT_AlterColumnGenericOptions: /* alter column OPTIONS (...) */
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "OPTIONS";
 			break;
-		default:
-			// TODO: Support all alter commands
+		case AT_ChangeOwner: /* change owner */
+			// TODO
 			Assert(false);
+			break;
+		case AT_ClusterOn: /* CLUSTER ON */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropCluster: /* SET WITHOUT CLUSTER */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetLogged: /* SET LOGGED */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetUnLogged: /* SET UNLOGGED */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropOids: /* SET WITHOUT OIDS */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetTableSpace: /* SET TABLESPACE */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetRelOptions: /* SET (...) -- AM specific parameters */
+			appendStringInfoString(str, "SET ");
+			def_parens = true;
+			break;
+		case AT_ResetRelOptions: /* RESET (...) -- AM specific parameters */
+			appendStringInfoString(str, "RESET ");
+			def_parens = true;
+			break;
+		case AT_ReplaceRelOptions: /* replace reloption list in its entirety */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableTrig: /* ENABLE TRIGGER name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableAlwaysTrig: /* ENABLE ALWAYS TRIGGER name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableReplicaTrig: /* ENABLE REPLICA TRIGGER name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DisableTrig: /* DISABLE TRIGGER name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableTrigAll: /* ENABLE TRIGGER ALL */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DisableTrigAll: /* DISABLE TRIGGER ALL */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableTrigUser: /* ENABLE TRIGGER USER */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DisableTrigUser: /* DISABLE TRIGGER USER */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableRule: /* ENABLE RULE name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableAlwaysRule: /* ENABLE ALWAYS RULE name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableReplicaRule: /* ENABLE REPLICA RULE name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DisableRule: /* DISABLE RULE name */
+			// TODO
+			Assert(false);
+			break;
+		case AT_AddInherit: /* INHERIT parent */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropInherit: /* NO INHERIT parent */
+			// TODO
+			Assert(false);
+			break;
+		case AT_AddOf: /* OF <type_name> */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropOf: /* NOT OF */
+			// TODO
+			Assert(false);
+			break;
+		case AT_ReplicaIdentity: /* REPLICA IDENTITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_EnableRowSecurity: /* ENABLE ROW SECURITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DisableRowSecurity: /* DISABLE ROW SECURITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_ForceRowSecurity: /* FORCE ROW SECURITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_NoForceRowSecurity: /* NO FORCE ROW SECURITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_GenericOptions: /* OPTIONS (...) */
+			// TODO
+			Assert(false);
+			break;
+		case AT_AttachPartition: /* ATTACH PARTITION */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DetachPartition: /* DETACH PARTITION */
+			// TODO
+			Assert(false);
+			break;
+		case AT_AddIdentity: /* ADD IDENTITY */
+			// TODO
+			Assert(false);
+			break;
+		case AT_SetIdentity: /* SET identity column options */
+			// TODO
+			Assert(false);
+			break;
+		case AT_DropIdentity: /* DROP IDENTITY */
+			// TODO
+			Assert(false);
+			break;
 	}
 
 	if (alter_table_cmd->missing_ok)
@@ -2742,7 +3291,11 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd)
 
 	if (alter_table_cmd->def != NULL)
 	{
+		if (def_parens)
+			appendStringInfoChar(str, '(');
 		deparseNode(str, alter_table_cmd->def, DEPARSE_NODE_CONTEXT_NONE);
+		if (def_parens)
+			appendStringInfoChar(str, ')');
 		appendStringInfoChar(str, ' ');
 	}
 
@@ -2925,19 +3478,46 @@ static void deparseVariableSetStmt(StringInfo str, VariableSetStmt* variable_set
 {
 	ListCell *lc;
 
-	appendStringInfoString(str, "SET ");
-
-	if (variable_set_stmt->is_local)
-		appendStringInfoString(str, "LOCAL ");
-
-	appendStringInfoString(str, quote_identifier(variable_set_stmt->name));
-	appendStringInfoString(str, " TO ");
-
-	foreach(lc, variable_set_stmt->args)
+	switch (variable_set_stmt->kind)
 	{
-		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
-		if (lnext(variable_set_stmt->args, lc))
-			appendStringInfoString(str, ", ");
+		case VAR_SET_VALUE: /* SET var = value */
+			appendStringInfoString(str, "SET ");
+			if (variable_set_stmt->is_local)
+				appendStringInfoString(str, "LOCAL ");
+			appendStringInfoString(str, quote_identifier(variable_set_stmt->name));
+			appendStringInfoString(str, " TO ");
+			foreach(lc, variable_set_stmt->args)
+			{
+				deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+				if (lnext(variable_set_stmt->args, lc))
+					appendStringInfoString(str, ", ");
+			}
+			break;
+		case VAR_SET_DEFAULT: /* SET var TO DEFAULT */
+			appendStringInfoString(str, "SET ");
+			if (variable_set_stmt->is_local)
+				appendStringInfoString(str, "LOCAL ");
+			appendStringInfoString(str, quote_identifier(variable_set_stmt->name));
+			appendStringInfoString(str, " TO DEFAULT");
+			break;
+		case VAR_SET_CURRENT: /* SET var FROM CURRENT */
+			appendStringInfoString(str, "SET ");
+			if (variable_set_stmt->is_local)
+				appendStringInfoString(str, "LOCAL ");
+			appendStringInfoString(str, quote_identifier(variable_set_stmt->name));
+			appendStringInfoString(str, " FROM CURRENT");
+			break;
+		case VAR_SET_MULTI: /* special case for SET TRANSACTION ... */
+			// TODO
+			Assert(false);
+			break;
+		case VAR_RESET: /* RESET var */
+			appendStringInfoString(str, "RESET ");
+			appendStringInfoString(str, quote_identifier(variable_set_stmt->name));
+			break;
+		case VAR_RESET_ALL: /* RESET ALL */
+			appendStringInfoString(str, "RESET ALL");
+			break;
 	}
 }
 
@@ -2947,7 +3527,10 @@ static void deparseVacuumStmt(StringInfo str, VacuumStmt* vacuum_stmt)
 	ListCell *lc2 = NULL;
 	char *defname = NULL;
 
-	appendStringInfoString(str, "VACUUM ");
+	if (vacuum_stmt->is_vacuumcmd)
+		appendStringInfoString(str, "VACUUM ");
+	else
+		appendStringInfoString(str, "ANALYZE ");
 
 	foreach(lc, vacuum_stmt->options)
 	{
@@ -3006,30 +3589,22 @@ static void deparseExplainStmt(StringInfo str, ExplainStmt *explain_stmt)
 {
 	ListCell *lc = NULL;
 	char *defname = NULL;
-	bool need_parens = list_length(explain_stmt->options) > 1;
 
 	appendStringInfoString(str, "EXPLAIN ");
 
-	if (need_parens)
+	if (list_length(explain_stmt->options) > 0)
+	{
 		appendStringInfoChar(str, '(');
 
-	foreach(lc, explain_stmt->options)
-	{
-		Assert(IsA(lfirst(lc), DefElem));
-		defname = pstrdup(castNode(DefElem, lfirst(lc))->defname);
-		for (unsigned char *p = (unsigned char *) defname; *p; p++)
-			*p = pg_toupper(*p);
-		appendStringInfoString(str, defname);
-		pfree(defname);
-		if (lnext(explain_stmt->options, lc))
-			appendStringInfoString(str, ", ");
+		foreach(lc, explain_stmt->options)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_EXPLAIN);
+			if (lnext(explain_stmt->options, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
 	}
 
-	if (need_parens)
-		appendStringInfoChar(str, ')');
-
-	removeTrailingSpace(str);
-	appendStringInfoChar(str, ' ');
 	deparseNode(str, explain_stmt->query, DEPARSE_NODE_CONTEXT_NONE);
 }
 
@@ -3502,6 +4077,173 @@ static void deparseDropRoleStmt(StringInfo str, DropRoleStmt *drop_role_stmt)
 	}
 }
 
+static void deparseIndexStmt(StringInfo str, IndexStmt *index_stmt)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "CREATE ");
+
+	if (index_stmt->unique)
+		appendStringInfoString(str, "UNIQUE ");
+
+	appendStringInfoString(str, "INDEX ");
+
+	if (index_stmt->concurrent)
+		appendStringInfoString(str, "CONCURRENTLY ");
+
+	if (index_stmt->if_not_exists)
+		appendStringInfoString(str, "IF NOT EXISTS ");
+
+	if (index_stmt->idxname != NULL)
+	{
+		appendStringInfoString(str, index_stmt->idxname);
+		appendStringInfoChar(str, ' ');
+	}
+
+	appendStringInfoString(str, "ON ");
+	deparseRangeVar(str, index_stmt->relation);
+	appendStringInfoChar(str, ' ');
+
+	if (index_stmt->accessMethod != NULL)
+	{
+		appendStringInfoString(str, "USING ");
+		appendStringInfoString(str, quote_identifier(index_stmt->accessMethod));
+		appendStringInfoChar(str, ' ');
+	}
+
+	appendStringInfoChar(str, '(');
+	foreach (lc, index_stmt->indexParams)
+	{
+		deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+		if (lnext(index_stmt->indexParams, lc))
+			appendStringInfoString(str, ", ");
+	}
+	appendStringInfoChar(str, ')');
+
+	if (list_length(index_stmt->indexIncludingParams) > 0)
+	{
+		appendStringInfoString(str, "INCLUDE (");
+		foreach (lc, index_stmt->indexIncludingParams)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(index_stmt->indexIncludingParams, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+
+	if (list_length(index_stmt->options) > 0)
+	{
+		appendStringInfoString(str, "WITH (");
+		foreach (lc, index_stmt->options)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(index_stmt->options, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+
+	if (index_stmt->tableSpace != NULL)
+	{
+		appendStringInfoString(str, "TABLESPACE ");
+		appendStringInfoString(str, quote_identifier(index_stmt->tableSpace));
+		appendStringInfoChar(str, ' ');
+	}
+
+	if (index_stmt->whereClause != NULL)
+	{
+		deparseNode(str, index_stmt->whereClause, DEPARSE_NODE_CONTEXT_NONE);
+		appendStringInfoChar(str, ' ');
+	}
+
+	removeTrailingSpace(str);
+}
+
+static void deparsePrepareStmt(StringInfo str, PrepareStmt *prepare_stmt)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "PREPARE ");
+	appendStringInfoString(str, quote_identifier(prepare_stmt->name));
+	if (list_length(prepare_stmt->argtypes) > 0)
+	{
+		appendStringInfoChar(str, '(');
+		foreach (lc, prepare_stmt->argtypes)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(prepare_stmt->argtypes, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoChar(str, ')');
+	}
+	appendStringInfoString(str, " AS ");
+	deparseNode(str, prepare_stmt->query, DEPARSE_NODE_CONTEXT_NONE);
+}
+
+static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "EXECUTE ");
+	appendStringInfoString(str, quote_identifier(execute_stmt->name));
+	if (list_length(execute_stmt->params) > 0)
+	{
+		appendStringInfoChar(str, '(');
+		foreach (lc, execute_stmt->params)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(execute_stmt->params, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoChar(str, ')');
+	}
+}
+
+static void deparseDeallocateStmt(StringInfo str, DeallocateStmt *deallocate_stmt)
+{
+	appendStringInfoString(str, "DEALLOCATE ");
+	if (deallocate_stmt->name != NULL)
+		appendStringInfoString(str, quote_identifier(deallocate_stmt->name));
+	else
+		appendStringInfoString(str, "ALL");
+}
+
+static void deparseCreateRoleStmt(StringInfo str, CreateRoleStmt *create_role_stmt)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "CREATE ");
+
+	switch (create_role_stmt->stmt_type)
+	{
+		case ROLESTMT_ROLE:
+			appendStringInfoString(str, "ROLE ");
+			break;
+		case ROLESTMT_USER:
+			appendStringInfoString(str, "USER ");
+			break;
+		case ROLESTMT_GROUP:
+			appendStringInfoString(str, "GROUP ");
+			break;
+	}
+
+	appendStringInfoString(str, quote_identifier(create_role_stmt->role));
+	appendStringInfoChar(str, ' ');
+
+	if (create_role_stmt->options != NULL)
+	{
+		appendStringInfoString(str, "WITH (");
+		foreach (lc, create_role_stmt->options)
+		{
+			deparseNode(str, lfirst(lc), DEPARSE_NODE_CONTEXT_NONE);
+			if (lnext(create_role_stmt->options, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+}
+
 static void deparseValue(StringInfo str, Value *value, DeparseNodeContext context)
 {
 	switch (nodeTag(value))
@@ -3671,7 +4413,7 @@ static void deparseNode(StringInfo str, Node *node, DeparseNodeContext context)
 			deparseFunctionParameter(str, (FunctionParameter *) node);
 			break;
 		case T_DefElem:
-			deparseDefElem(str, (DefElem *) node);
+			deparseDefElem(str, (DefElem *) node, context);
 			break;
 		case T_CreateSchemaStmt:
 			deparseCreateSchemaStmt(str, (CreateSchemaStmt *) node);
@@ -3756,6 +4498,27 @@ static void deparseNode(StringInfo str, Node *node, DeparseNodeContext context)
 			break;
 		case T_DropRoleStmt:
 			deparseDropRoleStmt(str, (DropRoleStmt *) node);
+			break;
+		case T_IndexStmt:
+			deparseIndexStmt(str, (IndexStmt *) node);
+			break;
+		case T_PartitionSpec:
+			deparsePartitionSpec(str, (PartitionSpec *) node);
+			break;
+		case T_PartitionElem:
+			deparsePartitionElem(str, (PartitionElem *) node);
+			break;
+		case T_PrepareStmt:
+			deparsePrepareStmt(str, (PrepareStmt *) node);
+			break;
+		case T_ExecuteStmt:
+			deparseExecuteStmt(str, (ExecuteStmt *) node);
+			break;
+		case T_DeallocateStmt:
+			deparseDeallocateStmt(str, (DeallocateStmt *) node);
+			break;
+		case T_CreateRoleStmt:
+			deparseCreateRoleStmt(str, (CreateRoleStmt *) node);
 			break;
 		case T_Integer:
 		case T_Float:
