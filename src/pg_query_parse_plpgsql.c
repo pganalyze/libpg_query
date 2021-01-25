@@ -182,8 +182,6 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	function->fn_rettype = VOIDOID;
 	function->fn_retset = is_setof;
 	function->fn_retistuple = false;
-	function->fn_retisdomain = false;
-	function->fn_prokind = PROKIND_FUNCTION;
 	/* a bit of hardwired knowledge about type VOID here */
 	function->fn_retbyval = true;
 	function->fn_rettyplen = sizeof(int32);

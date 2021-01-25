@@ -1,0 +1,53 @@
+commit d16b5f39bddaa385b28159f0e12c472d16158da4
+Author: Lukas Fittl <lukas@fittl.com>
+Date:   Wed Feb 17 08:02:10 2021 -0800
+
+    PL/pgSQL: Make plpgsql_start_datums and plpgsql_finish_datums extern
+    
+    This allows other source units to have the accompanying functions for
+    the already exported plpgsql_adddatum.
+
+diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
+index 093d34d46c..4fd09a11dd 100644
+--- a/src/pl/plpgsql/src/pl_comp.c
++++ b/src/pl/plpgsql/src/pl_comp.c
+@@ -107,8 +107,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
+ static PLpgSQL_row *build_row_from_class(Oid classOid);
+ static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
+ static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod, Oid collation);
+-static void plpgsql_start_datums(void);
+-static void plpgsql_finish_datums(PLpgSQL_function *function);
+ static void compute_function_hashkey(FunctionCallInfo fcinfo,
+ 						 Form_pg_proc procStruct,
+ 						 PLpgSQL_func_hashkey *hashkey,
+@@ -2309,7 +2307,7 @@ plpgsql_parse_err_condition(char *condname)
+  * plpgsql_start_datums			Initialize datum list at compile startup.
+  * ----------
+  */
+-static void
++void
+ plpgsql_start_datums(void)
+ {
+ 	datums_alloc = 128;
+@@ -2346,7 +2344,7 @@ plpgsql_adddatum(PLpgSQL_datum *new)
+  * of the dnos of all ROW, REC, and RECFIELD datums in the function.
+  * ----------
+  */
+-static void
++void
+ plpgsql_finish_datums(PLpgSQL_function *function)
+ {
+ 	Bitmapset  *resettable_datums = NULL;
+diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
+index 32f7c95007..c6d41f9788 100644
+--- a/src/pl/plpgsql/src/plpgsql.h
++++ b/src/pl/plpgsql/src/plpgsql.h
+@@ -1078,6 +1078,8 @@ extern PLpgSQL_rec *plpgsql_build_record(const char *refname, int lineno,
+ extern int plpgsql_recognize_err_condition(const char *condname,
+ 								bool allow_sqlstate);
+ extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
++extern void plpgsql_start_datums(void);
++extern void plpgsql_finish_datums(PLpgSQL_function *function);
+ extern void plpgsql_adddatum(PLpgSQL_datum *newdatum);
+ extern int	plpgsql_add_initdatums(int **varnos);
+ extern void plpgsql_HashTableInit(void);
