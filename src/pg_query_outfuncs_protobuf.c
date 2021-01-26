@@ -199,21 +199,23 @@ pg_query_nodes_to_protobuf(const void *obj)
 	int i = 0;
 	PgQuery__ParseResult parse_result = PG_QUERY__PARSE_RESULT__INIT;
 
-	if (obj == NULL) {
-    	protobuf.data = strdup("");
-		protobuf.len = 0;
-		return protobuf;
-	}
-
 	parse_result.version = PG_VERSION_NUM;
-	parse_result.n_stmts = list_length(obj);
-	parse_result.stmts = palloc(sizeof(PgQuery__RawStmt*) * parse_result.n_stmts);
-	foreach(lc, obj)
+
+	if (obj == NULL) {
+		parse_result.n_stmts = 0;
+		parse_result.stmts = NULL;
+	}
+	else
 	{
-		parse_result.stmts[i] = palloc(sizeof(PgQuery__RawStmt));
-		pg_query__raw_stmt__init(parse_result.stmts[i]);
-		_outRawStmt(parse_result.stmts[i], lfirst(lc));
-		i++;
+		parse_result.n_stmts = list_length(obj);
+		parse_result.stmts = palloc(sizeof(PgQuery__RawStmt*) * parse_result.n_stmts);
+		foreach(lc, obj)
+		{
+			parse_result.stmts[i] = palloc(sizeof(PgQuery__RawStmt));
+			pg_query__raw_stmt__init(parse_result.stmts[i]);
+			_outRawStmt(parse_result.stmts[i], lfirst(lc));
+			i++;
+		}
 	}
 
 	protobuf.len = pg_query__parse_result__get_packed_size(&parse_result);

@@ -285,7 +285,7 @@ pg_query_nodes_to_json(const void *obj)
 
 	if (obj == NULL) /* Make sure we generate valid JSON for empty queries */
 	{
-		appendStringInfoString(&out, "[]");
+		appendStringInfo(&out, "{\"version\":%d,\"stmts\":[]}", PG_VERSION_NUM);
 	}
 	else
 	{
