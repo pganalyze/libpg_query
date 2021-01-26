@@ -65,6 +65,32 @@ const char* tests[] = {
     "U = UIDENT, NO_KEYWORD\n"
     "UESCAPE = UESCAPE, UNRESERVED_KEYWORD\n"
     "'!' = SCONST, NO_KEYWORD\n",
+  "SELECT 'a'/*;*/'b'; SELECT ';';",
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "'a' = SCONST, NO_KEYWORD\n"
+    "/*;*/ = C_COMMENT, NO_KEYWORD\n"
+    "'b' = SCONST, NO_KEYWORD\n"
+    "; = ASCII_59, NO_KEYWORD\n"
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "';' = SCONST, NO_KEYWORD\n"
+    "; = ASCII_59, NO_KEYWORD\n",
+  "CREATE RULE x AS ON SELECT TO tbl DO (SELECT 1; SELECT 2)",
+    "CREATE = CREATE, RESERVED_KEYWORD\n"
+    "RULE = RULE, UNRESERVED_KEYWORD\n"
+    "x = IDENT, NO_KEYWORD\n"
+    "AS = AS, RESERVED_KEYWORD\n"
+    "ON = ON, RESERVED_KEYWORD\n"
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "TO = TO, RESERVED_KEYWORD\n"
+    "tbl = IDENT, NO_KEYWORD\n"
+    "DO = DO, RESERVED_KEYWORD\n"
+    "( = ASCII_40, NO_KEYWORD\n"
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "1 = ICONST, NO_KEYWORD\n"
+    "; = ASCII_59, NO_KEYWORD\n"
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "2 = ICONST, NO_KEYWORD\n"
+    ") = ASCII_41, NO_KEYWORD\n"
 };
 
-size_t testsCount = 10;
+size_t testsCount = 12;

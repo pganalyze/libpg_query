@@ -79,7 +79,15 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
 
-PgQuerySplitResult pg_query_split(const char *input);
+// Use pg_query_split_with_scanner when you need to split statements that may
+// contain parse errors, otherwise pg_query_split_with_parser is recommended
+// for improved accuracy due the parser adding additional token handling.
+//
+// Note that we try to support special cases like comments, strings containing
+// ";" on both, as well as oddities like "CREATE RULE .. (SELECT 1; SELECT 2);"
+// which is treated as as single statement.
+PgQuerySplitResult pg_query_split_with_scanner(const char *input);
+PgQuerySplitResult pg_query_split_with_parser(const char *input);
 
 PgQueryDeparseResult pg_query_deparse_protobuf(PgQueryProtobuf parse_tree);
 

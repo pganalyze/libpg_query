@@ -140,48 +140,6 @@ PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input)
 	return result;
 }
 
-PgQuerySplitResult pg_query_split(const char* input)
-{
-	MemoryContext ctx = NULL;
-	PgQueryInternalParsetreeAndError parsetree_and_error;
-	PgQuerySplitResult result = {};
-
-	ctx = pg_query_enter_memory_context();
-
-	parsetree_and_error = pg_query_raw_parse(input);
-
-	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
-	result.stderr_buffer = parsetree_and_error.stderr_buffer;
-	result.error = parsetree_and_error.error;
-
-	if (parsetree_and_error.tree != NULL)
-	{
-		ListCell *lc;
-
-		result.n_stmts = list_length(parsetree_and_error.tree);
-		result.stmts = malloc(sizeof(PgQuerySplitStmt*) * result.n_stmts);
-		foreach (lc, parsetree_and_error.tree)
-		{
-			RawStmt *raw_stmt = castNode(RawStmt, lfirst(lc));
-			result.stmts[foreach_current_index(lc)] = malloc(sizeof(PgQuerySplitStmt));
-			result.stmts[foreach_current_index(lc)]->stmt_location = raw_stmt->stmt_location;
-			if (raw_stmt->stmt_len == 0)
-				result.stmts[foreach_current_index(lc)]->stmt_len = strlen(input) - raw_stmt->stmt_location;
-			else
-				result.stmts[foreach_current_index(lc)]->stmt_len = raw_stmt->stmt_len;
-		}
-	}
-	else
-	{
-		result.n_stmts = 0;
-		result.stmts = NULL;
-	}
-
-	pg_query_exit_memory_context(ctx);
-
-	return result;
-}
-
 void pg_query_free_parse_result(PgQueryParseResult result)
 {
 	if (result.error) {
@@ -200,22 +158,4 @@ void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result)
 
 	free(result.parse_tree.data);
 	free(result.stderr_buffer);
-}
-
-void pg_query_free_split_result(PgQuerySplitResult result)
-{
-	if (result.error) {
-		pg_query_free_error(result.error);
-	}
-	free(result.stderr_buffer);
-
-	for (int i = 0; i < result.n_stmts; ++i)
-	{
-		free(result.stmts[i]);
-	}
-
-	if (result.stmts != NULL)
-	{
-		free(result.stmts);
-	}
 }
