@@ -1241,23 +1241,28 @@
         },
         {
           "name": "FUNC_PARAM_IN",
-          "value": 0
+          "value": 105,
+          "comment": "/* input only */"
         },
         {
           "name": "FUNC_PARAM_OUT",
-          "value": 1
+          "value": 111,
+          "comment": "/* output only */"
         },
         {
           "name": "FUNC_PARAM_INOUT",
-          "value": 2
+          "value": 98,
+          "comment": "/* both */"
         },
         {
           "name": "FUNC_PARAM_VARIADIC",
-          "value": 3
+          "value": 118,
+          "comment": "/* variadic (always input) */"
         },
         {
           "name": "FUNC_PARAM_TABLE",
-          "value": 4
+          "value": 116,
+          "comment": "/* table function output column */"
         }
       ],
       "comment": null

@@ -125,25 +125,27 @@ class Extractor
   end
 
   def handle_enum(line)
-    if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)))?,?\s*((?:[A-z0-9_]+,?\s*)+)?(\/\*.+)?/]
+    if line[/^\s+([A-z0-9_]+)(?: = (?:(\d+)(?: << (\d+))?|(PG_INT32_MAX)|(?:'(\w)')))?,?\s*((?:[A-z0-9_]+,?\s*)+)?(\/\*.+)?/]
       primary_value = { name: $1 }
       previous_line_values = @current_enum_def[:values].map {|v| v[:value] }.compact
       primary_value[:value] = if $2
                                 ($3 ? ($2.to_i << $3.to_i) : $2.to_i)
                               elsif $4 == 'PG_INT32_MAX'
                                 0x7FFFFFFF
+                              elsif $5
+                                $5.ord
                               elsif previous_line_values.size > 0
                                 previous_line_values[-1] + 1
                               else
                                 0
                               end
-      primary_value[:comment] = $6 if $6
+      primary_value[:comment] = $7 if $7
       @current_enum_def[:values] << primary_value
 
-      if $5
-        $5.split(',').map(&:strip).each do |name|
+      if $6
+        $6.split(',').map(&:strip).each do |name|
           secondary_value = { name: name }
-          secondary_value[:comment] = $6 if $6
+          secondary_value[:comment] = $7 if $7
           @current_enum_def[:values] << secondary_value
         end
       end
