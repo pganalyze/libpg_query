@@ -47,7 +47,7 @@ extern "C"
 	}
 
 #define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	out->set_##outname((pg_query::typename) node->fldname);
+	out->set_##outname((pg_query::typename) _enumToInt##typename(node->fldname));
 
 #define WRITE_LIST_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
