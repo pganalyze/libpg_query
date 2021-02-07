@@ -220,7 +220,824 @@ static PartitionCmd * _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg
 static VacuumRelation * _readVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) msg);
 static InlineCodeBlock * _readInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) msg);
 static CallContext * _readCallContext(OUT_TYPE(CallContext, CallContext) msg);
+static OverridingKind
+_intToEnumOverridingKind(int value) {
+  switch(value) {
+    case 0: return OVERRIDING_NOT_SET;
+    case 1: return OVERRIDING_USER_VALUE;
+    case 2: return OVERRIDING_SYSTEM_VALUE;
+  }
+  Assert(false);
+  return -1;
+}
 
+static QuerySource
+_intToEnumQuerySource(int value) {
+  switch(value) {
+    case 0: return QSRC_ORIGINAL;
+    case 1: return QSRC_PARSER;
+    case 2: return QSRC_INSTEAD_RULE;
+    case 3: return QSRC_QUAL_INSTEAD_RULE;
+    case 4: return QSRC_NON_INSTEAD_RULE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SortByDir
+_intToEnumSortByDir(int value) {
+  switch(value) {
+    case 0: return SORTBY_DEFAULT;
+    case 1: return SORTBY_ASC;
+    case 2: return SORTBY_DESC;
+    case 3: return SORTBY_USING;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SortByNulls
+_intToEnumSortByNulls(int value) {
+  switch(value) {
+    case 0: return SORTBY_NULLS_DEFAULT;
+    case 1: return SORTBY_NULLS_FIRST;
+    case 2: return SORTBY_NULLS_LAST;
+  }
+  Assert(false);
+  return -1;
+}
+
+static A_Expr_Kind
+_intToEnumA_Expr_Kind(int value) {
+  switch(value) {
+    case 0: return AEXPR_OP;
+    case 1: return AEXPR_OP_ANY;
+    case 2: return AEXPR_OP_ALL;
+    case 3: return AEXPR_DISTINCT;
+    case 4: return AEXPR_NOT_DISTINCT;
+    case 5: return AEXPR_NULLIF;
+    case 6: return AEXPR_OF;
+    case 7: return AEXPR_IN;
+    case 8: return AEXPR_LIKE;
+    case 9: return AEXPR_ILIKE;
+    case 10: return AEXPR_SIMILAR;
+    case 11: return AEXPR_BETWEEN;
+    case 12: return AEXPR_NOT_BETWEEN;
+    case 13: return AEXPR_BETWEEN_SYM;
+    case 14: return AEXPR_NOT_BETWEEN_SYM;
+    case 15: return AEXPR_PAREN;
+  }
+  Assert(false);
+  return -1;
+}
+
+static RoleSpecType
+_intToEnumRoleSpecType(int value) {
+  switch(value) {
+    case 0: return ROLESPEC_CSTRING;
+    case 1: return ROLESPEC_CURRENT_USER;
+    case 2: return ROLESPEC_SESSION_USER;
+    case 3: return ROLESPEC_PUBLIC;
+  }
+  Assert(false);
+  return -1;
+}
+
+static TableLikeOption
+_intToEnumTableLikeOption(int value) {
+  switch(value) {
+    case 0: return CREATE_TABLE_LIKE_COMMENTS;
+    case 1: return CREATE_TABLE_LIKE_CONSTRAINTS;
+    case 2: return CREATE_TABLE_LIKE_DEFAULTS;
+    case 3: return CREATE_TABLE_LIKE_GENERATED;
+    case 4: return CREATE_TABLE_LIKE_IDENTITY;
+    case 5: return CREATE_TABLE_LIKE_INDEXES;
+    case 6: return CREATE_TABLE_LIKE_STATISTICS;
+    case 7: return CREATE_TABLE_LIKE_STORAGE;
+    case 8: return CREATE_TABLE_LIKE_ALL;
+  }
+  Assert(false);
+  return -1;
+}
+
+static DefElemAction
+_intToEnumDefElemAction(int value) {
+  switch(value) {
+    case 0: return DEFELEM_UNSPEC;
+    case 1: return DEFELEM_SET;
+    case 2: return DEFELEM_ADD;
+    case 3: return DEFELEM_DROP;
+  }
+  Assert(false);
+  return -1;
+}
+
+static PartitionRangeDatumKind
+_intToEnumPartitionRangeDatumKind(int value) {
+  switch(value) {
+    case 0: return PARTITION_RANGE_DATUM_MINVALUE;
+    case 1: return PARTITION_RANGE_DATUM_VALUE;
+    case 2: return PARTITION_RANGE_DATUM_MAXVALUE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static RTEKind
+_intToEnumRTEKind(int value) {
+  switch(value) {
+    case 0: return RTE_RELATION;
+    case 1: return RTE_SUBQUERY;
+    case 2: return RTE_JOIN;
+    case 3: return RTE_FUNCTION;
+    case 4: return RTE_TABLEFUNC;
+    case 5: return RTE_VALUES;
+    case 6: return RTE_CTE;
+    case 7: return RTE_NAMEDTUPLESTORE;
+    case 8: return RTE_RESULT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static WCOKind
+_intToEnumWCOKind(int value) {
+  switch(value) {
+    case 0: return WCO_VIEW_CHECK;
+    case 1: return WCO_RLS_INSERT_CHECK;
+    case 2: return WCO_RLS_UPDATE_CHECK;
+    case 3: return WCO_RLS_CONFLICT_CHECK;
+  }
+  Assert(false);
+  return -1;
+}
+
+static GroupingSetKind
+_intToEnumGroupingSetKind(int value) {
+  switch(value) {
+    case 0: return GROUPING_SET_EMPTY;
+    case 1: return GROUPING_SET_SIMPLE;
+    case 2: return GROUPING_SET_ROLLUP;
+    case 3: return GROUPING_SET_CUBE;
+    case 4: return GROUPING_SET_SETS;
+  }
+  Assert(false);
+  return -1;
+}
+
+static CTEMaterialize
+_intToEnumCTEMaterialize(int value) {
+  switch(value) {
+    case 0: return CTEMaterializeDefault;
+    case 1: return CTEMaterializeAlways;
+    case 2: return CTEMaterializeNever;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SetOperation
+_intToEnumSetOperation(int value) {
+  switch(value) {
+    case 0: return SETOP_NONE;
+    case 1: return SETOP_UNION;
+    case 2: return SETOP_INTERSECT;
+    case 3: return SETOP_EXCEPT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ObjectType
+_intToEnumObjectType(int value) {
+  switch(value) {
+    case 0: return OBJECT_ACCESS_METHOD;
+    case 1: return OBJECT_AGGREGATE;
+    case 2: return OBJECT_AMOP;
+    case 3: return OBJECT_AMPROC;
+    case 4: return OBJECT_ATTRIBUTE;
+    case 5: return OBJECT_CAST;
+    case 6: return OBJECT_COLUMN;
+    case 7: return OBJECT_COLLATION;
+    case 8: return OBJECT_CONVERSION;
+    case 9: return OBJECT_DATABASE;
+    case 10: return OBJECT_DEFAULT;
+    case 11: return OBJECT_DEFACL;
+    case 12: return OBJECT_DOMAIN;
+    case 13: return OBJECT_DOMCONSTRAINT;
+    case 14: return OBJECT_EVENT_TRIGGER;
+    case 15: return OBJECT_EXTENSION;
+    case 16: return OBJECT_FDW;
+    case 17: return OBJECT_FOREIGN_SERVER;
+    case 18: return OBJECT_FOREIGN_TABLE;
+    case 19: return OBJECT_FUNCTION;
+    case 20: return OBJECT_INDEX;
+    case 21: return OBJECT_LANGUAGE;
+    case 22: return OBJECT_LARGEOBJECT;
+    case 23: return OBJECT_MATVIEW;
+    case 24: return OBJECT_OPCLASS;
+    case 25: return OBJECT_OPERATOR;
+    case 26: return OBJECT_OPFAMILY;
+    case 27: return OBJECT_POLICY;
+    case 28: return OBJECT_PROCEDURE;
+    case 29: return OBJECT_PUBLICATION;
+    case 30: return OBJECT_PUBLICATION_REL;
+    case 31: return OBJECT_ROLE;
+    case 32: return OBJECT_ROUTINE;
+    case 33: return OBJECT_RULE;
+    case 34: return OBJECT_SCHEMA;
+    case 35: return OBJECT_SEQUENCE;
+    case 36: return OBJECT_SUBSCRIPTION;
+    case 37: return OBJECT_STATISTIC_EXT;
+    case 38: return OBJECT_TABCONSTRAINT;
+    case 39: return OBJECT_TABLE;
+    case 40: return OBJECT_TABLESPACE;
+    case 41: return OBJECT_TRANSFORM;
+    case 42: return OBJECT_TRIGGER;
+    case 43: return OBJECT_TSCONFIGURATION;
+    case 44: return OBJECT_TSDICTIONARY;
+    case 45: return OBJECT_TSPARSER;
+    case 46: return OBJECT_TSTEMPLATE;
+    case 47: return OBJECT_TYPE;
+    case 48: return OBJECT_USER_MAPPING;
+    case 49: return OBJECT_VIEW;
+  }
+  Assert(false);
+  return -1;
+}
+
+static DropBehavior
+_intToEnumDropBehavior(int value) {
+  switch(value) {
+    case 0: return DROP_RESTRICT;
+    case 1: return DROP_CASCADE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static AlterTableType
+_intToEnumAlterTableType(int value) {
+  switch(value) {
+    case 0: return AT_AddColumn;
+    case 1: return AT_AddColumnRecurse;
+    case 2: return AT_AddColumnToView;
+    case 3: return AT_ColumnDefault;
+    case 4: return AT_CookedColumnDefault;
+    case 5: return AT_DropNotNull;
+    case 6: return AT_SetNotNull;
+    case 7: return AT_DropExpression;
+    case 8: return AT_CheckNotNull;
+    case 9: return AT_SetStatistics;
+    case 10: return AT_SetOptions;
+    case 11: return AT_ResetOptions;
+    case 12: return AT_SetStorage;
+    case 13: return AT_DropColumn;
+    case 14: return AT_DropColumnRecurse;
+    case 15: return AT_AddIndex;
+    case 16: return AT_ReAddIndex;
+    case 17: return AT_AddConstraint;
+    case 18: return AT_AddConstraintRecurse;
+    case 19: return AT_ReAddConstraint;
+    case 20: return AT_ReAddDomainConstraint;
+    case 21: return AT_AlterConstraint;
+    case 22: return AT_ValidateConstraint;
+    case 23: return AT_ValidateConstraintRecurse;
+    case 24: return AT_AddIndexConstraint;
+    case 25: return AT_DropConstraint;
+    case 26: return AT_DropConstraintRecurse;
+    case 27: return AT_ReAddComment;
+    case 28: return AT_AlterColumnType;
+    case 29: return AT_AlterColumnGenericOptions;
+    case 30: return AT_ChangeOwner;
+    case 31: return AT_ClusterOn;
+    case 32: return AT_DropCluster;
+    case 33: return AT_SetLogged;
+    case 34: return AT_SetUnLogged;
+    case 35: return AT_DropOids;
+    case 36: return AT_SetTableSpace;
+    case 37: return AT_SetRelOptions;
+    case 38: return AT_ResetRelOptions;
+    case 39: return AT_ReplaceRelOptions;
+    case 40: return AT_EnableTrig;
+    case 41: return AT_EnableAlwaysTrig;
+    case 42: return AT_EnableReplicaTrig;
+    case 43: return AT_DisableTrig;
+    case 44: return AT_EnableTrigAll;
+    case 45: return AT_DisableTrigAll;
+    case 46: return AT_EnableTrigUser;
+    case 47: return AT_DisableTrigUser;
+    case 48: return AT_EnableRule;
+    case 49: return AT_EnableAlwaysRule;
+    case 50: return AT_EnableReplicaRule;
+    case 51: return AT_DisableRule;
+    case 52: return AT_AddInherit;
+    case 53: return AT_DropInherit;
+    case 54: return AT_AddOf;
+    case 55: return AT_DropOf;
+    case 56: return AT_ReplicaIdentity;
+    case 57: return AT_EnableRowSecurity;
+    case 58: return AT_DisableRowSecurity;
+    case 59: return AT_ForceRowSecurity;
+    case 60: return AT_NoForceRowSecurity;
+    case 61: return AT_GenericOptions;
+    case 62: return AT_AttachPartition;
+    case 63: return AT_DetachPartition;
+    case 64: return AT_AddIdentity;
+    case 65: return AT_SetIdentity;
+    case 66: return AT_DropIdentity;
+  }
+  Assert(false);
+  return -1;
+}
+
+static GrantTargetType
+_intToEnumGrantTargetType(int value) {
+  switch(value) {
+    case 0: return ACL_TARGET_OBJECT;
+    case 1: return ACL_TARGET_ALL_IN_SCHEMA;
+    case 2: return ACL_TARGET_DEFAULTS;
+  }
+  Assert(false);
+  return -1;
+}
+
+static VariableSetKind
+_intToEnumVariableSetKind(int value) {
+  switch(value) {
+    case 0: return VAR_SET_VALUE;
+    case 1: return VAR_SET_DEFAULT;
+    case 2: return VAR_SET_CURRENT;
+    case 3: return VAR_SET_MULTI;
+    case 4: return VAR_RESET;
+    case 5: return VAR_RESET_ALL;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ConstrType
+_intToEnumConstrType(int value) {
+  switch(value) {
+    case 0: return CONSTR_NULL;
+    case 1: return CONSTR_NOTNULL;
+    case 2: return CONSTR_DEFAULT;
+    case 3: return CONSTR_IDENTITY;
+    case 4: return CONSTR_GENERATED;
+    case 5: return CONSTR_CHECK;
+    case 6: return CONSTR_PRIMARY;
+    case 7: return CONSTR_UNIQUE;
+    case 8: return CONSTR_EXCLUSION;
+    case 9: return CONSTR_FOREIGN;
+    case 10: return CONSTR_ATTR_DEFERRABLE;
+    case 11: return CONSTR_ATTR_NOT_DEFERRABLE;
+    case 12: return CONSTR_ATTR_DEFERRED;
+    case 13: return CONSTR_ATTR_IMMEDIATE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ImportForeignSchemaType
+_intToEnumImportForeignSchemaType(int value) {
+  switch(value) {
+    case 0: return FDW_IMPORT_SCHEMA_ALL;
+    case 1: return FDW_IMPORT_SCHEMA_LIMIT_TO;
+    case 2: return FDW_IMPORT_SCHEMA_EXCEPT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static RoleStmtType
+_intToEnumRoleStmtType(int value) {
+  switch(value) {
+    case 0: return ROLESTMT_ROLE;
+    case 1: return ROLESTMT_USER;
+    case 2: return ROLESTMT_GROUP;
+  }
+  Assert(false);
+  return -1;
+}
+
+static FetchDirection
+_intToEnumFetchDirection(int value) {
+  switch(value) {
+    case 0: return FETCH_FORWARD;
+    case 1: return FETCH_BACKWARD;
+    case 2: return FETCH_ABSOLUTE;
+    case 3: return FETCH_RELATIVE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static FunctionParameterMode
+_intToEnumFunctionParameterMode(int value) {
+  switch(value) {
+    case 0: return FUNC_PARAM_IN;
+    case 1: return FUNC_PARAM_OUT;
+    case 2: return FUNC_PARAM_INOUT;
+    case 3: return FUNC_PARAM_VARIADIC;
+    case 4: return FUNC_PARAM_TABLE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static TransactionStmtKind
+_intToEnumTransactionStmtKind(int value) {
+  switch(value) {
+    case 0: return TRANS_STMT_BEGIN;
+    case 1: return TRANS_STMT_START;
+    case 2: return TRANS_STMT_COMMIT;
+    case 3: return TRANS_STMT_ROLLBACK;
+    case 4: return TRANS_STMT_SAVEPOINT;
+    case 5: return TRANS_STMT_RELEASE;
+    case 6: return TRANS_STMT_ROLLBACK_TO;
+    case 7: return TRANS_STMT_PREPARE;
+    case 8: return TRANS_STMT_COMMIT_PREPARED;
+    case 9: return TRANS_STMT_ROLLBACK_PREPARED;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ViewCheckOption
+_intToEnumViewCheckOption(int value) {
+  switch(value) {
+    case 0: return NO_CHECK_OPTION;
+    case 1: return LOCAL_CHECK_OPTION;
+    case 2: return CASCADED_CHECK_OPTION;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ClusterOption
+_intToEnumClusterOption(int value) {
+  switch(value) {
+    case 0: return CLUOPT_RECHECK;
+    case 1: return CLUOPT_VERBOSE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static DiscardMode
+_intToEnumDiscardMode(int value) {
+  switch(value) {
+    case 0: return DISCARD_ALL;
+    case 1: return DISCARD_PLANS;
+    case 2: return DISCARD_SEQUENCES;
+    case 3: return DISCARD_TEMP;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ReindexObjectType
+_intToEnumReindexObjectType(int value) {
+  switch(value) {
+    case 0: return REINDEX_OBJECT_INDEX;
+    case 1: return REINDEX_OBJECT_TABLE;
+    case 2: return REINDEX_OBJECT_SCHEMA;
+    case 3: return REINDEX_OBJECT_SYSTEM;
+    case 4: return REINDEX_OBJECT_DATABASE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static AlterTSConfigType
+_intToEnumAlterTSConfigType(int value) {
+  switch(value) {
+    case 0: return ALTER_TSCONFIG_ADD_MAPPING;
+    case 1: return ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN;
+    case 2: return ALTER_TSCONFIG_REPLACE_DICT;
+    case 3: return ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN;
+    case 4: return ALTER_TSCONFIG_DROP_MAPPING;
+  }
+  Assert(false);
+  return -1;
+}
+
+static AlterSubscriptionType
+_intToEnumAlterSubscriptionType(int value) {
+  switch(value) {
+    case 0: return ALTER_SUBSCRIPTION_OPTIONS;
+    case 1: return ALTER_SUBSCRIPTION_CONNECTION;
+    case 2: return ALTER_SUBSCRIPTION_PUBLICATION;
+    case 3: return ALTER_SUBSCRIPTION_REFRESH;
+    case 4: return ALTER_SUBSCRIPTION_ENABLED;
+  }
+  Assert(false);
+  return -1;
+}
+
+static OnCommitAction
+_intToEnumOnCommitAction(int value) {
+  switch(value) {
+    case 0: return ONCOMMIT_NOOP;
+    case 1: return ONCOMMIT_PRESERVE_ROWS;
+    case 2: return ONCOMMIT_DELETE_ROWS;
+    case 3: return ONCOMMIT_DROP;
+  }
+  Assert(false);
+  return -1;
+}
+
+static ParamKind
+_intToEnumParamKind(int value) {
+  switch(value) {
+    case 0: return PARAM_EXTERN;
+    case 1: return PARAM_EXEC;
+    case 2: return PARAM_SUBLINK;
+    case 3: return PARAM_MULTIEXPR;
+  }
+  Assert(false);
+  return -1;
+}
+
+static CoercionContext
+_intToEnumCoercionContext(int value) {
+  switch(value) {
+    case 0: return COERCION_IMPLICIT;
+    case 1: return COERCION_ASSIGNMENT;
+    case 2: return COERCION_EXPLICIT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static CoercionForm
+_intToEnumCoercionForm(int value) {
+  switch(value) {
+    case 0: return COERCE_EXPLICIT_CALL;
+    case 1: return COERCE_EXPLICIT_CAST;
+    case 2: return COERCE_IMPLICIT_CAST;
+  }
+  Assert(false);
+  return -1;
+}
+
+static BoolExprType
+_intToEnumBoolExprType(int value) {
+  switch(value) {
+    case 0: return AND_EXPR;
+    case 1: return OR_EXPR;
+    case 2: return NOT_EXPR;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SubLinkType
+_intToEnumSubLinkType(int value) {
+  switch(value) {
+    case 0: return EXISTS_SUBLINK;
+    case 1: return ALL_SUBLINK;
+    case 2: return ANY_SUBLINK;
+    case 3: return ROWCOMPARE_SUBLINK;
+    case 4: return EXPR_SUBLINK;
+    case 5: return MULTIEXPR_SUBLINK;
+    case 6: return ARRAY_SUBLINK;
+    case 7: return CTE_SUBLINK;
+  }
+  Assert(false);
+  return -1;
+}
+
+static RowCompareType
+_intToEnumRowCompareType(int value) {
+  switch(value) {
+    case 0: return ROWCOMPARE_LT;
+    case 1: return ROWCOMPARE_LE;
+    case 2: return ROWCOMPARE_EQ;
+    case 3: return ROWCOMPARE_GE;
+    case 4: return ROWCOMPARE_GT;
+    case 5: return ROWCOMPARE_NE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static MinMaxOp
+_intToEnumMinMaxOp(int value) {
+  switch(value) {
+    case 0: return IS_GREATEST;
+    case 1: return IS_LEAST;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SQLValueFunctionOp
+_intToEnumSQLValueFunctionOp(int value) {
+  switch(value) {
+    case 0: return SVFOP_CURRENT_DATE;
+    case 1: return SVFOP_CURRENT_TIME;
+    case 2: return SVFOP_CURRENT_TIME_N;
+    case 3: return SVFOP_CURRENT_TIMESTAMP;
+    case 4: return SVFOP_CURRENT_TIMESTAMP_N;
+    case 5: return SVFOP_LOCALTIME;
+    case 6: return SVFOP_LOCALTIME_N;
+    case 7: return SVFOP_LOCALTIMESTAMP;
+    case 8: return SVFOP_LOCALTIMESTAMP_N;
+    case 9: return SVFOP_CURRENT_ROLE;
+    case 10: return SVFOP_CURRENT_USER;
+    case 11: return SVFOP_USER;
+    case 12: return SVFOP_SESSION_USER;
+    case 13: return SVFOP_CURRENT_CATALOG;
+    case 14: return SVFOP_CURRENT_SCHEMA;
+  }
+  Assert(false);
+  return -1;
+}
+
+static XmlExprOp
+_intToEnumXmlExprOp(int value) {
+  switch(value) {
+    case 0: return IS_XMLCONCAT;
+    case 1: return IS_XMLELEMENT;
+    case 2: return IS_XMLFOREST;
+    case 3: return IS_XMLPARSE;
+    case 4: return IS_XMLPI;
+    case 5: return IS_XMLROOT;
+    case 6: return IS_XMLSERIALIZE;
+    case 7: return IS_DOCUMENT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static XmlOptionType
+_intToEnumXmlOptionType(int value) {
+  switch(value) {
+    case 0: return XMLOPTION_DOCUMENT;
+    case 1: return XMLOPTION_CONTENT;
+  }
+  Assert(false);
+  return -1;
+}
+
+static NullTestType
+_intToEnumNullTestType(int value) {
+  switch(value) {
+    case 0: return IS_NULL;
+    case 1: return IS_NOT_NULL;
+  }
+  Assert(false);
+  return -1;
+}
+
+static BoolTestType
+_intToEnumBoolTestType(int value) {
+  switch(value) {
+    case 0: return IS_TRUE;
+    case 1: return IS_NOT_TRUE;
+    case 2: return IS_FALSE;
+    case 3: return IS_NOT_FALSE;
+    case 4: return IS_UNKNOWN;
+    case 5: return IS_NOT_UNKNOWN;
+  }
+  Assert(false);
+  return -1;
+}
+
+static CmdType
+_intToEnumCmdType(int value) {
+  switch(value) {
+    case 0: return CMD_UNKNOWN;
+    case 1: return CMD_SELECT;
+    case 2: return CMD_UPDATE;
+    case 3: return CMD_INSERT;
+    case 4: return CMD_DELETE;
+    case 5: return CMD_UTILITY;
+    case 6: return CMD_NOTHING;
+  }
+  Assert(false);
+  return -1;
+}
+
+static JoinType
+_intToEnumJoinType(int value) {
+  switch(value) {
+    case 0: return JOIN_INNER;
+    case 1: return JOIN_LEFT;
+    case 2: return JOIN_FULL;
+    case 3: return JOIN_RIGHT;
+    case 4: return JOIN_SEMI;
+    case 5: return JOIN_ANTI;
+    case 6: return JOIN_UNIQUE_OUTER;
+    case 7: return JOIN_UNIQUE_INNER;
+  }
+  Assert(false);
+  return -1;
+}
+
+static AggStrategy
+_intToEnumAggStrategy(int value) {
+  switch(value) {
+    case 0: return AGG_PLAIN;
+    case 1: return AGG_SORTED;
+    case 2: return AGG_HASHED;
+    case 3: return AGG_MIXED;
+  }
+  Assert(false);
+  return -1;
+}
+
+static AggSplit
+_intToEnumAggSplit(int value) {
+  switch(value) {
+    case 0: return AGGSPLIT_SIMPLE;
+    case 1: return AGGSPLIT_INITIAL_SERIAL;
+    case 2: return AGGSPLIT_FINAL_DESERIAL;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SetOpCmd
+_intToEnumSetOpCmd(int value) {
+  switch(value) {
+    case 0: return SETOPCMD_INTERSECT;
+    case 1: return SETOPCMD_INTERSECT_ALL;
+    case 2: return SETOPCMD_EXCEPT;
+    case 3: return SETOPCMD_EXCEPT_ALL;
+  }
+  Assert(false);
+  return -1;
+}
+
+static SetOpStrategy
+_intToEnumSetOpStrategy(int value) {
+  switch(value) {
+    case 0: return SETOP_SORTED;
+    case 1: return SETOP_HASHED;
+  }
+  Assert(false);
+  return -1;
+}
+
+static OnConflictAction
+_intToEnumOnConflictAction(int value) {
+  switch(value) {
+    case 0: return ONCONFLICT_NONE;
+    case 1: return ONCONFLICT_NOTHING;
+    case 2: return ONCONFLICT_UPDATE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static LimitOption
+_intToEnumLimitOption(int value) {
+  switch(value) {
+    case 0: return LIMIT_OPTION_DEFAULT;
+    case 1: return LIMIT_OPTION_COUNT;
+    case 2: return LIMIT_OPTION_WITH_TIES;
+  }
+  Assert(false);
+  return -1;
+}
+
+static LockClauseStrength
+_intToEnumLockClauseStrength(int value) {
+  switch(value) {
+    case 0: return LCS_NONE;
+    case 1: return LCS_FORKEYSHARE;
+    case 2: return LCS_FORSHARE;
+    case 3: return LCS_FORNOKEYUPDATE;
+    case 4: return LCS_FORUPDATE;
+  }
+  Assert(false);
+  return -1;
+}
+
+static LockWaitPolicy
+_intToEnumLockWaitPolicy(int value) {
+  switch(value) {
+    case 0: return LockWaitBlock;
+    case 1: return LockWaitSkip;
+    case 2: return LockWaitError;
+  }
+  Assert(false);
+  return -1;
+}
+
+static LockTupleMode
+_intToEnumLockTupleMode(int value) {
+  switch(value) {
+    case 0: return LockTupleKeyShare;
+    case 1: return LockTupleShare;
+    case 2: return LockTupleNoKeyExclusive;
+    case 3: return LockTupleExclusive;
+  }
+  Assert(false);
+  return -1;
+}
 
 static Alias *
 _readAlias(OUT_TYPE(Alias, Alias) msg)

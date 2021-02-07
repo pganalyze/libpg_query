@@ -227,6 +227,7 @@ _enumToStringOverridingKind(OverridingKind value) {
     case OVERRIDING_USER_VALUE: return "OVERRIDING_USER_VALUE";
     case OVERRIDING_SYSTEM_VALUE: return "OVERRIDING_SYSTEM_VALUE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -239,6 +240,7 @@ _enumToStringQuerySource(QuerySource value) {
     case QSRC_QUAL_INSTEAD_RULE: return "QSRC_QUAL_INSTEAD_RULE";
     case QSRC_NON_INSTEAD_RULE: return "QSRC_NON_INSTEAD_RULE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -250,6 +252,7 @@ _enumToStringSortByDir(SortByDir value) {
     case SORTBY_DESC: return "SORTBY_DESC";
     case SORTBY_USING: return "SORTBY_USING";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -260,6 +263,7 @@ _enumToStringSortByNulls(SortByNulls value) {
     case SORTBY_NULLS_FIRST: return "SORTBY_NULLS_FIRST";
     case SORTBY_NULLS_LAST: return "SORTBY_NULLS_LAST";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -283,6 +287,7 @@ _enumToStringA_Expr_Kind(A_Expr_Kind value) {
     case AEXPR_NOT_BETWEEN_SYM: return "AEXPR_NOT_BETWEEN_SYM";
     case AEXPR_PAREN: return "AEXPR_PAREN";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -294,6 +299,7 @@ _enumToStringRoleSpecType(RoleSpecType value) {
     case ROLESPEC_SESSION_USER: return "ROLESPEC_SESSION_USER";
     case ROLESPEC_PUBLIC: return "ROLESPEC_PUBLIC";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -310,6 +316,7 @@ _enumToStringTableLikeOption(TableLikeOption value) {
     case CREATE_TABLE_LIKE_STORAGE: return "CREATE_TABLE_LIKE_STORAGE";
     case CREATE_TABLE_LIKE_ALL: return "CREATE_TABLE_LIKE_ALL";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -321,6 +328,7 @@ _enumToStringDefElemAction(DefElemAction value) {
     case DEFELEM_ADD: return "DEFELEM_ADD";
     case DEFELEM_DROP: return "DEFELEM_DROP";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -331,6 +339,7 @@ _enumToStringPartitionRangeDatumKind(PartitionRangeDatumKind value) {
     case PARTITION_RANGE_DATUM_VALUE: return "PARTITION_RANGE_DATUM_VALUE";
     case PARTITION_RANGE_DATUM_MAXVALUE: return "PARTITION_RANGE_DATUM_MAXVALUE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -347,6 +356,7 @@ _enumToStringRTEKind(RTEKind value) {
     case RTE_NAMEDTUPLESTORE: return "RTE_NAMEDTUPLESTORE";
     case RTE_RESULT: return "RTE_RESULT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -358,6 +368,7 @@ _enumToStringWCOKind(WCOKind value) {
     case WCO_RLS_UPDATE_CHECK: return "WCO_RLS_UPDATE_CHECK";
     case WCO_RLS_CONFLICT_CHECK: return "WCO_RLS_CONFLICT_CHECK";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -370,6 +381,7 @@ _enumToStringGroupingSetKind(GroupingSetKind value) {
     case GROUPING_SET_CUBE: return "GROUPING_SET_CUBE";
     case GROUPING_SET_SETS: return "GROUPING_SET_SETS";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -380,6 +392,7 @@ _enumToStringCTEMaterialize(CTEMaterialize value) {
     case CTEMaterializeAlways: return "CTEMaterializeAlways";
     case CTEMaterializeNever: return "CTEMaterializeNever";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -391,6 +404,7 @@ _enumToStringSetOperation(SetOperation value) {
     case SETOP_INTERSECT: return "SETOP_INTERSECT";
     case SETOP_EXCEPT: return "SETOP_EXCEPT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -448,6 +462,7 @@ _enumToStringObjectType(ObjectType value) {
     case OBJECT_USER_MAPPING: return "OBJECT_USER_MAPPING";
     case OBJECT_VIEW: return "OBJECT_VIEW";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -457,6 +472,7 @@ _enumToStringDropBehavior(DropBehavior value) {
     case DROP_RESTRICT: return "DROP_RESTRICT";
     case DROP_CASCADE: return "DROP_CASCADE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -531,6 +547,7 @@ _enumToStringAlterTableType(AlterTableType value) {
     case AT_SetIdentity: return "AT_SetIdentity";
     case AT_DropIdentity: return "AT_DropIdentity";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -541,6 +558,7 @@ _enumToStringGrantTargetType(GrantTargetType value) {
     case ACL_TARGET_ALL_IN_SCHEMA: return "ACL_TARGET_ALL_IN_SCHEMA";
     case ACL_TARGET_DEFAULTS: return "ACL_TARGET_DEFAULTS";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -554,6 +572,7 @@ _enumToStringVariableSetKind(VariableSetKind value) {
     case VAR_RESET: return "VAR_RESET";
     case VAR_RESET_ALL: return "VAR_RESET_ALL";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -575,6 +594,7 @@ _enumToStringConstrType(ConstrType value) {
     case CONSTR_ATTR_DEFERRED: return "CONSTR_ATTR_DEFERRED";
     case CONSTR_ATTR_IMMEDIATE: return "CONSTR_ATTR_IMMEDIATE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -585,6 +605,7 @@ _enumToStringImportForeignSchemaType(ImportForeignSchemaType value) {
     case FDW_IMPORT_SCHEMA_LIMIT_TO: return "FDW_IMPORT_SCHEMA_LIMIT_TO";
     case FDW_IMPORT_SCHEMA_EXCEPT: return "FDW_IMPORT_SCHEMA_EXCEPT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -595,6 +616,7 @@ _enumToStringRoleStmtType(RoleStmtType value) {
     case ROLESTMT_USER: return "ROLESTMT_USER";
     case ROLESTMT_GROUP: return "ROLESTMT_GROUP";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -606,6 +628,7 @@ _enumToStringFetchDirection(FetchDirection value) {
     case FETCH_ABSOLUTE: return "FETCH_ABSOLUTE";
     case FETCH_RELATIVE: return "FETCH_RELATIVE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -618,6 +641,7 @@ _enumToStringFunctionParameterMode(FunctionParameterMode value) {
     case FUNC_PARAM_VARIADIC: return "FUNC_PARAM_VARIADIC";
     case FUNC_PARAM_TABLE: return "FUNC_PARAM_TABLE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -635,6 +659,7 @@ _enumToStringTransactionStmtKind(TransactionStmtKind value) {
     case TRANS_STMT_COMMIT_PREPARED: return "TRANS_STMT_COMMIT_PREPARED";
     case TRANS_STMT_ROLLBACK_PREPARED: return "TRANS_STMT_ROLLBACK_PREPARED";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -645,6 +670,7 @@ _enumToStringViewCheckOption(ViewCheckOption value) {
     case LOCAL_CHECK_OPTION: return "LOCAL_CHECK_OPTION";
     case CASCADED_CHECK_OPTION: return "CASCADED_CHECK_OPTION";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -654,6 +680,7 @@ _enumToStringClusterOption(ClusterOption value) {
     case CLUOPT_RECHECK: return "CLUOPT_RECHECK";
     case CLUOPT_VERBOSE: return "CLUOPT_VERBOSE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -665,6 +692,7 @@ _enumToStringDiscardMode(DiscardMode value) {
     case DISCARD_SEQUENCES: return "DISCARD_SEQUENCES";
     case DISCARD_TEMP: return "DISCARD_TEMP";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -677,6 +705,7 @@ _enumToStringReindexObjectType(ReindexObjectType value) {
     case REINDEX_OBJECT_SYSTEM: return "REINDEX_OBJECT_SYSTEM";
     case REINDEX_OBJECT_DATABASE: return "REINDEX_OBJECT_DATABASE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -689,6 +718,7 @@ _enumToStringAlterTSConfigType(AlterTSConfigType value) {
     case ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN: return "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN";
     case ALTER_TSCONFIG_DROP_MAPPING: return "ALTER_TSCONFIG_DROP_MAPPING";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -701,6 +731,7 @@ _enumToStringAlterSubscriptionType(AlterSubscriptionType value) {
     case ALTER_SUBSCRIPTION_REFRESH: return "ALTER_SUBSCRIPTION_REFRESH";
     case ALTER_SUBSCRIPTION_ENABLED: return "ALTER_SUBSCRIPTION_ENABLED";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -712,6 +743,7 @@ _enumToStringOnCommitAction(OnCommitAction value) {
     case ONCOMMIT_DELETE_ROWS: return "ONCOMMIT_DELETE_ROWS";
     case ONCOMMIT_DROP: return "ONCOMMIT_DROP";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -723,6 +755,7 @@ _enumToStringParamKind(ParamKind value) {
     case PARAM_SUBLINK: return "PARAM_SUBLINK";
     case PARAM_MULTIEXPR: return "PARAM_MULTIEXPR";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -733,6 +766,7 @@ _enumToStringCoercionContext(CoercionContext value) {
     case COERCION_ASSIGNMENT: return "COERCION_ASSIGNMENT";
     case COERCION_EXPLICIT: return "COERCION_EXPLICIT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -743,6 +777,7 @@ _enumToStringCoercionForm(CoercionForm value) {
     case COERCE_EXPLICIT_CAST: return "COERCE_EXPLICIT_CAST";
     case COERCE_IMPLICIT_CAST: return "COERCE_IMPLICIT_CAST";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -753,6 +788,7 @@ _enumToStringBoolExprType(BoolExprType value) {
     case OR_EXPR: return "OR_EXPR";
     case NOT_EXPR: return "NOT_EXPR";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -768,6 +804,7 @@ _enumToStringSubLinkType(SubLinkType value) {
     case ARRAY_SUBLINK: return "ARRAY_SUBLINK";
     case CTE_SUBLINK: return "CTE_SUBLINK";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -781,6 +818,7 @@ _enumToStringRowCompareType(RowCompareType value) {
     case ROWCOMPARE_GT: return "ROWCOMPARE_GT";
     case ROWCOMPARE_NE: return "ROWCOMPARE_NE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -790,6 +828,7 @@ _enumToStringMinMaxOp(MinMaxOp value) {
     case IS_GREATEST: return "IS_GREATEST";
     case IS_LEAST: return "IS_LEAST";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -812,6 +851,7 @@ _enumToStringSQLValueFunctionOp(SQLValueFunctionOp value) {
     case SVFOP_CURRENT_CATALOG: return "SVFOP_CURRENT_CATALOG";
     case SVFOP_CURRENT_SCHEMA: return "SVFOP_CURRENT_SCHEMA";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -827,6 +867,7 @@ _enumToStringXmlExprOp(XmlExprOp value) {
     case IS_XMLSERIALIZE: return "IS_XMLSERIALIZE";
     case IS_DOCUMENT: return "IS_DOCUMENT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -836,6 +877,7 @@ _enumToStringXmlOptionType(XmlOptionType value) {
     case XMLOPTION_DOCUMENT: return "XMLOPTION_DOCUMENT";
     case XMLOPTION_CONTENT: return "XMLOPTION_CONTENT";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -845,6 +887,7 @@ _enumToStringNullTestType(NullTestType value) {
     case IS_NULL: return "IS_NULL";
     case IS_NOT_NULL: return "IS_NOT_NULL";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -858,6 +901,7 @@ _enumToStringBoolTestType(BoolTestType value) {
     case IS_UNKNOWN: return "IS_UNKNOWN";
     case IS_NOT_UNKNOWN: return "IS_NOT_UNKNOWN";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -872,6 +916,7 @@ _enumToStringCmdType(CmdType value) {
     case CMD_UTILITY: return "CMD_UTILITY";
     case CMD_NOTHING: return "CMD_NOTHING";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -887,6 +932,7 @@ _enumToStringJoinType(JoinType value) {
     case JOIN_UNIQUE_OUTER: return "JOIN_UNIQUE_OUTER";
     case JOIN_UNIQUE_INNER: return "JOIN_UNIQUE_INNER";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -898,6 +944,7 @@ _enumToStringAggStrategy(AggStrategy value) {
     case AGG_HASHED: return "AGG_HASHED";
     case AGG_MIXED: return "AGG_MIXED";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -908,6 +955,7 @@ _enumToStringAggSplit(AggSplit value) {
     case AGGSPLIT_INITIAL_SERIAL: return "AGGSPLIT_INITIAL_SERIAL";
     case AGGSPLIT_FINAL_DESERIAL: return "AGGSPLIT_FINAL_DESERIAL";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -919,6 +967,7 @@ _enumToStringSetOpCmd(SetOpCmd value) {
     case SETOPCMD_EXCEPT: return "SETOPCMD_EXCEPT";
     case SETOPCMD_EXCEPT_ALL: return "SETOPCMD_EXCEPT_ALL";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -928,6 +977,7 @@ _enumToStringSetOpStrategy(SetOpStrategy value) {
     case SETOP_SORTED: return "SETOP_SORTED";
     case SETOP_HASHED: return "SETOP_HASHED";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -938,6 +988,7 @@ _enumToStringOnConflictAction(OnConflictAction value) {
     case ONCONFLICT_NOTHING: return "ONCONFLICT_NOTHING";
     case ONCONFLICT_UPDATE: return "ONCONFLICT_UPDATE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -948,6 +999,7 @@ _enumToStringLimitOption(LimitOption value) {
     case LIMIT_OPTION_COUNT: return "LIMIT_OPTION_COUNT";
     case LIMIT_OPTION_WITH_TIES: return "LIMIT_OPTION_WITH_TIES";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -960,6 +1012,7 @@ _enumToStringLockClauseStrength(LockClauseStrength value) {
     case LCS_FORNOKEYUPDATE: return "LCS_FORNOKEYUPDATE";
     case LCS_FORUPDATE: return "LCS_FORUPDATE";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -970,6 +1023,7 @@ _enumToStringLockWaitPolicy(LockWaitPolicy value) {
     case LockWaitSkip: return "LockWaitSkip";
     case LockWaitError: return "LockWaitError";
   }
+  Assert(false);
   return NULL;
 }
 
@@ -981,6 +1035,7 @@ _enumToStringLockTupleMode(LockTupleMode value) {
     case LockTupleNoKeyExclusive: return "LockTupleNoKeyExclusive";
     case LockTupleExclusive: return "LockTupleExclusive";
   }
+  Assert(false);
   return NULL;
 }static int
 _enumToIntOverridingKind(OverridingKind value) {
@@ -989,6 +1044,7 @@ _enumToIntOverridingKind(OverridingKind value) {
     case OVERRIDING_USER_VALUE: return 1;
     case OVERRIDING_SYSTEM_VALUE: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1001,6 +1057,7 @@ _enumToIntQuerySource(QuerySource value) {
     case QSRC_QUAL_INSTEAD_RULE: return 3;
     case QSRC_NON_INSTEAD_RULE: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1012,6 +1069,7 @@ _enumToIntSortByDir(SortByDir value) {
     case SORTBY_DESC: return 2;
     case SORTBY_USING: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1022,6 +1080,7 @@ _enumToIntSortByNulls(SortByNulls value) {
     case SORTBY_NULLS_FIRST: return 1;
     case SORTBY_NULLS_LAST: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1045,6 +1104,7 @@ _enumToIntA_Expr_Kind(A_Expr_Kind value) {
     case AEXPR_NOT_BETWEEN_SYM: return 14;
     case AEXPR_PAREN: return 15;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1056,6 +1116,7 @@ _enumToIntRoleSpecType(RoleSpecType value) {
     case ROLESPEC_SESSION_USER: return 2;
     case ROLESPEC_PUBLIC: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1072,6 +1133,7 @@ _enumToIntTableLikeOption(TableLikeOption value) {
     case CREATE_TABLE_LIKE_STORAGE: return 7;
     case CREATE_TABLE_LIKE_ALL: return 8;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1083,6 +1145,7 @@ _enumToIntDefElemAction(DefElemAction value) {
     case DEFELEM_ADD: return 2;
     case DEFELEM_DROP: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1093,6 +1156,7 @@ _enumToIntPartitionRangeDatumKind(PartitionRangeDatumKind value) {
     case PARTITION_RANGE_DATUM_VALUE: return 1;
     case PARTITION_RANGE_DATUM_MAXVALUE: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1109,6 +1173,7 @@ _enumToIntRTEKind(RTEKind value) {
     case RTE_NAMEDTUPLESTORE: return 7;
     case RTE_RESULT: return 8;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1120,6 +1185,7 @@ _enumToIntWCOKind(WCOKind value) {
     case WCO_RLS_UPDATE_CHECK: return 2;
     case WCO_RLS_CONFLICT_CHECK: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1132,6 +1198,7 @@ _enumToIntGroupingSetKind(GroupingSetKind value) {
     case GROUPING_SET_CUBE: return 3;
     case GROUPING_SET_SETS: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1142,6 +1209,7 @@ _enumToIntCTEMaterialize(CTEMaterialize value) {
     case CTEMaterializeAlways: return 1;
     case CTEMaterializeNever: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1153,6 +1221,7 @@ _enumToIntSetOperation(SetOperation value) {
     case SETOP_INTERSECT: return 2;
     case SETOP_EXCEPT: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1210,6 +1279,7 @@ _enumToIntObjectType(ObjectType value) {
     case OBJECT_USER_MAPPING: return 48;
     case OBJECT_VIEW: return 49;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1219,6 +1289,7 @@ _enumToIntDropBehavior(DropBehavior value) {
     case DROP_RESTRICT: return 0;
     case DROP_CASCADE: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1293,6 +1364,7 @@ _enumToIntAlterTableType(AlterTableType value) {
     case AT_SetIdentity: return 65;
     case AT_DropIdentity: return 66;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1303,6 +1375,7 @@ _enumToIntGrantTargetType(GrantTargetType value) {
     case ACL_TARGET_ALL_IN_SCHEMA: return 1;
     case ACL_TARGET_DEFAULTS: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1316,6 +1389,7 @@ _enumToIntVariableSetKind(VariableSetKind value) {
     case VAR_RESET: return 4;
     case VAR_RESET_ALL: return 5;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1337,6 +1411,7 @@ _enumToIntConstrType(ConstrType value) {
     case CONSTR_ATTR_DEFERRED: return 12;
     case CONSTR_ATTR_IMMEDIATE: return 13;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1347,6 +1422,7 @@ _enumToIntImportForeignSchemaType(ImportForeignSchemaType value) {
     case FDW_IMPORT_SCHEMA_LIMIT_TO: return 1;
     case FDW_IMPORT_SCHEMA_EXCEPT: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1357,6 +1433,7 @@ _enumToIntRoleStmtType(RoleStmtType value) {
     case ROLESTMT_USER: return 1;
     case ROLESTMT_GROUP: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1368,6 +1445,7 @@ _enumToIntFetchDirection(FetchDirection value) {
     case FETCH_ABSOLUTE: return 2;
     case FETCH_RELATIVE: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1380,6 +1458,7 @@ _enumToIntFunctionParameterMode(FunctionParameterMode value) {
     case FUNC_PARAM_VARIADIC: return 3;
     case FUNC_PARAM_TABLE: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1397,6 +1476,7 @@ _enumToIntTransactionStmtKind(TransactionStmtKind value) {
     case TRANS_STMT_COMMIT_PREPARED: return 8;
     case TRANS_STMT_ROLLBACK_PREPARED: return 9;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1407,6 +1487,7 @@ _enumToIntViewCheckOption(ViewCheckOption value) {
     case LOCAL_CHECK_OPTION: return 1;
     case CASCADED_CHECK_OPTION: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1416,6 +1497,7 @@ _enumToIntClusterOption(ClusterOption value) {
     case CLUOPT_RECHECK: return 0;
     case CLUOPT_VERBOSE: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1427,6 +1509,7 @@ _enumToIntDiscardMode(DiscardMode value) {
     case DISCARD_SEQUENCES: return 2;
     case DISCARD_TEMP: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1439,6 +1522,7 @@ _enumToIntReindexObjectType(ReindexObjectType value) {
     case REINDEX_OBJECT_SYSTEM: return 3;
     case REINDEX_OBJECT_DATABASE: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1451,6 +1535,7 @@ _enumToIntAlterTSConfigType(AlterTSConfigType value) {
     case ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN: return 3;
     case ALTER_TSCONFIG_DROP_MAPPING: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1463,6 +1548,7 @@ _enumToIntAlterSubscriptionType(AlterSubscriptionType value) {
     case ALTER_SUBSCRIPTION_REFRESH: return 3;
     case ALTER_SUBSCRIPTION_ENABLED: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1474,6 +1560,7 @@ _enumToIntOnCommitAction(OnCommitAction value) {
     case ONCOMMIT_DELETE_ROWS: return 2;
     case ONCOMMIT_DROP: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1485,6 +1572,7 @@ _enumToIntParamKind(ParamKind value) {
     case PARAM_SUBLINK: return 2;
     case PARAM_MULTIEXPR: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1495,6 +1583,7 @@ _enumToIntCoercionContext(CoercionContext value) {
     case COERCION_ASSIGNMENT: return 1;
     case COERCION_EXPLICIT: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1505,6 +1594,7 @@ _enumToIntCoercionForm(CoercionForm value) {
     case COERCE_EXPLICIT_CAST: return 1;
     case COERCE_IMPLICIT_CAST: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1515,6 +1605,7 @@ _enumToIntBoolExprType(BoolExprType value) {
     case OR_EXPR: return 1;
     case NOT_EXPR: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1530,6 +1621,7 @@ _enumToIntSubLinkType(SubLinkType value) {
     case ARRAY_SUBLINK: return 6;
     case CTE_SUBLINK: return 7;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1543,6 +1635,7 @@ _enumToIntRowCompareType(RowCompareType value) {
     case ROWCOMPARE_GT: return 4;
     case ROWCOMPARE_NE: return 5;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1552,6 +1645,7 @@ _enumToIntMinMaxOp(MinMaxOp value) {
     case IS_GREATEST: return 0;
     case IS_LEAST: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1574,6 +1668,7 @@ _enumToIntSQLValueFunctionOp(SQLValueFunctionOp value) {
     case SVFOP_CURRENT_CATALOG: return 13;
     case SVFOP_CURRENT_SCHEMA: return 14;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1589,6 +1684,7 @@ _enumToIntXmlExprOp(XmlExprOp value) {
     case IS_XMLSERIALIZE: return 6;
     case IS_DOCUMENT: return 7;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1598,6 +1694,7 @@ _enumToIntXmlOptionType(XmlOptionType value) {
     case XMLOPTION_DOCUMENT: return 0;
     case XMLOPTION_CONTENT: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1607,6 +1704,7 @@ _enumToIntNullTestType(NullTestType value) {
     case IS_NULL: return 0;
     case IS_NOT_NULL: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1620,6 +1718,7 @@ _enumToIntBoolTestType(BoolTestType value) {
     case IS_UNKNOWN: return 4;
     case IS_NOT_UNKNOWN: return 5;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1634,6 +1733,7 @@ _enumToIntCmdType(CmdType value) {
     case CMD_UTILITY: return 5;
     case CMD_NOTHING: return 6;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1649,6 +1749,7 @@ _enumToIntJoinType(JoinType value) {
     case JOIN_UNIQUE_OUTER: return 6;
     case JOIN_UNIQUE_INNER: return 7;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1660,6 +1761,7 @@ _enumToIntAggStrategy(AggStrategy value) {
     case AGG_HASHED: return 2;
     case AGG_MIXED: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1670,6 +1772,7 @@ _enumToIntAggSplit(AggSplit value) {
     case AGGSPLIT_INITIAL_SERIAL: return 1;
     case AGGSPLIT_FINAL_DESERIAL: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1681,6 +1784,7 @@ _enumToIntSetOpCmd(SetOpCmd value) {
     case SETOPCMD_EXCEPT: return 2;
     case SETOPCMD_EXCEPT_ALL: return 3;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1690,6 +1794,7 @@ _enumToIntSetOpStrategy(SetOpStrategy value) {
     case SETOP_SORTED: return 0;
     case SETOP_HASHED: return 1;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1700,6 +1805,7 @@ _enumToIntOnConflictAction(OnConflictAction value) {
     case ONCONFLICT_NOTHING: return 1;
     case ONCONFLICT_UPDATE: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1710,6 +1816,7 @@ _enumToIntLimitOption(LimitOption value) {
     case LIMIT_OPTION_COUNT: return 1;
     case LIMIT_OPTION_WITH_TIES: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1722,6 +1829,7 @@ _enumToIntLockClauseStrength(LockClauseStrength value) {
     case LCS_FORNOKEYUPDATE: return 3;
     case LCS_FORUPDATE: return 4;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1732,6 +1840,7 @@ _enumToIntLockWaitPolicy(LockWaitPolicy value) {
     case LockWaitSkip: return 1;
     case LockWaitError: return 2;
   }
+  Assert(false);
   return -1;
 }
 
@@ -1743,6 +1852,7 @@ _enumToIntLockTupleMode(LockTupleMode value) {
     case LockTupleNoKeyExclusive: return 2;
     case LockTupleExclusive: return 3;
   }
+  Assert(false);
   return -1;
 }
 

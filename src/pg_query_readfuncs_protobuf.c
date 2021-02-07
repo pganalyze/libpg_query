@@ -29,7 +29,7 @@
 	}
 
 #define READ_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	node->fldname = (typename) msg->outname;
+	node->fldname = _intToEnum##typename(msg->outname);
 
 #define READ_LIST_FIELD(outname, outname_json, fldname) \
 	{ \
