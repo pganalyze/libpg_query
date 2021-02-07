@@ -2770,6 +2770,7 @@ _readCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableS
   READ_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
   READ_STRING_FIELD(servername, servername, servername);
   READ_LIST_FIELD(options, options, options);
+  NodeSetTag(node, T_CreateForeignTableStmt);
   return node;
 }
 

@@ -199,6 +199,9 @@ class Generator
     'Value', # Special case
     'Const', # Only needed in post-parse analysis (and it introduces Datums, which we can't output)
   ]
+  EXPLICT_TAG_SETS = [ # These nodes need an explicit NodeSetTag during read funcs because they are a superset of another node
+    'CreateForeignTableStmt',
+  ]
   def generate!
     generate_outmethods!
 
@@ -263,6 +266,7 @@ case T_OidList:
       read_impls += "{\n"
       read_impls += format("  %s *node = makeNode(%s);\n", type, type)
       read_impls += readmethod
+      read_impls += format("  NodeSetTag(node, T_%s);\n", type) if EXPLICT_TAG_SETS.include?(type)
       read_impls += "  return node;\n"
       read_impls += "}\n"
       read_impls += "\n"
