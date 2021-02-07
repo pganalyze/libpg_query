@@ -1,5 +1,8 @@
 #include <pg_query.h>
 
+// For asprintf
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,20 +30,18 @@ int main()
 		char *buf = strdup("");
 		for (int i = 0; i < result.n_stmts; i++)
 		{
-			char *addbuf;
-			bool last_elem = i >= result.n_stmts - 1;
-			asprintf(&addbuf, "loc=%d,len=%d", result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
-			buf = realloc(buf, strlen(buf) + strlen(addbuf) + (last_elem ? 2 : 1));
-			if (buf == NULL)
+			char *newbuf;
+			int nbytes = asprintf(&newbuf, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
+			if (nbytes == -1)
 			{
 				printf("FAILED TO ALLOCATE MEMORY\n");
 				return EXIT_FAILURE;
 			}
-			strcat(buf, addbuf);
-			free(addbuf);
-			if (!last_elem)
-				strcat(buf, ";");
+			free(buf);
+			buf = newbuf;
 		}
+		// Drop trailing ;
+		buf[strlen(buf) - 1] = '\0';
 
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{
@@ -69,20 +70,18 @@ int main()
 		buf = strdup("");
 		for (int i = 0; i < result.n_stmts; i++)
 		{
-			char *addbuf;
-			bool last_elem = i >= result.n_stmts - 1;
-			asprintf(&addbuf, "loc=%d,len=%d", result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
-			buf = realloc(buf, strlen(buf) + strlen(addbuf) + (last_elem ? 2 : 1));
-			if (buf == NULL)
+			char *newbuf;
+			int nbytes = asprintf(&newbuf, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
+			if (nbytes == -1)
 			{
 				printf("FAILED TO ALLOCATE MEMORY\n");
 				return EXIT_FAILURE;
 			}
-			strcat(buf, addbuf);
-			free(addbuf);
-			if (!last_elem)
-				strcat(buf, ";");
+			free(buf);
+			buf = newbuf;
 		}
+		// Drop trailing ;
+		buf[strlen(buf) - 1] = '\0';
 
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{
