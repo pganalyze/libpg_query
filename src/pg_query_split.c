@@ -110,6 +110,10 @@ PgQuerySplitResult pg_query_split_with_scanner(const char* input)
 
         curstmt++;
       }
+      else if (open_parens == 0 && tok == ';') // Advance statement start in case we skip an empty statement
+      {
+        stmtstart = yylloc + 1;
+      }
 
       if (tok == 0) break;
     }

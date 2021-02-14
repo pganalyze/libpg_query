@@ -46,7 +46,7 @@ int main()
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{
 			ret_code = EXIT_FAILURE;
-			printf("INVALID result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 1], buf);
+			printf("INVALID scanner split result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 1], buf);
 		}
 		else
 		{
@@ -86,7 +86,7 @@ int main()
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{
 			ret_code = EXIT_FAILURE;
-			printf("INVALID result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 1], buf);
+			printf("INVALID parser split result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 1], buf);
 		}
 		else
 		{
