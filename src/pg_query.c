@@ -37,6 +37,8 @@ void pg_query_free_top_memory_context(MemoryContext context)
 	 */
 	Assert(TopMemoryContext == CurrentMemoryContext);
 
+	AssertArg(MemoryContextIsValid(context));
+
 	MemoryContextDeleteChildren(context);
 
 	context->methods->delete_context(context);

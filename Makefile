@@ -12,18 +12,29 @@ OBJ_FILES := $(SRC_FILES:.c=.o)
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_json_defs.o src/pg_query_json_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(OBJ_FILES))
 
-CFLAGS  = -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
-LIBPATH = -L.
+CFLAGS = -g -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+
+TEST_CFLAGS = -I. -g
+TEST_LDFLAGS = -pthread
 
 PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
-PG_CFLAGS = -fPIC
+
+CFLAGS_OPT_LEVEL = -O3
+ifeq ($(DEBUG),1)
+	CFLAGS_OPT_LEVEL = -O0
+endif
+ifeq ($(VALGRIND),1)
+	CFLAGS_OPT_LEVEL = -O0
+endif
+CFLAGS += $(CFLAGS_OPT_LEVEL)
 
 ifeq ($(DEBUG),1)
-	CFLAGS += -O0 -g
-	PG_CONFIGURE_FLAGS += --enable-cassert --enable-debug
-else
-	CFLAGS += -O3 -g
-	PG_CFLAGS += -O3
+	# We always add -g, so this only has to enable assertion checking
+	CFLAGS += -D USE_ASSERT_CHECKING
+endif
+ifeq ($(VALGRIND),1)
+	CFLAGS += -DUSE_VALGRIND
+	TEST_CFLAGS += -DUSE_VALGRIND
 endif
 
 CLEANLIBS = $(ARLIB)
@@ -33,6 +44,12 @@ CLEANFILES = $(PGDIRBZ2)
 AR = ar rs
 RM = rm -f
 ECHO = echo
+
+VALGRIND_MEMCHECK = valgrind --leak-check=full --gen-suppressions=all \
+  --suppressions=test/valgrind.supp --time-stamp=yes \
+  --error-markers=VALGRINDERROR-BEGIN,VALGRINDERROR-END \
+  --log-file=test/valgrind.log --trace-children=yes --show-leak-kinds=all \
+  --error-exitcode=1 --errors-for-leak-kinds=all
 
 CC ?= cc
 
@@ -74,6 +91,9 @@ extract_source: $(PGDIR)
 	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
 	# Support gcc earlier than 4.6.0 without reconfiguring
 	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
+	# Avoid problems with static asserts
+	echo "#undef StaticAssertDecl" >> ./src/postgres/include/c.h
+	echo "#define StaticAssertDecl(condition, errmessage)" >> ./src/postgres/include/c.h
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
@@ -95,22 +115,32 @@ examples: $(EXAMPLES)
 	examples/simple_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/normalize: examples/normalize.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/normalize.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/simple_error: examples/simple_error.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple_error.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_error.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/normalize_error.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize_error.c $(ARLIB) $(TEST_LDFLAGS)
 
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
-	$(CC) -I. -o $@ -g examples/simple_plpgsql.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
 TESTS = test/complex test/concurrency test/fingerprint test/normalize test/parse test/parse_plpgsql
 test: $(TESTS)
+ifeq ($(VALGRIND),1)
+	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
+	# Output-based tests
+	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
+	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+else
 	test/complex
 	test/concurrency
 	test/fingerprint
@@ -119,21 +149,24 @@ test: $(TESTS)
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+endif
 
 test/complex: test/complex.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/complex.c $(ARLIB)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/complex.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -pthread -g test/concurrency.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/concurrency.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/fingerprint.c $(ARLIB)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
-	$(CC) -I. -Isrc -o $@ -g test/normalize.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
-	$(CC) -I. -o $@ -g test/parse.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
-test/parse_plpgsql: test/parse_plpgsql.c $(ARLIB)
-	$(CC) -I. -o $@ -I./src -I./src/postgres/include -g test/parse_plpgsql.c $(ARLIB)
+test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
