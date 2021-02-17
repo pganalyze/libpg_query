@@ -10344,5 +10344,7 @@ int main() {
   }
   printf("\n");
 
-  return ret_code;
+    pg_query_exit();
+
+    return ret_code;
 }

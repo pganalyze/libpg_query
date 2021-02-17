@@ -54,5 +54,7 @@ int main() {
 
 	pg_query_free_plpgsql_parse_result(result);
 
+	pg_query_exit();
+
 	return ret_code;
 }

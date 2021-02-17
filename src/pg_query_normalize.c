@@ -356,7 +356,7 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 	MemoryContext ctx = NULL;
 	PgQueryNormalizeResult result = {0};
 
-	ctx = pg_query_enter_memory_context("pg_query_normalize");
+	ctx = pg_query_enter_memory_context();
 
 	PG_TRY();
 	{

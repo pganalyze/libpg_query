@@ -391,7 +391,7 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 	createFunctionStmts statements;
 	size_t i;
 
-	ctx = pg_query_enter_memory_context("pg_query_parse_plpgsql");
+	ctx = pg_query_enter_memory_context();
 
 	parse_result = pg_query_raw_parse(input);
 	result.error = parse_result.error;
