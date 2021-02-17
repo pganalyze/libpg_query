@@ -1,0 +1,44 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04]
+        compiler: [clang, gcc]
+        valgrind: [valgrind,no-valgrind]
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install Valgrind
+      if: matrix.valgrind == 'valgrind'
+      run: sudo apt install -y valgrind
+    - name: Determine make flags
+      id: make_flags
+      run: |
+        if [ "$COMPILER" = clang ]
+        then
+          echo "::set-output name=compiler_flags::CC=clang CXX=clang"
+        elif [ "$COMPILER" = gcc ]
+        then
+          echo "::set-output name=compiler_flags::CC=gcc CXX=g++"
+        else
+          echo "::set-output name=compiler_flags::"
+        fi
+        if [ "$VALGRIND" = valgrind ]
+        then
+          echo "::set-output name=debug_flags::VALGRIND=1 DEBUG=1"
+        else
+          echo "::set-output name=debug_flags::"
+        fi
+      env:
+        COMPILER: ${{ matrix.compiler }}
+        VALGRIND: ${{ matrix.valgrind }}
+    - name: Build and run tests
+      run: make $FLAGS
+      env:
+        FLAGS: ${{ format('{0} {1}', steps.make_flags.outputs.compiler_flags, steps.make_flags.outputs.debug_flags) }}

@@ -13,7 +13,6 @@
 #include <assert.h>
 
 int main() {
-	size_t i;
 	bool ret_code = EXIT_SUCCESS;
 	char *sample_buffer;
 	struct stat sample_stat;
@@ -23,8 +22,8 @@ int main() {
 
 	fd = open("test/plpgsql_samples.sql", O_RDONLY);
 	if (fd < 0) {
-        printf("Could not read samples file\n");
-        return EXIT_FAILURE;
+		printf("Could not read samples file\n");
+		return EXIT_FAILURE;
     }
 
 	fstat(fd, &sample_stat);
@@ -32,12 +31,13 @@ int main() {
 
 	if (sample_buffer != (void *) - 1)
 	{
-        result = pg_query_parse_plpgsql(sample_buffer);
-        munmap(sample_buffer, sample_stat.st_size);
-    } else {
-        printf("Could not mmap samples file\n");
-        return EXIT_FAILURE;
-    }
+		result = pg_query_parse_plpgsql(sample_buffer);
+		munmap(sample_buffer, sample_stat.st_size);
+		close(fd);
+	} else {
+		printf("Could not mmap samples file\n");
+		return EXIT_FAILURE;
+	}
 
 	if (result.error) {
 		printf("ERROR: %s\n", result.error->message);
@@ -48,9 +48,9 @@ int main() {
 		return EXIT_FAILURE;
 	}
 
-    f_out = fopen("test/plpgsql_samples.actual.json", "w");
+	f_out = fopen("test/plpgsql_samples.actual.json", "w");
 	fprintf(f_out, "%s\n", result.plpgsql_funcs);
-    close(fd);
+	fclose(f_out);
 
 	pg_query_free_plpgsql_parse_result(result);
 

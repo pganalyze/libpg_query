@@ -5,6 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef USE_VALGRIND
+#define TEST_LOOPS 10
+#else
+#define TEST_LOOPS 1000
+#endif
+
 const char* query = "select ? as field_id \
     union all select ? \
     union all select ? \
@@ -10321,28 +10327,28 @@ const char* query = "select ? as field_id \
 const char *fingerprint = "02b3deb3c387b2d3a61d1b9fec018cb51dc30e47e5";
 
 int main() {
-  size_t i;
-  bool ret_code = 0;
+    size_t i;
+    bool ret_code = 0;
 
-  for (i = 0; i < 1000; i++) {
-    PgQueryFingerprintResult result = pg_query_fingerprint(query);
+    for (i = 0; i < TEST_LOOPS; i++) {
+        PgQueryFingerprintResult result = pg_query_fingerprint(query);
 
-		if (result.error) {
-			ret_code = -1;
-			printf("%s\n", result.error->message);
-		} else if (strcmp(result.hexdigest, fingerprint) == 0) {
-      printf(".");
-    } else {
-      ret_code = -1;
-      printf("INVALID result, expected: %s\nactual: %s\nactual tokens: \n", fingerprint, result.hexdigest);
-      pg_query_fingerprint_with_opts(query, true);
+        if (result.error) {
+            ret_code = -1;
+            printf("%s\n", result.error->message);
+        } else if (strcmp(result.hexdigest, fingerprint) == 0) {
+            printf(".");
+        } else {
+            ret_code = -1;
+            printf("INVALID result, expected: %s\nactual: %s\nactual tokens: \n", fingerprint, result.hexdigest);
+            pg_query_fingerprint_with_opts(query, true);
+        }
+
+        pg_query_free_fingerprint_result(result);
+
+        if (ret_code != 0) break;
     }
-
-    pg_query_free_fingerprint_result(result);
-
-    if (ret_code != 0) return ret_code;
-  }
-  printf("\n");
+    printf("\n");
 
     pg_query_exit();
 

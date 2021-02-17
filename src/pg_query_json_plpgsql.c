@@ -663,10 +663,10 @@ plpgsqlToJSON(PLpgSQL_function *func)
 
 	appendStringInfoChar(&str, '{');
 
-  dump_function(&str, func);
+	dump_function(&str, func);
 
 	removeTrailingDelimiter(&str);
-  appendStringInfoString(&str, "}}");
+	appendStringInfoString(&str, "}}");
 
-  return str.data;
+	return str.data;
 }
