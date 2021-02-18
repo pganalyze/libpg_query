@@ -94,6 +94,9 @@ class Runner
       @basepath + 'src/common/fe_memutils.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/restricted_token.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/unicode/norm_test.c', # This file is not expected to be compiled for backend code
+      @basepath + 'src/backend/utils/mb/win866.c', # Win32 only
+      @basepath + 'src/backend/utils/mb/win1251.c', # Win32 only
+      @basepath + 'src/backend/utils/mb/iso.c', # Win32 only
       @basepath + 'src/port/dirent.c', # Win32 only
       @basepath + 'src/port/getaddrinfo.c', # Win32 only
       @basepath + 'src/port/getrusage.c', # Win32 only
@@ -202,7 +205,7 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g'])
+    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g', '-DUSE_ASSERT_CHECKING'])
     cursor = translation_unit.cursor
 
     func_cursor = nil
