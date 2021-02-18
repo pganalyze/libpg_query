@@ -2,6 +2,21 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 10-1.0.5
+
+* Update to latest Postgres 10 patch release (10.16)
+* Free Postgres top-level memory context on thread exit / with function
+  - Previously there was no way to free the top-level Postgres memory context,
+    causing threaded programs that churn through a lot of threads to leak
+    memory with each newly initialized thread-local top-level memory context.
+  - Instead, this uses a newly introduced cleanup method to free the memory
+    when a pthread exits (note this causes a pthread dependency to be added
+    to this library). In addition, primarily for memory testing purposes, add a
+    new method "pg_query_exit" that performs the same cleanup on demand.
+* Resolve correctness issues and possible memory leak in PL/pgSQL parser
+* Add arch-ppc.h for PPC architectures [#80](https://github.com/lfittl/libpg_query/pull/80) [@pkubaj](https://github.com/pkubaj)
+
+
 ## 10-1.0.4
 
 * Update to latest Postgres 10 patch release (10.15)
