@@ -41,7 +41,8 @@ int main()
 			buf = newbuf;
 		}
 		// Drop trailing ;
-		buf[strlen(buf) - 1] = '\0';
+		if (strlen(buf) > 0 && buf[strlen(buf) - 1] == ';')
+			buf[strlen(buf) - 1] = '\0';
 
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{
@@ -81,7 +82,8 @@ int main()
 			buf = newbuf;
 		}
 		// Drop trailing ;
-		buf[strlen(buf) - 1] = '\0';
+		if (strlen(buf) > 0 && buf[strlen(buf) - 1] == ';')
+			buf[strlen(buf) - 1] = '\0';
 
 		if (strcmp(buf, tests[i + 1]) != 0)
 		{

@@ -126,14 +126,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input)
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
 	result.error = parsetree_and_error.error;
-
-	if (parsetree_and_error.tree != NULL) {
-		PgQueryProtobuf tree_protobuf;
-
-		result.parse_tree = pg_query_nodes_to_protobuf(parsetree_and_error.tree);
-	} else {
-		result.parse_tree.data = strdup("");
-	}
+	result.parse_tree = pg_query_nodes_to_protobuf(parsetree_and_error.tree);
 
 	pg_query_exit_memory_context(ctx);
 
