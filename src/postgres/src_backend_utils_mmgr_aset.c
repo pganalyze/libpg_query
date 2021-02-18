@@ -13,6 +13,7 @@
  * - AllocSetGetChunkSpace
  * - AllocSetIsEmpty
  * - AllocSetStats
+ * - AllocSetCheck
  * - AllocSetContextCreate
  *--------------------------------------------------------------------
  */
@@ -249,7 +250,6 @@ static const MemoryContextMethods AllocSetMethods = {
 	,AllocSetCheck
 #endif
 };
-
 
 /*
  * Table for AllocSetFreeIndex

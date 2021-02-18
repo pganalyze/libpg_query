@@ -4,6 +4,8 @@
  * - MemoryContextReset
  * - MemoryContextDeleteChildren
  * - MemoryContextDelete
+ * - TopMemoryContext
+ * - CurrentMemoryContext
  * - MemoryContextSetParent
  * - pfree
  * - MemoryContextCallResetCallbacks
@@ -12,11 +14,9 @@
  * - MemoryContextStats
  * - MemoryContextStatsDetail
  * - MemoryContextStatsInternal
- * - TopMemoryContext
  * - pstrdup
  * - MemoryContextStrdup
  * - MemoryContextAlloc
- * - CurrentMemoryContext
  * - palloc
  * - MemoryContextAllocZeroAligned
  * - MemoryContextAllocZero
@@ -525,17 +525,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
  * This is just a debugging utility, so it's not fancy.
  */
 #ifdef MEMORY_CONTEXT_CHECKING
-void
-MemoryContextCheck(MemoryContext context)
-{
-	MemoryContext child;
 
-	AssertArg(MemoryContextIsValid(context));
-
-	(*context->methods->check) (context);
-	for (child = context->firstchild; child != NULL; child = child->nextchild)
-		MemoryContextCheck(child);
-}
 #endif
 
 /*
@@ -601,7 +591,7 @@ MemoryContextCheck(MemoryContext context)
  */
 MemoryContext
 MemoryContextCreate(NodeTag tag, Size size,
-					MemoryContextMethods *methods,
+					const MemoryContextMethods *methods,
 					MemoryContext parent,
 					const char *name)
 {
