@@ -3,6 +3,7 @@
  * - lappend
  * - new_list
  * - new_tail_cell
+ * - check_list_invariants
  * - lcons
  * - new_head_cell
  * - list_concat

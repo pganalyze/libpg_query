@@ -1224,3 +1224,5 @@ extern unsigned long long strtoull(const char *str, char **endptr, int base);
 #include "port.h"
 
 #endif							/* C_H */
+#undef StaticAssertDecl
+#define StaticAssertDecl(condition, errmessage)

@@ -11,6 +11,7 @@
  * - seg_alloc
  * - calc_bucket
  * - hash_corrupted
+ * - DynaHashAlloc
  * - get_hash_entry
  * - element_alloc
  *--------------------------------------------------------------------
@@ -293,7 +294,12 @@ static bool has_seq_scans(HTAB *hashp);
 static __thread MemoryContext CurrentDynaHashCxt = NULL;
 
 
-
+static void *
+DynaHashAlloc(Size size)
+{
+	Assert(MemoryContextIsValid(CurrentDynaHashCxt));
+	return MemoryContextAlloc(CurrentDynaHashCxt, size);
+}
 
 
 /*

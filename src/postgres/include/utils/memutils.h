@@ -133,7 +133,7 @@ GetMemoryChunkContext(void *pointer)
  * specific creation routines, and noplace else.
  */
 extern MemoryContext MemoryContextCreate(NodeTag tag, Size size,
-					MemoryContextMethods *methods,
+					const MemoryContextMethods *methods,
 					MemoryContext parent,
 					const char *name);
 
