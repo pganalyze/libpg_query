@@ -34399,20 +34399,22 @@ const ProtobufCMessageDescriptor pg_query__scan_token__descriptor =
   (ProtobufCMessageInit) pg_query__scan_token__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCEnumValue pg_query__overriding_kind__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__overriding_kind__enum_values_by_number[4] =
 {
-  { "OVERRIDING_NOT_SET", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_NOT_SET", 0 },
-  { "OVERRIDING_USER_VALUE", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_USER_VALUE", 1 },
-  { "OVERRIDING_SYSTEM_VALUE", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_SYSTEM_VALUE", 2 },
+  { "OVERRIDING_KIND_UNDEFINED", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_KIND_UNDEFINED", 0 },
+  { "OVERRIDING_NOT_SET", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_NOT_SET", 1 },
+  { "OVERRIDING_USER_VALUE", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_USER_VALUE", 2 },
+  { "OVERRIDING_SYSTEM_VALUE", "PG_QUERY__OVERRIDING_KIND__OVERRIDING_SYSTEM_VALUE", 3 },
 };
 static const ProtobufCIntRange pg_query__overriding_kind__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__overriding_kind__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__overriding_kind__enum_values_by_name[4] =
 {
-  { "OVERRIDING_NOT_SET", 0 },
-  { "OVERRIDING_SYSTEM_VALUE", 2 },
-  { "OVERRIDING_USER_VALUE", 1 },
+  { "OVERRIDING_KIND_UNDEFINED", 0 },
+  { "OVERRIDING_NOT_SET", 1 },
+  { "OVERRIDING_SYSTEM_VALUE", 3 },
+  { "OVERRIDING_USER_VALUE", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__overriding_kind__descriptor =
 {
@@ -34421,32 +34423,34 @@ const ProtobufCEnumDescriptor pg_query__overriding_kind__descriptor =
   "OverridingKind",
   "PgQuery__OverridingKind",
   "pg_query",
-  3,
+  4,
   pg_query__overriding_kind__enum_values_by_number,
-  3,
+  4,
   pg_query__overriding_kind__enum_values_by_name,
   1,
   pg_query__overriding_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__query_source__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__query_source__enum_values_by_number[6] =
 {
-  { "QSRC_ORIGINAL", "PG_QUERY__QUERY_SOURCE__QSRC_ORIGINAL", 0 },
-  { "QSRC_PARSER", "PG_QUERY__QUERY_SOURCE__QSRC_PARSER", 1 },
-  { "QSRC_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_INSTEAD_RULE", 2 },
-  { "QSRC_QUAL_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_QUAL_INSTEAD_RULE", 3 },
-  { "QSRC_NON_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_NON_INSTEAD_RULE", 4 },
+  { "QUERY_SOURCE_UNDEFINED", "PG_QUERY__QUERY_SOURCE__QUERY_SOURCE_UNDEFINED", 0 },
+  { "QSRC_ORIGINAL", "PG_QUERY__QUERY_SOURCE__QSRC_ORIGINAL", 1 },
+  { "QSRC_PARSER", "PG_QUERY__QUERY_SOURCE__QSRC_PARSER", 2 },
+  { "QSRC_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_INSTEAD_RULE", 3 },
+  { "QSRC_QUAL_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_QUAL_INSTEAD_RULE", 4 },
+  { "QSRC_NON_INSTEAD_RULE", "PG_QUERY__QUERY_SOURCE__QSRC_NON_INSTEAD_RULE", 5 },
 };
 static const ProtobufCIntRange pg_query__query_source__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__query_source__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__query_source__enum_values_by_name[6] =
 {
-  { "QSRC_INSTEAD_RULE", 2 },
-  { "QSRC_NON_INSTEAD_RULE", 4 },
-  { "QSRC_ORIGINAL", 0 },
-  { "QSRC_PARSER", 1 },
-  { "QSRC_QUAL_INSTEAD_RULE", 3 },
+  { "QSRC_INSTEAD_RULE", 3 },
+  { "QSRC_NON_INSTEAD_RULE", 5 },
+  { "QSRC_ORIGINAL", 1 },
+  { "QSRC_PARSER", 2 },
+  { "QSRC_QUAL_INSTEAD_RULE", 4 },
+  { "QUERY_SOURCE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__query_source__descriptor =
 {
@@ -34455,30 +34459,32 @@ const ProtobufCEnumDescriptor pg_query__query_source__descriptor =
   "QuerySource",
   "PgQuery__QuerySource",
   "pg_query",
-  5,
+  6,
   pg_query__query_source__enum_values_by_number,
-  5,
+  6,
   pg_query__query_source__enum_values_by_name,
   1,
   pg_query__query_source__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__sort_by_dir__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__sort_by_dir__enum_values_by_number[5] =
 {
-  { "SORTBY_DEFAULT", "PG_QUERY__SORT_BY_DIR__SORTBY_DEFAULT", 0 },
-  { "SORTBY_ASC", "PG_QUERY__SORT_BY_DIR__SORTBY_ASC", 1 },
-  { "SORTBY_DESC", "PG_QUERY__SORT_BY_DIR__SORTBY_DESC", 2 },
-  { "SORTBY_USING", "PG_QUERY__SORT_BY_DIR__SORTBY_USING", 3 },
+  { "SORT_BY_DIR_UNDEFINED", "PG_QUERY__SORT_BY_DIR__SORT_BY_DIR_UNDEFINED", 0 },
+  { "SORTBY_DEFAULT", "PG_QUERY__SORT_BY_DIR__SORTBY_DEFAULT", 1 },
+  { "SORTBY_ASC", "PG_QUERY__SORT_BY_DIR__SORTBY_ASC", 2 },
+  { "SORTBY_DESC", "PG_QUERY__SORT_BY_DIR__SORTBY_DESC", 3 },
+  { "SORTBY_USING", "PG_QUERY__SORT_BY_DIR__SORTBY_USING", 4 },
 };
 static const ProtobufCIntRange pg_query__sort_by_dir__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__sort_by_dir__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__sort_by_dir__enum_values_by_name[5] =
 {
-  { "SORTBY_ASC", 1 },
-  { "SORTBY_DEFAULT", 0 },
-  { "SORTBY_DESC", 2 },
-  { "SORTBY_USING", 3 },
+  { "SORTBY_ASC", 2 },
+  { "SORTBY_DEFAULT", 1 },
+  { "SORTBY_DESC", 3 },
+  { "SORTBY_USING", 4 },
+  { "SORT_BY_DIR_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__sort_by_dir__descriptor =
 {
@@ -34487,28 +34493,30 @@ const ProtobufCEnumDescriptor pg_query__sort_by_dir__descriptor =
   "SortByDir",
   "PgQuery__SortByDir",
   "pg_query",
-  4,
+  5,
   pg_query__sort_by_dir__enum_values_by_number,
-  4,
+  5,
   pg_query__sort_by_dir__enum_values_by_name,
   1,
   pg_query__sort_by_dir__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__sort_by_nulls__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__sort_by_nulls__enum_values_by_number[4] =
 {
-  { "SORTBY_NULLS_DEFAULT", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_DEFAULT", 0 },
-  { "SORTBY_NULLS_FIRST", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_FIRST", 1 },
-  { "SORTBY_NULLS_LAST", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_LAST", 2 },
+  { "SORT_BY_NULLS_UNDEFINED", "PG_QUERY__SORT_BY_NULLS__SORT_BY_NULLS_UNDEFINED", 0 },
+  { "SORTBY_NULLS_DEFAULT", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_DEFAULT", 1 },
+  { "SORTBY_NULLS_FIRST", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_FIRST", 2 },
+  { "SORTBY_NULLS_LAST", "PG_QUERY__SORT_BY_NULLS__SORTBY_NULLS_LAST", 3 },
 };
 static const ProtobufCIntRange pg_query__sort_by_nulls__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__sort_by_nulls__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__sort_by_nulls__enum_values_by_name[4] =
 {
-  { "SORTBY_NULLS_DEFAULT", 0 },
-  { "SORTBY_NULLS_FIRST", 1 },
-  { "SORTBY_NULLS_LAST", 2 },
+  { "SORTBY_NULLS_DEFAULT", 1 },
+  { "SORTBY_NULLS_FIRST", 2 },
+  { "SORTBY_NULLS_LAST", 3 },
+  { "SORT_BY_NULLS_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__sort_by_nulls__descriptor =
 {
@@ -34517,54 +34525,56 @@ const ProtobufCEnumDescriptor pg_query__sort_by_nulls__descriptor =
   "SortByNulls",
   "PgQuery__SortByNulls",
   "pg_query",
-  3,
+  4,
   pg_query__sort_by_nulls__enum_values_by_number,
-  3,
+  4,
   pg_query__sort_by_nulls__enum_values_by_name,
   1,
   pg_query__sort_by_nulls__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__a__expr__kind__enum_values_by_number[16] =
+static const ProtobufCEnumValue pg_query__a__expr__kind__enum_values_by_number[17] =
 {
-  { "AEXPR_OP", "PG_QUERY__A__EXPR__KIND__AEXPR_OP", 0 },
-  { "AEXPR_OP_ANY", "PG_QUERY__A__EXPR__KIND__AEXPR_OP_ANY", 1 },
-  { "AEXPR_OP_ALL", "PG_QUERY__A__EXPR__KIND__AEXPR_OP_ALL", 2 },
-  { "AEXPR_DISTINCT", "PG_QUERY__A__EXPR__KIND__AEXPR_DISTINCT", 3 },
-  { "AEXPR_NOT_DISTINCT", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_DISTINCT", 4 },
-  { "AEXPR_NULLIF", "PG_QUERY__A__EXPR__KIND__AEXPR_NULLIF", 5 },
-  { "AEXPR_OF", "PG_QUERY__A__EXPR__KIND__AEXPR_OF", 6 },
-  { "AEXPR_IN", "PG_QUERY__A__EXPR__KIND__AEXPR_IN", 7 },
-  { "AEXPR_LIKE", "PG_QUERY__A__EXPR__KIND__AEXPR_LIKE", 8 },
-  { "AEXPR_ILIKE", "PG_QUERY__A__EXPR__KIND__AEXPR_ILIKE", 9 },
-  { "AEXPR_SIMILAR", "PG_QUERY__A__EXPR__KIND__AEXPR_SIMILAR", 10 },
-  { "AEXPR_BETWEEN", "PG_QUERY__A__EXPR__KIND__AEXPR_BETWEEN", 11 },
-  { "AEXPR_NOT_BETWEEN", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_BETWEEN", 12 },
-  { "AEXPR_BETWEEN_SYM", "PG_QUERY__A__EXPR__KIND__AEXPR_BETWEEN_SYM", 13 },
-  { "AEXPR_NOT_BETWEEN_SYM", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_BETWEEN_SYM", 14 },
-  { "AEXPR_PAREN", "PG_QUERY__A__EXPR__KIND__AEXPR_PAREN", 15 },
+  { "A_EXPR_KIND_UNDEFINED", "PG_QUERY__A__EXPR__KIND__A_EXPR_KIND_UNDEFINED", 0 },
+  { "AEXPR_OP", "PG_QUERY__A__EXPR__KIND__AEXPR_OP", 1 },
+  { "AEXPR_OP_ANY", "PG_QUERY__A__EXPR__KIND__AEXPR_OP_ANY", 2 },
+  { "AEXPR_OP_ALL", "PG_QUERY__A__EXPR__KIND__AEXPR_OP_ALL", 3 },
+  { "AEXPR_DISTINCT", "PG_QUERY__A__EXPR__KIND__AEXPR_DISTINCT", 4 },
+  { "AEXPR_NOT_DISTINCT", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_DISTINCT", 5 },
+  { "AEXPR_NULLIF", "PG_QUERY__A__EXPR__KIND__AEXPR_NULLIF", 6 },
+  { "AEXPR_OF", "PG_QUERY__A__EXPR__KIND__AEXPR_OF", 7 },
+  { "AEXPR_IN", "PG_QUERY__A__EXPR__KIND__AEXPR_IN", 8 },
+  { "AEXPR_LIKE", "PG_QUERY__A__EXPR__KIND__AEXPR_LIKE", 9 },
+  { "AEXPR_ILIKE", "PG_QUERY__A__EXPR__KIND__AEXPR_ILIKE", 10 },
+  { "AEXPR_SIMILAR", "PG_QUERY__A__EXPR__KIND__AEXPR_SIMILAR", 11 },
+  { "AEXPR_BETWEEN", "PG_QUERY__A__EXPR__KIND__AEXPR_BETWEEN", 12 },
+  { "AEXPR_NOT_BETWEEN", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_BETWEEN", 13 },
+  { "AEXPR_BETWEEN_SYM", "PG_QUERY__A__EXPR__KIND__AEXPR_BETWEEN_SYM", 14 },
+  { "AEXPR_NOT_BETWEEN_SYM", "PG_QUERY__A__EXPR__KIND__AEXPR_NOT_BETWEEN_SYM", 15 },
+  { "AEXPR_PAREN", "PG_QUERY__A__EXPR__KIND__AEXPR_PAREN", 16 },
 };
 static const ProtobufCIntRange pg_query__a__expr__kind__value_ranges[] = {
-{0, 0},{0, 16}
+{0, 0},{0, 17}
 };
-static const ProtobufCEnumValueIndex pg_query__a__expr__kind__enum_values_by_name[16] =
+static const ProtobufCEnumValueIndex pg_query__a__expr__kind__enum_values_by_name[17] =
 {
-  { "AEXPR_BETWEEN", 11 },
-  { "AEXPR_BETWEEN_SYM", 13 },
-  { "AEXPR_DISTINCT", 3 },
-  { "AEXPR_ILIKE", 9 },
-  { "AEXPR_IN", 7 },
-  { "AEXPR_LIKE", 8 },
-  { "AEXPR_NOT_BETWEEN", 12 },
-  { "AEXPR_NOT_BETWEEN_SYM", 14 },
-  { "AEXPR_NOT_DISTINCT", 4 },
-  { "AEXPR_NULLIF", 5 },
-  { "AEXPR_OF", 6 },
-  { "AEXPR_OP", 0 },
-  { "AEXPR_OP_ALL", 2 },
-  { "AEXPR_OP_ANY", 1 },
-  { "AEXPR_PAREN", 15 },
-  { "AEXPR_SIMILAR", 10 },
+  { "AEXPR_BETWEEN", 12 },
+  { "AEXPR_BETWEEN_SYM", 14 },
+  { "AEXPR_DISTINCT", 4 },
+  { "AEXPR_ILIKE", 10 },
+  { "AEXPR_IN", 8 },
+  { "AEXPR_LIKE", 9 },
+  { "AEXPR_NOT_BETWEEN", 13 },
+  { "AEXPR_NOT_BETWEEN_SYM", 15 },
+  { "AEXPR_NOT_DISTINCT", 5 },
+  { "AEXPR_NULLIF", 6 },
+  { "AEXPR_OF", 7 },
+  { "AEXPR_OP", 1 },
+  { "AEXPR_OP_ALL", 3 },
+  { "AEXPR_OP_ANY", 2 },
+  { "AEXPR_PAREN", 16 },
+  { "AEXPR_SIMILAR", 11 },
+  { "A_EXPR_KIND_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__a__expr__kind__descriptor =
 {
@@ -34573,30 +34583,32 @@ const ProtobufCEnumDescriptor pg_query__a__expr__kind__descriptor =
   "A_Expr_Kind",
   "PgQuery__AExprKind",
   "pg_query",
-  16,
+  17,
   pg_query__a__expr__kind__enum_values_by_number,
-  16,
+  17,
   pg_query__a__expr__kind__enum_values_by_name,
   1,
   pg_query__a__expr__kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__role_spec_type__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__role_spec_type__enum_values_by_number[5] =
 {
-  { "ROLESPEC_CSTRING", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_CSTRING", 0 },
-  { "ROLESPEC_CURRENT_USER", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_CURRENT_USER", 1 },
-  { "ROLESPEC_SESSION_USER", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_SESSION_USER", 2 },
-  { "ROLESPEC_PUBLIC", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_PUBLIC", 3 },
+  { "ROLE_SPEC_TYPE_UNDEFINED", "PG_QUERY__ROLE_SPEC_TYPE__ROLE_SPEC_TYPE_UNDEFINED", 0 },
+  { "ROLESPEC_CSTRING", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_CSTRING", 1 },
+  { "ROLESPEC_CURRENT_USER", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_CURRENT_USER", 2 },
+  { "ROLESPEC_SESSION_USER", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_SESSION_USER", 3 },
+  { "ROLESPEC_PUBLIC", "PG_QUERY__ROLE_SPEC_TYPE__ROLESPEC_PUBLIC", 4 },
 };
 static const ProtobufCIntRange pg_query__role_spec_type__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__role_spec_type__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__role_spec_type__enum_values_by_name[5] =
 {
-  { "ROLESPEC_CSTRING", 0 },
-  { "ROLESPEC_CURRENT_USER", 1 },
-  { "ROLESPEC_PUBLIC", 3 },
-  { "ROLESPEC_SESSION_USER", 2 },
+  { "ROLESPEC_CSTRING", 1 },
+  { "ROLESPEC_CURRENT_USER", 2 },
+  { "ROLESPEC_PUBLIC", 4 },
+  { "ROLESPEC_SESSION_USER", 3 },
+  { "ROLE_SPEC_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__role_spec_type__descriptor =
 {
@@ -34605,40 +34617,42 @@ const ProtobufCEnumDescriptor pg_query__role_spec_type__descriptor =
   "RoleSpecType",
   "PgQuery__RoleSpecType",
   "pg_query",
-  4,
+  5,
   pg_query__role_spec_type__enum_values_by_number,
-  4,
+  5,
   pg_query__role_spec_type__enum_values_by_name,
   1,
   pg_query__role_spec_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__table_like_option__enum_values_by_number[9] =
+static const ProtobufCEnumValue pg_query__table_like_option__enum_values_by_number[10] =
 {
-  { "CREATE_TABLE_LIKE_COMMENTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_COMMENTS", 0 },
-  { "CREATE_TABLE_LIKE_CONSTRAINTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_CONSTRAINTS", 1 },
-  { "CREATE_TABLE_LIKE_DEFAULTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_DEFAULTS", 2 },
-  { "CREATE_TABLE_LIKE_GENERATED", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_GENERATED", 3 },
-  { "CREATE_TABLE_LIKE_IDENTITY", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_IDENTITY", 4 },
-  { "CREATE_TABLE_LIKE_INDEXES", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_INDEXES", 5 },
-  { "CREATE_TABLE_LIKE_STATISTICS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_STATISTICS", 6 },
-  { "CREATE_TABLE_LIKE_STORAGE", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_STORAGE", 7 },
-  { "CREATE_TABLE_LIKE_ALL", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_ALL", 8 },
+  { "TABLE_LIKE_OPTION_UNDEFINED", "PG_QUERY__TABLE_LIKE_OPTION__TABLE_LIKE_OPTION_UNDEFINED", 0 },
+  { "CREATE_TABLE_LIKE_COMMENTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_COMMENTS", 1 },
+  { "CREATE_TABLE_LIKE_CONSTRAINTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_CONSTRAINTS", 2 },
+  { "CREATE_TABLE_LIKE_DEFAULTS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_DEFAULTS", 3 },
+  { "CREATE_TABLE_LIKE_GENERATED", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_GENERATED", 4 },
+  { "CREATE_TABLE_LIKE_IDENTITY", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_IDENTITY", 5 },
+  { "CREATE_TABLE_LIKE_INDEXES", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_INDEXES", 6 },
+  { "CREATE_TABLE_LIKE_STATISTICS", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_STATISTICS", 7 },
+  { "CREATE_TABLE_LIKE_STORAGE", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_STORAGE", 8 },
+  { "CREATE_TABLE_LIKE_ALL", "PG_QUERY__TABLE_LIKE_OPTION__CREATE_TABLE_LIKE_ALL", 9 },
 };
 static const ProtobufCIntRange pg_query__table_like_option__value_ranges[] = {
-{0, 0},{0, 9}
+{0, 0},{0, 10}
 };
-static const ProtobufCEnumValueIndex pg_query__table_like_option__enum_values_by_name[9] =
+static const ProtobufCEnumValueIndex pg_query__table_like_option__enum_values_by_name[10] =
 {
-  { "CREATE_TABLE_LIKE_ALL", 8 },
-  { "CREATE_TABLE_LIKE_COMMENTS", 0 },
-  { "CREATE_TABLE_LIKE_CONSTRAINTS", 1 },
-  { "CREATE_TABLE_LIKE_DEFAULTS", 2 },
-  { "CREATE_TABLE_LIKE_GENERATED", 3 },
-  { "CREATE_TABLE_LIKE_IDENTITY", 4 },
-  { "CREATE_TABLE_LIKE_INDEXES", 5 },
-  { "CREATE_TABLE_LIKE_STATISTICS", 6 },
-  { "CREATE_TABLE_LIKE_STORAGE", 7 },
+  { "CREATE_TABLE_LIKE_ALL", 9 },
+  { "CREATE_TABLE_LIKE_COMMENTS", 1 },
+  { "CREATE_TABLE_LIKE_CONSTRAINTS", 2 },
+  { "CREATE_TABLE_LIKE_DEFAULTS", 3 },
+  { "CREATE_TABLE_LIKE_GENERATED", 4 },
+  { "CREATE_TABLE_LIKE_IDENTITY", 5 },
+  { "CREATE_TABLE_LIKE_INDEXES", 6 },
+  { "CREATE_TABLE_LIKE_STATISTICS", 7 },
+  { "CREATE_TABLE_LIKE_STORAGE", 8 },
+  { "TABLE_LIKE_OPTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__table_like_option__descriptor =
 {
@@ -34647,30 +34661,32 @@ const ProtobufCEnumDescriptor pg_query__table_like_option__descriptor =
   "TableLikeOption",
   "PgQuery__TableLikeOption",
   "pg_query",
-  9,
+  10,
   pg_query__table_like_option__enum_values_by_number,
-  9,
+  10,
   pg_query__table_like_option__enum_values_by_name,
   1,
   pg_query__table_like_option__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__def_elem_action__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__def_elem_action__enum_values_by_number[5] =
 {
-  { "DEFELEM_UNSPEC", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_UNSPEC", 0 },
-  { "DEFELEM_SET", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_SET", 1 },
-  { "DEFELEM_ADD", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_ADD", 2 },
-  { "DEFELEM_DROP", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_DROP", 3 },
+  { "DEF_ELEM_ACTION_UNDEFINED", "PG_QUERY__DEF_ELEM_ACTION__DEF_ELEM_ACTION_UNDEFINED", 0 },
+  { "DEFELEM_UNSPEC", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_UNSPEC", 1 },
+  { "DEFELEM_SET", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_SET", 2 },
+  { "DEFELEM_ADD", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_ADD", 3 },
+  { "DEFELEM_DROP", "PG_QUERY__DEF_ELEM_ACTION__DEFELEM_DROP", 4 },
 };
 static const ProtobufCIntRange pg_query__def_elem_action__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__def_elem_action__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__def_elem_action__enum_values_by_name[5] =
 {
-  { "DEFELEM_ADD", 2 },
-  { "DEFELEM_DROP", 3 },
-  { "DEFELEM_SET", 1 },
-  { "DEFELEM_UNSPEC", 0 },
+  { "DEFELEM_ADD", 3 },
+  { "DEFELEM_DROP", 4 },
+  { "DEFELEM_SET", 2 },
+  { "DEFELEM_UNSPEC", 1 },
+  { "DEF_ELEM_ACTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__def_elem_action__descriptor =
 {
@@ -34679,28 +34695,30 @@ const ProtobufCEnumDescriptor pg_query__def_elem_action__descriptor =
   "DefElemAction",
   "PgQuery__DefElemAction",
   "pg_query",
-  4,
+  5,
   pg_query__def_elem_action__enum_values_by_number,
-  4,
+  5,
   pg_query__def_elem_action__enum_values_by_name,
   1,
   pg_query__def_elem_action__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__partition_range_datum_kind__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__partition_range_datum_kind__enum_values_by_number[4] =
 {
-  { "PARTITION_RANGE_DATUM_MINVALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_MINVALUE", 0 },
-  { "PARTITION_RANGE_DATUM_VALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_VALUE", 1 },
-  { "PARTITION_RANGE_DATUM_MAXVALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_MAXVALUE", 2 },
+  { "PARTITION_RANGE_DATUM_KIND_UNDEFINED", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_KIND_UNDEFINED", 0 },
+  { "PARTITION_RANGE_DATUM_MINVALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_MINVALUE", 1 },
+  { "PARTITION_RANGE_DATUM_VALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_VALUE", 2 },
+  { "PARTITION_RANGE_DATUM_MAXVALUE", "PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_MAXVALUE", 3 },
 };
 static const ProtobufCIntRange pg_query__partition_range_datum_kind__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__partition_range_datum_kind__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__partition_range_datum_kind__enum_values_by_name[4] =
 {
-  { "PARTITION_RANGE_DATUM_MAXVALUE", 2 },
-  { "PARTITION_RANGE_DATUM_MINVALUE", 0 },
-  { "PARTITION_RANGE_DATUM_VALUE", 1 },
+  { "PARTITION_RANGE_DATUM_KIND_UNDEFINED", 0 },
+  { "PARTITION_RANGE_DATUM_MAXVALUE", 3 },
+  { "PARTITION_RANGE_DATUM_MINVALUE", 1 },
+  { "PARTITION_RANGE_DATUM_VALUE", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__partition_range_datum_kind__descriptor =
 {
@@ -34709,40 +34727,42 @@ const ProtobufCEnumDescriptor pg_query__partition_range_datum_kind__descriptor =
   "PartitionRangeDatumKind",
   "PgQuery__PartitionRangeDatumKind",
   "pg_query",
-  3,
+  4,
   pg_query__partition_range_datum_kind__enum_values_by_number,
-  3,
+  4,
   pg_query__partition_range_datum_kind__enum_values_by_name,
   1,
   pg_query__partition_range_datum_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__rtekind__enum_values_by_number[9] =
+static const ProtobufCEnumValue pg_query__rtekind__enum_values_by_number[10] =
 {
-  { "RTE_RELATION", "PG_QUERY__RTEKIND__RTE_RELATION", 0 },
-  { "RTE_SUBQUERY", "PG_QUERY__RTEKIND__RTE_SUBQUERY", 1 },
-  { "RTE_JOIN", "PG_QUERY__RTEKIND__RTE_JOIN", 2 },
-  { "RTE_FUNCTION", "PG_QUERY__RTEKIND__RTE_FUNCTION", 3 },
-  { "RTE_TABLEFUNC", "PG_QUERY__RTEKIND__RTE_TABLEFUNC", 4 },
-  { "RTE_VALUES", "PG_QUERY__RTEKIND__RTE_VALUES", 5 },
-  { "RTE_CTE", "PG_QUERY__RTEKIND__RTE_CTE", 6 },
-  { "RTE_NAMEDTUPLESTORE", "PG_QUERY__RTEKIND__RTE_NAMEDTUPLESTORE", 7 },
-  { "RTE_RESULT", "PG_QUERY__RTEKIND__RTE_RESULT", 8 },
+  { "RTEKIND_UNDEFINED", "PG_QUERY__RTEKIND__RTEKIND_UNDEFINED", 0 },
+  { "RTE_RELATION", "PG_QUERY__RTEKIND__RTE_RELATION", 1 },
+  { "RTE_SUBQUERY", "PG_QUERY__RTEKIND__RTE_SUBQUERY", 2 },
+  { "RTE_JOIN", "PG_QUERY__RTEKIND__RTE_JOIN", 3 },
+  { "RTE_FUNCTION", "PG_QUERY__RTEKIND__RTE_FUNCTION", 4 },
+  { "RTE_TABLEFUNC", "PG_QUERY__RTEKIND__RTE_TABLEFUNC", 5 },
+  { "RTE_VALUES", "PG_QUERY__RTEKIND__RTE_VALUES", 6 },
+  { "RTE_CTE", "PG_QUERY__RTEKIND__RTE_CTE", 7 },
+  { "RTE_NAMEDTUPLESTORE", "PG_QUERY__RTEKIND__RTE_NAMEDTUPLESTORE", 8 },
+  { "RTE_RESULT", "PG_QUERY__RTEKIND__RTE_RESULT", 9 },
 };
 static const ProtobufCIntRange pg_query__rtekind__value_ranges[] = {
-{0, 0},{0, 9}
+{0, 0},{0, 10}
 };
-static const ProtobufCEnumValueIndex pg_query__rtekind__enum_values_by_name[9] =
+static const ProtobufCEnumValueIndex pg_query__rtekind__enum_values_by_name[10] =
 {
-  { "RTE_CTE", 6 },
-  { "RTE_FUNCTION", 3 },
-  { "RTE_JOIN", 2 },
-  { "RTE_NAMEDTUPLESTORE", 7 },
-  { "RTE_RELATION", 0 },
-  { "RTE_RESULT", 8 },
-  { "RTE_SUBQUERY", 1 },
-  { "RTE_TABLEFUNC", 4 },
-  { "RTE_VALUES", 5 },
+  { "RTEKIND_UNDEFINED", 0 },
+  { "RTE_CTE", 7 },
+  { "RTE_FUNCTION", 4 },
+  { "RTE_JOIN", 3 },
+  { "RTE_NAMEDTUPLESTORE", 8 },
+  { "RTE_RELATION", 1 },
+  { "RTE_RESULT", 9 },
+  { "RTE_SUBQUERY", 2 },
+  { "RTE_TABLEFUNC", 5 },
+  { "RTE_VALUES", 6 },
 };
 const ProtobufCEnumDescriptor pg_query__rtekind__descriptor =
 {
@@ -34751,30 +34771,32 @@ const ProtobufCEnumDescriptor pg_query__rtekind__descriptor =
   "RTEKind",
   "PgQuery__RTEKind",
   "pg_query",
-  9,
+  10,
   pg_query__rtekind__enum_values_by_number,
-  9,
+  10,
   pg_query__rtekind__enum_values_by_name,
   1,
   pg_query__rtekind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__wcokind__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__wcokind__enum_values_by_number[5] =
 {
-  { "WCO_VIEW_CHECK", "PG_QUERY__WCOKIND__WCO_VIEW_CHECK", 0 },
-  { "WCO_RLS_INSERT_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_INSERT_CHECK", 1 },
-  { "WCO_RLS_UPDATE_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_UPDATE_CHECK", 2 },
-  { "WCO_RLS_CONFLICT_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_CONFLICT_CHECK", 3 },
+  { "WCOKIND_UNDEFINED", "PG_QUERY__WCOKIND__WCOKIND_UNDEFINED", 0 },
+  { "WCO_VIEW_CHECK", "PG_QUERY__WCOKIND__WCO_VIEW_CHECK", 1 },
+  { "WCO_RLS_INSERT_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_INSERT_CHECK", 2 },
+  { "WCO_RLS_UPDATE_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_UPDATE_CHECK", 3 },
+  { "WCO_RLS_CONFLICT_CHECK", "PG_QUERY__WCOKIND__WCO_RLS_CONFLICT_CHECK", 4 },
 };
 static const ProtobufCIntRange pg_query__wcokind__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__wcokind__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__wcokind__enum_values_by_name[5] =
 {
-  { "WCO_RLS_CONFLICT_CHECK", 3 },
-  { "WCO_RLS_INSERT_CHECK", 1 },
-  { "WCO_RLS_UPDATE_CHECK", 2 },
-  { "WCO_VIEW_CHECK", 0 },
+  { "WCOKIND_UNDEFINED", 0 },
+  { "WCO_RLS_CONFLICT_CHECK", 4 },
+  { "WCO_RLS_INSERT_CHECK", 2 },
+  { "WCO_RLS_UPDATE_CHECK", 3 },
+  { "WCO_VIEW_CHECK", 1 },
 };
 const ProtobufCEnumDescriptor pg_query__wcokind__descriptor =
 {
@@ -34783,32 +34805,34 @@ const ProtobufCEnumDescriptor pg_query__wcokind__descriptor =
   "WCOKind",
   "PgQuery__WCOKind",
   "pg_query",
-  4,
+  5,
   pg_query__wcokind__enum_values_by_number,
-  4,
+  5,
   pg_query__wcokind__enum_values_by_name,
   1,
   pg_query__wcokind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__grouping_set_kind__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__grouping_set_kind__enum_values_by_number[6] =
 {
-  { "GROUPING_SET_EMPTY", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_EMPTY", 0 },
-  { "GROUPING_SET_SIMPLE", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_SIMPLE", 1 },
-  { "GROUPING_SET_ROLLUP", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_ROLLUP", 2 },
-  { "GROUPING_SET_CUBE", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_CUBE", 3 },
-  { "GROUPING_SET_SETS", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_SETS", 4 },
+  { "GROUPING_SET_KIND_UNDEFINED", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_KIND_UNDEFINED", 0 },
+  { "GROUPING_SET_EMPTY", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_EMPTY", 1 },
+  { "GROUPING_SET_SIMPLE", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_SIMPLE", 2 },
+  { "GROUPING_SET_ROLLUP", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_ROLLUP", 3 },
+  { "GROUPING_SET_CUBE", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_CUBE", 4 },
+  { "GROUPING_SET_SETS", "PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_SETS", 5 },
 };
 static const ProtobufCIntRange pg_query__grouping_set_kind__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__grouping_set_kind__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__grouping_set_kind__enum_values_by_name[6] =
 {
-  { "GROUPING_SET_CUBE", 3 },
-  { "GROUPING_SET_EMPTY", 0 },
-  { "GROUPING_SET_ROLLUP", 2 },
-  { "GROUPING_SET_SETS", 4 },
-  { "GROUPING_SET_SIMPLE", 1 },
+  { "GROUPING_SET_CUBE", 4 },
+  { "GROUPING_SET_EMPTY", 1 },
+  { "GROUPING_SET_KIND_UNDEFINED", 0 },
+  { "GROUPING_SET_ROLLUP", 3 },
+  { "GROUPING_SET_SETS", 5 },
+  { "GROUPING_SET_SIMPLE", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__grouping_set_kind__descriptor =
 {
@@ -34817,28 +34841,30 @@ const ProtobufCEnumDescriptor pg_query__grouping_set_kind__descriptor =
   "GroupingSetKind",
   "PgQuery__GroupingSetKind",
   "pg_query",
-  5,
+  6,
   pg_query__grouping_set_kind__enum_values_by_number,
-  5,
+  6,
   pg_query__grouping_set_kind__enum_values_by_name,
   1,
   pg_query__grouping_set_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__ctematerialize__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__ctematerialize__enum_values_by_number[4] =
 {
-  { "CTEMaterializeDefault", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeDefault", 0 },
-  { "CTEMaterializeAlways", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeAlways", 1 },
-  { "CTEMaterializeNever", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeNever", 2 },
+  { "CTEMATERIALIZE_UNDEFINED", "PG_QUERY__CTEMATERIALIZE__CTEMATERIALIZE_UNDEFINED", 0 },
+  { "CTEMaterializeDefault", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeDefault", 1 },
+  { "CTEMaterializeAlways", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeAlways", 2 },
+  { "CTEMaterializeNever", "PG_QUERY__CTEMATERIALIZE__CTEMaterializeNever", 3 },
 };
 static const ProtobufCIntRange pg_query__ctematerialize__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__ctematerialize__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__ctematerialize__enum_values_by_name[4] =
 {
-  { "CTEMaterializeAlways", 1 },
-  { "CTEMaterializeDefault", 0 },
-  { "CTEMaterializeNever", 2 },
+  { "CTEMATERIALIZE_UNDEFINED", 0 },
+  { "CTEMaterializeAlways", 2 },
+  { "CTEMaterializeDefault", 1 },
+  { "CTEMaterializeNever", 3 },
 };
 const ProtobufCEnumDescriptor pg_query__ctematerialize__descriptor =
 {
@@ -34847,30 +34873,32 @@ const ProtobufCEnumDescriptor pg_query__ctematerialize__descriptor =
   "CTEMaterialize",
   "PgQuery__CTEMaterialize",
   "pg_query",
-  3,
+  4,
   pg_query__ctematerialize__enum_values_by_number,
-  3,
+  4,
   pg_query__ctematerialize__enum_values_by_name,
   1,
   pg_query__ctematerialize__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__set_operation__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__set_operation__enum_values_by_number[5] =
 {
-  { "SETOP_NONE", "PG_QUERY__SET_OPERATION__SETOP_NONE", 0 },
-  { "SETOP_UNION", "PG_QUERY__SET_OPERATION__SETOP_UNION", 1 },
-  { "SETOP_INTERSECT", "PG_QUERY__SET_OPERATION__SETOP_INTERSECT", 2 },
-  { "SETOP_EXCEPT", "PG_QUERY__SET_OPERATION__SETOP_EXCEPT", 3 },
+  { "SET_OPERATION_UNDEFINED", "PG_QUERY__SET_OPERATION__SET_OPERATION_UNDEFINED", 0 },
+  { "SETOP_NONE", "PG_QUERY__SET_OPERATION__SETOP_NONE", 1 },
+  { "SETOP_UNION", "PG_QUERY__SET_OPERATION__SETOP_UNION", 2 },
+  { "SETOP_INTERSECT", "PG_QUERY__SET_OPERATION__SETOP_INTERSECT", 3 },
+  { "SETOP_EXCEPT", "PG_QUERY__SET_OPERATION__SETOP_EXCEPT", 4 },
 };
 static const ProtobufCIntRange pg_query__set_operation__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__set_operation__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__set_operation__enum_values_by_name[5] =
 {
-  { "SETOP_EXCEPT", 3 },
-  { "SETOP_INTERSECT", 2 },
-  { "SETOP_NONE", 0 },
-  { "SETOP_UNION", 1 },
+  { "SETOP_EXCEPT", 4 },
+  { "SETOP_INTERSECT", 3 },
+  { "SETOP_NONE", 1 },
+  { "SETOP_UNION", 2 },
+  { "SET_OPERATION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__set_operation__descriptor =
 {
@@ -34879,122 +34907,124 @@ const ProtobufCEnumDescriptor pg_query__set_operation__descriptor =
   "SetOperation",
   "PgQuery__SetOperation",
   "pg_query",
-  4,
+  5,
   pg_query__set_operation__enum_values_by_number,
-  4,
+  5,
   pg_query__set_operation__enum_values_by_name,
   1,
   pg_query__set_operation__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__object_type__enum_values_by_number[50] =
+static const ProtobufCEnumValue pg_query__object_type__enum_values_by_number[51] =
 {
-  { "OBJECT_ACCESS_METHOD", "PG_QUERY__OBJECT_TYPE__OBJECT_ACCESS_METHOD", 0 },
-  { "OBJECT_AGGREGATE", "PG_QUERY__OBJECT_TYPE__OBJECT_AGGREGATE", 1 },
-  { "OBJECT_AMOP", "PG_QUERY__OBJECT_TYPE__OBJECT_AMOP", 2 },
-  { "OBJECT_AMPROC", "PG_QUERY__OBJECT_TYPE__OBJECT_AMPROC", 3 },
-  { "OBJECT_ATTRIBUTE", "PG_QUERY__OBJECT_TYPE__OBJECT_ATTRIBUTE", 4 },
-  { "OBJECT_CAST", "PG_QUERY__OBJECT_TYPE__OBJECT_CAST", 5 },
-  { "OBJECT_COLUMN", "PG_QUERY__OBJECT_TYPE__OBJECT_COLUMN", 6 },
-  { "OBJECT_COLLATION", "PG_QUERY__OBJECT_TYPE__OBJECT_COLLATION", 7 },
-  { "OBJECT_CONVERSION", "PG_QUERY__OBJECT_TYPE__OBJECT_CONVERSION", 8 },
-  { "OBJECT_DATABASE", "PG_QUERY__OBJECT_TYPE__OBJECT_DATABASE", 9 },
-  { "OBJECT_DEFAULT", "PG_QUERY__OBJECT_TYPE__OBJECT_DEFAULT", 10 },
-  { "OBJECT_DEFACL", "PG_QUERY__OBJECT_TYPE__OBJECT_DEFACL", 11 },
-  { "OBJECT_DOMAIN", "PG_QUERY__OBJECT_TYPE__OBJECT_DOMAIN", 12 },
-  { "OBJECT_DOMCONSTRAINT", "PG_QUERY__OBJECT_TYPE__OBJECT_DOMCONSTRAINT", 13 },
-  { "OBJECT_EVENT_TRIGGER", "PG_QUERY__OBJECT_TYPE__OBJECT_EVENT_TRIGGER", 14 },
-  { "OBJECT_EXTENSION", "PG_QUERY__OBJECT_TYPE__OBJECT_EXTENSION", 15 },
-  { "OBJECT_FDW", "PG_QUERY__OBJECT_TYPE__OBJECT_FDW", 16 },
-  { "OBJECT_FOREIGN_SERVER", "PG_QUERY__OBJECT_TYPE__OBJECT_FOREIGN_SERVER", 17 },
-  { "OBJECT_FOREIGN_TABLE", "PG_QUERY__OBJECT_TYPE__OBJECT_FOREIGN_TABLE", 18 },
-  { "OBJECT_FUNCTION", "PG_QUERY__OBJECT_TYPE__OBJECT_FUNCTION", 19 },
-  { "OBJECT_INDEX", "PG_QUERY__OBJECT_TYPE__OBJECT_INDEX", 20 },
-  { "OBJECT_LANGUAGE", "PG_QUERY__OBJECT_TYPE__OBJECT_LANGUAGE", 21 },
-  { "OBJECT_LARGEOBJECT", "PG_QUERY__OBJECT_TYPE__OBJECT_LARGEOBJECT", 22 },
-  { "OBJECT_MATVIEW", "PG_QUERY__OBJECT_TYPE__OBJECT_MATVIEW", 23 },
-  { "OBJECT_OPCLASS", "PG_QUERY__OBJECT_TYPE__OBJECT_OPCLASS", 24 },
-  { "OBJECT_OPERATOR", "PG_QUERY__OBJECT_TYPE__OBJECT_OPERATOR", 25 },
-  { "OBJECT_OPFAMILY", "PG_QUERY__OBJECT_TYPE__OBJECT_OPFAMILY", 26 },
-  { "OBJECT_POLICY", "PG_QUERY__OBJECT_TYPE__OBJECT_POLICY", 27 },
-  { "OBJECT_PROCEDURE", "PG_QUERY__OBJECT_TYPE__OBJECT_PROCEDURE", 28 },
-  { "OBJECT_PUBLICATION", "PG_QUERY__OBJECT_TYPE__OBJECT_PUBLICATION", 29 },
-  { "OBJECT_PUBLICATION_REL", "PG_QUERY__OBJECT_TYPE__OBJECT_PUBLICATION_REL", 30 },
-  { "OBJECT_ROLE", "PG_QUERY__OBJECT_TYPE__OBJECT_ROLE", 31 },
-  { "OBJECT_ROUTINE", "PG_QUERY__OBJECT_TYPE__OBJECT_ROUTINE", 32 },
-  { "OBJECT_RULE", "PG_QUERY__OBJECT_TYPE__OBJECT_RULE", 33 },
-  { "OBJECT_SCHEMA", "PG_QUERY__OBJECT_TYPE__OBJECT_SCHEMA", 34 },
-  { "OBJECT_SEQUENCE", "PG_QUERY__OBJECT_TYPE__OBJECT_SEQUENCE", 35 },
-  { "OBJECT_SUBSCRIPTION", "PG_QUERY__OBJECT_TYPE__OBJECT_SUBSCRIPTION", 36 },
-  { "OBJECT_STATISTIC_EXT", "PG_QUERY__OBJECT_TYPE__OBJECT_STATISTIC_EXT", 37 },
-  { "OBJECT_TABCONSTRAINT", "PG_QUERY__OBJECT_TYPE__OBJECT_TABCONSTRAINT", 38 },
-  { "OBJECT_TABLE", "PG_QUERY__OBJECT_TYPE__OBJECT_TABLE", 39 },
-  { "OBJECT_TABLESPACE", "PG_QUERY__OBJECT_TYPE__OBJECT_TABLESPACE", 40 },
-  { "OBJECT_TRANSFORM", "PG_QUERY__OBJECT_TYPE__OBJECT_TRANSFORM", 41 },
-  { "OBJECT_TRIGGER", "PG_QUERY__OBJECT_TYPE__OBJECT_TRIGGER", 42 },
-  { "OBJECT_TSCONFIGURATION", "PG_QUERY__OBJECT_TYPE__OBJECT_TSCONFIGURATION", 43 },
-  { "OBJECT_TSDICTIONARY", "PG_QUERY__OBJECT_TYPE__OBJECT_TSDICTIONARY", 44 },
-  { "OBJECT_TSPARSER", "PG_QUERY__OBJECT_TYPE__OBJECT_TSPARSER", 45 },
-  { "OBJECT_TSTEMPLATE", "PG_QUERY__OBJECT_TYPE__OBJECT_TSTEMPLATE", 46 },
-  { "OBJECT_TYPE", "PG_QUERY__OBJECT_TYPE__OBJECT_TYPE", 47 },
-  { "OBJECT_USER_MAPPING", "PG_QUERY__OBJECT_TYPE__OBJECT_USER_MAPPING", 48 },
-  { "OBJECT_VIEW", "PG_QUERY__OBJECT_TYPE__OBJECT_VIEW", 49 },
+  { "OBJECT_TYPE_UNDEFINED", "PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED", 0 },
+  { "OBJECT_ACCESS_METHOD", "PG_QUERY__OBJECT_TYPE__OBJECT_ACCESS_METHOD", 1 },
+  { "OBJECT_AGGREGATE", "PG_QUERY__OBJECT_TYPE__OBJECT_AGGREGATE", 2 },
+  { "OBJECT_AMOP", "PG_QUERY__OBJECT_TYPE__OBJECT_AMOP", 3 },
+  { "OBJECT_AMPROC", "PG_QUERY__OBJECT_TYPE__OBJECT_AMPROC", 4 },
+  { "OBJECT_ATTRIBUTE", "PG_QUERY__OBJECT_TYPE__OBJECT_ATTRIBUTE", 5 },
+  { "OBJECT_CAST", "PG_QUERY__OBJECT_TYPE__OBJECT_CAST", 6 },
+  { "OBJECT_COLUMN", "PG_QUERY__OBJECT_TYPE__OBJECT_COLUMN", 7 },
+  { "OBJECT_COLLATION", "PG_QUERY__OBJECT_TYPE__OBJECT_COLLATION", 8 },
+  { "OBJECT_CONVERSION", "PG_QUERY__OBJECT_TYPE__OBJECT_CONVERSION", 9 },
+  { "OBJECT_DATABASE", "PG_QUERY__OBJECT_TYPE__OBJECT_DATABASE", 10 },
+  { "OBJECT_DEFAULT", "PG_QUERY__OBJECT_TYPE__OBJECT_DEFAULT", 11 },
+  { "OBJECT_DEFACL", "PG_QUERY__OBJECT_TYPE__OBJECT_DEFACL", 12 },
+  { "OBJECT_DOMAIN", "PG_QUERY__OBJECT_TYPE__OBJECT_DOMAIN", 13 },
+  { "OBJECT_DOMCONSTRAINT", "PG_QUERY__OBJECT_TYPE__OBJECT_DOMCONSTRAINT", 14 },
+  { "OBJECT_EVENT_TRIGGER", "PG_QUERY__OBJECT_TYPE__OBJECT_EVENT_TRIGGER", 15 },
+  { "OBJECT_EXTENSION", "PG_QUERY__OBJECT_TYPE__OBJECT_EXTENSION", 16 },
+  { "OBJECT_FDW", "PG_QUERY__OBJECT_TYPE__OBJECT_FDW", 17 },
+  { "OBJECT_FOREIGN_SERVER", "PG_QUERY__OBJECT_TYPE__OBJECT_FOREIGN_SERVER", 18 },
+  { "OBJECT_FOREIGN_TABLE", "PG_QUERY__OBJECT_TYPE__OBJECT_FOREIGN_TABLE", 19 },
+  { "OBJECT_FUNCTION", "PG_QUERY__OBJECT_TYPE__OBJECT_FUNCTION", 20 },
+  { "OBJECT_INDEX", "PG_QUERY__OBJECT_TYPE__OBJECT_INDEX", 21 },
+  { "OBJECT_LANGUAGE", "PG_QUERY__OBJECT_TYPE__OBJECT_LANGUAGE", 22 },
+  { "OBJECT_LARGEOBJECT", "PG_QUERY__OBJECT_TYPE__OBJECT_LARGEOBJECT", 23 },
+  { "OBJECT_MATVIEW", "PG_QUERY__OBJECT_TYPE__OBJECT_MATVIEW", 24 },
+  { "OBJECT_OPCLASS", "PG_QUERY__OBJECT_TYPE__OBJECT_OPCLASS", 25 },
+  { "OBJECT_OPERATOR", "PG_QUERY__OBJECT_TYPE__OBJECT_OPERATOR", 26 },
+  { "OBJECT_OPFAMILY", "PG_QUERY__OBJECT_TYPE__OBJECT_OPFAMILY", 27 },
+  { "OBJECT_POLICY", "PG_QUERY__OBJECT_TYPE__OBJECT_POLICY", 28 },
+  { "OBJECT_PROCEDURE", "PG_QUERY__OBJECT_TYPE__OBJECT_PROCEDURE", 29 },
+  { "OBJECT_PUBLICATION", "PG_QUERY__OBJECT_TYPE__OBJECT_PUBLICATION", 30 },
+  { "OBJECT_PUBLICATION_REL", "PG_QUERY__OBJECT_TYPE__OBJECT_PUBLICATION_REL", 31 },
+  { "OBJECT_ROLE", "PG_QUERY__OBJECT_TYPE__OBJECT_ROLE", 32 },
+  { "OBJECT_ROUTINE", "PG_QUERY__OBJECT_TYPE__OBJECT_ROUTINE", 33 },
+  { "OBJECT_RULE", "PG_QUERY__OBJECT_TYPE__OBJECT_RULE", 34 },
+  { "OBJECT_SCHEMA", "PG_QUERY__OBJECT_TYPE__OBJECT_SCHEMA", 35 },
+  { "OBJECT_SEQUENCE", "PG_QUERY__OBJECT_TYPE__OBJECT_SEQUENCE", 36 },
+  { "OBJECT_SUBSCRIPTION", "PG_QUERY__OBJECT_TYPE__OBJECT_SUBSCRIPTION", 37 },
+  { "OBJECT_STATISTIC_EXT", "PG_QUERY__OBJECT_TYPE__OBJECT_STATISTIC_EXT", 38 },
+  { "OBJECT_TABCONSTRAINT", "PG_QUERY__OBJECT_TYPE__OBJECT_TABCONSTRAINT", 39 },
+  { "OBJECT_TABLE", "PG_QUERY__OBJECT_TYPE__OBJECT_TABLE", 40 },
+  { "OBJECT_TABLESPACE", "PG_QUERY__OBJECT_TYPE__OBJECT_TABLESPACE", 41 },
+  { "OBJECT_TRANSFORM", "PG_QUERY__OBJECT_TYPE__OBJECT_TRANSFORM", 42 },
+  { "OBJECT_TRIGGER", "PG_QUERY__OBJECT_TYPE__OBJECT_TRIGGER", 43 },
+  { "OBJECT_TSCONFIGURATION", "PG_QUERY__OBJECT_TYPE__OBJECT_TSCONFIGURATION", 44 },
+  { "OBJECT_TSDICTIONARY", "PG_QUERY__OBJECT_TYPE__OBJECT_TSDICTIONARY", 45 },
+  { "OBJECT_TSPARSER", "PG_QUERY__OBJECT_TYPE__OBJECT_TSPARSER", 46 },
+  { "OBJECT_TSTEMPLATE", "PG_QUERY__OBJECT_TYPE__OBJECT_TSTEMPLATE", 47 },
+  { "OBJECT_TYPE", "PG_QUERY__OBJECT_TYPE__OBJECT_TYPE", 48 },
+  { "OBJECT_USER_MAPPING", "PG_QUERY__OBJECT_TYPE__OBJECT_USER_MAPPING", 49 },
+  { "OBJECT_VIEW", "PG_QUERY__OBJECT_TYPE__OBJECT_VIEW", 50 },
 };
 static const ProtobufCIntRange pg_query__object_type__value_ranges[] = {
-{0, 0},{0, 50}
+{0, 0},{0, 51}
 };
-static const ProtobufCEnumValueIndex pg_query__object_type__enum_values_by_name[50] =
+static const ProtobufCEnumValueIndex pg_query__object_type__enum_values_by_name[51] =
 {
-  { "OBJECT_ACCESS_METHOD", 0 },
-  { "OBJECT_AGGREGATE", 1 },
-  { "OBJECT_AMOP", 2 },
-  { "OBJECT_AMPROC", 3 },
-  { "OBJECT_ATTRIBUTE", 4 },
-  { "OBJECT_CAST", 5 },
-  { "OBJECT_COLLATION", 7 },
-  { "OBJECT_COLUMN", 6 },
-  { "OBJECT_CONVERSION", 8 },
-  { "OBJECT_DATABASE", 9 },
-  { "OBJECT_DEFACL", 11 },
-  { "OBJECT_DEFAULT", 10 },
-  { "OBJECT_DOMAIN", 12 },
-  { "OBJECT_DOMCONSTRAINT", 13 },
-  { "OBJECT_EVENT_TRIGGER", 14 },
-  { "OBJECT_EXTENSION", 15 },
-  { "OBJECT_FDW", 16 },
-  { "OBJECT_FOREIGN_SERVER", 17 },
-  { "OBJECT_FOREIGN_TABLE", 18 },
-  { "OBJECT_FUNCTION", 19 },
-  { "OBJECT_INDEX", 20 },
-  { "OBJECT_LANGUAGE", 21 },
-  { "OBJECT_LARGEOBJECT", 22 },
-  { "OBJECT_MATVIEW", 23 },
-  { "OBJECT_OPCLASS", 24 },
-  { "OBJECT_OPERATOR", 25 },
-  { "OBJECT_OPFAMILY", 26 },
-  { "OBJECT_POLICY", 27 },
-  { "OBJECT_PROCEDURE", 28 },
-  { "OBJECT_PUBLICATION", 29 },
-  { "OBJECT_PUBLICATION_REL", 30 },
-  { "OBJECT_ROLE", 31 },
-  { "OBJECT_ROUTINE", 32 },
-  { "OBJECT_RULE", 33 },
-  { "OBJECT_SCHEMA", 34 },
-  { "OBJECT_SEQUENCE", 35 },
-  { "OBJECT_STATISTIC_EXT", 37 },
-  { "OBJECT_SUBSCRIPTION", 36 },
-  { "OBJECT_TABCONSTRAINT", 38 },
-  { "OBJECT_TABLE", 39 },
-  { "OBJECT_TABLESPACE", 40 },
-  { "OBJECT_TRANSFORM", 41 },
-  { "OBJECT_TRIGGER", 42 },
-  { "OBJECT_TSCONFIGURATION", 43 },
-  { "OBJECT_TSDICTIONARY", 44 },
-  { "OBJECT_TSPARSER", 45 },
-  { "OBJECT_TSTEMPLATE", 46 },
-  { "OBJECT_TYPE", 47 },
-  { "OBJECT_USER_MAPPING", 48 },
-  { "OBJECT_VIEW", 49 },
+  { "OBJECT_ACCESS_METHOD", 1 },
+  { "OBJECT_AGGREGATE", 2 },
+  { "OBJECT_AMOP", 3 },
+  { "OBJECT_AMPROC", 4 },
+  { "OBJECT_ATTRIBUTE", 5 },
+  { "OBJECT_CAST", 6 },
+  { "OBJECT_COLLATION", 8 },
+  { "OBJECT_COLUMN", 7 },
+  { "OBJECT_CONVERSION", 9 },
+  { "OBJECT_DATABASE", 10 },
+  { "OBJECT_DEFACL", 12 },
+  { "OBJECT_DEFAULT", 11 },
+  { "OBJECT_DOMAIN", 13 },
+  { "OBJECT_DOMCONSTRAINT", 14 },
+  { "OBJECT_EVENT_TRIGGER", 15 },
+  { "OBJECT_EXTENSION", 16 },
+  { "OBJECT_FDW", 17 },
+  { "OBJECT_FOREIGN_SERVER", 18 },
+  { "OBJECT_FOREIGN_TABLE", 19 },
+  { "OBJECT_FUNCTION", 20 },
+  { "OBJECT_INDEX", 21 },
+  { "OBJECT_LANGUAGE", 22 },
+  { "OBJECT_LARGEOBJECT", 23 },
+  { "OBJECT_MATVIEW", 24 },
+  { "OBJECT_OPCLASS", 25 },
+  { "OBJECT_OPERATOR", 26 },
+  { "OBJECT_OPFAMILY", 27 },
+  { "OBJECT_POLICY", 28 },
+  { "OBJECT_PROCEDURE", 29 },
+  { "OBJECT_PUBLICATION", 30 },
+  { "OBJECT_PUBLICATION_REL", 31 },
+  { "OBJECT_ROLE", 32 },
+  { "OBJECT_ROUTINE", 33 },
+  { "OBJECT_RULE", 34 },
+  { "OBJECT_SCHEMA", 35 },
+  { "OBJECT_SEQUENCE", 36 },
+  { "OBJECT_STATISTIC_EXT", 38 },
+  { "OBJECT_SUBSCRIPTION", 37 },
+  { "OBJECT_TABCONSTRAINT", 39 },
+  { "OBJECT_TABLE", 40 },
+  { "OBJECT_TABLESPACE", 41 },
+  { "OBJECT_TRANSFORM", 42 },
+  { "OBJECT_TRIGGER", 43 },
+  { "OBJECT_TSCONFIGURATION", 44 },
+  { "OBJECT_TSDICTIONARY", 45 },
+  { "OBJECT_TSPARSER", 46 },
+  { "OBJECT_TSTEMPLATE", 47 },
+  { "OBJECT_TYPE", 48 },
+  { "OBJECT_TYPE_UNDEFINED", 0 },
+  { "OBJECT_USER_MAPPING", 49 },
+  { "OBJECT_VIEW", 50 },
 };
 const ProtobufCEnumDescriptor pg_query__object_type__descriptor =
 {
@@ -35003,26 +35033,28 @@ const ProtobufCEnumDescriptor pg_query__object_type__descriptor =
   "ObjectType",
   "PgQuery__ObjectType",
   "pg_query",
-  50,
+  51,
   pg_query__object_type__enum_values_by_number,
-  50,
+  51,
   pg_query__object_type__enum_values_by_name,
   1,
   pg_query__object_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__drop_behavior__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__drop_behavior__enum_values_by_number[3] =
 {
-  { "DROP_RESTRICT", "PG_QUERY__DROP_BEHAVIOR__DROP_RESTRICT", 0 },
-  { "DROP_CASCADE", "PG_QUERY__DROP_BEHAVIOR__DROP_CASCADE", 1 },
+  { "DROP_BEHAVIOR_UNDEFINED", "PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED", 0 },
+  { "DROP_RESTRICT", "PG_QUERY__DROP_BEHAVIOR__DROP_RESTRICT", 1 },
+  { "DROP_CASCADE", "PG_QUERY__DROP_BEHAVIOR__DROP_CASCADE", 2 },
 };
 static const ProtobufCIntRange pg_query__drop_behavior__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__drop_behavior__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__drop_behavior__enum_values_by_name[3] =
 {
-  { "DROP_CASCADE", 1 },
-  { "DROP_RESTRICT", 0 },
+  { "DROP_BEHAVIOR_UNDEFINED", 0 },
+  { "DROP_CASCADE", 2 },
+  { "DROP_RESTRICT", 1 },
 };
 const ProtobufCEnumDescriptor pg_query__drop_behavior__descriptor =
 {
@@ -35031,156 +35063,158 @@ const ProtobufCEnumDescriptor pg_query__drop_behavior__descriptor =
   "DropBehavior",
   "PgQuery__DropBehavior",
   "pg_query",
-  2,
+  3,
   pg_query__drop_behavior__enum_values_by_number,
-  2,
+  3,
   pg_query__drop_behavior__enum_values_by_name,
   1,
   pg_query__drop_behavior__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__alter_table_type__enum_values_by_number[67] =
+static const ProtobufCEnumValue pg_query__alter_table_type__enum_values_by_number[68] =
 {
-  { "AT_AddColumn", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumn", 0 },
-  { "AT_AddColumnRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnRecurse", 1 },
-  { "AT_AddColumnToView", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnToView", 2 },
-  { "AT_ColumnDefault", "PG_QUERY__ALTER_TABLE_TYPE__AT_ColumnDefault", 3 },
-  { "AT_CookedColumnDefault", "PG_QUERY__ALTER_TABLE_TYPE__AT_CookedColumnDefault", 4 },
-  { "AT_DropNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropNotNull", 5 },
-  { "AT_SetNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetNotNull", 6 },
-  { "AT_DropExpression", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropExpression", 7 },
-  { "AT_CheckNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_CheckNotNull", 8 },
-  { "AT_SetStatistics", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetStatistics", 9 },
-  { "AT_SetOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetOptions", 10 },
-  { "AT_ResetOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ResetOptions", 11 },
-  { "AT_SetStorage", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetStorage", 12 },
-  { "AT_DropColumn", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumn", 13 },
-  { "AT_DropColumnRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumnRecurse", 14 },
-  { "AT_AddIndex", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndex", 15 },
-  { "AT_ReAddIndex", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddIndex", 16 },
-  { "AT_AddConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraint", 17 },
-  { "AT_AddConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraintRecurse", 18 },
-  { "AT_ReAddConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddConstraint", 19 },
-  { "AT_ReAddDomainConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddDomainConstraint", 20 },
-  { "AT_AlterConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterConstraint", 21 },
-  { "AT_ValidateConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraint", 22 },
-  { "AT_ValidateConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraintRecurse", 23 },
-  { "AT_AddIndexConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndexConstraint", 24 },
-  { "AT_DropConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraint", 25 },
-  { "AT_DropConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraintRecurse", 26 },
-  { "AT_ReAddComment", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddComment", 27 },
-  { "AT_AlterColumnType", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnType", 28 },
-  { "AT_AlterColumnGenericOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnGenericOptions", 29 },
-  { "AT_ChangeOwner", "PG_QUERY__ALTER_TABLE_TYPE__AT_ChangeOwner", 30 },
-  { "AT_ClusterOn", "PG_QUERY__ALTER_TABLE_TYPE__AT_ClusterOn", 31 },
-  { "AT_DropCluster", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropCluster", 32 },
-  { "AT_SetLogged", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetLogged", 33 },
-  { "AT_SetUnLogged", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetUnLogged", 34 },
-  { "AT_DropOids", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropOids", 35 },
-  { "AT_SetTableSpace", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetTableSpace", 36 },
-  { "AT_SetRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetRelOptions", 37 },
-  { "AT_ResetRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ResetRelOptions", 38 },
-  { "AT_ReplaceRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReplaceRelOptions", 39 },
-  { "AT_EnableTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrig", 40 },
-  { "AT_EnableAlwaysTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysTrig", 41 },
-  { "AT_EnableReplicaTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaTrig", 42 },
-  { "AT_DisableTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrig", 43 },
-  { "AT_EnableTrigAll", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigAll", 44 },
-  { "AT_DisableTrigAll", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigAll", 45 },
-  { "AT_EnableTrigUser", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigUser", 46 },
-  { "AT_DisableTrigUser", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigUser", 47 },
-  { "AT_EnableRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRule", 48 },
-  { "AT_EnableAlwaysRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysRule", 49 },
-  { "AT_EnableReplicaRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaRule", 50 },
-  { "AT_DisableRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRule", 51 },
-  { "AT_AddInherit", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddInherit", 52 },
-  { "AT_DropInherit", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropInherit", 53 },
-  { "AT_AddOf", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddOf", 54 },
-  { "AT_DropOf", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropOf", 55 },
-  { "AT_ReplicaIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReplicaIdentity", 56 },
-  { "AT_EnableRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRowSecurity", 57 },
-  { "AT_DisableRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRowSecurity", 58 },
-  { "AT_ForceRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_ForceRowSecurity", 59 },
-  { "AT_NoForceRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_NoForceRowSecurity", 60 },
-  { "AT_GenericOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_GenericOptions", 61 },
-  { "AT_AttachPartition", "PG_QUERY__ALTER_TABLE_TYPE__AT_AttachPartition", 62 },
-  { "AT_DetachPartition", "PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartition", 63 },
-  { "AT_AddIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIdentity", 64 },
-  { "AT_SetIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetIdentity", 65 },
-  { "AT_DropIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropIdentity", 66 },
+  { "ALTER_TABLE_TYPE_UNDEFINED", "PG_QUERY__ALTER_TABLE_TYPE__ALTER_TABLE_TYPE_UNDEFINED", 0 },
+  { "AT_AddColumn", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumn", 1 },
+  { "AT_AddColumnRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnRecurse", 2 },
+  { "AT_AddColumnToView", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnToView", 3 },
+  { "AT_ColumnDefault", "PG_QUERY__ALTER_TABLE_TYPE__AT_ColumnDefault", 4 },
+  { "AT_CookedColumnDefault", "PG_QUERY__ALTER_TABLE_TYPE__AT_CookedColumnDefault", 5 },
+  { "AT_DropNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropNotNull", 6 },
+  { "AT_SetNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetNotNull", 7 },
+  { "AT_DropExpression", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropExpression", 8 },
+  { "AT_CheckNotNull", "PG_QUERY__ALTER_TABLE_TYPE__AT_CheckNotNull", 9 },
+  { "AT_SetStatistics", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetStatistics", 10 },
+  { "AT_SetOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetOptions", 11 },
+  { "AT_ResetOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ResetOptions", 12 },
+  { "AT_SetStorage", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetStorage", 13 },
+  { "AT_DropColumn", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumn", 14 },
+  { "AT_DropColumnRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumnRecurse", 15 },
+  { "AT_AddIndex", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndex", 16 },
+  { "AT_ReAddIndex", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddIndex", 17 },
+  { "AT_AddConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraint", 18 },
+  { "AT_AddConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraintRecurse", 19 },
+  { "AT_ReAddConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddConstraint", 20 },
+  { "AT_ReAddDomainConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddDomainConstraint", 21 },
+  { "AT_AlterConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterConstraint", 22 },
+  { "AT_ValidateConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraint", 23 },
+  { "AT_ValidateConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraintRecurse", 24 },
+  { "AT_AddIndexConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndexConstraint", 25 },
+  { "AT_DropConstraint", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraint", 26 },
+  { "AT_DropConstraintRecurse", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraintRecurse", 27 },
+  { "AT_ReAddComment", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddComment", 28 },
+  { "AT_AlterColumnType", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnType", 29 },
+  { "AT_AlterColumnGenericOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnGenericOptions", 30 },
+  { "AT_ChangeOwner", "PG_QUERY__ALTER_TABLE_TYPE__AT_ChangeOwner", 31 },
+  { "AT_ClusterOn", "PG_QUERY__ALTER_TABLE_TYPE__AT_ClusterOn", 32 },
+  { "AT_DropCluster", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropCluster", 33 },
+  { "AT_SetLogged", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetLogged", 34 },
+  { "AT_SetUnLogged", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetUnLogged", 35 },
+  { "AT_DropOids", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropOids", 36 },
+  { "AT_SetTableSpace", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetTableSpace", 37 },
+  { "AT_SetRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetRelOptions", 38 },
+  { "AT_ResetRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ResetRelOptions", 39 },
+  { "AT_ReplaceRelOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReplaceRelOptions", 40 },
+  { "AT_EnableTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrig", 41 },
+  { "AT_EnableAlwaysTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysTrig", 42 },
+  { "AT_EnableReplicaTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaTrig", 43 },
+  { "AT_DisableTrig", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrig", 44 },
+  { "AT_EnableTrigAll", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigAll", 45 },
+  { "AT_DisableTrigAll", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigAll", 46 },
+  { "AT_EnableTrigUser", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigUser", 47 },
+  { "AT_DisableTrigUser", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigUser", 48 },
+  { "AT_EnableRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRule", 49 },
+  { "AT_EnableAlwaysRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysRule", 50 },
+  { "AT_EnableReplicaRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaRule", 51 },
+  { "AT_DisableRule", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRule", 52 },
+  { "AT_AddInherit", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddInherit", 53 },
+  { "AT_DropInherit", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropInherit", 54 },
+  { "AT_AddOf", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddOf", 55 },
+  { "AT_DropOf", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropOf", 56 },
+  { "AT_ReplicaIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_ReplicaIdentity", 57 },
+  { "AT_EnableRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRowSecurity", 58 },
+  { "AT_DisableRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRowSecurity", 59 },
+  { "AT_ForceRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_ForceRowSecurity", 60 },
+  { "AT_NoForceRowSecurity", "PG_QUERY__ALTER_TABLE_TYPE__AT_NoForceRowSecurity", 61 },
+  { "AT_GenericOptions", "PG_QUERY__ALTER_TABLE_TYPE__AT_GenericOptions", 62 },
+  { "AT_AttachPartition", "PG_QUERY__ALTER_TABLE_TYPE__AT_AttachPartition", 63 },
+  { "AT_DetachPartition", "PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartition", 64 },
+  { "AT_AddIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_AddIdentity", 65 },
+  { "AT_SetIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_SetIdentity", 66 },
+  { "AT_DropIdentity", "PG_QUERY__ALTER_TABLE_TYPE__AT_DropIdentity", 67 },
 };
 static const ProtobufCIntRange pg_query__alter_table_type__value_ranges[] = {
-{0, 0},{0, 67}
+{0, 0},{0, 68}
 };
-static const ProtobufCEnumValueIndex pg_query__alter_table_type__enum_values_by_name[67] =
+static const ProtobufCEnumValueIndex pg_query__alter_table_type__enum_values_by_name[68] =
 {
-  { "AT_AddColumn", 0 },
-  { "AT_AddColumnRecurse", 1 },
-  { "AT_AddColumnToView", 2 },
-  { "AT_AddConstraint", 17 },
-  { "AT_AddConstraintRecurse", 18 },
-  { "AT_AddIdentity", 64 },
-  { "AT_AddIndex", 15 },
-  { "AT_AddIndexConstraint", 24 },
-  { "AT_AddInherit", 52 },
-  { "AT_AddOf", 54 },
-  { "AT_AlterColumnGenericOptions", 29 },
-  { "AT_AlterColumnType", 28 },
-  { "AT_AlterConstraint", 21 },
-  { "AT_AttachPartition", 62 },
-  { "AT_ChangeOwner", 30 },
-  { "AT_CheckNotNull", 8 },
-  { "AT_ClusterOn", 31 },
-  { "AT_ColumnDefault", 3 },
-  { "AT_CookedColumnDefault", 4 },
-  { "AT_DetachPartition", 63 },
-  { "AT_DisableRowSecurity", 58 },
-  { "AT_DisableRule", 51 },
-  { "AT_DisableTrig", 43 },
-  { "AT_DisableTrigAll", 45 },
-  { "AT_DisableTrigUser", 47 },
-  { "AT_DropCluster", 32 },
-  { "AT_DropColumn", 13 },
-  { "AT_DropColumnRecurse", 14 },
-  { "AT_DropConstraint", 25 },
-  { "AT_DropConstraintRecurse", 26 },
-  { "AT_DropExpression", 7 },
-  { "AT_DropIdentity", 66 },
-  { "AT_DropInherit", 53 },
-  { "AT_DropNotNull", 5 },
-  { "AT_DropOf", 55 },
-  { "AT_DropOids", 35 },
-  { "AT_EnableAlwaysRule", 49 },
-  { "AT_EnableAlwaysTrig", 41 },
-  { "AT_EnableReplicaRule", 50 },
-  { "AT_EnableReplicaTrig", 42 },
-  { "AT_EnableRowSecurity", 57 },
-  { "AT_EnableRule", 48 },
-  { "AT_EnableTrig", 40 },
-  { "AT_EnableTrigAll", 44 },
-  { "AT_EnableTrigUser", 46 },
-  { "AT_ForceRowSecurity", 59 },
-  { "AT_GenericOptions", 61 },
-  { "AT_NoForceRowSecurity", 60 },
-  { "AT_ReAddComment", 27 },
-  { "AT_ReAddConstraint", 19 },
-  { "AT_ReAddDomainConstraint", 20 },
-  { "AT_ReAddIndex", 16 },
-  { "AT_ReplaceRelOptions", 39 },
-  { "AT_ReplicaIdentity", 56 },
-  { "AT_ResetOptions", 11 },
-  { "AT_ResetRelOptions", 38 },
-  { "AT_SetIdentity", 65 },
-  { "AT_SetLogged", 33 },
-  { "AT_SetNotNull", 6 },
-  { "AT_SetOptions", 10 },
-  { "AT_SetRelOptions", 37 },
-  { "AT_SetStatistics", 9 },
-  { "AT_SetStorage", 12 },
-  { "AT_SetTableSpace", 36 },
-  { "AT_SetUnLogged", 34 },
-  { "AT_ValidateConstraint", 22 },
-  { "AT_ValidateConstraintRecurse", 23 },
+  { "ALTER_TABLE_TYPE_UNDEFINED", 0 },
+  { "AT_AddColumn", 1 },
+  { "AT_AddColumnRecurse", 2 },
+  { "AT_AddColumnToView", 3 },
+  { "AT_AddConstraint", 18 },
+  { "AT_AddConstraintRecurse", 19 },
+  { "AT_AddIdentity", 65 },
+  { "AT_AddIndex", 16 },
+  { "AT_AddIndexConstraint", 25 },
+  { "AT_AddInherit", 53 },
+  { "AT_AddOf", 55 },
+  { "AT_AlterColumnGenericOptions", 30 },
+  { "AT_AlterColumnType", 29 },
+  { "AT_AlterConstraint", 22 },
+  { "AT_AttachPartition", 63 },
+  { "AT_ChangeOwner", 31 },
+  { "AT_CheckNotNull", 9 },
+  { "AT_ClusterOn", 32 },
+  { "AT_ColumnDefault", 4 },
+  { "AT_CookedColumnDefault", 5 },
+  { "AT_DetachPartition", 64 },
+  { "AT_DisableRowSecurity", 59 },
+  { "AT_DisableRule", 52 },
+  { "AT_DisableTrig", 44 },
+  { "AT_DisableTrigAll", 46 },
+  { "AT_DisableTrigUser", 48 },
+  { "AT_DropCluster", 33 },
+  { "AT_DropColumn", 14 },
+  { "AT_DropColumnRecurse", 15 },
+  { "AT_DropConstraint", 26 },
+  { "AT_DropConstraintRecurse", 27 },
+  { "AT_DropExpression", 8 },
+  { "AT_DropIdentity", 67 },
+  { "AT_DropInherit", 54 },
+  { "AT_DropNotNull", 6 },
+  { "AT_DropOf", 56 },
+  { "AT_DropOids", 36 },
+  { "AT_EnableAlwaysRule", 50 },
+  { "AT_EnableAlwaysTrig", 42 },
+  { "AT_EnableReplicaRule", 51 },
+  { "AT_EnableReplicaTrig", 43 },
+  { "AT_EnableRowSecurity", 58 },
+  { "AT_EnableRule", 49 },
+  { "AT_EnableTrig", 41 },
+  { "AT_EnableTrigAll", 45 },
+  { "AT_EnableTrigUser", 47 },
+  { "AT_ForceRowSecurity", 60 },
+  { "AT_GenericOptions", 62 },
+  { "AT_NoForceRowSecurity", 61 },
+  { "AT_ReAddComment", 28 },
+  { "AT_ReAddConstraint", 20 },
+  { "AT_ReAddDomainConstraint", 21 },
+  { "AT_ReAddIndex", 17 },
+  { "AT_ReplaceRelOptions", 40 },
+  { "AT_ReplicaIdentity", 57 },
+  { "AT_ResetOptions", 12 },
+  { "AT_ResetRelOptions", 39 },
+  { "AT_SetIdentity", 66 },
+  { "AT_SetLogged", 34 },
+  { "AT_SetNotNull", 7 },
+  { "AT_SetOptions", 11 },
+  { "AT_SetRelOptions", 38 },
+  { "AT_SetStatistics", 10 },
+  { "AT_SetStorage", 13 },
+  { "AT_SetTableSpace", 37 },
+  { "AT_SetUnLogged", 35 },
+  { "AT_ValidateConstraint", 23 },
+  { "AT_ValidateConstraintRecurse", 24 },
 };
 const ProtobufCEnumDescriptor pg_query__alter_table_type__descriptor =
 {
@@ -35189,28 +35223,30 @@ const ProtobufCEnumDescriptor pg_query__alter_table_type__descriptor =
   "AlterTableType",
   "PgQuery__AlterTableType",
   "pg_query",
-  67,
+  68,
   pg_query__alter_table_type__enum_values_by_number,
-  67,
+  68,
   pg_query__alter_table_type__enum_values_by_name,
   1,
   pg_query__alter_table_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__grant_target_type__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__grant_target_type__enum_values_by_number[4] =
 {
-  { "ACL_TARGET_OBJECT", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_OBJECT", 0 },
-  { "ACL_TARGET_ALL_IN_SCHEMA", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_ALL_IN_SCHEMA", 1 },
-  { "ACL_TARGET_DEFAULTS", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_DEFAULTS", 2 },
+  { "GRANT_TARGET_TYPE_UNDEFINED", "PG_QUERY__GRANT_TARGET_TYPE__GRANT_TARGET_TYPE_UNDEFINED", 0 },
+  { "ACL_TARGET_OBJECT", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_OBJECT", 1 },
+  { "ACL_TARGET_ALL_IN_SCHEMA", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_ALL_IN_SCHEMA", 2 },
+  { "ACL_TARGET_DEFAULTS", "PG_QUERY__GRANT_TARGET_TYPE__ACL_TARGET_DEFAULTS", 3 },
 };
 static const ProtobufCIntRange pg_query__grant_target_type__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__grant_target_type__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__grant_target_type__enum_values_by_name[4] =
 {
-  { "ACL_TARGET_ALL_IN_SCHEMA", 1 },
-  { "ACL_TARGET_DEFAULTS", 2 },
-  { "ACL_TARGET_OBJECT", 0 },
+  { "ACL_TARGET_ALL_IN_SCHEMA", 2 },
+  { "ACL_TARGET_DEFAULTS", 3 },
+  { "ACL_TARGET_OBJECT", 1 },
+  { "GRANT_TARGET_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__grant_target_type__descriptor =
 {
@@ -35219,34 +35255,36 @@ const ProtobufCEnumDescriptor pg_query__grant_target_type__descriptor =
   "GrantTargetType",
   "PgQuery__GrantTargetType",
   "pg_query",
-  3,
+  4,
   pg_query__grant_target_type__enum_values_by_number,
-  3,
+  4,
   pg_query__grant_target_type__enum_values_by_name,
   1,
   pg_query__grant_target_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__variable_set_kind__enum_values_by_number[6] =
+static const ProtobufCEnumValue pg_query__variable_set_kind__enum_values_by_number[7] =
 {
-  { "VAR_SET_VALUE", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_VALUE", 0 },
-  { "VAR_SET_DEFAULT", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_DEFAULT", 1 },
-  { "VAR_SET_CURRENT", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_CURRENT", 2 },
-  { "VAR_SET_MULTI", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_MULTI", 3 },
-  { "VAR_RESET", "PG_QUERY__VARIABLE_SET_KIND__VAR_RESET", 4 },
-  { "VAR_RESET_ALL", "PG_QUERY__VARIABLE_SET_KIND__VAR_RESET_ALL", 5 },
+  { "VARIABLE_SET_KIND_UNDEFINED", "PG_QUERY__VARIABLE_SET_KIND__VARIABLE_SET_KIND_UNDEFINED", 0 },
+  { "VAR_SET_VALUE", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_VALUE", 1 },
+  { "VAR_SET_DEFAULT", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_DEFAULT", 2 },
+  { "VAR_SET_CURRENT", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_CURRENT", 3 },
+  { "VAR_SET_MULTI", "PG_QUERY__VARIABLE_SET_KIND__VAR_SET_MULTI", 4 },
+  { "VAR_RESET", "PG_QUERY__VARIABLE_SET_KIND__VAR_RESET", 5 },
+  { "VAR_RESET_ALL", "PG_QUERY__VARIABLE_SET_KIND__VAR_RESET_ALL", 6 },
 };
 static const ProtobufCIntRange pg_query__variable_set_kind__value_ranges[] = {
-{0, 0},{0, 6}
+{0, 0},{0, 7}
 };
-static const ProtobufCEnumValueIndex pg_query__variable_set_kind__enum_values_by_name[6] =
+static const ProtobufCEnumValueIndex pg_query__variable_set_kind__enum_values_by_name[7] =
 {
-  { "VAR_RESET", 4 },
-  { "VAR_RESET_ALL", 5 },
-  { "VAR_SET_CURRENT", 2 },
-  { "VAR_SET_DEFAULT", 1 },
-  { "VAR_SET_MULTI", 3 },
-  { "VAR_SET_VALUE", 0 },
+  { "VARIABLE_SET_KIND_UNDEFINED", 0 },
+  { "VAR_RESET", 5 },
+  { "VAR_RESET_ALL", 6 },
+  { "VAR_SET_CURRENT", 3 },
+  { "VAR_SET_DEFAULT", 2 },
+  { "VAR_SET_MULTI", 4 },
+  { "VAR_SET_VALUE", 1 },
 };
 const ProtobufCEnumDescriptor pg_query__variable_set_kind__descriptor =
 {
@@ -35255,50 +35293,52 @@ const ProtobufCEnumDescriptor pg_query__variable_set_kind__descriptor =
   "VariableSetKind",
   "PgQuery__VariableSetKind",
   "pg_query",
-  6,
+  7,
   pg_query__variable_set_kind__enum_values_by_number,
-  6,
+  7,
   pg_query__variable_set_kind__enum_values_by_name,
   1,
   pg_query__variable_set_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__constr_type__enum_values_by_number[14] =
+static const ProtobufCEnumValue pg_query__constr_type__enum_values_by_number[15] =
 {
-  { "CONSTR_NULL", "PG_QUERY__CONSTR_TYPE__CONSTR_NULL", 0 },
-  { "CONSTR_NOTNULL", "PG_QUERY__CONSTR_TYPE__CONSTR_NOTNULL", 1 },
-  { "CONSTR_DEFAULT", "PG_QUERY__CONSTR_TYPE__CONSTR_DEFAULT", 2 },
-  { "CONSTR_IDENTITY", "PG_QUERY__CONSTR_TYPE__CONSTR_IDENTITY", 3 },
-  { "CONSTR_GENERATED", "PG_QUERY__CONSTR_TYPE__CONSTR_GENERATED", 4 },
-  { "CONSTR_CHECK", "PG_QUERY__CONSTR_TYPE__CONSTR_CHECK", 5 },
-  { "CONSTR_PRIMARY", "PG_QUERY__CONSTR_TYPE__CONSTR_PRIMARY", 6 },
-  { "CONSTR_UNIQUE", "PG_QUERY__CONSTR_TYPE__CONSTR_UNIQUE", 7 },
-  { "CONSTR_EXCLUSION", "PG_QUERY__CONSTR_TYPE__CONSTR_EXCLUSION", 8 },
-  { "CONSTR_FOREIGN", "PG_QUERY__CONSTR_TYPE__CONSTR_FOREIGN", 9 },
-  { "CONSTR_ATTR_DEFERRABLE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_DEFERRABLE", 10 },
-  { "CONSTR_ATTR_NOT_DEFERRABLE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_NOT_DEFERRABLE", 11 },
-  { "CONSTR_ATTR_DEFERRED", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_DEFERRED", 12 },
-  { "CONSTR_ATTR_IMMEDIATE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_IMMEDIATE", 13 },
+  { "CONSTR_TYPE_UNDEFINED", "PG_QUERY__CONSTR_TYPE__CONSTR_TYPE_UNDEFINED", 0 },
+  { "CONSTR_NULL", "PG_QUERY__CONSTR_TYPE__CONSTR_NULL", 1 },
+  { "CONSTR_NOTNULL", "PG_QUERY__CONSTR_TYPE__CONSTR_NOTNULL", 2 },
+  { "CONSTR_DEFAULT", "PG_QUERY__CONSTR_TYPE__CONSTR_DEFAULT", 3 },
+  { "CONSTR_IDENTITY", "PG_QUERY__CONSTR_TYPE__CONSTR_IDENTITY", 4 },
+  { "CONSTR_GENERATED", "PG_QUERY__CONSTR_TYPE__CONSTR_GENERATED", 5 },
+  { "CONSTR_CHECK", "PG_QUERY__CONSTR_TYPE__CONSTR_CHECK", 6 },
+  { "CONSTR_PRIMARY", "PG_QUERY__CONSTR_TYPE__CONSTR_PRIMARY", 7 },
+  { "CONSTR_UNIQUE", "PG_QUERY__CONSTR_TYPE__CONSTR_UNIQUE", 8 },
+  { "CONSTR_EXCLUSION", "PG_QUERY__CONSTR_TYPE__CONSTR_EXCLUSION", 9 },
+  { "CONSTR_FOREIGN", "PG_QUERY__CONSTR_TYPE__CONSTR_FOREIGN", 10 },
+  { "CONSTR_ATTR_DEFERRABLE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_DEFERRABLE", 11 },
+  { "CONSTR_ATTR_NOT_DEFERRABLE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_NOT_DEFERRABLE", 12 },
+  { "CONSTR_ATTR_DEFERRED", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_DEFERRED", 13 },
+  { "CONSTR_ATTR_IMMEDIATE", "PG_QUERY__CONSTR_TYPE__CONSTR_ATTR_IMMEDIATE", 14 },
 };
 static const ProtobufCIntRange pg_query__constr_type__value_ranges[] = {
-{0, 0},{0, 14}
+{0, 0},{0, 15}
 };
-static const ProtobufCEnumValueIndex pg_query__constr_type__enum_values_by_name[14] =
+static const ProtobufCEnumValueIndex pg_query__constr_type__enum_values_by_name[15] =
 {
-  { "CONSTR_ATTR_DEFERRABLE", 10 },
-  { "CONSTR_ATTR_DEFERRED", 12 },
-  { "CONSTR_ATTR_IMMEDIATE", 13 },
-  { "CONSTR_ATTR_NOT_DEFERRABLE", 11 },
-  { "CONSTR_CHECK", 5 },
-  { "CONSTR_DEFAULT", 2 },
-  { "CONSTR_EXCLUSION", 8 },
-  { "CONSTR_FOREIGN", 9 },
-  { "CONSTR_GENERATED", 4 },
-  { "CONSTR_IDENTITY", 3 },
-  { "CONSTR_NOTNULL", 1 },
-  { "CONSTR_NULL", 0 },
-  { "CONSTR_PRIMARY", 6 },
-  { "CONSTR_UNIQUE", 7 },
+  { "CONSTR_ATTR_DEFERRABLE", 11 },
+  { "CONSTR_ATTR_DEFERRED", 13 },
+  { "CONSTR_ATTR_IMMEDIATE", 14 },
+  { "CONSTR_ATTR_NOT_DEFERRABLE", 12 },
+  { "CONSTR_CHECK", 6 },
+  { "CONSTR_DEFAULT", 3 },
+  { "CONSTR_EXCLUSION", 9 },
+  { "CONSTR_FOREIGN", 10 },
+  { "CONSTR_GENERATED", 5 },
+  { "CONSTR_IDENTITY", 4 },
+  { "CONSTR_NOTNULL", 2 },
+  { "CONSTR_NULL", 1 },
+  { "CONSTR_PRIMARY", 7 },
+  { "CONSTR_TYPE_UNDEFINED", 0 },
+  { "CONSTR_UNIQUE", 8 },
 };
 const ProtobufCEnumDescriptor pg_query__constr_type__descriptor =
 {
@@ -35307,28 +35347,30 @@ const ProtobufCEnumDescriptor pg_query__constr_type__descriptor =
   "ConstrType",
   "PgQuery__ConstrType",
   "pg_query",
-  14,
+  15,
   pg_query__constr_type__enum_values_by_number,
-  14,
+  15,
   pg_query__constr_type__enum_values_by_name,
   1,
   pg_query__constr_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__import_foreign_schema_type__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__import_foreign_schema_type__enum_values_by_number[4] =
 {
-  { "FDW_IMPORT_SCHEMA_ALL", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_ALL", 0 },
-  { "FDW_IMPORT_SCHEMA_LIMIT_TO", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_LIMIT_TO", 1 },
-  { "FDW_IMPORT_SCHEMA_EXCEPT", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_EXCEPT", 2 },
+  { "IMPORT_FOREIGN_SCHEMA_TYPE_UNDEFINED", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__IMPORT_FOREIGN_SCHEMA_TYPE_UNDEFINED", 0 },
+  { "FDW_IMPORT_SCHEMA_ALL", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_ALL", 1 },
+  { "FDW_IMPORT_SCHEMA_LIMIT_TO", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_LIMIT_TO", 2 },
+  { "FDW_IMPORT_SCHEMA_EXCEPT", "PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__FDW_IMPORT_SCHEMA_EXCEPT", 3 },
 };
 static const ProtobufCIntRange pg_query__import_foreign_schema_type__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__import_foreign_schema_type__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__import_foreign_schema_type__enum_values_by_name[4] =
 {
-  { "FDW_IMPORT_SCHEMA_ALL", 0 },
-  { "FDW_IMPORT_SCHEMA_EXCEPT", 2 },
-  { "FDW_IMPORT_SCHEMA_LIMIT_TO", 1 },
+  { "FDW_IMPORT_SCHEMA_ALL", 1 },
+  { "FDW_IMPORT_SCHEMA_EXCEPT", 3 },
+  { "FDW_IMPORT_SCHEMA_LIMIT_TO", 2 },
+  { "IMPORT_FOREIGN_SCHEMA_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__import_foreign_schema_type__descriptor =
 {
@@ -35337,28 +35379,30 @@ const ProtobufCEnumDescriptor pg_query__import_foreign_schema_type__descriptor =
   "ImportForeignSchemaType",
   "PgQuery__ImportForeignSchemaType",
   "pg_query",
-  3,
+  4,
   pg_query__import_foreign_schema_type__enum_values_by_number,
-  3,
+  4,
   pg_query__import_foreign_schema_type__enum_values_by_name,
   1,
   pg_query__import_foreign_schema_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__role_stmt_type__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__role_stmt_type__enum_values_by_number[4] =
 {
-  { "ROLESTMT_ROLE", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_ROLE", 0 },
-  { "ROLESTMT_USER", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_USER", 1 },
-  { "ROLESTMT_GROUP", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_GROUP", 2 },
+  { "ROLE_STMT_TYPE_UNDEFINED", "PG_QUERY__ROLE_STMT_TYPE__ROLE_STMT_TYPE_UNDEFINED", 0 },
+  { "ROLESTMT_ROLE", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_ROLE", 1 },
+  { "ROLESTMT_USER", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_USER", 2 },
+  { "ROLESTMT_GROUP", "PG_QUERY__ROLE_STMT_TYPE__ROLESTMT_GROUP", 3 },
 };
 static const ProtobufCIntRange pg_query__role_stmt_type__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__role_stmt_type__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__role_stmt_type__enum_values_by_name[4] =
 {
-  { "ROLESTMT_GROUP", 2 },
-  { "ROLESTMT_ROLE", 0 },
-  { "ROLESTMT_USER", 1 },
+  { "ROLESTMT_GROUP", 3 },
+  { "ROLESTMT_ROLE", 1 },
+  { "ROLESTMT_USER", 2 },
+  { "ROLE_STMT_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__role_stmt_type__descriptor =
 {
@@ -35367,30 +35411,32 @@ const ProtobufCEnumDescriptor pg_query__role_stmt_type__descriptor =
   "RoleStmtType",
   "PgQuery__RoleStmtType",
   "pg_query",
-  3,
+  4,
   pg_query__role_stmt_type__enum_values_by_number,
-  3,
+  4,
   pg_query__role_stmt_type__enum_values_by_name,
   1,
   pg_query__role_stmt_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__fetch_direction__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__fetch_direction__enum_values_by_number[5] =
 {
-  { "FETCH_FORWARD", "PG_QUERY__FETCH_DIRECTION__FETCH_FORWARD", 0 },
-  { "FETCH_BACKWARD", "PG_QUERY__FETCH_DIRECTION__FETCH_BACKWARD", 1 },
-  { "FETCH_ABSOLUTE", "PG_QUERY__FETCH_DIRECTION__FETCH_ABSOLUTE", 2 },
-  { "FETCH_RELATIVE", "PG_QUERY__FETCH_DIRECTION__FETCH_RELATIVE", 3 },
+  { "FETCH_DIRECTION_UNDEFINED", "PG_QUERY__FETCH_DIRECTION__FETCH_DIRECTION_UNDEFINED", 0 },
+  { "FETCH_FORWARD", "PG_QUERY__FETCH_DIRECTION__FETCH_FORWARD", 1 },
+  { "FETCH_BACKWARD", "PG_QUERY__FETCH_DIRECTION__FETCH_BACKWARD", 2 },
+  { "FETCH_ABSOLUTE", "PG_QUERY__FETCH_DIRECTION__FETCH_ABSOLUTE", 3 },
+  { "FETCH_RELATIVE", "PG_QUERY__FETCH_DIRECTION__FETCH_RELATIVE", 4 },
 };
 static const ProtobufCIntRange pg_query__fetch_direction__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__fetch_direction__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__fetch_direction__enum_values_by_name[5] =
 {
-  { "FETCH_ABSOLUTE", 2 },
-  { "FETCH_BACKWARD", 1 },
-  { "FETCH_FORWARD", 0 },
-  { "FETCH_RELATIVE", 3 },
+  { "FETCH_ABSOLUTE", 3 },
+  { "FETCH_BACKWARD", 2 },
+  { "FETCH_DIRECTION_UNDEFINED", 0 },
+  { "FETCH_FORWARD", 1 },
+  { "FETCH_RELATIVE", 4 },
 };
 const ProtobufCEnumDescriptor pg_query__fetch_direction__descriptor =
 {
@@ -35399,32 +35445,34 @@ const ProtobufCEnumDescriptor pg_query__fetch_direction__descriptor =
   "FetchDirection",
   "PgQuery__FetchDirection",
   "pg_query",
-  4,
+  5,
   pg_query__fetch_direction__enum_values_by_number,
-  4,
+  5,
   pg_query__fetch_direction__enum_values_by_name,
   1,
   pg_query__fetch_direction__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__function_parameter_mode__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__function_parameter_mode__enum_values_by_number[6] =
 {
-  { "FUNC_PARAM_IN", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_IN", 0 },
-  { "FUNC_PARAM_OUT", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_OUT", 1 },
-  { "FUNC_PARAM_INOUT", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_INOUT", 2 },
-  { "FUNC_PARAM_VARIADIC", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_VARIADIC", 3 },
-  { "FUNC_PARAM_TABLE", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_TABLE", 4 },
+  { "FUNCTION_PARAMETER_MODE_UNDEFINED", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNCTION_PARAMETER_MODE_UNDEFINED", 0 },
+  { "FUNC_PARAM_IN", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_IN", 1 },
+  { "FUNC_PARAM_OUT", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_OUT", 2 },
+  { "FUNC_PARAM_INOUT", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_INOUT", 3 },
+  { "FUNC_PARAM_VARIADIC", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_VARIADIC", 4 },
+  { "FUNC_PARAM_TABLE", "PG_QUERY__FUNCTION_PARAMETER_MODE__FUNC_PARAM_TABLE", 5 },
 };
 static const ProtobufCIntRange pg_query__function_parameter_mode__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__function_parameter_mode__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__function_parameter_mode__enum_values_by_name[6] =
 {
-  { "FUNC_PARAM_IN", 0 },
-  { "FUNC_PARAM_INOUT", 2 },
-  { "FUNC_PARAM_OUT", 1 },
-  { "FUNC_PARAM_TABLE", 4 },
-  { "FUNC_PARAM_VARIADIC", 3 },
+  { "FUNCTION_PARAMETER_MODE_UNDEFINED", 0 },
+  { "FUNC_PARAM_IN", 1 },
+  { "FUNC_PARAM_INOUT", 3 },
+  { "FUNC_PARAM_OUT", 2 },
+  { "FUNC_PARAM_TABLE", 5 },
+  { "FUNC_PARAM_VARIADIC", 4 },
 };
 const ProtobufCEnumDescriptor pg_query__function_parameter_mode__descriptor =
 {
@@ -35433,42 +35481,44 @@ const ProtobufCEnumDescriptor pg_query__function_parameter_mode__descriptor =
   "FunctionParameterMode",
   "PgQuery__FunctionParameterMode",
   "pg_query",
-  5,
+  6,
   pg_query__function_parameter_mode__enum_values_by_number,
-  5,
+  6,
   pg_query__function_parameter_mode__enum_values_by_name,
   1,
   pg_query__function_parameter_mode__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__transaction_stmt_kind__enum_values_by_number[10] =
+static const ProtobufCEnumValue pg_query__transaction_stmt_kind__enum_values_by_number[11] =
 {
-  { "TRANS_STMT_BEGIN", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_BEGIN", 0 },
-  { "TRANS_STMT_START", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_START", 1 },
-  { "TRANS_STMT_COMMIT", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_COMMIT", 2 },
-  { "TRANS_STMT_ROLLBACK", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK", 3 },
-  { "TRANS_STMT_SAVEPOINT", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_SAVEPOINT", 4 },
-  { "TRANS_STMT_RELEASE", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_RELEASE", 5 },
-  { "TRANS_STMT_ROLLBACK_TO", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK_TO", 6 },
-  { "TRANS_STMT_PREPARE", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_PREPARE", 7 },
-  { "TRANS_STMT_COMMIT_PREPARED", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_COMMIT_PREPARED", 8 },
-  { "TRANS_STMT_ROLLBACK_PREPARED", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK_PREPARED", 9 },
+  { "TRANSACTION_STMT_KIND_UNDEFINED", "PG_QUERY__TRANSACTION_STMT_KIND__TRANSACTION_STMT_KIND_UNDEFINED", 0 },
+  { "TRANS_STMT_BEGIN", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_BEGIN", 1 },
+  { "TRANS_STMT_START", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_START", 2 },
+  { "TRANS_STMT_COMMIT", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_COMMIT", 3 },
+  { "TRANS_STMT_ROLLBACK", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK", 4 },
+  { "TRANS_STMT_SAVEPOINT", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_SAVEPOINT", 5 },
+  { "TRANS_STMT_RELEASE", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_RELEASE", 6 },
+  { "TRANS_STMT_ROLLBACK_TO", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK_TO", 7 },
+  { "TRANS_STMT_PREPARE", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_PREPARE", 8 },
+  { "TRANS_STMT_COMMIT_PREPARED", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_COMMIT_PREPARED", 9 },
+  { "TRANS_STMT_ROLLBACK_PREPARED", "PG_QUERY__TRANSACTION_STMT_KIND__TRANS_STMT_ROLLBACK_PREPARED", 10 },
 };
 static const ProtobufCIntRange pg_query__transaction_stmt_kind__value_ranges[] = {
-{0, 0},{0, 10}
+{0, 0},{0, 11}
 };
-static const ProtobufCEnumValueIndex pg_query__transaction_stmt_kind__enum_values_by_name[10] =
+static const ProtobufCEnumValueIndex pg_query__transaction_stmt_kind__enum_values_by_name[11] =
 {
-  { "TRANS_STMT_BEGIN", 0 },
-  { "TRANS_STMT_COMMIT", 2 },
-  { "TRANS_STMT_COMMIT_PREPARED", 8 },
-  { "TRANS_STMT_PREPARE", 7 },
-  { "TRANS_STMT_RELEASE", 5 },
-  { "TRANS_STMT_ROLLBACK", 3 },
-  { "TRANS_STMT_ROLLBACK_PREPARED", 9 },
-  { "TRANS_STMT_ROLLBACK_TO", 6 },
-  { "TRANS_STMT_SAVEPOINT", 4 },
-  { "TRANS_STMT_START", 1 },
+  { "TRANSACTION_STMT_KIND_UNDEFINED", 0 },
+  { "TRANS_STMT_BEGIN", 1 },
+  { "TRANS_STMT_COMMIT", 3 },
+  { "TRANS_STMT_COMMIT_PREPARED", 9 },
+  { "TRANS_STMT_PREPARE", 8 },
+  { "TRANS_STMT_RELEASE", 6 },
+  { "TRANS_STMT_ROLLBACK", 4 },
+  { "TRANS_STMT_ROLLBACK_PREPARED", 10 },
+  { "TRANS_STMT_ROLLBACK_TO", 7 },
+  { "TRANS_STMT_SAVEPOINT", 5 },
+  { "TRANS_STMT_START", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__transaction_stmt_kind__descriptor =
 {
@@ -35477,28 +35527,30 @@ const ProtobufCEnumDescriptor pg_query__transaction_stmt_kind__descriptor =
   "TransactionStmtKind",
   "PgQuery__TransactionStmtKind",
   "pg_query",
-  10,
+  11,
   pg_query__transaction_stmt_kind__enum_values_by_number,
-  10,
+  11,
   pg_query__transaction_stmt_kind__enum_values_by_name,
   1,
   pg_query__transaction_stmt_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__view_check_option__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__view_check_option__enum_values_by_number[4] =
 {
-  { "NO_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__NO_CHECK_OPTION", 0 },
-  { "LOCAL_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__LOCAL_CHECK_OPTION", 1 },
-  { "CASCADED_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__CASCADED_CHECK_OPTION", 2 },
+  { "VIEW_CHECK_OPTION_UNDEFINED", "PG_QUERY__VIEW_CHECK_OPTION__VIEW_CHECK_OPTION_UNDEFINED", 0 },
+  { "NO_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__NO_CHECK_OPTION", 1 },
+  { "LOCAL_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__LOCAL_CHECK_OPTION", 2 },
+  { "CASCADED_CHECK_OPTION", "PG_QUERY__VIEW_CHECK_OPTION__CASCADED_CHECK_OPTION", 3 },
 };
 static const ProtobufCIntRange pg_query__view_check_option__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__view_check_option__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__view_check_option__enum_values_by_name[4] =
 {
-  { "CASCADED_CHECK_OPTION", 2 },
-  { "LOCAL_CHECK_OPTION", 1 },
-  { "NO_CHECK_OPTION", 0 },
+  { "CASCADED_CHECK_OPTION", 3 },
+  { "LOCAL_CHECK_OPTION", 2 },
+  { "NO_CHECK_OPTION", 1 },
+  { "VIEW_CHECK_OPTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__view_check_option__descriptor =
 {
@@ -35507,26 +35559,28 @@ const ProtobufCEnumDescriptor pg_query__view_check_option__descriptor =
   "ViewCheckOption",
   "PgQuery__ViewCheckOption",
   "pg_query",
-  3,
+  4,
   pg_query__view_check_option__enum_values_by_number,
-  3,
+  4,
   pg_query__view_check_option__enum_values_by_name,
   1,
   pg_query__view_check_option__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__cluster_option__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__cluster_option__enum_values_by_number[3] =
 {
-  { "CLUOPT_RECHECK", "PG_QUERY__CLUSTER_OPTION__CLUOPT_RECHECK", 0 },
-  { "CLUOPT_VERBOSE", "PG_QUERY__CLUSTER_OPTION__CLUOPT_VERBOSE", 1 },
+  { "CLUSTER_OPTION_UNDEFINED", "PG_QUERY__CLUSTER_OPTION__CLUSTER_OPTION_UNDEFINED", 0 },
+  { "CLUOPT_RECHECK", "PG_QUERY__CLUSTER_OPTION__CLUOPT_RECHECK", 1 },
+  { "CLUOPT_VERBOSE", "PG_QUERY__CLUSTER_OPTION__CLUOPT_VERBOSE", 2 },
 };
 static const ProtobufCIntRange pg_query__cluster_option__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__cluster_option__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__cluster_option__enum_values_by_name[3] =
 {
-  { "CLUOPT_RECHECK", 0 },
-  { "CLUOPT_VERBOSE", 1 },
+  { "CLUOPT_RECHECK", 1 },
+  { "CLUOPT_VERBOSE", 2 },
+  { "CLUSTER_OPTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__cluster_option__descriptor =
 {
@@ -35535,30 +35589,32 @@ const ProtobufCEnumDescriptor pg_query__cluster_option__descriptor =
   "ClusterOption",
   "PgQuery__ClusterOption",
   "pg_query",
-  2,
+  3,
   pg_query__cluster_option__enum_values_by_number,
-  2,
+  3,
   pg_query__cluster_option__enum_values_by_name,
   1,
   pg_query__cluster_option__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__discard_mode__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__discard_mode__enum_values_by_number[5] =
 {
-  { "DISCARD_ALL", "PG_QUERY__DISCARD_MODE__DISCARD_ALL", 0 },
-  { "DISCARD_PLANS", "PG_QUERY__DISCARD_MODE__DISCARD_PLANS", 1 },
-  { "DISCARD_SEQUENCES", "PG_QUERY__DISCARD_MODE__DISCARD_SEQUENCES", 2 },
-  { "DISCARD_TEMP", "PG_QUERY__DISCARD_MODE__DISCARD_TEMP", 3 },
+  { "DISCARD_MODE_UNDEFINED", "PG_QUERY__DISCARD_MODE__DISCARD_MODE_UNDEFINED", 0 },
+  { "DISCARD_ALL", "PG_QUERY__DISCARD_MODE__DISCARD_ALL", 1 },
+  { "DISCARD_PLANS", "PG_QUERY__DISCARD_MODE__DISCARD_PLANS", 2 },
+  { "DISCARD_SEQUENCES", "PG_QUERY__DISCARD_MODE__DISCARD_SEQUENCES", 3 },
+  { "DISCARD_TEMP", "PG_QUERY__DISCARD_MODE__DISCARD_TEMP", 4 },
 };
 static const ProtobufCIntRange pg_query__discard_mode__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__discard_mode__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__discard_mode__enum_values_by_name[5] =
 {
-  { "DISCARD_ALL", 0 },
-  { "DISCARD_PLANS", 1 },
-  { "DISCARD_SEQUENCES", 2 },
-  { "DISCARD_TEMP", 3 },
+  { "DISCARD_ALL", 1 },
+  { "DISCARD_MODE_UNDEFINED", 0 },
+  { "DISCARD_PLANS", 2 },
+  { "DISCARD_SEQUENCES", 3 },
+  { "DISCARD_TEMP", 4 },
 };
 const ProtobufCEnumDescriptor pg_query__discard_mode__descriptor =
 {
@@ -35567,32 +35623,34 @@ const ProtobufCEnumDescriptor pg_query__discard_mode__descriptor =
   "DiscardMode",
   "PgQuery__DiscardMode",
   "pg_query",
-  4,
+  5,
   pg_query__discard_mode__enum_values_by_number,
-  4,
+  5,
   pg_query__discard_mode__enum_values_by_name,
   1,
   pg_query__discard_mode__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__reindex_object_type__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__reindex_object_type__enum_values_by_number[6] =
 {
-  { "REINDEX_OBJECT_INDEX", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_INDEX", 0 },
-  { "REINDEX_OBJECT_TABLE", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_TABLE", 1 },
-  { "REINDEX_OBJECT_SCHEMA", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_SCHEMA", 2 },
-  { "REINDEX_OBJECT_SYSTEM", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_SYSTEM", 3 },
-  { "REINDEX_OBJECT_DATABASE", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_DATABASE", 4 },
+  { "REINDEX_OBJECT_TYPE_UNDEFINED", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_TYPE_UNDEFINED", 0 },
+  { "REINDEX_OBJECT_INDEX", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_INDEX", 1 },
+  { "REINDEX_OBJECT_TABLE", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_TABLE", 2 },
+  { "REINDEX_OBJECT_SCHEMA", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_SCHEMA", 3 },
+  { "REINDEX_OBJECT_SYSTEM", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_SYSTEM", 4 },
+  { "REINDEX_OBJECT_DATABASE", "PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_DATABASE", 5 },
 };
 static const ProtobufCIntRange pg_query__reindex_object_type__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__reindex_object_type__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__reindex_object_type__enum_values_by_name[6] =
 {
-  { "REINDEX_OBJECT_DATABASE", 4 },
-  { "REINDEX_OBJECT_INDEX", 0 },
-  { "REINDEX_OBJECT_SCHEMA", 2 },
-  { "REINDEX_OBJECT_SYSTEM", 3 },
-  { "REINDEX_OBJECT_TABLE", 1 },
+  { "REINDEX_OBJECT_DATABASE", 5 },
+  { "REINDEX_OBJECT_INDEX", 1 },
+  { "REINDEX_OBJECT_SCHEMA", 3 },
+  { "REINDEX_OBJECT_SYSTEM", 4 },
+  { "REINDEX_OBJECT_TABLE", 2 },
+  { "REINDEX_OBJECT_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__reindex_object_type__descriptor =
 {
@@ -35601,32 +35659,34 @@ const ProtobufCEnumDescriptor pg_query__reindex_object_type__descriptor =
   "ReindexObjectType",
   "PgQuery__ReindexObjectType",
   "pg_query",
-  5,
+  6,
   pg_query__reindex_object_type__enum_values_by_number,
-  5,
+  6,
   pg_query__reindex_object_type__enum_values_by_name,
   1,
   pg_query__reindex_object_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__alter_tsconfig_type__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__alter_tsconfig_type__enum_values_by_number[6] =
 {
-  { "ALTER_TSCONFIG_ADD_MAPPING", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_ADD_MAPPING", 0 },
-  { "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", 1 },
-  { "ALTER_TSCONFIG_REPLACE_DICT", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_REPLACE_DICT", 2 },
-  { "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", 3 },
-  { "ALTER_TSCONFIG_DROP_MAPPING", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_DROP_MAPPING", 4 },
+  { "ALTER_TSCONFIG_TYPE_UNDEFINED", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_TYPE_UNDEFINED", 0 },
+  { "ALTER_TSCONFIG_ADD_MAPPING", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_ADD_MAPPING", 1 },
+  { "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", 2 },
+  { "ALTER_TSCONFIG_REPLACE_DICT", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_REPLACE_DICT", 3 },
+  { "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", 4 },
+  { "ALTER_TSCONFIG_DROP_MAPPING", "PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_DROP_MAPPING", 5 },
 };
 static const ProtobufCIntRange pg_query__alter_tsconfig_type__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__alter_tsconfig_type__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__alter_tsconfig_type__enum_values_by_name[6] =
 {
-  { "ALTER_TSCONFIG_ADD_MAPPING", 0 },
-  { "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", 1 },
-  { "ALTER_TSCONFIG_DROP_MAPPING", 4 },
-  { "ALTER_TSCONFIG_REPLACE_DICT", 2 },
-  { "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", 3 },
+  { "ALTER_TSCONFIG_ADD_MAPPING", 1 },
+  { "ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN", 2 },
+  { "ALTER_TSCONFIG_DROP_MAPPING", 5 },
+  { "ALTER_TSCONFIG_REPLACE_DICT", 3 },
+  { "ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN", 4 },
+  { "ALTER_TSCONFIG_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__alter_tsconfig_type__descriptor =
 {
@@ -35635,32 +35695,34 @@ const ProtobufCEnumDescriptor pg_query__alter_tsconfig_type__descriptor =
   "AlterTSConfigType",
   "PgQuery__AlterTSConfigType",
   "pg_query",
-  5,
+  6,
   pg_query__alter_tsconfig_type__enum_values_by_number,
-  5,
+  6,
   pg_query__alter_tsconfig_type__enum_values_by_name,
   1,
   pg_query__alter_tsconfig_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__alter_subscription_type__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__alter_subscription_type__enum_values_by_number[6] =
 {
-  { "ALTER_SUBSCRIPTION_OPTIONS", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_OPTIONS", 0 },
-  { "ALTER_SUBSCRIPTION_CONNECTION", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_CONNECTION", 1 },
-  { "ALTER_SUBSCRIPTION_PUBLICATION", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_PUBLICATION", 2 },
-  { "ALTER_SUBSCRIPTION_REFRESH", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_REFRESH", 3 },
-  { "ALTER_SUBSCRIPTION_ENABLED", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_ENABLED", 4 },
+  { "ALTER_SUBSCRIPTION_TYPE_UNDEFINED", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_TYPE_UNDEFINED", 0 },
+  { "ALTER_SUBSCRIPTION_OPTIONS", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_OPTIONS", 1 },
+  { "ALTER_SUBSCRIPTION_CONNECTION", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_CONNECTION", 2 },
+  { "ALTER_SUBSCRIPTION_PUBLICATION", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_PUBLICATION", 3 },
+  { "ALTER_SUBSCRIPTION_REFRESH", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_REFRESH", 4 },
+  { "ALTER_SUBSCRIPTION_ENABLED", "PG_QUERY__ALTER_SUBSCRIPTION_TYPE__ALTER_SUBSCRIPTION_ENABLED", 5 },
 };
 static const ProtobufCIntRange pg_query__alter_subscription_type__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__alter_subscription_type__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__alter_subscription_type__enum_values_by_name[6] =
 {
-  { "ALTER_SUBSCRIPTION_CONNECTION", 1 },
-  { "ALTER_SUBSCRIPTION_ENABLED", 4 },
-  { "ALTER_SUBSCRIPTION_OPTIONS", 0 },
-  { "ALTER_SUBSCRIPTION_PUBLICATION", 2 },
-  { "ALTER_SUBSCRIPTION_REFRESH", 3 },
+  { "ALTER_SUBSCRIPTION_CONNECTION", 2 },
+  { "ALTER_SUBSCRIPTION_ENABLED", 5 },
+  { "ALTER_SUBSCRIPTION_OPTIONS", 1 },
+  { "ALTER_SUBSCRIPTION_PUBLICATION", 3 },
+  { "ALTER_SUBSCRIPTION_REFRESH", 4 },
+  { "ALTER_SUBSCRIPTION_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__alter_subscription_type__descriptor =
 {
@@ -35669,30 +35731,32 @@ const ProtobufCEnumDescriptor pg_query__alter_subscription_type__descriptor =
   "AlterSubscriptionType",
   "PgQuery__AlterSubscriptionType",
   "pg_query",
-  5,
+  6,
   pg_query__alter_subscription_type__enum_values_by_number,
-  5,
+  6,
   pg_query__alter_subscription_type__enum_values_by_name,
   1,
   pg_query__alter_subscription_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__on_commit_action__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__on_commit_action__enum_values_by_number[5] =
 {
-  { "ONCOMMIT_NOOP", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_NOOP", 0 },
-  { "ONCOMMIT_PRESERVE_ROWS", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_PRESERVE_ROWS", 1 },
-  { "ONCOMMIT_DELETE_ROWS", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_DELETE_ROWS", 2 },
-  { "ONCOMMIT_DROP", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_DROP", 3 },
+  { "ON_COMMIT_ACTION_UNDEFINED", "PG_QUERY__ON_COMMIT_ACTION__ON_COMMIT_ACTION_UNDEFINED", 0 },
+  { "ONCOMMIT_NOOP", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_NOOP", 1 },
+  { "ONCOMMIT_PRESERVE_ROWS", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_PRESERVE_ROWS", 2 },
+  { "ONCOMMIT_DELETE_ROWS", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_DELETE_ROWS", 3 },
+  { "ONCOMMIT_DROP", "PG_QUERY__ON_COMMIT_ACTION__ONCOMMIT_DROP", 4 },
 };
 static const ProtobufCIntRange pg_query__on_commit_action__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__on_commit_action__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__on_commit_action__enum_values_by_name[5] =
 {
-  { "ONCOMMIT_DELETE_ROWS", 2 },
-  { "ONCOMMIT_DROP", 3 },
-  { "ONCOMMIT_NOOP", 0 },
-  { "ONCOMMIT_PRESERVE_ROWS", 1 },
+  { "ONCOMMIT_DELETE_ROWS", 3 },
+  { "ONCOMMIT_DROP", 4 },
+  { "ONCOMMIT_NOOP", 1 },
+  { "ONCOMMIT_PRESERVE_ROWS", 2 },
+  { "ON_COMMIT_ACTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__on_commit_action__descriptor =
 {
@@ -35701,30 +35765,32 @@ const ProtobufCEnumDescriptor pg_query__on_commit_action__descriptor =
   "OnCommitAction",
   "PgQuery__OnCommitAction",
   "pg_query",
-  4,
+  5,
   pg_query__on_commit_action__enum_values_by_number,
-  4,
+  5,
   pg_query__on_commit_action__enum_values_by_name,
   1,
   pg_query__on_commit_action__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__param_kind__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__param_kind__enum_values_by_number[5] =
 {
-  { "PARAM_EXTERN", "PG_QUERY__PARAM_KIND__PARAM_EXTERN", 0 },
-  { "PARAM_EXEC", "PG_QUERY__PARAM_KIND__PARAM_EXEC", 1 },
-  { "PARAM_SUBLINK", "PG_QUERY__PARAM_KIND__PARAM_SUBLINK", 2 },
-  { "PARAM_MULTIEXPR", "PG_QUERY__PARAM_KIND__PARAM_MULTIEXPR", 3 },
+  { "PARAM_KIND_UNDEFINED", "PG_QUERY__PARAM_KIND__PARAM_KIND_UNDEFINED", 0 },
+  { "PARAM_EXTERN", "PG_QUERY__PARAM_KIND__PARAM_EXTERN", 1 },
+  { "PARAM_EXEC", "PG_QUERY__PARAM_KIND__PARAM_EXEC", 2 },
+  { "PARAM_SUBLINK", "PG_QUERY__PARAM_KIND__PARAM_SUBLINK", 3 },
+  { "PARAM_MULTIEXPR", "PG_QUERY__PARAM_KIND__PARAM_MULTIEXPR", 4 },
 };
 static const ProtobufCIntRange pg_query__param_kind__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__param_kind__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__param_kind__enum_values_by_name[5] =
 {
-  { "PARAM_EXEC", 1 },
-  { "PARAM_EXTERN", 0 },
-  { "PARAM_MULTIEXPR", 3 },
-  { "PARAM_SUBLINK", 2 },
+  { "PARAM_EXEC", 2 },
+  { "PARAM_EXTERN", 1 },
+  { "PARAM_KIND_UNDEFINED", 0 },
+  { "PARAM_MULTIEXPR", 4 },
+  { "PARAM_SUBLINK", 3 },
 };
 const ProtobufCEnumDescriptor pg_query__param_kind__descriptor =
 {
@@ -35733,28 +35799,30 @@ const ProtobufCEnumDescriptor pg_query__param_kind__descriptor =
   "ParamKind",
   "PgQuery__ParamKind",
   "pg_query",
-  4,
+  5,
   pg_query__param_kind__enum_values_by_number,
-  4,
+  5,
   pg_query__param_kind__enum_values_by_name,
   1,
   pg_query__param_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__coercion_context__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__coercion_context__enum_values_by_number[4] =
 {
-  { "COERCION_IMPLICIT", "PG_QUERY__COERCION_CONTEXT__COERCION_IMPLICIT", 0 },
-  { "COERCION_ASSIGNMENT", "PG_QUERY__COERCION_CONTEXT__COERCION_ASSIGNMENT", 1 },
-  { "COERCION_EXPLICIT", "PG_QUERY__COERCION_CONTEXT__COERCION_EXPLICIT", 2 },
+  { "COERCION_CONTEXT_UNDEFINED", "PG_QUERY__COERCION_CONTEXT__COERCION_CONTEXT_UNDEFINED", 0 },
+  { "COERCION_IMPLICIT", "PG_QUERY__COERCION_CONTEXT__COERCION_IMPLICIT", 1 },
+  { "COERCION_ASSIGNMENT", "PG_QUERY__COERCION_CONTEXT__COERCION_ASSIGNMENT", 2 },
+  { "COERCION_EXPLICIT", "PG_QUERY__COERCION_CONTEXT__COERCION_EXPLICIT", 3 },
 };
 static const ProtobufCIntRange pg_query__coercion_context__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__coercion_context__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__coercion_context__enum_values_by_name[4] =
 {
-  { "COERCION_ASSIGNMENT", 1 },
-  { "COERCION_EXPLICIT", 2 },
-  { "COERCION_IMPLICIT", 0 },
+  { "COERCION_ASSIGNMENT", 2 },
+  { "COERCION_CONTEXT_UNDEFINED", 0 },
+  { "COERCION_EXPLICIT", 3 },
+  { "COERCION_IMPLICIT", 1 },
 };
 const ProtobufCEnumDescriptor pg_query__coercion_context__descriptor =
 {
@@ -35763,28 +35831,30 @@ const ProtobufCEnumDescriptor pg_query__coercion_context__descriptor =
   "CoercionContext",
   "PgQuery__CoercionContext",
   "pg_query",
-  3,
+  4,
   pg_query__coercion_context__enum_values_by_number,
-  3,
+  4,
   pg_query__coercion_context__enum_values_by_name,
   1,
   pg_query__coercion_context__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__coercion_form__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__coercion_form__enum_values_by_number[4] =
 {
-  { "COERCE_EXPLICIT_CALL", "PG_QUERY__COERCION_FORM__COERCE_EXPLICIT_CALL", 0 },
-  { "COERCE_EXPLICIT_CAST", "PG_QUERY__COERCION_FORM__COERCE_EXPLICIT_CAST", 1 },
-  { "COERCE_IMPLICIT_CAST", "PG_QUERY__COERCION_FORM__COERCE_IMPLICIT_CAST", 2 },
+  { "COERCION_FORM_UNDEFINED", "PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED", 0 },
+  { "COERCE_EXPLICIT_CALL", "PG_QUERY__COERCION_FORM__COERCE_EXPLICIT_CALL", 1 },
+  { "COERCE_EXPLICIT_CAST", "PG_QUERY__COERCION_FORM__COERCE_EXPLICIT_CAST", 2 },
+  { "COERCE_IMPLICIT_CAST", "PG_QUERY__COERCION_FORM__COERCE_IMPLICIT_CAST", 3 },
 };
 static const ProtobufCIntRange pg_query__coercion_form__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__coercion_form__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__coercion_form__enum_values_by_name[4] =
 {
-  { "COERCE_EXPLICIT_CALL", 0 },
-  { "COERCE_EXPLICIT_CAST", 1 },
-  { "COERCE_IMPLICIT_CAST", 2 },
+  { "COERCE_EXPLICIT_CALL", 1 },
+  { "COERCE_EXPLICIT_CAST", 2 },
+  { "COERCE_IMPLICIT_CAST", 3 },
+  { "COERCION_FORM_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__coercion_form__descriptor =
 {
@@ -35793,28 +35863,30 @@ const ProtobufCEnumDescriptor pg_query__coercion_form__descriptor =
   "CoercionForm",
   "PgQuery__CoercionForm",
   "pg_query",
-  3,
+  4,
   pg_query__coercion_form__enum_values_by_number,
-  3,
+  4,
   pg_query__coercion_form__enum_values_by_name,
   1,
   pg_query__coercion_form__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__bool_expr_type__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__bool_expr_type__enum_values_by_number[4] =
 {
-  { "AND_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__AND_EXPR", 0 },
-  { "OR_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__OR_EXPR", 1 },
-  { "NOT_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__NOT_EXPR", 2 },
+  { "BOOL_EXPR_TYPE_UNDEFINED", "PG_QUERY__BOOL_EXPR_TYPE__BOOL_EXPR_TYPE_UNDEFINED", 0 },
+  { "AND_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__AND_EXPR", 1 },
+  { "OR_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__OR_EXPR", 2 },
+  { "NOT_EXPR", "PG_QUERY__BOOL_EXPR_TYPE__NOT_EXPR", 3 },
 };
 static const ProtobufCIntRange pg_query__bool_expr_type__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__bool_expr_type__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__bool_expr_type__enum_values_by_name[4] =
 {
-  { "AND_EXPR", 0 },
-  { "NOT_EXPR", 2 },
-  { "OR_EXPR", 1 },
+  { "AND_EXPR", 1 },
+  { "BOOL_EXPR_TYPE_UNDEFINED", 0 },
+  { "NOT_EXPR", 3 },
+  { "OR_EXPR", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__bool_expr_type__descriptor =
 {
@@ -35823,38 +35895,40 @@ const ProtobufCEnumDescriptor pg_query__bool_expr_type__descriptor =
   "BoolExprType",
   "PgQuery__BoolExprType",
   "pg_query",
-  3,
+  4,
   pg_query__bool_expr_type__enum_values_by_number,
-  3,
+  4,
   pg_query__bool_expr_type__enum_values_by_name,
   1,
   pg_query__bool_expr_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__sub_link_type__enum_values_by_number[8] =
+static const ProtobufCEnumValue pg_query__sub_link_type__enum_values_by_number[9] =
 {
-  { "EXISTS_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__EXISTS_SUBLINK", 0 },
-  { "ALL_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ALL_SUBLINK", 1 },
-  { "ANY_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ANY_SUBLINK", 2 },
-  { "ROWCOMPARE_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ROWCOMPARE_SUBLINK", 3 },
-  { "EXPR_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__EXPR_SUBLINK", 4 },
-  { "MULTIEXPR_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__MULTIEXPR_SUBLINK", 5 },
-  { "ARRAY_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ARRAY_SUBLINK", 6 },
-  { "CTE_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__CTE_SUBLINK", 7 },
+  { "SUB_LINK_TYPE_UNDEFINED", "PG_QUERY__SUB_LINK_TYPE__SUB_LINK_TYPE_UNDEFINED", 0 },
+  { "EXISTS_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__EXISTS_SUBLINK", 1 },
+  { "ALL_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ALL_SUBLINK", 2 },
+  { "ANY_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ANY_SUBLINK", 3 },
+  { "ROWCOMPARE_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ROWCOMPARE_SUBLINK", 4 },
+  { "EXPR_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__EXPR_SUBLINK", 5 },
+  { "MULTIEXPR_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__MULTIEXPR_SUBLINK", 6 },
+  { "ARRAY_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__ARRAY_SUBLINK", 7 },
+  { "CTE_SUBLINK", "PG_QUERY__SUB_LINK_TYPE__CTE_SUBLINK", 8 },
 };
 static const ProtobufCIntRange pg_query__sub_link_type__value_ranges[] = {
-{0, 0},{0, 8}
+{0, 0},{0, 9}
 };
-static const ProtobufCEnumValueIndex pg_query__sub_link_type__enum_values_by_name[8] =
+static const ProtobufCEnumValueIndex pg_query__sub_link_type__enum_values_by_name[9] =
 {
-  { "ALL_SUBLINK", 1 },
-  { "ANY_SUBLINK", 2 },
-  { "ARRAY_SUBLINK", 6 },
-  { "CTE_SUBLINK", 7 },
-  { "EXISTS_SUBLINK", 0 },
-  { "EXPR_SUBLINK", 4 },
-  { "MULTIEXPR_SUBLINK", 5 },
-  { "ROWCOMPARE_SUBLINK", 3 },
+  { "ALL_SUBLINK", 2 },
+  { "ANY_SUBLINK", 3 },
+  { "ARRAY_SUBLINK", 7 },
+  { "CTE_SUBLINK", 8 },
+  { "EXISTS_SUBLINK", 1 },
+  { "EXPR_SUBLINK", 5 },
+  { "MULTIEXPR_SUBLINK", 6 },
+  { "ROWCOMPARE_SUBLINK", 4 },
+  { "SUB_LINK_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__sub_link_type__descriptor =
 {
@@ -35863,34 +35937,36 @@ const ProtobufCEnumDescriptor pg_query__sub_link_type__descriptor =
   "SubLinkType",
   "PgQuery__SubLinkType",
   "pg_query",
-  8,
+  9,
   pg_query__sub_link_type__enum_values_by_number,
-  8,
+  9,
   pg_query__sub_link_type__enum_values_by_name,
   1,
   pg_query__sub_link_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__row_compare_type__enum_values_by_number[6] =
+static const ProtobufCEnumValue pg_query__row_compare_type__enum_values_by_number[7] =
 {
-  { "ROWCOMPARE_LT", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_LT", 0 },
-  { "ROWCOMPARE_LE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_LE", 1 },
-  { "ROWCOMPARE_EQ", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_EQ", 2 },
-  { "ROWCOMPARE_GE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_GE", 3 },
-  { "ROWCOMPARE_GT", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_GT", 4 },
-  { "ROWCOMPARE_NE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_NE", 5 },
+  { "ROW_COMPARE_TYPE_UNDEFINED", "PG_QUERY__ROW_COMPARE_TYPE__ROW_COMPARE_TYPE_UNDEFINED", 0 },
+  { "ROWCOMPARE_LT", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_LT", 1 },
+  { "ROWCOMPARE_LE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_LE", 2 },
+  { "ROWCOMPARE_EQ", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_EQ", 3 },
+  { "ROWCOMPARE_GE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_GE", 4 },
+  { "ROWCOMPARE_GT", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_GT", 5 },
+  { "ROWCOMPARE_NE", "PG_QUERY__ROW_COMPARE_TYPE__ROWCOMPARE_NE", 6 },
 };
 static const ProtobufCIntRange pg_query__row_compare_type__value_ranges[] = {
-{0, 0},{0, 6}
+{0, 0},{0, 7}
 };
-static const ProtobufCEnumValueIndex pg_query__row_compare_type__enum_values_by_name[6] =
+static const ProtobufCEnumValueIndex pg_query__row_compare_type__enum_values_by_name[7] =
 {
-  { "ROWCOMPARE_EQ", 2 },
-  { "ROWCOMPARE_GE", 3 },
-  { "ROWCOMPARE_GT", 4 },
-  { "ROWCOMPARE_LE", 1 },
-  { "ROWCOMPARE_LT", 0 },
-  { "ROWCOMPARE_NE", 5 },
+  { "ROWCOMPARE_EQ", 3 },
+  { "ROWCOMPARE_GE", 4 },
+  { "ROWCOMPARE_GT", 5 },
+  { "ROWCOMPARE_LE", 2 },
+  { "ROWCOMPARE_LT", 1 },
+  { "ROWCOMPARE_NE", 6 },
+  { "ROW_COMPARE_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__row_compare_type__descriptor =
 {
@@ -35899,26 +35975,28 @@ const ProtobufCEnumDescriptor pg_query__row_compare_type__descriptor =
   "RowCompareType",
   "PgQuery__RowCompareType",
   "pg_query",
-  6,
+  7,
   pg_query__row_compare_type__enum_values_by_number,
-  6,
+  7,
   pg_query__row_compare_type__enum_values_by_name,
   1,
   pg_query__row_compare_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__min_max_op__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__min_max_op__enum_values_by_number[3] =
 {
-  { "IS_GREATEST", "PG_QUERY__MIN_MAX_OP__IS_GREATEST", 0 },
-  { "IS_LEAST", "PG_QUERY__MIN_MAX_OP__IS_LEAST", 1 },
+  { "MIN_MAX_OP_UNDEFINED", "PG_QUERY__MIN_MAX_OP__MIN_MAX_OP_UNDEFINED", 0 },
+  { "IS_GREATEST", "PG_QUERY__MIN_MAX_OP__IS_GREATEST", 1 },
+  { "IS_LEAST", "PG_QUERY__MIN_MAX_OP__IS_LEAST", 2 },
 };
 static const ProtobufCIntRange pg_query__min_max_op__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__min_max_op__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__min_max_op__enum_values_by_name[3] =
 {
-  { "IS_GREATEST", 0 },
-  { "IS_LEAST", 1 },
+  { "IS_GREATEST", 1 },
+  { "IS_LEAST", 2 },
+  { "MIN_MAX_OP_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__min_max_op__descriptor =
 {
@@ -35927,52 +36005,54 @@ const ProtobufCEnumDescriptor pg_query__min_max_op__descriptor =
   "MinMaxOp",
   "PgQuery__MinMaxOp",
   "pg_query",
-  2,
+  3,
   pg_query__min_max_op__enum_values_by_number,
-  2,
+  3,
   pg_query__min_max_op__enum_values_by_name,
   1,
   pg_query__min_max_op__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__sqlvalue_function_op__enum_values_by_number[15] =
+static const ProtobufCEnumValue pg_query__sqlvalue_function_op__enum_values_by_number[16] =
 {
-  { "SVFOP_CURRENT_DATE", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_DATE", 0 },
-  { "SVFOP_CURRENT_TIME", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIME", 1 },
-  { "SVFOP_CURRENT_TIME_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIME_N", 2 },
-  { "SVFOP_CURRENT_TIMESTAMP", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIMESTAMP", 3 },
-  { "SVFOP_CURRENT_TIMESTAMP_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIMESTAMP_N", 4 },
-  { "SVFOP_LOCALTIME", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIME", 5 },
-  { "SVFOP_LOCALTIME_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIME_N", 6 },
-  { "SVFOP_LOCALTIMESTAMP", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIMESTAMP", 7 },
-  { "SVFOP_LOCALTIMESTAMP_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIMESTAMP_N", 8 },
-  { "SVFOP_CURRENT_ROLE", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_ROLE", 9 },
-  { "SVFOP_CURRENT_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_USER", 10 },
-  { "SVFOP_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_USER", 11 },
-  { "SVFOP_SESSION_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_SESSION_USER", 12 },
-  { "SVFOP_CURRENT_CATALOG", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_CATALOG", 13 },
-  { "SVFOP_CURRENT_SCHEMA", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_SCHEMA", 14 },
+  { "SQLVALUE_FUNCTION_OP_UNDEFINED", "PG_QUERY__SQLVALUE_FUNCTION_OP__SQLVALUE_FUNCTION_OP_UNDEFINED", 0 },
+  { "SVFOP_CURRENT_DATE", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_DATE", 1 },
+  { "SVFOP_CURRENT_TIME", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIME", 2 },
+  { "SVFOP_CURRENT_TIME_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIME_N", 3 },
+  { "SVFOP_CURRENT_TIMESTAMP", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIMESTAMP", 4 },
+  { "SVFOP_CURRENT_TIMESTAMP_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_TIMESTAMP_N", 5 },
+  { "SVFOP_LOCALTIME", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIME", 6 },
+  { "SVFOP_LOCALTIME_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIME_N", 7 },
+  { "SVFOP_LOCALTIMESTAMP", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIMESTAMP", 8 },
+  { "SVFOP_LOCALTIMESTAMP_N", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_LOCALTIMESTAMP_N", 9 },
+  { "SVFOP_CURRENT_ROLE", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_ROLE", 10 },
+  { "SVFOP_CURRENT_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_USER", 11 },
+  { "SVFOP_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_USER", 12 },
+  { "SVFOP_SESSION_USER", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_SESSION_USER", 13 },
+  { "SVFOP_CURRENT_CATALOG", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_CATALOG", 14 },
+  { "SVFOP_CURRENT_SCHEMA", "PG_QUERY__SQLVALUE_FUNCTION_OP__SVFOP_CURRENT_SCHEMA", 15 },
 };
 static const ProtobufCIntRange pg_query__sqlvalue_function_op__value_ranges[] = {
-{0, 0},{0, 15}
+{0, 0},{0, 16}
 };
-static const ProtobufCEnumValueIndex pg_query__sqlvalue_function_op__enum_values_by_name[15] =
+static const ProtobufCEnumValueIndex pg_query__sqlvalue_function_op__enum_values_by_name[16] =
 {
-  { "SVFOP_CURRENT_CATALOG", 13 },
-  { "SVFOP_CURRENT_DATE", 0 },
-  { "SVFOP_CURRENT_ROLE", 9 },
-  { "SVFOP_CURRENT_SCHEMA", 14 },
-  { "SVFOP_CURRENT_TIME", 1 },
-  { "SVFOP_CURRENT_TIMESTAMP", 3 },
-  { "SVFOP_CURRENT_TIMESTAMP_N", 4 },
-  { "SVFOP_CURRENT_TIME_N", 2 },
-  { "SVFOP_CURRENT_USER", 10 },
-  { "SVFOP_LOCALTIME", 5 },
-  { "SVFOP_LOCALTIMESTAMP", 7 },
-  { "SVFOP_LOCALTIMESTAMP_N", 8 },
-  { "SVFOP_LOCALTIME_N", 6 },
-  { "SVFOP_SESSION_USER", 12 },
-  { "SVFOP_USER", 11 },
+  { "SQLVALUE_FUNCTION_OP_UNDEFINED", 0 },
+  { "SVFOP_CURRENT_CATALOG", 14 },
+  { "SVFOP_CURRENT_DATE", 1 },
+  { "SVFOP_CURRENT_ROLE", 10 },
+  { "SVFOP_CURRENT_SCHEMA", 15 },
+  { "SVFOP_CURRENT_TIME", 2 },
+  { "SVFOP_CURRENT_TIMESTAMP", 4 },
+  { "SVFOP_CURRENT_TIMESTAMP_N", 5 },
+  { "SVFOP_CURRENT_TIME_N", 3 },
+  { "SVFOP_CURRENT_USER", 11 },
+  { "SVFOP_LOCALTIME", 6 },
+  { "SVFOP_LOCALTIMESTAMP", 8 },
+  { "SVFOP_LOCALTIMESTAMP_N", 9 },
+  { "SVFOP_LOCALTIME_N", 7 },
+  { "SVFOP_SESSION_USER", 13 },
+  { "SVFOP_USER", 12 },
 };
 const ProtobufCEnumDescriptor pg_query__sqlvalue_function_op__descriptor =
 {
@@ -35981,38 +36061,40 @@ const ProtobufCEnumDescriptor pg_query__sqlvalue_function_op__descriptor =
   "SQLValueFunctionOp",
   "PgQuery__SQLValueFunctionOp",
   "pg_query",
-  15,
+  16,
   pg_query__sqlvalue_function_op__enum_values_by_number,
-  15,
+  16,
   pg_query__sqlvalue_function_op__enum_values_by_name,
   1,
   pg_query__sqlvalue_function_op__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__xml_expr_op__enum_values_by_number[8] =
+static const ProtobufCEnumValue pg_query__xml_expr_op__enum_values_by_number[9] =
 {
-  { "IS_XMLCONCAT", "PG_QUERY__XML_EXPR_OP__IS_XMLCONCAT", 0 },
-  { "IS_XMLELEMENT", "PG_QUERY__XML_EXPR_OP__IS_XMLELEMENT", 1 },
-  { "IS_XMLFOREST", "PG_QUERY__XML_EXPR_OP__IS_XMLFOREST", 2 },
-  { "IS_XMLPARSE", "PG_QUERY__XML_EXPR_OP__IS_XMLPARSE", 3 },
-  { "IS_XMLPI", "PG_QUERY__XML_EXPR_OP__IS_XMLPI", 4 },
-  { "IS_XMLROOT", "PG_QUERY__XML_EXPR_OP__IS_XMLROOT", 5 },
-  { "IS_XMLSERIALIZE", "PG_QUERY__XML_EXPR_OP__IS_XMLSERIALIZE", 6 },
-  { "IS_DOCUMENT", "PG_QUERY__XML_EXPR_OP__IS_DOCUMENT", 7 },
+  { "XML_EXPR_OP_UNDEFINED", "PG_QUERY__XML_EXPR_OP__XML_EXPR_OP_UNDEFINED", 0 },
+  { "IS_XMLCONCAT", "PG_QUERY__XML_EXPR_OP__IS_XMLCONCAT", 1 },
+  { "IS_XMLELEMENT", "PG_QUERY__XML_EXPR_OP__IS_XMLELEMENT", 2 },
+  { "IS_XMLFOREST", "PG_QUERY__XML_EXPR_OP__IS_XMLFOREST", 3 },
+  { "IS_XMLPARSE", "PG_QUERY__XML_EXPR_OP__IS_XMLPARSE", 4 },
+  { "IS_XMLPI", "PG_QUERY__XML_EXPR_OP__IS_XMLPI", 5 },
+  { "IS_XMLROOT", "PG_QUERY__XML_EXPR_OP__IS_XMLROOT", 6 },
+  { "IS_XMLSERIALIZE", "PG_QUERY__XML_EXPR_OP__IS_XMLSERIALIZE", 7 },
+  { "IS_DOCUMENT", "PG_QUERY__XML_EXPR_OP__IS_DOCUMENT", 8 },
 };
 static const ProtobufCIntRange pg_query__xml_expr_op__value_ranges[] = {
-{0, 0},{0, 8}
+{0, 0},{0, 9}
 };
-static const ProtobufCEnumValueIndex pg_query__xml_expr_op__enum_values_by_name[8] =
+static const ProtobufCEnumValueIndex pg_query__xml_expr_op__enum_values_by_name[9] =
 {
-  { "IS_DOCUMENT", 7 },
-  { "IS_XMLCONCAT", 0 },
-  { "IS_XMLELEMENT", 1 },
-  { "IS_XMLFOREST", 2 },
-  { "IS_XMLPARSE", 3 },
-  { "IS_XMLPI", 4 },
-  { "IS_XMLROOT", 5 },
-  { "IS_XMLSERIALIZE", 6 },
+  { "IS_DOCUMENT", 8 },
+  { "IS_XMLCONCAT", 1 },
+  { "IS_XMLELEMENT", 2 },
+  { "IS_XMLFOREST", 3 },
+  { "IS_XMLPARSE", 4 },
+  { "IS_XMLPI", 5 },
+  { "IS_XMLROOT", 6 },
+  { "IS_XMLSERIALIZE", 7 },
+  { "XML_EXPR_OP_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__xml_expr_op__descriptor =
 {
@@ -36021,26 +36103,28 @@ const ProtobufCEnumDescriptor pg_query__xml_expr_op__descriptor =
   "XmlExprOp",
   "PgQuery__XmlExprOp",
   "pg_query",
-  8,
+  9,
   pg_query__xml_expr_op__enum_values_by_number,
-  8,
+  9,
   pg_query__xml_expr_op__enum_values_by_name,
   1,
   pg_query__xml_expr_op__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__xml_option_type__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__xml_option_type__enum_values_by_number[3] =
 {
-  { "XMLOPTION_DOCUMENT", "PG_QUERY__XML_OPTION_TYPE__XMLOPTION_DOCUMENT", 0 },
-  { "XMLOPTION_CONTENT", "PG_QUERY__XML_OPTION_TYPE__XMLOPTION_CONTENT", 1 },
+  { "XML_OPTION_TYPE_UNDEFINED", "PG_QUERY__XML_OPTION_TYPE__XML_OPTION_TYPE_UNDEFINED", 0 },
+  { "XMLOPTION_DOCUMENT", "PG_QUERY__XML_OPTION_TYPE__XMLOPTION_DOCUMENT", 1 },
+  { "XMLOPTION_CONTENT", "PG_QUERY__XML_OPTION_TYPE__XMLOPTION_CONTENT", 2 },
 };
 static const ProtobufCIntRange pg_query__xml_option_type__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__xml_option_type__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__xml_option_type__enum_values_by_name[3] =
 {
-  { "XMLOPTION_CONTENT", 1 },
-  { "XMLOPTION_DOCUMENT", 0 },
+  { "XMLOPTION_CONTENT", 2 },
+  { "XMLOPTION_DOCUMENT", 1 },
+  { "XML_OPTION_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__xml_option_type__descriptor =
 {
@@ -36049,26 +36133,28 @@ const ProtobufCEnumDescriptor pg_query__xml_option_type__descriptor =
   "XmlOptionType",
   "PgQuery__XmlOptionType",
   "pg_query",
-  2,
+  3,
   pg_query__xml_option_type__enum_values_by_number,
-  2,
+  3,
   pg_query__xml_option_type__enum_values_by_name,
   1,
   pg_query__xml_option_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__null_test_type__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__null_test_type__enum_values_by_number[3] =
 {
-  { "IS_NULL", "PG_QUERY__NULL_TEST_TYPE__IS_NULL", 0 },
-  { "IS_NOT_NULL", "PG_QUERY__NULL_TEST_TYPE__IS_NOT_NULL", 1 },
+  { "NULL_TEST_TYPE_UNDEFINED", "PG_QUERY__NULL_TEST_TYPE__NULL_TEST_TYPE_UNDEFINED", 0 },
+  { "IS_NULL", "PG_QUERY__NULL_TEST_TYPE__IS_NULL", 1 },
+  { "IS_NOT_NULL", "PG_QUERY__NULL_TEST_TYPE__IS_NOT_NULL", 2 },
 };
 static const ProtobufCIntRange pg_query__null_test_type__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__null_test_type__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__null_test_type__enum_values_by_name[3] =
 {
-  { "IS_NOT_NULL", 1 },
-  { "IS_NULL", 0 },
+  { "IS_NOT_NULL", 2 },
+  { "IS_NULL", 1 },
+  { "NULL_TEST_TYPE_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__null_test_type__descriptor =
 {
@@ -36077,34 +36163,36 @@ const ProtobufCEnumDescriptor pg_query__null_test_type__descriptor =
   "NullTestType",
   "PgQuery__NullTestType",
   "pg_query",
-  2,
+  3,
   pg_query__null_test_type__enum_values_by_number,
-  2,
+  3,
   pg_query__null_test_type__enum_values_by_name,
   1,
   pg_query__null_test_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__bool_test_type__enum_values_by_number[6] =
+static const ProtobufCEnumValue pg_query__bool_test_type__enum_values_by_number[7] =
 {
-  { "IS_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_TRUE", 0 },
-  { "IS_NOT_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_TRUE", 1 },
-  { "IS_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_FALSE", 2 },
-  { "IS_NOT_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_FALSE", 3 },
-  { "IS_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_UNKNOWN", 4 },
-  { "IS_NOT_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_UNKNOWN", 5 },
+  { "BOOL_TEST_TYPE_UNDEFINED", "PG_QUERY__BOOL_TEST_TYPE__BOOL_TEST_TYPE_UNDEFINED", 0 },
+  { "IS_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_TRUE", 1 },
+  { "IS_NOT_TRUE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_TRUE", 2 },
+  { "IS_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_FALSE", 3 },
+  { "IS_NOT_FALSE", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_FALSE", 4 },
+  { "IS_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_UNKNOWN", 5 },
+  { "IS_NOT_UNKNOWN", "PG_QUERY__BOOL_TEST_TYPE__IS_NOT_UNKNOWN", 6 },
 };
 static const ProtobufCIntRange pg_query__bool_test_type__value_ranges[] = {
-{0, 0},{0, 6}
+{0, 0},{0, 7}
 };
-static const ProtobufCEnumValueIndex pg_query__bool_test_type__enum_values_by_name[6] =
+static const ProtobufCEnumValueIndex pg_query__bool_test_type__enum_values_by_name[7] =
 {
-  { "IS_FALSE", 2 },
-  { "IS_NOT_FALSE", 3 },
-  { "IS_NOT_TRUE", 1 },
-  { "IS_NOT_UNKNOWN", 5 },
-  { "IS_TRUE", 0 },
-  { "IS_UNKNOWN", 4 },
+  { "BOOL_TEST_TYPE_UNDEFINED", 0 },
+  { "IS_FALSE", 3 },
+  { "IS_NOT_FALSE", 4 },
+  { "IS_NOT_TRUE", 2 },
+  { "IS_NOT_UNKNOWN", 6 },
+  { "IS_TRUE", 1 },
+  { "IS_UNKNOWN", 5 },
 };
 const ProtobufCEnumDescriptor pg_query__bool_test_type__descriptor =
 {
@@ -36113,36 +36201,38 @@ const ProtobufCEnumDescriptor pg_query__bool_test_type__descriptor =
   "BoolTestType",
   "PgQuery__BoolTestType",
   "pg_query",
-  6,
+  7,
   pg_query__bool_test_type__enum_values_by_number,
-  6,
+  7,
   pg_query__bool_test_type__enum_values_by_name,
   1,
   pg_query__bool_test_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__cmd_type__enum_values_by_number[7] =
+static const ProtobufCEnumValue pg_query__cmd_type__enum_values_by_number[8] =
 {
-  { "CMD_UNKNOWN", "PG_QUERY__CMD_TYPE__CMD_UNKNOWN", 0 },
-  { "CMD_SELECT", "PG_QUERY__CMD_TYPE__CMD_SELECT", 1 },
-  { "CMD_UPDATE", "PG_QUERY__CMD_TYPE__CMD_UPDATE", 2 },
-  { "CMD_INSERT", "PG_QUERY__CMD_TYPE__CMD_INSERT", 3 },
-  { "CMD_DELETE", "PG_QUERY__CMD_TYPE__CMD_DELETE", 4 },
-  { "CMD_UTILITY", "PG_QUERY__CMD_TYPE__CMD_UTILITY", 5 },
-  { "CMD_NOTHING", "PG_QUERY__CMD_TYPE__CMD_NOTHING", 6 },
+  { "CMD_TYPE_UNDEFINED", "PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED", 0 },
+  { "CMD_UNKNOWN", "PG_QUERY__CMD_TYPE__CMD_UNKNOWN", 1 },
+  { "CMD_SELECT", "PG_QUERY__CMD_TYPE__CMD_SELECT", 2 },
+  { "CMD_UPDATE", "PG_QUERY__CMD_TYPE__CMD_UPDATE", 3 },
+  { "CMD_INSERT", "PG_QUERY__CMD_TYPE__CMD_INSERT", 4 },
+  { "CMD_DELETE", "PG_QUERY__CMD_TYPE__CMD_DELETE", 5 },
+  { "CMD_UTILITY", "PG_QUERY__CMD_TYPE__CMD_UTILITY", 6 },
+  { "CMD_NOTHING", "PG_QUERY__CMD_TYPE__CMD_NOTHING", 7 },
 };
 static const ProtobufCIntRange pg_query__cmd_type__value_ranges[] = {
-{0, 0},{0, 7}
+{0, 0},{0, 8}
 };
-static const ProtobufCEnumValueIndex pg_query__cmd_type__enum_values_by_name[7] =
+static const ProtobufCEnumValueIndex pg_query__cmd_type__enum_values_by_name[8] =
 {
-  { "CMD_DELETE", 4 },
-  { "CMD_INSERT", 3 },
-  { "CMD_NOTHING", 6 },
-  { "CMD_SELECT", 1 },
-  { "CMD_UNKNOWN", 0 },
-  { "CMD_UPDATE", 2 },
-  { "CMD_UTILITY", 5 },
+  { "CMD_DELETE", 5 },
+  { "CMD_INSERT", 4 },
+  { "CMD_NOTHING", 7 },
+  { "CMD_SELECT", 2 },
+  { "CMD_TYPE_UNDEFINED", 0 },
+  { "CMD_UNKNOWN", 1 },
+  { "CMD_UPDATE", 3 },
+  { "CMD_UTILITY", 6 },
 };
 const ProtobufCEnumDescriptor pg_query__cmd_type__descriptor =
 {
@@ -36151,38 +36241,40 @@ const ProtobufCEnumDescriptor pg_query__cmd_type__descriptor =
   "CmdType",
   "PgQuery__CmdType",
   "pg_query",
-  7,
+  8,
   pg_query__cmd_type__enum_values_by_number,
-  7,
+  8,
   pg_query__cmd_type__enum_values_by_name,
   1,
   pg_query__cmd_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__join_type__enum_values_by_number[8] =
+static const ProtobufCEnumValue pg_query__join_type__enum_values_by_number[9] =
 {
-  { "JOIN_INNER", "PG_QUERY__JOIN_TYPE__JOIN_INNER", 0 },
-  { "JOIN_LEFT", "PG_QUERY__JOIN_TYPE__JOIN_LEFT", 1 },
-  { "JOIN_FULL", "PG_QUERY__JOIN_TYPE__JOIN_FULL", 2 },
-  { "JOIN_RIGHT", "PG_QUERY__JOIN_TYPE__JOIN_RIGHT", 3 },
-  { "JOIN_SEMI", "PG_QUERY__JOIN_TYPE__JOIN_SEMI", 4 },
-  { "JOIN_ANTI", "PG_QUERY__JOIN_TYPE__JOIN_ANTI", 5 },
-  { "JOIN_UNIQUE_OUTER", "PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_OUTER", 6 },
-  { "JOIN_UNIQUE_INNER", "PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_INNER", 7 },
+  { "JOIN_TYPE_UNDEFINED", "PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED", 0 },
+  { "JOIN_INNER", "PG_QUERY__JOIN_TYPE__JOIN_INNER", 1 },
+  { "JOIN_LEFT", "PG_QUERY__JOIN_TYPE__JOIN_LEFT", 2 },
+  { "JOIN_FULL", "PG_QUERY__JOIN_TYPE__JOIN_FULL", 3 },
+  { "JOIN_RIGHT", "PG_QUERY__JOIN_TYPE__JOIN_RIGHT", 4 },
+  { "JOIN_SEMI", "PG_QUERY__JOIN_TYPE__JOIN_SEMI", 5 },
+  { "JOIN_ANTI", "PG_QUERY__JOIN_TYPE__JOIN_ANTI", 6 },
+  { "JOIN_UNIQUE_OUTER", "PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_OUTER", 7 },
+  { "JOIN_UNIQUE_INNER", "PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_INNER", 8 },
 };
 static const ProtobufCIntRange pg_query__join_type__value_ranges[] = {
-{0, 0},{0, 8}
+{0, 0},{0, 9}
 };
-static const ProtobufCEnumValueIndex pg_query__join_type__enum_values_by_name[8] =
+static const ProtobufCEnumValueIndex pg_query__join_type__enum_values_by_name[9] =
 {
-  { "JOIN_ANTI", 5 },
-  { "JOIN_FULL", 2 },
-  { "JOIN_INNER", 0 },
-  { "JOIN_LEFT", 1 },
-  { "JOIN_RIGHT", 3 },
-  { "JOIN_SEMI", 4 },
-  { "JOIN_UNIQUE_INNER", 7 },
-  { "JOIN_UNIQUE_OUTER", 6 },
+  { "JOIN_ANTI", 6 },
+  { "JOIN_FULL", 3 },
+  { "JOIN_INNER", 1 },
+  { "JOIN_LEFT", 2 },
+  { "JOIN_RIGHT", 4 },
+  { "JOIN_SEMI", 5 },
+  { "JOIN_TYPE_UNDEFINED", 0 },
+  { "JOIN_UNIQUE_INNER", 8 },
+  { "JOIN_UNIQUE_OUTER", 7 },
 };
 const ProtobufCEnumDescriptor pg_query__join_type__descriptor =
 {
@@ -36191,30 +36283,32 @@ const ProtobufCEnumDescriptor pg_query__join_type__descriptor =
   "JoinType",
   "PgQuery__JoinType",
   "pg_query",
-  8,
+  9,
   pg_query__join_type__enum_values_by_number,
-  8,
+  9,
   pg_query__join_type__enum_values_by_name,
   1,
   pg_query__join_type__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__agg_strategy__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__agg_strategy__enum_values_by_number[5] =
 {
-  { "AGG_PLAIN", "PG_QUERY__AGG_STRATEGY__AGG_PLAIN", 0 },
-  { "AGG_SORTED", "PG_QUERY__AGG_STRATEGY__AGG_SORTED", 1 },
-  { "AGG_HASHED", "PG_QUERY__AGG_STRATEGY__AGG_HASHED", 2 },
-  { "AGG_MIXED", "PG_QUERY__AGG_STRATEGY__AGG_MIXED", 3 },
+  { "AGG_STRATEGY_UNDEFINED", "PG_QUERY__AGG_STRATEGY__AGG_STRATEGY_UNDEFINED", 0 },
+  { "AGG_PLAIN", "PG_QUERY__AGG_STRATEGY__AGG_PLAIN", 1 },
+  { "AGG_SORTED", "PG_QUERY__AGG_STRATEGY__AGG_SORTED", 2 },
+  { "AGG_HASHED", "PG_QUERY__AGG_STRATEGY__AGG_HASHED", 3 },
+  { "AGG_MIXED", "PG_QUERY__AGG_STRATEGY__AGG_MIXED", 4 },
 };
 static const ProtobufCIntRange pg_query__agg_strategy__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__agg_strategy__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__agg_strategy__enum_values_by_name[5] =
 {
-  { "AGG_HASHED", 2 },
-  { "AGG_MIXED", 3 },
-  { "AGG_PLAIN", 0 },
-  { "AGG_SORTED", 1 },
+  { "AGG_HASHED", 3 },
+  { "AGG_MIXED", 4 },
+  { "AGG_PLAIN", 1 },
+  { "AGG_SORTED", 2 },
+  { "AGG_STRATEGY_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__agg_strategy__descriptor =
 {
@@ -36223,28 +36317,30 @@ const ProtobufCEnumDescriptor pg_query__agg_strategy__descriptor =
   "AggStrategy",
   "PgQuery__AggStrategy",
   "pg_query",
-  4,
+  5,
   pg_query__agg_strategy__enum_values_by_number,
-  4,
+  5,
   pg_query__agg_strategy__enum_values_by_name,
   1,
   pg_query__agg_strategy__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__agg_split__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__agg_split__enum_values_by_number[4] =
 {
-  { "AGGSPLIT_SIMPLE", "PG_QUERY__AGG_SPLIT__AGGSPLIT_SIMPLE", 0 },
-  { "AGGSPLIT_INITIAL_SERIAL", "PG_QUERY__AGG_SPLIT__AGGSPLIT_INITIAL_SERIAL", 1 },
-  { "AGGSPLIT_FINAL_DESERIAL", "PG_QUERY__AGG_SPLIT__AGGSPLIT_FINAL_DESERIAL", 2 },
+  { "AGG_SPLIT_UNDEFINED", "PG_QUERY__AGG_SPLIT__AGG_SPLIT_UNDEFINED", 0 },
+  { "AGGSPLIT_SIMPLE", "PG_QUERY__AGG_SPLIT__AGGSPLIT_SIMPLE", 1 },
+  { "AGGSPLIT_INITIAL_SERIAL", "PG_QUERY__AGG_SPLIT__AGGSPLIT_INITIAL_SERIAL", 2 },
+  { "AGGSPLIT_FINAL_DESERIAL", "PG_QUERY__AGG_SPLIT__AGGSPLIT_FINAL_DESERIAL", 3 },
 };
 static const ProtobufCIntRange pg_query__agg_split__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__agg_split__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__agg_split__enum_values_by_name[4] =
 {
-  { "AGGSPLIT_FINAL_DESERIAL", 2 },
-  { "AGGSPLIT_INITIAL_SERIAL", 1 },
-  { "AGGSPLIT_SIMPLE", 0 },
+  { "AGGSPLIT_FINAL_DESERIAL", 3 },
+  { "AGGSPLIT_INITIAL_SERIAL", 2 },
+  { "AGGSPLIT_SIMPLE", 1 },
+  { "AGG_SPLIT_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__agg_split__descriptor =
 {
@@ -36253,30 +36349,32 @@ const ProtobufCEnumDescriptor pg_query__agg_split__descriptor =
   "AggSplit",
   "PgQuery__AggSplit",
   "pg_query",
-  3,
+  4,
   pg_query__agg_split__enum_values_by_number,
-  3,
+  4,
   pg_query__agg_split__enum_values_by_name,
   1,
   pg_query__agg_split__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__set_op_cmd__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__set_op_cmd__enum_values_by_number[5] =
 {
-  { "SETOPCMD_INTERSECT", "PG_QUERY__SET_OP_CMD__SETOPCMD_INTERSECT", 0 },
-  { "SETOPCMD_INTERSECT_ALL", "PG_QUERY__SET_OP_CMD__SETOPCMD_INTERSECT_ALL", 1 },
-  { "SETOPCMD_EXCEPT", "PG_QUERY__SET_OP_CMD__SETOPCMD_EXCEPT", 2 },
-  { "SETOPCMD_EXCEPT_ALL", "PG_QUERY__SET_OP_CMD__SETOPCMD_EXCEPT_ALL", 3 },
+  { "SET_OP_CMD_UNDEFINED", "PG_QUERY__SET_OP_CMD__SET_OP_CMD_UNDEFINED", 0 },
+  { "SETOPCMD_INTERSECT", "PG_QUERY__SET_OP_CMD__SETOPCMD_INTERSECT", 1 },
+  { "SETOPCMD_INTERSECT_ALL", "PG_QUERY__SET_OP_CMD__SETOPCMD_INTERSECT_ALL", 2 },
+  { "SETOPCMD_EXCEPT", "PG_QUERY__SET_OP_CMD__SETOPCMD_EXCEPT", 3 },
+  { "SETOPCMD_EXCEPT_ALL", "PG_QUERY__SET_OP_CMD__SETOPCMD_EXCEPT_ALL", 4 },
 };
 static const ProtobufCIntRange pg_query__set_op_cmd__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__set_op_cmd__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__set_op_cmd__enum_values_by_name[5] =
 {
-  { "SETOPCMD_EXCEPT", 2 },
-  { "SETOPCMD_EXCEPT_ALL", 3 },
-  { "SETOPCMD_INTERSECT", 0 },
-  { "SETOPCMD_INTERSECT_ALL", 1 },
+  { "SETOPCMD_EXCEPT", 3 },
+  { "SETOPCMD_EXCEPT_ALL", 4 },
+  { "SETOPCMD_INTERSECT", 1 },
+  { "SETOPCMD_INTERSECT_ALL", 2 },
+  { "SET_OP_CMD_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__set_op_cmd__descriptor =
 {
@@ -36285,26 +36383,28 @@ const ProtobufCEnumDescriptor pg_query__set_op_cmd__descriptor =
   "SetOpCmd",
   "PgQuery__SetOpCmd",
   "pg_query",
-  4,
+  5,
   pg_query__set_op_cmd__enum_values_by_number,
-  4,
+  5,
   pg_query__set_op_cmd__enum_values_by_name,
   1,
   pg_query__set_op_cmd__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__set_op_strategy__enum_values_by_number[2] =
+static const ProtobufCEnumValue pg_query__set_op_strategy__enum_values_by_number[3] =
 {
-  { "SETOP_SORTED", "PG_QUERY__SET_OP_STRATEGY__SETOP_SORTED", 0 },
-  { "SETOP_HASHED", "PG_QUERY__SET_OP_STRATEGY__SETOP_HASHED", 1 },
+  { "SET_OP_STRATEGY_UNDEFINED", "PG_QUERY__SET_OP_STRATEGY__SET_OP_STRATEGY_UNDEFINED", 0 },
+  { "SETOP_SORTED", "PG_QUERY__SET_OP_STRATEGY__SETOP_SORTED", 1 },
+  { "SETOP_HASHED", "PG_QUERY__SET_OP_STRATEGY__SETOP_HASHED", 2 },
 };
 static const ProtobufCIntRange pg_query__set_op_strategy__value_ranges[] = {
-{0, 0},{0, 2}
+{0, 0},{0, 3}
 };
-static const ProtobufCEnumValueIndex pg_query__set_op_strategy__enum_values_by_name[2] =
+static const ProtobufCEnumValueIndex pg_query__set_op_strategy__enum_values_by_name[3] =
 {
-  { "SETOP_HASHED", 1 },
-  { "SETOP_SORTED", 0 },
+  { "SETOP_HASHED", 2 },
+  { "SETOP_SORTED", 1 },
+  { "SET_OP_STRATEGY_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__set_op_strategy__descriptor =
 {
@@ -36313,28 +36413,30 @@ const ProtobufCEnumDescriptor pg_query__set_op_strategy__descriptor =
   "SetOpStrategy",
   "PgQuery__SetOpStrategy",
   "pg_query",
-  2,
+  3,
   pg_query__set_op_strategy__enum_values_by_number,
-  2,
+  3,
   pg_query__set_op_strategy__enum_values_by_name,
   1,
   pg_query__set_op_strategy__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__on_conflict_action__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__on_conflict_action__enum_values_by_number[4] =
 {
-  { "ONCONFLICT_NONE", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_NONE", 0 },
-  { "ONCONFLICT_NOTHING", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_NOTHING", 1 },
-  { "ONCONFLICT_UPDATE", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_UPDATE", 2 },
+  { "ON_CONFLICT_ACTION_UNDEFINED", "PG_QUERY__ON_CONFLICT_ACTION__ON_CONFLICT_ACTION_UNDEFINED", 0 },
+  { "ONCONFLICT_NONE", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_NONE", 1 },
+  { "ONCONFLICT_NOTHING", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_NOTHING", 2 },
+  { "ONCONFLICT_UPDATE", "PG_QUERY__ON_CONFLICT_ACTION__ONCONFLICT_UPDATE", 3 },
 };
 static const ProtobufCIntRange pg_query__on_conflict_action__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__on_conflict_action__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__on_conflict_action__enum_values_by_name[4] =
 {
-  { "ONCONFLICT_NONE", 0 },
-  { "ONCONFLICT_NOTHING", 1 },
-  { "ONCONFLICT_UPDATE", 2 },
+  { "ONCONFLICT_NONE", 1 },
+  { "ONCONFLICT_NOTHING", 2 },
+  { "ONCONFLICT_UPDATE", 3 },
+  { "ON_CONFLICT_ACTION_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__on_conflict_action__descriptor =
 {
@@ -36343,28 +36445,30 @@ const ProtobufCEnumDescriptor pg_query__on_conflict_action__descriptor =
   "OnConflictAction",
   "PgQuery__OnConflictAction",
   "pg_query",
-  3,
+  4,
   pg_query__on_conflict_action__enum_values_by_number,
-  3,
+  4,
   pg_query__on_conflict_action__enum_values_by_name,
   1,
   pg_query__on_conflict_action__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__limit_option__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__limit_option__enum_values_by_number[4] =
 {
-  { "LIMIT_OPTION_DEFAULT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_DEFAULT", 0 },
-  { "LIMIT_OPTION_COUNT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_COUNT", 1 },
-  { "LIMIT_OPTION_WITH_TIES", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_WITH_TIES", 2 },
+  { "LIMIT_OPTION_UNDEFINED", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_UNDEFINED", 0 },
+  { "LIMIT_OPTION_DEFAULT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_DEFAULT", 1 },
+  { "LIMIT_OPTION_COUNT", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_COUNT", 2 },
+  { "LIMIT_OPTION_WITH_TIES", "PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_WITH_TIES", 3 },
 };
 static const ProtobufCIntRange pg_query__limit_option__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__limit_option__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__limit_option__enum_values_by_name[4] =
 {
-  { "LIMIT_OPTION_COUNT", 1 },
-  { "LIMIT_OPTION_DEFAULT", 0 },
-  { "LIMIT_OPTION_WITH_TIES", 2 },
+  { "LIMIT_OPTION_COUNT", 2 },
+  { "LIMIT_OPTION_DEFAULT", 1 },
+  { "LIMIT_OPTION_UNDEFINED", 0 },
+  { "LIMIT_OPTION_WITH_TIES", 3 },
 };
 const ProtobufCEnumDescriptor pg_query__limit_option__descriptor =
 {
@@ -36373,32 +36477,34 @@ const ProtobufCEnumDescriptor pg_query__limit_option__descriptor =
   "LimitOption",
   "PgQuery__LimitOption",
   "pg_query",
-  3,
+  4,
   pg_query__limit_option__enum_values_by_number,
-  3,
+  4,
   pg_query__limit_option__enum_values_by_name,
   1,
   pg_query__limit_option__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__lock_clause_strength__enum_values_by_number[5] =
+static const ProtobufCEnumValue pg_query__lock_clause_strength__enum_values_by_number[6] =
 {
-  { "LCS_NONE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_NONE", 0 },
-  { "LCS_FORKEYSHARE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORKEYSHARE", 1 },
-  { "LCS_FORSHARE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORSHARE", 2 },
-  { "LCS_FORNOKEYUPDATE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORNOKEYUPDATE", 3 },
-  { "LCS_FORUPDATE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORUPDATE", 4 },
+  { "LOCK_CLAUSE_STRENGTH_UNDEFINED", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LOCK_CLAUSE_STRENGTH_UNDEFINED", 0 },
+  { "LCS_NONE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_NONE", 1 },
+  { "LCS_FORKEYSHARE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORKEYSHARE", 2 },
+  { "LCS_FORSHARE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORSHARE", 3 },
+  { "LCS_FORNOKEYUPDATE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORNOKEYUPDATE", 4 },
+  { "LCS_FORUPDATE", "PG_QUERY__LOCK_CLAUSE_STRENGTH__LCS_FORUPDATE", 5 },
 };
 static const ProtobufCIntRange pg_query__lock_clause_strength__value_ranges[] = {
-{0, 0},{0, 5}
+{0, 0},{0, 6}
 };
-static const ProtobufCEnumValueIndex pg_query__lock_clause_strength__enum_values_by_name[5] =
+static const ProtobufCEnumValueIndex pg_query__lock_clause_strength__enum_values_by_name[6] =
 {
-  { "LCS_FORKEYSHARE", 1 },
-  { "LCS_FORNOKEYUPDATE", 3 },
-  { "LCS_FORSHARE", 2 },
-  { "LCS_FORUPDATE", 4 },
-  { "LCS_NONE", 0 },
+  { "LCS_FORKEYSHARE", 2 },
+  { "LCS_FORNOKEYUPDATE", 4 },
+  { "LCS_FORSHARE", 3 },
+  { "LCS_FORUPDATE", 5 },
+  { "LCS_NONE", 1 },
+  { "LOCK_CLAUSE_STRENGTH_UNDEFINED", 0 },
 };
 const ProtobufCEnumDescriptor pg_query__lock_clause_strength__descriptor =
 {
@@ -36407,28 +36513,30 @@ const ProtobufCEnumDescriptor pg_query__lock_clause_strength__descriptor =
   "LockClauseStrength",
   "PgQuery__LockClauseStrength",
   "pg_query",
-  5,
+  6,
   pg_query__lock_clause_strength__enum_values_by_number,
-  5,
+  6,
   pg_query__lock_clause_strength__enum_values_by_name,
   1,
   pg_query__lock_clause_strength__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__lock_wait_policy__enum_values_by_number[3] =
+static const ProtobufCEnumValue pg_query__lock_wait_policy__enum_values_by_number[4] =
 {
-  { "LockWaitBlock", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitBlock", 0 },
-  { "LockWaitSkip", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitSkip", 1 },
-  { "LockWaitError", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitError", 2 },
+  { "LOCK_WAIT_POLICY_UNDEFINED", "PG_QUERY__LOCK_WAIT_POLICY__LOCK_WAIT_POLICY_UNDEFINED", 0 },
+  { "LockWaitBlock", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitBlock", 1 },
+  { "LockWaitSkip", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitSkip", 2 },
+  { "LockWaitError", "PG_QUERY__LOCK_WAIT_POLICY__LockWaitError", 3 },
 };
 static const ProtobufCIntRange pg_query__lock_wait_policy__value_ranges[] = {
-{0, 0},{0, 3}
+{0, 0},{0, 4}
 };
-static const ProtobufCEnumValueIndex pg_query__lock_wait_policy__enum_values_by_name[3] =
+static const ProtobufCEnumValueIndex pg_query__lock_wait_policy__enum_values_by_name[4] =
 {
-  { "LockWaitBlock", 0 },
-  { "LockWaitError", 2 },
-  { "LockWaitSkip", 1 },
+  { "LOCK_WAIT_POLICY_UNDEFINED", 0 },
+  { "LockWaitBlock", 1 },
+  { "LockWaitError", 3 },
+  { "LockWaitSkip", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__lock_wait_policy__descriptor =
 {
@@ -36437,30 +36545,32 @@ const ProtobufCEnumDescriptor pg_query__lock_wait_policy__descriptor =
   "LockWaitPolicy",
   "PgQuery__LockWaitPolicy",
   "pg_query",
-  3,
+  4,
   pg_query__lock_wait_policy__enum_values_by_number,
-  3,
+  4,
   pg_query__lock_wait_policy__enum_values_by_name,
   1,
   pg_query__lock_wait_policy__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
-static const ProtobufCEnumValue pg_query__lock_tuple_mode__enum_values_by_number[4] =
+static const ProtobufCEnumValue pg_query__lock_tuple_mode__enum_values_by_number[5] =
 {
-  { "LockTupleKeyShare", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleKeyShare", 0 },
-  { "LockTupleShare", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleShare", 1 },
-  { "LockTupleNoKeyExclusive", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleNoKeyExclusive", 2 },
-  { "LockTupleExclusive", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleExclusive", 3 },
+  { "LOCK_TUPLE_MODE_UNDEFINED", "PG_QUERY__LOCK_TUPLE_MODE__LOCK_TUPLE_MODE_UNDEFINED", 0 },
+  { "LockTupleKeyShare", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleKeyShare", 1 },
+  { "LockTupleShare", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleShare", 2 },
+  { "LockTupleNoKeyExclusive", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleNoKeyExclusive", 3 },
+  { "LockTupleExclusive", "PG_QUERY__LOCK_TUPLE_MODE__LockTupleExclusive", 4 },
 };
 static const ProtobufCIntRange pg_query__lock_tuple_mode__value_ranges[] = {
-{0, 0},{0, 4}
+{0, 0},{0, 5}
 };
-static const ProtobufCEnumValueIndex pg_query__lock_tuple_mode__enum_values_by_name[4] =
+static const ProtobufCEnumValueIndex pg_query__lock_tuple_mode__enum_values_by_name[5] =
 {
-  { "LockTupleExclusive", 3 },
-  { "LockTupleKeyShare", 0 },
-  { "LockTupleNoKeyExclusive", 2 },
-  { "LockTupleShare", 1 },
+  { "LOCK_TUPLE_MODE_UNDEFINED", 0 },
+  { "LockTupleExclusive", 4 },
+  { "LockTupleKeyShare", 1 },
+  { "LockTupleNoKeyExclusive", 3 },
+  { "LockTupleShare", 2 },
 };
 const ProtobufCEnumDescriptor pg_query__lock_tuple_mode__descriptor =
 {
@@ -36469,9 +36579,9 @@ const ProtobufCEnumDescriptor pg_query__lock_tuple_mode__descriptor =
   "LockTupleMode",
   "PgQuery__LockTupleMode",
   "pg_query",
-  4,
+  5,
   pg_query__lock_tuple_mode__enum_values_by_number,
-  4,
+  5,
   pg_query__lock_tuple_mode__enum_values_by_name,
   1,
   pg_query__lock_tuple_mode__value_ranges,

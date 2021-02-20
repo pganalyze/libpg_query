@@ -162,7 +162,12 @@ class Generator
         @enum_to_strings[enum_type] = format("static const char*\n_enumToString%s(%s value) {\n  switch(value) {\n", enum_type, enum_type)
         @enum_to_ints[enum_type] = format("static int\n_enumToInt%s(%s value) {\n  switch(value) {\n", enum_type, enum_type)
         @int_to_enums[enum_type] = format("static %s\n_intToEnum%s(int value) {\n  switch(value) {\n", enum_type, enum_type)
-        protobuf_field = 0
+
+        # We intentionally add a dummy field for the zero value, that actually is not used in practice
+        # - this ensures that the JSON output always includes the enum value (and doesn't skip it because its the zero value)
+        @protobuf_enums[enum_type] += format("  %s_UNDEFINED = 0;\n", underscore(enum_type).upcase)
+        protobuf_field = 1
+
         enum_def['values'].each do |value|
           next unless value['name']
 

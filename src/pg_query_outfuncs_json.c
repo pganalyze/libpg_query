@@ -50,10 +50,8 @@
 
 /* Write an enumerated-type field */
 #define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	if (node->fldname != 0) { \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\":\"%s\",", \
-						 _enumToString##typename(node->fldname)); \
-	}
+	appendStringInfo(out, "\"" CppAsString(outname_json) "\":\"%s\",", \
+					 _enumToString##typename(node->fldname));
 
 /* Write a float field */
 #define WRITE_FLOAT_FIELD(outname, outname_json, fldname) \

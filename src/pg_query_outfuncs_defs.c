@@ -1040,9 +1040,9 @@ _enumToStringLockTupleMode(LockTupleMode value) {
 }static int
 _enumToIntOverridingKind(OverridingKind value) {
   switch(value) {
-    case OVERRIDING_NOT_SET: return 0;
-    case OVERRIDING_USER_VALUE: return 1;
-    case OVERRIDING_SYSTEM_VALUE: return 2;
+    case OVERRIDING_NOT_SET: return 1;
+    case OVERRIDING_USER_VALUE: return 2;
+    case OVERRIDING_SYSTEM_VALUE: return 3;
   }
   Assert(false);
   return -1;
@@ -1051,11 +1051,11 @@ _enumToIntOverridingKind(OverridingKind value) {
 static int
 _enumToIntQuerySource(QuerySource value) {
   switch(value) {
-    case QSRC_ORIGINAL: return 0;
-    case QSRC_PARSER: return 1;
-    case QSRC_INSTEAD_RULE: return 2;
-    case QSRC_QUAL_INSTEAD_RULE: return 3;
-    case QSRC_NON_INSTEAD_RULE: return 4;
+    case QSRC_ORIGINAL: return 1;
+    case QSRC_PARSER: return 2;
+    case QSRC_INSTEAD_RULE: return 3;
+    case QSRC_QUAL_INSTEAD_RULE: return 4;
+    case QSRC_NON_INSTEAD_RULE: return 5;
   }
   Assert(false);
   return -1;
@@ -1064,10 +1064,10 @@ _enumToIntQuerySource(QuerySource value) {
 static int
 _enumToIntSortByDir(SortByDir value) {
   switch(value) {
-    case SORTBY_DEFAULT: return 0;
-    case SORTBY_ASC: return 1;
-    case SORTBY_DESC: return 2;
-    case SORTBY_USING: return 3;
+    case SORTBY_DEFAULT: return 1;
+    case SORTBY_ASC: return 2;
+    case SORTBY_DESC: return 3;
+    case SORTBY_USING: return 4;
   }
   Assert(false);
   return -1;
@@ -1076,9 +1076,9 @@ _enumToIntSortByDir(SortByDir value) {
 static int
 _enumToIntSortByNulls(SortByNulls value) {
   switch(value) {
-    case SORTBY_NULLS_DEFAULT: return 0;
-    case SORTBY_NULLS_FIRST: return 1;
-    case SORTBY_NULLS_LAST: return 2;
+    case SORTBY_NULLS_DEFAULT: return 1;
+    case SORTBY_NULLS_FIRST: return 2;
+    case SORTBY_NULLS_LAST: return 3;
   }
   Assert(false);
   return -1;
@@ -1087,22 +1087,22 @@ _enumToIntSortByNulls(SortByNulls value) {
 static int
 _enumToIntA_Expr_Kind(A_Expr_Kind value) {
   switch(value) {
-    case AEXPR_OP: return 0;
-    case AEXPR_OP_ANY: return 1;
-    case AEXPR_OP_ALL: return 2;
-    case AEXPR_DISTINCT: return 3;
-    case AEXPR_NOT_DISTINCT: return 4;
-    case AEXPR_NULLIF: return 5;
-    case AEXPR_OF: return 6;
-    case AEXPR_IN: return 7;
-    case AEXPR_LIKE: return 8;
-    case AEXPR_ILIKE: return 9;
-    case AEXPR_SIMILAR: return 10;
-    case AEXPR_BETWEEN: return 11;
-    case AEXPR_NOT_BETWEEN: return 12;
-    case AEXPR_BETWEEN_SYM: return 13;
-    case AEXPR_NOT_BETWEEN_SYM: return 14;
-    case AEXPR_PAREN: return 15;
+    case AEXPR_OP: return 1;
+    case AEXPR_OP_ANY: return 2;
+    case AEXPR_OP_ALL: return 3;
+    case AEXPR_DISTINCT: return 4;
+    case AEXPR_NOT_DISTINCT: return 5;
+    case AEXPR_NULLIF: return 6;
+    case AEXPR_OF: return 7;
+    case AEXPR_IN: return 8;
+    case AEXPR_LIKE: return 9;
+    case AEXPR_ILIKE: return 10;
+    case AEXPR_SIMILAR: return 11;
+    case AEXPR_BETWEEN: return 12;
+    case AEXPR_NOT_BETWEEN: return 13;
+    case AEXPR_BETWEEN_SYM: return 14;
+    case AEXPR_NOT_BETWEEN_SYM: return 15;
+    case AEXPR_PAREN: return 16;
   }
   Assert(false);
   return -1;
@@ -1111,10 +1111,10 @@ _enumToIntA_Expr_Kind(A_Expr_Kind value) {
 static int
 _enumToIntRoleSpecType(RoleSpecType value) {
   switch(value) {
-    case ROLESPEC_CSTRING: return 0;
-    case ROLESPEC_CURRENT_USER: return 1;
-    case ROLESPEC_SESSION_USER: return 2;
-    case ROLESPEC_PUBLIC: return 3;
+    case ROLESPEC_CSTRING: return 1;
+    case ROLESPEC_CURRENT_USER: return 2;
+    case ROLESPEC_SESSION_USER: return 3;
+    case ROLESPEC_PUBLIC: return 4;
   }
   Assert(false);
   return -1;
@@ -1123,15 +1123,15 @@ _enumToIntRoleSpecType(RoleSpecType value) {
 static int
 _enumToIntTableLikeOption(TableLikeOption value) {
   switch(value) {
-    case CREATE_TABLE_LIKE_COMMENTS: return 0;
-    case CREATE_TABLE_LIKE_CONSTRAINTS: return 1;
-    case CREATE_TABLE_LIKE_DEFAULTS: return 2;
-    case CREATE_TABLE_LIKE_GENERATED: return 3;
-    case CREATE_TABLE_LIKE_IDENTITY: return 4;
-    case CREATE_TABLE_LIKE_INDEXES: return 5;
-    case CREATE_TABLE_LIKE_STATISTICS: return 6;
-    case CREATE_TABLE_LIKE_STORAGE: return 7;
-    case CREATE_TABLE_LIKE_ALL: return 8;
+    case CREATE_TABLE_LIKE_COMMENTS: return 1;
+    case CREATE_TABLE_LIKE_CONSTRAINTS: return 2;
+    case CREATE_TABLE_LIKE_DEFAULTS: return 3;
+    case CREATE_TABLE_LIKE_GENERATED: return 4;
+    case CREATE_TABLE_LIKE_IDENTITY: return 5;
+    case CREATE_TABLE_LIKE_INDEXES: return 6;
+    case CREATE_TABLE_LIKE_STATISTICS: return 7;
+    case CREATE_TABLE_LIKE_STORAGE: return 8;
+    case CREATE_TABLE_LIKE_ALL: return 9;
   }
   Assert(false);
   return -1;
@@ -1140,10 +1140,10 @@ _enumToIntTableLikeOption(TableLikeOption value) {
 static int
 _enumToIntDefElemAction(DefElemAction value) {
   switch(value) {
-    case DEFELEM_UNSPEC: return 0;
-    case DEFELEM_SET: return 1;
-    case DEFELEM_ADD: return 2;
-    case DEFELEM_DROP: return 3;
+    case DEFELEM_UNSPEC: return 1;
+    case DEFELEM_SET: return 2;
+    case DEFELEM_ADD: return 3;
+    case DEFELEM_DROP: return 4;
   }
   Assert(false);
   return -1;
@@ -1152,9 +1152,9 @@ _enumToIntDefElemAction(DefElemAction value) {
 static int
 _enumToIntPartitionRangeDatumKind(PartitionRangeDatumKind value) {
   switch(value) {
-    case PARTITION_RANGE_DATUM_MINVALUE: return 0;
-    case PARTITION_RANGE_DATUM_VALUE: return 1;
-    case PARTITION_RANGE_DATUM_MAXVALUE: return 2;
+    case PARTITION_RANGE_DATUM_MINVALUE: return 1;
+    case PARTITION_RANGE_DATUM_VALUE: return 2;
+    case PARTITION_RANGE_DATUM_MAXVALUE: return 3;
   }
   Assert(false);
   return -1;
@@ -1163,15 +1163,15 @@ _enumToIntPartitionRangeDatumKind(PartitionRangeDatumKind value) {
 static int
 _enumToIntRTEKind(RTEKind value) {
   switch(value) {
-    case RTE_RELATION: return 0;
-    case RTE_SUBQUERY: return 1;
-    case RTE_JOIN: return 2;
-    case RTE_FUNCTION: return 3;
-    case RTE_TABLEFUNC: return 4;
-    case RTE_VALUES: return 5;
-    case RTE_CTE: return 6;
-    case RTE_NAMEDTUPLESTORE: return 7;
-    case RTE_RESULT: return 8;
+    case RTE_RELATION: return 1;
+    case RTE_SUBQUERY: return 2;
+    case RTE_JOIN: return 3;
+    case RTE_FUNCTION: return 4;
+    case RTE_TABLEFUNC: return 5;
+    case RTE_VALUES: return 6;
+    case RTE_CTE: return 7;
+    case RTE_NAMEDTUPLESTORE: return 8;
+    case RTE_RESULT: return 9;
   }
   Assert(false);
   return -1;
@@ -1180,10 +1180,10 @@ _enumToIntRTEKind(RTEKind value) {
 static int
 _enumToIntWCOKind(WCOKind value) {
   switch(value) {
-    case WCO_VIEW_CHECK: return 0;
-    case WCO_RLS_INSERT_CHECK: return 1;
-    case WCO_RLS_UPDATE_CHECK: return 2;
-    case WCO_RLS_CONFLICT_CHECK: return 3;
+    case WCO_VIEW_CHECK: return 1;
+    case WCO_RLS_INSERT_CHECK: return 2;
+    case WCO_RLS_UPDATE_CHECK: return 3;
+    case WCO_RLS_CONFLICT_CHECK: return 4;
   }
   Assert(false);
   return -1;
@@ -1192,11 +1192,11 @@ _enumToIntWCOKind(WCOKind value) {
 static int
 _enumToIntGroupingSetKind(GroupingSetKind value) {
   switch(value) {
-    case GROUPING_SET_EMPTY: return 0;
-    case GROUPING_SET_SIMPLE: return 1;
-    case GROUPING_SET_ROLLUP: return 2;
-    case GROUPING_SET_CUBE: return 3;
-    case GROUPING_SET_SETS: return 4;
+    case GROUPING_SET_EMPTY: return 1;
+    case GROUPING_SET_SIMPLE: return 2;
+    case GROUPING_SET_ROLLUP: return 3;
+    case GROUPING_SET_CUBE: return 4;
+    case GROUPING_SET_SETS: return 5;
   }
   Assert(false);
   return -1;
@@ -1205,9 +1205,9 @@ _enumToIntGroupingSetKind(GroupingSetKind value) {
 static int
 _enumToIntCTEMaterialize(CTEMaterialize value) {
   switch(value) {
-    case CTEMaterializeDefault: return 0;
-    case CTEMaterializeAlways: return 1;
-    case CTEMaterializeNever: return 2;
+    case CTEMaterializeDefault: return 1;
+    case CTEMaterializeAlways: return 2;
+    case CTEMaterializeNever: return 3;
   }
   Assert(false);
   return -1;
@@ -1216,10 +1216,10 @@ _enumToIntCTEMaterialize(CTEMaterialize value) {
 static int
 _enumToIntSetOperation(SetOperation value) {
   switch(value) {
-    case SETOP_NONE: return 0;
-    case SETOP_UNION: return 1;
-    case SETOP_INTERSECT: return 2;
-    case SETOP_EXCEPT: return 3;
+    case SETOP_NONE: return 1;
+    case SETOP_UNION: return 2;
+    case SETOP_INTERSECT: return 3;
+    case SETOP_EXCEPT: return 4;
   }
   Assert(false);
   return -1;
@@ -1228,56 +1228,56 @@ _enumToIntSetOperation(SetOperation value) {
 static int
 _enumToIntObjectType(ObjectType value) {
   switch(value) {
-    case OBJECT_ACCESS_METHOD: return 0;
-    case OBJECT_AGGREGATE: return 1;
-    case OBJECT_AMOP: return 2;
-    case OBJECT_AMPROC: return 3;
-    case OBJECT_ATTRIBUTE: return 4;
-    case OBJECT_CAST: return 5;
-    case OBJECT_COLUMN: return 6;
-    case OBJECT_COLLATION: return 7;
-    case OBJECT_CONVERSION: return 8;
-    case OBJECT_DATABASE: return 9;
-    case OBJECT_DEFAULT: return 10;
-    case OBJECT_DEFACL: return 11;
-    case OBJECT_DOMAIN: return 12;
-    case OBJECT_DOMCONSTRAINT: return 13;
-    case OBJECT_EVENT_TRIGGER: return 14;
-    case OBJECT_EXTENSION: return 15;
-    case OBJECT_FDW: return 16;
-    case OBJECT_FOREIGN_SERVER: return 17;
-    case OBJECT_FOREIGN_TABLE: return 18;
-    case OBJECT_FUNCTION: return 19;
-    case OBJECT_INDEX: return 20;
-    case OBJECT_LANGUAGE: return 21;
-    case OBJECT_LARGEOBJECT: return 22;
-    case OBJECT_MATVIEW: return 23;
-    case OBJECT_OPCLASS: return 24;
-    case OBJECT_OPERATOR: return 25;
-    case OBJECT_OPFAMILY: return 26;
-    case OBJECT_POLICY: return 27;
-    case OBJECT_PROCEDURE: return 28;
-    case OBJECT_PUBLICATION: return 29;
-    case OBJECT_PUBLICATION_REL: return 30;
-    case OBJECT_ROLE: return 31;
-    case OBJECT_ROUTINE: return 32;
-    case OBJECT_RULE: return 33;
-    case OBJECT_SCHEMA: return 34;
-    case OBJECT_SEQUENCE: return 35;
-    case OBJECT_SUBSCRIPTION: return 36;
-    case OBJECT_STATISTIC_EXT: return 37;
-    case OBJECT_TABCONSTRAINT: return 38;
-    case OBJECT_TABLE: return 39;
-    case OBJECT_TABLESPACE: return 40;
-    case OBJECT_TRANSFORM: return 41;
-    case OBJECT_TRIGGER: return 42;
-    case OBJECT_TSCONFIGURATION: return 43;
-    case OBJECT_TSDICTIONARY: return 44;
-    case OBJECT_TSPARSER: return 45;
-    case OBJECT_TSTEMPLATE: return 46;
-    case OBJECT_TYPE: return 47;
-    case OBJECT_USER_MAPPING: return 48;
-    case OBJECT_VIEW: return 49;
+    case OBJECT_ACCESS_METHOD: return 1;
+    case OBJECT_AGGREGATE: return 2;
+    case OBJECT_AMOP: return 3;
+    case OBJECT_AMPROC: return 4;
+    case OBJECT_ATTRIBUTE: return 5;
+    case OBJECT_CAST: return 6;
+    case OBJECT_COLUMN: return 7;
+    case OBJECT_COLLATION: return 8;
+    case OBJECT_CONVERSION: return 9;
+    case OBJECT_DATABASE: return 10;
+    case OBJECT_DEFAULT: return 11;
+    case OBJECT_DEFACL: return 12;
+    case OBJECT_DOMAIN: return 13;
+    case OBJECT_DOMCONSTRAINT: return 14;
+    case OBJECT_EVENT_TRIGGER: return 15;
+    case OBJECT_EXTENSION: return 16;
+    case OBJECT_FDW: return 17;
+    case OBJECT_FOREIGN_SERVER: return 18;
+    case OBJECT_FOREIGN_TABLE: return 19;
+    case OBJECT_FUNCTION: return 20;
+    case OBJECT_INDEX: return 21;
+    case OBJECT_LANGUAGE: return 22;
+    case OBJECT_LARGEOBJECT: return 23;
+    case OBJECT_MATVIEW: return 24;
+    case OBJECT_OPCLASS: return 25;
+    case OBJECT_OPERATOR: return 26;
+    case OBJECT_OPFAMILY: return 27;
+    case OBJECT_POLICY: return 28;
+    case OBJECT_PROCEDURE: return 29;
+    case OBJECT_PUBLICATION: return 30;
+    case OBJECT_PUBLICATION_REL: return 31;
+    case OBJECT_ROLE: return 32;
+    case OBJECT_ROUTINE: return 33;
+    case OBJECT_RULE: return 34;
+    case OBJECT_SCHEMA: return 35;
+    case OBJECT_SEQUENCE: return 36;
+    case OBJECT_SUBSCRIPTION: return 37;
+    case OBJECT_STATISTIC_EXT: return 38;
+    case OBJECT_TABCONSTRAINT: return 39;
+    case OBJECT_TABLE: return 40;
+    case OBJECT_TABLESPACE: return 41;
+    case OBJECT_TRANSFORM: return 42;
+    case OBJECT_TRIGGER: return 43;
+    case OBJECT_TSCONFIGURATION: return 44;
+    case OBJECT_TSDICTIONARY: return 45;
+    case OBJECT_TSPARSER: return 46;
+    case OBJECT_TSTEMPLATE: return 47;
+    case OBJECT_TYPE: return 48;
+    case OBJECT_USER_MAPPING: return 49;
+    case OBJECT_VIEW: return 50;
   }
   Assert(false);
   return -1;
@@ -1286,8 +1286,8 @@ _enumToIntObjectType(ObjectType value) {
 static int
 _enumToIntDropBehavior(DropBehavior value) {
   switch(value) {
-    case DROP_RESTRICT: return 0;
-    case DROP_CASCADE: return 1;
+    case DROP_RESTRICT: return 1;
+    case DROP_CASCADE: return 2;
   }
   Assert(false);
   return -1;
@@ -1296,73 +1296,73 @@ _enumToIntDropBehavior(DropBehavior value) {
 static int
 _enumToIntAlterTableType(AlterTableType value) {
   switch(value) {
-    case AT_AddColumn: return 0;
-    case AT_AddColumnRecurse: return 1;
-    case AT_AddColumnToView: return 2;
-    case AT_ColumnDefault: return 3;
-    case AT_CookedColumnDefault: return 4;
-    case AT_DropNotNull: return 5;
-    case AT_SetNotNull: return 6;
-    case AT_DropExpression: return 7;
-    case AT_CheckNotNull: return 8;
-    case AT_SetStatistics: return 9;
-    case AT_SetOptions: return 10;
-    case AT_ResetOptions: return 11;
-    case AT_SetStorage: return 12;
-    case AT_DropColumn: return 13;
-    case AT_DropColumnRecurse: return 14;
-    case AT_AddIndex: return 15;
-    case AT_ReAddIndex: return 16;
-    case AT_AddConstraint: return 17;
-    case AT_AddConstraintRecurse: return 18;
-    case AT_ReAddConstraint: return 19;
-    case AT_ReAddDomainConstraint: return 20;
-    case AT_AlterConstraint: return 21;
-    case AT_ValidateConstraint: return 22;
-    case AT_ValidateConstraintRecurse: return 23;
-    case AT_AddIndexConstraint: return 24;
-    case AT_DropConstraint: return 25;
-    case AT_DropConstraintRecurse: return 26;
-    case AT_ReAddComment: return 27;
-    case AT_AlterColumnType: return 28;
-    case AT_AlterColumnGenericOptions: return 29;
-    case AT_ChangeOwner: return 30;
-    case AT_ClusterOn: return 31;
-    case AT_DropCluster: return 32;
-    case AT_SetLogged: return 33;
-    case AT_SetUnLogged: return 34;
-    case AT_DropOids: return 35;
-    case AT_SetTableSpace: return 36;
-    case AT_SetRelOptions: return 37;
-    case AT_ResetRelOptions: return 38;
-    case AT_ReplaceRelOptions: return 39;
-    case AT_EnableTrig: return 40;
-    case AT_EnableAlwaysTrig: return 41;
-    case AT_EnableReplicaTrig: return 42;
-    case AT_DisableTrig: return 43;
-    case AT_EnableTrigAll: return 44;
-    case AT_DisableTrigAll: return 45;
-    case AT_EnableTrigUser: return 46;
-    case AT_DisableTrigUser: return 47;
-    case AT_EnableRule: return 48;
-    case AT_EnableAlwaysRule: return 49;
-    case AT_EnableReplicaRule: return 50;
-    case AT_DisableRule: return 51;
-    case AT_AddInherit: return 52;
-    case AT_DropInherit: return 53;
-    case AT_AddOf: return 54;
-    case AT_DropOf: return 55;
-    case AT_ReplicaIdentity: return 56;
-    case AT_EnableRowSecurity: return 57;
-    case AT_DisableRowSecurity: return 58;
-    case AT_ForceRowSecurity: return 59;
-    case AT_NoForceRowSecurity: return 60;
-    case AT_GenericOptions: return 61;
-    case AT_AttachPartition: return 62;
-    case AT_DetachPartition: return 63;
-    case AT_AddIdentity: return 64;
-    case AT_SetIdentity: return 65;
-    case AT_DropIdentity: return 66;
+    case AT_AddColumn: return 1;
+    case AT_AddColumnRecurse: return 2;
+    case AT_AddColumnToView: return 3;
+    case AT_ColumnDefault: return 4;
+    case AT_CookedColumnDefault: return 5;
+    case AT_DropNotNull: return 6;
+    case AT_SetNotNull: return 7;
+    case AT_DropExpression: return 8;
+    case AT_CheckNotNull: return 9;
+    case AT_SetStatistics: return 10;
+    case AT_SetOptions: return 11;
+    case AT_ResetOptions: return 12;
+    case AT_SetStorage: return 13;
+    case AT_DropColumn: return 14;
+    case AT_DropColumnRecurse: return 15;
+    case AT_AddIndex: return 16;
+    case AT_ReAddIndex: return 17;
+    case AT_AddConstraint: return 18;
+    case AT_AddConstraintRecurse: return 19;
+    case AT_ReAddConstraint: return 20;
+    case AT_ReAddDomainConstraint: return 21;
+    case AT_AlterConstraint: return 22;
+    case AT_ValidateConstraint: return 23;
+    case AT_ValidateConstraintRecurse: return 24;
+    case AT_AddIndexConstraint: return 25;
+    case AT_DropConstraint: return 26;
+    case AT_DropConstraintRecurse: return 27;
+    case AT_ReAddComment: return 28;
+    case AT_AlterColumnType: return 29;
+    case AT_AlterColumnGenericOptions: return 30;
+    case AT_ChangeOwner: return 31;
+    case AT_ClusterOn: return 32;
+    case AT_DropCluster: return 33;
+    case AT_SetLogged: return 34;
+    case AT_SetUnLogged: return 35;
+    case AT_DropOids: return 36;
+    case AT_SetTableSpace: return 37;
+    case AT_SetRelOptions: return 38;
+    case AT_ResetRelOptions: return 39;
+    case AT_ReplaceRelOptions: return 40;
+    case AT_EnableTrig: return 41;
+    case AT_EnableAlwaysTrig: return 42;
+    case AT_EnableReplicaTrig: return 43;
+    case AT_DisableTrig: return 44;
+    case AT_EnableTrigAll: return 45;
+    case AT_DisableTrigAll: return 46;
+    case AT_EnableTrigUser: return 47;
+    case AT_DisableTrigUser: return 48;
+    case AT_EnableRule: return 49;
+    case AT_EnableAlwaysRule: return 50;
+    case AT_EnableReplicaRule: return 51;
+    case AT_DisableRule: return 52;
+    case AT_AddInherit: return 53;
+    case AT_DropInherit: return 54;
+    case AT_AddOf: return 55;
+    case AT_DropOf: return 56;
+    case AT_ReplicaIdentity: return 57;
+    case AT_EnableRowSecurity: return 58;
+    case AT_DisableRowSecurity: return 59;
+    case AT_ForceRowSecurity: return 60;
+    case AT_NoForceRowSecurity: return 61;
+    case AT_GenericOptions: return 62;
+    case AT_AttachPartition: return 63;
+    case AT_DetachPartition: return 64;
+    case AT_AddIdentity: return 65;
+    case AT_SetIdentity: return 66;
+    case AT_DropIdentity: return 67;
   }
   Assert(false);
   return -1;
@@ -1371,9 +1371,9 @@ _enumToIntAlterTableType(AlterTableType value) {
 static int
 _enumToIntGrantTargetType(GrantTargetType value) {
   switch(value) {
-    case ACL_TARGET_OBJECT: return 0;
-    case ACL_TARGET_ALL_IN_SCHEMA: return 1;
-    case ACL_TARGET_DEFAULTS: return 2;
+    case ACL_TARGET_OBJECT: return 1;
+    case ACL_TARGET_ALL_IN_SCHEMA: return 2;
+    case ACL_TARGET_DEFAULTS: return 3;
   }
   Assert(false);
   return -1;
@@ -1382,12 +1382,12 @@ _enumToIntGrantTargetType(GrantTargetType value) {
 static int
 _enumToIntVariableSetKind(VariableSetKind value) {
   switch(value) {
-    case VAR_SET_VALUE: return 0;
-    case VAR_SET_DEFAULT: return 1;
-    case VAR_SET_CURRENT: return 2;
-    case VAR_SET_MULTI: return 3;
-    case VAR_RESET: return 4;
-    case VAR_RESET_ALL: return 5;
+    case VAR_SET_VALUE: return 1;
+    case VAR_SET_DEFAULT: return 2;
+    case VAR_SET_CURRENT: return 3;
+    case VAR_SET_MULTI: return 4;
+    case VAR_RESET: return 5;
+    case VAR_RESET_ALL: return 6;
   }
   Assert(false);
   return -1;
@@ -1396,20 +1396,20 @@ _enumToIntVariableSetKind(VariableSetKind value) {
 static int
 _enumToIntConstrType(ConstrType value) {
   switch(value) {
-    case CONSTR_NULL: return 0;
-    case CONSTR_NOTNULL: return 1;
-    case CONSTR_DEFAULT: return 2;
-    case CONSTR_IDENTITY: return 3;
-    case CONSTR_GENERATED: return 4;
-    case CONSTR_CHECK: return 5;
-    case CONSTR_PRIMARY: return 6;
-    case CONSTR_UNIQUE: return 7;
-    case CONSTR_EXCLUSION: return 8;
-    case CONSTR_FOREIGN: return 9;
-    case CONSTR_ATTR_DEFERRABLE: return 10;
-    case CONSTR_ATTR_NOT_DEFERRABLE: return 11;
-    case CONSTR_ATTR_DEFERRED: return 12;
-    case CONSTR_ATTR_IMMEDIATE: return 13;
+    case CONSTR_NULL: return 1;
+    case CONSTR_NOTNULL: return 2;
+    case CONSTR_DEFAULT: return 3;
+    case CONSTR_IDENTITY: return 4;
+    case CONSTR_GENERATED: return 5;
+    case CONSTR_CHECK: return 6;
+    case CONSTR_PRIMARY: return 7;
+    case CONSTR_UNIQUE: return 8;
+    case CONSTR_EXCLUSION: return 9;
+    case CONSTR_FOREIGN: return 10;
+    case CONSTR_ATTR_DEFERRABLE: return 11;
+    case CONSTR_ATTR_NOT_DEFERRABLE: return 12;
+    case CONSTR_ATTR_DEFERRED: return 13;
+    case CONSTR_ATTR_IMMEDIATE: return 14;
   }
   Assert(false);
   return -1;
@@ -1418,9 +1418,9 @@ _enumToIntConstrType(ConstrType value) {
 static int
 _enumToIntImportForeignSchemaType(ImportForeignSchemaType value) {
   switch(value) {
-    case FDW_IMPORT_SCHEMA_ALL: return 0;
-    case FDW_IMPORT_SCHEMA_LIMIT_TO: return 1;
-    case FDW_IMPORT_SCHEMA_EXCEPT: return 2;
+    case FDW_IMPORT_SCHEMA_ALL: return 1;
+    case FDW_IMPORT_SCHEMA_LIMIT_TO: return 2;
+    case FDW_IMPORT_SCHEMA_EXCEPT: return 3;
   }
   Assert(false);
   return -1;
@@ -1429,9 +1429,9 @@ _enumToIntImportForeignSchemaType(ImportForeignSchemaType value) {
 static int
 _enumToIntRoleStmtType(RoleStmtType value) {
   switch(value) {
-    case ROLESTMT_ROLE: return 0;
-    case ROLESTMT_USER: return 1;
-    case ROLESTMT_GROUP: return 2;
+    case ROLESTMT_ROLE: return 1;
+    case ROLESTMT_USER: return 2;
+    case ROLESTMT_GROUP: return 3;
   }
   Assert(false);
   return -1;
@@ -1440,10 +1440,10 @@ _enumToIntRoleStmtType(RoleStmtType value) {
 static int
 _enumToIntFetchDirection(FetchDirection value) {
   switch(value) {
-    case FETCH_FORWARD: return 0;
-    case FETCH_BACKWARD: return 1;
-    case FETCH_ABSOLUTE: return 2;
-    case FETCH_RELATIVE: return 3;
+    case FETCH_FORWARD: return 1;
+    case FETCH_BACKWARD: return 2;
+    case FETCH_ABSOLUTE: return 3;
+    case FETCH_RELATIVE: return 4;
   }
   Assert(false);
   return -1;
@@ -1452,11 +1452,11 @@ _enumToIntFetchDirection(FetchDirection value) {
 static int
 _enumToIntFunctionParameterMode(FunctionParameterMode value) {
   switch(value) {
-    case FUNC_PARAM_IN: return 0;
-    case FUNC_PARAM_OUT: return 1;
-    case FUNC_PARAM_INOUT: return 2;
-    case FUNC_PARAM_VARIADIC: return 3;
-    case FUNC_PARAM_TABLE: return 4;
+    case FUNC_PARAM_IN: return 1;
+    case FUNC_PARAM_OUT: return 2;
+    case FUNC_PARAM_INOUT: return 3;
+    case FUNC_PARAM_VARIADIC: return 4;
+    case FUNC_PARAM_TABLE: return 5;
   }
   Assert(false);
   return -1;
@@ -1465,16 +1465,16 @@ _enumToIntFunctionParameterMode(FunctionParameterMode value) {
 static int
 _enumToIntTransactionStmtKind(TransactionStmtKind value) {
   switch(value) {
-    case TRANS_STMT_BEGIN: return 0;
-    case TRANS_STMT_START: return 1;
-    case TRANS_STMT_COMMIT: return 2;
-    case TRANS_STMT_ROLLBACK: return 3;
-    case TRANS_STMT_SAVEPOINT: return 4;
-    case TRANS_STMT_RELEASE: return 5;
-    case TRANS_STMT_ROLLBACK_TO: return 6;
-    case TRANS_STMT_PREPARE: return 7;
-    case TRANS_STMT_COMMIT_PREPARED: return 8;
-    case TRANS_STMT_ROLLBACK_PREPARED: return 9;
+    case TRANS_STMT_BEGIN: return 1;
+    case TRANS_STMT_START: return 2;
+    case TRANS_STMT_COMMIT: return 3;
+    case TRANS_STMT_ROLLBACK: return 4;
+    case TRANS_STMT_SAVEPOINT: return 5;
+    case TRANS_STMT_RELEASE: return 6;
+    case TRANS_STMT_ROLLBACK_TO: return 7;
+    case TRANS_STMT_PREPARE: return 8;
+    case TRANS_STMT_COMMIT_PREPARED: return 9;
+    case TRANS_STMT_ROLLBACK_PREPARED: return 10;
   }
   Assert(false);
   return -1;
@@ -1483,9 +1483,9 @@ _enumToIntTransactionStmtKind(TransactionStmtKind value) {
 static int
 _enumToIntViewCheckOption(ViewCheckOption value) {
   switch(value) {
-    case NO_CHECK_OPTION: return 0;
-    case LOCAL_CHECK_OPTION: return 1;
-    case CASCADED_CHECK_OPTION: return 2;
+    case NO_CHECK_OPTION: return 1;
+    case LOCAL_CHECK_OPTION: return 2;
+    case CASCADED_CHECK_OPTION: return 3;
   }
   Assert(false);
   return -1;
@@ -1494,8 +1494,8 @@ _enumToIntViewCheckOption(ViewCheckOption value) {
 static int
 _enumToIntClusterOption(ClusterOption value) {
   switch(value) {
-    case CLUOPT_RECHECK: return 0;
-    case CLUOPT_VERBOSE: return 1;
+    case CLUOPT_RECHECK: return 1;
+    case CLUOPT_VERBOSE: return 2;
   }
   Assert(false);
   return -1;
@@ -1504,10 +1504,10 @@ _enumToIntClusterOption(ClusterOption value) {
 static int
 _enumToIntDiscardMode(DiscardMode value) {
   switch(value) {
-    case DISCARD_ALL: return 0;
-    case DISCARD_PLANS: return 1;
-    case DISCARD_SEQUENCES: return 2;
-    case DISCARD_TEMP: return 3;
+    case DISCARD_ALL: return 1;
+    case DISCARD_PLANS: return 2;
+    case DISCARD_SEQUENCES: return 3;
+    case DISCARD_TEMP: return 4;
   }
   Assert(false);
   return -1;
@@ -1516,11 +1516,11 @@ _enumToIntDiscardMode(DiscardMode value) {
 static int
 _enumToIntReindexObjectType(ReindexObjectType value) {
   switch(value) {
-    case REINDEX_OBJECT_INDEX: return 0;
-    case REINDEX_OBJECT_TABLE: return 1;
-    case REINDEX_OBJECT_SCHEMA: return 2;
-    case REINDEX_OBJECT_SYSTEM: return 3;
-    case REINDEX_OBJECT_DATABASE: return 4;
+    case REINDEX_OBJECT_INDEX: return 1;
+    case REINDEX_OBJECT_TABLE: return 2;
+    case REINDEX_OBJECT_SCHEMA: return 3;
+    case REINDEX_OBJECT_SYSTEM: return 4;
+    case REINDEX_OBJECT_DATABASE: return 5;
   }
   Assert(false);
   return -1;
@@ -1529,11 +1529,11 @@ _enumToIntReindexObjectType(ReindexObjectType value) {
 static int
 _enumToIntAlterTSConfigType(AlterTSConfigType value) {
   switch(value) {
-    case ALTER_TSCONFIG_ADD_MAPPING: return 0;
-    case ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN: return 1;
-    case ALTER_TSCONFIG_REPLACE_DICT: return 2;
-    case ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN: return 3;
-    case ALTER_TSCONFIG_DROP_MAPPING: return 4;
+    case ALTER_TSCONFIG_ADD_MAPPING: return 1;
+    case ALTER_TSCONFIG_ALTER_MAPPING_FOR_TOKEN: return 2;
+    case ALTER_TSCONFIG_REPLACE_DICT: return 3;
+    case ALTER_TSCONFIG_REPLACE_DICT_FOR_TOKEN: return 4;
+    case ALTER_TSCONFIG_DROP_MAPPING: return 5;
   }
   Assert(false);
   return -1;
@@ -1542,11 +1542,11 @@ _enumToIntAlterTSConfigType(AlterTSConfigType value) {
 static int
 _enumToIntAlterSubscriptionType(AlterSubscriptionType value) {
   switch(value) {
-    case ALTER_SUBSCRIPTION_OPTIONS: return 0;
-    case ALTER_SUBSCRIPTION_CONNECTION: return 1;
-    case ALTER_SUBSCRIPTION_PUBLICATION: return 2;
-    case ALTER_SUBSCRIPTION_REFRESH: return 3;
-    case ALTER_SUBSCRIPTION_ENABLED: return 4;
+    case ALTER_SUBSCRIPTION_OPTIONS: return 1;
+    case ALTER_SUBSCRIPTION_CONNECTION: return 2;
+    case ALTER_SUBSCRIPTION_PUBLICATION: return 3;
+    case ALTER_SUBSCRIPTION_REFRESH: return 4;
+    case ALTER_SUBSCRIPTION_ENABLED: return 5;
   }
   Assert(false);
   return -1;
@@ -1555,10 +1555,10 @@ _enumToIntAlterSubscriptionType(AlterSubscriptionType value) {
 static int
 _enumToIntOnCommitAction(OnCommitAction value) {
   switch(value) {
-    case ONCOMMIT_NOOP: return 0;
-    case ONCOMMIT_PRESERVE_ROWS: return 1;
-    case ONCOMMIT_DELETE_ROWS: return 2;
-    case ONCOMMIT_DROP: return 3;
+    case ONCOMMIT_NOOP: return 1;
+    case ONCOMMIT_PRESERVE_ROWS: return 2;
+    case ONCOMMIT_DELETE_ROWS: return 3;
+    case ONCOMMIT_DROP: return 4;
   }
   Assert(false);
   return -1;
@@ -1567,10 +1567,10 @@ _enumToIntOnCommitAction(OnCommitAction value) {
 static int
 _enumToIntParamKind(ParamKind value) {
   switch(value) {
-    case PARAM_EXTERN: return 0;
-    case PARAM_EXEC: return 1;
-    case PARAM_SUBLINK: return 2;
-    case PARAM_MULTIEXPR: return 3;
+    case PARAM_EXTERN: return 1;
+    case PARAM_EXEC: return 2;
+    case PARAM_SUBLINK: return 3;
+    case PARAM_MULTIEXPR: return 4;
   }
   Assert(false);
   return -1;
@@ -1579,9 +1579,9 @@ _enumToIntParamKind(ParamKind value) {
 static int
 _enumToIntCoercionContext(CoercionContext value) {
   switch(value) {
-    case COERCION_IMPLICIT: return 0;
-    case COERCION_ASSIGNMENT: return 1;
-    case COERCION_EXPLICIT: return 2;
+    case COERCION_IMPLICIT: return 1;
+    case COERCION_ASSIGNMENT: return 2;
+    case COERCION_EXPLICIT: return 3;
   }
   Assert(false);
   return -1;
@@ -1590,9 +1590,9 @@ _enumToIntCoercionContext(CoercionContext value) {
 static int
 _enumToIntCoercionForm(CoercionForm value) {
   switch(value) {
-    case COERCE_EXPLICIT_CALL: return 0;
-    case COERCE_EXPLICIT_CAST: return 1;
-    case COERCE_IMPLICIT_CAST: return 2;
+    case COERCE_EXPLICIT_CALL: return 1;
+    case COERCE_EXPLICIT_CAST: return 2;
+    case COERCE_IMPLICIT_CAST: return 3;
   }
   Assert(false);
   return -1;
@@ -1601,9 +1601,9 @@ _enumToIntCoercionForm(CoercionForm value) {
 static int
 _enumToIntBoolExprType(BoolExprType value) {
   switch(value) {
-    case AND_EXPR: return 0;
-    case OR_EXPR: return 1;
-    case NOT_EXPR: return 2;
+    case AND_EXPR: return 1;
+    case OR_EXPR: return 2;
+    case NOT_EXPR: return 3;
   }
   Assert(false);
   return -1;
@@ -1612,14 +1612,14 @@ _enumToIntBoolExprType(BoolExprType value) {
 static int
 _enumToIntSubLinkType(SubLinkType value) {
   switch(value) {
-    case EXISTS_SUBLINK: return 0;
-    case ALL_SUBLINK: return 1;
-    case ANY_SUBLINK: return 2;
-    case ROWCOMPARE_SUBLINK: return 3;
-    case EXPR_SUBLINK: return 4;
-    case MULTIEXPR_SUBLINK: return 5;
-    case ARRAY_SUBLINK: return 6;
-    case CTE_SUBLINK: return 7;
+    case EXISTS_SUBLINK: return 1;
+    case ALL_SUBLINK: return 2;
+    case ANY_SUBLINK: return 3;
+    case ROWCOMPARE_SUBLINK: return 4;
+    case EXPR_SUBLINK: return 5;
+    case MULTIEXPR_SUBLINK: return 6;
+    case ARRAY_SUBLINK: return 7;
+    case CTE_SUBLINK: return 8;
   }
   Assert(false);
   return -1;
@@ -1628,12 +1628,12 @@ _enumToIntSubLinkType(SubLinkType value) {
 static int
 _enumToIntRowCompareType(RowCompareType value) {
   switch(value) {
-    case ROWCOMPARE_LT: return 0;
-    case ROWCOMPARE_LE: return 1;
-    case ROWCOMPARE_EQ: return 2;
-    case ROWCOMPARE_GE: return 3;
-    case ROWCOMPARE_GT: return 4;
-    case ROWCOMPARE_NE: return 5;
+    case ROWCOMPARE_LT: return 1;
+    case ROWCOMPARE_LE: return 2;
+    case ROWCOMPARE_EQ: return 3;
+    case ROWCOMPARE_GE: return 4;
+    case ROWCOMPARE_GT: return 5;
+    case ROWCOMPARE_NE: return 6;
   }
   Assert(false);
   return -1;
@@ -1642,8 +1642,8 @@ _enumToIntRowCompareType(RowCompareType value) {
 static int
 _enumToIntMinMaxOp(MinMaxOp value) {
   switch(value) {
-    case IS_GREATEST: return 0;
-    case IS_LEAST: return 1;
+    case IS_GREATEST: return 1;
+    case IS_LEAST: return 2;
   }
   Assert(false);
   return -1;
@@ -1652,21 +1652,21 @@ _enumToIntMinMaxOp(MinMaxOp value) {
 static int
 _enumToIntSQLValueFunctionOp(SQLValueFunctionOp value) {
   switch(value) {
-    case SVFOP_CURRENT_DATE: return 0;
-    case SVFOP_CURRENT_TIME: return 1;
-    case SVFOP_CURRENT_TIME_N: return 2;
-    case SVFOP_CURRENT_TIMESTAMP: return 3;
-    case SVFOP_CURRENT_TIMESTAMP_N: return 4;
-    case SVFOP_LOCALTIME: return 5;
-    case SVFOP_LOCALTIME_N: return 6;
-    case SVFOP_LOCALTIMESTAMP: return 7;
-    case SVFOP_LOCALTIMESTAMP_N: return 8;
-    case SVFOP_CURRENT_ROLE: return 9;
-    case SVFOP_CURRENT_USER: return 10;
-    case SVFOP_USER: return 11;
-    case SVFOP_SESSION_USER: return 12;
-    case SVFOP_CURRENT_CATALOG: return 13;
-    case SVFOP_CURRENT_SCHEMA: return 14;
+    case SVFOP_CURRENT_DATE: return 1;
+    case SVFOP_CURRENT_TIME: return 2;
+    case SVFOP_CURRENT_TIME_N: return 3;
+    case SVFOP_CURRENT_TIMESTAMP: return 4;
+    case SVFOP_CURRENT_TIMESTAMP_N: return 5;
+    case SVFOP_LOCALTIME: return 6;
+    case SVFOP_LOCALTIME_N: return 7;
+    case SVFOP_LOCALTIMESTAMP: return 8;
+    case SVFOP_LOCALTIMESTAMP_N: return 9;
+    case SVFOP_CURRENT_ROLE: return 10;
+    case SVFOP_CURRENT_USER: return 11;
+    case SVFOP_USER: return 12;
+    case SVFOP_SESSION_USER: return 13;
+    case SVFOP_CURRENT_CATALOG: return 14;
+    case SVFOP_CURRENT_SCHEMA: return 15;
   }
   Assert(false);
   return -1;
@@ -1675,14 +1675,14 @@ _enumToIntSQLValueFunctionOp(SQLValueFunctionOp value) {
 static int
 _enumToIntXmlExprOp(XmlExprOp value) {
   switch(value) {
-    case IS_XMLCONCAT: return 0;
-    case IS_XMLELEMENT: return 1;
-    case IS_XMLFOREST: return 2;
-    case IS_XMLPARSE: return 3;
-    case IS_XMLPI: return 4;
-    case IS_XMLROOT: return 5;
-    case IS_XMLSERIALIZE: return 6;
-    case IS_DOCUMENT: return 7;
+    case IS_XMLCONCAT: return 1;
+    case IS_XMLELEMENT: return 2;
+    case IS_XMLFOREST: return 3;
+    case IS_XMLPARSE: return 4;
+    case IS_XMLPI: return 5;
+    case IS_XMLROOT: return 6;
+    case IS_XMLSERIALIZE: return 7;
+    case IS_DOCUMENT: return 8;
   }
   Assert(false);
   return -1;
@@ -1691,8 +1691,8 @@ _enumToIntXmlExprOp(XmlExprOp value) {
 static int
 _enumToIntXmlOptionType(XmlOptionType value) {
   switch(value) {
-    case XMLOPTION_DOCUMENT: return 0;
-    case XMLOPTION_CONTENT: return 1;
+    case XMLOPTION_DOCUMENT: return 1;
+    case XMLOPTION_CONTENT: return 2;
   }
   Assert(false);
   return -1;
@@ -1701,8 +1701,8 @@ _enumToIntXmlOptionType(XmlOptionType value) {
 static int
 _enumToIntNullTestType(NullTestType value) {
   switch(value) {
-    case IS_NULL: return 0;
-    case IS_NOT_NULL: return 1;
+    case IS_NULL: return 1;
+    case IS_NOT_NULL: return 2;
   }
   Assert(false);
   return -1;
@@ -1711,12 +1711,12 @@ _enumToIntNullTestType(NullTestType value) {
 static int
 _enumToIntBoolTestType(BoolTestType value) {
   switch(value) {
-    case IS_TRUE: return 0;
-    case IS_NOT_TRUE: return 1;
-    case IS_FALSE: return 2;
-    case IS_NOT_FALSE: return 3;
-    case IS_UNKNOWN: return 4;
-    case IS_NOT_UNKNOWN: return 5;
+    case IS_TRUE: return 1;
+    case IS_NOT_TRUE: return 2;
+    case IS_FALSE: return 3;
+    case IS_NOT_FALSE: return 4;
+    case IS_UNKNOWN: return 5;
+    case IS_NOT_UNKNOWN: return 6;
   }
   Assert(false);
   return -1;
@@ -1725,13 +1725,13 @@ _enumToIntBoolTestType(BoolTestType value) {
 static int
 _enumToIntCmdType(CmdType value) {
   switch(value) {
-    case CMD_UNKNOWN: return 0;
-    case CMD_SELECT: return 1;
-    case CMD_UPDATE: return 2;
-    case CMD_INSERT: return 3;
-    case CMD_DELETE: return 4;
-    case CMD_UTILITY: return 5;
-    case CMD_NOTHING: return 6;
+    case CMD_UNKNOWN: return 1;
+    case CMD_SELECT: return 2;
+    case CMD_UPDATE: return 3;
+    case CMD_INSERT: return 4;
+    case CMD_DELETE: return 5;
+    case CMD_UTILITY: return 6;
+    case CMD_NOTHING: return 7;
   }
   Assert(false);
   return -1;
@@ -1740,14 +1740,14 @@ _enumToIntCmdType(CmdType value) {
 static int
 _enumToIntJoinType(JoinType value) {
   switch(value) {
-    case JOIN_INNER: return 0;
-    case JOIN_LEFT: return 1;
-    case JOIN_FULL: return 2;
-    case JOIN_RIGHT: return 3;
-    case JOIN_SEMI: return 4;
-    case JOIN_ANTI: return 5;
-    case JOIN_UNIQUE_OUTER: return 6;
-    case JOIN_UNIQUE_INNER: return 7;
+    case JOIN_INNER: return 1;
+    case JOIN_LEFT: return 2;
+    case JOIN_FULL: return 3;
+    case JOIN_RIGHT: return 4;
+    case JOIN_SEMI: return 5;
+    case JOIN_ANTI: return 6;
+    case JOIN_UNIQUE_OUTER: return 7;
+    case JOIN_UNIQUE_INNER: return 8;
   }
   Assert(false);
   return -1;
@@ -1756,10 +1756,10 @@ _enumToIntJoinType(JoinType value) {
 static int
 _enumToIntAggStrategy(AggStrategy value) {
   switch(value) {
-    case AGG_PLAIN: return 0;
-    case AGG_SORTED: return 1;
-    case AGG_HASHED: return 2;
-    case AGG_MIXED: return 3;
+    case AGG_PLAIN: return 1;
+    case AGG_SORTED: return 2;
+    case AGG_HASHED: return 3;
+    case AGG_MIXED: return 4;
   }
   Assert(false);
   return -1;
@@ -1768,9 +1768,9 @@ _enumToIntAggStrategy(AggStrategy value) {
 static int
 _enumToIntAggSplit(AggSplit value) {
   switch(value) {
-    case AGGSPLIT_SIMPLE: return 0;
-    case AGGSPLIT_INITIAL_SERIAL: return 1;
-    case AGGSPLIT_FINAL_DESERIAL: return 2;
+    case AGGSPLIT_SIMPLE: return 1;
+    case AGGSPLIT_INITIAL_SERIAL: return 2;
+    case AGGSPLIT_FINAL_DESERIAL: return 3;
   }
   Assert(false);
   return -1;
@@ -1779,10 +1779,10 @@ _enumToIntAggSplit(AggSplit value) {
 static int
 _enumToIntSetOpCmd(SetOpCmd value) {
   switch(value) {
-    case SETOPCMD_INTERSECT: return 0;
-    case SETOPCMD_INTERSECT_ALL: return 1;
-    case SETOPCMD_EXCEPT: return 2;
-    case SETOPCMD_EXCEPT_ALL: return 3;
+    case SETOPCMD_INTERSECT: return 1;
+    case SETOPCMD_INTERSECT_ALL: return 2;
+    case SETOPCMD_EXCEPT: return 3;
+    case SETOPCMD_EXCEPT_ALL: return 4;
   }
   Assert(false);
   return -1;
@@ -1791,8 +1791,8 @@ _enumToIntSetOpCmd(SetOpCmd value) {
 static int
 _enumToIntSetOpStrategy(SetOpStrategy value) {
   switch(value) {
-    case SETOP_SORTED: return 0;
-    case SETOP_HASHED: return 1;
+    case SETOP_SORTED: return 1;
+    case SETOP_HASHED: return 2;
   }
   Assert(false);
   return -1;
@@ -1801,9 +1801,9 @@ _enumToIntSetOpStrategy(SetOpStrategy value) {
 static int
 _enumToIntOnConflictAction(OnConflictAction value) {
   switch(value) {
-    case ONCONFLICT_NONE: return 0;
-    case ONCONFLICT_NOTHING: return 1;
-    case ONCONFLICT_UPDATE: return 2;
+    case ONCONFLICT_NONE: return 1;
+    case ONCONFLICT_NOTHING: return 2;
+    case ONCONFLICT_UPDATE: return 3;
   }
   Assert(false);
   return -1;
@@ -1812,9 +1812,9 @@ _enumToIntOnConflictAction(OnConflictAction value) {
 static int
 _enumToIntLimitOption(LimitOption value) {
   switch(value) {
-    case LIMIT_OPTION_DEFAULT: return 0;
-    case LIMIT_OPTION_COUNT: return 1;
-    case LIMIT_OPTION_WITH_TIES: return 2;
+    case LIMIT_OPTION_DEFAULT: return 1;
+    case LIMIT_OPTION_COUNT: return 2;
+    case LIMIT_OPTION_WITH_TIES: return 3;
   }
   Assert(false);
   return -1;
@@ -1823,11 +1823,11 @@ _enumToIntLimitOption(LimitOption value) {
 static int
 _enumToIntLockClauseStrength(LockClauseStrength value) {
   switch(value) {
-    case LCS_NONE: return 0;
-    case LCS_FORKEYSHARE: return 1;
-    case LCS_FORSHARE: return 2;
-    case LCS_FORNOKEYUPDATE: return 3;
-    case LCS_FORUPDATE: return 4;
+    case LCS_NONE: return 1;
+    case LCS_FORKEYSHARE: return 2;
+    case LCS_FORSHARE: return 3;
+    case LCS_FORNOKEYUPDATE: return 4;
+    case LCS_FORUPDATE: return 5;
   }
   Assert(false);
   return -1;
@@ -1836,9 +1836,9 @@ _enumToIntLockClauseStrength(LockClauseStrength value) {
 static int
 _enumToIntLockWaitPolicy(LockWaitPolicy value) {
   switch(value) {
-    case LockWaitBlock: return 0;
-    case LockWaitSkip: return 1;
-    case LockWaitError: return 2;
+    case LockWaitBlock: return 1;
+    case LockWaitSkip: return 2;
+    case LockWaitError: return 3;
   }
   Assert(false);
   return -1;
@@ -1847,10 +1847,10 @@ _enumToIntLockWaitPolicy(LockWaitPolicy value) {
 static int
 _enumToIntLockTupleMode(LockTupleMode value) {
   switch(value) {
-    case LockTupleKeyShare: return 0;
-    case LockTupleShare: return 1;
-    case LockTupleNoKeyExclusive: return 2;
-    case LockTupleExclusive: return 3;
+    case LockTupleKeyShare: return 1;
+    case LockTupleShare: return 2;
+    case LockTupleNoKeyExclusive: return 3;
+    case LockTupleExclusive: return 4;
   }
   Assert(false);
   return -1;
