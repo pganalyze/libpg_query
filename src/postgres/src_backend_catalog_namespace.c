@@ -954,9 +954,6 @@ Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
 
 /*
  * Remove all temp tables from the temporary namespace.
- *
- * If we haven't set up one yet, but one exists from a previous crashed
- * backend, clean that one; but only do this once in a session's life.
  */
 
 

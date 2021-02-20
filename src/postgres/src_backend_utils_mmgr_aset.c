@@ -1263,55 +1263,6 @@ AllocSetRealloc(MemoryContext context, void *pointer, Size size)
 
 		return pointer;
 	}
-
-	/*
-	 * Chunk sizes are aligned to power of 2 in AllocSetAlloc().  Maybe the
-	 * allocated area already is >= the new size.  (In particular, we will
-	 * fall out here if the requested size is a decrease.)
-	 */
-	else if (oldsize >= size)
-	{
-#ifdef MEMORY_CONTEXT_CHECKING
-		Size		oldrequest = chunk->requested_size;
-
-#ifdef RANDOMIZE_ALLOCATED_MEMORY
-		/* We can only fill the extra space if we know the prior request */
-		if (size > oldrequest)
-			randomize_mem((char *) pointer + oldrequest,
-						  size - oldrequest);
-#endif
-
-		chunk->requested_size = size;
-		VALGRIND_MAKE_MEM_NOACCESS(&chunk->requested_size,
-								   sizeof(chunk->requested_size));
-
-		/*
-		 * If this is an increase, mark any newly-available part UNDEFINED.
-		 * Otherwise, mark the obsolete part NOACCESS.
-		 */
-		if (size > oldrequest)
-			VALGRIND_MAKE_MEM_UNDEFINED((char *) pointer + oldrequest,
-										size - oldrequest);
-		else
-			VALGRIND_MAKE_MEM_NOACCESS((char *) pointer + size,
-									   oldsize - size);
-
-		/* set mark to catch clobber of "unused" space */
-		if (size < oldsize)
-			set_sentinel(pointer, size);
-#else							/* !MEMORY_CONTEXT_CHECKING */
-
-		/*
-		 * We don't have the information to determine whether we're growing
-		 * the old request or shrinking it, so we conservatively mark the
-		 * entire new allocation DEFINED.
-		 */
-		VALGRIND_MAKE_MEM_NOACCESS(pointer, oldsize);
-		VALGRIND_MAKE_MEM_DEFINED(pointer, size);
-#endif
-
-		return pointer;
-	}
 	else
 	{
 		/*

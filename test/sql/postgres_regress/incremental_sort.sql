@@ -149,6 +149,9 @@ insert into t(a, b) select (case when i < 5 then i else 9 end), i from generate_
 analyze t;
 explain (costs off) select * from (select * from t order by a) s order by a, b limit 70;
 select * from (select * from t order by a) s order by a, b limit 70;
+-- Checks case where we hit a group boundary at the last tuple of a batch.
+select * from (select * from t order by a) s order by a, b limit 5;
+
 -- Test rescan.
 begin;
 -- We force the planner to choose a plan with incremental sort on the right side
@@ -220,6 +223,10 @@ explain (costs off) select a,b,sum(c) from t group by 1,2 order by 1,2,3 limit 1
 set enable_hashagg to off;
 explain (costs off) select * from t union select * from t order by 1,3;
 
+-- Full sort, not just incremental sort can be pushed below a gather merge path
+-- by generate_useful_gather_paths.
+explain (costs off) select distinct a,b from t;
+
 drop table t;
 
 -- Sort pushdown can't go below where expressions are part of the rel target.
@@ -246,9 +253,22 @@ from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub;
 explain (costs off) select sub.unique1, md5(stringu1)
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub
 order by 1, 2;
+-- Parallel sort but with expression (correlated subquery) that
+-- is prohibited in parallel plans.
+explain (costs off) select distinct
+  unique1,
+  (select t.unique1 from tenk1 where tenk1.unique1 = t.unique1)
+from tenk1 t, generate_series(1, 1000);
+explain (costs off) select
+  unique1,
+  (select t.unique1 from tenk1 where tenk1.unique1 = t.unique1)
+from tenk1 t, generate_series(1, 1000)
+order by 1, 2;
 -- Parallel sort but with expression not available until the upper rel.
 explain (costs off) select distinct sub.unique1, stringu1 || random()::text
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub;
 explain (costs off) select sub.unique1, stringu1 || random()::text
 from tenk1, lateral (select tenk1.unique1 from generate_series(1, 1000)) as sub
 order by 1, 2;
+-- Disallow pushing down sort when pathkey is an SRF.
+explain (costs off) select unique1 from tenk1 order by unnest('{1,2}'::int[]);

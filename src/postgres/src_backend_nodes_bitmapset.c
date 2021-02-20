@@ -3,6 +3,8 @@
  * - bms_copy
  * - bms_equal
  * - bms_is_empty
+ * - bms_first_member
+ * - bms_free
  * - bms_next_member
  * - bms_num_members
  *--------------------------------------------------------------------
@@ -165,7 +167,12 @@ bms_equal(const Bitmapset *a, const Bitmapset *b)
  *
  * Same as pfree except for allowing NULL input
  */
-
+void
+bms_free(Bitmapset *a)
+{
+	if (a)
+		pfree(a);
+}
 
 
 /*
@@ -375,7 +382,33 @@ bms_is_empty(const Bitmapset *a)
  * CAUTION: this destroys the content of "inputset".  If the set must
  * not be modified, use bms_next_member instead.
  */
+int
+bms_first_member(Bitmapset *a)
+{
+	int			nwords;
+	int			wordnum;
 
+	if (a == NULL)
+		return -1;
+	nwords = a->nwords;
+	for (wordnum = 0; wordnum < nwords; wordnum++)
+	{
+		bitmapword	w = a->words[wordnum];
+
+		if (w != 0)
+		{
+			int			result;
+
+			w = RIGHTMOST_ONE(w);
+			a->words[wordnum] &= ~w;
+
+			result = wordnum * BITS_PER_BITMAPWORD;
+			result += bmw_rightmost_one_pos(w);
+			return result;
+		}
+	}
+	return -1;
+}
 
 /*
  * bms_next_member - find next member of a set

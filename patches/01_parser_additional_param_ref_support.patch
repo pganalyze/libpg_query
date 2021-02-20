@@ -1,4 +1,4 @@
-commit 7d73adfdb4cf11baf354da19e4328be02363d190
+commit 2be7057a595bdf4794dd4f9397de19a0fcd0dc23
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:06:25 2021 -0800
 
@@ -23,7 +23,7 @@ Date:   Sun Jan 3 15:06:25 2021 -0800
     SELECT INTERVAL (6) $1;
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 6f0205145d..23441cd495 100644
+index 3adc087e3f..cf2b521c23 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -162,6 +162,8 @@ static Node *makeBitStringConst(char *str, int location);
@@ -129,7 +129,7 @@ index 6f0205145d..23441cd495 100644
  			| IDENT
  				{
  					$$ = makeStringConst($1, @1);
-@@ -14648,6 +14695,10 @@ extract_list:
+@@ -14649,6 +14696,10 @@ extract_list:
  				{
  					$$ = list_make2(makeStringConst($1, @1), $3);
  				}
@@ -140,7 +140,7 @@ index 6f0205145d..23441cd495 100644
  			| /*EMPTY*/								{ $$ = NIL; }
  		;
  
-@@ -15092,6 +15143,45 @@ AexprConst: Iconst
+@@ -15093,6 +15144,45 @@ AexprConst: Iconst
  					t->location = @1;
  					$$ = makeStringConstCast($6, @6, t);
  				}
@@ -186,7 +186,7 @@ index 6f0205145d..23441cd495 100644
  			| ConstTypename Sconst
  				{
  					$$ = makeStringConstCast($2, @2, $1);
-@@ -15109,6 +15199,23 @@ AexprConst: Iconst
+@@ -15110,6 +15200,23 @@ AexprConst: Iconst
  											makeIntConst($3, @3));
  					$$ = makeStringConstCast($5, @5, t);
  				}
@@ -210,7 +210,7 @@ index 6f0205145d..23441cd495 100644
  			| TRUE_P
  				{
  					$$ = makeBoolAConst(true, @1);
-@@ -15963,6 +16070,24 @@ makeBoolAConst(bool state, int location)
+@@ -15964,6 +16071,24 @@ makeBoolAConst(bool state, int location)
  	return makeTypeCast((Node *)n, SystemTypeName("bool"), -1);
  }
  

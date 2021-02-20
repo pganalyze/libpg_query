@@ -5,7 +5,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 13.1
+PG_VERSION = 13.2
 PROTOC_VERSION = 3.14.0
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protobuf/pg_query.pb-c.c
@@ -94,6 +94,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_limit_option_enum_value_default.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_alloc_set_delete_free_list.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h

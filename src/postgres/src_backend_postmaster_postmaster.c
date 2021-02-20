@@ -728,17 +728,16 @@ HANDLE		PostmasterHandle;
  *
  * Returns NULL on failure, other than out-of-memory which is fatal.
  */
-#ifndef EXEC_BACKEND
-#if defined(ENABLE_GSS) || defined(ENABLE_SSPI)
-#endif
-#endif
+
 
 
 /*
  * ConnFree -- free a local connection data structure
+ *
+ * Caller has already closed the socket if any, so there's not much
+ * to do here.
  */
-#ifdef USE_SSL
-#endif
+
 
 
 /*
@@ -1331,18 +1330,6 @@ SubPostmasterMain(int argc, char *argv[])
 
 	/* Close the postmaster's sockets (as soon as we know them) */
 	ClosePostmasterPorts(strcmp(argv[1], "--forklog") == 0);
-
-	/*
-	 * Set up memory area for GSS information. Mirrors the code in ConnCreate
-	 * for the non-exec case.
-	 */
-#if defined(ENABLE_GSS) || defined(ENABLE_SSPI)
-	port.gss = (pg_gssinfo *) calloc(1, sizeof(pg_gssinfo));
-	if (!port.gss)
-		ereport(FATAL,
-				(errcode(ERRCODE_OUT_OF_MEMORY),
-				 errmsg("out of memory")));
-#endif
 
 	/*
 	 * If appropriate, physically re-attach to shared memory segment. We want

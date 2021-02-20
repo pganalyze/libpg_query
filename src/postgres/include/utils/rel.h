@@ -234,10 +234,6 @@ typedef struct RelationData
 
 	/* use "struct" here to avoid needing to include pgstat.h: */
 	struct PgStat_TableStatus *pgstat_info; /* statistics collection area */
-
-	/* placed here to avoid ABI break before v12: */
-	bool		rd_partcheckvalid;	/* true if list has been computed */
-	MemoryContext rd_partcheckcxt;	/* private cxt for rd_partcheck, if any */
 } RelationData;
 
 

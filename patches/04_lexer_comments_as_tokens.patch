@@ -1,4 +1,4 @@
-commit e56fb93b527dae3b23d681d20a96def6acd9cd3b
+commit 2e6aded5d64f6825e8e4e100d2234b3e89b62cd6
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 16:01:44 2021 -0800
 
@@ -12,7 +12,7 @@ Date:   Sun Jan 3 16:01:44 2021 -0800
     this change, the lexer returns them as SQL_COMMENT/C_COMMENT tokens.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index d6acf390b2..243ff10375 100644
+index bcdda00a3a..9a581cbde6 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -620,6 +620,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
@@ -100,7 +100,7 @@ index a2eeeba217..cbfb92384a 100644
  			return cur_token;
  	}
 diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
-index 5a7e1a4444..3be7d049d8 100644
+index 3e84162487..d1e6e714ab 100644
 --- a/src/pl/plpgsql/src/pl_gram.y
 +++ b/src/pl/plpgsql/src/pl_gram.y
 @@ -236,6 +236,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);

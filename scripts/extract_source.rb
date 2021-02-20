@@ -528,6 +528,8 @@ runner.deep_resolve('CopyErrorData')
 runner.deep_resolve('FlushErrorState')
 
 # Needed for output funcs
+runner.deep_resolve('bms_first_member')
+runner.deep_resolve('bms_free')
 runner.deep_resolve('bms_next_member')
 runner.deep_resolve('bms_num_members')
 runner.deep_resolve('makeBitString')

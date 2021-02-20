@@ -207,10 +207,8 @@ const PQcommMethods *PqCommMethods = NULL;
  * safe to run at any instant.
  * --------------------------------
  */
-#if defined(ENABLE_GSS) || defined(ENABLE_SSPI)
 #ifdef ENABLE_GSS
 #endif							/* ENABLE_GSS */
-#endif							/* ENABLE_GSS || ENABLE_SSPI */
 
 
 

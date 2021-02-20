@@ -183,7 +183,6 @@ static int	syslog_facility = 0;
 static void assign_syslog_facility(int newval, void *extra);
 static void assign_syslog_ident(const char *newval, void *extra);
 static void assign_session_replication_role(int newval, void *extra);
-static bool check_client_min_messages(int *newval, void **extra, GucSource source);
 static bool check_temp_buffers(int *newval, void **extra, GucSource source);
 static bool check_bonjour(bool *newval, void **extra, GucSource source);
 static bool check_ssl(bool *newval, void **extra, GucSource source);
@@ -1686,8 +1685,6 @@ read_nondefault_variables(void)
 
 #ifdef HAVE_SYSLOG
 #endif
-
-
 
 
 

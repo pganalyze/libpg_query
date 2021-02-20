@@ -147,12 +147,10 @@ typedef enum LockTagType
 	LOCKTAG_SPECULATIVE_TOKEN,	/* speculative insertion Xid and token */
 	LOCKTAG_OBJECT,				/* non-relation database object */
 	LOCKTAG_USERLOCK,			/* reserved for old contrib/userlock code */
-	LOCKTAG_ADVISORY,			/* advisory user locks */
-	LOCKTAG_DATABASE_FROZEN_IDS	/* pg_database.datfrozenxid */
-	/* ID info for frozen IDs is DB OID */
+	LOCKTAG_ADVISORY			/* advisory user locks */
 } LockTagType;
 
-#define LOCKTAG_LAST_TYPE	LOCKTAG_DATABASE_FROZEN_IDS
+#define LOCKTAG_LAST_TYPE	LOCKTAG_ADVISORY
 
 extern const char *const LockTagTypeNames[];
 

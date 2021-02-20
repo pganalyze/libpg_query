@@ -1,4 +1,4 @@
-commit e0d793a3b577affba37e52fb4f89ea229b3164ba
+commit 5a6d523c4a209c17690b39cdaae166d703d07a61
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:56:21 2021 -0800
 
@@ -14,7 +14,7 @@ Date:   Sun Jan 3 15:56:21 2021 -0800
     should be considered deprecated.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 23441cd495..d6acf390b2 100644
+index cf2b521c23..bcdda00a3a 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -164,6 +164,7 @@ static Node *makeAConst(Value *v, int location);
@@ -82,7 +82,7 @@ index 23441cd495..d6acf390b2 100644
  			| PARAM
  				{
  					$$ = makeParamRef($1, @1);
-@@ -13275,6 +13298,11 @@ a_expr:		c_expr									{ $$ = $1; }
+@@ -13276,6 +13299,11 @@ a_expr:		c_expr									{ $$ = $1; }
  			| a_expr qual_Op					%prec POSTFIXOP
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, NULL, @2); }
  
@@ -94,7 +94,7 @@ index 23441cd495..d6acf390b2 100644
  			| a_expr AND a_expr
  				{ $$ = makeAndExpr($1, $3, @2); }
  			| a_expr OR a_expr
-@@ -13683,6 +13711,10 @@ b_expr:		c_expr
+@@ -13684,6 +13712,10 @@ b_expr:		c_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, ">=", $1, $3, @2); }
  			| b_expr NOT_EQUALS b_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, "<>", $1, $3, @2); }
@@ -105,7 +105,7 @@ index 23441cd495..d6acf390b2 100644
  			| b_expr qual_Op b_expr				%prec Op
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, $3, @2); }
  			| qual_Op b_expr					%prec Op
-@@ -13728,6 +13760,18 @@ b_expr:		c_expr
+@@ -13729,6 +13761,18 @@ b_expr:		c_expr
   */
  c_expr:		columnref								{ $$ = $1; }
  			| AexprConst							{ $$ = $1; }
@@ -124,7 +124,7 @@ index 23441cd495..d6acf390b2 100644
  			| PARAM opt_indirection
  				{
  					ParamRef *p = makeNode(ParamRef);
-@@ -14584,6 +14628,7 @@ MathOp:		 '+'									{ $$ = "+"; }
+@@ -14585,6 +14629,7 @@ MathOp:		 '+'									{ $$ = "+"; }
  			| LESS_EQUALS							{ $$ = "<="; }
  			| GREATER_EQUALS						{ $$ = ">="; }
  			| NOT_EQUALS							{ $$ = "<>"; }
@@ -132,7 +132,7 @@ index 23441cd495..d6acf390b2 100644
  		;
  
  qual_Op:	Op
-@@ -14699,6 +14744,10 @@ extract_list:
+@@ -14700,6 +14745,10 @@ extract_list:
  				{
  					$$ = list_make2(makeParamRef($1, @1), $3);
  				}
@@ -143,7 +143,7 @@ index 23441cd495..d6acf390b2 100644
  			| /*EMPTY*/								{ $$ = NIL; }
  		;
  
-@@ -15216,6 +15265,19 @@ AexprConst: Iconst
+@@ -15217,6 +15266,19 @@ AexprConst: Iconst
  											makeIntConst($3, @3));
  					$$ = makeParamRefCast($5, @5, t);
  				}
@@ -163,7 +163,7 @@ index 23441cd495..d6acf390b2 100644
  			| TRUE_P
  				{
  					$$ = makeBoolAConst(true, @1);
-@@ -16088,6 +16150,31 @@ makeParamRefCast(int number, int location, TypeName *typename)
+@@ -16089,6 +16151,31 @@ makeParamRefCast(int number, int location, TypeName *typename)
  	return makeTypeCast(p, typename, -1);
  }
  
