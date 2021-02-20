@@ -36,9 +36,9 @@ int main() {
     if (result.error) {
       printf("  error: %s at %d\n", result.error->message, result.error->cursorpos);
     } else {
-      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf_len, result.pbuf);
+      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf.len, (void *) result.pbuf.data);
 
-      printf("  version: %d, tokens: %ld, size: %d\n", scan_result->version, scan_result->n_tokens, result.pbuf_len);
+      printf("  version: %d, tokens: %ld, size: %d\n", scan_result->version, scan_result->n_tokens, result.pbuf.len);
       for (j = 0; j < scan_result->n_tokens; j++) {
         scan_token = scan_result->tokens[j];
         token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);

@@ -112,9 +112,9 @@ PgQueryScanResult pg_query_scan(const char* input)
     scan_result.version = PG_VERSION_NUM;
     scan_result.n_tokens = token_count;
     scan_result.tokens = output_tokens;
-    result.pbuf_len = pg_query__scan_result__get_packed_size(&scan_result);
-    result.pbuf = malloc(result.pbuf_len);
-    pg_query__scan_result__pack(&scan_result, result.pbuf);
+    result.pbuf.len = pg_query__scan_result__get_packed_size(&scan_result);
+    result.pbuf.data = malloc(result.pbuf.len);
+    pg_query__scan_result__pack(&scan_result, (void*) result.pbuf.data);
 
     for (i = 0; i < token_count; i++) {
       free(output_tokens[i]);
@@ -168,6 +168,6 @@ void pg_query_free_scan_result(PgQueryScanResult result)
     pg_query_free_error(result.error);
   }
 
-  free(result.pbuf);
+  free(result.pbuf.data);
   free(result.stderr_buffer);
 }

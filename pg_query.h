@@ -11,8 +11,12 @@ typedef struct {
 } PgQueryError;
 
 typedef struct {
-  void* pbuf;
-	unsigned int pbuf_len;
+  unsigned int len;
+  char* data;
+} PgQueryProtobuf;
+
+typedef struct {
+  PgQueryProtobuf pbuf;
   char* stderr_buffer;
   PgQueryError* error;
 } PgQueryScanResult;
@@ -22,11 +26,6 @@ typedef struct {
   char* stderr_buffer;
   PgQueryError* error;
 } PgQueryParseResult;
-
-typedef struct {
-  unsigned int len;
-  char* data;
-} PgQueryProtobuf;
 
 typedef struct {
   PgQueryProtobuf parse_tree;

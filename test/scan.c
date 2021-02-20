@@ -29,7 +29,7 @@ int main() {
       ret_code = -1;
       printf("%s\n", result.error->message);
     } else {
-      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf_len, result.pbuf);
+      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf.len, (void*) result.pbuf.data);
 
       for (j = 0; j < scan_result->n_tokens; j++) {
         char buffer2[1024];
