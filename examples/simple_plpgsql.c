@@ -25,5 +25,8 @@ $$ LANGUAGE plpgsql;");
 
   pg_query_free_plpgsql_parse_result(result);
 
+  // Optional, this ensures all memory is freed upon program exit (useful when running Valgrind)
+  pg_query_exit();
+
   return 0;
 }
