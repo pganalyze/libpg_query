@@ -12,12 +12,12 @@ SRC_FILES := $(wildcard src/*.c src/postgres/*.c) protobuf-c/protobuf-c.c protob
 NOT_OBJ_FILES := src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
 OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o))
 
-CFLAGS = -g -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+override CFLAGS += -g -I. -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
-TEST_CFLAGS = -I. -g
-TEST_LDFLAGS = -pthread
+override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib
 
-PG_CONFIGURE_FLAGS = -q --without-readline --without-zlib
+override TEST_CFLAGS += -I. -g
+override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
 ifeq ($(DEBUG),1)
@@ -26,15 +26,15 @@ endif
 ifeq ($(VALGRIND),1)
 	CFLAGS_OPT_LEVEL = -O0
 endif
-CFLAGS += $(CFLAGS_OPT_LEVEL)
+override CFLAGS += $(CFLAGS_OPT_LEVEL)
 
 ifeq ($(DEBUG),1)
 	# We always add -g, so this only has to enable assertion checking
-	CFLAGS += -D USE_ASSERT_CHECKING
+	override CFLAGS += -D USE_ASSERT_CHECKING
 endif
 ifeq ($(VALGRIND),1)
-	CFLAGS += -DUSE_VALGRIND
-	TEST_CFLAGS += -DUSE_VALGRIND
+	override CFLAGS += -DUSE_VALGRIND
+	override TEST_CFLAGS += -DUSE_VALGRIND
 endif
 
 CLEANLIBS = $(ARLIB)
@@ -56,13 +56,13 @@ CC ?= cc
 # Experimental use of Protobuf C++ library, primarily used to validate JSON output matches Protobuf JSON mapping
 CXX_SRC_FILES := src/pg_query_outfuncs_protobuf_cpp.cc protobuf/pg_query.pb.cc
 ifeq ($(USE_PROTOBUF_CPP),1)
-	CXXFLAGS = `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++11 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
+	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++11 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
 	ifeq ($(DEBUG),1)
-		CXXFLAGS += -O0 -g
+		override CXXFLAGS += -O0 -g
 	else
-		CXXFLAGS += -O3 -g
+		override CXXFLAGS += -O3 -g
 	endif
-	TEST_LDFLAGS += `pkg-config --libs protobuf` -lstdc++
+	override TEST_LDFLAGS += `pkg-config --libs protobuf` -lstdc++
 
 	# Don't use regular Protobuf-C or JSON implementation (instead implement the same methods using the C++ library)
 	SRC_FILES := $(filter-out src/pg_query_outfuncs_json.c src/pg_query_outfuncs_protobuf.c, $(SRC_FILES))
