@@ -102,7 +102,8 @@ class Generator
           elsif ['Bitmapset*', 'Relids'].include?(type)
             @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            # FIXME: Add to protobuf
+            @protobuf_messages[node_type] += format("  repeated uint64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            protobuf_field_count += 1
           elsif ['Value'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_VALUE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
@@ -361,11 +362,6 @@ message OidList
 message IntList
 {
   repeated Node items = 1;
-}
-
-message Bitmapset
-{
-  repeated uint64 words = 1;
 }
 
 #{protobuf_messages}

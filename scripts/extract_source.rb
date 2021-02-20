@@ -244,7 +244,8 @@ class Runner
             end_offset += 1 if cursor.kind == :cursor_variable # The ";" isn't counted correctly by clang
 
             if cursor.kind == :cursor_variable && (cursor.linkage == :external || cursor.linkage == :internal) &&
-              !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified?
+              !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified? &&
+              cursor.type.pointee.kind != :type_function_proto
               analysis.external_variables << cursor.spelling
             end
 
@@ -527,8 +528,8 @@ runner.deep_resolve('CopyErrorData')
 runner.deep_resolve('FlushErrorState')
 
 # Needed for output funcs
-runner.deep_resolve('bms_first_member')
-runner.deep_resolve('bms_free')
+runner.deep_resolve('bms_next_member')
+runner.deep_resolve('bms_num_members')
 runner.deep_resolve('makeBitString')
 
 # Needed for deparse

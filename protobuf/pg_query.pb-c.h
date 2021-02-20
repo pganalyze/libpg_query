@@ -26,7 +26,6 @@ typedef struct _PgQuery__Null PgQuery__Null;
 typedef struct _PgQuery__List PgQuery__List;
 typedef struct _PgQuery__OidList PgQuery__OidList;
 typedef struct _PgQuery__IntList PgQuery__IntList;
-typedef struct _PgQuery__Bitmapset PgQuery__Bitmapset;
 typedef struct _PgQuery__Alias PgQuery__Alias;
 typedef struct _PgQuery__RangeVar PgQuery__RangeVar;
 typedef struct _PgQuery__TableFunc PgQuery__TableFunc;
@@ -2011,17 +2010,6 @@ struct  _PgQuery__IntList
     , 0,NULL }
 
 
-struct  _PgQuery__Bitmapset
-{
-  ProtobufCMessage base;
-  size_t n_words;
-  uint64_t *words;
-};
-#define PG_QUERY__BITMAPSET__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__bitmapset__descriptor) \
-    , 0,NULL }
-
-
 struct  _PgQuery__Alias
 {
   ProtobufCMessage base;
@@ -2071,12 +2059,14 @@ struct  _PgQuery__TableFunc
   PgQuery__Node **colexprs;
   size_t n_coldefexprs;
   PgQuery__Node **coldefexprs;
+  size_t n_notnulls;
+  uint64_t *notnulls;
   int32_t ordinalitycol;
   int32_t location;
 };
 #define PG_QUERY__TABLE_FUNC__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_func__descriptor) \
-    , 0,NULL, 0,NULL, NULL, NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
+    , 0,NULL, 0,NULL, NULL, NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
 
 
 struct  _PgQuery__Expr
@@ -5014,12 +5004,20 @@ struct  _PgQuery__RangeTblEntry
   protobuf_c_boolean in_from_cl;
   uint32_t required_perms;
   uint32_t check_as_user;
+  size_t n_selected_cols;
+  uint64_t *selected_cols;
+  size_t n_inserted_cols;
+  uint64_t *inserted_cols;
+  size_t n_updated_cols;
+  uint64_t *updated_cols;
+  size_t n_extra_updated_cols;
+  uint64_t *extra_updated_cols;
   size_t n_security_quals;
   PgQuery__Node **security_quals;
 };
 #define PG_QUERY__RANGE_TBL_ENTRY__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_entry__descriptor) \
-    , PG_QUERY__RTEKIND__RTEKIND_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, 0, 0, 0, 0, 0,NULL }
+    , PG_QUERY__RTEKIND__RTEKIND_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, 0, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
 
 
 struct  _PgQuery__RangeTblFunction
@@ -5035,10 +5033,12 @@ struct  _PgQuery__RangeTblFunction
   PgQuery__Node **funccoltypmods;
   size_t n_funccolcollations;
   PgQuery__Node **funccolcollations;
+  size_t n_funcparams;
+  uint64_t *funcparams;
 };
 #define PG_QUERY__RANGE_TBL_FUNCTION__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_function__descriptor) \
-    , NULL, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+    , NULL, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
 
 
 struct  _PgQuery__TableSampleClause
@@ -5646,25 +5646,6 @@ PgQuery__IntList *
                       const uint8_t       *data);
 void   pg_query__int_list__free_unpacked
                      (PgQuery__IntList *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__Bitmapset methods */
-void   pg_query__bitmapset__init
-                     (PgQuery__Bitmapset         *message);
-size_t pg_query__bitmapset__get_packed_size
-                     (const PgQuery__Bitmapset   *message);
-size_t pg_query__bitmapset__pack
-                     (const PgQuery__Bitmapset   *message,
-                      uint8_t             *out);
-size_t pg_query__bitmapset__pack_to_buffer
-                     (const PgQuery__Bitmapset   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__Bitmapset *
-       pg_query__bitmapset__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__bitmapset__free_unpacked
-                     (PgQuery__Bitmapset *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__Alias methods */
 void   pg_query__alias__init
@@ -9900,9 +9881,6 @@ typedef void (*PgQuery__OidList_Closure)
 typedef void (*PgQuery__IntList_Closure)
                  (const PgQuery__IntList *message,
                   void *closure_data);
-typedef void (*PgQuery__Bitmapset_Closure)
-                 (const PgQuery__Bitmapset *message,
-                  void *closure_data);
 typedef void (*PgQuery__Alias_Closure)
                  (const PgQuery__Alias *message,
                   void *closure_data);
@@ -10640,7 +10618,6 @@ extern const ProtobufCMessageDescriptor pg_query__null__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__list__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__oid_list__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__int_list__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__bitmapset__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__alias__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_var__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__table_func__descriptor;

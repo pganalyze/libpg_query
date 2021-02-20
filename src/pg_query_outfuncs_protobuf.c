@@ -54,7 +54,16 @@
       } \
     }
 
-#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) // FIXME
+#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
+	if (!bms_is_empty(node->fldname)) \
+	{ \
+		int x = 0; \
+		int i = 0; \
+		out->n_##outname = bms_num_members(node->fldname); \
+		out->outname = palloc(sizeof(PgQuery__Node*) * out->n_##outname); \
+		while ((x = bms_first_member(node->fldname)) >= 0) \
+			out->outname[i++] = x; \
+    }
 
 #define WRITE_NODE_FIELD(outname, outname_json, fldname) \
 	{ \

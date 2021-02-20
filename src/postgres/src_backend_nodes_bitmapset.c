@@ -3,8 +3,8 @@
  * - bms_copy
  * - bms_equal
  * - bms_is_empty
- * - bms_first_member
- * - bms_free
+ * - bms_next_member
+ * - bms_num_members
  *--------------------------------------------------------------------
  */
 
@@ -165,12 +165,7 @@ bms_equal(const Bitmapset *a, const Bitmapset *b)
  *
  * Same as pfree except for allowing NULL input
  */
-void
-bms_free(Bitmapset *a)
-{
-	if (a)
-		pfree(a);
-}
+
 
 
 /*
@@ -257,7 +252,26 @@ bms_free(Bitmapset *a)
 /*
  * bms_num_members - count members of set
  */
+int
+bms_num_members(const Bitmapset *a)
+{
+	int			result = 0;
+	int			nwords;
+	int			wordnum;
 
+	if (a == NULL)
+		return 0;
+	nwords = a->nwords;
+	for (wordnum = 0; wordnum < nwords; wordnum++)
+	{
+		bitmapword	w = a->words[wordnum];
+
+		/* No need to count the bits in a zero word */
+		if (w != 0)
+			result += bmw_popcount(w);
+	}
+	return result;
+}
 
 /*
  * bms_membership - does a set have zero, one, or multiple members?
@@ -361,33 +375,7 @@ bms_is_empty(const Bitmapset *a)
  * CAUTION: this destroys the content of "inputset".  If the set must
  * not be modified, use bms_next_member instead.
  */
-int
-bms_first_member(Bitmapset *a)
-{
-	int			nwords;
-	int			wordnum;
 
-	if (a == NULL)
-		return -1;
-	nwords = a->nwords;
-	for (wordnum = 0; wordnum < nwords; wordnum++)
-	{
-		bitmapword	w = a->words[wordnum];
-
-		if (w != 0)
-		{
-			int			result;
-
-			w = RIGHTMOST_ONE(w);
-			a->words[wordnum] &= ~w;
-
-			result = wordnum * BITS_PER_BITMAPWORD;
-			result += bmw_rightmost_one_pos(w);
-			return result;
-		}
-	}
-	return -1;
-}
 
 /*
  * bms_next_member - find next member of a set
@@ -408,7 +396,39 @@ bms_first_member(Bitmapset *a)
  * It makes no difference in simple loop usage, but complex iteration logic
  * might need such an ability.
  */
+int
+bms_next_member(const Bitmapset *a, int prevbit)
+{
+	int			nwords;
+	int			wordnum;
+	bitmapword	mask;
 
+	if (a == NULL)
+		return -2;
+	nwords = a->nwords;
+	prevbit++;
+	mask = (~(bitmapword) 0) << BITNUM(prevbit);
+	for (wordnum = WORDNUM(prevbit); wordnum < nwords; wordnum++)
+	{
+		bitmapword	w = a->words[wordnum];
+
+		/* ignore bits before prevbit */
+		w &= mask;
+
+		if (w != 0)
+		{
+			int			result;
+
+			result = wordnum * BITS_PER_BITMAPWORD;
+			result += bmw_rightmost_one_pos(w);
+			return result;
+		}
+
+		/* in subsequent words, consider all bits */
+		mask = (~(bitmapword) 0);
+	}
+	return -2;
+}
 
 /*
  * bms_prev_member - find prev member of a set

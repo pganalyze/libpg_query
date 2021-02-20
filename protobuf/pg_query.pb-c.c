@@ -502,51 +502,6 @@ void   pg_query__int_list__free_unpacked
   assert(message->base.descriptor == &pg_query__int_list__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   pg_query__bitmapset__init
-                     (PgQuery__Bitmapset         *message)
-{
-  static const PgQuery__Bitmapset init_value = PG_QUERY__BITMAPSET__INIT;
-  *message = init_value;
-}
-size_t pg_query__bitmapset__get_packed_size
-                     (const PgQuery__Bitmapset *message)
-{
-  assert(message->base.descriptor == &pg_query__bitmapset__descriptor);
-  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
-}
-size_t pg_query__bitmapset__pack
-                     (const PgQuery__Bitmapset *message,
-                      uint8_t       *out)
-{
-  assert(message->base.descriptor == &pg_query__bitmapset__descriptor);
-  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
-}
-size_t pg_query__bitmapset__pack_to_buffer
-                     (const PgQuery__Bitmapset *message,
-                      ProtobufCBuffer *buffer)
-{
-  assert(message->base.descriptor == &pg_query__bitmapset__descriptor);
-  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
-}
-PgQuery__Bitmapset *
-       pg_query__bitmapset__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data)
-{
-  return (PgQuery__Bitmapset *)
-     protobuf_c_message_unpack (&pg_query__bitmapset__descriptor,
-                                allocator, len, data);
-}
-void   pg_query__bitmapset__free_unpacked
-                     (PgQuery__Bitmapset *message,
-                      ProtobufCAllocator *allocator)
-{
-  if(!message)
-    return;
-  assert(message->base.descriptor == &pg_query__bitmapset__descriptor);
-  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
-}
 void   pg_query__alias__init
                      (PgQuery__Alias         *message)
 {
@@ -13867,44 +13822,6 @@ const ProtobufCMessageDescriptor pg_query__int_list__descriptor =
   (ProtobufCMessageInit) pg_query__int_list__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__bitmapset__field_descriptors[1] =
-{
-  {
-    "words",
-    1,
-    PROTOBUF_C_LABEL_REPEATED,
-    PROTOBUF_C_TYPE_UINT64,
-    offsetof(PgQuery__Bitmapset, n_words),
-    offsetof(PgQuery__Bitmapset, words),
-    NULL,
-    NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
-    0,NULL,NULL    /* reserved1,reserved2, etc */
-  },
-};
-static const unsigned pg_query__bitmapset__field_indices_by_name[] = {
-  0,   /* field[0] = words */
-};
-static const ProtobufCIntRange pg_query__bitmapset__number_ranges[1 + 1] =
-{
-  { 1, 0 },
-  { 0, 1 }
-};
-const ProtobufCMessageDescriptor pg_query__bitmapset__descriptor =
-{
-  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
-  "pg_query.Bitmapset",
-  "Bitmapset",
-  "PgQuery__Bitmapset",
-  "pg_query",
-  sizeof(PgQuery__Bitmapset),
-  1,
-  pg_query__bitmapset__field_descriptors,
-  pg_query__bitmapset__field_indices_by_name,
-  1,  pg_query__bitmapset__number_ranges,
-  (ProtobufCMessageInit) pg_query__bitmapset__init,
-  NULL,NULL,NULL    /* reserved[123] */
-};
 static const ProtobufCFieldDescriptor pg_query__alias__field_descriptors[2] =
 {
   {
@@ -14072,7 +13989,7 @@ const ProtobufCMessageDescriptor pg_query__range_var__descriptor =
   (ProtobufCMessageInit) pg_query__range_var__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[12] =
+static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[13] =
 {
   {
     "ns_uris",
@@ -14195,8 +14112,20 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[12
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "ordinalitycol",
+    "notnulls",
     11,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__TableFunc, n_notnulls),
+    offsetof(PgQuery__TableFunc, notnulls),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ordinalitycol",
+    12,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -14208,7 +14137,7 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[12
   },
   {
     "location",
-    12,
+    13,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -14227,16 +14156,17 @@ static const unsigned pg_query__table_func__field_indices_by_name[] = {
   5,   /* field[5] = coltypes */
   6,   /* field[6] = coltypmods */
   2,   /* field[2] = docexpr */
-  11,   /* field[11] = location */
+  12,   /* field[12] = location */
+  10,   /* field[10] = notnulls */
   1,   /* field[1] = ns_names */
   0,   /* field[0] = ns_uris */
-  10,   /* field[10] = ordinalitycol */
+  11,   /* field[11] = ordinalitycol */
   3,   /* field[3] = rowexpr */
 };
 static const ProtobufCIntRange pg_query__table_func__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 12 }
+  { 0, 13 }
 };
 const ProtobufCMessageDescriptor pg_query__table_func__descriptor =
 {
@@ -14246,7 +14176,7 @@ const ProtobufCMessageDescriptor pg_query__table_func__descriptor =
   "PgQuery__TableFunc",
   "pg_query",
   sizeof(PgQuery__TableFunc),
-  12,
+  13,
   pg_query__table_func__field_descriptors,
   pg_query__table_func__field_indices_by_name,
   1,  pg_query__table_func__number_ranges,
@@ -31594,7 +31524,7 @@ const ProtobufCMessageDescriptor pg_query__def_elem__descriptor =
   (ProtobufCMessageInit) pg_query__def_elem__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__range_tbl_entry__field_descriptors[32] =
+static const ProtobufCFieldDescriptor pg_query__range_tbl_entry__field_descriptors[36] =
 {
   {
     "rtekind",
@@ -31969,8 +31899,56 @@ static const ProtobufCFieldDescriptor pg_query__range_tbl_entry__field_descripto
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "security_quals",
+    "selected_cols",
     32,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblEntry, n_selected_cols),
+    offsetof(PgQuery__RangeTblEntry, selected_cols),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inserted_cols",
+    33,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblEntry, n_inserted_cols),
+    offsetof(PgQuery__RangeTblEntry, inserted_cols),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "updated_cols",
+    34,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblEntry, n_updated_cols),
+    offsetof(PgQuery__RangeTblEntry, updated_cols),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "extra_updated_cols",
+    35,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblEntry, n_extra_updated_cols),
+    offsetof(PgQuery__RangeTblEntry, extra_updated_cols),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "security_quals",
+    36,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__RangeTblEntry, n_security_quals),
@@ -31992,10 +31970,12 @@ static const unsigned pg_query__range_tbl_entry__field_indices_by_name[] = {
   22,   /* field[22] = enrname */
   23,   /* field[23] = enrtuples */
   25,   /* field[25] = eref */
+  34,   /* field[34] = extra_updated_cols */
   13,   /* field[13] = funcordinality */
   12,   /* field[12] = functions */
   28,   /* field[28] = in_from_cl */
   27,   /* field[27] = inh */
+  32,   /* field[32] = inserted_cols */
   9,   /* field[9] = joinaliasvars */
   10,   /* field[10] = joinleftcols */
   8,   /* field[8] = joinmergedcols */
@@ -32008,17 +31988,19 @@ static const unsigned pg_query__range_tbl_entry__field_indices_by_name[] = {
   29,   /* field[29] = required_perms */
   0,   /* field[0] = rtekind */
   6,   /* field[6] = security_barrier */
-  31,   /* field[31] = security_quals */
+  35,   /* field[35] = security_quals */
+  31,   /* field[31] = selected_cols */
   18,   /* field[18] = self_reference */
   5,   /* field[5] = subquery */
   14,   /* field[14] = tablefunc */
   4,   /* field[4] = tablesample */
+  33,   /* field[33] = updated_cols */
   15,   /* field[15] = values_lists */
 };
 static const ProtobufCIntRange pg_query__range_tbl_entry__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 32 }
+  { 0, 36 }
 };
 const ProtobufCMessageDescriptor pg_query__range_tbl_entry__descriptor =
 {
@@ -32028,14 +32010,14 @@ const ProtobufCMessageDescriptor pg_query__range_tbl_entry__descriptor =
   "PgQuery__RangeTblEntry",
   "pg_query",
   sizeof(PgQuery__RangeTblEntry),
-  32,
+  36,
   pg_query__range_tbl_entry__field_descriptors,
   pg_query__range_tbl_entry__field_indices_by_name,
   1,  pg_query__range_tbl_entry__number_ranges,
   (ProtobufCMessageInit) pg_query__range_tbl_entry__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descriptors[7] =
 {
   {
     "funcexpr",
@@ -32109,6 +32091,18 @@ static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descri
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "funcparams",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblFunction, n_funcparams),
+    offsetof(PgQuery__RangeTblFunction, funcparams),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__range_tbl_function__field_indices_by_name[] = {
   5,   /* field[5] = funccolcollations */
@@ -32117,11 +32111,12 @@ static const unsigned pg_query__range_tbl_function__field_indices_by_name[] = {
   3,   /* field[3] = funccoltypes */
   4,   /* field[4] = funccoltypmods */
   0,   /* field[0] = funcexpr */
+  6,   /* field[6] = funcparams */
 };
 static const ProtobufCIntRange pg_query__range_tbl_function__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__range_tbl_function__descriptor =
 {
@@ -32131,7 +32126,7 @@ const ProtobufCMessageDescriptor pg_query__range_tbl_function__descriptor =
   "PgQuery__RangeTblFunction",
   "pg_query",
   sizeof(PgQuery__RangeTblFunction),
-  6,
+  7,
   pg_query__range_tbl_function__field_descriptors,
   pg_query__range_tbl_function__field_indices_by_name,
   1,  pg_query__range_tbl_function__number_ranges,

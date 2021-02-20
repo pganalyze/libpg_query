@@ -119,11 +119,14 @@
 	}
 
 #define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
+	if (!bms_is_empty(node->fldname)) \
 	{ \
-		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
-		_outBitmapset(out, node->fldname); \
+		int x = 0; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		while ((x = bms_next_member(node->fldname, x)) >= 0) \
+			appendStringInfo(out, "%d,", x); \
 		removeTrailingDelimiter(out); \
-		appendStringInfo(out, ","); \
+		appendStringInfo(out, "],"); \
 	}
 
 static void _outNode(StringInfo out, const void *obj);
@@ -225,24 +228,6 @@ static void
 _outNull(StringInfo out, const Value *node)
 {
 	// No fields
-}
-
-static void
-_outBitmapset(StringInfo out, const Bitmapset *bms)
-{
-	Bitmapset	*tmpset;
-	int			x;
-
-	WRITE_NODE_TYPE("Bitmapset");
-	appendStringInfo(out, "\"words\":");
-	appendStringInfoChar(out, '[');
-	tmpset = bms_copy(bms);
-	while ((x = bms_first_member(tmpset)) >= 0)
-		appendStringInfo(out, "%d,", x);
-	bms_free(tmpset);
-	removeTrailingDelimiter(out);
-	appendStringInfoChar(out, ']');
-	appendStringInfo(out, ",");
 }
 
 #include "pg_query_outfuncs_defs.c"

@@ -287,11 +287,6 @@ message IntList
   repeated Node items = 1;
 }
 
-message Bitmapset
-{
-  repeated uint64 words = 1;
-}
-
 message Alias
 {
   string aliasname = 1 [json_name="aliasname"];
@@ -321,8 +316,9 @@ message TableFunc
   repeated Node colcollations = 8 [json_name="colcollations"];
   repeated Node colexprs = 9 [json_name="colexprs"];
   repeated Node coldefexprs = 10 [json_name="coldefexprs"];
-  int32 ordinalitycol = 11 [json_name="ordinalitycol"];
-  int32 location = 12 [json_name="location"];
+  repeated uint64 notnulls = 11 [json_name="notnulls"];
+  int32 ordinalitycol = 12 [json_name="ordinalitycol"];
+  int32 location = 13 [json_name="location"];
 }
 
 message Expr
@@ -2084,7 +2080,11 @@ message RangeTblEntry
   bool in_from_cl = 29 [json_name="inFromCl"];
   uint32 required_perms = 30 [json_name="requiredPerms"];
   uint32 check_as_user = 31 [json_name="checkAsUser"];
-  repeated Node security_quals = 32 [json_name="securityQuals"];
+  repeated uint64 selected_cols = 32 [json_name="selectedCols"];
+  repeated uint64 inserted_cols = 33 [json_name="insertedCols"];
+  repeated uint64 updated_cols = 34 [json_name="updatedCols"];
+  repeated uint64 extra_updated_cols = 35 [json_name="extraUpdatedCols"];
+  repeated Node security_quals = 36 [json_name="securityQuals"];
 }
 
 message RangeTblFunction
@@ -2095,6 +2095,7 @@ message RangeTblFunction
   repeated Node funccoltypes = 4 [json_name="funccoltypes"];
   repeated Node funccoltypmods = 5 [json_name="funccoltypmods"];
   repeated Node funccolcollations = 6 [json_name="funccolcollations"];
+  repeated uint64 funcparams = 7 [json_name="funcparams"];
 }
 
 message TableSampleClause
