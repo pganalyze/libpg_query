@@ -581,6 +581,8 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 	PLpgSQL_datum *d;
 
 	WRITE_NODE_TYPE("PLpgSQL_function");
+	WRITE_INT_FIELD(new_varno, new_varno, new_varno);
+	WRITE_INT_FIELD(old_varno, old_varno, old_varno);
 
 	appendStringInfoString(out, "\"datums\":");
 	appendStringInfoChar(out, '[');
@@ -698,6 +700,7 @@ dump_record(StringInfo out, PLpgSQL_rec *node) {
 	WRITE_NODE_TYPE("PLpgSQL_rec");
 
 	WRITE_STRING_FIELD(refname, refname, refname);
+	WRITE_INT_FIELD(dno, dno, dno);
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 }
 
