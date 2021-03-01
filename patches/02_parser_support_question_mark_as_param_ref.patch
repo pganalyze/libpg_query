@@ -1,4 +1,4 @@
-commit 5a6d523c4a209c17690b39cdaae166d703d07a61
+commit 911e2c633fc9f75ea587f9763470ee6140cea0f1
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:56:21 2021 -0800
 
@@ -14,7 +14,7 @@ Date:   Sun Jan 3 15:56:21 2021 -0800
     should be considered deprecated.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index cf2b521c23..bcdda00a3a 100644
+index cf2b521c23..ad796b87e1 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -164,6 +164,7 @@ static Node *makeAConst(Value *v, int location);
@@ -33,21 +33,21 @@ index cf2b521c23..bcdda00a3a 100644
  %left		POSTFIXOP		/* dummy for postfix Op rules */
  /*
   * To support target_el without AS, we must give IDENT an explicit priority
-@@ -1028,6 +1030,11 @@ AlterOptRoleElem:
+@@ -1033,6 +1035,11 @@ AlterOptRoleElem:
  					$$ = makeDefElem("password",
- 									 (Node *)makeString($2), @1);
+ 						(Node *)makeParamRef($2, @2), @1);
  				}
 +			| PASSWORD '?'
 +				{
 +					$$ = makeDefElem("password",
 +						(Node *)makeParamRef(0, @2), @1);
 +				}
- 			| PASSWORD PARAM
+ 			| PASSWORD NULL_P
  				{
+ 					$$ = makeDefElem("password", NULL, @1);
+@@ -1057,6 +1064,16 @@ AlterOptRoleElem:
  					$$ = makeDefElem("password",
-@@ -1047,6 +1054,16 @@ AlterOptRoleElem:
- 					$$ = makeDefElem("password",
- 									 (Node *)makeString($3), @1);
+ 									 (Node *)makeParamRef($3, @3), @1);
  				}
 +			| ENCRYPTED PASSWORD '?'
 +				{
@@ -59,10 +59,55 @@ index cf2b521c23..bcdda00a3a 100644
 +					$$ = makeDefElem("password",
 +									 (Node *)makeParamRef(0, @3), @1);
 +				}
- 			| ENCRYPTED PASSWORD PARAM
+ 			| UNENCRYPTED PASSWORD Sconst
  				{
- 					/*
-@@ -1636,6 +1653,8 @@ var_value:	opt_boolean_or_string
+ 					ereport(ERROR,
+@@ -1552,6 +1569,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+ 					n->args = list_make1(makeParamRef($2, @2));
+ 					$$ = n;
+ 				}
++			| SCHEMA '?'
++				{
++					VariableSetStmt *n = makeNode(VariableSetStmt);
++					n->kind = VAR_SET_VALUE;
++					n->name = "search_path";
++					n->args = list_make1(makeParamRef(0, @2));
++					$$ = n;
++				}
+ 			| NAMES opt_encoding
+ 				{
+ 					VariableSetStmt *n = makeNode(VariableSetStmt);
+@@ -1579,6 +1604,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+ 					n->args = list_make1(makeParamRef($2, @2));
+ 					$$ = n;
+ 				}
++			| ROLE '?'
++				{
++					VariableSetStmt *n = makeNode(VariableSetStmt);
++					n->kind = VAR_SET_VALUE;
++					n->name = "role";
++					n->args = list_make1(makeParamRef(0, @2));
++					$$ = n;
++				}
+ 			| SESSION AUTHORIZATION NonReservedWord_or_Sconst
+ 				{
+ 					VariableSetStmt *n = makeNode(VariableSetStmt);
+@@ -1595,6 +1628,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+ 					n->args = list_make1(makeParamRef($3, @3));
+ 					$$ = n;
+ 				}
++			| SESSION AUTHORIZATION '?'
++				{
++					VariableSetStmt *n = makeNode(VariableSetStmt);
++					n->kind = VAR_SET_VALUE;
++					n->name = "session_authorization";
++					n->args = list_make1(makeParamRef(0, @3));
++					$$ = n;
++				}
+ 			| SESSION AUTHORIZATION DEFAULT
+ 				{
+ 					VariableSetStmt *n = makeNode(VariableSetStmt);
+@@ -1636,6 +1677,8 @@ var_value:	opt_boolean_or_string
  				{ $$ = makeAConst($1, @1); }
  			| PARAM
  				{ $$ = makeParamRef($1, @1); }
@@ -71,18 +116,18 @@ index cf2b521c23..bcdda00a3a 100644
  		;
  
  iso_level:	READ UNCOMMITTED						{ $$ = "read uncommitted"; }
-@@ -1669,6 +1688,10 @@ zone_value:
+@@ -1673,6 +1716,10 @@ zone_value:
  				{
- 					$$ = makeStringConst($1, @1);
+ 					$$ = makeParamRef($1, @1);
  				}
 +			| '?'
 +				{
 +					$$ = makeParamRef(0, @1);
 +				}
- 			| PARAM
+ 			| IDENT
  				{
- 					$$ = makeParamRef($1, @1);
-@@ -13276,6 +13299,11 @@ a_expr:		c_expr									{ $$ = $1; }
+ 					$$ = makeStringConst($1, @1);
+@@ -13276,6 +13323,11 @@ a_expr:		c_expr									{ $$ = $1; }
  			| a_expr qual_Op					%prec POSTFIXOP
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, NULL, @2); }
  
@@ -94,7 +139,7 @@ index cf2b521c23..bcdda00a3a 100644
  			| a_expr AND a_expr
  				{ $$ = makeAndExpr($1, $3, @2); }
  			| a_expr OR a_expr
-@@ -13684,6 +13712,10 @@ b_expr:		c_expr
+@@ -13684,6 +13736,10 @@ b_expr:		c_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, ">=", $1, $3, @2); }
  			| b_expr NOT_EQUALS b_expr
  				{ $$ = (Node *) makeSimpleA_Expr(AEXPR_OP, "<>", $1, $3, @2); }
@@ -105,26 +150,29 @@ index cf2b521c23..bcdda00a3a 100644
  			| b_expr qual_Op b_expr				%prec Op
  				{ $$ = (Node *) makeA_Expr(AEXPR_OP, $2, $1, $3, @2); }
  			| qual_Op b_expr					%prec Op
-@@ -13729,6 +13761,18 @@ b_expr:		c_expr
-  */
- c_expr:		columnref								{ $$ = $1; }
- 			| AexprConst							{ $$ = $1; }
+@@ -13744,6 +13800,21 @@ c_expr:		columnref								{ $$ = $1; }
+ 					else
+ 						$$ = (Node *) p;
+ 				}
 +			| '?' opt_indirection
 +				{
++					ParamRef *p = makeNode(ParamRef);
++					p->number = 0;
++					p->location = @1;
 +					if ($2)
 +					{
 +						A_Indirection *n = makeNode(A_Indirection);
-+						n->arg = makeParamRef(0, @1);
++						n->arg = (Node *) p;
 +						n->indirection = check_indirection($2, yyscanner);
 +						$$ = (Node *) n;
 +					}
 +					else
-+						$$ = makeParamRef(0, @1);
++						$$ = (Node *) p;
 +				}
- 			| PARAM opt_indirection
+ 			| '(' a_expr ')' opt_indirection
  				{
- 					ParamRef *p = makeNode(ParamRef);
-@@ -14585,6 +14629,7 @@ MathOp:		 '+'									{ $$ = "+"; }
+ 					if ($4)
+@@ -14585,6 +14656,7 @@ MathOp:		 '+'									{ $$ = "+"; }
  			| LESS_EQUALS							{ $$ = "<="; }
  			| GREATER_EQUALS						{ $$ = ">="; }
  			| NOT_EQUALS							{ $$ = "<>"; }
@@ -132,7 +180,7 @@ index cf2b521c23..bcdda00a3a 100644
  		;
  
  qual_Op:	Op
-@@ -14700,6 +14745,10 @@ extract_list:
+@@ -14700,6 +14772,10 @@ extract_list:
  				{
  					$$ = list_make2(makeParamRef($1, @1), $3);
  				}
@@ -143,39 +191,45 @@ index cf2b521c23..bcdda00a3a 100644
  			| /*EMPTY*/								{ $$ = NIL; }
  		;
  
-@@ -15217,6 +15266,19 @@ AexprConst: Iconst
+@@ -15208,7 +15284,7 @@ AexprConst: Iconst
+ 				{
+ 					TypeName *t = $1;
+ 					t->typmods = $3;
+-					$$ = makeParamRefCast($2, @3, t);
++					$$ = makeParamRefCast($2, @2, t);
+ 				}
+ 			| ConstInterval '(' Iconst ')' PARAM
+ 				{
+@@ -15217,6 +15293,14 @@ AexprConst: Iconst
  											makeIntConst($3, @3));
  					$$ = makeParamRefCast($5, @5, t);
  				}
 +			/* Version without () is handled in a_expr/b_expr logic due to ? mis-parsing as operator */
-+			| ConstInterval '(' '?' ')' '?' opt_interval
++			| ConstInterval '(' Iconst ')' '?'
 +				{
 +					TypeName *t = $1;
-+					if ($6 != NIL)
-+					{
-+						t->typmods = lappend($6, makeParamRef(0, @3));
-+					}
-+					else
-+						t->typmods = list_make2(makeIntConst(INTERVAL_FULL_RANGE, -1),
-+												makeParamRef(0, @3));
++					t->typmods = list_make2(makeIntConst(INTERVAL_FULL_RANGE, -1),
++											makeIntConst($3, @3));
 +					$$ = makeParamRefCast(0, @5, t);
 +				}
  			| TRUE_P
  				{
  					$$ = makeBoolAConst(true, @1);
-@@ -16089,6 +16151,31 @@ makeParamRefCast(int number, int location, TypeName *typename)
+@@ -16089,6 +16173,33 @@ makeParamRefCast(int number, int location, TypeName *typename)
  	return makeTypeCast(p, typename, -1);
  }
  
 +/*
-+ * Makes INTERVAL-like nodes for "INTERVAL ? typemod", otherwise treat as A_EXPR
++ * Makes INTERVAL-like nodes for "INTERVAL ?" and "INTERVAL ? opt_interval", otherwise treat as A_EXPR
 + */
 +static Node *
 +makeInterval_or_AExprOp(Node *lexpr, Node *rexpr, int location)
 +{
-+	if (lexpr && IsA(lexpr, ColumnRef)) {
++	if (lexpr && IsA(lexpr, ColumnRef))
++	{
 +		ColumnRef *c = (ColumnRef *) lexpr;
-+		if (strcmp(strVal(linitial(c->fields)), "interval") == 0 ) {
++		if (strcmp(strVal(linitial(c->fields)), "interval") == 0 )
++		{
 +			TypeName *t = SystemTypeName("interval");
 +			t->location = c->location;
 +
