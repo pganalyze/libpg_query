@@ -1414,9 +1414,10 @@ static void deparseTargetList(StringInfo str, List *l)
 	foreach(lc, l)
 	{
 		ResTarget *res_target = castNode(ResTarget, lfirst(lc));
-		Assert(res_target->val != NULL);
 
-		if (IsA(res_target->val, ColumnRef))
+		if (res_target->val == NULL)
+			elog(ERROR, "deparse error in deparseTargetList: ResTarget without val");
+		else if (IsA(res_target->val, ColumnRef))
 			deparseColumnRef(str, castNode(ColumnRef, res_target->val));
 		else
 			deparseExpr(str, res_target->val);
