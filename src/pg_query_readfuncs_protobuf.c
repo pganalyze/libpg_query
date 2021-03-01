@@ -74,6 +74,7 @@
 
 static Node * _readNode(PgQuery__Node *msg);
 
+#include "pg_query_enum_defs.c"
 #include "pg_query_readfuncs_defs.c"
 
 static List * _readList(PgQuery__List *msg)

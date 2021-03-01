@@ -230,6 +230,7 @@ _outNull(StringInfo out, const Value *node)
 	// No fields
 }
 
+#include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
 
 static void

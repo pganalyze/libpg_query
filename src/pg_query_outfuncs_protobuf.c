@@ -179,6 +179,7 @@ _outNull(PgQuery__Null* out, const Value *node)
   // Null has no fields
 }
 
+#include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
 
 static void

@@ -189,6 +189,7 @@ _fingerprintCopyTokens(FingerprintContext *source, FingerprintContext *target, c
 	}
 }
 
+#include "pg_query_enum_defs.c"
 #include "pg_query_fingerprint_defs.c"
 
 void
@@ -288,7 +289,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 			{
 				FingerprintToken *token = dlist_container(FingerprintToken, list_node, iter.cur);
 
-				printf("%s, ", token->str);
+				printf("\"%s\", ", token->str);
 			}
 
 			printf("]\n");
