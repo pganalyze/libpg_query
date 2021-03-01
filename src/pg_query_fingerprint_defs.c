@@ -279,11 +279,9 @@ _fingerprintParam(FingerprintContext *ctx, const Param *node, const void *parent
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->paramkind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->paramkind);
+  if (true) {
     _fingerprintString(ctx, "paramkind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringParamKind(node->paramkind));
   }
 
   if (node->paramtype != 0) {
@@ -365,11 +363,9 @@ _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *pare
     _fingerprintNode(&subCtx, node->aggorder, node, "aggorder", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "aggorder");
   }
-  if (node->aggsplit != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->aggsplit);
+  if (true) {
     _fingerprintString(ctx, "aggsplit");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringAggSplit(node->aggsplit));
   }
 
   if (node->aggstar) {
@@ -593,11 +589,9 @@ _fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->funcformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->funcformat);
+  if (true) {
     _fingerprintString(ctx, "funcformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->funcformat));
   }
 
   if (node->funcid != 0) {
@@ -770,11 +764,9 @@ _fingerprintBoolExpr(FingerprintContext *ctx, const BoolExpr *node, const void *
     _fingerprintNode(&subCtx, node->args, node, "args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "args");
   }
-  if (node->boolop != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->boolop);
+  if (true) {
     _fingerprintString(ctx, "boolop");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringBoolExprType(node->boolop));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -801,11 +793,9 @@ _fingerprintSubLink(FingerprintContext *ctx, const SubLink *node, const void *pa
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->subLinkType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->subLinkType);
+  if (true) {
     _fingerprintString(ctx, "subLinkType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSubLinkType(node->subLinkType));
   }
 
   if (node->subselect != NULL) {
@@ -905,11 +895,9 @@ _fingerprintSubPlan(FingerprintContext *ctx, const SubPlan *node, const void *pa
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->subLinkType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->subLinkType);
+  if (true) {
     _fingerprintString(ctx, "subLinkType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSubLinkType(node->subLinkType));
   }
 
   if (node->testexpr != NULL) {
@@ -1033,11 +1021,9 @@ _fingerprintRelabelType(FingerprintContext *ctx, const RelabelType *node, const 
 
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->relabelformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->relabelformat);
+  if (true) {
     _fingerprintString(ctx, "relabelformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->relabelformat));
   }
 
   if (node->resultcollid != 0) {
@@ -1075,11 +1061,9 @@ _fingerprintCoerceViaIO(FingerprintContext *ctx, const CoerceViaIO *node, const 
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->coerceformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->coerceformat);
+  if (true) {
     _fingerprintString(ctx, "coerceformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->coerceformat));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -1112,11 +1096,9 @@ _fingerprintArrayCoerceExpr(FingerprintContext *ctx, const ArrayCoerceExpr *node
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->coerceformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->coerceformat);
+  if (true) {
     _fingerprintString(ctx, "coerceformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->coerceformat));
   }
 
   if (node->elemexpr != NULL) {
@@ -1163,11 +1145,9 @@ _fingerprintConvertRowtypeExpr(FingerprintContext *ctx, const ConvertRowtypeExpr
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->convertformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->convertformat);
+  if (true) {
     _fingerprintString(ctx, "convertformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->convertformat));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -1358,11 +1338,9 @@ _fingerprintRowExpr(FingerprintContext *ctx, const RowExpr *node, const void *pa
   }
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->row_format != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->row_format);
+  if (true) {
     _fingerprintString(ctx, "row_format");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->row_format));
   }
 
   if (node->row_typeid != 0) {
@@ -1409,11 +1387,9 @@ _fingerprintRowCompareExpr(FingerprintContext *ctx, const RowCompareExpr *node, 
     _fingerprintNode(&subCtx, node->rargs, node, "rargs", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "rargs");
   }
-  if (node->rctype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->rctype);
+  if (true) {
     _fingerprintString(ctx, "rctype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringRowCompareType(node->rctype));
   }
 
 }
@@ -1481,11 +1457,9 @@ _fingerprintMinMaxExpr(FingerprintContext *ctx, const MinMaxExpr *node, const vo
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->op != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->op);
+  if (true) {
     _fingerprintString(ctx, "op");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringMinMaxOp(node->op));
   }
 
 }
@@ -1497,11 +1471,9 @@ _fingerprintSQLValueFunction(FingerprintContext *ctx, const SQLValueFunction *no
 
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->op != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->op);
+  if (true) {
     _fingerprintString(ctx, "op");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSQLValueFunctionOp(node->op));
   }
 
   if (node->type != 0) {
@@ -1550,11 +1522,9 @@ _fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *pa
     _fingerprintNode(&subCtx, node->named_args, node, "named_args", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "named_args");
   }
-  if (node->op != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->op);
+  if (true) {
     _fingerprintString(ctx, "op");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringXmlExprOp(node->op));
   }
 
   if (node->type != 0) {
@@ -1571,11 +1541,9 @@ _fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *pa
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->xmloption != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->xmloption);
+  if (true) {
     _fingerprintString(ctx, "xmloption");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringXmlOptionType(node->xmloption));
   }
 
 }
@@ -1599,11 +1567,9 @@ _fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *
 
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->nulltesttype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->nulltesttype);
+  if (true) {
     _fingerprintString(ctx, "nulltesttype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringNullTestType(node->nulltesttype));
   }
 
 }
@@ -1620,11 +1586,9 @@ _fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const 
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->booltesttype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->booltesttype);
+  if (true) {
     _fingerprintString(ctx, "booltesttype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringBoolTestType(node->booltesttype));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -1643,11 +1607,9 @@ _fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, 
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->coercionformat != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->coercionformat);
+  if (true) {
     _fingerprintString(ctx, "coercionformat");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionForm(node->coercionformat));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -1869,11 +1831,9 @@ _fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *
     _fingerprintString(ctx, "true");
   }
 
-  if (node->jointype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->jointype);
+  if (true) {
     _fingerprintString(ctx, "jointype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringJoinType(node->jointype));
   }
 
   if (node->larg != NULL) {
@@ -1937,11 +1897,9 @@ _fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, 
 {
   _fingerprintString(ctx, "OnConflictExpr");
 
-  if (node->action != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->action);
+  if (true) {
     _fingerprintString(ctx, "action");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOnConflictAction(node->action));
   }
 
   if (node->arbiterElems != NULL && node->arbiterElems->length > 0) {
@@ -2008,11 +1966,9 @@ _fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const vo
     _fingerprintNode(&subCtx, node->colNames, node, "colNames", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "colNames");
   }
-  if (node->onCommit != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->onCommit);
+  if (true) {
     _fingerprintString(ctx, "onCommit");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOnCommitAction(node->onCommit));
   }
 
   if (node->options != NULL && node->options->length > 0) {
@@ -2075,11 +2031,9 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintString(ctx, "true");
   }
 
-  if (node->commandType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->commandType);
+  if (true) {
     _fingerprintString(ctx, "commandType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCmdType(node->commandType));
   }
 
   if (node->constraintDeps != NULL && node->constraintDeps->length > 0) {
@@ -2185,11 +2139,9 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintCopyTokens(&subCtx, ctx, "limitOffset");
   }
 
-  if (node->limitOption != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->limitOption);
+  if (true) {
     _fingerprintString(ctx, "limitOption");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLimitOption(node->limitOption));
   }
 
   if (node->onConflict != NULL) {
@@ -2199,11 +2151,9 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintCopyTokens(&subCtx, ctx, "onConflict");
   }
 
-  if (node->override != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->override);
+  if (true) {
     _fingerprintString(ctx, "override");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOverridingKind(node->override));
   }
 
   if (node->queryId != 0) {
@@ -2213,11 +2163,9 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->querySource != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->querySource);
+  if (true) {
     _fingerprintString(ctx, "querySource");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringQuerySource(node->querySource));
   }
 
   if (node->resultRelation != 0) {
@@ -2317,11 +2265,9 @@ _fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const vo
     _fingerprintCopyTokens(&subCtx, ctx, "onConflictClause");
   }
 
-  if (node->override != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->override);
+  if (true) {
     _fingerprintString(ctx, "override");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOverridingKind(node->override));
   }
 
   if (node->relation != NULL) {
@@ -2502,11 +2448,9 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintCopyTokens(&subCtx, ctx, "limitOffset");
   }
 
-  if (node->limitOption != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->limitOption);
+  if (true) {
     _fingerprintString(ctx, "limitOption");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLimitOption(node->limitOption));
   }
 
   if (node->lockingClause != NULL && node->lockingClause->length > 0) {
@@ -2515,11 +2459,9 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintNode(&subCtx, node->lockingClause, node, "lockingClause", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lockingClause");
   }
-  if (node->op != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->op);
+  if (true) {
     _fingerprintString(ctx, "op");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSetOperation(node->op));
   }
 
   if (node->rarg != NULL) {
@@ -2592,11 +2534,9 @@ _fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, 
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
-  if (node->relkind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->relkind);
+  if (true) {
     _fingerprintString(ctx, "relkind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->relkind));
   }
 
 }
@@ -2606,11 +2546,9 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
 {
   _fingerprintString(ctx, "AlterTableCmd");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->def != NULL) {
@@ -2644,11 +2582,9 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->subtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->subtype);
+  if (true) {
     _fingerprintString(ctx, "subtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringAlterTableType(node->subtype));
   }
 
 }
@@ -2658,11 +2594,9 @@ _fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node
 {
   _fingerprintString(ctx, "AlterDomainStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->def != NULL) {
@@ -2737,11 +2671,9 @@ _fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *no
     _fingerprintCopyTokens(&subCtx, ctx, "larg");
   }
 
-  if (node->op != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->op);
+  if (true) {
     _fingerprintString(ctx, "op");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSetOperation(node->op));
   }
 
   if (node->rarg != NULL) {
@@ -2758,11 +2690,9 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
 {
   _fingerprintString(ctx, "GrantStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->grant_option) {
@@ -2787,11 +2717,9 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
     _fingerprintNode(&subCtx, node->objects, node, "objects", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objects");
   }
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
   if (node->privileges != NULL && node->privileges->length > 0) {
@@ -2800,11 +2728,9 @@ _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void
     _fingerprintNode(&subCtx, node->privileges, node, "privileges", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "privileges");
   }
-  if (node->targtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->targtype);
+  if (true) {
     _fingerprintString(ctx, "targtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringGrantTargetType(node->targtype));
   }
 
 }
@@ -2819,11 +2745,9 @@ _fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, co
     _fingerprintString(ctx, "true");
   }
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->granted_roles != NULL && node->granted_roles->length > 0) {
@@ -2996,11 +2920,9 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
     _fingerprintCopyTokens(&subCtx, ctx, "ofTypename");
   }
 
-  if (node->oncommit != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->oncommit);
+  if (true) {
     _fingerprintString(ctx, "oncommit");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOnCommitAction(node->oncommit));
   }
 
   if (node->options != NULL && node->options->length > 0) {
@@ -3071,11 +2993,9 @@ _fingerprintDefineStmt(FingerprintContext *ctx, const DefineStmt *node, const vo
     _fingerprintString(ctx, "true");
   }
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->kind));
   }
 
   if (node->oldstyle) {
@@ -3095,11 +3015,9 @@ _fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *
 {
   _fingerprintString(ctx, "DropStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->concurrent) {
@@ -3118,11 +3036,9 @@ _fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *
     _fingerprintNode(&subCtx, node->objects, node, "objects", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "objects");
   }
-  if (node->removeType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->removeType);
+  if (true) {
     _fingerprintString(ctx, "removeType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->removeType));
   }
 
 }
@@ -3132,11 +3048,9 @@ _fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, cons
 {
   _fingerprintString(ctx, "TruncateStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->relations != NULL && node->relations->length > 0) {
@@ -3169,11 +3083,9 @@ _fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const 
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
 }
@@ -3183,11 +3095,9 @@ _fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void
 {
   _fingerprintString(ctx, "FetchStmt");
 
-  if (node->direction != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->direction);
+  if (true) {
     _fingerprintString(ctx, "direction");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringFetchDirection(node->direction));
   }
 
   if (node->howMany != 0) {
@@ -3394,11 +3304,9 @@ _fingerprintAlterFunctionStmt(FingerprintContext *ctx, const AlterFunctionStmt *
     _fingerprintCopyTokens(&subCtx, ctx, "func");
   }
 
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
 }
@@ -3421,11 +3329,9 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
 {
   _fingerprintString(ctx, "RenameStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->missing_ok) {
@@ -3452,18 +3358,14 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
     _fingerprintCopyTokens(&subCtx, ctx, "relation");
   }
 
-  if (node->relationType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->relationType);
+  if (true) {
     _fingerprintString(ctx, "relationType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->relationType));
   }
 
-  if (node->renameType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->renameType);
+  if (true) {
     _fingerprintString(ctx, "renameType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->renameType));
   }
 
   if (node->subname != NULL) {
@@ -3484,11 +3386,9 @@ _fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *
     _fingerprintNode(&subCtx, node->actions, node, "actions", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "actions");
   }
-  if (node->event != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->event);
+  if (true) {
     _fingerprintString(ctx, "event");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCmdType(node->event));
   }
 
   if (node->instead) {
@@ -3575,11 +3475,9 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
 
   // Intentionally ignoring node->gid for fingerprinting
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringTransactionStmtKind(node->kind));
   }
 
   // Intentionally ignoring node->options for fingerprinting
@@ -3624,11 +3522,9 @@ _fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *
     _fingerprintCopyTokens(&subCtx, ctx, "view");
   }
 
-  if (node->withCheckOption != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->withCheckOption);
+  if (true) {
     _fingerprintString(ctx, "withCheckOption");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringViewCheckOption(node->withCheckOption));
   }
 
 }
@@ -3792,11 +3688,9 @@ _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *
     _fingerprintCopyTokens(&subCtx, ctx, "query");
   }
 
-  if (node->relkind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->relkind);
+  if (true) {
     _fingerprintString(ctx, "relkind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->relkind));
   }
 
 }
@@ -3884,11 +3778,9 @@ _fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node
     _fingerprintString(ctx, "true");
   }
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringVariableSetKind(node->kind));
   }
 
   if (node->name != NULL) {
@@ -3915,11 +3807,9 @@ _fingerprintDiscardStmt(FingerprintContext *ctx, const DiscardStmt *node, const 
 {
   _fingerprintString(ctx, "DiscardStmt");
 
-  if (node->target != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->target);
+  if (true) {
     _fingerprintString(ctx, "target");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDiscardMode(node->target));
   }
 
 }
@@ -4071,11 +3961,9 @@ _fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, 
     _fingerprintString(ctx, node->role);
   }
 
-  if (node->stmt_type != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->stmt_type);
+  if (true) {
     _fingerprintString(ctx, "stmt_type");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringRoleStmtType(node->stmt_type));
   }
 
 }
@@ -4178,11 +4066,9 @@ _fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const 
     _fingerprintString(ctx, "true");
   }
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringReindexObjectType(node->kind));
   }
 
   if (node->name != NULL) {
@@ -4345,11 +4231,9 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
 {
   _fingerprintString(ctx, "CreateCastStmt");
 
-  if (node->context != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->context);
+  if (true) {
     _fingerprintString(ctx, "context");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCoercionContext(node->context));
   }
 
   if (node->func != NULL) {
@@ -4601,11 +4485,9 @@ _fingerprintAlterObjectDependsStmt(FingerprintContext *ctx, const AlterObjectDep
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objectType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objectType);
+  if (true) {
     _fingerprintString(ctx, "objectType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objectType));
   }
 
   if (node->relation != NULL) {
@@ -4644,11 +4526,9 @@ _fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSche
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objectType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objectType);
+  if (true) {
     _fingerprintString(ctx, "objectType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objectType));
   }
 
   if (node->relation != NULL) {
@@ -4679,11 +4559,9 @@ _fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, 
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objectType != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objectType);
+  if (true) {
     _fingerprintString(ctx, "objectType");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objectType));
   }
 
   if (node->relation != NULL) {
@@ -4739,11 +4617,9 @@ _fingerprintDropOwnedStmt(FingerprintContext *ctx, const DropOwnedStmt *node, co
 {
   _fingerprintString(ctx, "DropOwnedStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->roles != NULL && node->roles->length > 0) {
@@ -4906,11 +4782,9 @@ _fingerprintAlterTSConfigurationStmt(FingerprintContext *ctx, const AlterTSConfi
     _fingerprintNode(&subCtx, node->dicts, node, "dicts", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "dicts");
   }
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringAlterTSConfigType(node->kind));
   }
 
   if (node->missing_ok) {
@@ -5167,11 +5041,9 @@ _fingerprintAlterTableMoveAllStmt(FingerprintContext *ctx, const AlterTableMoveA
     _fingerprintString(ctx, "true");
   }
 
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
   if (node->orig_tablespacename != NULL) {
@@ -5204,11 +5076,9 @@ _fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, cons
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
   if (node->provider != NULL) {
@@ -5243,11 +5113,9 @@ _fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeign
 {
   _fingerprintString(ctx, "ImportForeignSchemaStmt");
 
-  if (node->list_type != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->list_type);
+  if (true) {
     _fingerprintString(ctx, "list_type");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringImportForeignSchemaType(node->list_type));
   }
 
   if (node->local_schema != NULL) {
@@ -5344,11 +5212,9 @@ _fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExten
     _fingerprintCopyTokens(&subCtx, ctx, "object");
   }
 
-  if (node->objtype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->objtype);
+  if (true) {
     _fingerprintString(ctx, "objtype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringObjectType(node->objtype));
   }
 
 }
@@ -5656,11 +5522,9 @@ _fingerprintAlterPublicationStmt(FingerprintContext *ctx, const AlterPublication
     _fingerprintString(ctx, node->pubname);
   }
 
-  if (node->tableAction != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->tableAction);
+  if (true) {
     _fingerprintString(ctx, "tableAction");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDefElemAction(node->tableAction));
   }
 
   if (node->tables != NULL && node->tables->length > 0) {
@@ -5710,11 +5574,9 @@ _fingerprintAlterSubscriptionStmt(FingerprintContext *ctx, const AlterSubscripti
     _fingerprintString(ctx, node->conninfo);
   }
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringAlterSubscriptionType(node->kind));
   }
 
   if (node->options != NULL && node->options->length > 0) {
@@ -5741,11 +5603,9 @@ _fingerprintDropSubscriptionStmt(FingerprintContext *ctx, const DropSubscription
 {
   _fingerprintString(ctx, "DropSubscriptionStmt");
 
-  if (node->behavior != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->behavior);
+  if (true) {
     _fingerprintString(ctx, "behavior");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDropBehavior(node->behavior));
   }
 
   if (node->missing_ok) {
@@ -5865,11 +5725,9 @@ _fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *pare
 {
   _fingerprintString(ctx, "A_Expr");
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
   }
 
   if (node->lexpr != NULL) {
@@ -6166,18 +6024,14 @@ _fingerprintSortBy(FingerprintContext *ctx, const SortBy *node, const void *pare
     _fingerprintCopyTokens(&subCtx, ctx, "node");
   }
 
-  if (node->sortby_dir != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->sortby_dir);
+  if (true) {
     _fingerprintString(ctx, "sortby_dir");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSortByDir(node->sortby_dir));
   }
 
-  if (node->sortby_nulls != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->sortby_nulls);
+  if (true) {
     _fingerprintString(ctx, "sortby_nulls");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSortByNulls(node->sortby_nulls));
   }
 
   if (node->useOp != NULL && node->useOp->length > 0) {
@@ -6621,11 +6475,9 @@ _fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void
     _fingerprintString(ctx, node->name);
   }
 
-  if (node->nulls_ordering != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->nulls_ordering);
+  if (true) {
     _fingerprintString(ctx, "nulls_ordering");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSortByNulls(node->nulls_ordering));
   }
 
   if (node->opclass != NULL && node->opclass->length > 0) {
@@ -6640,11 +6492,9 @@ _fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void
     _fingerprintNode(&subCtx, node->opclassopts, node, "opclassopts", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "opclassopts");
   }
-  if (node->ordering != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->ordering);
+  if (true) {
     _fingerprintString(ctx, "ordering");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringSortByDir(node->ordering));
   }
 
 }
@@ -6664,11 +6514,9 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
     _fingerprintString(ctx, node->conname);
   }
 
-  if (node->contype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->contype);
+  if (true) {
     _fingerprintString(ctx, "contype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringConstrType(node->contype));
   }
 
   if (node->cooked_expr != NULL) {
@@ -6826,11 +6674,9 @@ _fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *pa
     _fingerprintCopyTokens(&subCtx, ctx, "arg");
   }
 
-  if (node->defaction != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->defaction);
+  if (true) {
     _fingerprintString(ctx, "defaction");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringDefElemAction(node->defaction));
   }
 
   if (node->defname != NULL) {
@@ -6991,11 +6837,9 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintNode(&subCtx, node->joinrightcols, node, "joinrightcols", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "joinrightcols");
   }
-  if (node->jointype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->jointype);
+  if (true) {
     _fingerprintString(ctx, "jointype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringJoinType(node->jointype));
   }
 
   if (node->lateral) {
@@ -7030,11 +6874,9 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->rtekind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->rtekind);
+  if (true) {
     _fingerprintString(ctx, "rtekind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringRTEKind(node->rtekind));
   }
 
   if (node->securityQuals != NULL && node->securityQuals->length > 0) {
@@ -7209,11 +7051,9 @@ _fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node
     _fingerprintString(ctx, "true");
   }
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringWCOKind(node->kind));
   }
 
   if (node->polname != NULL) {
@@ -7284,11 +7124,9 @@ _fingerprintGroupingSet(FingerprintContext *ctx, const GroupingSet *node, const 
     _fingerprintNode(&subCtx, node->content, node, "content", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "content");
   }
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringGroupingSetKind(node->kind));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -7517,11 +7355,9 @@ _fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *
     _fingerprintCopyTokens(&subCtx, ctx, "defexpr");
   }
 
-  if (node->mode != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->mode);
+  if (true) {
     _fingerprintString(ctx, "mode");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringFunctionParameterMode(node->mode));
   }
 
   if (node->name != NULL) {
@@ -7542,18 +7378,14 @@ _fingerprintLockingClause(FingerprintContext *ctx, const LockingClause *node, co
     _fingerprintNode(&subCtx, node->lockedRels, node, "lockedRels", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "lockedRels");
   }
-  if (node->strength != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->strength);
+  if (true) {
     _fingerprintString(ctx, "strength");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLockClauseStrength(node->strength));
   }
 
-  if (node->waitPolicy != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->waitPolicy);
+  if (true) {
     _fingerprintString(ctx, "waitPolicy");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLockWaitPolicy(node->waitPolicy));
   }
 
 }
@@ -7575,18 +7407,14 @@ _fingerprintRowMarkClause(FingerprintContext *ctx, const RowMarkClause *node, co
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->strength != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->strength);
+  if (true) {
     _fingerprintString(ctx, "strength");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLockClauseStrength(node->strength));
   }
 
-  if (node->waitPolicy != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->waitPolicy);
+  if (true) {
     _fingerprintString(ctx, "waitPolicy");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringLockWaitPolicy(node->waitPolicy));
   }
 
 }
@@ -7612,11 +7440,9 @@ _fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, cons
     _fingerprintCopyTokens(&subCtx, ctx, "typeName");
   }
 
-  if (node->xmloption != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->xmloption);
+  if (true) {
     _fingerprintString(ctx, "xmloption");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringXmlOptionType(node->xmloption));
   }
 
 }
@@ -7673,11 +7499,9 @@ _fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *no
 {
   _fingerprintString(ctx, "OnConflictClause");
 
-  if (node->action != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->action);
+  if (true) {
     _fingerprintString(ctx, "action");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringOnConflictAction(node->action));
   }
 
   if (node->infer != NULL) {
@@ -7739,11 +7563,9 @@ _fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node
     _fingerprintNode(&subCtx, node->ctecoltypmods, node, "ctecoltypmods", depth + 1);
     _fingerprintCopyTokens(&subCtx, ctx, "ctecoltypmods");
   }
-  if (node->ctematerialized != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->ctematerialized);
+  if (true) {
     _fingerprintString(ctx, "ctematerialized");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringCTEMaterialize(node->ctematerialized));
   }
 
   if (node->ctename != NULL) {
@@ -7786,11 +7608,9 @@ _fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *
     _fingerprintString(ctx, node->rolename);
   }
 
-  if (node->roletype != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->roletype);
+  if (true) {
     _fingerprintString(ctx, "roletype");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringRoleSpecType(node->roletype));
   }
 
 }
@@ -7927,11 +7747,9 @@ _fingerprintPartitionRangeDatum(FingerprintContext *ctx, const PartitionRangeDat
 {
   _fingerprintString(ctx, "PartitionRangeDatum");
 
-  if (node->kind != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->kind);
+  if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, buffer);
+    _fingerprintString(ctx, _enumToStringPartitionRangeDatumKind(node->kind));
   }
 
   // Intentionally ignoring node->location for fingerprinting

@@ -140,6 +140,14 @@ class Generator
 
   EOL
 
+  FINGERPRINT_ENUM = <<-EOL
+  if (true) {
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, _enumToString%<typename>s(node->%<name>s));
+  }
+
+  EOL
+
   # Fingerprinting additional code to be inserted
   FINGERPRINT_OVERRIDE_NODES = {
     'A_Const' => :skip,
@@ -238,7 +246,7 @@ class Generator
               if field_type.end_with?('*') && @nodetypes.include?(field_type[0..-2])
                 fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
               elsif @all_known_enums.include?(field_type)
-                fingerprint_def += format(FINGERPRINT_INT, name: name)
+                fingerprint_def += format(FINGERPRINT_ENUM, name: name, typename: field_type)
               else
                 # This shouldn't happen - if it does the above is missing something :-)
                 puts type
