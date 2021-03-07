@@ -231,7 +231,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 
 	if (parsetree_and_error.tree != NULL || result.error == NULL) {
 		FingerprintContext ctx;
-		int i;
+		XXH64_canonical_t chash;
 
 		_fingerprintInitContext(&ctx, printTokens);
 
@@ -256,6 +256,16 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 
 		result.fingerprint = XXH3_64bits_digest(ctx.xxh_state);
 		_fingerprintFreeContext(&ctx);
+
+		XXH64_canonicalFromHash(&chash, result.fingerprint);
+		int err = asprintf(&result.fingerprint_str, "%02x%02x%02x%02x%02x%02x%02x%02x",
+						   chash.digest[0], chash.digest[1], chash.digest[2], chash.digest[3],
+						   chash.digest[4], chash.digest[5], chash.digest[6], chash.digest[7]);
+		if (err == -1) {
+			PgQueryError* error = malloc(sizeof(PgQueryError));
+			error->message = strdup("Failed to output fingerprint string due to asprintf failure");
+			result.error = error;
+		}
 	}
 
 	pg_query_exit_memory_context(ctx);
@@ -276,5 +286,6 @@ void pg_query_free_fingerprint_result(PgQueryFingerprintResult result)
 		free(result.error);
 	}
 
+	free(result.fingerprint_str);
 	free(result.stderr_buffer);
 }

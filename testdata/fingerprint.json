@@ -62,7 +62,7 @@
       "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true",
       "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
       "valuesLists", "A_ArrayExpr"],
-    "expectedHash": "c83ed64ae3b705d"
+    "expectedHash": "0c83ed64ae3b705d"
   },
   {
     "input": "SELECT b AS x, a AS y FROM z",
@@ -329,7 +329,7 @@
       "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
       "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str",
       "id", "name", "String", "str", "="],
-    "expectedHash": "119adaeb91afad0"
+    "expectedHash": "0119adaeb91afad0"
   },
   {
     "input": "FETCH 1000 FROM cursor_123",
@@ -419,7 +419,7 @@
   {
     "input": "SELECT * FROM t_1",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t_1", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
-    "expectedHash": "18bd9230646143e"
+    "expectedHash": "018bd9230646143e"
   },
   {
     "input": "SELECT * FROM t_2",

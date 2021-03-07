@@ -59,6 +59,7 @@ typedef struct {
 
 typedef struct {
   uint64_t fingerprint;
+  char* fingerprint_str;
   char* stderr_buffer;
   PgQueryError* error;
 } PgQueryFingerprintResult;

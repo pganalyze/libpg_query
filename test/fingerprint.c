@@ -23,32 +23,19 @@ int main()
 			pg_query_free_fingerprint_result(result);
 			continue;
 		}
-
-		// This is intentionally malloc-ed and will survive exiting the memory context
-		char *actual;
-		int err = asprintf(&actual, "%llx", result.fingerprint);
-		if (err == -1)
-		{
-			ret_code = -1;
-			printf("ERROR - asprintf failed\n");
-			pg_query_free_fingerprint_result(result);
-			continue;
-		}
-
-		if (strcmp(actual, tests[i + 1]) == 0)
+		else if (strcmp(result.fingerprint_str, tests[i + 1]) == 0)
 		{
 			printf(".");
 		}
 		else
 		{
 			ret_code = -1;
-			printf("INVALID result for \"%s\"\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], tests[i + 1], actual);
+			printf("INVALID result for \"%s\"\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], tests[i + 1], result.fingerprint_str);
 			pg_query_fingerprint_with_opts(tests[i], true);
 		}
 
-		free(actual);
 		pg_query_free_fingerprint_result(result);
-		}
+	}
 
 	printf("\n");
 
