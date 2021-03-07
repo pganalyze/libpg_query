@@ -699,8 +699,11 @@ case T_MultiAssignRef:
   _fingerprintMultiAssignRef(ctx, obj, parent, field_name, depth);
   break;
 case T_TypeCast:
+  if (!IsA(castNode(TypeCast, obj)->arg, A_Const) && !IsA(castNode(TypeCast, obj)->arg, ParamRef))
+  {
   _fingerprintString(ctx, "TypeCast");
   _fingerprintTypeCast(ctx, obj, parent, field_name, depth);
+  }
   break;
 case T_CollateClause:
   _fingerprintString(ctx, "CollateClause");

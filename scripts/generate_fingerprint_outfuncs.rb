@@ -281,8 +281,10 @@ class Generator
       if FINGERPRINT_SKIP_NODES.include?(type)
         conds += format("  // Intentionally ignoring for fingerprinting\n")
       else
+        conds += format("  if (!IsA(castNode(TypeCast, obj)->arg, A_Const) && !IsA(castNode(TypeCast, obj)->arg, ParamRef))\n  {\n") if type == 'TypeCast'
         conds += format("  _fingerprintString(ctx, \"%s\");\n", type)
         conds += format("  _fingerprint%s(ctx, obj, parent, field_name, depth);\n", type)
+        conds += "  }\n" if type == 'TypeCast'
       end
       conds += "  break;\n"
     end
