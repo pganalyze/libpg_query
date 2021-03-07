@@ -182,7 +182,7 @@ class Generator
         @protobuf_enums[enum_type] += "}"
         @enum_to_strings[enum_type] += "  }\n  Assert(false);\n  return NULL;\n}"
         @enum_to_ints[enum_type] += "  }\n  Assert(false);\n  return -1;\n}"
-        @int_to_enums[enum_type] += "  }\n  Assert(false);\n  return 0;\n}"
+        @int_to_enums[enum_type] += format("  }\n  Assert(false);\n  return %s;\n}",  enum_def['values'].map { |v| v['name'] }.compact.first)
       end
     end
 
