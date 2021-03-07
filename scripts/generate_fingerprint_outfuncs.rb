@@ -149,15 +149,15 @@ class Generator
   EOL
 
   # Fingerprinting additional code to be inserted
-  FINGERPRINT_OVERRIDE_NODES = {
-    'A_Const' => :skip,
-    'Alias' => :skip,
-    'ParamRef' => :skip,
-    'SetToDefault' => :skip,
-    'IntList' => :skip,
-    'OidList' => :skip,
-    'Null' => :skip,
-  }
+  FINGERPRINT_SKIP_NODES = [
+    'A_Const',
+    'Alias',
+    'ParamRef',
+    'SetToDefault',
+    'IntList',
+    'OidList',
+    'Null',
+  ]
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
@@ -168,15 +168,13 @@ class Generator
     ['TransactionStmt', 'options'] => :skip,
     ['TransactionStmt', 'gid'] => :skip,
     ['TransactionStmt', 'savepoint_name'] => :skip,
-    ['RawStmt', 'stmt_len'] => :skip,
-    ['RawStmt', 'stmt_location'] => :skip,
     ['DeclareCursorStmt', 'portalname'] => :skip,
     ['FetchStmt', 'portalname'] => :skip,
     ['ClosePortalStmt', 'portalname'] => :skip,
-    ['IndexStmt', 'oldCreateSubid'] => :skip,
-    ['IndexStmt', 'oldFirstRelfilenodeSubid'] => :skip,
+    ['RawStmt', 'stmt_len'] => :skip,
+    ['RawStmt', 'stmt_location'] => :skip,
   }
-  INT_TYPES = ['bits32', 'uint32', 'int', 'Oid', 'int32', 'Index', 'AclMode', 'int16', 'AttrNumber', 'uint16']
+  INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AclMode', 'AttrNumber', 'SubTransactionId']
   LONG_INT_TYPES = ['long', 'uint64']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
   FLOAT_TYPES = ['Cost', 'double']
@@ -191,12 +189,10 @@ class Generator
         next if struct_def['fields'].nil?
         next if IGNORE_FOR_GENERATOR.include?(type)
 
-        fp_override = FINGERPRINT_OVERRIDE_NODES[type]
-        if fp_override
-          fp_override = "  // Intentionally ignoring all fields for fingerprinting\n" if fp_override == :skip
-          fingerprint_def = fp_override
+        if FINGERPRINT_SKIP_NODES.include?(type)
+          fingerprint_def = "  // Intentionally ignoring all fields for fingerprinting\n"
         else
-          fingerprint_def = format("  _fingerprintString(ctx, \"%s\");\n\n", type)
+          fingerprint_def = ''
           struct_def['fields'].reject { |f| f['name'].nil? }.sort_by { |f| f['name'] }.each do |field|
             name = field['name']
             field_type = field['c_type']
@@ -282,7 +278,12 @@ class Generator
       defs += "\n"
 
       conds += format("case T_%s:\n", type)
-      conds += format("  _fingerprint%s(ctx, obj, parent, field_name, depth);\n", type)
+      if FINGERPRINT_SKIP_NODES.include?(type)
+        conds += format("  // Intentionally ignoring for fingerprinting\n")
+      else
+        conds += format("  _fingerprintString(ctx, \"%s\");\n", type)
+        conds += format("  _fingerprint%s(ctx, obj, parent, field_name, depth);\n", type)
+      end
       conds += "  break;\n"
     end
 

@@ -541,11 +541,6 @@ runner.deep_resolve('pg_toupper')
 runner.deep_resolve('pg_qsort')
 runner.deep_resolve('raw_expression_tree_walker')
 
-# SHA1 needed for fingerprinting
-runner.deep_resolve('sha1_result')
-runner.deep_resolve('sha1_init')
-runner.deep_resolve('sha1_loop')
-
 # Other required functions
 runner.deep_resolve('pg_printf')
 

@@ -1,6 +1,8 @@
 #ifndef PG_QUERY_H
 #define PG_QUERY_H
 
+#include <stdint.h>
+
 typedef struct {
 	char* message; // exception message
 	char* funcname; // source function of exception (e.g. SearchSysCache)
@@ -56,7 +58,7 @@ typedef struct {
 } PgQueryPlpgsqlParseResult;
 
 typedef struct {
-  char* hexdigest;
+  uint64_t fingerprint;
   char* stderr_buffer;
   PgQueryError* error;
 } PgQueryFingerprintResult;

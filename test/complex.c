@@ -10324,7 +10324,7 @@ const char* query = "select ? as field_id \
     union all select ? \
     union all select ?";
 
-const char *fingerprint = "03b3deb3c387b2d3a61d1b9fec018cb51dc30e47e5";
+uint64_t fingerprint = 9041079572601325735; // 7d785df836f148a7
 
 int main() {
     size_t i;
@@ -10336,11 +10336,11 @@ int main() {
         if (result.error) {
             ret_code = -1;
             printf("%s\n", result.error->message);
-        } else if (strcmp(result.hexdigest, fingerprint) == 0) {
+        } else if (result.fingerprint == fingerprint) {
             printf(".");
         } else {
             ret_code = -1;
-            printf("INVALID result, expected: %s\nactual: %s\nactual tokens: \n", fingerprint, result.hexdigest);
+            printf("INVALID result, expected: %llx\nactual: %llx\nactual tokens: \n", fingerprint, result.fingerprint);
             pg_query_fingerprint_with_opts(query, true);
         }
 
