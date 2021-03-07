@@ -30,6 +30,17 @@ class Generator
 
   EOL
 
+  FINGERPRINT_A_EXPR_KIND = <<-EOL
+  if (true) {
+    _fingerprintString(ctx, "kind");
+    if (node->kind == AEXPR_OP_ANY || node->kind == AEXPR_IN)
+      _fingerprintString(ctx, "AEXPR_OP");
+    else
+      _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
+  }
+
+  EOL
+
   FINGERPRINT_NODE = <<-EOL
   if (true) {
     FingerprintContext subCtx;
@@ -162,6 +173,7 @@ class Generator
     [nil, 'location'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
     ['RangeVar', 'relname'] => FINGERPRINT_RANGE_VAR_RELNAME,
+    ['A_Expr', 'kind'] => FINGERPRINT_A_EXPR_KIND,
     ['PrepareStmt', 'name'] => :skip,
     ['ExecuteStmt', 'name'] => :skip,
     ['DeallocateStmt', 'name'] => :skip,

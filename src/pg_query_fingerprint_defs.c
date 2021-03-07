@@ -5409,7 +5409,10 @@ _fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *pare
 {
   if (true) {
     _fingerprintString(ctx, "kind");
-    _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
+    if (node->kind == AEXPR_OP_ANY || node->kind == AEXPR_IN)
+      _fingerprintString(ctx, "AEXPR_OP");
+    else
+      _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
   }
 
   if (node->lexpr != NULL) {
