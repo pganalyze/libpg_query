@@ -31,45 +31,45 @@
   {
     "input": "SELECT COUNT(DISTINCT id), * FROM targets WHERE something IS NOT NULL AND elsewhere::interval < now()",
 		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname",
-      "targets", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef",
-      "fields", "A_Star", "ResTarget", "val", "FuncCall", "agg_distinct", "true", "args",
-      "ColumnRef", "fields", "String", "str", "id", "funcname", "String", "str", "count",
+      "targets", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val",
+      "FuncCall", "agg_distinct", "true", "args", "ColumnRef", "fields", "String", "str", "id", "funcname", "String", "str", "count",
+      "ResTarget", "val", "ColumnRef", "fields", "A_Star",
       "whereClause", "BoolExpr", "args", "A_Expr", "kind", "AEXPR_OP", "lexpr", "TypeCast", "arg",
       "ColumnRef", "fields", "String", "str", "elsewhere", "typeName", "TypeName",
       "names", "String", "str", "pg_catalog", "String", "str", "interval", "typemod",
       "-1", "name", "String", "str", "<", "rexpr", "FuncCall", "funcname", "String",
       "str", "now", "NullTest", "arg", "ColumnRef", "fields", "String",
       "str", "something", "nulltesttype", "IS_NOT_NULL", "boolop", "AND_EXPR"],
-		"expectedHash": "b35ba8267a11c774"
+		"expectedHash": "f35802f83bded2b7"
   },
   {
     "input": "INSERT INTO test (a, b) VALUES (?, ?)",
 		"expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget",
-      "name", "a", "ResTarget", "name", "b", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar",
+      "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar",
       "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-		"expectedHash": "8b57e65d8721e40a"
+		"expectedHash": "24bfb2aac0c5f523"
   },
   {
     "input": "INSERT INTO test (b, a) VALUES (?, ?)",
 		"expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget",
-      "name", "a", "ResTarget", "name", "b", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar",
+      "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar",
       "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-		"expectedHash": "8b57e65d8721e40a"
+		"expectedHash": "24bfb2aac0c5f523"
   },
   {
     "input": "INSERT INTO test (a, b) VALUES (ARRAY[?, ?, ?, ?], ?::timestamptz), (ARRAY[?, ?, ?, ?], ?::timestamptz), (?, ?::timestamptz)",
     "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name",
-      "a", "ResTarget", "name", "b", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true",
+      "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true",
       "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
       "valuesLists", "A_ArrayExpr"],
-    "expectedHash": "60e22dc67575fa19"
+    "expectedHash": "c83ed64ae3b705d"
   },
   {
     "input": "SELECT b AS x, a AS y FROM z",
 		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z",
       "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields",
-      "String", "str", "a", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "b"],
-		"expectedHash": "eea9914123f20455"
+      "String", "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
+		"expectedHash": "1a8bf5d7614de3a5"
   },
   {
     "input": "SELECT * FROM x WHERE y = ?",
@@ -191,7 +191,7 @@
       "String", "str", "b", "query", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
       "relname", "view_a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op",
       "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String",
-      "str", "a", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "b",
+      "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a",
       "withClause", "WithClause", "ctes", "CommonTableExpr", "aliascolnames",
       "String", "str", "a", "String", "str", "b", "ctematerialized", "CTEMaterializeDefault",
       "ctename", "view_a", "ctequery", "SelectStmt", "fromClause", "RangeFunction",
@@ -199,7 +199,7 @@
       "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
       "recursive", "true", "view", "RangeVar", "inh", "true", "relname", "view_a",
       "relpersistence", "p", "withCheckOption", "NO_CHECK_OPTION"],
-    "expectedHash": "6f1e1a99e3038fa1"
+    "expectedHash": "1b052efaedbbb523"
   },
   {
     "input": "VACUUM FULL my_table",
@@ -252,17 +252,17 @@
   },
   {
     "input": "INSERT INTO films (code, title, did) VALUES ('UA502', 'Bananas', 105), ('T_601', 'Yojimbo', DEFAULT)",
-    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "code", "ResTarget", "name", "did",
-      "ResTarget", "name", "title", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true", "relname", "films",
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did",
+      "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true", "relname", "films",
       "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-    "expectedHash": "5742630295559151"
+    "expectedHash": "e80a6fe77d029c13"
   },
   {
     "input": "INSERT INTO films (code, title, did) VALUES (?, ?, ?)",
-    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "code", "ResTarget", "name", "did",
-      "ResTarget", "name", "title", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true", "relname", "films",
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did",
+      "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "RangeVar", "inh", "true", "relname", "films",
       "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-    "expectedHash": "5742630295559151"
+    "expectedHash": "e80a6fe77d029c13"
   },
   {
     "input": "SELECT * FROM a",
@@ -353,8 +353,8 @@
   },
   {
     "input": "UPDATE x SET a = 1, b = 2, c = 3",
-    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "name", "a", "ResTarget", "name", "b", "ResTarget", "name", "c"],
-    "expectedHash": "4c5732a9711accb8"
+    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "targetList", "ResTarget", "name", "b", "ResTarget", "name", "c", "ResTarget", "name", "a"],
+    "expectedHash": "d23e73b92458e370"
   },
   {
     "input": "UPDATE x SET z = now()",

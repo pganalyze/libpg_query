@@ -10324,7 +10324,7 @@ const char* query = "select ? as field_id \
     union all select ? \
     union all select ?";
 
-uint64_t fingerprint = 9041079572601325735; // 7d785df836f148a7
+uint64_t fingerprint = 6569086358648747720; // 5b2a153d1a1f76c8
 
 int main() {
     size_t i;

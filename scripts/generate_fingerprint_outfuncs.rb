@@ -58,30 +58,60 @@ class Generator
 
   FINGERPRINT_NODE = <<-EOL
   if (true) {
-    FingerprintContext subCtx;
-    _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, &node->%<name>s, node, "%<name>s", depth + 1);
-    _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "%<name>s");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, &node->%<name>s, node, "%<name>s", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
   }
 
   EOL
 
   FINGERPRINT_NODE_PTR = <<-EOL
   if (node->%<name>s != NULL) {
-    FingerprintContext subCtx;
-    _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s", depth + 1);
-    _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "%<name>s");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
   }
 
   EOL
 
   FINGERPRINT_LIST = <<-EOL
   if (node->%<name>s != NULL && node->%<name>s->length > 0) {
-    FingerprintContext subCtx;
-    _fingerprintInitForTokens(&subCtx);
-    _fingerprintNode(&subCtx, node->%<name>s, node, "%<name>s", depth + 1);
-    _fingerprintCopyTokens(&subCtx, ctx, "%<name>s");
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "%<name>s");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
   }
   EOL
 
@@ -308,7 +338,7 @@ class Generator
       if FINGERPRINT_SKIP_NODES.include?(type)
         conds += format("  // Intentionally ignoring for fingerprinting\n")
       else
-        conds += format("  if (!IsA(castNode(TypeCast, obj)->arg, A_Const) && !IsA(castNode(TypeCast, obj)->arg, ParamRef))\n  {\n") if type == 'TypeCast'
+        conds += format("  if (!IsA(castNode(TypeCast, (void*) obj)->arg, A_Const) && !IsA(castNode(TypeCast, (void*) obj)->arg, ParamRef))\n  {\n") if type == 'TypeCast'
         conds += format("  _fingerprintString(ctx, \"%s\");\n", type)
         conds += format("  _fingerprint%s(ctx, obj, parent, field_name, depth);\n", type)
         conds += "  }\n" if type == 'TypeCast'
