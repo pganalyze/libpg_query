@@ -21,7 +21,7 @@
 typedef struct FingerprintContext
 {
 	dlist_head tokens;
-	XXH64_state_t *xxh_state; // If this is NULL we write tokens, otherwise we write the hash directly
+	XXH3_state_t *xxh_state; // If this is NULL we write tokens, otherwise we write the hash directly
 } FingerprintContext;
 
 typedef struct FingerprintToken
@@ -42,7 +42,7 @@ static void
 _fingerprintString(FingerprintContext *ctx, const char *str)
 {
 	if (ctx->xxh_state != NULL) {
-		XXH64_update(ctx->xxh_state, str, strlen(str));
+		XXH3_64bits_update(ctx->xxh_state, str, strlen(str));
 	} else {
 		FingerprintToken *token = palloc0(sizeof(FingerprintToken));
 		token->str = pstrdup(str);
@@ -254,18 +254,17 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 	if (parsetree_and_error.tree != NULL || result.error == NULL) {
 		FingerprintContext ctx;
 		int i;
-		XXH64_hash_t const xxhseed = PG_QUERY_FINGERPRINT_VERSION;
 
-		ctx.xxh_state = XXH64_createState();
+		ctx.xxh_state = XXH3_createState();
 		if (ctx.xxh_state == NULL) abort();
-		if (XXH64_reset(ctx.xxh_state, xxhseed) == XXH_ERROR) abort();
+		if (XXH3_64bits_reset_withSeed(ctx.xxh_state, PG_QUERY_FINGERPRINT_VERSION) == XXH_ERROR) abort();
 
 		if (parsetree_and_error.tree != NULL) {
 			_fingerprintNode(&ctx, parsetree_and_error.tree, NULL, NULL, 0);
 		}
 
-		result.fingerprint = XXH64_digest(ctx.xxh_state);
-		XXH64_freeState(ctx.xxh_state);
+		result.fingerprint = XXH3_64bits_digest(ctx.xxh_state);
+		XXH3_freeState(ctx.xxh_state);
 
 		if (printTokens) {
 			FingerprintContext debugCtx;
