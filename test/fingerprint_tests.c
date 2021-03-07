@@ -12,7 +12,7 @@ const char* tests[] = {
   "SELECT COUNT(DISTINCT id), * FROM targets WHERE something IS NOT NULL AND elsewhere::interval < now()",
   "b35ba8267a11c774",
   "INSERT INTO test (a, b) VALUES (?, ?)",
-  "8b0f05e18fbf2f4e",
+  "8b57e65d8721e40a",
   "INSERT INTO test (b, a) VALUES (?, ?)",
   "8b57e65d8721e40a",
   "INSERT INTO test (a, b) VALUES (ARRAY[?, ?, ?, ?], ?::timestamptz), (ARRAY[?, ?, ?, ?], ?::timestamptz), (?, ?::timestamptz)",
@@ -113,6 +113,16 @@ const char* tests[] = {
   "673f199f13dfe665",
   "SELECT * FROM t WHERE a && '[1,2]'::int4range",
   "673f199f13dfe665",
+  "SELECT * FROM t_20210301_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_y",
+  "d357dac4a24fcf1b",
+  "SELECT * FROM t_1",
+  "18bd9230646143e",
+  "SELECT * FROM t_2",
+  "3f1444da570c1a66",
 };
 
 size_t testsLength = __LINE__ - 4;

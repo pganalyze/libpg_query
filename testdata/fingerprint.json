@@ -400,5 +400,30 @@
     "input": "SELECT * FROM t WHERE a && '[1,2]'::int4range",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "a", "name", "String", "str", "&&"],
     "expectedHash": "673f199f13dfe665"
+  },
+  {
+    "input": "SELECT * FROM t_20210301_x",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t__x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedHash": "6f8169980cd70a25"
+  },
+  {
+    "input": "SELECT * FROM t_20210302_x",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t__x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedHash": "6f8169980cd70a25"
+  },
+  {
+    "input": "SELECT * FROM t_20210302_y",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t__y", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedHash": "d357dac4a24fcf1b"
+  },
+  {
+    "input": "SELECT * FROM t_1",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t_1", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedHash": "18bd9230646143e"
+  },
+  {
+    "input": "SELECT * FROM t_2",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t_2", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedHash": "3f1444da570c1a66"
   }
 ]

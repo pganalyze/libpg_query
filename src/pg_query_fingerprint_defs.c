@@ -27,8 +27,23 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
   // Intentionally ignoring node->location for fingerprinting
 
   if (node->relname != NULL && node->relpersistence != 't') {
+    int len = strlen(node->relname);
+    char *r = palloc0((len + 1) * sizeof(char));
+    char *p = r;
+    for (int i = 0; i < len; i++) {
+      if (node->relname[i] >= '0' && node->relname[i] <= '9' &&
+          ((i + 1 < len && node->relname[i + 1] >= '0' && node->relname[i + 1] <= '9') ||
+           (i > 0 && node->relname[i - 1] >= '0' && node->relname[i - 1] <= '9'))) {
+        // Skip
+      } else {
+        *p = node->relname[i];
+        p++;
+      }
+    }
+    *p = 0;
     _fingerprintString(ctx, "relname");
-    _fingerprintString(ctx, node->relname);
+    _fingerprintString(ctx, r);
+    pfree(r);
   }
 
   if (node->relpersistence != 0) {
