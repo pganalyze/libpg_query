@@ -1642,7 +1642,7 @@ _intToEnumOverridingKind(int value) {
     case 3: return OVERRIDING_SYSTEM_VALUE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static QuerySource
@@ -1655,7 +1655,7 @@ _intToEnumQuerySource(int value) {
     case 5: return QSRC_NON_INSTEAD_RULE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SortByDir
@@ -1667,7 +1667,7 @@ _intToEnumSortByDir(int value) {
     case 4: return SORTBY_USING;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SortByNulls
@@ -1678,7 +1678,7 @@ _intToEnumSortByNulls(int value) {
     case 3: return SORTBY_NULLS_LAST;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static A_Expr_Kind
@@ -1702,7 +1702,7 @@ _intToEnumA_Expr_Kind(int value) {
     case 16: return AEXPR_PAREN;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static RoleSpecType
@@ -1714,7 +1714,7 @@ _intToEnumRoleSpecType(int value) {
     case 4: return ROLESPEC_PUBLIC;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static TableLikeOption
@@ -1731,7 +1731,7 @@ _intToEnumTableLikeOption(int value) {
     case 9: return CREATE_TABLE_LIKE_ALL;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static DefElemAction
@@ -1743,7 +1743,7 @@ _intToEnumDefElemAction(int value) {
     case 4: return DEFELEM_DROP;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static PartitionRangeDatumKind
@@ -1754,7 +1754,7 @@ _intToEnumPartitionRangeDatumKind(int value) {
     case 3: return PARTITION_RANGE_DATUM_MAXVALUE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static RTEKind
@@ -1771,7 +1771,7 @@ _intToEnumRTEKind(int value) {
     case 9: return RTE_RESULT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static WCOKind
@@ -1783,7 +1783,7 @@ _intToEnumWCOKind(int value) {
     case 4: return WCO_RLS_CONFLICT_CHECK;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static GroupingSetKind
@@ -1796,7 +1796,7 @@ _intToEnumGroupingSetKind(int value) {
     case 5: return GROUPING_SET_SETS;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static CTEMaterialize
@@ -1807,7 +1807,7 @@ _intToEnumCTEMaterialize(int value) {
     case 3: return CTEMaterializeNever;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SetOperation
@@ -1819,7 +1819,7 @@ _intToEnumSetOperation(int value) {
     case 4: return SETOP_EXCEPT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ObjectType
@@ -1877,7 +1877,7 @@ _intToEnumObjectType(int value) {
     case 50: return OBJECT_VIEW;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static DropBehavior
@@ -1887,7 +1887,7 @@ _intToEnumDropBehavior(int value) {
     case 2: return DROP_CASCADE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static AlterTableType
@@ -1962,7 +1962,7 @@ _intToEnumAlterTableType(int value) {
     case 67: return AT_DropIdentity;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static GrantTargetType
@@ -1973,7 +1973,7 @@ _intToEnumGrantTargetType(int value) {
     case 3: return ACL_TARGET_DEFAULTS;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static VariableSetKind
@@ -1987,7 +1987,7 @@ _intToEnumVariableSetKind(int value) {
     case 6: return VAR_RESET_ALL;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ConstrType
@@ -2009,7 +2009,7 @@ _intToEnumConstrType(int value) {
     case 14: return CONSTR_ATTR_IMMEDIATE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ImportForeignSchemaType
@@ -2020,7 +2020,7 @@ _intToEnumImportForeignSchemaType(int value) {
     case 3: return FDW_IMPORT_SCHEMA_EXCEPT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static RoleStmtType
@@ -2031,7 +2031,7 @@ _intToEnumRoleStmtType(int value) {
     case 3: return ROLESTMT_GROUP;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static FetchDirection
@@ -2043,7 +2043,7 @@ _intToEnumFetchDirection(int value) {
     case 4: return FETCH_RELATIVE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static FunctionParameterMode
@@ -2056,7 +2056,7 @@ _intToEnumFunctionParameterMode(int value) {
     case 5: return FUNC_PARAM_TABLE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static TransactionStmtKind
@@ -2074,7 +2074,7 @@ _intToEnumTransactionStmtKind(int value) {
     case 10: return TRANS_STMT_ROLLBACK_PREPARED;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ViewCheckOption
@@ -2085,7 +2085,7 @@ _intToEnumViewCheckOption(int value) {
     case 3: return CASCADED_CHECK_OPTION;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ClusterOption
@@ -2095,7 +2095,7 @@ _intToEnumClusterOption(int value) {
     case 2: return CLUOPT_VERBOSE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static DiscardMode
@@ -2107,7 +2107,7 @@ _intToEnumDiscardMode(int value) {
     case 4: return DISCARD_TEMP;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ReindexObjectType
@@ -2120,7 +2120,7 @@ _intToEnumReindexObjectType(int value) {
     case 5: return REINDEX_OBJECT_DATABASE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static AlterTSConfigType
@@ -2133,7 +2133,7 @@ _intToEnumAlterTSConfigType(int value) {
     case 5: return ALTER_TSCONFIG_DROP_MAPPING;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static AlterSubscriptionType
@@ -2146,7 +2146,7 @@ _intToEnumAlterSubscriptionType(int value) {
     case 5: return ALTER_SUBSCRIPTION_ENABLED;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static OnCommitAction
@@ -2158,7 +2158,7 @@ _intToEnumOnCommitAction(int value) {
     case 4: return ONCOMMIT_DROP;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static ParamKind
@@ -2170,7 +2170,7 @@ _intToEnumParamKind(int value) {
     case 4: return PARAM_MULTIEXPR;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static CoercionContext
@@ -2181,7 +2181,7 @@ _intToEnumCoercionContext(int value) {
     case 3: return COERCION_EXPLICIT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static CoercionForm
@@ -2192,7 +2192,7 @@ _intToEnumCoercionForm(int value) {
     case 3: return COERCE_IMPLICIT_CAST;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static BoolExprType
@@ -2203,7 +2203,7 @@ _intToEnumBoolExprType(int value) {
     case 3: return NOT_EXPR;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SubLinkType
@@ -2219,7 +2219,7 @@ _intToEnumSubLinkType(int value) {
     case 8: return CTE_SUBLINK;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static RowCompareType
@@ -2233,7 +2233,7 @@ _intToEnumRowCompareType(int value) {
     case 6: return ROWCOMPARE_NE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static MinMaxOp
@@ -2243,7 +2243,7 @@ _intToEnumMinMaxOp(int value) {
     case 2: return IS_LEAST;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SQLValueFunctionOp
@@ -2266,7 +2266,7 @@ _intToEnumSQLValueFunctionOp(int value) {
     case 15: return SVFOP_CURRENT_SCHEMA;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static XmlExprOp
@@ -2282,7 +2282,7 @@ _intToEnumXmlExprOp(int value) {
     case 8: return IS_DOCUMENT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static XmlOptionType
@@ -2292,7 +2292,7 @@ _intToEnumXmlOptionType(int value) {
     case 2: return XMLOPTION_CONTENT;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static NullTestType
@@ -2302,7 +2302,7 @@ _intToEnumNullTestType(int value) {
     case 2: return IS_NOT_NULL;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static BoolTestType
@@ -2316,7 +2316,7 @@ _intToEnumBoolTestType(int value) {
     case 6: return IS_NOT_UNKNOWN;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static CmdType
@@ -2331,7 +2331,7 @@ _intToEnumCmdType(int value) {
     case 7: return CMD_NOTHING;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static JoinType
@@ -2347,7 +2347,7 @@ _intToEnumJoinType(int value) {
     case 8: return JOIN_UNIQUE_INNER;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static AggStrategy
@@ -2359,7 +2359,7 @@ _intToEnumAggStrategy(int value) {
     case 4: return AGG_MIXED;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static AggSplit
@@ -2370,7 +2370,7 @@ _intToEnumAggSplit(int value) {
     case 3: return AGGSPLIT_FINAL_DESERIAL;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SetOpCmd
@@ -2382,7 +2382,7 @@ _intToEnumSetOpCmd(int value) {
     case 4: return SETOPCMD_EXCEPT_ALL;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static SetOpStrategy
@@ -2392,7 +2392,7 @@ _intToEnumSetOpStrategy(int value) {
     case 2: return SETOP_HASHED;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static OnConflictAction
@@ -2403,7 +2403,7 @@ _intToEnumOnConflictAction(int value) {
     case 3: return ONCONFLICT_UPDATE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static LimitOption
@@ -2414,7 +2414,7 @@ _intToEnumLimitOption(int value) {
     case 3: return LIMIT_OPTION_WITH_TIES;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static LockClauseStrength
@@ -2427,7 +2427,7 @@ _intToEnumLockClauseStrength(int value) {
     case 5: return LCS_FORUPDATE;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static LockWaitPolicy
@@ -2438,7 +2438,7 @@ _intToEnumLockWaitPolicy(int value) {
     case 3: return LockWaitError;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
 
 static LockTupleMode
@@ -2450,5 +2450,5 @@ _intToEnumLockTupleMode(int value) {
     case 4: return LockTupleExclusive;
   }
   Assert(false);
-  return -1;
+  return 0;
 }
