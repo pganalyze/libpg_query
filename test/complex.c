@@ -10324,7 +10324,7 @@ const char* query = "select ? as field_id \
     union all select ? \
     union all select ?";
 
-const char *fingerprint = "5b2a153d1a1f76c8";
+const char *fingerprint = "fc5a0500dddc25aa";
 
 int main() {
     size_t i;
