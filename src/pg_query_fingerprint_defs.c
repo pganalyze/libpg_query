@@ -1,3 +1,224 @@
+static void _fingerprintAlias(FingerprintContext *ctx, const Alias *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTableFunc(FingerprintContext *ctx, const TableFunc *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintExpr(FingerprintContext *ctx, const Expr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintVar(FingerprintContext *ctx, const Var *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintConst(FingerprintContext *ctx, const Const *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintParam(FingerprintContext *ctx, const Param *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintGroupingFunc(FingerprintContext *ctx, const GroupingFunc *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSubscriptingRef(FingerprintContext *ctx, const SubscriptingRef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintNamedArgExpr(FingerprintContext *ctx, const NamedArgExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintOpExpr(FingerprintContext *ctx, const OpExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintScalarArrayOpExpr(FingerprintContext *ctx, const ScalarArrayOpExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintBoolExpr(FingerprintContext *ctx, const BoolExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSubLink(FingerprintContext *ctx, const SubLink *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSubPlan(FingerprintContext *ctx, const SubPlan *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlternativeSubPlan(FingerprintContext *ctx, const AlternativeSubPlan *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFieldSelect(FingerprintContext *ctx, const FieldSelect *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFieldStore(FingerprintContext *ctx, const FieldStore *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRelabelType(FingerprintContext *ctx, const RelabelType *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCoerceViaIO(FingerprintContext *ctx, const CoerceViaIO *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintArrayCoerceExpr(FingerprintContext *ctx, const ArrayCoerceExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintConvertRowtypeExpr(FingerprintContext *ctx, const ConvertRowtypeExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCollateExpr(FingerprintContext *ctx, const CollateExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCaseExpr(FingerprintContext *ctx, const CaseExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCaseWhen(FingerprintContext *ctx, const CaseWhen *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCaseTestExpr(FingerprintContext *ctx, const CaseTestExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintArrayExpr(FingerprintContext *ctx, const ArrayExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRowExpr(FingerprintContext *ctx, const RowExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRowCompareExpr(FingerprintContext *ctx, const RowCompareExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCoalesceExpr(FingerprintContext *ctx, const CoalesceExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintMinMaxExpr(FingerprintContext *ctx, const MinMaxExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSQLValueFunction(FingerprintContext *ctx, const SQLValueFunction *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintXmlExpr(FingerprintContext *ctx, const XmlExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCoerceToDomainValue(FingerprintContext *ctx, const CoerceToDomainValue *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSetToDefault(FingerprintContext *ctx, const SetToDefault *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCurrentOfExpr(FingerprintContext *ctx, const CurrentOfExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintNextValueExpr(FingerprintContext *ctx, const NextValueExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintInferenceElem(FingerprintContext *ctx, const InferenceElem *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTargetEntry(FingerprintContext *ctx, const TargetEntry *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTblRef(FingerprintContext *ctx, const RangeTblRef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFromExpr(FingerprintContext *ctx, const FromExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintOnConflictExpr(FingerprintContext *ctx, const OnConflictExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRawStmt(FingerprintContext *ctx, const RawStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDeleteStmt(FingerprintContext *ctx, const DeleteStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintUpdateStmt(FingerprintContext *ctx, const UpdateStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterDomainStmt(FingerprintContext *ctx, const AlterDomainStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSetOperationStmt(FingerprintContext *ctx, const SetOperationStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintGrantStmt(FingerprintContext *ctx, const GrantStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterDefaultPrivilegesStmt(FingerprintContext *ctx, const AlterDefaultPrivilegesStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintClosePortalStmt(FingerprintContext *ctx, const ClosePortalStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCopyStmt(FingerprintContext *ctx, const CopyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDefineStmt(FingerprintContext *ctx, const DefineStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropStmt(FingerprintContext *ctx, const DropStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTruncateStmt(FingerprintContext *ctx, const TruncateStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCommentStmt(FingerprintContext *ctx, const CommentStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFetchStmt(FingerprintContext *ctx, const FetchStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateFunctionStmt(FingerprintContext *ctx, const CreateFunctionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterFunctionStmt(FingerprintContext *ctx, const AlterFunctionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDoStmt(FingerprintContext *ctx, const DoStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintListenStmt(FingerprintContext *ctx, const ListenStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintUnlistenStmt(FingerprintContext *ctx, const UnlistenStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintLoadStmt(FingerprintContext *ctx, const LoadStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateDomainStmt(FingerprintContext *ctx, const CreateDomainStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreatedbStmt(FingerprintContext *ctx, const CreatedbStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropdbStmt(FingerprintContext *ctx, const DropdbStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintVacuumStmt(FingerprintContext *ctx, const VacuumStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintExplainStmt(FingerprintContext *ctx, const ExplainStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterSeqStmt(FingerprintContext *ctx, const AlterSeqStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintVariableShowStmt(FingerprintContext *ctx, const VariableShowStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDiscardStmt(FingerprintContext *ctx, const DiscardStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreatePLangStmt(FingerprintContext *ctx, const CreatePLangStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterRoleStmt(FingerprintContext *ctx, const AlterRoleStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropRoleStmt(FingerprintContext *ctx, const DropRoleStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintLockStmt(FingerprintContext *ctx, const LockStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintConstraintsSetStmt(FingerprintContext *ctx, const ConstraintsSetStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCheckPointStmt(FingerprintContext *ctx, const CheckPointStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterDatabaseStmt(FingerprintContext *ctx, const AlterDatabaseStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterDatabaseSetStmt(FingerprintContext *ctx, const AlterDatabaseSetStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateConversionStmt(FingerprintContext *ctx, const CreateConversionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateOpFamilyStmt(FingerprintContext *ctx, const CreateOpFamilyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterOpFamilyStmt(FingerprintContext *ctx, const AlterOpFamilyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPrepareStmt(FingerprintContext *ctx, const PrepareStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintExecuteStmt(FingerprintContext *ctx, const ExecuteStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDeallocateStmt(FingerprintContext *ctx, const DeallocateStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDeclareCursorStmt(FingerprintContext *ctx, const DeclareCursorStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateTableSpaceStmt(FingerprintContext *ctx, const CreateTableSpaceStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropTableSpaceStmt(FingerprintContext *ctx, const DropTableSpaceStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterObjectDependsStmt(FingerprintContext *ctx, const AlterObjectDependsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterOperatorStmt(FingerprintContext *ctx, const AlterOperatorStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTypeStmt(FingerprintContext *ctx, const AlterTypeStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropOwnedStmt(FingerprintContext *ctx, const DropOwnedStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintReassignOwnedStmt(FingerprintContext *ctx, const ReassignOwnedStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCompositeTypeStmt(FingerprintContext *ctx, const CompositeTypeStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateEnumStmt(FingerprintContext *ctx, const CreateEnumStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateRangeStmt(FingerprintContext *ctx, const CreateRangeStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterEnumStmt(FingerprintContext *ctx, const AlterEnumStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTSDictionaryStmt(FingerprintContext *ctx, const AlterTSDictionaryStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTSConfigurationStmt(FingerprintContext *ctx, const AlterTSConfigurationStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateFdwStmt(FingerprintContext *ctx, const CreateFdwStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterFdwStmt(FingerprintContext *ctx, const AlterFdwStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateForeignServerStmt(FingerprintContext *ctx, const CreateForeignServerStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterForeignServerStmt(FingerprintContext *ctx, const AlterForeignServerStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateUserMappingStmt(FingerprintContext *ctx, const CreateUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterUserMappingStmt(FingerprintContext *ctx, const AlterUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropUserMappingStmt(FingerprintContext *ctx, const DropUserMappingStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTableSpaceOptionsStmt(FingerprintContext *ctx, const AlterTableSpaceOptionsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterTableMoveAllStmt(FingerprintContext *ctx, const AlterTableMoveAllStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSecLabelStmt(FingerprintContext *ctx, const SecLabelStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateForeignTableStmt(FingerprintContext *ctx, const CreateForeignTableStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintImportForeignSchemaStmt(FingerprintContext *ctx, const ImportForeignSchemaStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateExtensionStmt(FingerprintContext *ctx, const CreateExtensionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterExtensionStmt(FingerprintContext *ctx, const AlterExtensionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterExtensionContentsStmt(FingerprintContext *ctx, const AlterExtensionContentsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateEventTrigStmt(FingerprintContext *ctx, const CreateEventTrigStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterEventTrigStmt(FingerprintContext *ctx, const AlterEventTrigStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintReplicaIdentityStmt(FingerprintContext *ctx, const ReplicaIdentityStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterSystemStmt(FingerprintContext *ctx, const AlterSystemStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreatePolicyStmt(FingerprintContext *ctx, const CreatePolicyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterPolicyStmt(FingerprintContext *ctx, const AlterPolicyStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateAmStmt(FingerprintContext *ctx, const CreateAmStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreatePublicationStmt(FingerprintContext *ctx, const CreatePublicationStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterPublicationStmt(FingerprintContext *ctx, const AlterPublicationStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateSubscriptionStmt(FingerprintContext *ctx, const CreateSubscriptionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterSubscriptionStmt(FingerprintContext *ctx, const AlterSubscriptionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDropSubscriptionStmt(FingerprintContext *ctx, const DropSubscriptionStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateStatsStmt(FingerprintContext *ctx, const CreateStatsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterCollationStmt(FingerprintContext *ctx, const AlterCollationStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCallStmt(FingerprintContext *ctx, const CallStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAlterStatsStmt(FingerprintContext *ctx, const AlterStatsStmt *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintColumnRef(FingerprintContext *ctx, const ColumnRef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintParamRef(FingerprintContext *ctx, const ParamRef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_Const(FingerprintContext *ctx, const A_Const *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_Star(FingerprintContext *ctx, const A_Star *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_Indices(FingerprintContext *ctx, const A_Indices *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_Indirection(FingerprintContext *ctx, const A_Indirection *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintA_ArrayExpr(FingerprintContext *ctx, const A_ArrayExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintResTarget(FingerprintContext *ctx, const ResTarget *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintMultiAssignRef(FingerprintContext *ctx, const MultiAssignRef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTypeCast(FingerprintContext *ctx, const TypeCast *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCollateClause(FingerprintContext *ctx, const CollateClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSortBy(FingerprintContext *ctx, const SortBy *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWindowDef(FingerprintContext *ctx, const WindowDef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeSubselect(FingerprintContext *ctx, const RangeSubselect *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeFunction(FingerprintContext *ctx, const RangeFunction *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTableSample(FingerprintContext *ctx, const RangeTableSample *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTableFunc(FingerprintContext *ctx, const RangeTableFunc *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTableFuncCol(FingerprintContext *ctx, const RangeTableFuncCol *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTypeName(FingerprintContext *ctx, const TypeName *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintIndexElem(FingerprintContext *ctx, const IndexElem *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRangeTblFunction(FingerprintContext *ctx, const RangeTblFunction *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTableSampleClause(FingerprintContext *ctx, const TableSampleClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWithCheckOption(FingerprintContext *ctx, const WithCheckOption *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSortGroupClause(FingerprintContext *ctx, const SortGroupClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintGroupingSet(FingerprintContext *ctx, const GroupingSet *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintObjectWithArgs(FingerprintContext *ctx, const ObjectWithArgs *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintAccessPriv(FingerprintContext *ctx, const AccessPriv *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintLockingClause(FingerprintContext *ctx, const LockingClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRowMarkClause(FingerprintContext *ctx, const RowMarkClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWithClause(FingerprintContext *ctx, const WithClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintInferClause(FingerprintContext *ctx, const InferClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintTriggerTransition(FingerprintContext *ctx, const TriggerTransition *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPartitionElem(FingerprintContext *ctx, const PartitionElem *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPartitionSpec(FingerprintContext *ctx, const PartitionSpec *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPartitionBoundSpec(FingerprintContext *ctx, const PartitionBoundSpec *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPartitionRangeDatum(FingerprintContext *ctx, const PartitionRangeDatum *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintPartitionCmd(FingerprintContext *ctx, const PartitionCmd *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintVacuumRelation(FingerprintContext *ctx, const VacuumRelation *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintInlineCodeBlock(FingerprintContext *ctx, const InlineCodeBlock *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintCallContext(FingerprintContext *ctx, const CallContext *node, const void *parent, const char *field_name, unsigned int depth);
+
+
 static void
 _fingerprintAlias(FingerprintContext *ctx, const Alias *node, const void *parent, const char *field_name, unsigned int depth)
 {
@@ -15,7 +236,7 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -2482,7 +2703,7 @@ _fingerprintJoinExpr(FingerprintContext *ctx, const JoinExpr *node, const void *
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -2774,7 +2995,7 @@ _fingerprintIntoClause(FingerprintContext *ctx, const IntoClause *node, const vo
     _fingerprintString(ctx, "rel");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->rel, node, "rel", depth + 1);
+    _fingerprintRangeVar(ctx, node->rel, node, "rel", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3001,7 +3222,7 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintString(ctx, "jointree");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->jointree, node, "jointree", depth + 1);
+    _fingerprintFromExpr(ctx, node->jointree, node, "jointree", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3057,7 +3278,7 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     _fingerprintString(ctx, "onConflict");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->onConflict, node, "onConflict", depth + 1);
+    _fingerprintOnConflictExpr(ctx, node->onConflict, node, "onConflict", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3279,7 +3500,7 @@ _fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const vo
     _fingerprintString(ctx, "onConflictClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->onConflictClause, node, "onConflictClause", depth + 1);
+    _fingerprintOnConflictClause(ctx, node->onConflictClause, node, "onConflictClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3301,7 +3522,7 @@ _fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const vo
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3351,7 +3572,7 @@ _fingerprintInsertStmt(FingerprintContext *ctx, const InsertStmt *node, const vo
     _fingerprintString(ctx, "withClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->withClause, node, "withClause", depth + 1);
+    _fingerprintWithClause(ctx, node->withClause, node, "withClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3373,7 +3594,7 @@ _fingerprintDeleteStmt(FingerprintContext *ctx, const DeleteStmt *node, const vo
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3439,7 +3660,7 @@ _fingerprintDeleteStmt(FingerprintContext *ctx, const DeleteStmt *node, const vo
     _fingerprintString(ctx, "withClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->withClause, node, "withClause", depth + 1);
+    _fingerprintWithClause(ctx, node->withClause, node, "withClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3477,7 +3698,7 @@ _fingerprintUpdateStmt(FingerprintContext *ctx, const UpdateStmt *node, const vo
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3543,7 +3764,7 @@ _fingerprintUpdateStmt(FingerprintContext *ctx, const UpdateStmt *node, const vo
     _fingerprintString(ctx, "withClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->withClause, node, "withClause", depth + 1);
+    _fingerprintWithClause(ctx, node->withClause, node, "withClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3635,7 +3856,7 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintString(ctx, "intoClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->intoClause, node, "intoClause", depth + 1);
+    _fingerprintIntoClause(ctx, node->intoClause, node, "intoClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3652,7 +3873,7 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintString(ctx, "larg");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->larg, node, "larg", depth + 1);
+    _fingerprintSelectStmt(ctx, node->larg, node, "larg", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3729,7 +3950,7 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintString(ctx, "rarg");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->rarg, node, "rarg", depth + 1);
+    _fingerprintSelectStmt(ctx, node->rarg, node, "rarg", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3827,7 +4048,7 @@ _fingerprintSelectStmt(FingerprintContext *ctx, const SelectStmt *node, const vo
     _fingerprintString(ctx, "withClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->withClause, node, "withClause", depth + 1);
+    _fingerprintWithClause(ctx, node->withClause, node, "withClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3870,7 +4091,7 @@ _fingerprintAlterTableStmt(FingerprintContext *ctx, const AlterTableStmt *node, 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -3929,7 +4150,7 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
     _fingerprintString(ctx, "newowner");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->newowner, node, "newowner", depth + 1);
+    _fingerprintRoleSpec(ctx, node->newowner, node, "newowner", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4255,7 +4476,7 @@ _fingerprintGrantRoleStmt(FingerprintContext *ctx, const GrantRoleStmt *node, co
     _fingerprintString(ctx, "grantor");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->grantor, node, "grantor", depth + 1);
+    _fingerprintRoleSpec(ctx, node->grantor, node, "grantor", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4282,7 +4503,7 @@ _fingerprintAlterDefaultPrivilegesStmt(FingerprintContext *ctx, const AlterDefau
     _fingerprintString(ctx, "action");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->action, node, "action", depth + 1);
+    _fingerprintGrantStmt(ctx, node->action, node, "action", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4339,7 +4560,7 @@ _fingerprintClusterStmt(FingerprintContext *ctx, const ClusterStmt *node, const 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4425,7 +4646,7 @@ _fingerprintCopyStmt(FingerprintContext *ctx, const CopyStmt *node, const void *
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4506,7 +4727,7 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
     _fingerprintString(ctx, "ofTypename");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->ofTypename, node, "ofTypename", depth + 1);
+    _fingerprintTypeName(ctx, node->ofTypename, node, "ofTypename", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4544,7 +4765,7 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
     _fingerprintString(ctx, "partbound");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->partbound, node, "partbound", depth + 1);
+    _fingerprintPartitionBoundSpec(ctx, node->partbound, node, "partbound", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4561,7 +4782,7 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
     _fingerprintString(ctx, "partspec");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->partspec, node, "partspec", depth + 1);
+    _fingerprintPartitionSpec(ctx, node->partspec, node, "partspec", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4578,7 +4799,7 @@ _fingerprintCreateStmt(FingerprintContext *ctx, const CreateStmt *node, const vo
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -4959,7 +5180,7 @@ _fingerprintIndexStmt(FingerprintContext *ctx, const IndexStmt *node, const void
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5076,7 +5297,7 @@ _fingerprintCreateFunctionStmt(FingerprintContext *ctx, const CreateFunctionStmt
     _fingerprintString(ctx, "returnType");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->returnType, node, "returnType", depth + 1);
+    _fingerprintTypeName(ctx, node->returnType, node, "returnType", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5114,7 +5335,7 @@ _fingerprintAlterFunctionStmt(FingerprintContext *ctx, const AlterFunctionStmt *
     _fingerprintString(ctx, "func");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->func, node, "func", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->func, node, "func", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5194,7 +5415,7 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5257,7 +5478,7 @@ _fingerprintRuleStmt(FingerprintContext *ctx, const RuleStmt *node, const void *
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5416,7 +5637,7 @@ _fingerprintViewStmt(FingerprintContext *ctx, const ViewStmt *node, const void *
     _fingerprintString(ctx, "view");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->view, node, "view", depth + 1);
+    _fingerprintRangeVar(ctx, node->view, node, "view", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5453,7 +5674,7 @@ _fingerprintCreateDomainStmt(FingerprintContext *ctx, const CreateDomainStmt *no
     _fingerprintString(ctx, "collClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->collClause, node, "collClause", depth + 1);
+    _fingerprintCollateClause(ctx, node->collClause, node, "collClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5502,7 +5723,7 @@ _fingerprintCreateDomainStmt(FingerprintContext *ctx, const CreateDomainStmt *no
     _fingerprintString(ctx, "typeName");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typeName, node, "typeName", depth + 1);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5666,7 +5887,7 @@ _fingerprintCreateTableAsStmt(FingerprintContext *ctx, const CreateTableAsStmt *
     _fingerprintString(ctx, "into");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->into, node, "into", depth + 1);
+    _fingerprintIntoClause(ctx, node->into, node, "into", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5748,7 +5969,7 @@ _fingerprintCreateSeqStmt(FingerprintContext *ctx, const CreateSeqStmt *node, co
     _fingerprintString(ctx, "sequence");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->sequence, node, "sequence", depth + 1);
+    _fingerprintRangeVar(ctx, node->sequence, node, "sequence", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5796,7 +6017,7 @@ _fingerprintAlterSeqStmt(FingerprintContext *ctx, const AlterSeqStmt *node, cons
     _fingerprintString(ctx, "sequence");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->sequence, node, "sequence", depth + 1);
+    _fingerprintRangeVar(ctx, node->sequence, node, "sequence", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5906,7 +6127,7 @@ _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, 
     _fingerprintString(ctx, "constrrel");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->constrrel, node, "constrrel", depth + 1);
+    _fingerprintRangeVar(ctx, node->constrrel, node, "constrrel", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -5961,7 +6182,7 @@ _fingerprintCreateTrigStmt(FingerprintContext *ctx, const CreateTrigStmt *node, 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6155,7 +6376,7 @@ _fingerprintAlterRoleStmt(FingerprintContext *ctx, const AlterRoleStmt *node, co
     _fingerprintString(ctx, "role");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->role, node, "role", depth + 1);
+    _fingerprintRoleSpec(ctx, node->role, node, "role", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6284,7 +6505,7 @@ _fingerprintReindexStmt(FingerprintContext *ctx, const ReindexStmt *node, const 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6311,7 +6532,7 @@ _fingerprintCreateSchemaStmt(FingerprintContext *ctx, const CreateSchemaStmt *no
     _fingerprintString(ctx, "authrole");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->authrole, node, "authrole", depth + 1);
+    _fingerprintRoleSpec(ctx, node->authrole, node, "authrole", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6390,7 +6611,7 @@ _fingerprintAlterDatabaseSetStmt(FingerprintContext *ctx, const AlterDatabaseSet
     _fingerprintString(ctx, "setstmt");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->setstmt, node, "setstmt", depth + 1);
+    _fingerprintVariableSetStmt(ctx, node->setstmt, node, "setstmt", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6417,7 +6638,7 @@ _fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *no
     _fingerprintString(ctx, "role");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->role, node, "role", depth + 1);
+    _fingerprintRoleSpec(ctx, node->role, node, "role", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6434,7 +6655,7 @@ _fingerprintAlterRoleSetStmt(FingerprintContext *ctx, const AlterRoleSetStmt *no
     _fingerprintString(ctx, "setstmt");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->setstmt, node, "setstmt", depth + 1);
+    _fingerprintVariableSetStmt(ctx, node->setstmt, node, "setstmt", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6513,7 +6734,7 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
     _fingerprintString(ctx, "func");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->func, node, "func", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->func, node, "func", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6535,7 +6756,7 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
     _fingerprintString(ctx, "sourcetype");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->sourcetype, node, "sourcetype", depth + 1);
+    _fingerprintTypeName(ctx, node->sourcetype, node, "sourcetype", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6552,7 +6773,7 @@ _fingerprintCreateCastStmt(FingerprintContext *ctx, const CreateCastStmt *node, 
     _fingerprintString(ctx, "targettype");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->targettype, node, "targettype", depth + 1);
+    _fingerprintTypeName(ctx, node->targettype, node, "targettype", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6579,7 +6800,7 @@ _fingerprintCreateOpClassStmt(FingerprintContext *ctx, const CreateOpClassStmt *
     _fingerprintString(ctx, "datatype");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->datatype, node, "datatype", depth + 1);
+    _fingerprintTypeName(ctx, node->datatype, node, "datatype", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6846,7 +7067,7 @@ _fingerprintCreateTableSpaceStmt(FingerprintContext *ctx, const CreateTableSpace
     _fingerprintString(ctx, "owner");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->owner, node, "owner", depth + 1);
+    _fingerprintRoleSpec(ctx, node->owner, node, "owner", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6927,7 +7148,7 @@ _fingerprintAlterObjectDependsStmt(FingerprintContext *ctx, const AlterObjectDep
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -6986,7 +7207,7 @@ _fingerprintAlterObjectSchemaStmt(FingerprintContext *ctx, const AlterObjectSche
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7008,7 +7229,7 @@ _fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, 
     _fingerprintString(ctx, "newowner");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->newowner, node, "newowner", depth + 1);
+    _fingerprintRoleSpec(ctx, node->newowner, node, "newowner", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7047,7 +7268,7 @@ _fingerprintAlterOwnerStmt(FingerprintContext *ctx, const AlterOwnerStmt *node, 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7069,7 +7290,7 @@ _fingerprintAlterOperatorStmt(FingerprintContext *ctx, const AlterOperatorStmt *
     _fingerprintString(ctx, "opername");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->opername, node, "opername", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->opername, node, "opername", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7170,7 +7391,7 @@ _fingerprintReassignOwnedStmt(FingerprintContext *ctx, const ReassignOwnedStmt *
     _fingerprintString(ctx, "newrole");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->newrole, node, "newrole", depth + 1);
+    _fingerprintRoleSpec(ctx, node->newrole, node, "newrole", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7224,7 +7445,7 @@ _fingerprintCompositeTypeStmt(FingerprintContext *ctx, const CompositeTypeStmt *
     _fingerprintString(ctx, "typevar");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typevar, node, "typevar", depth + 1);
+    _fingerprintRangeVar(ctx, node->typevar, node, "typevar", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7668,7 +7889,7 @@ _fingerprintCreateUserMappingStmt(FingerprintContext *ctx, const CreateUserMappi
     _fingerprintString(ctx, "user");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->user, node, "user", depth + 1);
+    _fingerprintRoleSpec(ctx, node->user, node, "user", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7711,7 +7932,7 @@ _fingerprintAlterUserMappingStmt(FingerprintContext *ctx, const AlterUserMapping
     _fingerprintString(ctx, "user");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->user, node, "user", depth + 1);
+    _fingerprintRoleSpec(ctx, node->user, node, "user", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7743,7 +7964,7 @@ _fingerprintDropUserMappingStmt(FingerprintContext *ctx, const DropUserMappingSt
     _fingerprintString(ctx, "user");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->user, node, "user", depth + 1);
+    _fingerprintRoleSpec(ctx, node->user, node, "user", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8123,7 +8344,7 @@ _fingerprintRefreshMatViewStmt(FingerprintContext *ctx, const RefreshMatViewStmt
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8166,7 +8387,7 @@ _fingerprintAlterSystemStmt(FingerprintContext *ctx, const AlterSystemStmt *node
     _fingerprintString(ctx, "setstmt");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->setstmt, node, "setstmt", depth + 1);
+    _fingerprintVariableSetStmt(ctx, node->setstmt, node, "setstmt", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8236,7 +8457,7 @@ _fingerprintCreatePolicyStmt(FingerprintContext *ctx, const CreatePolicyStmt *no
     _fingerprintString(ctx, "table");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->table, node, "table", depth + 1);
+    _fingerprintRangeVar(ctx, node->table, node, "table", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8313,7 +8534,7 @@ _fingerprintAlterPolicyStmt(FingerprintContext *ctx, const AlterPolicyStmt *node
     _fingerprintString(ctx, "table");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->table, node, "table", depth + 1);
+    _fingerprintRangeVar(ctx, node->table, node, "table", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8352,7 +8573,7 @@ _fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformSt
     _fingerprintString(ctx, "fromsql");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->fromsql, node, "fromsql", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->fromsql, node, "fromsql", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8379,7 +8600,7 @@ _fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformSt
     _fingerprintString(ctx, "tosql");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->tosql, node, "tosql", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->tosql, node, "tosql", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8396,7 +8617,7 @@ _fingerprintCreateTransformStmt(FingerprintContext *ctx, const CreateTransformSt
     _fingerprintString(ctx, "type_name");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->type_name, node, "type_name", depth + 1);
+    _fingerprintTypeName(ctx, node->type_name, node, "type_name", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8768,7 +8989,7 @@ _fingerprintCallStmt(FingerprintContext *ctx, const CallStmt *node, const void *
     _fingerprintString(ctx, "funccall");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->funccall, node, "funccall", depth + 1);
+    _fingerprintFuncCall(ctx, node->funccall, node, "funccall", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -8785,7 +9006,7 @@ _fingerprintCallStmt(FingerprintContext *ctx, const CallStmt *node, const void *
     _fingerprintString(ctx, "funcexpr");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->funcexpr, node, "funcexpr", depth + 1);
+    _fingerprintFuncExpr(ctx, node->funcexpr, node, "funcexpr", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9027,7 +9248,7 @@ _fingerprintFuncCall(FingerprintContext *ctx, const FuncCall *node, const void *
     _fingerprintString(ctx, "over");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->over, node, "over", depth + 1);
+    _fingerprintWindowDef(ctx, node->over, node, "over", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9259,7 +9480,7 @@ _fingerprintTypeCast(FingerprintContext *ctx, const TypeCast *node, const void *
     _fingerprintString(ctx, "typeName");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typeName, node, "typeName", depth + 1);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9461,7 +9682,7 @@ _fingerprintRangeSubselect(FingerprintContext *ctx, const RangeSubselect *node, 
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9505,7 +9726,7 @@ _fingerprintRangeFunction(FingerprintContext *ctx, const RangeFunction *node, co
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9647,7 +9868,7 @@ _fingerprintRangeTableFunc(FingerprintContext *ctx, const RangeTableFunc *node, 
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9793,7 +10014,7 @@ _fingerprintRangeTableFuncCol(FingerprintContext *ctx, const RangeTableFuncCol *
     _fingerprintString(ctx, "typeName");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typeName, node, "typeName", depth + 1);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9894,7 +10115,7 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
     _fingerprintString(ctx, "collClause");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->collClause, node, "collClause", depth + 1);
+    _fingerprintCollateClause(ctx, node->collClause, node, "collClause", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -9984,7 +10205,7 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
     _fingerprintString(ctx, "identitySequence");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->identitySequence, node, "identitySequence", depth + 1);
+    _fingerprintRangeVar(ctx, node->identitySequence, node, "identitySequence", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10048,7 +10269,7 @@ _fingerprintColumnDef(FingerprintContext *ctx, const ColumnDef *node, const void
     _fingerprintString(ctx, "typeName");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typeName, node, "typeName", depth + 1);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10355,7 +10576,7 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
     _fingerprintString(ctx, "pktable");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->pktable, node, "pktable", depth + 1);
+    _fingerprintRangeVar(ctx, node->pktable, node, "pktable", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10460,7 +10681,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, "alias");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->alias, node, "alias", depth + 1);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10556,7 +10777,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, "eref");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->eref, node, "eref", depth + 1);
+    _fingerprintAlias(ctx, node->eref, node, "eref", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10772,7 +10993,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, "subquery");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->subquery, node, "subquery", depth + 1);
+    _fingerprintQuery(ctx, node->subquery, node, "subquery", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10789,7 +11010,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, "tablefunc");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->tablefunc, node, "tablefunc", depth + 1);
+    _fingerprintTableFunc(ctx, node->tablefunc, node, "tablefunc", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -10806,7 +11027,7 @@ _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, co
     _fingerprintString(ctx, "tablesample");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->tablesample, node, "tablesample", depth + 1);
+    _fingerprintTableSampleClause(ctx, node->tablesample, node, "tablesample", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11340,7 +11561,7 @@ _fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *
     _fingerprintString(ctx, "name");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->name, node, "name", depth + 1);
+    _fingerprintObjectWithArgs(ctx, node->name, node, "name", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11380,7 +11601,7 @@ _fingerprintCreateOpClassItem(FingerprintContext *ctx, const CreateOpClassItem *
     _fingerprintString(ctx, "storedtype");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->storedtype, node, "storedtype", depth + 1);
+    _fingerprintTypeName(ctx, node->storedtype, node, "storedtype", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11409,7 +11630,7 @@ _fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11431,7 +11652,7 @@ _fingerprintFunctionParameter(FingerprintContext *ctx, const FunctionParameter *
     _fingerprintString(ctx, "argType");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->argType, node, "argType", depth + 1);
+    _fingerprintTypeName(ctx, node->argType, node, "argType", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11557,7 +11778,7 @@ _fingerprintXmlSerialize(FingerprintContext *ctx, const XmlSerialize *node, cons
     _fingerprintString(ctx, "typeName");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->typeName, node, "typeName", depth + 1);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -11662,7 +11883,7 @@ _fingerprintOnConflictClause(FingerprintContext *ctx, const OnConflictClause *no
     _fingerprintString(ctx, "infer");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->infer, node, "infer", depth + 1);
+    _fingerprintInferClause(ctx, node->infer, node, "infer", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -12080,7 +12301,7 @@ _fingerprintPartitionCmd(FingerprintContext *ctx, const PartitionCmd *node, cons
     _fingerprintString(ctx, "bound");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->bound, node, "bound", depth + 1);
+    _fingerprintPartitionBoundSpec(ctx, node->bound, node, "bound", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -12097,7 +12318,7 @@ _fingerprintPartitionCmd(FingerprintContext *ctx, const PartitionCmd *node, cons
     _fingerprintString(ctx, "name");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->name, node, "name", depth + 1);
+    _fingerprintRangeVar(ctx, node->name, node, "name", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -12126,7 +12347,7 @@ _fingerprintVacuumRelation(FingerprintContext *ctx, const VacuumRelation *node, 
     _fingerprintString(ctx, "relation");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->relation, node, "relation", depth + 1);
+    _fingerprintRangeVar(ctx, node->relation, node, "relation", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)

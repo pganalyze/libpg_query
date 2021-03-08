@@ -96,6 +96,26 @@ class Generator
 
   EOL
 
+  FINGERPRINT_SPECIFIC_NODE_PTR = <<-EOL
+  if (node->%<name>s != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "%<name>s");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprint%<typename>s(ctx, node->%<name>s, node, "%<name>s", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  EOL
+
   FINGERPRINT_LIST = <<-EOL
   if (node->%<name>s != NULL && node->%<name>s->length > 0) {
     XXH3_state_t* prev = XXH3_createState();
@@ -297,7 +317,9 @@ class Generator
               fingerprint_def += format(FINGERPRINT_FLOAT, name: name)
             else
               if field_type.end_with?('*') && @nodetypes.include?(field_type[0..-2])
-                fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
+                typename = field_type[0..-2]
+                typename = 'Node' if typename == 'Value'
+                fingerprint_def += format(FINGERPRINT_SPECIFIC_NODE_PTR, name: name, typename: typename)
               elsif @all_known_enums.include?(field_type)
                 fingerprint_def += format(FINGERPRINT_ENUM, name: name, typename: field_type)
               else
@@ -321,6 +343,13 @@ class Generator
 
     defs = ''
     conds = ''
+
+    @nodetypes.each do |type|
+      fingerprint_def = @fingerprint_defs[type]
+      next unless fingerprint_def
+      defs += format("static void _fingerprint%s(FingerprintContext *ctx, const %s *node, const void *parent, const char *field_name, unsigned int depth);\n", type, type)
+    end
+    defs += "\n\n"
 
     @nodetypes.each do |type|
       # next if IGNORE_LIST.include?(type)
