@@ -122,6 +122,9 @@ extract_source: $(PGDIR)
 	# Avoid problems with static asserts
 	echo "#undef StaticAssertDecl" >> ./src/postgres/include/c.h
 	echo "#define StaticAssertDecl(condition, errmessage)" >> ./src/postgres/include/c.h
+	# Avoid dependency on execinfo (requires extra library on musl-libc based systems)
+	echo "#undef HAVE_EXECINFO_H" >> ./src/postgres/include/pg_config.h
+	echo "#undef HAVE_BACKTRACE_SYMBOLS" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
