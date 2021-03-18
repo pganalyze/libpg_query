@@ -229,15 +229,15 @@ For stability, it is recommended you use individual tagged git versions, see CHA
 
 Each major version is maintained in a dedicated git branch. Only the latest Postgres stable release receives active updates.
 
-| PostgreSQL Major Version | Branch    | Status              |
-|--------------------------|-----------|---------------------|
-| 13                       | 13-latest | Active development  |
-| 12                       | (n/a)     | Not supported       |
-| 11                       | (n/a)     | Not supported       |
-| 10                       | 10-latest | Critical fixes only |
-| 9.6                      | (n/a)     | Not supported       |
-| 9.5                      | (n/a)     | Not supported       |
-| 9.4                      | master    | End Of Life         |
+| PostgreSQL Major Version | Branch     | Status              |
+|--------------------------|------------|---------------------|
+| 13                       | 13-latest  | Active development  |
+| 12                       | (n/a)      | Not supported       |
+| 11                       | (n/a)      | Not supported       |
+| 10                       | 10-latest  | Critical fixes only |
+| 9.6                      | (n/a)      | Not supported       |
+| 9.5                      | (n/a)      | Not supported       |
+| 9.4                      | 9-4-latest | End Of Life         |
 
 ## Resources
 
