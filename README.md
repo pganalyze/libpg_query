@@ -236,8 +236,8 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 | 11                       | (n/a)      | Not supported       |
 | 10                       | 10-latest  | Critical fixes only |
 | 9.6                      | (n/a)      | Not supported       |
-| 9.5                      | (n/a)      | Not supported       |
-| 9.4                      | 9-4-latest | End Of Life         |
+| 9.5                      | 9.5-latest | No longer supported |
+| 9.4                      | 9.4-latest | No longer supported |
 
 ## Resources
 
