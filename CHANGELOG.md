@@ -2,7 +2,66 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
-## 10-1.0.5
+## 13-2.0.0   2021-03-18
+
+* Update to PostgreSQL 13 parser (13.2 release)
+* Changes to JSON output format
+  - WARNING: These JSON format changes are incompatible with prior releases.
+  - New top-level result object that contains the Postgres version number the
+    parser is based on
+  - Node type names are only output when the field is a generic field (Node*),
+    but not when the field always has the same type. This matches how the
+    Postgres source looks like, and ensures the JSON and (new) Protobuf format
+    match in their structure. You can utilize the `srcdata/struct_defs.json`
+    file as needed to get the necessary context on field types.
+  - Whitespace between control characters in JSON is no longer added
+  - "<" and ">" characters are escaped to avoid browser HTML injections
+  - Enum values are output with the value's name, instead of the integer value
+* Introduce new Protobuf parse tree output format
+  - Up until now, this library relied on JSON to pass the parse result back
+    to the caller, which has a number of downsides, most importantly that
+    we don't have a readily available parser for JSON thats not tied to a
+    running Postgres server. That in turn makes it hard to provide
+    cross-language features such as deparsing directly in this library
+    (which would require reading back a parse tree that gets passed in).
+  - Protobuf isn't perfect, but its straightforward enough to generate the
+    schema definitions for the parse tree nodes, and output the tree using
+    a bundled C protobuf library, which has a small enough SLOC count (~3k)
+    to not be noticeable in the big picture.
+* Add support for returning Postgres scanner result
+  - This allows utilizing pg_query for use cases that need the raw token
+    information, instead of a parse tree. Due to additional modifications
+    to the Postgres source, this also contains information about comments
+    in the query string, and their location.
+* Add deparsing functionality that turns parse tree back into a SQL query
+  - This is based on the deparser that was written over multiple years for
+    the pg_query Ruby library, and is now accessible for all bindings through
+    this new API and implementation.
+* Fingerprinting: Introduce v3 version and 64-bit XXH3 hash
+  - See full details in the wiki page here: https://github.com/lfittl/libpg_query/wiki/Fingerprinting#version-30-based-on-postgresql-13
+* Add new pg_query_split_with_scanner/pg_query_split_with_parser functions to
+  split up multi-statement strings
+  - Naively one could assume that splitting a string by ";" is sufficient,
+    but it becomes tricky once one takes into consideration that this
+    character can also show up in identifier, constants or comments.
+  - We provide both a parser-based split function and a scanner-based split
+    function. Most importantly when splitting statements in a file that may
+    contain syntax errors that cause a parser error, but are accepted by the
+    scanner. Otherwise the parser-based split function is recommended
+    due to better accuracy.
+* Add experimental Protobuf C++ outfuncs, converge JSON output to match Protobuf
+  mapped output
+* Extract source with USE_ASSERT_CHECKING enabled
+  - This ensures we have the necessary functions to compile an
+    assert-enabled build if necessary. Note that this doesn't mean that
+    asserts are enabled by default (they are not, you need to explicitly
+    use DEBUG=1).
+* Ensure codebase has a clean Valgrind run
+* PL/pgSQL: Output NEW/OLD variable numbers, record dno fields [Ethan Resnick](https://github.com/ethanresnick)
+* Makefile: Allow passing in customized CFLAGS/PG_CONFIGURE_FLAGS/TEST_* [Ethan Resnick](https://github.com/ethanresnick)
+
+
+## 10-1.0.5   2021-02-17
 
 * Update to latest Postgres 10 patch release (10.16)
 * Free Postgres top-level memory context on thread exit / with function
@@ -17,13 +76,13 @@ All versions are tagged by the major Postgres version, plus an individual semver
 * Add arch-ppc.h for PPC architectures [#80](https://github.com/lfittl/libpg_query/pull/80) [@pkubaj](https://github.com/pkubaj)
 
 
-## 10-1.0.4
+## 10-1.0.4   2020-12-27
 
 * Update to latest Postgres 10 patch release (10.15)
 * PL/pgSQL parsing: Handle asprintf failures (and prevent compiler warning)
 
 
-## 10-1.0.3
+## 10-1.0.3   2020-11-07
 
 * Update to latest Postgres 10 patch release (10.14)
 * Add support for ARM builds by explicitly copying ARM header file
@@ -31,7 +90,7 @@ All versions are tagged by the major Postgres version, plus an individual semver
 * Free stderr_buffer when parsing plpgsql [@herwinw](https://github.com/herwinw)
 
 
-## 10-1.0.2
+## 10-1.0.2   2018-05-18
 
 * Avoid compiler warning due to unused result in pg_query_parse_plpgsql
 
