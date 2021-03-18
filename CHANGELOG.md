@@ -38,7 +38,7 @@ All versions are tagged by the major Postgres version, plus an individual semver
     the pg_query Ruby library, and is now accessible for all bindings through
     this new API and implementation.
 * Fingerprinting: Introduce v3 version and 64-bit XXH3 hash
-  - See full details in the wiki page here: https://github.com/lfittl/libpg_query/wiki/Fingerprinting#version-30-based-on-postgresql-13
+  - See full details in the wiki page here: https://github.com/pganalyze/libpg_query/wiki/Fingerprinting#version-30-based-on-postgresql-13
 * Add new pg_query_split_with_scanner/pg_query_split_with_parser functions to
   split up multi-statement strings
   - Naively one could assume that splitting a string by ";" is sufficient,
@@ -73,7 +73,7 @@ All versions are tagged by the major Postgres version, plus an individual semver
     to this library). In addition, primarily for memory testing purposes, add a
     new method "pg_query_exit" that performs the same cleanup on demand.
 * Resolve correctness issues and possible memory leak in PL/pgSQL parser
-* Add arch-ppc.h for PPC architectures [#80](https://github.com/lfittl/libpg_query/pull/80) [@pkubaj](https://github.com/pkubaj)
+* Add arch-ppc.h for PPC architectures [#80](https://github.com/pganalyze/libpg_query/pull/80) [@pkubaj](https://github.com/pkubaj)
 
 
 ## 10-1.0.4   2020-12-27
@@ -175,7 +175,7 @@ All versions are tagged by the major Postgres version, plus an individual semver
   * Only ignore ResTarget.name when parent field name is targetList *and*
     we have a SelectStmt as a parent node (fixes UpdateStmt fingerprinting)
 * Normalize the password in ALTER ROLE ... PASSWORD '123' statements
-* Make library thread-safe through thread-local storage [#13](https://github.com/lfittl/libpg_query/issues/13)
+* Make library thread-safe through thread-local storage [#13](https://github.com/pganalyze/libpg_query/issues/13)
 
 
 ## 9.5-1.3.0    2016-05-31
@@ -188,12 +188,12 @@ All versions are tagged by the major Postgres version, plus an individual semver
 
 ## 9.5-1.2.1    2016-05-17
 
-* Make sure we encode special characters correctly in JSON output ([@zhm](https://github.com/zhm) [#11](https://github.com/lfittl/libpg_query/pull/11))
+* Make sure we encode special characters correctly in JSON output ([@zhm](https://github.com/zhm) [#11](https://github.com/pganalyze/libpg_query/pull/11))
 
 
 ## 9.5-1.2.0    2016-05-16
 
-* Fix stack overflow when parsing CREATE FOREIGN TABLE ([#9](https://github.com/lfittl/libpg_query/issues/9))
+* Fix stack overflow when parsing CREATE FOREIGN TABLE ([#9](https://github.com/pganalyze/libpg_query/issues/9))
 * Update to PostgreSQL 9.5.3
 
 

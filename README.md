@@ -4,7 +4,7 @@ C library for accessing the PostgreSQL parser outside of the server.
 
 This library uses the actual PostgreSQL server source to parse SQL queries and return the internal PostgreSQL parse tree.
 
-Note that this is mostly intended as a base library for [pg_query](https://github.com/lfittl/pg_query) (Ruby), [pg_query.go](https://github.com/lfittl/pg_query.go) (Go), [pg-query-parser](https://github.com/zhm/pg-query-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
+Note that this is mostly intended as a base library for [pg_query](https://github.com/pganalyze/pg_query) (Ruby), [pg_query.go](https://github.com/pganalyze/pg_query_go) (Go), [pg-query-parser](https://github.com/zhm/pg-query-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
 
 You can find further background to why a query's parse tree is useful here: https://pganalyze.com/blog/parse-postgresql-queries-in-ruby.html
 
@@ -12,7 +12,7 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```sh
-git clone -b 13-latest git://github.com/lfittl/libpg_query
+git clone -b 13-latest git://github.com/pganalyze/libpg_query
 cd libpg_query
 make
 ```
@@ -24,7 +24,7 @@ For a production build, its best to use a specific git tag (see CHANGELOG).
 
 ## Usage: Parsing a query
 
-A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple.c) that parses a query looks like this:
+A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple.c) that parses a query looks like this:
 
 ```c
 #include <pg_query.h>
@@ -177,11 +177,11 @@ This will output:
 50fde20626009aba
 ```
 
-See https://github.com/lfittl/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
+See https://github.com/pganalyze/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
 ## Usage: Parsing a PL/pgSQL function (Experimental)
 
-A [full example](https://github.com/lfittl/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
+A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
 
 ```c
 #include <pg_query.h>
@@ -243,10 +243,10 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 
 pg_query wrappers in other languages:
 
-* Ruby: [pg_query](https://github.com/lfittl/pg_query)
-* Go: [pg_query_go](https://github.com/lfittl/pg_query_go)
+* Ruby: [pg_query](https://github.com/pganalyze/pg_query)
+* Go: [pg_query_go](https://github.com/pganalyze/pg_query_go)
 * Javascript (Node): [pgsql-parser](https://github.com/pyramation/pgsql-parser)
-* Javascript (Browser): [pg-query-emscripten](https://github.com/lfittl/pg-query-emscripten)
+* Javascript (Browser): [pg-query-emscripten](https://github.com/pganalyze/pg-query-emscripten)
 * Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
 
@@ -262,7 +262,7 @@ Products, tools and libraries built on pg_query:
 * [DuckDB](https://github.com/cwida/duckdb) ([details](https://github.com/cwida/duckdb/tree/master/third_party/libpg_query))
 * and more
 
-Please feel free to [open a PR](https://github.com/lfittl/libpg_query/pull/new/master) to add yours! :)
+Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/new/master) to add yours! :)
 
 
 ## Authors
