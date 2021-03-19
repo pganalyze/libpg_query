@@ -4,7 +4,7 @@ C library for accessing the PostgreSQL parser outside of the server.
 
 This library uses the actual PostgreSQL server source to parse SQL queries and return the internal PostgreSQL parse tree.
 
-Note that this is mostly intended as a base library for [pg_query](https://github.com/pganalyze/pg_query) (Ruby), [pg_query.go](https://github.com/pganalyze/pg_query_go) (Go), [pg-query-parser](https://github.com/zhm/pg-query-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
+Note that this is mostly intended as a base library for [pg_query](https://github.com/pganalyze/pg_query) (Ruby), [pg_query.go](https://github.com/pganalyze/pg_query_go) (Go), [pgsql-parser](https://github.com/pyramation/pgsql-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
 
 You can find further background to why a query's parse tree is useful here: https://pganalyze.com/blog/parse-postgresql-queries-in-ruby.html
 
