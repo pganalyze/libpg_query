@@ -4018,23 +4018,25 @@ static void deparseTableLikeClause(StringInfo str, TableLikeClause *table_like_c
 
 	if (table_like_clause->options == CREATE_TABLE_LIKE_ALL)
 		appendStringInfoString(str, "INCLUDING ALL ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_COMMENTS)
+        else
+        {
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_COMMENTS)
 		appendStringInfoString(str, "INCLUDING COMMENTS ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_CONSTRAINTS)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_CONSTRAINTS)
 		appendStringInfoString(str, "INCLUDING CONSTRAINTS ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_DEFAULTS)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_DEFAULTS)
 		appendStringInfoString(str, "INCLUDING DEFAULTS ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_IDENTITY)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_IDENTITY)
 		appendStringInfoString(str, "INCLUDING IDENTITY ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_GENERATED)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_GENERATED)
 		appendStringInfoString(str, "INCLUDING GENERATED ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_INDEXES)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_INDEXES)
 		appendStringInfoString(str, "INCLUDING INDEXES ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_STATISTICS)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_STATISTICS)
 		appendStringInfoString(str, "INCLUDING STATISTICS ");
-	if (table_like_clause->options & CREATE_TABLE_LIKE_STORAGE)
+	    if (table_like_clause->options & CREATE_TABLE_LIKE_STORAGE)
 		appendStringInfoString(str, "INCLUDING STORAGE ");
-
+	}
 	removeTrailingSpace(str);
 }
 
