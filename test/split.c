@@ -1,9 +1,9 @@
+// Ensure we have asprintf's definition on glibc-based platforms to avoid compiler warnings
+#define _GNU_SOURCE
+#include <stdio.h>
+
 #include <pg_query.h>
 
-// For asprintf
-#define _GNU_SOURCE
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
