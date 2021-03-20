@@ -1,3 +1,7 @@
+// Ensure we have asprintf's definition on glibc-based platforms to avoid compiler warnings
+#define _GNU_SOURCE
+#include <stdio.h>
+
 #include "pg_query.h"
 #include "pg_query_internal.h"
 #include "pg_query_fingerprint.h"
@@ -13,7 +17,6 @@
 #include "nodes/parsenodes.h"
 #include "nodes/value.h"
 
-#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 
