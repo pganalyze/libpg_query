@@ -379,7 +379,8 @@ const char* tests[] = {
   "ALTER SYSTEM SET fsync TO OFF",
   "ALTER SYSTEM RESET fsync",
   "CREATE EXTENSION x",
-  "CREATE EXTENSION IF NOT EXISTS x CASCADE VERSION \"1.2\" SCHEMA a"
+  "CREATE EXTENSION IF NOT EXISTS x CASCADE VERSION \"1.2\" SCHEMA a",
+  "CREATE TABLE like_constraint_rename_cache (LIKE constraint_rename_cache INCLUDING ALL)"
 };
 
 size_t testsLength = __LINE__ - 4;
