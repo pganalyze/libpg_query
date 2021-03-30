@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.1   2021-03-30
+
+* Fix ARM builds: Avoid dependency on cpuid.h header
+* Simplify deparser of TableLikeClause [#91](https://github.com/pganalyze/libpg_query/pull/91) [Lele Gaifax](https://github.com/lelit)
+* Fix asprintf warnings by ensuring _GNU_SOURCE is set early enough
+* srcdata/nodetypes.json: Avoid bogus values accidentally parsed from inside comments
+
+
 ## 13-2.0.0   2021-03-18
 
 * Update to PostgreSQL 13 parser (13.2 release)
