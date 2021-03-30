@@ -36,8 +36,8 @@ class Extractor
     lines = File.read(File.join(@pgdir, '/src/include/nodes/nodes.h'))
     lines.each_line do |line|
       if inside
-        if line[/([A-z_]+)(\s+=\s+\d+)?,/]
-          @nodetypes << $1[2..-1] # Without T_ prefix
+        if line[/T_([A-z_]+)(\s+=\s+\d+)?,/]
+          @nodetypes << $1
         elsif line == "} NodeTag;\n"
           inside = false
         end
