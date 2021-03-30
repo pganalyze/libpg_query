@@ -1069,6 +1069,11 @@
           "name": "options",
           "c_type": "bits32",
           "comment": "/* OR of TableLikeOption flags */"
+        },
+        {
+          "name": "relationOid",
+          "c_type": "Oid",
+          "comment": "/* If table has been looked up, its OID */"
         }
       ],
       "comment": "/*\n * TableLikeClause - CREATE TABLE ( ... LIKE ... ) clause\n */\n"
