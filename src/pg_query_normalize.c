@@ -318,8 +318,10 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 		DefElem * defElem = (DefElem *) node;
 		if (defElem->arg != NULL && IsA(defElem->arg, String)) {
 			for (int i = defElem->location; i < jstate->query_len; i++) {
-				if (jstate->query[i] == '\'')
+				if (jstate->query[i] == '\'') {
 					RecordConstLocation(jstate, i);
+					break;
+			  }
 			}
 		}
 		return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
