@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.3   2021-04-02
+
+* Normalize: Fix handling of two subsequent DefElem elements [#96](https://github.com/pganalyze/libpg_query/pull/91)
+  - We were incorrectly adding too many DefElem locations to the recorded
+    constant values, causing a crash when more than a single DefElem
+    is present in a utility statement.
+
+
 ## 13-2.0.2   2021-03-30
 
 * srcdata/nodetypes.json: Avoid bogus values accidentally parsed from inside comments
