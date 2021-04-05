@@ -2,6 +2,16 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.4   2021-04-05
+
+* Deparser: Fix crash in CopyStmt with HEADER or FREEZE inside WITH parens
+  - The parse tree does not contain an explicit argument in those cases,
+    but does when specified in the legacy mode without the wrapping WITH.
+  - With this change we only output the "1" argument when the original tree
+    also had this, to ensure parse tree comparisons match. Note the intent
+    here is technically the same, which is to enable these options.
+
+
 ## 13-2.0.3   2021-04-02
 
 * Normalize: Fix handling of two subsequent DefElem elements [#96](https://github.com/pganalyze/libpg_query/pull/91)
