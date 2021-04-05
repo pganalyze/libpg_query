@@ -6678,9 +6678,11 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 				else
 					Assert(false);
 			}
-			else if (strcmp(def_elem->defname, "freeze") == 0 && intVal(def_elem->arg) == 1)
+			else if (strcmp(def_elem->defname, "freeze") == 0 && (def_elem->arg == NULL || intVal(def_elem->arg) == 1))
 			{
-				appendStringInfoString(str, "FREEZE 1");
+				appendStringInfoString(str, "FREEZE");
+				if (def_elem->arg != NULL && intVal(def_elem->arg) == 1)
+					appendStringInfoString(str, " 1");
 			}
 			else if (strcmp(def_elem->defname, "delimiter") == 0)
 			{
@@ -6692,9 +6694,11 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 				appendStringInfoString(str, "NULL ");
 				deparseStringLiteral(str, strVal(def_elem->arg));
 			}
-			else if (strcmp(def_elem->defname, "header") == 0 && intVal(def_elem->arg) == 1)
+			else if (strcmp(def_elem->defname, "header") == 0 && (def_elem->arg == NULL || intVal(def_elem->arg) == 1))
 			{
-				appendStringInfoString(str, "HEADER 1");
+				appendStringInfoString(str, "HEADER");
+				if (def_elem->arg != NULL && intVal(def_elem->arg) == 1)
+					appendStringInfoString(str, " 1");
 			}
 			else if (strcmp(def_elem->defname, "quote") == 0)
 			{
