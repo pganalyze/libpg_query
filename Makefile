@@ -13,8 +13,11 @@ PROTOC_VERSION = 3.14.0
 
 VERSION = 2.0.4
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
+VERSION_MINOR = $(call word-dot,$(VERSION),2)
+VERSION_PATCH = $(call word-dot,$(VERSION),3)
 
 SONAME = $(SOLIB).$(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR))
+SOLIBVER = $(SONAME).$(VERSION_MINOR).$(VERSION_PATCH)
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
 NOT_OBJ_FILES := src/pg_query_enum_defs.o src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
@@ -50,6 +53,8 @@ CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2)
 
 AR = ar rs
+INSTALL = install
+LN_S = ln -s
 RM = rm -f
 ECHO = echo
 
@@ -89,7 +94,7 @@ clean:
 	-@ $(RM) -rf {test,examples}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
 
-.PHONY: all clean build extract_source examples test
+.PHONY: all clean build extract_source examples test install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -262,3 +267,17 @@ test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 
 test/split: test/split.c test/split_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/split.c $(ARLIB) $(TEST_LDFLAGS)
+
+prefix = /usr/local
+libdir = $(prefix)/lib
+includedir = $(prefix)/include
+
+install: $(ARLIB) $(SOLIB)
+	$(INSTALL) -d "$(DESTDIR)"$(libdir)
+	$(INSTALL) -m 644 $(ARLIB) "$(DESTDIR)"$(libdir)/$(ARLIB)
+	$(INSTALL) -m 755 $(SOLIB) "$(DESTDIR)"$(libdir)/$(SOLIBVER)
+	$(LN_S) $(SOLIBVER) "$(DESTDIR)"$(libdir)/$(SONAME)
+	$(LN_S) $(SOLIBVER) "$(DESTDIR)"$(libdir)/$(SOLIB)
+	$(INSTALL) -d "$(DESTDIR)"$(includedir)/$(TARGET)
+	$(INSTALL) -m 644 pg_query.h "$(DESTDIR)"$(includedir)/pg_query.h
+	$(INSTALL) -m 644 protobuf/pg_query.proto "$(DESTDIR)"$(includedir)/$(TARGET)/pg_query.proto
