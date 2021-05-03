@@ -381,7 +381,8 @@ const char* tests[] = {
   "CREATE EXTENSION x",
   "CREATE EXTENSION IF NOT EXISTS x CASCADE VERSION \"1.2\" SCHEMA a",
   "CREATE TABLE like_constraint_rename_cache (LIKE constraint_rename_cache INCLUDING ALL)",
-  "COPY manual_export TO STDOUT WITH (FORMAT CSV, HEADER)"
+  "COPY manual_export TO STDOUT WITH (FORMAT CSV, HEADER)",
+  "SELECT 1 FROM a.b.c"
 };
 
 size_t testsLength = __LINE__ - 4;

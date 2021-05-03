@@ -2247,6 +2247,12 @@ static void deparseRangeVar(StringInfo str, RangeVar *range_var, DeparseNodeCont
 	if (!range_var->inh && context != DEPARSE_NODE_CONTEXT_CREATE_TYPE && context != DEPARSE_NODE_CONTEXT_ALTER_TYPE)
 		appendStringInfoString(str, "ONLY ");
 
+	if (range_var->catalogname != NULL)
+	{
+		appendStringInfoString(str, quote_identifier(range_var->catalogname));
+		appendStringInfoChar(str, '.');
+	}
+
 	if (range_var->schemaname != NULL)
 	{
 		appendStringInfoString(str, quote_identifier(range_var->schemaname));
