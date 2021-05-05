@@ -249,7 +249,7 @@ pg_query wrappers in other languages:
 * Javascript (Browser): [pg-query-emscripten](https://github.com/pganalyze/pg-query-emscripten)
 * Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
-* Rust: [pg_query](https://github.com/paupino/pg_query)
+* Rust: [pg_query.rs](https://github.com/paupino/pg_query.rs)
 
 Products, tools and libraries built on pg_query:
 
