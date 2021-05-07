@@ -87,14 +87,16 @@ endif
 
 all: examples test build
 
-build: $(ARLIB) $(SOLIB)
+build: $(ARLIB)
+
+build_shared: $(SOLIB)
 
 clean:
 	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES) $(TESTS)
 	-@ $(RM) -rf {test,examples}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
 
-.PHONY: all clean build extract_source examples test install
+.PHONY: all clean build build_shared extract_source examples test install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
