@@ -405,6 +405,7 @@ enum Token {
   ASCII_62 = 62; // \">\"
   ASCII_63 = 63; // \"?\"
   ASCII_91 = 91; // \"[\"
+  ASCII_92 = 92; // \"\\\"
   ASCII_93 = 93; // \"]\"
   ASCII_94 = 94; // \"^\"
   // Named tokens in scan.l
