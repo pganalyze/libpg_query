@@ -2270,6 +2270,7 @@ _outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out, const TableL
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   WRITE_UINT_FIELD(options, options, options);
+  WRITE_UINT_FIELD(relation_oid, relationOid, relationOid);
 }
 
 static void
