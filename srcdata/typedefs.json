@@ -128,5 +128,25 @@
     "new_type_name": "pg_wchar",
     "source_type": "unsigned int",
     "comment": "/*\n * The pg_wchar type\n */\n"
+  },
+  {
+    "new_type_name": "YYSTYPE",
+    "source_type": "union YYSTYPE",
+    "comment": "\t/* these fields must match core_YYSTYPE: */\n"
+  },
+  {
+    "new_type_name": "YYLTYPE",
+    "source_type": "YYLTYPE",
+    "comment": "/* Location type.  */\n"
+  },
+  {
+    "new_type_name": "YYSTYPE",
+    "source_type": "union YYSTYPE",
+    "comment": "\t\t/* these fields must match core_YYSTYPE: */\n"
+  },
+  {
+    "new_type_name": "YYLTYPE",
+    "source_type": "YYLTYPE",
+    "comment": "/* Location type.  */\n"
   }
 ]

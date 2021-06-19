@@ -5,6 +5,7 @@
 
 require 'ffi/clang'
 require 'json'
+require 'pathname'
 
 module FFI::Clang::Lib
   enum :storage_class, [
@@ -211,8 +212,17 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g', '-DUSE_ASSERT_CHECKING'])
-    cursor = translation_unit.cursor
+
+    case `uname --operating-system`.strip
+    when /darwin/i
+      sdk = `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include'
+    when /linux/i
+      # where `libclang` is looked up by `find / -name libclang.so 2>/dev/null`
+      # and there's only one instance of libclang
+      sdk = Pathname.new(ENV['LIBCLANG']).dirname.join('clang').glob("*/include")[0].to_path
+    end
+    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I', '/usr/local/opt/openssl/include', '-I', sdk, '-DDLSUFFIX=".bundle"', '-msse4.2', '-g', '-DUSE_ASSERT_CHECKING'])
+    cursor = translation_unit.cursor  
 
     func_cursor = nil
     analysis = FileAnalysis.new(file, @basepath)

@@ -4387,6 +4387,9 @@
     "yytokentype": {
       "values": [
         {
+          "comment": ""
+        },
+        {
           "name": "IDENT",
           "value": 258
         },
@@ -6283,7 +6286,537 @@
           "value": 731
         }
       ],
-      "comment": "   /* Put the tokens into the symbol table, so that GDB and other debuggers\n      know about them.  */\n"
+      "comment": "/* Token type.  */\n"
+    }
+  },
+  "../pl/plpgsql/src/pl_gram": {
+    "yytokentype": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "IDENT",
+          "value": 258
+        },
+        {
+          "name": "UIDENT",
+          "value": 259
+        },
+        {
+          "name": "FCONST",
+          "value": 260
+        },
+        {
+          "name": "SCONST",
+          "value": 261
+        },
+        {
+          "name": "USCONST",
+          "value": 262
+        },
+        {
+          "name": "BCONST",
+          "value": 263
+        },
+        {
+          "name": "XCONST",
+          "value": 264
+        },
+        {
+          "name": "Op",
+          "value": 265
+        },
+        {
+          "name": "ICONST",
+          "value": 266
+        },
+        {
+          "name": "PARAM",
+          "value": 267
+        },
+        {
+          "name": "TYPECAST",
+          "value": 268
+        },
+        {
+          "name": "DOT_DOT",
+          "value": 269
+        },
+        {
+          "name": "COLON_EQUALS",
+          "value": 270
+        },
+        {
+          "name": "EQUALS_GREATER",
+          "value": 271
+        },
+        {
+          "name": "LESS_EQUALS",
+          "value": 272
+        },
+        {
+          "name": "GREATER_EQUALS",
+          "value": 273
+        },
+        {
+          "name": "NOT_EQUALS",
+          "value": 274
+        },
+        {
+          "name": "SQL_COMMENT",
+          "value": 275
+        },
+        {
+          "name": "C_COMMENT",
+          "value": 276
+        },
+        {
+          "name": "T_WORD",
+          "value": 277
+        },
+        {
+          "name": "T_CWORD",
+          "value": 278
+        },
+        {
+          "name": "T_DATUM",
+          "value": 279
+        },
+        {
+          "name": "LESS_LESS",
+          "value": 280
+        },
+        {
+          "name": "GREATER_GREATER",
+          "value": 281
+        },
+        {
+          "name": "K_ABSOLUTE",
+          "value": 282
+        },
+        {
+          "name": "K_ALIAS",
+          "value": 283
+        },
+        {
+          "name": "K_ALL",
+          "value": 284
+        },
+        {
+          "name": "K_AND",
+          "value": 285
+        },
+        {
+          "name": "K_ARRAY",
+          "value": 286
+        },
+        {
+          "name": "K_ASSERT",
+          "value": 287
+        },
+        {
+          "name": "K_BACKWARD",
+          "value": 288
+        },
+        {
+          "name": "K_BEGIN",
+          "value": 289
+        },
+        {
+          "name": "K_BY",
+          "value": 290
+        },
+        {
+          "name": "K_CALL",
+          "value": 291
+        },
+        {
+          "name": "K_CASE",
+          "value": 292
+        },
+        {
+          "name": "K_CHAIN",
+          "value": 293
+        },
+        {
+          "name": "K_CLOSE",
+          "value": 294
+        },
+        {
+          "name": "K_COLLATE",
+          "value": 295
+        },
+        {
+          "name": "K_COLUMN",
+          "value": 296
+        },
+        {
+          "name": "K_COLUMN_NAME",
+          "value": 297
+        },
+        {
+          "name": "K_COMMIT",
+          "value": 298
+        },
+        {
+          "name": "K_CONSTANT",
+          "value": 299
+        },
+        {
+          "name": "K_CONSTRAINT",
+          "value": 300
+        },
+        {
+          "name": "K_CONSTRAINT_NAME",
+          "value": 301
+        },
+        {
+          "name": "K_CONTINUE",
+          "value": 302
+        },
+        {
+          "name": "K_CURRENT",
+          "value": 303
+        },
+        {
+          "name": "K_CURSOR",
+          "value": 304
+        },
+        {
+          "name": "K_DATATYPE",
+          "value": 305
+        },
+        {
+          "name": "K_DEBUG",
+          "value": 306
+        },
+        {
+          "name": "K_DECLARE",
+          "value": 307
+        },
+        {
+          "name": "K_DEFAULT",
+          "value": 308
+        },
+        {
+          "name": "K_DETAIL",
+          "value": 309
+        },
+        {
+          "name": "K_DIAGNOSTICS",
+          "value": 310
+        },
+        {
+          "name": "K_DO",
+          "value": 311
+        },
+        {
+          "name": "K_DUMP",
+          "value": 312
+        },
+        {
+          "name": "K_ELSE",
+          "value": 313
+        },
+        {
+          "name": "K_ELSIF",
+          "value": 314
+        },
+        {
+          "name": "K_END",
+          "value": 315
+        },
+        {
+          "name": "K_ERRCODE",
+          "value": 316
+        },
+        {
+          "name": "K_ERROR",
+          "value": 317
+        },
+        {
+          "name": "K_EXCEPTION",
+          "value": 318
+        },
+        {
+          "name": "K_EXECUTE",
+          "value": 319
+        },
+        {
+          "name": "K_EXIT",
+          "value": 320
+        },
+        {
+          "name": "K_FETCH",
+          "value": 321
+        },
+        {
+          "name": "K_FIRST",
+          "value": 322
+        },
+        {
+          "name": "K_FOR",
+          "value": 323
+        },
+        {
+          "name": "K_FOREACH",
+          "value": 324
+        },
+        {
+          "name": "K_FORWARD",
+          "value": 325
+        },
+        {
+          "name": "K_FROM",
+          "value": 326
+        },
+        {
+          "name": "K_GET",
+          "value": 327
+        },
+        {
+          "name": "K_HINT",
+          "value": 328
+        },
+        {
+          "name": "K_IF",
+          "value": 329
+        },
+        {
+          "name": "K_IMPORT",
+          "value": 330
+        },
+        {
+          "name": "K_IN",
+          "value": 331
+        },
+        {
+          "name": "K_INFO",
+          "value": 332
+        },
+        {
+          "name": "K_INSERT",
+          "value": 333
+        },
+        {
+          "name": "K_INTO",
+          "value": 334
+        },
+        {
+          "name": "K_IS",
+          "value": 335
+        },
+        {
+          "name": "K_LAST",
+          "value": 336
+        },
+        {
+          "name": "K_LOG",
+          "value": 337
+        },
+        {
+          "name": "K_LOOP",
+          "value": 338
+        },
+        {
+          "name": "K_MESSAGE",
+          "value": 339
+        },
+        {
+          "name": "K_MESSAGE_TEXT",
+          "value": 340
+        },
+        {
+          "name": "K_MOVE",
+          "value": 341
+        },
+        {
+          "name": "K_NEXT",
+          "value": 342
+        },
+        {
+          "name": "K_NO",
+          "value": 343
+        },
+        {
+          "name": "K_NOT",
+          "value": 344
+        },
+        {
+          "name": "K_NOTICE",
+          "value": 345
+        },
+        {
+          "name": "K_NULL",
+          "value": 346
+        },
+        {
+          "name": "K_OPEN",
+          "value": 347
+        },
+        {
+          "name": "K_OPTION",
+          "value": 348
+        },
+        {
+          "name": "K_OR",
+          "value": 349
+        },
+        {
+          "name": "K_PERFORM",
+          "value": 350
+        },
+        {
+          "name": "K_PG_CONTEXT",
+          "value": 351
+        },
+        {
+          "name": "K_PG_DATATYPE_NAME",
+          "value": 352
+        },
+        {
+          "name": "K_PG_EXCEPTION_CONTEXT",
+          "value": 353
+        },
+        {
+          "name": "K_PG_EXCEPTION_DETAIL",
+          "value": 354
+        },
+        {
+          "name": "K_PG_EXCEPTION_HINT",
+          "value": 355
+        },
+        {
+          "name": "K_PRINT_STRICT_PARAMS",
+          "value": 356
+        },
+        {
+          "name": "K_PRIOR",
+          "value": 357
+        },
+        {
+          "name": "K_QUERY",
+          "value": 358
+        },
+        {
+          "name": "K_RAISE",
+          "value": 359
+        },
+        {
+          "name": "K_RELATIVE",
+          "value": 360
+        },
+        {
+          "name": "K_RESET",
+          "value": 361
+        },
+        {
+          "name": "K_RETURN",
+          "value": 362
+        },
+        {
+          "name": "K_RETURNED_SQLSTATE",
+          "value": 363
+        },
+        {
+          "name": "K_REVERSE",
+          "value": 364
+        },
+        {
+          "name": "K_ROLLBACK",
+          "value": 365
+        },
+        {
+          "name": "K_ROW_COUNT",
+          "value": 366
+        },
+        {
+          "name": "K_ROWTYPE",
+          "value": 367
+        },
+        {
+          "name": "K_SCHEMA",
+          "value": 368
+        },
+        {
+          "name": "K_SCHEMA_NAME",
+          "value": 369
+        },
+        {
+          "name": "K_SCROLL",
+          "value": 370
+        },
+        {
+          "name": "K_SET",
+          "value": 371
+        },
+        {
+          "name": "K_SLICE",
+          "value": 372
+        },
+        {
+          "name": "K_SQLSTATE",
+          "value": 373
+        },
+        {
+          "name": "K_STACKED",
+          "value": 374
+        },
+        {
+          "name": "K_STRICT",
+          "value": 375
+        },
+        {
+          "name": "K_TABLE",
+          "value": 376
+        },
+        {
+          "name": "K_TABLE_NAME",
+          "value": 377
+        },
+        {
+          "name": "K_THEN",
+          "value": 378
+        },
+        {
+          "name": "K_TO",
+          "value": 379
+        },
+        {
+          "name": "K_TYPE",
+          "value": 380
+        },
+        {
+          "name": "K_USE_COLUMN",
+          "value": 381
+        },
+        {
+          "name": "K_USE_VARIABLE",
+          "value": 382
+        },
+        {
+          "name": "K_USING",
+          "value": 383
+        },
+        {
+          "name": "K_VARIABLE_CONFLICT",
+          "value": 384
+        },
+        {
+          "name": "K_WARNING",
+          "value": 385
+        },
+        {
+          "name": "K_WHEN",
+          "value": 386
+        },
+        {
+          "name": "K_WHILE",
+          "value": 387
+        }
+      ],
+      "comment": "/* Token type.  */\n"
     }
   }
 }

@@ -37,6 +37,7 @@ class Generator
     @protobuf_messages = {}
     @protobuf_enums = {}
     @scan_protobuf_tokens = []
+    @plpgsql_scan_protobuf_tokens = []
     @enum_to_strings = {}
     @enum_to_ints = {}
     @int_to_enums = {}
@@ -190,6 +191,12 @@ class Generator
     scan_values.each do |value|
       next unless value['name']
       @scan_protobuf_tokens << format('%s = %d;', value['name'], value['value'])
+    end
+
+    scan_values = @enum_defs['../pl/plpgsql/src/pl_gram']['yytokentype']['values']
+    scan_values.each do |value|
+      next unless value['name']
+      @plpgsql_scan_protobuf_tokens << format('PLPG_%s = %d;', value['name'], value['value'])
     end
 
     @typedefs.each do |typedef|
@@ -411,6 +418,42 @@ enum Token {
   // Named tokens in scan.l
   #{@scan_protobuf_tokens.join("\n  ")}
 }
+
+message PlpgsqlScanToken {
+  int32 start = 1;
+  int32 end = 2;
+  PlpgsqlToken token = 4;
+  KeywordKind keyword_kind = 5;
+}
+
+enum PlpgsqlToken {
+  PLPG_NUL = 0;
+  // Single-character tokens that are returned 1:1 (identical with \"self\" list in scan.l)
+  // Either supporting syntax, or single-character operators (some can be both)
+  // Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
+  PLPG_ASCII_37 = 37; // \"%\"
+  PLPG_ASCII_40 = 40; // \"\(\"
+  PLPG_ASCII_41 = 41; // \")\"
+  PLPG_ASCII_42 = 42; // \"*\"
+  PLPG_ASCII_43 = 43; // \"+\"
+  PLPG_ASCII_44 = 44; // \",\"
+  PLPG_ASCII_45 = 45; // \"-\"
+  PLPG_ASCII_46 = 46; // \".\"
+  PLPG_ASCII_47 = 47; // \"/\"
+  PLPG_ASCII_58 = 58; // \":\"
+  PLPG_ASCII_59 = 59; // \";\"
+  PLPG_ASCII_60 = 60; // \"<\"
+  PLPG_ASCII_61 = 61; // \"=\"
+  PLPG_ASCII_62 = 62; // \">\"
+  PLPG_ASCII_63 = 63; // \"?\"
+  PLPG_ASCII_91 = 91; // \"[\"
+  PLPG_ASCII_92 = 92; // \"\\\"
+  PLPG_ASCII_93 = 93; // \"]\"
+  PLPG_ASCII_94 = 94; // \"^\"
+  // Named tokens in scan.l
+  #{@plpgsql_scan_protobuf_tokens.join("\n  ")}
+}
+
 "
 
     File.write('./protobuf/pg_query.proto', protobuf)
