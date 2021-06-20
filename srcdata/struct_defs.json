@@ -8575,7 +8575,34 @@
           "comment": null
         }
       ],
-      "comment": "/* Line 1529 of yacc.c.  */\n"
+      "comment": null
+    }
+  },
+  "../pl/plpgsql/src/pl_gram": {
+    "YYLTYPE": {
+      "fields": [
+        {
+          "name": "first_line",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "first_column",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "last_line",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "last_column",
+          "c_type": "int",
+          "comment": null
+        }
+      ],
+      "comment": null
     }
   },
   "nodes/value": {

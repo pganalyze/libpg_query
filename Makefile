@@ -16,7 +16,7 @@ override CFLAGS += -g -I. -I./vendor -I./src/postgres/include -Wall -Wno-unused-
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib
 
-override TEST_CFLAGS += -I. -I./vendor -g
+override TEST_CFLAGS += -I. -I./vendor -I./src/postgres/include -g
 override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
@@ -102,11 +102,13 @@ $(PGDIR):
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
 
+LIBCLANG ?= /Library/Developer/CommandLineTools/usr/lib/libclang.dylib
+
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
-	mkdir ./src/postgres
-	mkdir ./src/postgres/include
-	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
+	mkdir -p ./src/postgres/include/storage
+	mkdir -p ./src/postgres/include/port/atomics
+	LIBCLANG=$(LIBCLANG) ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
@@ -128,9 +130,9 @@ extract_source: $(PGDIR)
 	# Avoid dependency on cpuid.h (only supported on x86 systems)
 	echo "#undef HAVE__GET_CPUID" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' ./pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' ./pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' ./pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
@@ -146,6 +148,9 @@ extract_source: $(PGDIR)
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
+
+protobuf/pg_query.proto: scripts/generate_protobuf_and_funcs.rb srcdata
+	scripts/generate_protobuf_and_funcs.rb
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )
 	protoc --c_out=. protobuf/pg_query.proto
@@ -171,6 +176,7 @@ examples: $(EXAMPLES)
 	examples/simple_error
 	examples/normalize_error
 	examples/simple_plpgsql
+	examples/scan_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
@@ -186,6 +192,10 @@ examples/simple_error: examples/simple_error.c $(ARLIB)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize_error.c $(ARLIB) $(TEST_LDFLAGS)
+
+examples/scan_plpgsql: 	examples/scan_plpgsql.c
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/scan_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+
 
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
