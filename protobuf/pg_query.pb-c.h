@@ -17,6 +17,7 @@ PROTOBUF_C__BEGIN_DECLS
 
 typedef struct _PgQuery__ParseResult PgQuery__ParseResult;
 typedef struct _PgQuery__ScanResult PgQuery__ScanResult;
+typedef struct _PgQuery__PlpgsqlScanResult PgQuery__PlpgsqlScanResult;
 typedef struct _PgQuery__Node PgQuery__Node;
 typedef struct _PgQuery__Integer PgQuery__Integer;
 typedef struct _PgQuery__Float PgQuery__Float;
@@ -1663,6 +1664,18 @@ struct  _PgQuery__ScanResult
 };
 #define PG_QUERY__SCAN_RESULT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__scan_result__descriptor) \
+    , 0, 0,NULL }
+
+
+struct  _PgQuery__PlpgsqlScanResult
+{
+  ProtobufCMessage base;
+  int32_t version;
+  size_t n_tokens;
+  PgQuery__PlpgsqlScanToken **tokens;
+};
+#define PG_QUERY__PLPGSQL_SCAN_RESULT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__plpgsql_scan_result__descriptor) \
     , 0, 0,NULL }
 
 
@@ -5712,6 +5725,25 @@ PgQuery__ScanResult *
                       const uint8_t       *data);
 void   pg_query__scan_result__free_unpacked
                      (PgQuery__ScanResult *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PlpgsqlScanResult methods */
+void   pg_query__plpgsql_scan_result__init
+                     (PgQuery__PlpgsqlScanResult         *message);
+size_t pg_query__plpgsql_scan_result__get_packed_size
+                     (const PgQuery__PlpgsqlScanResult   *message);
+size_t pg_query__plpgsql_scan_result__pack
+                     (const PgQuery__PlpgsqlScanResult   *message,
+                      uint8_t             *out);
+size_t pg_query__plpgsql_scan_result__pack_to_buffer
+                     (const PgQuery__PlpgsqlScanResult   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PlpgsqlScanResult *
+       pg_query__plpgsql_scan_result__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__plpgsql_scan_result__free_unpacked
+                     (PgQuery__PlpgsqlScanResult *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__Node methods */
 void   pg_query__node__init
@@ -10110,6 +10142,9 @@ typedef void (*PgQuery__ParseResult_Closure)
 typedef void (*PgQuery__ScanResult_Closure)
                  (const PgQuery__ScanResult *message,
                   void *closure_data);
+typedef void (*PgQuery__PlpgsqlScanResult_Closure)
+                 (const PgQuery__PlpgsqlScanResult *message,
+                  void *closure_data);
 typedef void (*PgQuery__Node_Closure)
                  (const PgQuery__Node *message,
                   void *closure_data);
@@ -10869,6 +10904,7 @@ extern const ProtobufCEnumDescriptor    pg_query__token__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__plpgsql_token__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__parse_result__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__scan_result__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__plpgsql_scan_result__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__node__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__integer__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__float__descriptor;

@@ -176,6 +176,7 @@ examples: $(EXAMPLES)
 	examples/simple_error
 	examples/normalize_error
 	examples/simple_plpgsql
+	examples/scan_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
@@ -191,6 +192,10 @@ examples/simple_error: examples/simple_error.c $(ARLIB)
 
 examples/normalize_error: examples/normalize_error.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/normalize_error.c $(ARLIB) $(TEST_LDFLAGS)
+
+examples/scan_plpgsql: 	examples/scan_plpgsql.c
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/scan_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+
 
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)

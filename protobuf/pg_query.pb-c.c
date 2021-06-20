@@ -97,6 +97,51 @@ void   pg_query__scan_result__free_unpacked
   assert(message->base.descriptor == &pg_query__scan_result__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   pg_query__plpgsql_scan_result__init
+                     (PgQuery__PlpgsqlScanResult         *message)
+{
+  static const PgQuery__PlpgsqlScanResult init_value = PG_QUERY__PLPGSQL_SCAN_RESULT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpgsql_scan_result__get_packed_size
+                     (const PgQuery__PlpgsqlScanResult *message)
+{
+  assert(message->base.descriptor == &pg_query__plpgsql_scan_result__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpgsql_scan_result__pack
+                     (const PgQuery__PlpgsqlScanResult *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpgsql_scan_result__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpgsql_scan_result__pack_to_buffer
+                     (const PgQuery__PlpgsqlScanResult *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpgsql_scan_result__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PlpgsqlScanResult *
+       pg_query__plpgsql_scan_result__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PlpgsqlScanResult *)
+     protobuf_c_message_unpack (&pg_query__plpgsql_scan_result__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpgsql_scan_result__free_unpacked
+                     (PgQuery__PlpgsqlScanResult *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpgsql_scan_result__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   pg_query__node__init
                      (PgQuery__Node         *message)
 {
@@ -10592,6 +10637,57 @@ const ProtobufCMessageDescriptor pg_query__scan_result__descriptor =
   pg_query__scan_result__field_indices_by_name,
   1,  pg_query__scan_result__number_ranges,
   (ProtobufCMessageInit) pg_query__scan_result__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpgsql_scan_result__field_descriptors[2] =
+{
+  {
+    "version",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PlpgsqlScanResult, version),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "tokens",
+    2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PlpgsqlScanResult, n_tokens),
+    offsetof(PgQuery__PlpgsqlScanResult, tokens),
+    &pg_query__plpgsql_scan_token__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpgsql_scan_result__field_indices_by_name[] = {
+  1,   /* field[1] = tokens */
+  0,   /* field[0] = version */
+};
+static const ProtobufCIntRange pg_query__plpgsql_scan_result__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpgsql_scan_result__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PlpgsqlScanResult",
+  "PlpgsqlScanResult",
+  "PgQuery__PlpgsqlScanResult",
+  "pg_query",
+  sizeof(PgQuery__PlpgsqlScanResult),
+  2,
+  pg_query__plpgsql_scan_result__field_descriptors,
+  pg_query__plpgsql_scan_result__field_indices_by_name,
+  1,  pg_query__plpgsql_scan_result__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpgsql_scan_result__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
 static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[228] =

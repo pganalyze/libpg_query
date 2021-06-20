@@ -328,6 +328,11 @@ message ScanResult {
   repeated ScanToken tokens = 2;
 }
 
+message PlpgsqlScanResult {
+  int32 version = 1;
+  repeated PlpgsqlScanToken tokens = 2;
+}
+
 message Node {
   oneof node {
 		#{protobuf_nodes.join("\n    ")}
