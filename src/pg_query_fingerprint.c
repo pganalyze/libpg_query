@@ -17,6 +17,8 @@
 #include "nodes/parsenodes.h"
 #include "nodes/value.h"
 
+#include "common/hashfn.h"
+
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -26,7 +28,7 @@ typedef struct FingerprintContext
 {
 	XXH3_state_t *xxh_state;
 
-	dlist_head *listsort_cache;
+	struct listsort_cache_hash *listsort_cache;
 
 	bool write_tokens;
 	dlist_head tokens;
@@ -41,14 +43,26 @@ typedef struct FingerprintListsortItem
 typedef struct FingerprintListsortItemCacheEntry
 {
 	/* List node this cache entry is for */
-	const List *node;
+	uintptr_t node;
 
 	/* Hashes of all list items -- this is expensive to calculate */
 	FingerprintListsortItem **listsort_items;
 	size_t listsort_items_size;
 
-	dlist_node list_node;
+	/* hash entry status */
+	char status;
 } FingerprintListsortItemCacheEntry;
+
+#define SH_PREFIX listsort_cache
+#define SH_ELEMENT_TYPE FingerprintListsortItemCacheEntry
+#define SH_KEY_TYPE uintptr_t
+#define SH_KEY node
+#define SH_HASH_KEY(tb, key) hash_bytes((const unsigned char *) &key, sizeof(uintptr_t))
+#define SH_EQUAL(tb, a, b) a == b
+#define SH_SCOPE static inline
+#define SH_DEFINE
+#define SH_DECLARE
+#include "lib/simplehash.h"
 
 typedef struct FingerprintToken
 {
@@ -139,29 +153,20 @@ _fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, 
 		 * We have seen real-world problems with this logic here without
 		 * a cache in place.
 		 */
-		dlist_iter iter;
 		FingerprintListsortItem** listsort_items = NULL;
 		size_t listsort_items_size = 0;
-		dlist_foreach(iter, ctx->listsort_cache)
+		FingerprintListsortItemCacheEntry *entry = listsort_cache_lookup(ctx->listsort_cache, (uintptr_t) node);
+		if (entry != NULL)
 		{
-			FingerprintListsortItemCacheEntry *entry = dlist_container(FingerprintListsortItemCacheEntry, list_node, iter.cur);
-			if (entry->node == node)
-			{
-				listsort_items = entry->listsort_items;
-				listsort_items_size = entry->listsort_items_size;
-				break;
-			}
+			listsort_items = entry->listsort_items;
+			listsort_items_size = entry->listsort_items_size;
 		}
-
-		/*
-		 * If we haven't calculated the hashes for these list nodes before,
-		 * do so now, so we can fingerprint correctly.
-		 */
-		if (listsort_items == NULL)
+		else
 		{
 			listsort_items = palloc0(node->length * sizeof(FingerprintListsortItem*));
 			listsort_items_size = 0;
 			ListCell *lc;
+			bool found;
 
 			foreach(lc, node)
 			{
@@ -180,11 +185,11 @@ _fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, 
 
 			pg_qsort(listsort_items, listsort_items_size, sizeof(FingerprintListsortItem*), compareFingerprintListsortItem);
 
-			FingerprintListsortItemCacheEntry *entry = palloc0(sizeof(FingerprintListsortItemCacheEntry));
+			FingerprintListsortItemCacheEntry *entry = listsort_cache_insert(ctx->listsort_cache, (uintptr_t) node, &found);
+			Assert(!found);
+
 			entry->listsort_items = listsort_items;
 			entry->listsort_items_size = listsort_items_size;
-			entry->node = node;
-			dlist_push_tail(ctx->listsort_cache, &entry->list_node);
 		}
 
 		for (size_t i = 0; i < listsort_items_size; i++)
@@ -221,8 +226,7 @@ _fingerprintInitContext(FingerprintContext *ctx, FingerprintContext *parent, boo
 	}
 	else
 	{
-		ctx->listsort_cache = palloc0(sizeof(dlist_head));
-		dlist_init(ctx->listsort_cache);
+		ctx->listsort_cache = listsort_cache_create(CurrentMemoryContext, 128, NULL);
 	}
 
 	if (write_tokens)
