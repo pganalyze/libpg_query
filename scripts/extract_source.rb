@@ -541,6 +541,10 @@ runner.deep_resolve('pg_toupper')
 runner.deep_resolve('pg_qsort')
 runner.deep_resolve('raw_expression_tree_walker')
 
+# Needed to work with simplehash (in fingerprinting logic)
+runner.deep_resolve('hash_bytes')
+runner.deep_resolve('MemoryContextAllocExtended')
+
 # Other required functions
 runner.deep_resolve('pg_printf')
 

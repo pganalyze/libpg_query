@@ -17,6 +17,8 @@
 #include "nodes/parsenodes.h"
 #include "nodes/value.h"
 
+#include "common/hashfn.h"
+
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -26,15 +28,41 @@ typedef struct FingerprintContext
 {
 	XXH3_state_t *xxh_state;
 
+	struct listsort_cache_hash *listsort_cache;
+
 	bool write_tokens;
 	dlist_head tokens;
 } FingerprintContext;
 
-typedef struct FingerprintListContext
+typedef struct FingerprintListsortItem
 {
 	XXH64_hash_t hash;
 	size_t list_pos;
-} FingerprintListContext;
+} FingerprintListsortItem;
+
+typedef struct FingerprintListsortItemCacheEntry
+{
+	/* List node this cache entry is for */
+	uintptr_t node;
+
+	/* Hashes of all list items -- this is expensive to calculate */
+	FingerprintListsortItem **listsort_items;
+	size_t listsort_items_size;
+
+	/* hash entry status */
+	char status;
+} FingerprintListsortItemCacheEntry;
+
+#define SH_PREFIX listsort_cache
+#define SH_ELEMENT_TYPE FingerprintListsortItemCacheEntry
+#define SH_KEY_TYPE uintptr_t
+#define SH_KEY node
+#define SH_HASH_KEY(tb, key) hash_bytes((const unsigned char *) &key, sizeof(uintptr_t))
+#define SH_EQUAL(tb, a, b) a == b
+#define SH_SCOPE static inline
+#define SH_DEFINE
+#define SH_DECLARE
+#include "lib/simplehash.h"
 
 typedef struct FingerprintToken
 {
@@ -43,7 +71,7 @@ typedef struct FingerprintToken
 } FingerprintToken;
 
 static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *parent_field_name, unsigned int depth);
-static void _fingerprintInitContext(FingerprintContext *ctx, bool write_tokens);
+static void _fingerprintInitContext(FingerprintContext *ctx, FingerprintContext *parent, bool write_tokens);
 static void _fingerprintFreeContext(FingerprintContext *ctx);
 
 #define PG_QUERY_FINGERPRINT_VERSION 3
@@ -96,10 +124,10 @@ _fingerprintBitString(FingerprintContext *ctx, const Value *node)
 	}
 }
 
-static int compareFingerprintListContext(const void *a, const void *b)
+static int compareFingerprintListsortItem(const void *a, const void *b)
 {
-	FingerprintListContext *ca = *(FingerprintListContext**) a;
-	FingerprintListContext *cb = *(FingerprintListContext**) b;
+	FingerprintListsortItem *ca = *(FingerprintListsortItem**) a;
+	FingerprintListsortItem *cb = *(FingerprintListsortItem**) b;
 	if (ca->hash > cb->hash)
 		return 1;
 	else if (ca->hash < cb->hash)
@@ -111,38 +139,69 @@ static void
 _fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, char *field_name, unsigned int depth)
 {
 	if (field_name != NULL && (strcmp(field_name, "fromClause") == 0 || strcmp(field_name, "targetList") == 0 ||
-			strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0 || strcmp(field_name, "valuesLists") == 0 ||
-			strcmp(field_name, "args") == 0)) {
-
-		FingerprintListContext** listCtxArr = palloc0(node->length * sizeof(FingerprintListContext*));
-		size_t listCtxCount = 0;
-		const ListCell *lc;
-
-		foreach(lc, node)
+		strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0 || strcmp(field_name, "valuesLists") == 0 ||
+		strcmp(field_name, "args") == 0))
+	{
+		/*
+		 * Check for cached values for the hashes of subnodes
+		 *
+		 * Note this cache is important so we avoid exponential runtime behavior,
+		 * which would be the case if we fingerprinted each node twice, which
+		 * then would also again have to fingerprint each of its subnodes twice,
+		 * etc., leading to deep nodes to be fingerprinted many many times over.
+		 *
+		 * We have seen real-world problems with this logic here without
+		 * a cache in place.
+		 */
+		FingerprintListsortItem** listsort_items = NULL;
+		size_t listsort_items_size = 0;
+		FingerprintListsortItemCacheEntry *entry = listsort_cache_lookup(ctx->listsort_cache, (uintptr_t) node);
+		if (entry != NULL)
 		{
-			FingerprintContext subCtx;
-			FingerprintListContext* listCtx = palloc0(sizeof(FingerprintListContext));
+			listsort_items = entry->listsort_items;
+			listsort_items_size = entry->listsort_items_size;
+		}
+		else
+		{
+			listsort_items = palloc0(node->length * sizeof(FingerprintListsortItem*));
+			listsort_items_size = 0;
+			ListCell *lc;
+			bool found;
 
-			_fingerprintInitContext(&subCtx, false);
-			_fingerprintNode(&subCtx, lfirst(lc), parent, field_name, depth + 1);
-			listCtx->hash = XXH3_64bits_digest(subCtx.xxh_state);
-			listCtx->list_pos = listCtxCount;
-			_fingerprintFreeContext(&subCtx);
+			foreach(lc, node)
+			{
+				FingerprintContext fctx;
+				FingerprintListsortItem* lctx = palloc0(sizeof(FingerprintListsortItem));
 
-			listCtxArr[listCtxCount] = listCtx;
-			listCtxCount += 1;
+				_fingerprintInitContext(&fctx, ctx, false);
+				_fingerprintNode(&fctx, lfirst(lc), parent, field_name, depth + 1);
+				lctx->hash = XXH3_64bits_digest(fctx.xxh_state);
+				lctx->list_pos = listsort_items_size;
+				_fingerprintFreeContext(&fctx);
+
+				listsort_items[listsort_items_size] = lctx;
+				listsort_items_size += 1;
+			}
+
+			pg_qsort(listsort_items, listsort_items_size, sizeof(FingerprintListsortItem*), compareFingerprintListsortItem);
+
+			FingerprintListsortItemCacheEntry *entry = listsort_cache_insert(ctx->listsort_cache, (uintptr_t) node, &found);
+			Assert(!found);
+
+			entry->listsort_items = listsort_items;
+			entry->listsort_items_size = listsort_items_size;
 		}
 
-		pg_qsort(listCtxArr, listCtxCount, sizeof(FingerprintListContext*), compareFingerprintListContext);
-
-		for (size_t i = 0; i < listCtxCount; i++)
+		for (size_t i = 0; i < listsort_items_size; i++)
 		{
-			if (i > 0 && listCtxArr[i - 1]->hash == listCtxArr[i]->hash)
+			if (i > 0 && listsort_items[i - 1]->hash == listsort_items[i]->hash)
 				continue; // Ignore duplicates
 
-			_fingerprintNode(ctx, lfirst(list_nth_cell(node, listCtxArr[i]->list_pos)), parent, field_name, depth + 1);
+			_fingerprintNode(ctx, lfirst(list_nth_cell(node, listsort_items[i]->list_pos)), parent, field_name, depth + 1);
 		}
-	} else {
+	}
+	else
+	{
 		const ListCell *lc;
 
 		foreach(lc, node)
@@ -155,15 +214,28 @@ _fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, 
 }
 
 static void
-_fingerprintInitContext(FingerprintContext *ctx, bool write_tokens) {
+_fingerprintInitContext(FingerprintContext *ctx, FingerprintContext *parent, bool write_tokens)
+{
 	ctx->xxh_state = XXH3_createState();
 	if (ctx->xxh_state == NULL) abort();
 	if (XXH3_64bits_reset_withSeed(ctx->xxh_state, PG_QUERY_FINGERPRINT_VERSION) == XXH_ERROR) abort();
 
-	if (write_tokens) {
+	if (parent != NULL)
+	{
+		ctx->listsort_cache = parent->listsort_cache;
+	}
+	else
+	{
+		ctx->listsort_cache = listsort_cache_create(CurrentMemoryContext, 128, NULL);
+	}
+
+	if (write_tokens)
+	{
 		ctx->write_tokens = true;
 		dlist_init(&ctx->tokens);
-	} else {
+	}
+	else
+	{
 		ctx->write_tokens = false;
 	}
 }
@@ -237,7 +309,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool 
 		FingerprintContext ctx;
 		XXH64_canonical_t chash;
 
-		_fingerprintInitContext(&ctx, printTokens);
+		_fingerprintInitContext(&ctx, NULL, printTokens);
 
 		if (parsetree_and_error.tree != NULL) {
 			_fingerprintNode(&ctx, parsetree_and_error.tree, NULL, NULL, 0);
