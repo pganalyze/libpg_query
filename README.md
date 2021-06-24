@@ -51,7 +51,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 130002,
+    "version": 130003,
     "stmts": [
         {
             "stmt": {
@@ -124,7 +124,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 130002, tokens: 7, size: 77
+  version: 130003, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
