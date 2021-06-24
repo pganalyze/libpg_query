@@ -123,6 +123,8 @@ const char* tests[] = {
   "018bd9230646143e",
   "SELECT * FROM t_2",
   "3f1444da570c1a66",
+  "UPDATE tbl SET doc = jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(jsonb_set(doc, ARRAY[$1], $2, $3), ARRAY[$4], $5, $6), ARRAY[$7], $8, $9), ARRAY[$10], $11, $12), ARRAY[$13], $14, $15), ARRAY[$16], $17, $18), ARRAY[$19], $20, $21), ARRAY[$22], $23, $24), ARRAY[$25], $26, $27), ARRAY[$28], $29, $30), ARRAY[$31], $32, $33), ARRAY[$34], $35, $36), ARRAY[$37], $38, $39), ARRAY[$40], $41, $42), ARRAY[$43], $44, $45), ARRAY[$46], $47, $48), ARRAY[$49], $50, $51), ARRAY[$52], $53, $54), ARRAY[$55], $56, $57), ARRAY[$58], $59, $60), ARRAY[$61], $62, $63), ARRAY[$64], $65, $66), ARRAY[$67], $68, $69), ARRAY[$70], $71, $72), ARRAY[$73], $74, $75), ARRAY[$76], $77, $78), ARRAY[$79], $80, $81), ARRAY[$82], $83, $84), ARRAY[$85], $86, $87), ARRAY[$88], $89, $90), ARRAY[$91], $92, $93), ARRAY[$94], $95, $96), ARRAY[$97], $98, $99), ARRAY[$100], $101, $102), ARRAY[$103], $104, $105), ARRAY[$106], $107, $108)",
+  "dc495a2ae9f367bf",
 };
 
 size_t testsLength = __LINE__ - 4;
