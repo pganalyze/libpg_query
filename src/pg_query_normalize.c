@@ -303,71 +303,115 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 
 	if (node == NULL) return false;
 
-	if (IsA(node, A_Const))
+	switch (nodeTag(node))
 	{
-		RecordConstLocation(jstate, castNode(A_Const, node)->location);
-	}
-	else if (IsA(node, ParamRef))
-	{
-		/* Track the highest ParamRef number */
-		if (((ParamRef *) node)->number > jstate->highest_extern_param_id)
-			jstate->highest_extern_param_id = castNode(ParamRef, node)->number;
-	}
-	else if (IsA(node, DefElem))
-	{
-		DefElem * defElem = (DefElem *) node;
-		if (defElem->arg != NULL && IsA(defElem->arg, String)) {
-			for (int i = defElem->location; i < jstate->query_len; i++) {
-				if (jstate->query[i] == '\'') {
-					RecordConstLocation(jstate, i);
-					break;
-			  }
+		case T_A_Const:
+			RecordConstLocation(jstate, castNode(A_Const, node)->location);
+			break;
+		case T_ParamRef:
+			{
+				/* Track the highest ParamRef number */
+				if (((ParamRef *) node)->number > jstate->highest_extern_param_id)
+					jstate->highest_extern_param_id = castNode(ParamRef, node)->number;
 			}
-		}
-		return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
-	}
-	else if (IsA(node, RawStmt))
-	{
-		return const_record_walker((Node *) ((RawStmt *) node)->stmt, jstate);
-	}
-	else if (IsA(node, VariableSetStmt))
-	{
-		return const_record_walker((Node *) ((VariableSetStmt *) node)->args, jstate);
-	}
-	else if (IsA(node, CopyStmt))
-	{
-		return const_record_walker((Node *) ((CopyStmt *) node)->query, jstate);
-	}
-	else if (IsA(node, ExplainStmt))
-	{
-		return const_record_walker((Node *) ((ExplainStmt *) node)->query, jstate);
-	}
-	else if (IsA(node, CreateRoleStmt))
-	{
-		return const_record_walker((Node *) ((CreateRoleStmt *) node)->options, jstate);
-	}
-	else if (IsA(node, AlterRoleStmt))
-	{
-		return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
-	}
-	else if (IsA(node, DeclareCursorStmt))
-	{
-		return const_record_walker((Node *) ((DeclareCursorStmt *) node)->query, jstate);
+			break;
+		case T_DefElem:
+			{
+				DefElem * defElem = (DefElem *) node;
+				if (defElem->arg != NULL && IsA(defElem->arg, String)) {
+					for (int i = defElem->location; i < jstate->query_len; i++) {
+						if (jstate->query[i] == '\'') {
+							RecordConstLocation(jstate, i);
+							break;
+						}
+					}
+				}
+				return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
+			}
+			break;
+		case T_RawStmt:
+			return const_record_walker((Node *) ((RawStmt *) node)->stmt, jstate);
+		case T_VariableSetStmt:
+			return const_record_walker((Node *) ((VariableSetStmt *) node)->args, jstate);
+		case T_CopyStmt:
+			return const_record_walker((Node *) ((CopyStmt *) node)->query, jstate);
+		case T_ExplainStmt:
+			return const_record_walker((Node *) ((ExplainStmt *) node)->query, jstate);
+		case T_CreateRoleStmt:
+			return const_record_walker((Node *) ((CreateRoleStmt *) node)->options, jstate);
+		case T_AlterRoleStmt:
+			return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
+		case T_DeclareCursorStmt:
+			return const_record_walker((Node *) ((DeclareCursorStmt *) node)->query, jstate);
+		case T_SelectStmt:
+			{
+				SelectStmt *stmt = (SelectStmt *) node;
+				ListCell *lc;
+
+				if (const_record_walker((Node *) stmt->distinctClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->intoClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->targetList, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->fromClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->whereClause, jstate))
+					return true;
+
+				// Instead of walking all of groupClause (like raw_expression_tree_walker does),
+				// only walk certain items.
+				foreach(lc, stmt->groupClause)
+				{
+					// Do not walk A_Const values that are simple integers, this avoids
+					// turning "GROUP BY 1" into "GROUP BY $n", which obscures an important
+					// semantic meaning. This matches how pg_stat_statements handles the
+					// GROUP BY clause (i.e. it doesn't touch these constants)
+					if (IsA(lfirst(lc), A_Const) && IsA(&castNode(A_Const, lfirst(lc))->val, Integer))
+						continue;
+
+					if (const_record_walker((Node *) lfirst(lc), jstate))
+						return true;
+				}
+				if (const_record_walker((Node *) stmt->havingClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->windowClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->valuesLists, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->sortClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->limitOffset, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->limitCount, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->lockingClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->withClause, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->larg, jstate))
+					return true;
+				if (const_record_walker((Node *) stmt->rarg, jstate))
+					return true;
+
+				return false;
+			}
+		default:
+			{
+				PG_TRY();
+				{
+					return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+				}
+				PG_CATCH();
+				{
+					MemoryContextSwitchTo(normalize_context);
+					FlushErrorState();
+				}
+				PG_END_TRY();
+			}
 	}
 
-	PG_TRY();
-	{
-		result = raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
-	}
-	PG_CATCH();
-	{
-		MemoryContextSwitchTo(normalize_context);
-		result = false;
-		FlushErrorState();
-	}
-	PG_END_TRY();
-
-	return result;
+	return false;
 }
 
 PgQueryNormalizeResult pg_query_normalize(const char* input)
