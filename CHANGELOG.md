@@ -2,6 +2,24 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.5   2021-06-24
+
+* Update to Postgres 13.3 patch release [#114](https://github.com/pganalyze/libpg_query/pull/114)
+* Add optional Makefile target to build as shared library [#100](https://github.com/pganalyze/libpg_query/pull/100)
+* Normalize: Don't touch "GROUP BY 1" type statements, keep original text [#113](https://github.com/pganalyze/libpg_query/pull/113)
+  -  This avoids obscuring the semantic meaning of integers in the GROUP BY
+    clause, which is to reference a particular column in the target list.
+* Fingerprint: Cache list item hashes to fingerprint complex queries faster [#112](https://github.com/pganalyze/libpg_query/pull/112)
+  - This was exhibiting quite bad runtime behaviour before, causing both an
+    explosion in memory, as well as very high CPU runtime for complex queries.
+  - The new approach ensures we don't calculate the hashes for a particular
+    list more than once, which ensures that we roughly have quadratic runtime
+    instead of exponential runtime.
+* Deparser: Emit the RangeVar catalogname if present [#105](https://github.com/pganalyze/libpg_query/pull/105)
+* Fix crash in pg_scan function when encountering backslash escapes [#109](https://github.com/pganalyze/libpg_query/pull/109)
+* Integrate oss-fuzz fuzzer [#106](https://github.com/pganalyze/libpg_query/pull/106)
+
+
 ## 13-2.0.4   2021-04-05
 
 * Deparser: Fix crash in CopyStmt with HEADER or FREEZE inside WITH parens
