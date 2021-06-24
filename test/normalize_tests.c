@@ -9,6 +9,8 @@ const char* tests[] = {
   "CREATE ROLE postgres ENCRYPTED PASSWORD $1",
   "ALTER ROLE foo WITH PASSWORD 'bar' VALID UNTIL 'infinity'",
   "ALTER ROLE foo WITH PASSWORD $1 VALID UNTIL $2",
+  "SELECT a, SUM(b) FROM tbl WHERE c = 'foo' GROUP BY 1, 'bar'",
+  "SELECT a, SUM(b) FROM tbl WHERE c = $1 GROUP BY 1, $2",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
