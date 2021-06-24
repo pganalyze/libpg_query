@@ -1,12 +1,23 @@
 root_dir := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+word-dot = $(word $2,$(subst ., ,$1))
 
 TARGET = pg_query
 ARLIB = lib$(TARGET).a
+SOLIB = lib$(TARGET).so
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 13.2
+PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PROTOC_VERSION = 3.14.0
+
+VERSION = 2.0.4
+VERSION_MAJOR = $(call word-dot,$(VERSION),1)
+VERSION_MINOR = $(call word-dot,$(VERSION),2)
+VERSION_PATCH = $(call word-dot,$(VERSION),3)
+
+SONAME = $(SOLIB).$(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR)).$(VERSION_MINOR)
+SOLIBVER = $(SONAME).$(VERSION_PATCH)
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
 NOT_OBJ_FILES := src/pg_query_enum_defs.o src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
@@ -42,6 +53,8 @@ CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2)
 
 AR = ar rs
+INSTALL = install
+LN_S = ln -s
 RM = rm -f
 ECHO = echo
 
@@ -76,12 +89,14 @@ all: examples test build
 
 build: $(ARLIB)
 
+build_shared: $(SOLIB)
+
 clean:
 	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES) $(TESTS)
 	-@ $(RM) -rf {test,examples}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2)
 
-.PHONY: all clean build extract_source examples test
+.PHONY: all clean build build_shared extract_source examples test install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -145,6 +160,9 @@ extract_source: $(PGDIR)
 
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
+
+$(SOLIB): $(OBJ_FILES) Makefile
+	@$(CC) $(CFLAGS) -shared -Wl,-soname,$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )
@@ -251,3 +269,17 @@ test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 
 test/split: test/split.c test/split_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/split.c $(ARLIB) $(TEST_LDFLAGS)
+
+prefix = /usr/local
+libdir = $(prefix)/lib
+includedir = $(prefix)/include
+
+install: $(ARLIB) $(SOLIB)
+	$(INSTALL) -d "$(DESTDIR)"$(libdir)
+	$(INSTALL) -m 644 $(ARLIB) "$(DESTDIR)"$(libdir)/$(ARLIB)
+	$(INSTALL) -m 755 $(SOLIB) "$(DESTDIR)"$(libdir)/$(SOLIBVER)
+	$(LN_S) $(SOLIBVER) "$(DESTDIR)"$(libdir)/$(SONAME)
+	$(LN_S) $(SOLIBVER) "$(DESTDIR)"$(libdir)/$(SOLIB)
+	$(INSTALL) -d "$(DESTDIR)"$(includedir)/$(TARGET)
+	$(INSTALL) -m 644 pg_query.h "$(DESTDIR)"$(includedir)/pg_query.h
+	$(INSTALL) -m 644 protobuf/pg_query.proto "$(DESTDIR)"$(includedir)/$(TARGET)/pg_query.proto
