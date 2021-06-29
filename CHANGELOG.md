@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.6   2021-06-29
+
+* Normalize: Don't touch "ORDER BY 1" expressions, keep original text [#115](https://github.com/pganalyze/libpg_query/pull/115)
+  - This avoids obscuring the semantic meaning of integers in the ORDER BY
+    clause, which is to reference a particular column in the target list.
+
+
 ## 13-2.0.5   2021-06-24
 
 * Update to Postgres 13.3 patch release [#114](https://github.com/pganalyze/libpg_query/pull/114)
