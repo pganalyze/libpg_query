@@ -373,13 +373,21 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 					if (const_record_walker((Node *) lfirst(lc), jstate))
 						return true;
 				}
+				foreach(lc, stmt->sortClause)
+				{
+					// Similarly, don't turn "ORDER BY 1" into "ORDER BY $n"
+					if (IsA(lfirst(lc), SortBy) && IsA(castNode(SortBy, lfirst(lc))->node, A_Const) &&
+					    IsA(&castNode(A_Const, castNode(SortBy, lfirst(lc))->node)->val, Integer))
+						continue;
+
+					if (const_record_walker((Node *) lfirst(lc), jstate))
+						return true;
+				}
 				if (const_record_walker((Node *) stmt->havingClause, jstate))
 					return true;
 				if (const_record_walker((Node *) stmt->windowClause, jstate))
 					return true;
 				if (const_record_walker((Node *) stmt->valuesLists, jstate))
-					return true;
-				if (const_record_walker((Node *) stmt->sortClause, jstate))
 					return true;
 				if (const_record_walker((Node *) stmt->limitOffset, jstate))
 					return true;
