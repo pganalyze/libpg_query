@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.0.7   2021-07-16
+
+* Normalize: Don't modify constants in TypeName typmods/arrayBounds fields (#118)
+  - This matches how pg_stat_statement behaves, and avoids causing parsing
+    errors on the normalized statement
+* Don't fail builds on systems that have strchrnul support (FreeBSD)
+
+
 ## 13-2.0.6   2021-06-29
 
 * Normalize: Don't touch "ORDER BY 1" expressions, keep original text [#115](https://github.com/pganalyze/libpg_query/pull/115)
