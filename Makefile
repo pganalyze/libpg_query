@@ -142,6 +142,10 @@ extract_source: $(PGDIR)
 	echo "#undef HAVE_BACKTRACE_SYMBOLS" >> ./src/postgres/include/pg_config.h
 	# Avoid dependency on cpuid.h (only supported on x86 systems)
 	echo "#undef HAVE__GET_CPUID" >> ./src/postgres/include/pg_config.h
+	# Ensure we don't fail on systems that have strchrnul support (FreeBSD)
+	echo "#ifdef __FreeBSD__" >> ./src/postgres/include/pg_config.h
+	echo "#define HAVE_STRCHRNUL" >> ./src/postgres/include/pg_config.h
+	echo "#endif" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
