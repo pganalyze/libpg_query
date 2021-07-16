@@ -343,6 +343,9 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
 		case T_DeclareCursorStmt:
 			return const_record_walker((Node *) ((DeclareCursorStmt *) node)->query, jstate);
+		case T_TypeName:
+			/* Don't normalize constants in typmods or arrayBounds */
+			return false;
 		case T_SelectStmt:
 			{
 				SelectStmt *stmt = (SelectStmt *) node;
