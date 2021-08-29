@@ -469,6 +469,8 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		error = malloc(sizeof(PgQueryError));
 		error->message   = strdup(error_data->message);
 		error->filename  = strdup(error_data->filename);
+		error->funcname  = strdup(error_data->funcname);
+		error->context   = NULL;
 		error->lineno    = error_data->lineno;
 		error->cursorpos = error_data->cursorpos;
 
@@ -487,6 +489,7 @@ void pg_query_free_normalize_result(PgQueryNormalizeResult result)
   if (result.error) {
     free(result.error->message);
     free(result.error->filename);
+    free(result.error->funcname);
     free(result.error);
   }
 
