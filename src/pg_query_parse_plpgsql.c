@@ -108,7 +108,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 		}
 	}
 
-	assert(proc_source);
+	assert(proc_source != NULL);
 
 	if (stmt->returnType != NULL) {
 		foreach(lc3, stmt->returnType->names)
@@ -178,6 +178,26 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
 	plpgsql_DumpExecTree = false;
 	plpgsql_start_datums();
+
+	/* Setup parameter names */
+	foreach(lc, stmt->parameters)
+	{
+		FunctionParameter *param = lfirst_node(FunctionParameter, lc);
+		if (param->name != NULL)
+		{
+			char buf[32];
+			PLpgSQL_type *argdtype;
+			PLpgSQL_variable *argvariable;
+			PLpgSQL_nsitem_type argitemtype;
+			snprintf(buf, sizeof(buf), "$%d", foreach_current_index(lc) + 1);
+			argdtype = plpgsql_build_datatype(UNKNOWNOID, -1, InvalidOid, NULL);
+			argvariable = plpgsql_build_variable(param->name ? param->name : buf, 0, argdtype, false);
+			argitemtype = argvariable->dtype == PLPGSQL_DTYPE_VAR ? PLPGSQL_NSTYPE_VAR : PLPGSQL_NSTYPE_REC;
+			plpgsql_ns_additem(argitemtype, argvariable->dno, buf);
+			if (param->name != NULL)
+				plpgsql_ns_additem(argitemtype, argvariable->dno, param->name);
+		}
+	}
 
 	/* Set up as though in a function returning VOID */
 	function->fn_rettype = VOIDOID;
