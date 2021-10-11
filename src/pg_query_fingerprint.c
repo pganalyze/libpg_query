@@ -291,6 +291,21 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, c
 	}
 }
 
+uint64_t pg_query_fingerprint_node(const void *node)
+{
+	FingerprintContext ctx;
+	uint64 result;
+
+	_fingerprintInitContext(&ctx, NULL, false);
+	_fingerprintNode(&ctx, node, NULL, NULL, 0);
+
+	result = XXH3_64bits_digest(ctx.xxh_state);
+
+	_fingerprintFreeContext(&ctx);
+
+	return result;
+}
+
 PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, bool printTokens)
 {
 	MemoryContext ctx = NULL;

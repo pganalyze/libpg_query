@@ -1,5 +1,6 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
+#include "pg_query_fingerprint.h"
 
 #include "parser/parser.h"
 #include "parser/scanner.h"
@@ -14,6 +15,7 @@ typedef struct pgssLocationLen
 {
 	int			location;		/* start offset in query text */
 	int			length;			/* length in bytes, or -1 to ignore */
+	int			param_id;		/* Param id to use - if negative prefix, need to abs(..) and add highest_extern_param_id */
 } pgssLocationLen;
 
 /*
@@ -30,13 +32,31 @@ typedef struct pgssConstLocations
 	/* Current number of valid entries in clocations array */
 	int			clocations_count;
 
+	/* highest Param id we have assigned, not yet taking into account external param refs */
+	int			highest_normalize_param_id;
+
 	/* highest Param id we've seen, in order to start normalization correctly */
 	int			highest_extern_param_id;
 
 	/* query text */
 	const char * query;
 	int			query_len;
+
+	/* optional recording of assigned or discovered param refs, only active if param_refs is not NULL */
+	int *param_refs;
+	int param_refs_buf_size;
+	int param_refs_count;
 } pgssConstLocations;
+
+/*
+ * Intermediate working state struct to remember param refs for individual target list elements
+ */
+typedef struct FpAndParamRefs
+{
+	uint64_t fp;
+	int* param_refs;
+	int param_refs_count;
+} FpAndParamRefs;
 
 /*
  * comp_location: comparator for qsorting pgssLocationLen structs by location
@@ -230,7 +250,8 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 	for (i = 0; i < jstate->clocations_count; i++)
 	{
 		int			off,		/* Offset from start for cur tok */
-					tok_len;	/* Length (in bytes) of that tok */
+					tok_len,	/* Length (in bytes) of that tok */
+					param_id;	/* Param ID to be assigned */
 
 		off = jstate->clocations[i].location;
 		/* Adjust recorded location if we're dealing with partial string */
@@ -250,8 +271,10 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 		n_quer_loc += len_to_wrt;
 
 		/* And insert a param symbol in place of the constant token */
-		n_quer_loc += sprintf(norm_query + n_quer_loc, "$%d",
-							  i + 1 + jstate->highest_extern_param_id);
+		param_id = (jstate->clocations[i].param_id < 0) ?
+					jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
+					jstate->clocations[i].param_id;
+		n_quer_loc += sprintf(norm_query + n_quer_loc, "$%d", param_id);
 
 		quer_loc = off + tok_len;
 		last_off = off;
@@ -292,6 +315,18 @@ static void RecordConstLocation(pgssConstLocations *jstate, int location)
 		jstate->clocations[jstate->clocations_count].location = location;
 		/* initialize lengths to -1 to simplify fill_in_constant_lengths */
 		jstate->clocations[jstate->clocations_count].length = -1;
+		/* by default we assume that we need a new param ref */
+		jstate->clocations[jstate->clocations_count].param_id = - jstate->highest_normalize_param_id;
+		jstate->highest_normalize_param_id++;
+		/* record param ref number if requested */
+		if (jstate->param_refs != NULL) {
+			jstate->param_refs[jstate->param_refs_count] = jstate->clocations[jstate->clocations_count].param_id;
+			jstate->param_refs_count++;
+			if (jstate->param_refs_count >= jstate->param_refs_buf_size) {
+				jstate->param_refs_buf_size *= 2;
+				jstate->param_refs = (int *) repalloc(jstate->param_refs, jstate->param_refs_buf_size * sizeof(int));
+			}
+		}
 		jstate->clocations_count++;
 	}
 }
@@ -313,6 +348,15 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 				/* Track the highest ParamRef number */
 				if (((ParamRef *) node)->number > jstate->highest_extern_param_id)
 					jstate->highest_extern_param_id = castNode(ParamRef, node)->number;
+
+				if (jstate->param_refs != NULL) {
+					jstate->param_refs[jstate->param_refs_count] = ((ParamRef *) node)->number;
+					jstate->param_refs_count++;
+					if (jstate->param_refs_count >= jstate->param_refs_buf_size) {
+						jstate->param_refs_buf_size *= 2;
+						jstate->param_refs = (int *) repalloc(jstate->param_refs, jstate->param_refs_buf_size * sizeof(int));
+					}
+				}
 			}
 			break;
 		case T_DefElem:
@@ -350,35 +394,88 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			{
 				SelectStmt *stmt = (SelectStmt *) node;
 				ListCell *lc;
+				List *fp_and_param_refs_list = NIL;
 
 				if (const_record_walker((Node *) stmt->distinctClause, jstate))
 					return true;
 				if (const_record_walker((Node *) stmt->intoClause, jstate))
 					return true;
-				if (const_record_walker((Node *) stmt->targetList, jstate))
-					return true;
+				foreach(lc, stmt->targetList)
+				{
+					ResTarget *res_target = lfirst_node(ResTarget, lc);
+					FpAndParamRefs *fp_and_param_refs = palloc0(sizeof(FpAndParamRefs));
+
+					/* Save all param refs we encounter or assign */
+					jstate->param_refs = palloc0(1 * sizeof(int));
+					jstate->param_refs_buf_size = 1;
+					jstate->param_refs_count = 0;
+
+					/* Walk the element */
+					if (const_record_walker((Node *) res_target, jstate))
+						return true;
+
+					/* Remember fingerprint and param refs for later */
+					fp_and_param_refs->fp = pg_query_fingerprint_node(res_target->val);
+					fp_and_param_refs->param_refs = jstate->param_refs;
+					fp_and_param_refs->param_refs_count = jstate->param_refs_count;
+					fp_and_param_refs_list = lappend(fp_and_param_refs_list, fp_and_param_refs);
+
+					/* Reset for next element, or stop recording if this is the last element */
+					jstate->param_refs = NULL;
+					jstate->param_refs_buf_size = 0;
+					jstate->param_refs_count = 0;
+				}
 				if (const_record_walker((Node *) stmt->fromClause, jstate))
 					return true;
 				if (const_record_walker((Node *) stmt->whereClause, jstate))
 					return true;
 
-				// Instead of walking all of groupClause (like raw_expression_tree_walker does),
-				// only walk certain items.
+				/*
+				 * Instead of walking all of groupClause (like raw_expression_tree_walker does),
+				 * only walk certain items.
+				 */
 				foreach(lc, stmt->groupClause)
 				{
-					// Do not walk A_Const values that are simple integers, this avoids
-					// turning "GROUP BY 1" into "GROUP BY $n", which obscures an important
-					// semantic meaning. This matches how pg_stat_statements handles the
-					// GROUP BY clause (i.e. it doesn't touch these constants)
+					/*
+					 * Do not walk A_Const values that are simple integers, this avoids
+					 * turning "GROUP BY 1" into "GROUP BY $n", which obscures an important
+					 * semantic meaning. This matches how pg_stat_statements handles the
+					 * GROUP BY clause (i.e. it doesn't touch these constants)
+					 */
 					if (IsA(lfirst(lc), A_Const) && IsA(&castNode(A_Const, lfirst(lc))->val, Integer))
 						continue;
 
+					/*
+					 * Match up GROUP BY clauses against the target list, to assign the same
+					 * param refs as used in the target list - this ensures the query is valid,
+					 * instead of throwing a bogus "columns ... must appear in the GROUP BY
+					 * clause or be used in an aggregate function" error
+					 */
+					uint64_t fp = pg_query_fingerprint_node(lfirst(lc));
+					FpAndParamRefs *fppr = NULL;
+					ListCell *lc2;
+					foreach(lc2, fp_and_param_refs_list) {
+						if (fp == ((FpAndParamRefs *) lfirst(lc2))->fp) {
+							fppr = (FpAndParamRefs *) lfirst(lc2);
+							foreach_delete_current(fp_and_param_refs_list, lc2);
+							break;
+						}
+					}
+
+					int prev_cloc_count = jstate->clocations_count;
 					if (const_record_walker((Node *) lfirst(lc), jstate))
 						return true;
+
+					if (fppr != NULL && fppr->param_refs_count == jstate->clocations_count - prev_cloc_count) {
+						for (int i = prev_cloc_count; i < jstate->clocations_count; i++) {
+							jstate->clocations[i].param_id = fppr->param_refs[i - prev_cloc_count];
+						}
+						jstate->highest_normalize_param_id -= fppr->param_refs_count;
+					}
 				}
 				foreach(lc, stmt->sortClause)
 				{
-					// Similarly, don't turn "ORDER BY 1" into "ORDER BY $n"
+					/* Similarly, don't turn "ORDER BY 1" into "ORDER BY $n" */
 					if (IsA(lfirst(lc), SortBy) && IsA(castNode(SortBy, lfirst(lc))->node, A_Const) &&
 					    IsA(&castNode(A_Const, castNode(SortBy, lfirst(lc))->node)->val, Integer))
 						continue;
@@ -448,9 +545,13 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		jstate.clocations = (pgssLocationLen *)
 			palloc(jstate.clocations_buf_size * sizeof(pgssLocationLen));
 		jstate.clocations_count = 0;
+		jstate.highest_normalize_param_id = 1;
 		jstate.highest_extern_param_id = 0;
 		jstate.query = input;
 		jstate.query_len = query_len;
+		jstate.param_refs = NULL;
+		jstate.param_refs_buf_size = 0;
+		jstate.param_refs_count = 0;
 
 		/* Walk tree and record const locations */
 		const_record_walker((Node *) tree, &jstate);
