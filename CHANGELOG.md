@@ -2,6 +2,15 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.1.0   2021-10-12
+
+* Normalize: add funcname error object [#121](https://github.com/pganalyze/libpg_query/pull/121)
+* Normalize: Match GROUP BY against target list and re-use param refs [#124](https://github.com/pganalyze/libpg_query/pull/124)
+* PL/pgSQL: Setup namespace items for parameters, support RECORD types [#123](https://github.com/pganalyze/libpg_query/pull/123)
+  - This significantly improves parsing for PL/pgSQL functions, to the extent
+    that most functions should now parse successfully
+
+
 ## 13-2.0.7   2021-07-16
 
 * Normalize: Don't modify constants in TypeName typmods/arrayBounds fields (#118)
