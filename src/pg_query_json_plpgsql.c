@@ -126,6 +126,10 @@ static void dump_open(StringInfo out, PLpgSQL_stmt_open *stmt);
 static void dump_fetch(StringInfo out, PLpgSQL_stmt_fetch *stmt);
 static void dump_close(StringInfo out, PLpgSQL_stmt_close *stmt);
 static void dump_perform(StringInfo out, PLpgSQL_stmt_perform *stmt);
+static void dump_call(StringInfo out, PLpgSQL_stmt_call *stmt);
+static void dump_commit(StringInfo out, PLpgSQL_stmt_commit *stmt);
+static void dump_rollback(StringInfo out, PLpgSQL_stmt_rollback *stmt);
+static void dump_set(StringInfo out, PLpgSQL_stmt_set *stmt);
 static void dump_expr(StringInfo out, PLpgSQL_expr *expr);
 static void dump_function(StringInfo out, PLpgSQL_function *func);
 static void dump_exception(StringInfo out, PLpgSQL_exception *node);
@@ -206,6 +210,18 @@ dump_stmt(StringInfo out, PLpgSQL_stmt *node)
 			break;
 		case PLPGSQL_STMT_PERFORM:
 			dump_perform(out, (PLpgSQL_stmt_perform *) node);
+			break;
+		case PLPGSQL_STMT_CALL:
+			dump_call(out, (PLpgSQL_stmt_call *) node);
+			break;
+		case PLPGSQL_STMT_COMMIT:
+			dump_commit(out, (PLpgSQL_stmt_commit *) node);
+			break;
+		case PLPGSQL_STMT_ROLLBACK:
+			dump_rollback(out, (PLpgSQL_stmt_rollback *) node);
+			break;
+		case PLPGSQL_STMT_SET:
+			dump_set(out, (PLpgSQL_stmt_set *) node);
 			break;
 		default:
 			elog(ERROR, "unrecognized cmd_type: %d", node->cmd_type);
@@ -439,6 +455,44 @@ static void
 dump_perform(StringInfo out, PLpgSQL_stmt_perform *node)
 {
 	WRITE_NODE_TYPE("PLpgSQL_stmt_perform");
+
+	WRITE_INT_FIELD(lineno, lineno, lineno);
+	WRITE_EXPR_FIELD(expr);
+}
+
+static void
+dump_call(StringInfo out, PLpgSQL_stmt_call *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_stmt_call");
+
+	WRITE_INT_FIELD(lineno, lineno, lineno);
+	WRITE_EXPR_FIELD(expr);
+	WRITE_BOOL_FIELD(is_call, is_call, is_call);
+	WRITE_VARIABLE_FIELD(target);
+}
+
+static void
+dump_commit(StringInfo out, PLpgSQL_stmt_commit *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_stmt_commit");
+
+	WRITE_INT_FIELD(lineno, lineno, lineno);
+	WRITE_BOOL_FIELD(chain, chain, chain);
+}
+
+static void
+dump_rollback(StringInfo out, PLpgSQL_stmt_rollback *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_stmt_rollback");
+
+	WRITE_INT_FIELD(lineno, lineno, lineno);
+	WRITE_BOOL_FIELD(chain, chain, chain);
+}
+
+static void
+dump_set(StringInfo out, PLpgSQL_stmt_set *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_stmt_set");
 
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 	WRITE_EXPR_FIELD(expr);
