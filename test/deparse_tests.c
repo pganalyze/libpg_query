@@ -104,6 +104,7 @@ const char* tests[] = {
   "INSERT INTO x (y, z) VALUES (1, 'abc') ON CONFLICT (y) DO NOTHING RETURNING y",
   "INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International') ON CONFLICT (did) WHERE is_active DO NOTHING",
   "INSERT INTO distributors (did, dname) VALUES (9, 'Antwerp Design') ON CONFLICT ON CONSTRAINT distributors_pkey DO NOTHING",
+  "INSERT INTO foo (a, b, c, d) VALUES ($1) ON CONFLICT (id) DO UPDATE SET (a, b, c, d) = (excluded.a, excluded.b, excluded.c, CASE WHEN foo.d = excluded.d THEN excluded.d END)",
   "INSERT INTO employees SELECT * FROM people WHERE 1 = 1 GROUP BY name HAVING count(name) > 1 ORDER BY name DESC LIMIT 10 OFFSET 15 FOR UPDATE",
   "INSERT INTO films VALUES ('T_601', 'Yojimbo', 106, DEFAULT, 'Drama', DEFAULT)",
   "SELECT * FROM people FOR UPDATE OF name, email",
