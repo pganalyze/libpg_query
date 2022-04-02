@@ -321,8 +321,7 @@ static void deparseExpr(StringInfo str, Node *node)
 			deparseGroupingFunc(str, castNode(GroupingFunc, node));
 			break;
 		default:
-			Assert(false);
-			elog(ERROR, "unpermitted node type in a_expr/b_expr: %d",
+			elog(ERROR, "deparse: unpermitted node type in a_expr/b_expr: %d",
 				 (int) nodeTag(node));
 			break;
 	}
@@ -372,8 +371,7 @@ static void deparseCExpr(StringInfo str, Node *node)
 			deparseGroupingFunc(str, castNode(GroupingFunc, node));
 			break;
 		default:
-			Assert(false);
-			elog(ERROR, "unpermitted node type in c_expr: %d",
+			elog(ERROR, "deparse: unpermitted node type in c_expr: %d",
 				 (int) nodeTag(node));
 			break;
 	}
@@ -1416,7 +1414,7 @@ static void deparseTargetList(StringInfo str, List *l)
 		ResTarget *res_target = castNode(ResTarget, lfirst(lc));
 
 		if (res_target->val == NULL)
-			elog(ERROR, "deparse error in deparseTargetList: ResTarget without val");
+			elog(ERROR, "deparse: error in deparseTargetList: ResTarget without val");
 		else if (IsA(res_target->val, ColumnRef))
 			deparseColumnRef(str, castNode(ColumnRef, res_target->val));
 		else
@@ -9427,7 +9425,7 @@ static void deparseValue(StringInfo str, Value *value, DeparseNodeContext contex
 			appendStringInfoString(str, "NULL");
 			break;
 		default:
-			elog(ERROR, "unrecognized value node type: %d",
+			elog(ERROR, "deparse: unrecognized value node type: %d",
 				 (int) nodeTag(value));
 			break;
 	}
@@ -9900,8 +9898,7 @@ static void deparseStmt(StringInfo str, Node *node)
 			deparseCreateRangeStmt(str, castNode(CreateRangeStmt, node));
 			break;
 		default:
-			// No other node types are supported at the top-level
-			Assert(false);
+			elog(ERROR, "deparse: unsupported top-level node type: %u", nodeTag(node));
 	}
 }
 
