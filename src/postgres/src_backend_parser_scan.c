@@ -5664,7 +5664,7 @@ YY_RULE_SETUP
 						nchars = 1;
 
 					if (yytext[0] != '?' && strchr(yytext, '?') &&
-					  strcmp(yytext, "@?") != 0)
+					  strcmp(yytext, "#?") != 0 && strcmp(yytext, "@?") != 0)
 						/* Lex up to just before the ? character */
 						nchars = strchr(yytext, '?') - yytext;
 
