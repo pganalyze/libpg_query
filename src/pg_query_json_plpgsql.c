@@ -117,6 +117,7 @@ static void dump_return_next(StringInfo out, PLpgSQL_stmt_return_next *stmt);
 static void dump_return_query(StringInfo out, PLpgSQL_stmt_return_query *stmt);
 static void dump_raise(StringInfo out, PLpgSQL_stmt_raise *stmt);
 static void dump_raise_option(StringInfo out, PLpgSQL_raise_option *node);
+static void dump_assert(StringInfo out, PLpgSQL_stmt_assert *stmt);
 static void dump_execsql(StringInfo out, PLpgSQL_stmt_execsql *stmt);
 static void dump_dynexecute(StringInfo out, PLpgSQL_stmt_dynexecute *stmt);
 static void dump_dynfors(StringInfo out, PLpgSQL_stmt_dynfors *stmt);
@@ -186,6 +187,9 @@ dump_stmt(StringInfo out, PLpgSQL_stmt *node)
 			break;
 		case PLPGSQL_STMT_RAISE:
 			dump_raise(out, (PLpgSQL_stmt_raise *) node);
+			break;
+		case PLPGSQL_STMT_ASSERT:
+			dump_assert(out, (PLpgSQL_stmt_assert *) node);
 			break;
 		case PLPGSQL_STMT_EXECSQL:
 			dump_execsql(out, (PLpgSQL_stmt_execsql *) node);
@@ -560,6 +564,16 @@ dump_raise_option(StringInfo out, PLpgSQL_raise_option *node)
 
 	WRITE_ENUM_FIELD(opt_type, opt_type, opt_type);
 	WRITE_EXPR_FIELD(expr);
+}
+
+static void
+dump_assert(StringInfo out, PLpgSQL_stmt_assert *node)
+{
+	WRITE_NODE_TYPE("PLpgSQL_stmt_assert");
+
+	WRITE_INT_FIELD(lineno, lineno, lineno);
+	WRITE_EXPR_FIELD(cond);
+	WRITE_EXPR_FIELD(message);
 }
 
 static void
