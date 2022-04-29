@@ -5658,13 +5658,16 @@ YY_RULE_SETUP
 					 * spacing between ? as a substition character and a simple operator (e.g. "?=?")
 					 */
 					if (yytext[0] == '?' &&
+					  strcmp(yytext, "?<@") != 0 && strcmp(yytext, "?@>") != 0 &&
+					  strcmp(yytext, "?~") != 0 && strcmp(yytext, "?@") != 0 &&
 					  strcmp(yytext, "?|") != 0 && strcmp(yytext, "?&") != 0 &&
 					  strcmp(yytext, "?#") != 0 && strcmp(yytext, "?-") != 0 &&
 					  strcmp(yytext, "?-|") != 0 && strcmp(yytext, "?||") != 0)
 						nchars = 1;
 
 					if (yytext[0] != '?' && strchr(yytext, '?') &&
-					  strcmp(yytext, "#?") != 0 && strcmp(yytext, "@?") != 0)
+					  strcmp(yytext, "^?") != 0 && strcmp(yytext, "#?") != 0 &&
+					  strcmp(yytext, "@?") != 0)
 						/* Lex up to just before the ? character */
 						nchars = strchr(yytext, '?') - yytext;
 
