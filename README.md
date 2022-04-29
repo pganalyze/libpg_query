@@ -261,6 +261,7 @@ Products, tools and libraries built on pg_query:
 * [pgscope](https://github.com/gjalves/pgscope)
 * [pg_materialize](https://github.com/aanari/pg-materialize)
 * [DuckDB](https://github.com/cwida/duckdb) ([details](https://github.com/cwida/duckdb/tree/master/third_party/libpg_query))
+* [pgspot](https://github.com/timescale/pgspot)
 * and more
 
 Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/new/master) to add yours! :)
