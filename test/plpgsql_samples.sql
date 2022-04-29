@@ -511,3 +511,15 @@ BEGIN
   select 1 as c1, 2 as c2 into v3;
   v3.c1 := 4;
 END;$$;
+
+CREATE FUNCTION test_assert() RETURNS integer
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  ASSERT true;
+  ASSERT now() < '2000-01-01';
+  ASSERT false, 'msg';
+  ASSERT false, version();
+
+  RETURN 1;
+END;$$;
