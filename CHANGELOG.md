@@ -2,6 +2,19 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.1.1   2022-05-03
+
+* PL/pgSQL parser
+  - Add support for Assert [#135](https://github.com/pganalyze/libpg_query/pull/135)
+  - Add support for SET, COMMIT, ROLLBACK and CALL [#130](https://github.com/pganalyze/libpg_query/pull/130)
+* Add support for parsing more operators that include a `?` character (special cased to support old pg_stat_statements query texts)
+  - ltree extension [#136](https://github.com/pganalyze/libpg_query/pull/136)
+  - promscale extension [#133](https://github.com/pganalyze/libpg_query/pull/133)
+* Deparser improvements
+  - Prefix errors with "deparse", and remove some asserts [#131](https://github.com/pganalyze/libpg_query/pull/131)
+  - Fix potential segfault when passing invalid protobuf (RawStmt without Stmt) [#128](https://github.com/pganalyze/libpg_query/pull/128)
+
+
 ## 13-2.1.0   2021-10-12
 
 * Normalize: add funcname error object [#121](https://github.com/pganalyze/libpg_query/pull/121)
