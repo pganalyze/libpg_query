@@ -37,6 +37,14 @@ int main()
 		pg_query_free_fingerprint_result(result);
 	}
 
+	// Ensures that there isn't a memory leak in the error case
+	PgQueryFingerprintResult result = pg_query_fingerprint("SELECT !");
+	if (strcmp(result.error->message, "syntax error at end of input") != 0) {
+		printf("\nERROR mismatch: %s\n", result.error->message);
+		return EXIT_FAILURE;
+	}
+	pg_query_free_fingerprint_result(result);
+
 	printf("\n");
 
 	pg_query_exit();
