@@ -374,6 +374,7 @@ void pg_query_free_fingerprint_result(PgQueryFingerprintResult result)
 	if (result.error) {
 		free(result.error->message);
 		free(result.error->filename);
+		free(result.error->funcname);
 		free(result.error);
 	}
 
