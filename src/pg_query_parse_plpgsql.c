@@ -73,6 +73,40 @@ static void plpgsql_compile_error_callback(void *arg)
 				   plpgsql_error_funcname, plpgsql_latest_lineno());
 }
 
+static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
+{
+	char *proc_source = NULL;
+	PLpgSQL_function *function;
+	ErrorContextCallback plerrcontext;
+	const ListCell *lc;
+	char *language = "plpgsql";
+
+	assert(IsA(stmt, DoStmt));
+
+	foreach(lc, stmt->args)
+	{
+		DefElem* elem = (DefElem*) lfirst(lc);
+
+		if (strcmp(elem->defname, "as") == 0) {
+
+			assert(IsA(elem->arg, String));
+			proc_source = strVal(elem->arg);
+		} else if (strcmp(elem->defname, "language") == 0) {
+			language = strVal(elem->arg);
+		}
+	}
+
+	assert(proc_source != NULL);
+
+	if(strcmp(language, "plpgsql") != 0) { 
+		function = (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
+	} else {
+		function = plpgsql_compile_inline(proc_source);
+	}
+
+	return function;
+}
+
 static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 {
 	char *func_name;
@@ -87,6 +121,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	const ListCell *lc, *lc2, *lc3;
 	bool is_trigger = false;
 	bool is_setof = false;
+	char *language = "plpgsql";
 
 	assert(IsA(stmt, CreateFunctionStmt));
 
@@ -105,10 +140,16 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 			{
 				proc_source = strVal(lfirst(lc2));
 			}
+		} else if (strcmp(elem->defname, "language") == 0) {
+			language = strVal(elem->arg);
 		}
 	}
 
 	assert(proc_source != NULL);
+
+	if(strcmp(language, "plpgsql") != 0) { 
+		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
+	}
 
 	if (stmt->returnType != NULL) {
 		foreach(lc3, stmt->returnType->names)
@@ -354,12 +395,135 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(CreateFunctionStmt
 	return result;
 }
 
+PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql_do(DoStmt* stmt)
+{
+	PgQueryInternalPlpgsqlFuncAndError result = {0};
+	MemoryContext cctx = CurrentMemoryContext;
+
+	char stderr_buffer[STDERR_BUFFER_LEN + 1] = {0};
+#ifndef DEBUG
+	int stderr_global;
+	int stderr_pipe[2];
+#endif
+
+#ifndef DEBUG
+	// Setup pipe for stderr redirection
+	if (pipe(stderr_pipe) != 0) {
+		PgQueryError* error = malloc(sizeof(PgQueryError));
+
+		error->message = strdup("Failed to open pipe, too many open file descriptors")
+
+		result.error = error;
+
+		return result;
+	}
+
+	fcntl(stderr_pipe[0], F_SETFL, fcntl(stderr_pipe[0], F_GETFL) | O_NONBLOCK);
+
+	// Redirect stderr to the pipe
+	stderr_global = dup(STDERR_FILENO);
+	dup2(stderr_pipe[1], STDERR_FILENO);
+	close(stderr_pipe[1]);
+#endif
+
+	PG_TRY();
+	{
+		result.func = compile_do_stmt(stmt);
+
+#ifndef DEBUG
+		// Save stderr for result
+		read(stderr_pipe[0], stderr_buffer, STDERR_BUFFER_LEN);
+#endif
+
+		if (strlen(stderr_buffer) > 0) {
+			PgQueryError* error = malloc(sizeof(PgQueryError));
+			error->message = strdup(stderr_buffer);
+			error->filename = "";
+			error->funcname = "";
+			error->context  = "";
+			result.error = error;
+		}
+	}
+	PG_CATCH();
+	{
+		ErrorData* error_data;
+		PgQueryError* error;
+
+		MemoryContextSwitchTo(cctx);
+		error_data = CopyErrorData();
+
+		// Note: This is intentionally malloc so exiting the memory context doesn't free this
+		error = malloc(sizeof(PgQueryError));
+		error->message   = strdup(error_data->message);
+		error->filename  = strdup(error_data->filename);
+		error->funcname  = strdup(error_data->funcname);
+		error->context   = strdup(error_data->context);
+		error->lineno    = error_data->lineno;
+		error->cursorpos = error_data->cursorpos;
+
+		result.error = error;
+		FlushErrorState();
+	}
+	PG_END_TRY();
+
+#ifndef DEBUG
+	// Restore stderr, close pipe
+	dup2(stderr_global, STDERR_FILENO);
+	close(stderr_pipe[0]);
+	close(stderr_global);
+#endif
+
+	return result;
+}
+
 typedef struct createFunctionStmts
 {
 	CreateFunctionStmt **stmts;
 	int stmts_buf_size;
 	int stmts_count;
 } createFunctionStmts;
+
+typedef struct doStmts
+{
+	DoStmt **stmts;
+	int stmts_buf_size;
+	int stmts_count;
+} doStmts;
+
+static bool do_stmts_walker(Node *node, doStmts *state)
+{
+	bool result;
+	MemoryContext ccxt = CurrentMemoryContext;
+
+	if (node == NULL) return false;
+
+	if (IsA(node, DoStmt))
+	{
+		if (state->stmts_count >= state->stmts_buf_size)
+		{
+			state->stmts_buf_size *= 2;
+			state->stmts = (DoStmt**) repalloc(state->stmts, state->stmts_buf_size * sizeof(DoStmt*));
+		}
+		state->stmts[state->stmts_count] = (DoStmt *) node;
+		state->stmts_count++;
+	} else if (IsA(node, RawStmt)) {
+		return do_stmts_walker((Node *) ((RawStmt *) node)->stmt, state);
+	}
+
+	PG_TRY();
+	{
+		result = raw_expression_tree_walker(node, do_stmts_walker, (void*) state);
+	}
+	PG_CATCH();
+	{
+		MemoryContextSwitchTo(ccxt);
+		FlushErrorState();
+		result = false;
+	}
+	PG_END_TRY();
+
+	return result;
+}
 
 static bool create_function_stmts_walker(Node *node, createFunctionStmts *state)
 {
@@ -401,7 +565,8 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 	MemoryContext ctx = NULL;
 	PgQueryPlpgsqlParseResult result = {0};
 	PgQueryInternalParsetreeAndError parse_result;
-	createFunctionStmts statements;
+	createFunctionStmts createFunctionStatements;
+	doStmts doStatements;
 	size_t i;
 
 	ctx = pg_query_enter_memory_context();
@@ -413,13 +578,19 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 		return result;
 	}
 
-	statements.stmts_buf_size = 100;
-	statements.stmts = (CreateFunctionStmt**) palloc(statements.stmts_buf_size * sizeof(CreateFunctionStmt*));
-	statements.stmts_count = 0;
+	createFunctionStatements.stmts_buf_size = 100;
+	createFunctionStatements.stmts = (CreateFunctionStmt**) palloc(createFunctionStatements.stmts_buf_size * sizeof(CreateFunctionStmt*));
+	createFunctionStatements.stmts_count = 0;
 
-	create_function_stmts_walker((Node*) parse_result.tree, &statements);
+	doStatements.stmts_buf_size = 100;
+	doStatements.stmts = (DoStmt**) palloc(doStatements.stmts_buf_size * sizeof(DoStmt*));
+	doStatements.stmts_count = 0;
 
-	if (statements.stmts_count == 0) {
+	create_function_stmts_walker((Node*) parse_result.tree, &createFunctionStatements);
+
+	do_stmts_walker((Node*) parse_result.tree, &doStatements);
+
+	if (createFunctionStatements.stmts_count == 0 && doStatements.stmts_count == 0) {
 		result.plpgsql_funcs = strdup("[]");
 		pg_query_exit_memory_context(ctx);
 		return result;
@@ -427,10 +598,44 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 
 	result.plpgsql_funcs = strdup("[\n");
 
-	for (i = 0; i < statements.stmts_count; i++) {
+	for (i = 0; i < createFunctionStatements.stmts_count; i++) {
 		PgQueryInternalPlpgsqlFuncAndError func_and_error;
 
-		func_and_error = pg_query_raw_parse_plpgsql(statements.stmts[i]);
+		func_and_error = pg_query_raw_parse_plpgsql(createFunctionStatements.stmts[i]);
+
+		// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
+		result.error = func_and_error.error;
+
+		if (result.error != NULL) {
+			pg_query_exit_memory_context(ctx);
+			return result;
+		}
+
+		if (func_and_error.func != NULL) {
+			char *func_json;
+			char *new_out;
+
+			func_json = plpgsqlToJSON(func_and_error.func);
+			plpgsql_free_function_memory(func_and_error.func);
+
+			int err = asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
+			if (err == -1) {
+				PgQueryError* error = malloc(sizeof(PgQueryError));
+				error->message = strdup("Failed to output PL/pgSQL functions due to asprintf failure");
+				result.error = error;
+			} else {
+				free(result.plpgsql_funcs);
+				result.plpgsql_funcs = new_out;
+			}
+
+			pfree(func_json);
+		}
+	}
+
+	for (i = 0; i < doStatements.stmts_count; i++) {
+		PgQueryInternalPlpgsqlFuncAndError func_and_error;
+
+		func_and_error = pg_query_raw_parse_plpgsql_do(doStatements.stmts[i]);
 
 		// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 		result.error = func_and_error.error;
