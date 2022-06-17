@@ -4,7 +4,7 @@
 
 #include "protobuf/pg_query.pb-c.h"
 
-size_t testCount = 12;
+size_t testCount = 13;
 const char* tests[] = {
   "SELECT 1",
   "SELECT \\s 1",
