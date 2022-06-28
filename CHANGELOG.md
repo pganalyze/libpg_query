@@ -2,6 +2,12 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.1.2   2022-06-28
+
+* Add support for analyzing PL/pgSQL code inside DO blocks [#142](https://github.com/pganalyze/libpg_query/pull/142)
+* Fix memory leak in pg_query_fingerprint error handling [#141](https://github.com/pganalyze/libpg_query/pull/141)
+
+
 ## 13-2.1.1   2022-05-03
 
 * PL/pgSQL parser
