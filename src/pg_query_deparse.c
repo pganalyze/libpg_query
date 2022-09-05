@@ -5680,6 +5680,10 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			appendStringInfoString(str, "ALTER COLUMN ");
 			options = "SET STORAGE";
 			break;
+		case AT_SetCompression: /* alter column set compression */
+			appendStringInfoString(str, "ALTER COLUMN ");
+			options = "SET COMPRESSION";
+			break;
 		case AT_DropColumn: /* drop column */
 			if (context == DEPARSE_NODE_CONTEXT_ALTER_TYPE)
 				appendStringInfoString(str, "DROP ATTRIBUTE ");
@@ -5917,6 +5921,13 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			break;
 		case AT_SetStorage:
 			deparseColId(str, strVal(alter_table_cmd->def));
+			appendStringInfoChar(str, ' ');
+			break;
+		case AT_SetCompression:
+			if (strcmp(strVal(alter_table_cmd->def), "default") == 0)
+				appendStringInfoString(str, "DEFAULT");
+			else
+				deparseColId(str, strVal(alter_table_cmd->def));
 			appendStringInfoChar(str, ' ');
 			break;
 		case AT_AddIdentity:
