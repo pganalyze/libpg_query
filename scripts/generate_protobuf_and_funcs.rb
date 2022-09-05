@@ -374,6 +374,7 @@ message ScanToken {
   int32 end = 2;
   Token token = 4;
   KeywordKind keyword_kind = 5;
+  bool bare_label = 6;
 }
 
 enum KeywordKind {

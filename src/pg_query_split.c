@@ -59,7 +59,7 @@ PgQuerySplitResult pg_query_split_with_scanner(const char* input)
     {
       int tok = core_yylex(&yylval, &yylloc, yyscanner);
       switch (tok) {
-      #define PG_KEYWORD(a,b,c) case b: is_keyword = true; break;
+      #define PG_KEYWORD(a,b,c,d) case b: is_keyword = true; break;
       #include "parser/kwlist.h"
       default: is_keyword = false;
       }
@@ -88,7 +88,7 @@ PgQuerySplitResult pg_query_split_with_scanner(const char* input)
     {
       int tok = core_yylex(&yylval, &yylloc, yyscanner);
       switch (tok) {
-      #define PG_KEYWORD(a,b,c) case b: is_keyword = true; break;
+      #define PG_KEYWORD(a,b,c,d) case b: is_keyword = true; break;
       #include "parser/kwlist.h"
       default: is_keyword = false;
       }
