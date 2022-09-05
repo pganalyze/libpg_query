@@ -107,6 +107,14 @@
           "comment": ""
         },
         {
+          "name": "isReturn",
+          "c_type": "bool",
+          "comment": "/* is a RETURN statement */"
+        },
+        {
+          "comment": ""
+        },
+        {
           "name": "cteList",
           "c_type": "List*",
           "comment": "/* WITH list (of CommonTableExpr's) */"
@@ -163,6 +171,11 @@
           "name": "groupClause",
           "c_type": "List*",
           "comment": "/* a list of SortGroupClause's */"
+        },
+        {
+          "name": "groupDistinct",
+          "c_type": "bool",
+          "comment": "/* is the group by clause distinct? */"
         },
         {
           "comment": ""
@@ -521,6 +534,11 @@
           "comment": "/* FILTER clause, if any */"
         },
         {
+          "name": "over",
+          "c_type": "WindowDef*",
+          "comment": "/* OVER clause, if any */"
+        },
+        {
           "name": "agg_within_group",
           "c_type": "bool",
           "comment": "/* ORDER BY appeared in WITHIN GROUP */"
@@ -541,9 +559,9 @@
           "comment": "/* last argument was labeled VARIADIC */"
         },
         {
-          "name": "over",
-          "c_type": "WindowDef*",
-          "comment": "/* OVER clause, if any */"
+          "name": "funcformat",
+          "c_type": "CoercionForm",
+          "comment": "/* how to display this node */"
         },
         {
           "name": "location",
@@ -976,6 +994,11 @@
           "comment": "/* type of column */"
         },
         {
+          "name": "compression",
+          "c_type": "char*",
+          "comment": "/* compression method for column */"
+        },
+        {
           "name": "inhcount",
           "c_type": "int",
           "comment": "/* number of times column is inherited */"
@@ -1399,6 +1422,11 @@
           "name": "bound",
           "c_type": "PartitionBoundSpec*",
           "comment": "/* FOR VALUES, if attaching */"
+        },
+        {
+          "name": "concurrent",
+          "c_type": "bool",
+          "comment": null
         }
       ],
       "comment": "/*\n * PartitionCmd - info for ALTER TABLE/INDEX ATTACH/DETACH PARTITION commands\n */\n"
@@ -1496,6 +1524,17 @@
           "name": "joinrightcols",
           "c_type": "List*",
           "comment": "/* right-side input column numbers */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * join_using_alias is an alias clause attached directly to JOIN/USING. It\n\t * is different from the alias field (below) in that it does not hide the\n\t * range variables of the tables being joined.\n\t */\n"
+        },
+        {
+          "name": "join_using_alias",
+          "c_type": "Alias*",
+          "comment": null
         },
         {
           "comment": ""
@@ -1660,7 +1699,7 @@
           "comment": "/* security barrier quals to apply, if any */"
         }
       ],
-      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used anymore during parsing, since the parser now uses\n *\t  a separate \"namespace\" data structure to control visibility, but it is\n *\t  needed by ruleutils.c to determine whether RTEs should be shown in\n *\t  decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  updatedCols is also used in some other places, for example, to determine\n *\t  which triggers to fire and in FDWs to know which changed columns they\n *\t  need to ship off.\n *\n *\t  Generated columns that are caused to be updated by an update to a base\n *\t  column are listed in extraUpdatedCols.  This is not considered for\n *\t  permission checking, but it is useful in those places that want to know\n *\t  the full set of columns being updated as opposed to only the ones the\n *\t  user explicitly mentioned in the query.  (There is currently no need for\n *\t  an extraInsertedCols, but it could exist.)  Note that extraUpdatedCols\n *\t  is populated during query rewrite, NOT in the parser, since generated\n *\t  columns could be added after a rule has been parsed and stored.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used during parsing (except in transformLockingClause,\n *\t  q.v.); the parser now uses a separate \"namespace\" data structure to\n *\t  control visibility.  But it is needed by ruleutils.c to determine\n *\t  whether RTEs should be shown in decompiled queries.\n *\n *\t  requiredPerms and checkAsUser specify run-time access permissions\n *\t  checks to be performed at query startup.  The user must have *all*\n *\t  of the permissions that are OR'd together in requiredPerms (zero\n *\t  indicates no permissions checking).  If checkAsUser is not zero,\n *\t  then do the permissions checks using the access rights of that user,\n *\t  not the current effective user ID.  (This allows rules to act as\n *\t  setuid gateways.)  Permissions checks only apply to RELATION RTEs.\n *\n *\t  For SELECT/INSERT/UPDATE permissions, if the user doesn't have\n *\t  table-wide permissions then it is sufficient to have the permissions\n *\t  on all columns identified in selectedCols (for SELECT) and/or\n *\t  insertedCols and/or updatedCols (INSERT with ON CONFLICT DO UPDATE may\n *\t  have all 3).  selectedCols, insertedCols and updatedCols are bitmapsets,\n *\t  which cannot have negative integer members, so we subtract\n *\t  FirstLowInvalidHeapAttributeNumber from column numbers before storing\n *\t  them in these fields.  A whole-row Var reference is represented by\n *\t  setting the bit for InvalidAttrNumber.\n *\n *\t  updatedCols is also used in some other places, for example, to determine\n *\t  which triggers to fire and in FDWs to know which changed columns they\n *\t  need to ship off.\n *\n *\t  Generated columns that are caused to be updated by an update to a base\n *\t  column are listed in extraUpdatedCols.  This is not considered for\n *\t  permission checking, but it is useful in those places that want to know\n *\t  the full set of columns being updated as opposed to only the ones the\n *\t  user explicitly mentioned in the query.  (There is currently no need for\n *\t  an extraInsertedCols, but it could exist.)  Note that extraUpdatedCols\n *\t  is populated during query rewrite, NOT in the parser, since generated\n *\t  columns could be added after a rule has been parsed and stored.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
     },
     "RangeTblFunction": {
       "fields": [
@@ -2036,6 +2075,99 @@
       ],
       "comment": "/*\n * OnConflictClause -\n *\t\trepresentation of ON CONFLICT clause\n *\n * Note: OnConflictClause does not propagate into the Query representation.\n */\n"
     },
+    "CTESearchClause": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "search_col_list",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "name": "search_breadth_first",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "name": "search_seq_column",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": null
+        }
+      ],
+      "comment": null
+    },
+    "CTECycleClause": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "cycle_col_list",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "name": "cycle_mark_column",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "cycle_mark_value",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "name": "cycle_mark_default",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "name": "cycle_path_column",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "comment": "\t/* These fields are set during parse analysis: */\n"
+        },
+        {
+          "name": "cycle_mark_type",
+          "c_type": "Oid",
+          "comment": "/* common type of _value and _default */"
+        },
+        {
+          "name": "cycle_mark_typmod",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "cycle_mark_collation",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "name": "cycle_mark_neop",
+          "c_type": "Oid",
+          "comment": "/* <> operator for type */"
+        }
+      ],
+      "comment": null
+    },
     "CommonTableExpr": {
       "fields": [
         {
@@ -2065,6 +2197,16 @@
           "name": "ctequery",
           "c_type": "Node*",
           "comment": "/* the CTE's subquery */"
+        },
+        {
+          "name": "search_clause",
+          "c_type": "CTESearchClause*",
+          "comment": null
+        },
+        {
+          "name": "cycle_clause",
+          "c_type": "CTECycleClause*",
+          "comment": null
         },
         {
           "name": "location",
@@ -2321,6 +2463,11 @@
           "comment": "/* GROUP BY clauses */"
         },
         {
+          "name": "groupDistinct",
+          "c_type": "bool",
+          "comment": "/* Is this GROUP BY DISTINCT? */"
+        },
+        {
           "name": "havingClause",
           "c_type": "Node*",
           "comment": "/* HAVING conditional-expression */"
@@ -2471,6 +2618,59 @@
       ],
       "comment": "/* ----------------------\n *\t\tSet Operation node for post-analysis query trees\n *\n * After parse analysis, a SELECT with set operations is represented by a\n * top-level Query node containing the leaf SELECTs as subqueries in its\n * range table.  Its setOperations field shows the tree of set operations,\n * with leaf SelectStmt nodes replaced by RangeTblRef nodes, and internal\n * nodes replaced by SetOperationStmt nodes.  Information about the output\n * column types is added, too.  (Note that the child nodes do not necessarily\n * produce these types directly, but we've checked that their output types\n * can be coerced to the output column type.)  Also, if it's not UNION ALL,\n * information about the types' sort/group semantics is provided in the form\n * of a SortGroupClause list (same representation as, eg, DISTINCT).\n * The resolved common column collations are provided too; but note that if\n * it's not UNION ALL, it's okay for a column to not have a common collation,\n * so a member of the colCollations list could be InvalidOid even though the\n * column has a collatable type.\n * ----------------------\n */\n"
     },
+    "ReturnStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "returnval",
+          "c_type": "Node*",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * RETURN statement (inside SQL function body)\n */\n"
+    },
+    "PLAssignStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": "/* initial column name */"
+        },
+        {
+          "name": "indirection",
+          "c_type": "List*",
+          "comment": "/* subscripts and field names, if any */"
+        },
+        {
+          "name": "nnames",
+          "c_type": "int",
+          "comment": "/* number of names to use in ColumnRef */"
+        },
+        {
+          "name": "val",
+          "c_type": "SelectStmt*",
+          "comment": "/* the PL/pgSQL expression to assign */"
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": "/* name's token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/* ----------------------\n *\t\tPL/pgSQL Assignment Statement\n *\n * Like SelectStmt, this is transformed into a SELECT Query.\n * However, the targetlist of the result looks more like an UPDATE.\n * ----------------------\n */\n"
+    },
     "CreateSchemaStmt": {
       "fields": [
         {
@@ -2519,7 +2719,7 @@
           "comment": "/* list of subcommands */"
         },
         {
-          "name": "relkind",
+          "name": "objtype",
           "c_type": "ObjectType",
           "comment": "/* type of object */"
         },
@@ -2592,6 +2792,11 @@
           "name": "missing_ok",
           "c_type": "bool",
           "comment": "/* skip error if missing? */"
+        },
+        {
+          "name": "recurse",
+          "c_type": "bool",
+          "comment": "/* exec-time recursion */"
         }
       ],
       "comment": "/* ----------------------\n *\tAlter Table\n * ----------------------\n */\n"
@@ -2697,6 +2902,11 @@
           "comment": "/* grant or revoke grant option */"
         },
         {
+          "name": "grantor",
+          "c_type": "RoleSpec*",
+          "comment": null
+        },
+        {
           "name": "behavior",
           "c_type": "DropBehavior",
           "comment": "/* drop behavior (for REVOKE) */"
@@ -2719,15 +2929,20 @@
         {
           "name": "objargs",
           "c_type": "List*",
-          "comment": "/* list of Typename nodes */"
+          "comment": "/* list of Typename nodes (input args only) */"
+        },
+        {
+          "name": "objfuncargs",
+          "c_type": "List*",
+          "comment": "/* list of FunctionParameter nodes */"
         },
         {
           "name": "args_unspecified",
           "c_type": "bool",
-          "comment": "/* argument list was omitted, so name must\n\t\t\t\t\t\t\t\t\t * be unique (note that objargs == NIL\n\t\t\t\t\t\t\t\t\t * means zero args) */\n"
+          "comment": "/* argument list was omitted? */"
         }
       ],
-      "comment": "/*\n * Note: ObjectWithArgs carries only the types of the input parameters of the\n * function.  So it is sufficient to identify an existing function, but it\n * is not enough info to define a function nor to call it.\n */\n"
+      "comment": "/*\n * ObjectWithArgs represents a function/procedure/operator name plus parameter\n * identification.\n *\n * objargs includes only the types of the input parameters of the object.\n * In some contexts, that will be all we have, and it's enough to look up\n * objects according to the traditional Postgres rules (i.e., when only input\n * arguments matter).\n *\n * objfuncargs, if not NIL, carries the full specification of the parameter\n * list, including parameter mode annotations.\n *\n * Some grammar productions can set args_unspecified = true instead of\n * providing parameter info.  In this case, lookup will succeed only if\n * the object name is unique.  Note that otherwise, NIL parameter lists\n * mean zero arguments.\n */\n"
     },
     "AccessPriv": {
       "fields": [
@@ -2924,7 +3139,7 @@
         {
           "name": "inhRelations",
           "c_type": "List*",
-          "comment": "/* relations to inherit from (list of\n\t\t\t\t\t\t\t\t * inhRelation) */\n"
+          "comment": "/* relations to inherit from (list of\n\t\t\t\t\t\t\t\t * RangeVar) */\n"
         },
         {
           "name": "partbound",
@@ -3727,6 +3942,16 @@
           "comment": null
         },
         {
+          "name": "replace",
+          "c_type": "bool",
+          "comment": "/* replace trigger if already exists */"
+        },
+        {
+          "name": "isconstraint",
+          "c_type": "bool",
+          "comment": "/* This is a constraint trigger */"
+        },
+        {
           "name": "trigname",
           "c_type": "char*",
           "comment": "/* TRIGGER's name */"
@@ -3776,11 +4001,6 @@
           "name": "whenClause",
           "c_type": "Node*",
           "comment": "/* qual expression, or NULL if none */"
-        },
-        {
-          "name": "isconstraint",
-          "c_type": "bool",
-          "comment": "/* This is a constraint trigger */"
         },
         {
           "comment": "\t/* explicitly named transition data */\n"
@@ -4615,12 +4835,37 @@
           "comment": "/* comment to apply to stats, or NULL */"
         },
         {
+          "name": "transformed",
+          "c_type": "bool",
+          "comment": "/* true when transformStatsStmt is finished */"
+        },
+        {
           "name": "if_not_exists",
           "c_type": "bool",
           "comment": "/* do nothing if stats name already exists */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Statistics Statement\n * ----------------------\n */\n"
+    },
+    "StatsElem": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": "/* name of attribute to index, or NULL */"
+        },
+        {
+          "name": "expr",
+          "c_type": "Node*",
+          "comment": "/* expression to index, or NULL */"
+        }
+      ],
+      "comment": "/*\n * StatsElem - statistics parameters (used in CREATE STATISTICS)\n *\n * For a plain attribute, 'name' is the name of the referenced table column\n * and 'expr' is NULL.  For an expression, 'name' is NULL and 'expr' is the\n * expression tree.\n */\n"
     },
     "AlterStatsStmt": {
       "fields": [
@@ -4683,6 +4928,11 @@
           "name": "options",
           "c_type": "List*",
           "comment": "/* a list of DefElem */"
+        },
+        {
+          "name": "sql_body",
+          "c_type": "Node*",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Function Statement\n * ----------------------\n */\n"
@@ -4802,10 +5052,15 @@
         {
           "name": "funcexpr",
           "c_type": "FuncExpr*",
-          "comment": "/* transformed */"
+          "comment": "/* transformed call, with only input args */"
+        },
+        {
+          "name": "outargs",
+          "c_type": "List*",
+          "comment": "/* transformed output-argument expressions */"
         }
       ],
-      "comment": "/* ----------------------\n *\t\tCALL statement\n * ----------------------\n */\n"
+      "comment": "/* ----------------------\n *\t\tCALL statement\n *\n * OUT-mode arguments are removed from the transformed funcexpr.  The outargs\n * list contains copies of the expressions for all output arguments, in the\n * order of the procedure's declared arguments.  (outargs is never evaluated,\n * but is useful to the caller as a reference for what to assign to.)\n * ----------------------\n */\n"
     },
     "CallContext": {
       "fields": [
@@ -5415,12 +5670,12 @@
           "comment": "/* original index defined */"
         },
         {
-          "name": "options",
-          "c_type": "int",
-          "comment": "/* OR of ClusterOption flags */"
+          "name": "params",
+          "c_type": "List*",
+          "comment": "/* list of DefElem nodes */"
         }
       ],
-      "comment": null
+      "comment": "/* ----------------------\n *\t\tCluster Statement (support pbrown's cluster index implementation)\n * ----------------------\n */\n"
     },
     "VacuumStmt": {
       "fields": [
@@ -5510,7 +5765,7 @@
           "comment": "/* destination table */"
         },
         {
-          "name": "relkind",
+          "name": "objtype",
           "c_type": "ObjectType",
           "comment": "/* OBJECT_TABLE or OBJECT_MATVIEW */"
         },
@@ -5645,14 +5900,9 @@
           "comment": "/* name of database to reindex */"
         },
         {
-          "name": "options",
-          "c_type": "int",
-          "comment": "/* Reindex options flags */"
-        },
-        {
-          "name": "concurrent",
-          "c_type": "bool",
-          "comment": "/* reindex concurrently? */"
+          "name": "params",
+          "c_type": "List*",
+          "comment": "/* list of DefElem nodes */"
         }
       ],
       "comment": null
@@ -6541,12 +6791,22 @@
           "comment": "/* expected agg-splitting mode of parent Agg */"
         },
         {
+          "name": "aggno",
+          "c_type": "int",
+          "comment": "/* unique ID within the Agg node */"
+        },
+        {
+          "name": "aggtransno",
+          "c_type": "int",
+          "comment": "/* unique ID of transition state in the Agg */"
+        },
+        {
           "name": "location",
           "c_type": "int",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * Aggref\n *\n * The aggregate's args list is a targetlist, ie, a list of TargetEntry nodes.\n *\n * For a normal (non-ordered-set) aggregate, the non-resjunk TargetEntries\n * represent the aggregate's regular arguments (if any) and resjunk TLEs can\n * be added at the end to represent ORDER BY expressions that are not also\n * arguments.  As in a top-level Query, the TLEs can be marked with\n * ressortgroupref indexes to let them be referenced by SortGroupClause\n * entries in the aggorder and/or aggdistinct lists.  This represents ORDER BY\n * and DISTINCT operations to be applied to the aggregate input rows before\n * they are passed to the transition function.  The grammar only allows a\n * simple \"DISTINCT\" specifier for the arguments, but we use the full\n * query-level representation to allow more code sharing.\n *\n * For an ordered-set aggregate, the args list represents the WITHIN GROUP\n * (aggregated) arguments, all of which will be listed in the aggorder list.\n * DISTINCT is not supported in this case, so aggdistinct will be NIL.\n * The direct arguments appear in aggdirectargs (as a list of plain\n * expressions, not TargetEntry nodes).\n *\n * aggtranstype is the data type of the state transition values for this\n * aggregate (resolved to an actual type, if agg's transtype is polymorphic).\n * This is determined during planning and is InvalidOid before that.\n *\n * aggargtypes is an OID list of the data types of the direct and regular\n * arguments.  Normally it's redundant with the aggdirectargs and args lists,\n * but in a combining aggregate, it's not because the args list has been\n * replaced with a single argument representing the partial-aggregate\n * transition values.\n *\n * aggsplit indicates the expected partial-aggregation mode for the Aggref's\n * parent plan node.  It's always set to AGGSPLIT_SIMPLE in the parser, but\n * the planner might change it to something else.  We use this mainly as\n * a crosscheck that the Aggrefs match the plan; but note that when aggsplit\n * indicates a non-final mode, aggtype reflects the transition data type\n * not the SQL-level output type of the aggregate.\n */\n"
+      "comment": "/*\n * Aggref\n *\n * The aggregate's args list is a targetlist, ie, a list of TargetEntry nodes.\n *\n * For a normal (non-ordered-set) aggregate, the non-resjunk TargetEntries\n * represent the aggregate's regular arguments (if any) and resjunk TLEs can\n * be added at the end to represent ORDER BY expressions that are not also\n * arguments.  As in a top-level Query, the TLEs can be marked with\n * ressortgroupref indexes to let them be referenced by SortGroupClause\n * entries in the aggorder and/or aggdistinct lists.  This represents ORDER BY\n * and DISTINCT operations to be applied to the aggregate input rows before\n * they are passed to the transition function.  The grammar only allows a\n * simple \"DISTINCT\" specifier for the arguments, but we use the full\n * query-level representation to allow more code sharing.\n *\n * For an ordered-set aggregate, the args list represents the WITHIN GROUP\n * (aggregated) arguments, all of which will be listed in the aggorder list.\n * DISTINCT is not supported in this case, so aggdistinct will be NIL.\n * The direct arguments appear in aggdirectargs (as a list of plain\n * expressions, not TargetEntry nodes).\n *\n * aggtranstype is the data type of the state transition values for this\n * aggregate (resolved to an actual type, if agg's transtype is polymorphic).\n * This is determined during planning and is InvalidOid before that.\n *\n * aggargtypes is an OID list of the data types of the direct and regular\n * arguments.  Normally it's redundant with the aggdirectargs and args lists,\n * but in a combining aggregate, it's not because the args list has been\n * replaced with a single argument representing the partial-aggregate\n * transition values.\n *\n * aggsplit indicates the expected partial-aggregation mode for the Aggref's\n * parent plan node.  It's always set to AGGSPLIT_SIMPLE in the parser, but\n * the planner might change it to something else.  We use this mainly as\n * a crosscheck that the Aggrefs match the plan; but note that when aggsplit\n * indicates a non-final mode, aggtype reflects the transition data type\n * not the SQL-level output type of the aggregate.\n *\n * aggno and aggtransno are -1 in the parse stage, and are set in planning.\n * Aggregates with the same 'aggno' represent the same aggregate expression,\n * and can share the result.  Aggregates with same 'transno' but different\n * 'aggno' can share the same transition state, only the final function needs\n * to be called separately.\n */\n"
     },
     "GroupingFunc": {
       "fields": [
@@ -6658,17 +6918,22 @@
         {
           "name": "refelemtype",
           "c_type": "Oid",
-          "comment": "/* type of the container elements */"
+          "comment": "/* the container type's pg_type.typelem */"
+        },
+        {
+          "name": "refrestype",
+          "c_type": "Oid",
+          "comment": "/* type of the SubscriptingRef's result */"
         },
         {
           "name": "reftypmod",
           "c_type": "int32",
-          "comment": "/* typmod of the container (and elements too) */"
+          "comment": "/* typmod of the result */"
         },
         {
           "name": "refcollid",
           "c_type": "Oid",
-          "comment": "/* OID of collation, or InvalidOid if none */"
+          "comment": "/* collation of result, or InvalidOid if none */"
         },
         {
           "name": "refupperindexpr",
@@ -6686,15 +6951,12 @@
           "comment": "/* the expression that evaluates to a\n\t\t\t\t\t\t\t\t * container value */\n"
         },
         {
-          "comment": ""
-        },
-        {
           "name": "refassgnexpr",
           "c_type": "Expr*",
           "comment": "/* expression for the source value, or NULL if\n\t\t\t\t\t\t\t\t * fetch */\n"
         }
       ],
-      "comment": "/* ----------------\n *\tSubscriptingRef: describes a subscripting operation over a container\n *\t\t\t(array, etc).\n *\n * A SubscriptingRef can describe fetching a single element from a container,\n * fetching a part of container (e.g. array slice), storing a single element into\n * a container, or storing a slice.  The \"store\" cases work with an\n * initial container value and a source value that is inserted into the\n * appropriate part of the container; the result of the operation is an\n * entire new modified container value.\n *\n * If reflowerindexpr = NIL, then we are fetching or storing a single container\n * element at the subscripts given by refupperindexpr. Otherwise we are\n * fetching or storing a container slice, that is a rectangular subcontainer\n * with lower and upper bounds given by the index expressions.\n * reflowerindexpr must be the same length as refupperindexpr when it\n * is not NIL.\n *\n * In the slice case, individual expressions in the subscript lists can be\n * NULL, meaning \"substitute the array's current lower or upper bound\".\n *\n * Note: the result datatype is the element type when fetching a single\n * element; but it is the array type when doing subarray fetch or either\n * type of store.\n *\n * Note: for the cases where a container is returned, if refexpr yields a R/W\n * expanded container, then the implementation is allowed to modify that object\n * in-place and return the same object.)\n * ----------------\n */\n"
+      "comment": "/*\n * SubscriptingRef: describes a subscripting operation over a container\n * (array, etc).\n *\n * A SubscriptingRef can describe fetching a single element from a container,\n * fetching a part of a container (e.g. an array slice), storing a single\n * element into a container, or storing a slice.  The \"store\" cases work with\n * an initial container value and a source value that is inserted into the\n * appropriate part of the container; the result of the operation is an\n * entire new modified container value.\n *\n * If reflowerindexpr = NIL, then we are fetching or storing a single container\n * element at the subscripts given by refupperindexpr. Otherwise we are\n * fetching or storing a container slice, that is a rectangular subcontainer\n * with lower and upper bounds given by the index expressions.\n * reflowerindexpr must be the same length as refupperindexpr when it\n * is not NIL.\n *\n * In the slice case, individual expressions in the subscript lists can be\n * NULL, meaning \"substitute the array's current lower or upper bound\".\n * (Non-array containers may or may not support this.)\n *\n * refcontainertype is the actual container type that determines the\n * subscripting semantics.  (This will generally be either the exposed type of\n * refexpr, or the base type if that is a domain.)  refelemtype is the type of\n * the container's elements; this is saved for the use of the subscripting\n * functions, but is not used by the core code.  refrestype, reftypmod, and\n * refcollid describe the type of the SubscriptingRef's result.  In a store\n * expression, refrestype will always match refcontainertype; in a fetch,\n * it could be refelemtype for an element fetch, or refcontainertype for a\n * slice fetch, or possibly something else as determined by type-specific\n * subscripting logic.  Likewise, reftypmod and refcollid will match the\n * container's properties in a store, but could be different in a fetch.\n *\n * Note: for the cases where a container is returned, if refexpr yields a R/W\n * expanded container, then the implementation is allowed to modify that\n * object in-place and return the same object.\n */\n"
     },
     "FuncExpr": {
       "fields": [
@@ -6846,7 +7108,12 @@
         {
           "name": "opfuncid",
           "c_type": "Oid",
-          "comment": "/* PG_PROC OID of underlying function */"
+          "comment": "/* PG_PROC OID of comparison function */"
+        },
+        {
+          "name": "hashfuncid",
+          "c_type": "Oid",
+          "comment": "/* PG_PROC OID of hash func or InvalidOid */"
         },
         {
           "name": "useOr",
@@ -6869,7 +7136,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * ScalarArrayOpExpr - expression node for \"scalar op ANY/ALL (array)\"\n *\n * The operator must yield boolean.  It is applied to the left operand\n * and each element of the righthand array, and the results are combined\n * with OR or AND (for ANY or ALL respectively).  The node representation\n * is almost the same as for the underlying operator, but we need a useOr\n * flag to remember whether it's ANY or ALL, and we don't have to store\n * the result type (or the collation) because it must be boolean.\n */\n"
+      "comment": "/*\n * ScalarArrayOpExpr - expression node for \"scalar op ANY/ALL (array)\"\n *\n * The operator must yield boolean.  It is applied to the left operand\n * and each element of the righthand array, and the results are combined\n * with OR or AND (for ANY or ALL respectively).  The node representation\n * is almost the same as for the underlying operator, but we need a useOr\n * flag to remember whether it's ANY or ALL, and we don't have to store\n * the result type (or the collation) because it must be boolean.\n *\n * A ScalarArrayOpExpr with a valid hashfuncid is evaluated during execution\n * by building a hash table containing the Const values from the rhs arg.\n * This table is probed during expression evaluation.  Only useOr=true\n * ScalarArrayOpExpr with Const arrays on the rhs can have the hashfuncid\n * field set. See convert_saop_to_hashed_saop().\n */\n"
     },
     "BoolExpr": {
       "fields": [
@@ -7069,7 +7336,7 @@
           "comment": "/* SubPlan(s) with equivalent results */"
         }
       ],
-      "comment": "/*\n * AlternativeSubPlan - expression node for a choice among SubPlans\n *\n * The subplans are given as a List so that the node definition need not\n * change if there's ever more than two alternatives.  For the moment,\n * though, there are always exactly two; and the first one is the fast-start\n * plan.\n */\n"
+      "comment": "/*\n * AlternativeSubPlan - expression node for a choice among SubPlans\n *\n * This is used only transiently during planning: by the time the plan\n * reaches the executor, all AlternativeSubPlan nodes have been removed.\n *\n * The subplans are given as a List so that the node definition need not\n * change if there's ever more than two alternatives.  For the moment,\n * though, there are always exactly two; and the first one is the fast-start\n * plan.\n */\n"
     },
     "FieldSelect": {
       "fields": [
@@ -7954,7 +8221,7 @@
           "comment": "/* set to true to eliminate the attribute from\n\t\t\t\t\t\t\t\t * final target list */\n"
         }
       ],
-      "comment": "/*--------------------\n * TargetEntry -\n *\t   a target entry (used in query target lists)\n *\n * Strictly speaking, a TargetEntry isn't an expression node (since it can't\n * be evaluated by ExecEvalExpr).  But we treat it as one anyway, since in\n * very many places it's convenient to process a whole query targetlist as a\n * single expression tree.\n *\n * In a SELECT's targetlist, resno should always be equal to the item's\n * ordinal position (counting from 1).  However, in an INSERT or UPDATE\n * targetlist, resno represents the attribute number of the destination\n * column for the item; so there may be missing or out-of-order resnos.\n * It is even legal to have duplicated resnos; consider\n *\t\tUPDATE table SET arraycol[1] = ..., arraycol[2] = ..., ...\n * The two meanings come together in the executor, because the planner\n * transforms INSERT/UPDATE tlists into a normalized form with exactly\n * one entry for each column of the destination table.  Before that's\n * happened, however, it is risky to assume that resno == position.\n * Generally get_tle_by_resno() should be used rather than list_nth()\n * to fetch tlist entries by resno, and only in SELECT should you assume\n * that resno is a unique identifier.\n *\n * resname is required to represent the correct column name in non-resjunk\n * entries of top-level SELECT targetlists, since it will be used as the\n * column title sent to the frontend.  In most other contexts it is only\n * a debugging aid, and may be wrong or even NULL.  (In particular, it may\n * be wrong in a tlist from a stored rule, if the referenced column has been\n * renamed by ALTER TABLE since the rule was made.  Also, the planner tends\n * to store NULL rather than look up a valid name for tlist entries in\n * non-toplevel plan nodes.)  In resjunk entries, resname should be either\n * a specific system-generated name (such as \"ctid\") or NULL; anything else\n * risks confusing ExecGetJunkAttribute!\n *\n * ressortgroupref is used in the representation of ORDER BY, GROUP BY, and\n * DISTINCT items.  Targetlist entries with ressortgroupref=0 are not\n * sort/group items.  If ressortgroupref>0, then this item is an ORDER BY,\n * GROUP BY, and/or DISTINCT target value.  No two entries in a targetlist\n * may have the same nonzero ressortgroupref --- but there is no particular\n * meaning to the nonzero values, except as tags.  (For example, one must\n * not assume that lower ressortgroupref means a more significant sort key.)\n * The order of the associated SortGroupClause lists determine the semantics.\n *\n * resorigtbl/resorigcol identify the source of the column, if it is a\n * simple reference to a column of a base table (or view).  If it is not\n * a simple reference, these fields are zeroes.\n *\n * If resjunk is true then the column is a working column (such as a sort key)\n * that should be removed from the final output of the query.  Resjunk columns\n * must have resnos that cannot duplicate any regular column's resno.  Also\n * note that there are places that assume resjunk columns come after non-junk\n * columns.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * TargetEntry -\n *\t   a target entry (used in query target lists)\n *\n * Strictly speaking, a TargetEntry isn't an expression node (since it can't\n * be evaluated by ExecEvalExpr).  But we treat it as one anyway, since in\n * very many places it's convenient to process a whole query targetlist as a\n * single expression tree.\n *\n * In a SELECT's targetlist, resno should always be equal to the item's\n * ordinal position (counting from 1).  However, in an INSERT or UPDATE\n * targetlist, resno represents the attribute number of the destination\n * column for the item; so there may be missing or out-of-order resnos.\n * It is even legal to have duplicated resnos; consider\n *\t\tUPDATE table SET arraycol[1] = ..., arraycol[2] = ..., ...\n * In an INSERT, the rewriter and planner will normalize the tlist by\n * reordering it into physical column order and filling in default values\n * for any columns not assigned values by the original query.  In an UPDATE,\n * after the rewriter merges multiple assignments for the same column, the\n * planner extracts the target-column numbers into a separate \"update_colnos\"\n * list, and then renumbers the tlist elements serially.  Thus, tlist resnos\n * match ordinal position in all tlists seen by the executor; but it is wrong\n * to assume that before planning has happened.\n *\n * resname is required to represent the correct column name in non-resjunk\n * entries of top-level SELECT targetlists, since it will be used as the\n * column title sent to the frontend.  In most other contexts it is only\n * a debugging aid, and may be wrong or even NULL.  (In particular, it may\n * be wrong in a tlist from a stored rule, if the referenced column has been\n * renamed by ALTER TABLE since the rule was made.  Also, the planner tends\n * to store NULL rather than look up a valid name for tlist entries in\n * non-toplevel plan nodes.)  In resjunk entries, resname should be either\n * a specific system-generated name (such as \"ctid\") or NULL; anything else\n * risks confusing ExecGetJunkAttribute!\n *\n * ressortgroupref is used in the representation of ORDER BY, GROUP BY, and\n * DISTINCT items.  Targetlist entries with ressortgroupref=0 are not\n * sort/group items.  If ressortgroupref>0, then this item is an ORDER BY,\n * GROUP BY, and/or DISTINCT target value.  No two entries in a targetlist\n * may have the same nonzero ressortgroupref --- but there is no particular\n * meaning to the nonzero values, except as tags.  (For example, one must\n * not assume that lower ressortgroupref means a more significant sort key.)\n * The order of the associated SortGroupClause lists determine the semantics.\n *\n * resorigtbl/resorigcol identify the source of the column, if it is a\n * simple reference to a column of a base table (or view).  If it is not\n * a simple reference, these fields are zeroes.\n *\n * If resjunk is true then the column is a working column (such as a sort key)\n * that should be removed from the final output of the query.  Resjunk columns\n * must have resnos that cannot duplicate any regular column's resno.  Also\n * note that there are places that assume resjunk columns come after non-junk\n * columns.\n *--------------------\n */\n"
     },
     "RangeTblRef": {
       "fields": [
@@ -8004,6 +8271,11 @@
           "comment": "/* USING clause, if any (list of String) */"
         },
         {
+          "name": "join_using_alias",
+          "c_type": "Alias*",
+          "comment": "/* alias attached to USING clause, if any */"
+        },
+        {
           "name": "quals",
           "c_type": "Node*",
           "comment": "/* qualifiers on join, if any */"
@@ -8019,7 +8291,7 @@
           "comment": "/* RT index assigned for join, or 0 */"
         }
       ],
-      "comment": "/*----------\n * JoinExpr - for SQL JOIN expressions\n *\n * isNatural, usingClause, and quals are interdependent.  The user can write\n * only one of NATURAL, USING(), or ON() (this is enforced by the grammar).\n * If he writes NATURAL then parse analysis generates the equivalent USING()\n * list, and from that fills in \"quals\" with the right equality comparisons.\n * If he writes USING() then \"quals\" is filled with equality comparisons.\n * If he writes ON() then only \"quals\" is set.  Note that NATURAL/USING\n * are not equivalent to ON() since they also affect the output column list.\n *\n * alias is an Alias node representing the AS alias-clause attached to the\n * join expression, or NULL if no clause.  NB: presence or absence of the\n * alias has a critical impact on semantics, because a join with an alias\n * restricts visibility of the tables/columns inside it.\n *\n * During parse analysis, an RTE is created for the Join, and its index\n * is filled into rtindex.  This RTE is present mainly so that Vars can\n * be created that refer to the outputs of the join.  The planner sometimes\n * generates JoinExprs internally; these can have rtindex = 0 if there are\n * no join alias variables referencing such joins.\n *----------\n */\n"
+      "comment": "/*----------\n * JoinExpr - for SQL JOIN expressions\n *\n * isNatural, usingClause, and quals are interdependent.  The user can write\n * only one of NATURAL, USING(), or ON() (this is enforced by the grammar).\n * If he writes NATURAL then parse analysis generates the equivalent USING()\n * list, and from that fills in \"quals\" with the right equality comparisons.\n * If he writes USING() then \"quals\" is filled with equality comparisons.\n * If he writes ON() then only \"quals\" is set.  Note that NATURAL/USING\n * are not equivalent to ON() since they also affect the output column list.\n *\n * alias is an Alias node representing the AS alias-clause attached to the\n * join expression, or NULL if no clause.  NB: presence or absence of the\n * alias has a critical impact on semantics, because a join with an alias\n * restricts visibility of the tables/columns inside it.\n *\n * join_using_alias is an Alias node representing the join correlation\n * name that SQL:2016 and later allow to be attached to JOIN/USING.\n * Its column alias list includes only the common column names from USING,\n * and it does not restrict visibility of the join's input tables.\n *\n * During parse analysis, an RTE is created for the Join, and its index\n * is filled into rtindex.  This RTE is present mainly so that Vars can\n * be created that refer to the outputs of the join.  The planner sometimes\n * generates JoinExprs internally; these can have rtindex = 0 if there are\n * no join alias variables referencing such joins.\n *----------\n */\n"
     },
     "FromExpr": {
       "fields": [
@@ -8234,9 +8506,9 @@
           "comment": "/* Original data size (includes header) */"
         },
         {
-          "name": "va_extsize",
-          "c_type": "int32",
-          "comment": "/* External saved size (doesn't) */"
+          "name": "va_extinfo",
+          "c_type": "uint32",
+          "comment": "/* External saved size (without header) and\n\t\t\t\t\t\t\t\t * compression method */\n"
         },
         {
           "name": "va_valueid",
@@ -8249,7 +8521,7 @@
           "comment": "/* RelID of TOAST table containing it */"
         }
       ],
-      "comment": "/*\n * struct varatt_external is a traditional \"TOAST pointer\", that is, the\n * information needed to fetch a Datum stored out-of-line in a TOAST table.\n * The data is compressed if and only if va_extsize < va_rawsize - VARHDRSZ.\n * This struct must not contain any padding, because we sometimes compare\n * these pointers using memcmp.\n *\n * Note that this information is stored unaligned within actual tuples, so\n * you need to memcpy from the tuple into a local struct variable before\n * you can look at these fields!  (The reason we use memcmp is to avoid\n * having to do that just to detect equality of two TOAST pointers...)\n */\n"
+      "comment": "/*\n * struct varatt_external is a traditional \"TOAST pointer\", that is, the\n * information needed to fetch a Datum stored out-of-line in a TOAST table.\n * The data is compressed if and only if the external size stored in\n * va_extinfo is less than va_rawsize - VARHDRSZ.\n *\n * This struct must not contain any padding, because we sometimes compare\n * these pointers using memcmp.\n *\n * Note that this information is stored unaligned within actual tuples, so\n * you need to memcpy from the tuple into a local struct variable before\n * you can look at these fields!  (The reason we use memcmp is to avoid\n * having to do that just to detect equality of two TOAST pointers...)\n */\n"
     },
     "varatt_expanded": {
       "fields": [
@@ -8472,8 +8744,8 @@
       "fields": [
         {
           "name": "options",
-          "c_type": "int",
-          "comment": "/* bitmask of VacuumOption */"
+          "c_type": "bits32",
+          "comment": "/* bitmask of VACOPT_* */"
         },
         {
           "name": "freeze_min_age",
@@ -8507,13 +8779,13 @@
         },
         {
           "name": "index_cleanup",
-          "c_type": "VacOptTernaryValue",
-          "comment": "/* Do index vacuum and cleanup,\n\t\t\t\t\t\t\t\t\t\t * default value depends on reloptions */\n"
+          "c_type": "VacOptValue",
+          "comment": "/* Do index vacuum and cleanup */"
         },
         {
           "name": "truncate",
-          "c_type": "VacOptTernaryValue",
-          "comment": "/* Truncate empty pages at the end,\n\t\t\t\t\t\t\t\t\t * default value depends on reloptions */\n"
+          "c_type": "VacOptValue",
+          "comment": "/* Truncate empty pages at the end */"
         },
         {
           "comment": ""
