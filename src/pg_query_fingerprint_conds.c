@@ -220,6 +220,14 @@ case T_SelectStmt:
   _fingerprintString(ctx, "SelectStmt");
   _fingerprintSelectStmt(ctx, obj, parent, field_name, depth);
   break;
+case T_ReturnStmt:
+  _fingerprintString(ctx, "ReturnStmt");
+  _fingerprintReturnStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_PLAssignStmt:
+  _fingerprintString(ctx, "PLAssignStmt");
+  _fingerprintPLAssignStmt(ctx, obj, parent, field_name, depth);
+  break;
 case T_AlterTableStmt:
   _fingerprintString(ctx, "AlterTableStmt");
   _fingerprintAlterTableStmt(ctx, obj, parent, field_name, depth);
@@ -749,6 +757,10 @@ case T_IndexElem:
   _fingerprintString(ctx, "IndexElem");
   _fingerprintIndexElem(ctx, obj, parent, field_name, depth);
   break;
+case T_StatsElem:
+  _fingerprintString(ctx, "StatsElem");
+  _fingerprintStatsElem(ctx, obj, parent, field_name, depth);
+  break;
 case T_Constraint:
   _fingerprintString(ctx, "Constraint");
   _fingerprintConstraint(ctx, obj, parent, field_name, depth);
@@ -828,6 +840,14 @@ case T_InferClause:
 case T_OnConflictClause:
   _fingerprintString(ctx, "OnConflictClause");
   _fingerprintOnConflictClause(ctx, obj, parent, field_name, depth);
+  break;
+case T_CTESearchClause:
+  _fingerprintString(ctx, "CTESearchClause");
+  _fingerprintCTESearchClause(ctx, obj, parent, field_name, depth);
+  break;
+case T_CTECycleClause:
+  _fingerprintString(ctx, "CTECycleClause");
+  _fingerprintCTECycleClause(ctx, obj, parent, field_name, depth);
   break;
 case T_CommonTableExpr:
   _fingerprintString(ctx, "CommonTableExpr");
