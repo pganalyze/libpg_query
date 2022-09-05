@@ -5731,6 +5731,7 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			Assert(false);
 			break;
 		case AT_ReAddComment: /* internal to commands/tablecmds.c */
+		case AT_ReAddStatistics: /* internal to commands/tablecmds.c */
 			Assert(false);
 			break;
 		case AT_AlterColumnType: /* alter column type */
