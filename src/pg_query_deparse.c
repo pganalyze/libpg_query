@@ -3184,6 +3184,7 @@ static void deparseRowExpr(StringInfo str, RowExpr *row_expr)
 		case COERCE_EXPLICIT_CALL:
 			appendStringInfoString(str, "ROW");
 			break;
+		case COERCE_SQL_SYNTAX:
 		case COERCE_EXPLICIT_CAST:
 			// Not present in raw parser output
 			Assert(false);
