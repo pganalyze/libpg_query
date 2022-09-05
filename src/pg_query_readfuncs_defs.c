@@ -57,6 +57,8 @@ static InsertStmt * _readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg);
 static DeleteStmt * _readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg);
 static UpdateStmt * _readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg);
 static SelectStmt * _readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg);
+static ReturnStmt * _readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg);
+static PLAssignStmt * _readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg);
 static AlterTableStmt * _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg);
 static AlterTableCmd * _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg);
 static AlterDomainStmt * _readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg);
@@ -189,6 +191,7 @@ static RangeTableFuncCol * _readRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, Ra
 static TypeName * _readTypeName(OUT_TYPE(TypeName, TypeName) msg);
 static ColumnDef * _readColumnDef(OUT_TYPE(ColumnDef, ColumnDef) msg);
 static IndexElem * _readIndexElem(OUT_TYPE(IndexElem, IndexElem) msg);
+static StatsElem * _readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg);
 static Constraint * _readConstraint(OUT_TYPE(Constraint, Constraint) msg);
 static DefElem * _readDefElem(OUT_TYPE(DefElem, DefElem) msg);
 static RangeTblEntry * _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg);
@@ -209,6 +212,8 @@ static XmlSerialize * _readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg
 static WithClause * _readWithClause(OUT_TYPE(WithClause, WithClause) msg);
 static InferClause * _readInferClause(OUT_TYPE(InferClause, InferClause) msg);
 static OnConflictClause * _readOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) msg);
+static CTESearchClause * _readCTESearchClause(OUT_TYPE(CTESearchClause, CTESearchClause) msg);
+static CTECycleClause * _readCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) msg);
 static CommonTableExpr * _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg);
 static RoleSpec * _readRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) msg);
 static TriggerTransition * _readTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) msg);
@@ -321,6 +326,8 @@ _readAggref(OUT_TYPE(Aggref, Aggref) msg)
   READ_CHAR_FIELD(aggkind, aggkind, aggkind);
   READ_UINT_FIELD(agglevelsup, agglevelsup, agglevelsup);
   READ_ENUM_FIELD(AggSplit, aggsplit, aggsplit, aggsplit);
+  READ_INT_FIELD(aggno, aggno, aggno);
+  READ_INT_FIELD(aggtransno, aggtransno, aggtransno);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -360,6 +367,7 @@ _readSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) msg)
   SubscriptingRef *node = makeNode(SubscriptingRef);
   READ_UINT_FIELD(refcontainertype, refcontainertype, refcontainertype);
   READ_UINT_FIELD(refelemtype, refelemtype, refelemtype);
+  READ_UINT_FIELD(refrestype, refrestype, refrestype);
   READ_INT_FIELD(reftypmod, reftypmod, reftypmod);
   READ_UINT_FIELD(refcollid, refcollid, refcollid);
   READ_LIST_FIELD(refupperindexpr, refupperindexpr, refupperindexpr);
@@ -447,6 +455,7 @@ _readScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) msg)
   ScalarArrayOpExpr *node = makeNode(ScalarArrayOpExpr);
   READ_UINT_FIELD(opno, opno, opno);
   READ_UINT_FIELD(opfuncid, opfuncid, opfuncid);
+  READ_UINT_FIELD(hashfuncid, hashfuncid, hashfuncid);
   READ_BOOL_FIELD(use_or, useOr, useOr);
   READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
@@ -829,6 +838,7 @@ _readJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) msg)
   READ_NODE_PTR_FIELD(larg, larg, larg);
   READ_NODE_PTR_FIELD(rarg, rarg, rarg);
   READ_LIST_FIELD(using_clause, usingClause, usingClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, join_using_alias, join_using_alias, join_using_alias);
   READ_NODE_PTR_FIELD(quals, quals, quals);
   READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
   READ_INT_FIELD(rtindex, rtindex, rtindex);
@@ -902,6 +912,7 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_BOOL_FIELD(has_modifying_cte, hasModifyingCTE, hasModifyingCTE);
   READ_BOOL_FIELD(has_for_update, hasForUpdate, hasForUpdate);
   READ_BOOL_FIELD(has_row_security, hasRowSecurity, hasRowSecurity);
+  READ_BOOL_FIELD(is_return, isReturn, isReturn);
   READ_LIST_FIELD(cte_list, cteList, cteList);
   READ_LIST_FIELD(rtable, rtable, rtable);
   READ_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
@@ -910,6 +921,7 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_SPECIFIC_NODE_PTR_FIELD(OnConflictExpr, on_conflict_expr, on_conflict, onConflict, onConflict);
   READ_LIST_FIELD(returning_list, returningList, returningList);
   READ_LIST_FIELD(group_clause, groupClause, groupClause);
+  READ_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
   READ_LIST_FIELD(grouping_sets, groupingSets, groupingSets);
   READ_NODE_PTR_FIELD(having_qual, havingQual, havingQual);
   READ_LIST_FIELD(window_clause, windowClause, windowClause);
@@ -976,6 +988,7 @@ _readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg)
   READ_LIST_FIELD(from_clause, fromClause, fromClause);
   READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
   READ_LIST_FIELD(group_clause, groupClause, groupClause);
+  READ_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
   READ_NODE_PTR_FIELD(having_clause, havingClause, havingClause);
   READ_LIST_FIELD(window_clause, windowClause, windowClause);
   READ_LIST_FIELD(values_lists, valuesLists, valuesLists);
@@ -992,13 +1005,33 @@ _readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg)
   return node;
 }
 
+static ReturnStmt *
+_readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg)
+{
+  ReturnStmt *node = makeNode(ReturnStmt);
+  READ_NODE_PTR_FIELD(returnval, returnval, returnval);
+  return node;
+}
+
+static PLAssignStmt *
+_readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg)
+{
+  PLAssignStmt *node = makeNode(PLAssignStmt);
+  READ_STRING_FIELD(name, name, name);
+  READ_LIST_FIELD(indirection, indirection, indirection);
+  READ_INT_FIELD(nnames, nnames, nnames);
+  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, val, val, val);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
 static AlterTableStmt *
 _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg)
 {
   AlterTableStmt *node = makeNode(AlterTableStmt);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   READ_LIST_FIELD(cmds, cmds, cmds);
-  READ_ENUM_FIELD(ObjectType, relkind, relkind, relkind);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
   READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   return node;
 }
@@ -1014,6 +1047,7 @@ _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg)
   READ_NODE_PTR_FIELD(def, def, def);
   READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
   READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  READ_BOOL_FIELD(recurse, recurse, recurse);
   return node;
 }
 
@@ -1056,6 +1090,7 @@ _readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg)
   READ_LIST_FIELD(privileges, privileges, privileges);
   READ_LIST_FIELD(grantees, grantees, grantees);
   READ_BOOL_FIELD(grant_option, grant_option, grant_option);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
   READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
   return node;
 }
@@ -1096,7 +1131,7 @@ _readClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) msg)
   ClusterStmt *node = makeNode(ClusterStmt);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   READ_STRING_FIELD(indexname, indexname, indexname);
-  READ_INT_FIELD(options, options, options);
+  READ_LIST_FIELD(params, params, params);
   return node;
 }
 
@@ -1231,6 +1266,7 @@ _readCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) msg)
   READ_LIST_FIELD(parameters, parameters, parameters);
   READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, return_type, returnType, returnType);
   READ_LIST_FIELD(options, options, options);
+  READ_NODE_PTR_FIELD(sql_body, sql_body, sql_body);
   return node;
 }
 
@@ -1394,7 +1430,7 @@ _readCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) msg)
   CreateTableAsStmt *node = makeNode(CreateTableAsStmt);
   READ_NODE_PTR_FIELD(query, query, query);
   READ_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
-  READ_ENUM_FIELD(ObjectType, relkind, relkind, relkind);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
   READ_BOOL_FIELD(is_select_into, is_select_into, is_select_into);
   READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
   return node;
@@ -1454,6 +1490,8 @@ static CreateTrigStmt *
 _readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg)
 {
   CreateTrigStmt *node = makeNode(CreateTrigStmt);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
   READ_STRING_FIELD(trigname, trigname, trigname);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   READ_LIST_FIELD(funcname, funcname, funcname);
@@ -1463,7 +1501,6 @@ _readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg)
   READ_INT_FIELD(events, events, events);
   READ_LIST_FIELD(columns, columns, columns);
   READ_NODE_PTR_FIELD(when_clause, whenClause, whenClause);
-  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
   READ_LIST_FIELD(transition_rels, transitionRels, transitionRels);
   READ_BOOL_FIELD(deferrable, deferrable, deferrable);
   READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
@@ -1539,8 +1576,7 @@ _readReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) msg)
   READ_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   READ_STRING_FIELD(name, name, name);
-  READ_INT_FIELD(options, options, options);
-  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
+  READ_LIST_FIELD(params, params, params);
   return node;
 }
 
@@ -2160,6 +2196,7 @@ _readCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg)
   READ_LIST_FIELD(exprs, exprs, exprs);
   READ_LIST_FIELD(relations, relations, relations);
   READ_STRING_FIELD(stxcomment, stxcomment, stxcomment);
+  READ_BOOL_FIELD(transformed, transformed, transformed);
   READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
   return node;
 }
@@ -2178,6 +2215,7 @@ _readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg)
   CallStmt *node = makeNode(CallStmt);
   READ_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
   READ_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
+  READ_LIST_FIELD(outargs, outargs, outargs);
   return node;
 }
 
@@ -2238,11 +2276,12 @@ _readFuncCall(OUT_TYPE(FuncCall, FuncCall) msg)
   READ_LIST_FIELD(args, args, args);
   READ_LIST_FIELD(agg_order, agg_order, agg_order);
   READ_NODE_PTR_FIELD(agg_filter, agg_filter, agg_filter);
+  READ_SPECIFIC_NODE_PTR_FIELD(WindowDef, window_def, over, over, over);
   READ_BOOL_FIELD(agg_within_group, agg_within_group, agg_within_group);
   READ_BOOL_FIELD(agg_star, agg_star, agg_star);
   READ_BOOL_FIELD(agg_distinct, agg_distinct, agg_distinct);
   READ_BOOL_FIELD(func_variadic, func_variadic, func_variadic);
-  READ_SPECIFIC_NODE_PTR_FIELD(WindowDef, window_def, over, over, over);
+  READ_ENUM_FIELD(CoercionForm, funcformat, funcformat, funcformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -2434,6 +2473,7 @@ _readColumnDef(OUT_TYPE(ColumnDef, ColumnDef) msg)
   ColumnDef *node = makeNode(ColumnDef);
   READ_STRING_FIELD(colname, colname, colname);
   READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_STRING_FIELD(compression, compression, compression);
   READ_INT_FIELD(inhcount, inhcount, inhcount);
   READ_BOOL_FIELD(is_local, is_local, is_local);
   READ_BOOL_FIELD(is_not_null, is_not_null, is_not_null);
@@ -2464,6 +2504,15 @@ _readIndexElem(OUT_TYPE(IndexElem, IndexElem) msg)
   READ_LIST_FIELD(opclassopts, opclassopts, opclassopts);
   READ_ENUM_FIELD(SortByDir, ordering, ordering, ordering);
   READ_ENUM_FIELD(SortByNulls, nulls_ordering, nulls_ordering, nulls_ordering);
+  return node;
+}
+
+static StatsElem *
+_readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg)
+{
+  StatsElem *node = makeNode(StatsElem);
+  READ_STRING_FIELD(name, name, name);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
   return node;
 }
 
@@ -2530,6 +2579,7 @@ _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
   READ_LIST_FIELD(joinaliasvars, joinaliasvars, joinaliasvars);
   READ_LIST_FIELD(joinleftcols, joinleftcols, joinleftcols);
   READ_LIST_FIELD(joinrightcols, joinrightcols, joinrightcols);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, join_using_alias, join_using_alias, join_using_alias);
   READ_LIST_FIELD(functions, functions, functions);
   READ_BOOL_FIELD(funcordinality, funcordinality, funcordinality);
   READ_SPECIFIC_NODE_PTR_FIELD(TableFunc, table_func, tablefunc, tablefunc, tablefunc);
@@ -2642,6 +2692,7 @@ _readObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) msg)
   ObjectWithArgs *node = makeNode(ObjectWithArgs);
   READ_LIST_FIELD(objname, objname, objname);
   READ_LIST_FIELD(objargs, objargs, objargs);
+  READ_LIST_FIELD(objfuncargs, objfuncargs, objfuncargs);
   READ_BOOL_FIELD(args_unspecified, args_unspecified, args_unspecified);
   return node;
 }
@@ -2754,6 +2805,34 @@ _readOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) msg)
   return node;
 }
 
+static CTESearchClause *
+_readCTESearchClause(OUT_TYPE(CTESearchClause, CTESearchClause) msg)
+{
+  CTESearchClause *node = makeNode(CTESearchClause);
+  READ_LIST_FIELD(search_col_list, search_col_list, search_col_list);
+  READ_BOOL_FIELD(search_breadth_first, search_breadth_first, search_breadth_first);
+  READ_STRING_FIELD(search_seq_column, search_seq_column, search_seq_column);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static CTECycleClause *
+_readCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) msg)
+{
+  CTECycleClause *node = makeNode(CTECycleClause);
+  READ_LIST_FIELD(cycle_col_list, cycle_col_list, cycle_col_list);
+  READ_STRING_FIELD(cycle_mark_column, cycle_mark_column, cycle_mark_column);
+  READ_NODE_PTR_FIELD(cycle_mark_value, cycle_mark_value, cycle_mark_value);
+  READ_NODE_PTR_FIELD(cycle_mark_default, cycle_mark_default, cycle_mark_default);
+  READ_STRING_FIELD(cycle_path_column, cycle_path_column, cycle_path_column);
+  READ_INT_FIELD(location, location, location);
+  READ_UINT_FIELD(cycle_mark_type, cycle_mark_type, cycle_mark_type);
+  READ_INT_FIELD(cycle_mark_typmod, cycle_mark_typmod, cycle_mark_typmod);
+  READ_UINT_FIELD(cycle_mark_collation, cycle_mark_collation, cycle_mark_collation);
+  READ_UINT_FIELD(cycle_mark_neop, cycle_mark_neop, cycle_mark_neop);
+  return node;
+}
+
 static CommonTableExpr *
 _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg)
 {
@@ -2762,6 +2841,8 @@ _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg)
   READ_LIST_FIELD(aliascolnames, aliascolnames, aliascolnames);
   READ_ENUM_FIELD(CTEMaterialize, ctematerialized, ctematerialized, ctematerialized);
   READ_NODE_PTR_FIELD(ctequery, ctequery, ctequery);
+  READ_SPECIFIC_NODE_PTR_FIELD(CTESearchClause, ctesearch_clause, search_clause, search_clause, search_clause);
+  READ_SPECIFIC_NODE_PTR_FIELD(CTECycleClause, ctecycle_clause, cycle_clause, cycle_clause, cycle_clause);
   READ_INT_FIELD(location, location, location);
   READ_BOOL_FIELD(cterecursive, cterecursive, cterecursive);
   READ_INT_FIELD(cterefcount, cterefcount, cterefcount);
@@ -2845,6 +2926,7 @@ _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg)
   PartitionCmd *node = makeNode(PartitionCmd);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
   READ_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
+  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
   return node;
 }
 

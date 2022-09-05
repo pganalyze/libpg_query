@@ -57,6 +57,8 @@
   READ_COND(DeleteStmt, DeleteStmt, delete_stmt, DELETE_STMT, DeleteStmt, delete_stmt);
   READ_COND(UpdateStmt, UpdateStmt, update_stmt, UPDATE_STMT, UpdateStmt, update_stmt);
   READ_COND(SelectStmt, SelectStmt, select_stmt, SELECT_STMT, SelectStmt, select_stmt);
+  READ_COND(ReturnStmt, ReturnStmt, return_stmt, RETURN_STMT, ReturnStmt, return_stmt);
+  READ_COND(PLAssignStmt, PLAssignStmt, plassign_stmt, PLASSIGN_STMT, PLAssignStmt, plassign_stmt);
   READ_COND(AlterTableStmt, AlterTableStmt, alter_table_stmt, ALTER_TABLE_STMT, AlterTableStmt, alter_table_stmt);
   READ_COND(AlterTableCmd, AlterTableCmd, alter_table_cmd, ALTER_TABLE_CMD, AlterTableCmd, alter_table_cmd);
   READ_COND(AlterDomainStmt, AlterDomainStmt, alter_domain_stmt, ALTER_DOMAIN_STMT, AlterDomainStmt, alter_domain_stmt);
@@ -189,6 +191,7 @@
   READ_COND(TypeName, TypeName, type_name, TYPE_NAME, TypeName, type_name);
   READ_COND(ColumnDef, ColumnDef, column_def, COLUMN_DEF, ColumnDef, column_def);
   READ_COND(IndexElem, IndexElem, index_elem, INDEX_ELEM, IndexElem, index_elem);
+  READ_COND(StatsElem, StatsElem, stats_elem, STATS_ELEM, StatsElem, stats_elem);
   READ_COND(Constraint, Constraint, constraint, CONSTRAINT, Constraint, constraint);
   READ_COND(DefElem, DefElem, def_elem, DEF_ELEM, DefElem, def_elem);
   READ_COND(RangeTblEntry, RangeTblEntry, range_tbl_entry, RANGE_TBL_ENTRY, RangeTblEntry, range_tbl_entry);
@@ -209,6 +212,8 @@
   READ_COND(WithClause, WithClause, with_clause, WITH_CLAUSE, WithClause, with_clause);
   READ_COND(InferClause, InferClause, infer_clause, INFER_CLAUSE, InferClause, infer_clause);
   READ_COND(OnConflictClause, OnConflictClause, on_conflict_clause, ON_CONFLICT_CLAUSE, OnConflictClause, on_conflict_clause);
+  READ_COND(CTESearchClause, CTESearchClause, ctesearch_clause, CTESEARCH_CLAUSE, CTESearchClause, ctesearch_clause);
+  READ_COND(CTECycleClause, CTECycleClause, ctecycle_clause, CTECYCLE_CLAUSE, CTECycleClause, ctecycle_clause);
   READ_COND(CommonTableExpr, CommonTableExpr, common_table_expr, COMMON_TABLE_EXPR, CommonTableExpr, common_table_expr);
   READ_COND(RoleSpec, RoleSpec, role_spec, ROLE_SPEC, RoleSpec, role_spec);
   READ_COND(TriggerTransition, TriggerTransition, trigger_transition, TRIGGER_TRANSITION, TriggerTransition, trigger_transition);

@@ -195,6 +195,12 @@ case T_UpdateStmt:
 case T_SelectStmt:
   OUT_NODE(SelectStmt, SelectStmt, select_stmt, SELECT_STMT, SelectStmt, select_stmt);
   break;
+case T_ReturnStmt:
+  OUT_NODE(ReturnStmt, ReturnStmt, return_stmt, RETURN_STMT, ReturnStmt, return_stmt);
+  break;
+case T_PLAssignStmt:
+  OUT_NODE(PLAssignStmt, PLAssignStmt, plassign_stmt, PLASSIGN_STMT, PLAssignStmt, plassign_stmt);
+  break;
 case T_AlterTableStmt:
   OUT_NODE(AlterTableStmt, AlterTableStmt, alter_table_stmt, ALTER_TABLE_STMT, AlterTableStmt, alter_table_stmt);
   break;
@@ -591,6 +597,9 @@ case T_ColumnDef:
 case T_IndexElem:
   OUT_NODE(IndexElem, IndexElem, index_elem, INDEX_ELEM, IndexElem, index_elem);
   break;
+case T_StatsElem:
+  OUT_NODE(StatsElem, StatsElem, stats_elem, STATS_ELEM, StatsElem, stats_elem);
+  break;
 case T_Constraint:
   OUT_NODE(Constraint, Constraint, constraint, CONSTRAINT, Constraint, constraint);
   break;
@@ -650,6 +659,12 @@ case T_InferClause:
   break;
 case T_OnConflictClause:
   OUT_NODE(OnConflictClause, OnConflictClause, on_conflict_clause, ON_CONFLICT_CLAUSE, OnConflictClause, on_conflict_clause);
+  break;
+case T_CTESearchClause:
+  OUT_NODE(CTESearchClause, CTESearchClause, ctesearch_clause, CTESEARCH_CLAUSE, CTESearchClause, ctesearch_clause);
+  break;
+case T_CTECycleClause:
+  OUT_NODE(CTECycleClause, CTECycleClause, ctecycle_clause, CTECYCLE_CLAUSE, CTECycleClause, ctecycle_clause);
   break;
 case T_CommonTableExpr:
   OUT_NODE(CommonTableExpr, CommonTableExpr, common_table_expr, COMMON_TABLE_EXPR, CommonTableExpr, common_table_expr);
