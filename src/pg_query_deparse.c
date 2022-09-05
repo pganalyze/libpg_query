@@ -2680,24 +2680,6 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			deparseExpr(str, a_expr->rexpr);
 			appendStringInfoChar(str, ')');
 			return;
-		case AEXPR_OF: /* IS [NOT] OF - name must be "=" or "<>" */
-			Assert(list_length(a_expr->name) == 1);
-			Assert(IsA(linitial(a_expr->name), String));
-			Assert(IsA(a_expr->rexpr, List));
-			deparseExpr(str, a_expr->lexpr);
-			appendStringInfoChar(str, ' ');
-			name = ((Value *) linitial(a_expr->name))->val.str;
-			if (strcmp(name, "=") == 0) {
-				appendStringInfoString(str, "IS OF ");
-			} else if (strcmp(name, "<>") == 0) {
-				appendStringInfoString(str, "IS NOT OF ");
-			} else {
-				Assert(false);
-			}
-			appendStringInfoChar(str, '(');
-			deparseTypeList(str, castNode(List, a_expr->rexpr));
-			appendStringInfoChar(str, ')');
-			return;
 		case AEXPR_IN: /* [NOT] IN - name must be "=" or "<>" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
