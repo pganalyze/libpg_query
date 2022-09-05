@@ -96,7 +96,6 @@ static void dump_row(StringInfo out, PLpgSQL_row *stmt);
 static void dump_var(StringInfo out, PLpgSQL_var *stmt);
 static void dump_variable(StringInfo out, PLpgSQL_variable *stmt);
 static void dump_record_field(StringInfo out, PLpgSQL_recfield *node);
-static void dump_array_elem(StringInfo out, PLpgSQL_arrayelem *node);
 static void dump_stmt(StringInfo out, PLpgSQL_stmt *stmt);
 static void dump_block(StringInfo out, PLpgSQL_stmt_block *block);
 static void dump_exception_block(StringInfo out, PLpgSQL_exception_block *node);
@@ -673,9 +672,6 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 			case PLPGSQL_DTYPE_RECFIELD:
 				dump_record_field(out, (PLpgSQL_recfield *) d);
 				break;
-			case PLPGSQL_DTYPE_ARRAYELEM:
-				dump_array_elem(out, (PLpgSQL_arrayelem *) d);
-				break;
 			default:
 				elog(WARNING, "could not dump unrecognized dtype: %d",
 					 (int) d->dtype);
@@ -778,14 +774,6 @@ dump_record_field(StringInfo out, PLpgSQL_recfield *node) {
 
 	WRITE_STRING_FIELD(fieldname, fieldname, fieldname);
 	WRITE_INT_FIELD(recparentno, recparentno, recparentno);
-}
-
-static void
-dump_array_elem(StringInfo out, PLpgSQL_arrayelem *node) {
-	WRITE_NODE_TYPE("PLpgSQL_arrayelem");
-
-	WRITE_EXPR_FIELD(subscript);
-	WRITE_INT_FIELD(arrayparentno, arrayparentno, arrayparentno);
 }
 
 char *
