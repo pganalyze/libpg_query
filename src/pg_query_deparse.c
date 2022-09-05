@@ -4538,6 +4538,9 @@ static void deparseRoleSpec(StringInfo str, RoleSpec *role_spec)
 			Assert(role_spec->rolename != NULL);
 			appendStringInfoString(str, quote_identifier(role_spec->rolename));
 			break;
+		case ROLESPEC_CURRENT_ROLE:
+			appendStringInfoString(str, "CURRENT_ROLE");
+			break;
 		case ROLESPEC_CURRENT_USER:
 			appendStringInfoString(str, "CURRENT_USER");
 			break;
