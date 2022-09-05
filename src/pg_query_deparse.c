@@ -2783,10 +2783,6 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 					appendStringInfoString(str, " AND ");
 			}
 			return;
-		case AEXPR_PAREN: /* nameless dummy node for parentheses */
-			// Not present in parse trees when operator_precedence_warning is turned off
-			Assert(false);
-			return;
 	}
 }
 
