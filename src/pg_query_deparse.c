@@ -7816,8 +7816,7 @@ static void deparseReindexStmt(StringInfo str, ReindexStmt *reindex_stmt)
 {
 	appendStringInfoString(str, "REINDEX ");
 
-	if (reindex_stmt->options & REINDEXOPT_VERBOSE)
-		appendStringInfoString(str, "(VERBOSE) ");
+        deparseUtilityOptionList(str, reindex_stmt->params);
 
 	switch (reindex_stmt->kind)
 	{
@@ -7837,9 +7836,6 @@ static void deparseReindexStmt(StringInfo str, ReindexStmt *reindex_stmt)
 			appendStringInfoString(str, "DATABASE ");
 			break;
 	}
-
-	if (reindex_stmt->concurrent)
-		appendStringInfoString(str, "CONCURRENTLY ");
 
 	if (reindex_stmt->relation != NULL)
 	{
@@ -9364,8 +9360,8 @@ static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func)
 static void deparseClusterStmt(StringInfo str, ClusterStmt *cluster_stmt)
 {
 	appendStringInfoString(str, "CLUSTER ");
-	if (cluster_stmt->options & CLUOPT_VERBOSE)
-		appendStringInfoString(str, "VERBOSE ");
+
+        deparseUtilityOptionList(str, cluster_stmt->params);
 
 	if (cluster_stmt->relation != NULL)
 	{
