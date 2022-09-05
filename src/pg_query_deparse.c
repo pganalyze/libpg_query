@@ -2010,6 +2010,38 @@ static void deparseCreatedbOptList(StringInfo str, List *l)
 	}
 }
 
+// "utility_option_list" in gram.y
+static void deparseUtilityOptionList(StringInfo str, List *options)
+{
+	ListCell *lc = NULL;
+	char *defname = NULL;
+
+	if (list_length(options) > 0)
+	{
+		appendStringInfoChar(str, '(');
+		foreach(lc, options)
+		{
+			DefElem *def_elem = castNode(DefElem, lfirst(lc));
+			deparseGenericDefElemName(str, def_elem->defname);
+
+			if (def_elem->arg != NULL)
+			{
+				appendStringInfoChar(str, ' ');
+				if (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float))
+					deparseNumericOnly(str, (Value *) def_elem->arg);
+				else if (IsA(def_elem->arg, String))
+					deparseOptBooleanOrString(str, strVal(def_elem->arg));
+				else
+					Assert(false);
+			}
+
+			if (lnext(options, lc))
+				appendStringInfoString(str, ", ");
+		}
+		appendStringInfoString(str, ") ");
+	}
+}
+
 static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 {
 	const ListCell *lc = NULL;
@@ -6458,28 +6490,7 @@ static void deparseVacuumStmt(StringInfo str, VacuumStmt *vacuum_stmt)
 	else
 		appendStringInfoString(str, "ANALYZE ");
 
-	if (list_length(vacuum_stmt->options) > 0)
-	{
-		appendStringInfoChar(str, '(');
-		foreach(lc, vacuum_stmt->options)
-		{
-			DefElem *def_elem = castNode(DefElem, lfirst(lc));
-			deparseGenericDefElemName(str, def_elem->defname);
-			if (def_elem->arg != NULL)
-			{
-				appendStringInfoChar(str, ' ');
-				if (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float))
-					deparseNumericOnly(str, (Value *) def_elem->arg);
-				else if (IsA(def_elem->arg, String))
-					deparseOptBooleanOrString(str, strVal(def_elem->arg));
-				else
-					Assert(false);
-			}
-			if (lnext(vacuum_stmt->options, lc))
-				appendStringInfoString(str, ", ");
-		}
-		appendStringInfoString(str, ") ");
-	}
+        deparseUtilityOptionList(str, vacuum_stmt->options);
 
 	foreach(lc, vacuum_stmt->rels)
 	{
@@ -6590,31 +6601,7 @@ static void deparseExplainStmt(StringInfo str, ExplainStmt *explain_stmt)
 
 	appendStringInfoString(str, "EXPLAIN ");
 
-	if (list_length(explain_stmt->options) > 0)
-	{
-		appendStringInfoChar(str, '(');
-
-		foreach(lc, explain_stmt->options)
-		{
-			DefElem *def_elem = castNode(DefElem, lfirst(lc));
-			deparseGenericDefElemName(str, def_elem->defname);
-
-			if (def_elem->arg != NULL && IsA(def_elem->arg, String))
-			{
-				appendStringInfoChar(str, ' ');
-				deparseOptBooleanOrString(str, strVal(def_elem->arg));
-			}
-			else if (def_elem->arg != NULL && (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float)))
-			{
-				appendStringInfoChar(str, ' ');
-				deparseNumericOnly(str, (Value *) def_elem->arg);
-			}
-
-			if (lnext(explain_stmt->options, lc))
-				appendStringInfoString(str, ", ");
-		}
-		appendStringInfoString(str, ") ");
-	}
+        deparseUtilityOptionList(str, explain_stmt->options);
 
 	deparseExplainableStmt(str, explain_stmt->query);
 }
