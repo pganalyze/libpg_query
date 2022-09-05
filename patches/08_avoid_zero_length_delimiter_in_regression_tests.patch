@@ -12,7 +12,7 @@ diff --git a/src/test/regress/expected/copy2.out b/src/test/regress/expected/cop
 index e40287d25a..4f545659ad 100644
 --- a/src/test/regress/expected/copy2.out
 +++ b/src/test/regress/expected/copy2.out
-@@ -422,9 +422,9 @@ BEGIN;
+@@ -469,9 +469,9 @@ BEGIN;
  COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b), FORCE_NULL(c));
  COMMIT;
  SELECT b, c FROM forcetest WHERE a = 1;
@@ -25,7 +25,7 @@ index e40287d25a..4f545659ad 100644
  (1 row)
  
  -- should succeed, FORCE_NULL and FORCE_NOT_NULL can be both specified
-@@ -432,17 +432,17 @@ BEGIN;
+@@ -479,17 +479,17 @@ BEGIN;
  COPY forcetest (a, b, c, d) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(c,d), FORCE_NULL(c,d));
  COMMIT;
  SELECT c, d FROM forcetest WHERE a = 2;
@@ -52,7 +52,7 @@ diff --git a/src/test/regress/expected/create_am.out b/src/test/regress/expected
 index b9dc82dd3c..21f2ad83fc 100644
 --- a/src/test/regress/expected/create_am.out
 +++ b/src/test/regress/expected/create_am.out
-@@ -281,10 +281,8 @@ ORDER BY 3, 1, 2;
+@@ -279,10 +279,8 @@ ORDER BY 3, 1, 2;
  ROLLBACK;
  -- Third, check that we can neither create a table using a nonexistent
  -- AM, nor using an index AM
@@ -69,7 +69,7 @@ diff --git a/src/test/regress/sql/copy2.sql b/src/test/regress/sql/copy2.sql
 index 902f4fac19..453cc42e59 100644
 --- a/src/test/regress/sql/copy2.sql
 +++ b/src/test/regress/sql/copy2.sql
-@@ -295,21 +295,21 @@ CREATE TEMP TABLE forcetest (
+@@ -309,21 +309,21 @@ CREATE TEMP TABLE forcetest (
  -- should succeed with no effect ("b" remains an empty string, "c" remains NULL)
  BEGIN;
  COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b), FORCE_NULL(c));
@@ -98,7 +98,7 @@ diff --git a/src/test/regress/sql/create_am.sql b/src/test/regress/sql/create_am
 index 97df244d17..869de81ddf 100644
 --- a/src/test/regress/sql/create_am.sql
 +++ b/src/test/regress/sql/create_am.sql
-@@ -205,7 +205,7 @@ ROLLBACK;
+@@ -203,7 +203,7 @@ ROLLBACK;
  
  -- Third, check that we can neither create a table using a nonexistent
  -- AM, nor using an index AM

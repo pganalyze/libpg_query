@@ -15,7 +15,7 @@ diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
 index bcdda00a3a..9a581cbde6 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -620,6 +620,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+@@ -629,6 +629,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -27,7 +27,7 @@ diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
 index be86eb37fe..07b8fd486f 100644
 --- a/src/backend/parser/parser.c
 +++ b/src/backend/parser/parser.c
-@@ -131,6 +131,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
+@@ -150,6 +150,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
  		case USCONST:
  			cur_token_length = strlen(yyextra->core_yy_extra.scanbuf + *llocp);
  			break;
@@ -61,7 +61,7 @@ index 5caa03e395..6d7e2f0f12 100644
  whitespace_with_newline	({horiz_whitespace}*{newline}{special_whitespace}*)
  
  quote			'
-@@ -423,6 +423,11 @@ other			.
+@@ -419,6 +419,11 @@ other			.
  					/* ignore */
  				}
  
@@ -73,7 +73,7 @@ index 5caa03e395..6d7e2f0f12 100644
  {xcstart}		{
  					/* Set location in case of syntax error in comment */
  					SET_YYLLOC();
-@@ -441,7 +446,11 @@ other			.
+@@ -437,7 +442,11 @@ other			.
  
  {xcstop}		{
  					if (yyextra->xcdepth <= 0)
@@ -103,7 +103,7 @@ diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
 index 3e84162487..d1e6e714ab 100644
 --- a/src/pl/plpgsql/src/pl_gram.y
 +++ b/src/pl/plpgsql/src/pl_gram.y
-@@ -236,6 +236,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
+@@ -234,6 +234,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS

@@ -26,7 +26,7 @@ diff --git a/src/include/nodes/nodes.h b/src/include/nodes/nodes.h
 index 381d84b4e4..a540fce7eb 100644
 --- a/src/include/nodes/nodes.h
 +++ b/src/include/nodes/nodes.h
-@@ -834,9 +834,9 @@ typedef enum OnConflictAction
+@@ -844,9 +844,9 @@ typedef enum OnConflictAction
   */
  typedef enum LimitOption
  {

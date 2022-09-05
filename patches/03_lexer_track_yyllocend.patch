@@ -11,7 +11,7 @@ diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
 index 9ba31f418c..5caa03e395 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -517,6 +517,7 @@ other			.
+@@ -513,6 +513,7 @@ other			.
  					{
  						/* If NCHAR isn't a keyword, just return "n" */
  						yylval->str = pstrdup("n");
@@ -19,7 +19,7 @@ index 9ba31f418c..5caa03e395 100644
  						return IDENT;
  					}
  				}
-@@ -585,9 +586,11 @@ other			.
+@@ -581,9 +582,11 @@ other			.
  					{
  						case xb:
  							yylval->str = litbufdup(yyscanner);
@@ -31,7 +31,7 @@ index 9ba31f418c..5caa03e395 100644
  							return XCONST;
  						case xq:
  						case xe:
-@@ -600,9 +603,11 @@ other			.
+@@ -596,9 +599,11 @@ other			.
  											   yyextra->literallen,
  											   false);
  							yylval->str = litbufdup(yyscanner);
@@ -43,7 +43,7 @@ index 9ba31f418c..5caa03e395 100644
  							return USCONST;
  						default:
  							yyerror("unhandled previous state in xqs");
-@@ -740,6 +745,7 @@ other			.
+@@ -736,6 +741,7 @@ other			.
  						yyextra->dolqstart = NULL;
  						BEGIN(INITIAL);
  						yylval->str = litbufdup(yyscanner);
@@ -51,7 +51,7 @@ index 9ba31f418c..5caa03e395 100644
  						return SCONST;
  					}
  					else
-@@ -785,6 +791,7 @@ other			.
+@@ -781,6 +787,7 @@ other			.
  					if (yyextra->literallen >= NAMEDATALEN)
  						truncate_identifier(ident, yyextra->literallen, true);
  					yylval->str = ident;
@@ -59,7 +59,7 @@ index 9ba31f418c..5caa03e395 100644
  					return IDENT;
  				}
  <xui>{dquote}	{
-@@ -793,6 +800,7 @@ other			.
+@@ -789,6 +796,7 @@ other			.
  						yyerror("zero-length delimited identifier");
  					/* can't truncate till after we de-escape the ident */
  					yylval->str = litbufdup(yyscanner);
@@ -67,7 +67,7 @@ index 9ba31f418c..5caa03e395 100644
  					return UIDENT;
  				}
  <xd,xui>{xddouble}	{
-@@ -812,6 +820,7 @@ other			.
+@@ -808,6 +816,7 @@ other			.
  					/* and treat it as {identifier} */
  					ident = downcase_truncate_identifier(yytext, yyleng, true);
  					yylval->str = ident;
@@ -75,7 +75,7 @@ index 9ba31f418c..5caa03e395 100644
  					return IDENT;
  				}
  
-@@ -1065,6 +1074,7 @@ other			.
+@@ -1031,6 +1040,7 @@ other			.
  					 */
  					ident = downcase_truncate_identifier(yytext, yyleng, true);
  					yylval->str = ident;

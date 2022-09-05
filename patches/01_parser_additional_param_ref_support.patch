@@ -26,7 +26,7 @@ diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
 index 3adc087e3f..cf2b521c23 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -162,6 +162,8 @@ static Node *makeBitStringConst(char *str, int location);
+@@ -168,6 +168,8 @@ static Node *makeBitStringConst(char *str, int location);
  static Node *makeNullAConst(int location);
  static Node *makeAConst(Value *v, int location);
  static Node *makeBoolAConst(bool state, int location);
@@ -35,7 +35,7 @@ index 3adc087e3f..cf2b521c23 100644
  static RoleSpec *makeRoleSpec(RoleSpecType type, int location);
  static void check_qualified_name(List *names, core_yyscan_t yyscanner);
  static List *check_func_name(List *names, core_yyscan_t yyscanner);
-@@ -1026,6 +1028,11 @@ AlterOptRoleElem:
+@@ -1086,6 +1088,11 @@ AlterOptRoleElem:
  					$$ = makeDefElem("password",
  									 (Node *)makeString($2), @1);
  				}
@@ -47,7 +47,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| PASSWORD NULL_P
  				{
  					$$ = makeDefElem("password", NULL, @1);
-@@ -1040,6 +1047,16 @@ AlterOptRoleElem:
+@@ -1100,6 +1107,16 @@ AlterOptRoleElem:
  					$$ = makeDefElem("password",
  									 (Node *)makeString($3), @1);
  				}
@@ -64,7 +64,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| UNENCRYPTED PASSWORD Sconst
  				{
  					ereport(ERROR,
-@@ -1527,6 +1544,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+@@ -1587,6 +1604,14 @@ set_rest_more:	/* Generic SET syntaxes: */
  					n->args = list_make1(makeStringConst($2, @2));
  					$$ = n;
  				}
@@ -79,7 +79,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| NAMES opt_encoding
  				{
  					VariableSetStmt *n = makeNode(VariableSetStmt);
-@@ -1546,6 +1571,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+@@ -1606,6 +1631,14 @@ set_rest_more:	/* Generic SET syntaxes: */
  					n->args = list_make1(makeStringConst($2, @2));
  					$$ = n;
  				}
@@ -94,7 +94,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| SESSION AUTHORIZATION NonReservedWord_or_Sconst
  				{
  					VariableSetStmt *n = makeNode(VariableSetStmt);
-@@ -1554,6 +1587,14 @@ set_rest_more:	/* Generic SET syntaxes: */
+@@ -1614,6 +1647,14 @@ set_rest_more:	/* Generic SET syntaxes: */
  					n->args = list_make1(makeStringConst($3, @3));
  					$$ = n;
  				}
@@ -109,7 +109,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| SESSION AUTHORIZATION DEFAULT
  				{
  					VariableSetStmt *n = makeNode(VariableSetStmt);
-@@ -1593,6 +1634,8 @@ var_value:	opt_boolean_or_string
+@@ -1653,6 +1694,8 @@ var_value:	opt_boolean_or_string
  				{ $$ = makeStringConst($1, @1); }
  			| NumericOnly
  				{ $$ = makeAConst($1, @1); }
@@ -118,7 +118,7 @@ index 3adc087e3f..cf2b521c23 100644
  		;
  
  iso_level:	READ UNCOMMITTED						{ $$ = "read uncommitted"; }
-@@ -1626,6 +1669,10 @@ zone_value:
+@@ -1686,6 +1729,10 @@ zone_value:
  				{
  					$$ = makeStringConst($1, @1);
  				}
@@ -129,7 +129,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| IDENT
  				{
  					$$ = makeStringConst($1, @1);
-@@ -14649,6 +14696,10 @@ extract_list:
+@@ -14783,6 +14830,10 @@ extract_list:
  				{
  					$$ = list_make2(makeStringConst($1, @1), $3);
  				}
@@ -137,10 +137,10 @@ index 3adc087e3f..cf2b521c23 100644
 +				{
 +					$$ = list_make2(makeParamRef($1, @1), $3);
 +				}
- 			| /*EMPTY*/								{ $$ = NIL; }
  		;
- 
-@@ -15093,6 +15144,45 @@ AexprConst: Iconst
+
+ /* Allow delimited string Sconst in extract_arg as an SQL extension.
+@@ -15205,6 +15256,45 @@ AexprConst: Iconst
  					t->location = @1;
  					$$ = makeStringConstCast($6, @6, t);
  				}
@@ -186,7 +186,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| ConstTypename Sconst
  				{
  					$$ = makeStringConstCast($2, @2, $1);
-@@ -15110,6 +15200,23 @@ AexprConst: Iconst
+@@ -15222,6 +15312,23 @@ AexprConst: Iconst
  											makeIntConst($3, @3));
  					$$ = makeStringConstCast($5, @5, t);
  				}
@@ -210,7 +210,7 @@ index 3adc087e3f..cf2b521c23 100644
  			| TRUE_P
  				{
  					$$ = makeBoolAConst(true, @1);
-@@ -15964,6 +16071,24 @@ makeBoolAConst(bool state, int location)
+@@ -16599,6 +1676,24 @@ makeBoolAConst(bool state, int location)
  	return makeTypeCast((Node *)n, SystemTypeName("bool"), -1);
  }
  

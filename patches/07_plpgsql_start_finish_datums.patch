@@ -11,7 +11,7 @@ diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
 index 828ff5a288..4670fcafa2 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
-@@ -105,8 +105,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
+@@ -106,8 +106,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
  static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
  static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
  									Oid collation, TypeName *origtypname);
@@ -20,7 +20,7 @@ index 828ff5a288..4670fcafa2 100644
  static void compute_function_hashkey(FunctionCallInfo fcinfo,
  									 Form_pg_proc procStruct,
  									 PLpgSQL_func_hashkey *hashkey,
-@@ -2270,7 +2268,7 @@ plpgsql_parse_err_condition(char *condname)
+@@ -2312,7 +2310,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +29,7 @@ index 828ff5a288..4670fcafa2 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2304,7 +2302,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2348,7 +2344,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -42,7 +42,7 @@ diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
 index 0c3d30fb13..25fdd20bbf 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
-@@ -1263,6 +1263,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
+@@ -1241,6 +1241,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
  extern int	plpgsql_recognize_err_condition(const char *condname,
  											bool allow_sqlstate);
  extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
