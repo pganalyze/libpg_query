@@ -8799,7 +8799,29 @@ static void deparseAlterSubscriptionStmt(StringInfo str, AlterSubscriptionStmt *
 			appendStringInfoString(str, "REFRESH PUBLICATION ");
 			deparseOptDefinition(str, alter_subscription_stmt->options);
 			break;
-		case ALTER_SUBSCRIPTION_PUBLICATION:
+		case ALTER_SUBSCRIPTION_ADD_PUBLICATION:
+			appendStringInfoString(str, "ADD PUBLICATION ");
+			foreach(lc, alter_subscription_stmt->publication)
+			{
+				deparseColLabel(str, strVal(lfirst(lc)));
+				if (lnext(alter_subscription_stmt->publication, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoChar(str, ' ');
+			deparseOptDefinition(str, alter_subscription_stmt->options);
+			break;
+		case ALTER_SUBSCRIPTION_DROP_PUBLICATION:
+			appendStringInfoString(str, "DROP PUBLICATION ");
+			foreach(lc, alter_subscription_stmt->publication)
+			{
+				deparseColLabel(str, strVal(lfirst(lc)));
+				if (lnext(alter_subscription_stmt->publication, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoChar(str, ' ');
+			deparseOptDefinition(str, alter_subscription_stmt->options);
+			break;
+		case ALTER_SUBSCRIPTION_SET_PUBLICATION:
 			appendStringInfoString(str, "SET PUBLICATION ");
 			foreach(lc, alter_subscription_stmt->publication)
 			{
