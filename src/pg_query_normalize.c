@@ -536,7 +536,7 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		int query_len;
 
 		/* Parse query */
-		tree = raw_parser(input);
+		tree = raw_parser(input, RAW_PARSE_DEFAULT);
 
 		query_len = (int) strlen(input);
 

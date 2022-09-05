@@ -42,7 +42,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
 
 	PG_TRY();
 	{
-		result.tree = raw_parser(input);
+		result.tree = raw_parser(input, RAW_PARSE_DEFAULT);
 
 #ifndef DEBUG
 		// Save stderr for result
