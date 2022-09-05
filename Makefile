@@ -110,7 +110,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_alloc_set_delete_free_list.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
-	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); CC=clang ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -121,7 +121,7 @@ extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
-	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
+	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
@@ -147,9 +147,9 @@ extract_source: $(PGDIR)
 	echo "#define HAVE_STRCHRNUL" >> ./src/postgres/include/pg_config.h
 	echo "#endif" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
