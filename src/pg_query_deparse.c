@@ -5849,6 +5849,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_DetachPartition: /* DETACH PARTITION */
 			appendStringInfoString(str, "DETACH PARTITION ");
 			break;
+		case AT_DetachPartitionFinalize: /* DETACH PARTITION FINALIZE */
+			appendStringInfoString(str, "DETACH PARTITION ");
+			break;
 		case AT_AddIdentity: /* ADD IDENTITY */
 			appendStringInfoString(str, "ALTER ");
 			options = "ADD";
@@ -5896,6 +5899,10 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_DetachPartition:
 			deparsePartitionCmd(str, castNode(PartitionCmd, alter_table_cmd->def));
 			appendStringInfoChar(str, ' ');
+			break;
+		case AT_DetachPartitionFinalize:
+			deparsePartitionCmd(str, castNode(PartitionCmd, alter_table_cmd->def));
+			appendStringInfoString(str, "FINALIZE ");
 			break;
 		case AT_AddColumn:
 		case AT_AlterColumnType:
