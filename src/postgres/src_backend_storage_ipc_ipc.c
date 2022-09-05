@@ -15,7 +15,7 @@
  * exit-time cleanup for either a postmaster or a backend.
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -173,9 +173,9 @@ void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); e
  *		cancel_before_shmem_exit
  *
  *		this function removes a previously-registered before_shmem_exit
- *		callback.  For simplicity, only the latest entry can be
- *		removed.  (We could work harder but there is no need for
- *		current uses.)
+ *		callback.  We only look at the latest entry for removal, as we
+ * 		expect callers to add and remove temporary before_shmem_exit
+ * 		callbacks in strict LIFO order.
  * ----------------------------------------------------------------
  */
 
@@ -187,6 +187,15 @@ void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); e
  *		registered functions.  This is used just after forking a backend,
  *		so that the backend doesn't believe it should call the postmaster's
  *		on-exit routines when it exits...
+ * ----------------------------------------------------------------
+ */
+
+
+/* ----------------------------------------------------------------
+ *		check_on_shmem_exit_lists_are_empty
+ *
+ *		Debugging check that no shmem cleanup handlers have been registered
+ *		prematurely in the current process.
  * ----------------------------------------------------------------
  */
 

@@ -4,7 +4,7 @@
  *	  Relation descriptor cache definitions.
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/relcache.h
@@ -14,7 +14,6 @@
 #ifndef RELCACHE_H
 #define RELCACHE_H
 
-#include "postgres.h"
 #include "access/tupdesc.h"
 #include "nodes/bitmapset.h"
 
@@ -64,6 +63,8 @@ typedef enum IndexAttrBitmapKind
 
 extern Bitmapset *RelationGetIndexAttrBitmap(Relation relation,
 											 IndexAttrBitmapKind attrKind);
+
+extern Bitmapset *RelationGetIdentityKeyBitmap(Relation relation);
 
 extern void RelationGetExclusionInfo(Relation indexRelation,
 									 Oid **operators,
@@ -121,7 +122,7 @@ extern void RelationForgetRelation(Oid rid);
 
 extern void RelationCacheInvalidateEntry(Oid relationId);
 
-extern void RelationCacheInvalidate(void);
+extern void RelationCacheInvalidate(bool debug_discard);
 
 extern void RelationCloseSmgrByOid(Oid relationId);
 

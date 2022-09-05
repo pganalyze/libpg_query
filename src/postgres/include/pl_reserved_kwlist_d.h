@@ -3,7 +3,7 @@
  * pl_reserved_kwlist_d.h
  *    List of keywords represented as a ScanKeywordList.
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -80,25 +80,25 @@ static int
 ReservedPLKeywords_hash_func(const void *key, size_t keylen)
 {
 	static const int8 h[49] = {
-		    -2,    127,      7,    127,      0,    127,    127,    127,
-		    18,      5,    127,     27,    127,      0,    127,    127,
-		     0,     39,     32,     22,     10,    127,     19,    -26,
-		   127,    -11,      0,     12,    127,    127,     -1,     28,
-		    20,      0,     23,    127,      0,     14,     -8,    127,
-		   127,    127,     13,      5,    127,    -23,      1,      0,
-		   127,
+		127,   0,     15,    127,   9,     127,   127,   127,
+		-14,   23,    127,   0,     127,   8,     -7,    127,
+		0,     127,   127,   4,     5,     127,   127,   22,
+		10,    -6,    127,   -20,   127,   -2,    -5,    127,
+		1,     22,    -6,    14,    0,     0,     127,   13,
+		0,     -1,    127,   127,   21,    23,    7,     12,
+		0
 	};
 
 	const unsigned char *k = (const unsigned char *) key;
 	uint32		a = 0;
-	uint32		b = 1;
+	uint32		b = 9;
 
 	while (keylen--)
 	{
 		unsigned char c = *k++ | 0x20;
 
-		a = a * 31 + c;
-		b = b * 127 + c;
+		a = a * 257 + c;
+		b = b * 17 + c;
 	}
 	return h[a % 49] + h[b % 49];
 }

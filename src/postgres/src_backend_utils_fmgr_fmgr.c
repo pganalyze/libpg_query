@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - FunctionCall5Coll
+ * - FunctionCall6Coll
  *--------------------------------------------------------------------
  */
 
@@ -9,7 +9,7 @@
  * fmgr.c
  *	  The Postgres function manager.
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -124,7 +124,7 @@ extern Datum fmgr_security_definer(PG_FUNCTION_ARGS);
  * If *mod == NULL and *fn != NULL, the function is implemented by a symbol in
  * the main binary.
  *
- * If *mod != NULL and *fn !=NULL the function is implemented in an extension
+ * If *mod != NULL and *fn != NULL the function is implemented in an extension
  * shared object.
  *
  * The returned module and function names are pstrdup'ed into the current
@@ -291,14 +291,17 @@ struct fmgr_security_definer_cache
 
 
 
+
+
 Datum
-FunctionCall5Coll(FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2,
-				  Datum arg3, Datum arg4, Datum arg5)
+FunctionCall6Coll(FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2,
+				  Datum arg3, Datum arg4, Datum arg5,
+				  Datum arg6)
 {
-	LOCAL_FCINFO(fcinfo, 5);
+	LOCAL_FCINFO(fcinfo, 6);
 	Datum		result;
 
-	InitFunctionCallInfoData(*fcinfo, flinfo, 5, collation, NULL, NULL);
+	InitFunctionCallInfoData(*fcinfo, flinfo, 6, collation, NULL, NULL);
 
 	fcinfo->args[0].value = arg1;
 	fcinfo->args[0].isnull = false;
@@ -310,6 +313,8 @@ FunctionCall5Coll(FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2,
 	fcinfo->args[3].isnull = false;
 	fcinfo->args[4].value = arg5;
 	fcinfo->args[4].isnull = false;
+	fcinfo->args[5].value = arg6;
+	fcinfo->args[5].isnull = false;
 
 	result = FunctionCallInvoke(fcinfo);
 
@@ -319,8 +324,6 @@ FunctionCall5Coll(FmgrInfo *flinfo, Oid collation, Datum arg1, Datum arg2,
 
 	return result;
 }
-
-
 
 
 

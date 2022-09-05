@@ -41,7 +41,6 @@
  * - free_call
  * - free_commit
  * - free_rollback
- * - free_set
  *--------------------------------------------------------------------
  */
 
@@ -50,7 +49,7 @@
  * pl_funcs.c		- Misc functions for the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -353,7 +352,6 @@ static void free_perform(PLpgSQL_stmt_perform *stmt);
 static void free_call(PLpgSQL_stmt_call *stmt);
 static void free_commit(PLpgSQL_stmt_commit *stmt);
 static void free_rollback(PLpgSQL_stmt_rollback *stmt);
-static void free_set(PLpgSQL_stmt_set *stmt);
 static void free_expr(PLpgSQL_expr *expr);
 
 
@@ -442,9 +440,6 @@ free_stmt(PLpgSQL_stmt *stmt)
 			break;
 		case PLPGSQL_STMT_ROLLBACK:
 			free_rollback((PLpgSQL_stmt_rollback *) stmt);
-			break;
-		case PLPGSQL_STMT_SET:
-			free_set((PLpgSQL_stmt_set *) stmt);
 			break;
 		default:
 			elog(ERROR, "unrecognized cmd_type: %d", stmt->cmd_type);
@@ -610,12 +605,6 @@ free_rollback(PLpgSQL_stmt_rollback *stmt)
 }
 
 static void
-free_set(PLpgSQL_stmt_set *stmt)
-{
-	free_expr(stmt->expr);
-}
-
-static void
 free_exit(PLpgSQL_stmt_exit *stmt)
 {
 	free_expr(stmt->cond);
@@ -744,9 +733,6 @@ plpgsql_free_function_memory(PLpgSQL_function *func)
 				break;
 			case PLPGSQL_DTYPE_RECFIELD:
 				break;
-			case PLPGSQL_DTYPE_ARRAYELEM:
-				free_expr(((PLpgSQL_arrayelem *) d)->subscript);
-				break;
 			default:
 				elog(ERROR, "unrecognized data type: %d", d->dtype);
 		}
@@ -804,10 +790,7 @@ static void dump_perform(PLpgSQL_stmt_perform *stmt);
 static void dump_call(PLpgSQL_stmt_call *stmt);
 static void dump_commit(PLpgSQL_stmt_commit *stmt);
 static void dump_rollback(PLpgSQL_stmt_rollback *stmt);
-static void dump_set(PLpgSQL_stmt_set *stmt);
 static void dump_expr(PLpgSQL_expr *expr);
-
-
 
 
 

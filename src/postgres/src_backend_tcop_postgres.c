@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - whereToSendOutput
  * - debug_query_string
+ * - whereToSendOutput
  * - ProcessInterrupts
  * - check_stack_depth
  * - stack_is_too_deep
@@ -16,7 +16,7 @@
  * postgres.c
  *	  POSTGRES C Backend Interface
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -55,7 +55,6 @@
 #include "catalog/pg_type.h"
 #include "commands/async.h"
 #include "commands/prepare.h"
-#include "executor/spi.h"
 #include "jit/jit.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
@@ -80,6 +79,7 @@
 #include "rewrite/rewriteHandler.h"
 #include "storage/bufmgr.h"
 #include "storage/ipc.h"
+#include "storage/pmsignal.h"
 #include "storage/proc.h"
 #include "storage/procsignal.h"
 #include "storage/sinval.h"
@@ -117,7 +117,21 @@ __thread int			max_stack_depth = 100;
 /* wait N seconds to allow attach from a debugger */
 
 
+/* Time between checks that the client is still connected. */
 
+
+/* ----------------
+ *		private typedefs etc
+ * ----------------
+ */
+
+/* type of argument for bind_param_error_callback */
+typedef struct BindParamCbData
+{
+	const char *portalName;
+	int			paramno;		/* zero-based param number, or -1 initially */
+	const char *paramval;		/* textual input string, if available */
+} BindParamCbData;
 
 /* ----------------
  *		private variables
@@ -194,12 +208,12 @@ static int	interactive_getc(void);
 static int	SocketBackend(StringInfo inBuf);
 static int	ReadCommand(StringInfo inBuf);
 static void forbidden_in_wal_sender(char firstchar);
-static List *pg_rewrite_query(Query *query);
 static bool check_log_statement(List *stmt_list);
 static int	errdetail_execute(List *raw_parsetree_list);
 static int	errdetail_params(ParamListInfo params);
 static int	errdetail_abort(void);
 static int	errdetail_recovery_conflict(void);
+static void bind_param_error_callback(void *arg);
 static void start_xact_command(void);
 static void finish_xact_command(void);
 static bool IsTransactionExitStmt(Node *parsetree);
@@ -435,6 +449,13 @@ static void disable_statement_timeout(void);
 
 
 /*
+ * bind_param_error_callback
+ *
+ * Error context callback used while parsing parameters in a Bind message
+ */
+
+
+/*
  * exec_describe_statement_message
  *
  * Process a "Describe" message for a prepared statement
@@ -486,8 +507,8 @@ static void disable_statement_timeout(void);
 /*
  * quickdie() occurs when signaled SIGQUIT by the postmaster.
  *
- * Some backend has bought the farm,
- * so we need to stop what we're doing and exit.
+ * Either some backend has bought the farm, or we've been told to shut down
+ * "immediately"; so we need to stop what we're doing and exit.
  */
 
 
@@ -520,6 +541,12 @@ static void disable_statement_timeout(void);
  * If an interrupt condition is pending, and it's safe to service it,
  * then clear the flag and accept the interrupt.  Called only when
  * InterruptPending is true.
+ *
+ * Note: if INTERRUPTS_CAN_BE_PROCESSED() is true, then ProcessInterrupts
+ * is guaranteed to clear the InterruptPending flag before returning.
+ * (This is not the same as guaranteeing that it's still clear when we
+ * return; another interrupt could have arrived.  But we promise that
+ * any pre-existing one will have been serviced.)
  */
 void ProcessInterrupts(void) {}
 
@@ -568,7 +595,12 @@ ia64_get_bsp(void)
  *
  * Returns the old reference point, if any.
  */
+#ifndef HAVE__BUILTIN_FRAME_ADDRESS
+#endif
 #if defined(__ia64__) || defined(__ia64)
+#else
+#endif
+#ifdef HAVE__BUILTIN_FRAME_ADDRESS
 #else
 #endif
 #if defined(__ia64__) || defined(__ia64)

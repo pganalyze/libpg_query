@@ -157,33 +157,31 @@ extern int plpgsql_yydebug;
     K_QUERY = 358,                 /* K_QUERY  */
     K_RAISE = 359,                 /* K_RAISE  */
     K_RELATIVE = 360,              /* K_RELATIVE  */
-    K_RESET = 361,                 /* K_RESET  */
-    K_RETURN = 362,                /* K_RETURN  */
-    K_RETURNED_SQLSTATE = 363,     /* K_RETURNED_SQLSTATE  */
-    K_REVERSE = 364,               /* K_REVERSE  */
-    K_ROLLBACK = 365,              /* K_ROLLBACK  */
-    K_ROW_COUNT = 366,             /* K_ROW_COUNT  */
-    K_ROWTYPE = 367,               /* K_ROWTYPE  */
-    K_SCHEMA = 368,                /* K_SCHEMA  */
-    K_SCHEMA_NAME = 369,           /* K_SCHEMA_NAME  */
-    K_SCROLL = 370,                /* K_SCROLL  */
-    K_SET = 371,                   /* K_SET  */
-    K_SLICE = 372,                 /* K_SLICE  */
-    K_SQLSTATE = 373,              /* K_SQLSTATE  */
-    K_STACKED = 374,               /* K_STACKED  */
-    K_STRICT = 375,                /* K_STRICT  */
-    K_TABLE = 376,                 /* K_TABLE  */
-    K_TABLE_NAME = 377,            /* K_TABLE_NAME  */
-    K_THEN = 378,                  /* K_THEN  */
-    K_TO = 379,                    /* K_TO  */
-    K_TYPE = 380,                  /* K_TYPE  */
-    K_USE_COLUMN = 381,            /* K_USE_COLUMN  */
-    K_USE_VARIABLE = 382,          /* K_USE_VARIABLE  */
-    K_USING = 383,                 /* K_USING  */
-    K_VARIABLE_CONFLICT = 384,     /* K_VARIABLE_CONFLICT  */
-    K_WARNING = 385,               /* K_WARNING  */
-    K_WHEN = 386,                  /* K_WHEN  */
-    K_WHILE = 387                  /* K_WHILE  */
+    K_RETURN = 361,                /* K_RETURN  */
+    K_RETURNED_SQLSTATE = 362,     /* K_RETURNED_SQLSTATE  */
+    K_REVERSE = 363,               /* K_REVERSE  */
+    K_ROLLBACK = 364,              /* K_ROLLBACK  */
+    K_ROW_COUNT = 365,             /* K_ROW_COUNT  */
+    K_ROWTYPE = 366,               /* K_ROWTYPE  */
+    K_SCHEMA = 367,                /* K_SCHEMA  */
+    K_SCHEMA_NAME = 368,           /* K_SCHEMA_NAME  */
+    K_SCROLL = 369,                /* K_SCROLL  */
+    K_SLICE = 370,                 /* K_SLICE  */
+    K_SQLSTATE = 371,              /* K_SQLSTATE  */
+    K_STACKED = 372,               /* K_STACKED  */
+    K_STRICT = 373,                /* K_STRICT  */
+    K_TABLE = 374,                 /* K_TABLE  */
+    K_TABLE_NAME = 375,            /* K_TABLE_NAME  */
+    K_THEN = 376,                  /* K_THEN  */
+    K_TO = 377,                    /* K_TO  */
+    K_TYPE = 378,                  /* K_TYPE  */
+    K_USE_COLUMN = 379,            /* K_USE_COLUMN  */
+    K_USE_VARIABLE = 380,          /* K_USE_VARIABLE  */
+    K_USING = 381,                 /* K_USING  */
+    K_VARIABLE_CONFLICT = 382,     /* K_VARIABLE_CONFLICT  */
+    K_WARNING = 383,               /* K_WARNING  */
+    K_WHEN = 384,                  /* K_WHEN  */
+    K_WHILE = 385                  /* K_WHILE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -192,7 +190,7 @@ extern int plpgsql_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 120 "pl_gram.y"
+#line 119 "pl_gram.y"
 
 		core_YYSTYPE			core_yystype;
 		/* these fields must match core_YYSTYPE: */
@@ -243,7 +241,7 @@ union YYSTYPE
 		PLpgSQL_stmt_fetch		*fetch;
 		PLpgSQL_case_when		*casewhen;
 
-#line 247 "pl_gram.h"
+#line 245 "pl_gram.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

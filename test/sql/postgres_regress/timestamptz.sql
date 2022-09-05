@@ -156,45 +156,96 @@ SELECT 'Wed Jul 11 10:51:14 GMT+4 2001'::timestamptz;
 SELECT 'Wed Jul 11 10:51:14 PST-03:00 2001'::timestamptz;
 SELECT 'Wed Jul 11 10:51:14 PST+03:00 2001'::timestamptz;
 
-SELECT '' AS "64", d1 FROM TIMESTAMPTZ_TBL;
+SELECT d1 FROM TIMESTAMPTZ_TBL;
 
--- Check behavior at the lower boundary of the timestamp range
+-- Check behavior at the boundaries of the timestamp range
 SELECT '4714-11-24 00:00:00+00 BC'::timestamptz;
 SELECT '4714-11-23 16:00:00-08 BC'::timestamptz;
 SELECT 'Sun Nov 23 16:00:00 4714 PST BC'::timestamptz;
 SELECT '4714-11-23 23:59:59+00 BC'::timestamptz;  -- out of range
--- The upper boundary differs between integer and float timestamps, so no check
+SELECT '294276-12-31 23:59:59+00'::timestamptz;
+SELECT '294276-12-31 15:59:59-08'::timestamptz;
+SELECT '294277-01-01 00:00:00+00'::timestamptz;  -- out of range
+SELECT '294277-12-31 16:00:00-08'::timestamptz;  -- out of range
 
 -- Demonstrate functions and operators
-SELECT '' AS "48", d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 > timestamp with time zone '1997-01-02';
 
-SELECT '' AS "15", d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 < timestamp with time zone '1997-01-02';
 
-SELECT '' AS one, d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 = timestamp with time zone '1997-01-02';
 
-SELECT '' AS "63", d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 != timestamp with time zone '1997-01-02';
 
-SELECT '' AS "16", d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 <= timestamp with time zone '1997-01-02';
 
-SELECT '' AS "49", d1 FROM TIMESTAMPTZ_TBL
+SELECT d1 FROM TIMESTAMPTZ_TBL
    WHERE d1 >= timestamp with time zone '1997-01-02';
 
-SELECT '' AS "54", d1 - timestamp with time zone '1997-01-02' AS diff
+SELECT d1 - timestamp with time zone '1997-01-02' AS diff
    FROM TIMESTAMPTZ_TBL WHERE d1 BETWEEN '1902-01-01' AND '2038-01-01';
 
-SELECT '' AS date_trunc_week, date_trunc( 'week', timestamp with time zone '2004-02-29 15:44:17.71393' ) AS week_trunc;
+SELECT date_trunc( 'week', timestamp with time zone '2004-02-29 15:44:17.71393' ) AS week_trunc;
 
-SELECT '' AS date_trunc_at_tz, date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'Australia/Sydney') as sydney_trunc;  -- zone name
-SELECT '' AS date_trunc_at_tz, date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'GMT') as gmt_trunc;  -- fixed-offset abbreviation
-SELECT '' AS date_trunc_at_tz, date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'VET') as vet_trunc;  -- variable-offset abbreviation
+SELECT date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'Australia/Sydney') as sydney_trunc;  -- zone name
+SELECT date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'GMT') as gmt_trunc;  -- fixed-offset abbreviation
+SELECT date_trunc('day', timestamp with time zone '2001-02-16 20:38:40+00', 'VET') as vet_trunc;  -- variable-offset abbreviation
+
+-- verify date_bin behaves the same as date_trunc for relevant intervals
+SELECT
+  str,
+  interval,
+  date_trunc(str, ts, 'Australia/Sydney') = date_bin(interval::interval, ts, timestamp with time zone '2001-01-01+11') AS equal
+FROM (
+  VALUES
+  ('day', '1 d'),
+  ('hour', '1 h'),
+  ('minute', '1 m'),
+  ('second', '1 s'),
+  ('millisecond', '1 ms'),
+  ('microsecond', '1 us')
+) intervals (str, interval),
+(VALUES (timestamptz '2020-02-29 15:44:17.71393+00')) ts (ts);
+
+-- bin timestamps into arbitrary intervals
+SELECT
+  interval,
+  ts,
+  origin,
+  date_bin(interval::interval, ts, origin)
+FROM (
+  VALUES
+  ('15 days'),
+  ('2 hours'),
+  ('1 hour 30 minutes'),
+  ('15 minutes'),
+  ('10 seconds'),
+  ('100 milliseconds'),
+  ('250 microseconds')
+) intervals (interval),
+(VALUES (timestamptz '2020-02-11 15:44:17.71393')) ts (ts),
+(VALUES (timestamptz '2001-01-01')) origin (origin);
+
+-- shift bins using the origin parameter:
+SELECT date_bin('5 min'::interval, timestamptz '2020-02-01 01:01:01+00', timestamptz '2020-02-01 00:02:30+00');
+
+-- disallow intervals with months or years
+SELECT date_bin('5 months'::interval, timestamp with time zone '2020-02-01 01:01:01+00', timestamp with time zone '2001-01-01+00');
+SELECT date_bin('5 years'::interval,  timestamp with time zone '2020-02-01 01:01:01+00', timestamp with time zone '2001-01-01+00');
+
+-- disallow zero intervals
+SELECT date_bin('0 days'::interval, timestamp with time zone '1970-01-01 01:00:00+00' , timestamp with time zone '1970-01-01 00:00:00+00');
+
+-- disallow negative intervals
+SELECT date_bin('-2 days'::interval, timestamp with time zone '1970-01-01 01:00:00+00' , timestamp with time zone '1970-01-01 00:00:00+00');
 
 -- Test casting within a BETWEEN qualifier
-SELECT '' AS "54", d1 - timestamp with time zone '1997-01-02' AS diff
+SELECT d1 - timestamp with time zone '1997-01-02' AS diff
   FROM TIMESTAMPTZ_TBL
   WHERE d1 BETWEEN timestamp with time zone '1902-01-01' AND timestamp with time zone '2038-01-01';
 
@@ -220,7 +271,8 @@ SELECT d1 as timestamptz,
    date_part( 'decade', d1) AS decade,
    date_part( 'century', d1) AS century,
    date_part( 'millennium', d1) AS millennium,
-   round(date_part( 'julian', d1)) AS julian
+   round(date_part( 'julian', d1)) AS julian,
+   date_part( 'epoch', d1) AS epoch
    FROM TIMESTAMPTZ_TBL;
 
 SELECT d1 as timestamptz,
@@ -229,41 +281,57 @@ SELECT d1 as timestamptz,
    date_part( 'timezone_minute', d1) AS timezone_minute
    FROM TIMESTAMPTZ_TBL;
 
+-- extract implementation is mostly the same as date_part, so only
+-- test a few cases for additional coverage.
+SELECT d1 as "timestamp",
+   extract(microseconds from d1) AS microseconds,
+   extract(milliseconds from d1) AS milliseconds,
+   extract(seconds from d1) AS seconds,
+   round(extract(julian from d1)) AS julian,
+   extract(epoch from d1) AS epoch
+   FROM TIMESTAMPTZ_TBL;
+
+-- value near upper bound uses special case in code
+SELECT date_part('epoch', '294270-01-01 00:00:00+00'::timestamptz);
+SELECT extract(epoch from '294270-01-01 00:00:00+00'::timestamptz);
+-- another internal overflow test case
+SELECT extract(epoch from '5000-01-01 00:00:00+00'::timestamptz);
+
 -- TO_CHAR()
-SELECT '' AS to_char_1, to_char(d1, 'DAY Day day DY Dy dy MONTH Month month RM MON Mon mon')
+SELECT to_char(d1, 'DAY Day day DY Dy dy MONTH Month month RM MON Mon mon')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_2, to_char(d1, 'FMDAY FMDay FMday FMMONTH FMMonth FMmonth FMRM')
+SELECT to_char(d1, 'FMDAY FMDay FMday FMMONTH FMMonth FMmonth FMRM')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_3, to_char(d1, 'Y,YYY YYYY YYY YY Y CC Q MM WW DDD DD D J')
+SELECT to_char(d1, 'Y,YYY YYYY YYY YY Y CC Q MM WW DDD DD D J')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_4, to_char(d1, 'FMY,YYY FMYYYY FMYYY FMYY FMY FMCC FMQ FMMM FMWW FMDDD FMDD FMD FMJ')
+SELECT to_char(d1, 'FMY,YYY FMYYYY FMYYY FMYY FMY FMCC FMQ FMMM FMWW FMDDD FMDD FMD FMJ')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_5, to_char(d1, 'HH HH12 HH24 MI SS SSSS')
+SELECT to_char(d1, 'HH HH12 HH24 MI SS SSSS')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_6, to_char(d1, E'"HH:MI:SS is" HH:MI:SS "\\"text between quote marks\\""')
+SELECT to_char(d1, E'"HH:MI:SS is" HH:MI:SS "\\"text between quote marks\\""')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_7, to_char(d1, 'HH24--text--MI--text--SS')
+SELECT to_char(d1, 'HH24--text--MI--text--SS')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_8, to_char(d1, 'YYYYTH YYYYth Jth')
+SELECT to_char(d1, 'YYYYTH YYYYth Jth')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_9, to_char(d1, 'YYYY A.D. YYYY a.d. YYYY bc HH:MI:SS P.M. HH:MI:SS p.m. HH:MI:SS pm')
+SELECT to_char(d1, 'YYYY A.D. YYYY a.d. YYYY bc HH:MI:SS P.M. HH:MI:SS p.m. HH:MI:SS pm')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_10, to_char(d1, 'IYYY IYY IY I IW IDDD ID')
+SELECT to_char(d1, 'IYYY IYY IY I IW IDDD ID')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_11, to_char(d1, 'FMIYYY FMIYY FMIY FMI FMIW FMIDDD FMID')
+SELECT to_char(d1, 'FMIYYY FMIYY FMIY FMI FMIW FMIDDD FMID')
    FROM TIMESTAMPTZ_TBL;
 
-SELECT '' AS to_char_12, to_char(d, 'FF1 FF2 FF3 FF4 FF5 FF6  ff1 ff2 ff3 ff4 ff5 ff6  MS US')
+SELECT to_char(d, 'FF1 FF2 FF3 FF4 FF5 FF6  ff1 ff2 ff3 ff4 ff5 ff6  MS US')
    FROM (VALUES
        ('2018-11-02 12:34:56'::timestamptz),
        ('2018-11-02 12:34:56.78'),
@@ -341,6 +409,20 @@ SELECT make_timestamptz(2008, 12, 10, 10, 10, 10, 'EDT');
 SELECT make_timestamptz(2014, 12, 10, 10, 10, 10, 'PST8PDT');
 
 RESET TimeZone;
+
+-- generate_series for timestamptz
+select * from generate_series('2020-01-01 00:00'::timestamptz,
+                              '2020-01-02 03:00'::timestamptz,
+                              '1 hour'::interval);
+-- the LIMIT should allow this to terminate in a reasonable amount of time
+-- (but that unfortunately doesn't work yet for SELECT * FROM ...)
+select generate_series('2022-01-01 00:00'::timestamptz,
+                       'infinity'::timestamptz,
+                       '1 month'::interval) limit 10;
+-- errors
+select * from generate_series('2020-01-01 00:00'::timestamptz,
+                              '2020-01-02 03:00'::timestamptz,
+                              '0 hour'::interval);
 
 --
 -- Test behavior with a dynamic (time-varying) timezone abbreviation.

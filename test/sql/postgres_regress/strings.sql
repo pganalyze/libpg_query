@@ -137,31 +137,33 @@ SELECT SUBSTRING('string' FROM -10 FOR 2147483646) AS "string";
 SELECT SUBSTRING('string' FROM -10 FOR -2147483646) AS "error";
 
 -- T581 regular expression substring (with SQL's bizarre regexp syntax)
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"(b_d)#"%' ESCAPE '#') AS "bcd";
+-- obsolete SQL99 syntax
 SELECT SUBSTRING('abcdefg' FROM 'a#"(b_d)#"%' FOR '#') AS "bcd";
 
 -- No match should return NULL
-SELECT SUBSTRING('abcdefg' FROM '#"(b_d)#"%' FOR '#') IS NULL AS "True";
+SELECT SUBSTRING('abcdefg' SIMILAR '#"(b_d)#"%' ESCAPE '#') IS NULL AS "True";
 
 -- Null inputs should return NULL
-SELECT SUBSTRING('abcdefg' FROM '%' FOR NULL) IS NULL AS "True";
-SELECT SUBSTRING(NULL FROM '%' FOR '#') IS NULL AS "True";
-SELECT SUBSTRING('abcdefg' FROM NULL FOR '#') IS NULL AS "True";
+SELECT SUBSTRING('abcdefg' SIMILAR '%' ESCAPE NULL) IS NULL AS "True";
+SELECT SUBSTRING(NULL SIMILAR '%' ESCAPE '#') IS NULL AS "True";
+SELECT SUBSTRING('abcdefg' SIMILAR NULL ESCAPE '#') IS NULL AS "True";
 
 -- The first and last parts should act non-greedy
-SELECT SUBSTRING('abcdefg' FROM 'a#"%#"g' FOR '#') AS "bcdef";
-SELECT SUBSTRING('abcdefg' FROM 'a*#"%#"g*' FOR '#') AS "abcdefg";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%#"g' ESCAPE '#') AS "bcdef";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a*#"%#"g*' ESCAPE '#') AS "abcdefg";
 
 -- Vertical bar in any part affects only that part
-SELECT SUBSTRING('abcdefg' FROM 'a|b#"%#"g' FOR '#') AS "bcdef";
-SELECT SUBSTRING('abcdefg' FROM 'a#"%#"x|g' FOR '#') AS "bcdef";
-SELECT SUBSTRING('abcdefg' FROM 'a#"%|ab#"g' FOR '#') AS "bcdef";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a|b#"%#"g' ESCAPE '#') AS "bcdef";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%#"x|g' ESCAPE '#') AS "bcdef";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%|ab#"g' ESCAPE '#') AS "bcdef";
 
 -- Can't have more than two part separators
-SELECT SUBSTRING('abcdefg' FROM 'a*#"%#"g*#"x' FOR '#') AS "error";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a*#"%#"g*#"x' ESCAPE '#') AS "error";
 
 -- Postgres extension: with 0 or 1 separator, assume parts 1 and 3 are empty
-SELECT SUBSTRING('abcdefg' FROM 'a#"%g' FOR '#') AS "bcdefg";
-SELECT SUBSTRING('abcdefg' FROM 'a%g' FOR '#') AS "abcdefg";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a#"%g' ESCAPE '#') AS "bcdefg";
+SELECT SUBSTRING('abcdefg' SIMILAR 'a%g' ESCAPE '#') AS "abcdefg";
 
 -- substring() with just two arguments is not allowed by SQL spec;
 -- we accept it, but we interpret the pattern as a POSIX regexp not SQL
@@ -298,6 +300,12 @@ SELECT 'indio' NOT LIKE 'in__o' AS "false";
 SELECT 'indio' LIKE 'in_o' AS "false";
 SELECT 'indio' NOT LIKE 'in_o' AS "true";
 
+SELECT 'abc'::name LIKE '_b_' AS "true";
+SELECT 'abc'::name NOT LIKE '_b_' AS "false";
+
+SELECT 'abc'::bytea LIKE '_b_'::bytea AS "true";
+SELECT 'abc'::bytea NOT LIKE '_b_'::bytea AS "false";
+
 -- unused escape character
 SELECT 'hawkeye' LIKE 'h%' ESCAPE '#' AS "true";
 SELECT 'hawkeye' NOT LIKE 'h%' ESCAPE '#' AS "false";
@@ -330,6 +338,9 @@ SELECT 'i_dio' NOT LIKE 'i$_nd_o' ESCAPE '$' AS "true";
 
 SELECT 'i_dio' LIKE 'i$_d%o' ESCAPE '$' AS "true";
 SELECT 'i_dio' NOT LIKE 'i$_d%o' ESCAPE '$' AS "false";
+
+SELECT 'a_c'::bytea LIKE 'a$__'::bytea ESCAPE '$'::bytea AS "true";
+SELECT 'a_c'::bytea NOT LIKE 'a$__'::bytea ESCAPE '$'::bytea AS "false";
 
 -- escape character same as pattern character
 SELECT 'maca' LIKE 'm%aca' ESCAPE '%' AS "true";
@@ -364,6 +375,9 @@ SELECT 'hawkeye' NOT ILIKE 'H%Eye' AS "false";
 
 SELECT 'Hawkeye' ILIKE 'h%' AS "true";
 SELECT 'Hawkeye' NOT ILIKE 'h%' AS "false";
+
+SELECT 'ABC'::name ILIKE '_b_' AS "true";
+SELECT 'ABC'::name NOT ILIKE '_b_' AS "false";
 
 --
 -- test %/_ combination cases, cf bugs #4821 and #5478
@@ -536,7 +550,23 @@ SELECT replace('yabadoo', 'bad', '') AS "yaoo";
 --
 -- test split_part
 --
+select split_part('','@',1) AS "empty string";
+
+select split_part('','@',-1) AS "empty string";
+
+select split_part('joeuser@mydatabase','',1) AS "joeuser@mydatabase";
+
+select split_part('joeuser@mydatabase','',2) AS "empty string";
+
+select split_part('joeuser@mydatabase','',-1) AS "joeuser@mydatabase";
+
+select split_part('joeuser@mydatabase','',-2) AS "empty string";
+
 select split_part('joeuser@mydatabase','@',0) AS "an error";
+
+select split_part('joeuser@mydatabase','@@',1) AS "joeuser@mydatabase";
+
+select split_part('joeuser@mydatabase','@@',2) AS "empty string";
 
 select split_part('joeuser@mydatabase','@',1) AS "joeuser";
 
@@ -545,6 +575,14 @@ select split_part('joeuser@mydatabase','@',2) AS "mydatabase";
 select split_part('joeuser@mydatabase','@',3) AS "empty string";
 
 select split_part('@joeuser@mydatabase@','@',2) AS "joeuser";
+
+select split_part('joeuser@mydatabase','@',-1) AS "mydatabase";
+
+select split_part('joeuser@mydatabase','@',-2) AS "joeuser";
+
+select split_part('joeuser@mydatabase','@',-3) AS "empty string";
+
+select split_part('@joeuser@mydatabase@','@',-2) AS "mydatabase";
 
 --
 -- test to_hex
@@ -655,6 +693,8 @@ set standard_conforming_strings = off;
 
 select 'a\\bcd' as f1, 'a\\b\'cd' as f2, 'a\\b\'''cd' as f3, 'abcd\\'   as f4, 'ab\\\'cd' as f5, '\\\\' as f6;
 
+reset standard_conforming_strings;
+
 
 --
 -- Additional string functions
@@ -696,9 +736,26 @@ SELECT SUBSTRING('string'::bytea FROM -10 FOR 2147483646) AS "string";
 SELECT SUBSTRING('string'::bytea FROM -10 FOR -2147483646) AS "error";
 
 SELECT trim(E'\\000'::bytea from E'\\000Tom\\000'::bytea);
+SELECT trim(leading E'\\000'::bytea from E'\\000Tom\\000'::bytea);
+SELECT trim(trailing E'\\000'::bytea from E'\\000Tom\\000'::bytea);
 SELECT btrim(E'\\000trim\\000'::bytea, E'\\000'::bytea);
 SELECT btrim(''::bytea, E'\\000'::bytea);
 SELECT btrim(E'\\000trim\\000'::bytea, ''::bytea);
 SELECT encode(overlay(E'Th\\000omas'::bytea placing E'Th\\001omas'::bytea from 2),'escape');
 SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 8),'escape');
 SELECT encode(overlay(E'Th\\000omas'::bytea placing E'\\002\\003'::bytea from 5 for 3),'escape');
+
+SELECT bit_count('\x1234567890'::bytea);
+
+SELECT unistr('\0064at\+0000610');
+SELECT unistr('d\u0061t\U000000610');
+SELECT unistr('a\\b');
+-- errors:
+SELECT unistr('wrong: \db99');
+SELECT unistr('wrong: \db99\0061');
+SELECT unistr('wrong: \+00db99\+000061');
+SELECT unistr('wrong: \+2FFFFF');
+SELECT unistr('wrong: \udb99\u0061');
+SELECT unistr('wrong: \U0000db99\U00000061');
+SELECT unistr('wrong: \U002FFFFF');
+SELECT unistr('wrong: \xyz');

@@ -640,6 +640,11 @@ explain (verbose, costs off)
 select * from testrngfunc();
 select * from testrngfunc();
 
+-- Check a couple of error cases while we're here
+select * from testrngfunc() as t(f1 int8,f2 int8);  -- fail, composite result
+select * from pg_get_keywords() as t(f1 int8,f2 int8);  -- fail, OUT params
+select * from sin(3) as t(f1 int8,f2 int8);  -- fail, scalar result type
+
 drop type rngfunc_type cascade;
 
 --
@@ -762,3 +767,18 @@ select *, row_to_json(u) from unnest(array[null::rngfunc2, (1,'foo')::rngfunc2, 
 select *, row_to_json(u) from unnest(array[]::rngfunc2[]) u;
 
 drop type rngfunc2;
+
+-- check handling of functions pulled up into function RTEs (bug #17227)
+
+explain (verbose, costs off)
+select * from
+  (select jsonb_path_query_array(module->'lectures', '$[*]') as lecture
+   from unnest(array['{"lectures": [{"id": "1"}]}'::jsonb])
+        as unnested_modules(module)) as ss,
+  jsonb_to_recordset(ss.lecture) as j (id text);
+
+select * from
+  (select jsonb_path_query_array(module->'lectures', '$[*]') as lecture
+   from unnest(array['{"lectures": [{"id": "1"}]}'::jsonb])
+        as unnested_modules(module)) as ss,
+  jsonb_to_recordset(ss.lecture) as j (id text);

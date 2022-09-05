@@ -20,7 +20,7 @@
 /*-------------------------------------------------------------------------
  *
  * dynahash.c
- *	  dynamic hash tables
+ *	  dynamic chained hash tables
  *
  * dynahash.c supports both local-to-a-backend hash tables and hash tables in
  * shared memory.  For shared hash tables, it is the caller's responsibility
@@ -49,18 +49,29 @@
  * dynahash.c provides support for these types of lookup keys:
  *
  * 1. Null-terminated C strings (truncated if necessary to fit in keysize),
- * compared as though by strcmp().  This is the default behavior.
+ * compared as though by strcmp().  This is selected by specifying the
+ * HASH_STRINGS flag to hash_create.
  *
  * 2. Arbitrary binary data of size keysize, compared as though by memcmp().
  * (Caller must ensure there are no undefined padding bits in the keys!)
- * This is selected by specifying HASH_BLOBS flag to hash_create.
+ * This is selected by specifying the HASH_BLOBS flag to hash_create.
  *
  * 3. More complex key behavior can be selected by specifying user-supplied
  * hashing, comparison, and/or key-copying functions.  At least a hashing
  * function must be supplied; comparison defaults to memcmp() and key copying
  * to memcpy() when a user-defined hashing function is selected.
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Compared to simplehash, dynahash has the following benefits:
+ *
+ * - It supports partitioning, which is useful for shared memory access using
+ *   locks.
+ * - Shared memory hashes are allocated in a fixed size area at startup and
+ *   are discoverable by name from other processes.
+ * - Because entries don't need to be moved in the case of hash conflicts,
+ *   dynahash has better performance for large entries.
+ * - Guarantees stable pointers to entries.
+ *
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -131,7 +142,6 @@
 #define DEF_SEGSIZE			   256
 #define DEF_SEGSIZE_SHIFT	   8	/* must be log2(DEF_SEGSIZE) */
 #define DEF_DIRSIZE			   256
-#define DEF_FFACTOR			   1	/* default fill factor */
 
 /* Number of freelists to be used for a partitioned hash table. */
 #define NUM_FREELISTS			32
@@ -200,7 +210,6 @@ struct HASHHDR
 	Size		keysize;		/* hash key length in bytes */
 	Size		entrysize;		/* total user element size in bytes */
 	long		num_partitions; /* # partitions (must be power of 2), or 0 */
-	long		ffactor;		/* target fill factor */
 	long		max_dsize;		/* 'dsize' limit if directory is fixed size */
 	long		ssize;			/* segment size --- must be power of 2 */
 	int			sshift;			/* segment shift = log2(ssize) */
@@ -323,6 +332,28 @@ DynaHashAlloc(Size size)
  *	nelem: maximum number of elements expected
  *	*info: additional table parameters, as indicated by flags
  *	flags: bitmask indicating which parameters to take from *info
+ *
+ * The flags value *must* include HASH_ELEM.  (Formerly, this was nominally
+ * optional, but the default keysize and entrysize values were useless.)
+ * The flags value must also include exactly one of HASH_STRINGS, HASH_BLOBS,
+ * or HASH_FUNCTION, to define the key hashing semantics (C strings,
+ * binary blobs, or custom, respectively).  Callers specifying a custom
+ * hash function will likely also want to use HASH_COMPARE, and perhaps
+ * also HASH_KEYCOPY, to control key comparison and copying.
+ * Another often-used flag is HASH_CONTEXT, to allocate the hash table
+ * under info->hcxt rather than under TopMemoryContext; the default
+ * behavior is only suitable for session-lifespan hash tables.
+ * Other flags bits are special-purpose and seldom used, except for those
+ * associated with shared-memory hash tables, for which see ShmemInitHash().
+ *
+ * Fields in *info are read only when the associated flags bit is set.
+ * It is not necessary to initialize other fields of *info.
+ * Neither tabname nor *info need persist after the hash_create() call.
+ *
+ * Note: It is deprecated for callers of hash_create() to explicitly specify
+ * string_hash, tag_hash, uint32_hash, or oid_hash.  Just set HASH_STRINGS or
+ * HASH_BLOBS.  Use HASH_FUNCTION only when you want something other than
+ * one of these.
  *
  * Note: for a shared-memory hashtable, nelem needs to be a pretty good
  * estimate, since we can't expand the table on the fly.  But an unshared
@@ -486,11 +517,10 @@ hash_search_with_hash_value(HTAB *hashp,
 	{
 		/*
 		 * Can't split if running in partitioned mode, nor if frozen, nor if
-		 * table is the subject of any active hash_seq_search scans.  Strange
-		 * order of these tests is to try to check cheaper conditions first.
+		 * table is the subject of any active hash_seq_search scans.
 		 */
-		if (!IS_PARTITIONED(hctl) && !hashp->frozen &&
-			hctl->freeList[0].nentries / (long) (hctl->max_bucket + 1) >= hctl->ffactor &&
+		if (hctl->freeList[0].nentries > (long) hctl->max_bucket &&
+			!IS_PARTITIONED(hctl) && !hashp->frozen &&
 			!has_seq_scans(hashp))
 			(void) expand_table(hashp);
 	}

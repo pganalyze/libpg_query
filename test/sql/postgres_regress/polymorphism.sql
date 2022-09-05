@@ -71,6 +71,16 @@ select polyf(int4range(42, 49), 11, 4.5) as fail;  -- range type doesn't fit
 
 drop function polyf(x anycompatiblerange, y anycompatible, z anycompatible);
 
+create function polyf(x anycompatiblemultirange, y anycompatible, z anycompatible) returns anycompatiblearray as $$
+  select array[lower(x), upper(x), y, z]
+$$ language sql;
+
+select polyf(multirange(int4range(42, 49)), 11, 2::smallint) as int, polyf(multirange(float8range(4.5, 7.8)), 7.8, 11::real) as num;
+
+select polyf(multirange(int4range(42, 49)), 11, 4.5) as fail;  -- range type doesn't fit
+
+drop function polyf(x anycompatiblemultirange, y anycompatible, z anycompatible);
+
 -- fail, can't infer type:
 create function polyf(x anycompatible) returns anycompatiblerange as $$
   select array[x + 1, x + 2]
@@ -83,6 +93,19 @@ $$ language sql;
 select polyf(int4range(42, 49), array[11]) as int, polyf(float8range(4.5, 7.8), array[7]) as num;
 
 drop function polyf(x anycompatiblerange, y anycompatiblearray);
+
+-- fail, can't infer type:
+create function polyf(x anycompatible) returns anycompatiblemultirange as $$
+  select array[x + 1, x + 2]
+$$ language sql;
+
+create function polyf(x anycompatiblemultirange, y anycompatiblearray) returns anycompatiblemultirange as $$
+  select x
+$$ language sql;
+
+select polyf(multirange(int4range(42, 49)), array[11]) as int, polyf(multirange(float8range(4.5, 7.8)), array[7]) as num;
+
+drop function polyf(x anycompatiblemultirange, y anycompatiblearray);
 
 create function polyf(a anyelement, b anyarray,
                       c anycompatible, d anycompatible,
@@ -102,6 +125,54 @@ select x, pg_typeof(x), y, pg_typeof(y)
 
 drop function polyf(a anyelement, b anyarray,
                     c anycompatible, d anycompatible);
+
+create function polyf(anyrange) returns anymultirange
+as 'select multirange($1);' language sql;
+
+select polyf(int4range(1,10));
+select polyf(null);
+
+drop function polyf(anyrange);
+
+create function polyf(anymultirange) returns anyelement
+as 'select lower($1);' language sql;
+
+select polyf(int4multirange(int4range(1,10), int4range(20,30)));
+select polyf(null);
+
+drop function polyf(anymultirange);
+
+create function polyf(anycompatiblerange) returns anycompatiblemultirange
+as 'select multirange($1);' language sql;
+
+select polyf(int4range(1,10));
+select polyf(null);
+
+drop function polyf(anycompatiblerange);
+
+create function polyf(anymultirange) returns anyrange
+as 'select range_merge($1);' language sql;
+
+select polyf(int4multirange(int4range(1,10), int4range(20,30)));
+select polyf(null);
+
+drop function polyf(anymultirange);
+
+create function polyf(anycompatiblemultirange) returns anycompatiblerange
+as 'select range_merge($1);' language sql;
+
+select polyf(int4multirange(int4range(1,10), int4range(20,30)));
+select polyf(null);
+
+drop function polyf(anycompatiblemultirange);
+
+create function polyf(anycompatiblemultirange) returns anycompatible
+as 'select lower($1);' language sql;
+
+select polyf(int4multirange(int4range(1,10), int4range(20,30)));
+select polyf(null);
+
+drop function polyf(anycompatiblemultirange);
 
 
 --
@@ -994,6 +1065,35 @@ drop function anyctest(anycompatiblerange, anycompatiblerange);
 -- fail, can't infer result type:
 create function anyctest(anycompatible)
 returns anycompatiblerange as $$
+  select $1
+$$ language sql;
+
+create function anyctest(anycompatible, anycompatiblemultirange)
+returns anycompatiblemultirange as $$
+  select $2
+$$ language sql;
+
+select x, pg_typeof(x) from anyctest(11, multirange(int4range(4,7))) x;
+select x, pg_typeof(x) from anyctest(11, multirange(numrange(4,7))) x;
+select x, pg_typeof(x) from anyctest(11, 12) x;  -- fail
+select x, pg_typeof(x) from anyctest(11.2, multirange(int4range(4,7))) x;  -- fail
+select x, pg_typeof(x) from anyctest(11.2, '{[4,7)}') x;  -- fail
+
+drop function anyctest(anycompatible, anycompatiblemultirange);
+
+create function anyctest(anycompatiblemultirange, anycompatiblemultirange)
+returns anycompatible as $$
+  select lower($1) + upper($2)
+$$ language sql;
+
+select x, pg_typeof(x) from anyctest(multirange(int4range(11,12)), multirange(int4range(4,7))) x;
+select x, pg_typeof(x) from anyctest(multirange(int4range(11,12)), multirange(numrange(4,7))) x; -- fail
+
+drop function anyctest(anycompatiblemultirange, anycompatiblemultirange);
+
+-- fail, can't infer result type:
+create function anyctest(anycompatible)
+returns anycompatiblemultirange as $$
   select $1
 $$ language sql;
 

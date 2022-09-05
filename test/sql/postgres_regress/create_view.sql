@@ -328,6 +328,17 @@ select * from
 
 \d+ view_of_joins
 
+create table tbl1a (a int, c int);
+create view view_of_joins_2a as select * from tbl1 join tbl1a using (a);
+create view view_of_joins_2b as select * from tbl1 join tbl1a using (a) as x;
+create view view_of_joins_2c as select * from (tbl1 join tbl1a using (a)) as y;
+create view view_of_joins_2d as select * from (tbl1 join tbl1a using (a) as x) as y;
+
+select pg_get_viewdef('view_of_joins_2a', true);
+select pg_get_viewdef('view_of_joins_2b', true);
+select pg_get_viewdef('view_of_joins_2c', true);
+select pg_get_viewdef('view_of_joins_2d', true);
+
 -- Test view decompilation in the face of column addition/deletion/renaming
 
 create table tt2 (a int, b int, c int);
@@ -515,9 +526,11 @@ begin;
 -- this perhaps should be rejected, but it isn't:
 alter table tt14t drop column f3;
 
--- f3 is still in the view ...
+-- column f3 is still in the view, sort of ...
 select pg_get_viewdef('tt14v', true);
--- but will fail at execution
+-- ... and you can even EXPLAIN it ...
+explain (verbose, costs off) select * from tt14v;
+-- but it will fail at execution
 select f1, f4 from tt14v;
 select * from tt14v;
 
@@ -554,6 +567,11 @@ select * from tt17v;
 select pg_get_viewdef('tt17v', true);
 select * from int8_tbl i where i.* in (values(i.*::int8_tbl));
 
+create table tt15v_log(o tt15v, n tt15v, incr bool);
+create rule updlog as on update to tt15v do also
+  insert into tt15v_log values(old, new, row(old,old) < row(new,new));
+\d+ tt15v
+
 -- check unique-ification of overlength names
 
 create view tt18v as
@@ -585,6 +603,31 @@ select * from
   cast(1+2 as int4) as i4,
   cast(1+2 as int8) as i8;
 select pg_get_viewdef('tt20v', true);
+
+-- reverse-listing of various special function syntaxes required by SQL
+
+create view tt201v as
+select
+  extract(day from now()) as extr,
+  (now(), '1 day'::interval) overlaps
+    (current_timestamp(2), '1 day'::interval) as o,
+  'foo' is normalized isn,
+  'foo' is nfkc normalized isnn,
+  normalize('foo') as n,
+  normalize('foo', nfkd) as nfkd,
+  overlay('foo' placing 'bar' from 2) as ovl,
+  overlay('foo' placing 'bar' from 2 for 3) as ovl2,
+  position('foo' in 'foobar') as p,
+  substring('foo' from 2 for 3) as s,
+  substring('foo' similar 'f' escape '#') as ss,
+  substring('foo' from 'oo') as ssf,  -- historically-permitted abuse
+  trim(' ' from ' foo ') as bt,
+  trim(leading ' ' from ' foo ') as lt,
+  trim(trailing ' foo ') as rt,
+  trim(E'\\000'::bytea from E'\\000Tom\\000'::bytea) as btb,
+  trim(leading E'\\000'::bytea from E'\\000Tom\\000'::bytea) as ltb,
+  trim(trailing E'\\000'::bytea from E'\\000Tom\\000'::bytea) as rtb;
+select pg_get_viewdef('tt201v', true);
 
 -- corner cases with empty join conditions
 

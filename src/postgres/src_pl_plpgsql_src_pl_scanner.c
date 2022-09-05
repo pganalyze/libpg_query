@@ -23,8 +23,8 @@
  * - plpgsql_scanner_errposition
  * - plpgsql_yyerror
  * - plpgsql_push_back_token
- * - plpgsql_token_is_unreserved_keyword
  * - plpgsql_peek
+ * - plpgsql_token_is_unreserved_keyword
  * - plpgsql_append_source_text
  * - plpgsql_peek2
  * - plpgsql_scanner_finish
@@ -38,7 +38,7 @@
  *	  lexical scanning for PL/pgSQL
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *

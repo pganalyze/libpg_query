@@ -10,7 +10,7 @@
  *		string handling helpers
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -70,6 +70,12 @@ strtoint(const char *pg_restrict str, char **pg_restrict endptr, int base)
  * all non-ASCII but perform more intelligent filtering which would allow UTF or
  * similar, but it's unclear exactly what we should allow, so stick to ASCII only
  * for now.
+ */
+
+
+
+/*
+ * pg_is_ascii -- Check if string is made only of ASCII characters
  */
 
 

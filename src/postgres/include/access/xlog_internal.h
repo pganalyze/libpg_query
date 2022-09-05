@@ -11,7 +11,7 @@
  * Note: This file must be includable in both frontend and backend contexts,
  * to allow stand-alone tools like pg_receivewal to deal with WAL files.
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/access/xlog_internal.h
@@ -31,7 +31,7 @@
 /*
  * Each page of XLOG file has a header like this:
  */
-#define XLOG_PAGE_MAGIC 0xD106	/* can be used as WAL version indicator */
+#define XLOG_PAGE_MAGIC 0xD10D	/* can be used as WAL version indicator */
 
 typedef struct XLogPageHeaderData
 {
@@ -43,11 +43,8 @@ typedef struct XLogPageHeaderData
 	/*
 	 * When there is not enough space on current page for whole record, we
 	 * continue on the next page.  xlp_rem_len is the number of bytes
-	 * remaining from a previous page.
-	 *
-	 * Note that xlp_rem_len includes backup-block data; that is, it tracks
-	 * xl_tot_len not xl_len in the initial header.  Also note that the
-	 * continuation data isn't necessarily aligned.
+	 * remaining from a previous page; it tracks xl_tot_len in the initial
+	 * header.  Note that the continuation data isn't necessarily aligned.
 	 */
 	uint32		xlp_rem_len;	/* total len of remaining data for record */
 } XLogPageHeaderData;
@@ -79,8 +76,10 @@ typedef XLogLongPageHeaderData *XLogLongPageHeader;
 #define XLP_LONG_HEADER				0x0002
 /* This flag indicates backup blocks starting in this page are optional */
 #define XLP_BKP_REMOVABLE			0x0004
+/* Replaces a missing contrecord; see CreateOverwriteContrecordRecord */
+#define XLP_FIRST_IS_OVERWRITE_CONTRECORD 0x0008
 /* All defined flag bits in xlp_info (used for validity checking of header) */
-#define XLP_ALL_FLAGS				0x0007
+#define XLP_ALL_FLAGS				0x000F
 
 #define XLogPageHeaderSize(hdr)		\
 	(((hdr)->xlp_info & XLP_LONG_HEADER) ? SizeOfXLogLongPHD : SizeOfXLogShortPHD)
@@ -251,6 +250,13 @@ typedef struct xl_restore_point
 	TimestampTz rp_time;
 	char		rp_name[MAXFNAMELEN];
 } xl_restore_point;
+
+/* Overwrite of prior contrecord */
+typedef struct xl_overwrite_contrecord
+{
+	XLogRecPtr	overwritten_lsn;
+	TimestampTz overwrite_time;
+} xl_overwrite_contrecord;
 
 /* End of recovery mark, when we don't do an END_OF_RECOVERY checkpoint */
 typedef struct xl_end_of_recovery

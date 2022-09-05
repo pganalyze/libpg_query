@@ -107,14 +107,14 @@ SET enable_indexscan = OFF;
 SET enable_bitmapscan = OFF;
 
 SELECT * FROM fast_emp4000
-    WHERE home_base @ '(200,200),(2000,1000)'::box
+    WHERE home_base <@ '(200,200),(2000,1000)'::box
     ORDER BY (home_base[0])[0];
 
 SELECT count(*) FROM fast_emp4000 WHERE home_base && '(1000,1000,0,0)'::box;
 
 SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
 
-SELECT * FROM polygon_tbl WHERE f1 ~ '((1,1),(2,2),(2,1))'::polygon
+SELECT * FROM polygon_tbl WHERE f1 @> '((1,1),(2,2),(2,1))'::polygon
     ORDER BY (poly_center(f1))[0];
 
 SELECT * FROM circle_tbl WHERE f1 && circle(point(1,-2), 1)
@@ -136,9 +136,9 @@ SELECT count(*) FROM point_tbl p WHERE p.f1 << '(0.0, 0.0)';
 
 SELECT count(*) FROM point_tbl p WHERE p.f1 >> '(0.0, 0.0)';
 
-SELECT count(*) FROM point_tbl p WHERE p.f1 <^ '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 <<| '(0.0, 0.0)';
 
-SELECT count(*) FROM point_tbl p WHERE p.f1 >^ '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 |>> '(0.0, 0.0)';
 
 SELECT count(*) FROM point_tbl p WHERE p.f1 ~= '(-5, -12)';
 
@@ -161,10 +161,10 @@ SET enable_bitmapscan = OFF;
 
 EXPLAIN (COSTS OFF)
 SELECT * FROM fast_emp4000
-    WHERE home_base @ '(200,200),(2000,1000)'::box
+    WHERE home_base <@ '(200,200),(2000,1000)'::box
     ORDER BY (home_base[0])[0];
 SELECT * FROM fast_emp4000
-    WHERE home_base @ '(200,200),(2000,1000)'::box
+    WHERE home_base <@ '(200,200),(2000,1000)'::box
     ORDER BY (home_base[0])[0];
 
 EXPLAIN (COSTS OFF)
@@ -176,9 +176,9 @@ SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
 SELECT count(*) FROM fast_emp4000 WHERE home_base IS NULL;
 
 EXPLAIN (COSTS OFF)
-SELECT * FROM polygon_tbl WHERE f1 ~ '((1,1),(2,2),(2,1))'::polygon
+SELECT * FROM polygon_tbl WHERE f1 @> '((1,1),(2,2),(2,1))'::polygon
     ORDER BY (poly_center(f1))[0];
-SELECT * FROM polygon_tbl WHERE f1 ~ '((1,1),(2,2),(2,1))'::polygon
+SELECT * FROM polygon_tbl WHERE f1 @> '((1,1),(2,2),(2,1))'::polygon
     ORDER BY (poly_center(f1))[0];
 
 EXPLAIN (COSTS OFF)
@@ -220,12 +220,12 @@ SELECT count(*) FROM point_tbl p WHERE p.f1 >> '(0.0, 0.0)';
 SELECT count(*) FROM point_tbl p WHERE p.f1 >> '(0.0, 0.0)';
 
 EXPLAIN (COSTS OFF)
-SELECT count(*) FROM point_tbl p WHERE p.f1 <^ '(0.0, 0.0)';
-SELECT count(*) FROM point_tbl p WHERE p.f1 <^ '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 <<| '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 <<| '(0.0, 0.0)';
 
 EXPLAIN (COSTS OFF)
-SELECT count(*) FROM point_tbl p WHERE p.f1 >^ '(0.0, 0.0)';
-SELECT count(*) FROM point_tbl p WHERE p.f1 >^ '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 |>> '(0.0, 0.0)';
+SELECT count(*) FROM point_tbl p WHERE p.f1 |>> '(0.0, 0.0)';
 
 EXPLAIN (COSTS OFF)
 SELECT count(*) FROM point_tbl p WHERE p.f1 ~= '(-5, -12)';
@@ -254,6 +254,10 @@ SELECT * FROM gpolygon_tbl ORDER BY f1 <-> '(0,0)'::point LIMIT 10;
 EXPLAIN (COSTS OFF)
 SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10;
 SELECT circle_center(f1), round(radius(f1)) as radius FROM gcircle_tbl ORDER BY f1 <-> '(200,300)'::point LIMIT 10;
+
+EXPLAIN (COSTS OFF)
+SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x;
+SELECT point(x,x), (SELECT f1 FROM gpolygon_tbl ORDER BY f1 <-> point(x,x) LIMIT 1) as c FROM generate_series(0,10,1) x;
 
 -- Now check the results from bitmap indexscan
 SET enable_seqscan = OFF;
@@ -481,11 +485,22 @@ CREATE INDEX CONCURRENTLY concur_index4 on concur_heap(f2) WHERE f1='a';
 CREATE INDEX CONCURRENTLY concur_index5 on concur_heap(f2) WHERE f1='x';
 -- here we also check that you can default the index name
 CREATE INDEX CONCURRENTLY on concur_heap((f2||f1));
-
 -- You can't do a concurrent index build in a transaction
 BEGIN;
 CREATE INDEX CONCURRENTLY concur_index7 ON concur_heap(f1);
 COMMIT;
+-- test where predicate is able to do a transactional update during
+-- a concurrent build before switching pg_index state flags.
+CREATE FUNCTION predicate_stable() RETURNS bool IMMUTABLE
+LANGUAGE plpgsql AS $$
+BEGIN
+  EXECUTE 'SELECT txid_current()';
+  RETURN true;
+END; $$;
+CREATE INDEX CONCURRENTLY concur_index8 ON concur_heap (f1)
+  WHERE predicate_stable();
+DROP INDEX concur_index8;
+DROP FUNCTION predicate_stable();
 
 -- But you can do a regular index build in a transaction
 BEGIN;
@@ -609,7 +624,7 @@ DROP TABLE syscol_table;
 -- Tests for IS NULL/IS NOT NULL with b-tree indexes
 --
 
-SELECT unique1, unique2 INTO onek_with_null FROM onek;
+CREATE TABLE onek_with_null AS SELECT unique1, unique2 FROM onek;
 INSERT INTO onek_with_null (unique1,unique2) VALUES (NULL, -1), (NULL, NULL);
 CREATE UNIQUE INDEX onek_nulltest ON onek_with_null (unique2,unique1);
 
@@ -796,7 +811,7 @@ DROP TABLE reindex_verbose;
 CREATE TABLE concur_reindex_tab (c1 int);
 -- REINDEX
 REINDEX TABLE concur_reindex_tab; -- notice
-REINDEX TABLE CONCURRENTLY concur_reindex_tab; -- notice
+REINDEX (CONCURRENTLY) TABLE concur_reindex_tab; -- notice
 ALTER TABLE concur_reindex_tab ADD COLUMN c2 text; -- add toast index
 -- Normal index with integer column
 CREATE UNIQUE INDEX concur_reindex_ind1 ON concur_reindex_tab(c1);
@@ -877,6 +892,15 @@ REINDEX TABLE CONCURRENTLY concur_replident;
 SELECT indexrelid::regclass, indisreplident FROM pg_index
   WHERE indrelid = 'concur_replident'::regclass;
 DROP TABLE concur_replident;
+-- Check that opclass parameters are preserved
+CREATE TABLE concur_appclass_tab(i tsvector, j tsvector, k tsvector);
+CREATE INDEX concur_appclass_ind on concur_appclass_tab
+  USING gist (i tsvector_ops (siglen='1000'), j tsvector_ops (siglen='500'));
+CREATE INDEX concur_appclass_ind_2 on concur_appclass_tab
+  USING gist (k tsvector_ops (siglen='300'), j tsvector_ops);
+REINDEX TABLE CONCURRENTLY concur_appclass_tab;
+\d concur_appclass_tab
+DROP TABLE concur_appclass_tab;
 
 -- Partitions
 -- Create some partitioned tables
@@ -903,12 +927,6 @@ CREATE INDEX concur_reindex_part_index_0_2 ON ONLY concur_reindex_part_0_2 (c1);
 ALTER INDEX concur_reindex_part_index_0 ATTACH PARTITION concur_reindex_part_index_0_2;
 SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
   ORDER BY relid, level;
--- REINDEX fails for partitioned indexes
-REINDEX INDEX concur_reindex_part_index_10;
-REINDEX INDEX CONCURRENTLY concur_reindex_part_index_10;
--- REINDEX is a no-op for partitioned tables
-REINDEX TABLE concur_reindex_part_10;
-REINDEX TABLE CONCURRENTLY concur_reindex_part_10;
 SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
   ORDER BY relid, level;
 -- REINDEX should preserve dependencies of partition tree.
@@ -948,6 +966,88 @@ WHERE classid = 'pg_class'::regclass AND
   ORDER BY 1, 2;
 SELECT relid, parentrelid, level FROM pg_partition_tree('concur_reindex_part_index')
   ORDER BY relid, level;
+
+-- REINDEX for partitioned indexes
+-- REINDEX TABLE fails for partitioned indexes
+-- Top-most parent index
+REINDEX TABLE concur_reindex_part_index; -- error
+REINDEX TABLE CONCURRENTLY concur_reindex_part_index; -- error
+-- Partitioned index with no leaves
+REINDEX TABLE concur_reindex_part_index_10; -- error
+REINDEX TABLE CONCURRENTLY concur_reindex_part_index_10; -- error
+-- Cannot run in a transaction block
+BEGIN;
+REINDEX INDEX concur_reindex_part_index;
+ROLLBACK;
+-- Helper functions to track changes of relfilenodes in a partition tree.
+-- Create a table tracking the relfilenode state.
+CREATE OR REPLACE FUNCTION create_relfilenode_part(relname text, indname text)
+  RETURNS VOID AS
+  $func$
+  BEGIN
+  EXECUTE format('
+    CREATE TABLE %I AS
+      SELECT oid, relname, relfilenode, relkind, reltoastrelid
+      FROM pg_class
+      WHERE oid IN
+         (SELECT relid FROM pg_partition_tree(''%I''));',
+	 relname, indname);
+  END
+  $func$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION compare_relfilenode_part(tabname text)
+  RETURNS TABLE (relname name, relkind "char", state text) AS
+  $func$
+  BEGIN
+    RETURN QUERY EXECUTE
+      format(
+        'SELECT  b.relname,
+                 b.relkind,
+                 CASE WHEN a.relfilenode = b.relfilenode THEN ''relfilenode is unchanged''
+                 ELSE ''relfilenode has changed'' END
+           -- Do not join with OID here as CONCURRENTLY changes it.
+           FROM %I b JOIN pg_class a ON b.relname = a.relname
+           ORDER BY 1;', tabname);
+  END
+  $func$ LANGUAGE plpgsql;
+--  Check that expected relfilenodes are changed, non-concurrent case.
+SELECT create_relfilenode_part('reindex_index_status', 'concur_reindex_part_index');
+REINDEX INDEX concur_reindex_part_index;
+SELECT * FROM compare_relfilenode_part('reindex_index_status');
+DROP TABLE reindex_index_status;
+-- concurrent case.
+SELECT create_relfilenode_part('reindex_index_status', 'concur_reindex_part_index');
+REINDEX INDEX CONCURRENTLY concur_reindex_part_index;
+SELECT * FROM compare_relfilenode_part('reindex_index_status');
+DROP TABLE reindex_index_status;
+
+-- REINDEX for partitioned tables
+-- REINDEX INDEX fails for partitioned tables
+-- Top-most parent
+REINDEX INDEX concur_reindex_part; -- error
+REINDEX INDEX CONCURRENTLY concur_reindex_part; -- error
+-- Partitioned with no leaves
+REINDEX INDEX concur_reindex_part_10; -- error
+REINDEX INDEX CONCURRENTLY concur_reindex_part_10; -- error
+-- Cannot run in a transaction block
+BEGIN;
+REINDEX TABLE concur_reindex_part;
+ROLLBACK;
+-- Check that expected relfilenodes are changed, non-concurrent case.
+-- Note that the partition tree changes of the *indexes* need to be checked.
+SELECT create_relfilenode_part('reindex_index_status', 'concur_reindex_part_index');
+REINDEX TABLE concur_reindex_part;
+SELECT * FROM compare_relfilenode_part('reindex_index_status');
+DROP TABLE reindex_index_status;
+-- concurrent case.
+SELECT create_relfilenode_part('reindex_index_status', 'concur_reindex_part_index');
+REINDEX TABLE CONCURRENTLY concur_reindex_part;
+SELECT * FROM compare_relfilenode_part('reindex_index_status');
+DROP TABLE reindex_index_status;
+
+DROP FUNCTION create_relfilenode_part;
+DROP FUNCTION compare_relfilenode_part;
+
+-- Cleanup of partition tree used for REINDEX test.
 DROP TABLE concur_reindex_part;
 
 -- Check errors

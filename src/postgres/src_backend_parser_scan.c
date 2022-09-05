@@ -67,7 +67,7 @@
  * Postgres 9.2, this check is made automatically by the Makefile.)
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -659,8 +659,8 @@ static void yynoreturn yy_fatal_error ( const char* msg , yyscan_t yyscanner );
 	yyg->yy_hold_char = *yy_cp; \
 	*yy_cp = '\0'; \
 	yyg->yy_c_buf_p = yy_cp;
-#define YY_NUM_RULES 66
-#define YY_END_OF_BUFFER 67
+#define YY_NUM_RULES 65
+#define YY_END_OF_BUFFER 66
 struct yy_trans_info
 	{
 	flex_int16_t yy_verify;
@@ -682,7 +682,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {  47,6665 }, {  48,6667 }, {  49,6667 }, {  50,6667 }, {  51,6667 },
  {  52,6667 }, {  53,6667 }, {  54,6667 }, {  55,6667 }, {  56,6667 },
  {  57,6667 }, {  58,6219 }, {  59,6216 }, {  60,6732 }, {  61,6743 },
- {  62,6810 }, {  63,6564 }, {  64,6241 }, {  65,6842 }, {  66,7099 },
+ {  62,6810 }, {  63,6241 }, {  64,6241 }, {  65,6842 }, {  66,7099 },
  {  67,6842 }, {  68,6842 }, {  69,7356 }, {  70,6842 }, {  71,6842 },
  {  72,6842 }, {  73,6842 }, {  74,6842 }, {  75,6842 }, {  76,6842 },
  {  77,6842 }, {  78,7613 }, {  79,6842 }, {  80,6842 }, {  81,6842 },
@@ -738,7 +738,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {  44,5958 }, {  45,6317 }, {  46,6336 }, {  47,6407 }, {  48,6409 },
  {  49,6409 }, {  50,6409 }, {  51,6409 }, {  52,6409 }, {  53,6409 },
  {  54,6409 }, {  55,6409 }, {  56,6409 }, {  57,6409 }, {  58,5961 },
- {  59,5958 }, {  60,6474 }, {  61,6485 }, {  62,6552 }, {  63,6306 },
+ {  59,5958 }, {  60,6474 }, {  61,6485 }, {  62,6552 }, {  63,5983 },
  {  64,5983 }, {  65,6584 }, {  66,6841 }, {  67,6584 }, {  68,6584 },
  {  69,7098 }, {  70,6584 }, {  71,6584 }, {  72,6584 }, {  73,6584 },
  {  74,6584 }, {  75,6584 }, {  76,6584 }, {  77,6584 }, {  78,7355 },
@@ -2029,18 +2029,18 @@ static const struct yy_trans_info yy_transition[17678] =
  { 238, 335 }, { 239, 335 }, { 240, 335 }, { 241, 335 }, { 242, 335 },
  { 243, 335 }, { 244, 335 }, { 245, 335 }, { 246, 335 }, { 247, 335 },
  { 248, 335 }, { 249, 335 }, { 250, 335 }, { 251, 335 }, { 252, 335 },
- { 253, 335 }, { 254, 335 }, { 255, 335 }, { 256, 335 }, {   0,  65 },
+ { 253, 335 }, { 254, 335 }, { 255, 335 }, { 256, 335 }, {   0,  64 },
  {   0,11228 }, {   0,   1 }, {   0,11226 }, {   0,  39 }, {   0,11224 },
 
- {   0,   0 }, {   0,   1 }, {   0,11221 }, {   0,  56 }, {   0,11219 },
+ {   0,   0 }, {   0,   1 }, {   0,11221 }, {   0,  55 }, {   0,11219 },
  {   0,   0 }, {   9,5098 }, {  10,5098 }, {   0,   0 }, {  12,5098 },
  {  13,5098 }, {   9,5093 }, {  10,5093 }, {   0,   0 }, {  12,5093 },
- {  13,5093 }, {   0,  14 }, {   0,11206 }, {   0,  55 }, {   0,11204 },
- {   0,   0 }, {   0,  55 }, {   0,11201 }, {   0,  17 }, {   0,11199 },
+ {  13,5093 }, {   0,  14 }, {   0,11206 }, {   0,  54 }, {   0,11204 },
+ {   0,   0 }, {   0,  54 }, {   0,11201 }, {   0,  17 }, {   0,11199 },
  {   0,   0 }, {   0,   7 }, {   0,11196 }, {   0,   0 }, {  32,5098 },
  {   0,   7 }, {   0,11192 }, {   0,   0 }, {   0,   0 }, {  32,5093 },
  {   0,  41 }, {   0,11187 }, {  33,5346 }, {   0,   0 }, {  35,5346 },
- {   0,   0 }, {  37,5346 }, {  38,5346 }, {   0,  56 }, {   0,11179 },
+ {   0,   0 }, {  37,5346 }, {  38,5346 }, {   0,  55 }, {   0,11179 },
  {   0,   0 }, {  42,5346 }, {  43,5346 }, {   0,   0 }, {  45,5346 },
 
  {   0,   0 }, {  47,5346 }, {   0,  17 }, {   0,11170 }, {   0,  20 },
@@ -2055,21 +2055,21 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {  34, 320 }, {   0,   0 }, {  94,5346 }, {  39, 324 },
 
  {  96,5346 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  60,5306 },
- {  61,5306 }, {  62,5306 }, {  63,5306 }, {  64,5306 }, {   0,  65 },
+ {  61,5306 }, {  62,5306 }, {  63,5306 }, {  64,5306 }, {   0,  64 },
  {   0,11113 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,  26 }, {   0,11107 }, {   0,  33 }, {   0,11105 }, {   0,  48 },
- {   0,11103 }, {   0,  47 }, {   0,11101 }, {   0,  49 }, {   0,11099 },
- {   0,   0 }, {   0,   0 }, {   0,   0 }, { 124,5346 }, {   0,   0 },
- { 126,5346 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  26 }, {   0,11107 }, {   0,  33 }, {   0,11105 }, {   0,  47 },
+ {   0,11103 }, {   0,  46 }, {   0,11101 }, {   0,  48 }, {   0,11099 },
+ {   0,   9 }, {   0,11097 }, {   0,   0 }, { 124,5346 }, {   0,   0 },
+ { 126,5346 }, {   0,  15 }, {   0,11091 }, {   0,  13 }, {   0,11089 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  94,5306 }, {   0,   0 },
- {  96,5306 }, {   0,   0 }, {   0,  64 }, {   0,11080 }, {   0,   9 },
- {   0,11078 }, {  36,   8 }, {   0,  15 }, {   0,11075 }, {   0,   0 },
+ {  96,5306 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,   0 }, {  36,   8 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  48,5268 }, {  49,5268 },
  {  50,5268 }, {  51,5268 }, {  52,5268 }, {  53,5268 }, {  54,5268 },
  {  55,5268 }, {  56,5268 }, {  57,5268 }, { 124,5306 }, {   0,   0 },
- { 126,5306 }, {   0,  46 }, {   0,11051 }, {   0,  13 }, {   0,11049 },
+ { 126,5306 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {  65,5331 }, {  66,5331 }, {  67,5331 }, {  68,5331 }, {  69,5331 },
  {  70,5331 }, {  71,5331 }, {  72,5331 }, {  73,5331 }, {  74,5331 },
  {  75,5331 }, {  76,5331 }, {  77,5331 }, {  78,5331 }, {  79,5331 },
@@ -2077,13 +2077,13 @@ static const struct yy_trans_info yy_transition[17678] =
  {  85,5331 }, {  86,5331 }, {  87,5331 }, {  88,5331 }, {  89,5331 },
 
  {  90,5331 }, {  85,8881 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {  95,5331 }, {  63,   0 }, {  97,5331 }, {  98,5331 }, {  99,5331 },
+ {  95,5331 }, {   0,   0 }, {  97,5331 }, {  98,5331 }, {  99,5331 },
  { 100,5331 }, { 101,5331 }, { 102,5331 }, { 103,5331 }, { 104,5331 },
  { 105,5331 }, { 106,5331 }, { 107,5331 }, { 108,5331 }, { 109,5331 },
  { 110,5331 }, { 111,5331 }, { 112,5331 }, { 113,5331 }, { 114,5331 },
  { 115,5331 }, { 116,5331 }, { 117,5331 }, { 118,5331 }, { 119,5331 },
  { 120,5331 }, { 121,5331 }, { 122,5331 }, { 117,8904 }, {   0,   0 },
- {  63, -29 }, {   0,   0 }, {   0,   0 }, { 128,5331 }, { 129,5331 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, { 128,5331 }, { 129,5331 },
  { 130,5331 }, { 131,5331 }, { 132,5331 }, { 133,5331 }, { 134,5331 },
  { 135,5331 }, { 136,5331 }, { 137,5331 }, { 138,5331 }, { 139,5331 },
 
@@ -2112,13 +2112,13 @@ static const struct yy_trans_info yy_transition[17678] =
  { 240,5331 }, { 241,5331 }, { 242,5331 }, { 243,5331 }, { 244,5331 },
  { 245,5331 }, { 246,5331 }, { 247,5331 }, { 248,5331 }, { 249,5331 },
  { 250,5331 }, { 251,5331 }, { 252,5331 }, { 253,5331 }, { 254,5331 },
- { 255,5331 }, {   0,  55 }, {   0,10856 }, {   0,  45 }, {   0,10854 },
+ { 255,5331 }, {   0,  54 }, {   0,10856 }, {   0,  45 }, {   0,10854 },
  {   0,  12 }, {   0,10852 }, {   0,   0 }, {   0,   0 }, {   0,   8 },
- {   0,10848 }, {   0,   0 }, {   0,  55 }, {   0,10845 }, {   0,   5 },
+ {   0,10848 }, {   0,   0 }, {   0,  54 }, {   0,10845 }, {   0,   5 },
  {   0,10843 }, {   0,  43 }, {   0,10841 }, {   0,  21 }, {   0,10839 },
  {   0,  19 }, {   0,10837 }, {   0,  18 }, {   0,10835 }, {   0,  29 },
- {   0,10833 }, {   0,  35 }, {   0,10831 }, {   0,  60 }, {   0,10829 },
- {   0,   0 }, {   0,  55 }, {   0,10826 }, {   0,  40 }, {   0,10824 },
+ {   0,10833 }, {   0,  35 }, {   0,10831 }, {   0,  59 }, {   0,10829 },
+ {   0,   0 }, {   0,  54 }, {   0,10826 }, {   0,  40 }, {   0,10824 },
 
  {  33,4983 }, {   0,   0 }, {  35,4983 }, {  34,  30 }, {  37,4983 },
  {  38,4983 }, {   0,  16 }, {   0,10816 }, {  39,  38 }, {  42,4983 },
@@ -2134,7 +2134,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {  53,5559 }, {  54,5559 }, {  55,5559 }, {  56,5559 }, {  57,5559 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {  94,4983 }, {   0,   0 }, {  96,4983 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,  55 }, {   0,10755 }, {   0,  58 },
+ {   0,   0 }, {   0,   0 }, {   0,  54 }, {   0,10755 }, {   0,  57 },
  {   0,10753 }, {   0,   0 }, {  94,4972 }, {   0,   0 }, {  96,4972 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2148,10 +2148,10 @@ static const struct yy_trans_info yy_transition[17678] =
  {  47,4882 }, {  46,5513 }, {   0,   0 }, {  48,5577 }, {  49,5577 },
  {  50,5577 }, {  51,5577 }, {  52,5577 }, {  53,5577 }, {  54,5577 },
  {  55,5577 }, {  56,5577 }, {  57,5577 }, {  60,4882 }, {  61,4882 },
- {  62,4882 }, {  63,4882 }, {  64,4882 }, {   0,   0 }, {   0,  55 },
+ {  62,4882 }, {  63,4882 }, {  64,4882 }, {   0,   0 }, {   0,  54 },
  {   0,10688 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  69,5599 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,  55 }, {   0,10677 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  54 }, {   0,10677 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2166,13 +2166,13 @@ static const struct yy_trans_info yy_transition[17678] =
 
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {  60,4804 }, {  61,4804 }, {  62,5671 }, {  63,4804 },
- {  64,4804 }, {   0,   0 }, {   0,  55 }, {   0,10610 }, {   0,   0 },
+ {  64,4804 }, {   0,   0 }, {   0,  54 }, {   0,10610 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  94,4815 },
  {   0,   0 }, {  96,4815 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {  94,4804 }, {   0,   0 }, {  96,4804 }, {   0,   0 }, {   0,  64 },
+ {  94,4804 }, {   0,   0 }, {  96,4804 }, {   0,   0 }, {   0,  63 },
  {   0,10578 }, {  33,4737 }, {   0,   0 }, {  35,4737 }, {   0,   0 },
 
  {  37,4737 }, {  38,4737 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2187,7 +2187,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {  50,5663 }, {  51,5663 }, {  52,5663 }, {  53,5663 }, {  54,5663 },
 
  {  55,5663 }, {  56,5663 }, {  57,5663 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {  94,4737 }, {  63,-502 }, {  96,4737 },
+ {   0,   0 }, {   0,   0 }, {  94,4737 }, {   0,   0 }, {  96,4737 },
  {  65,5663 }, {  66,5663 }, {  67,5663 }, {  68,5663 }, {  69,5663 },
  {  70,5663 }, {  71,5663 }, {  72,5663 }, {  73,5663 }, {  74,5663 },
  {  75,5663 }, {  76,5663 }, {  77,5663 }, {  78,5663 }, {  79,5663 },
@@ -2230,7 +2230,7 @@ static const struct yy_trans_info yy_transition[17678] =
  { 245,5663 }, { 246,5663 }, { 247,5663 }, { 248,5663 }, { 249,5663 },
  { 250,5663 }, { 251,5663 }, { 252,5663 }, { 253,5663 }, { 254,5663 },
 
- { 255,5663 }, {   0,  64 }, {   0,10321 }, {   0,   0 }, {   0,   0 },
+ { 255,5663 }, {   0,  63 }, {   0,10321 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2238,13 +2238,13 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  36,5406 }, {   0,   0 },
- {   0,   0 }, {  39,-757 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,   0 }, {  39,-776 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
 
  {  48,5406 }, {  49,5406 }, {  50,5406 }, {  51,5406 }, {  52,5406 },
  {  53,5406 }, {  54,5406 }, {  55,5406 }, {  56,5406 }, {  57,5406 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {  63,-759 }, {   0,   0 }, {  65,5406 }, {  66,5406 }, {  67,5406 },
+ {   0,   0 }, {   0,   0 }, {  65,5406 }, {  66,5406 }, {  67,5406 },
  {  68,5406 }, {  69,5406 }, {  70,5406 }, {  71,5406 }, {  72,5406 },
  {  73,5406 }, {  74,5406 }, {  75,5406 }, {  76,5406 }, {  77,5406 },
  {  78,5406 }, {  79,5406 }, {  80,5406 }, {  81,5406 }, {  82,5406 },
@@ -2286,7 +2286,7 @@ static const struct yy_trans_info yy_transition[17678] =
  { 243,5406 }, { 244,5406 }, { 245,5406 }, { 246,5406 }, { 247,5406 },
 
  { 248,5406 }, { 249,5406 }, { 250,5406 }, { 251,5406 }, { 252,5406 },
- { 253,5406 }, { 254,5406 }, { 255,5406 }, {   0,  64 }, {   0,10064 },
+ { 253,5406 }, { 254,5406 }, { 255,5406 }, {   0,  63 }, {   0,10064 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2294,13 +2294,13 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {  36,5149 }, {   0,   0 }, {   0,   0 }, {  39,-1011 }, {   0,   0 },
+ {  36,5149 }, {   0,   0 }, {   0,   0 }, {  39,-1027 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {  48,5149 }, {  49,5149 }, {  50,5149 },
  {  51,5149 }, {  52,5149 }, {  53,5149 }, {  54,5149 }, {  55,5149 },
  {  56,5149 }, {  57,5149 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {  63,-987 }, {   0,   0 }, {  65,5149 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  65,5149 },
  {  66,5149 }, {  67,5149 }, {  68,5149 }, {  69,5149 }, {  70,5149 },
  {  71,5149 }, {  72,5149 }, {  73,5149 }, {  74,5149 }, {  75,5149 },
  {  76,5149 }, {  77,5149 }, {  78,5149 }, {  79,5149 }, {  80,5149 },
@@ -2343,7 +2343,7 @@ static const struct yy_trans_info yy_transition[17678] =
  { 241,5149 }, { 242,5149 }, { 243,5149 }, { 244,5149 }, { 245,5149 },
  { 246,5149 }, { 247,5149 }, { 248,5149 }, { 249,5149 }, { 250,5149 },
  { 251,5149 }, { 252,5149 }, { 253,5149 }, { 254,5149 }, { 255,5149 },
- {   0,  64 }, {   0,9807 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  63 }, {   0,9807 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2352,11 +2352,11 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {  36,4892 }, {   0,   0 }, {   0,   0 },
- {  39,-1242 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {  39,-1282 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  48,4892 },
  {  49,4892 }, {  50,4892 }, {  51,4892 }, {  52,4892 }, {  53,4892 },
  {  54,4892 }, {  55,4892 }, {  56,4892 }, {  57,4892 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  63,-1273 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {  65,4892 }, {  66,4892 }, {  67,4892 }, {  68,4892 },
  {  69,4892 }, {  70,4892 }, {  71,4892 }, {  72,4892 }, {  73,4892 },
  {  74,4892 }, {  75,4892 }, {  76,4892 }, {  77,4892 }, {  78,4892 },
@@ -2399,7 +2399,7 @@ static const struct yy_trans_info yy_transition[17678] =
  { 239,4892 }, { 240,4892 }, { 241,4892 }, { 242,4892 }, { 243,4892 },
  { 244,4892 }, { 245,4892 }, { 246,4892 }, { 247,4892 }, { 248,4892 },
  { 249,4892 }, { 250,4892 }, { 251,4892 }, { 252,4892 }, { 253,4892 },
- { 254,4892 }, { 255,4892 }, {   0,  64 }, {   0,9550 }, {   0,   0 },
+ { 254,4892 }, { 255,4892 }, {   0,  63 }, {   0,9550 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2413,7 +2413,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {  48,4635 }, {  49,4635 }, {  50,4635 }, {  51,4635 },
  {  52,4635 }, {  53,4635 }, {  54,4635 }, {  55,4635 }, {  56,4635 },
  {  57,4635 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {  63,-1530 }, {   0,   0 }, {  65,4635 }, {  66,4635 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {  65,4635 }, {  66,4635 },
  {  67,4635 }, {  68,4635 }, {  69,4635 }, {  70,4635 }, {  71,4635 },
  {  72,4635 }, {  73,4635 }, {  74,4635 }, {  75,4635 }, {  76,4635 },
 
@@ -2455,7 +2455,7 @@ static const struct yy_trans_info yy_transition[17678] =
  { 237,4635 }, { 238,4635 }, { 239,4635 }, { 240,4635 }, { 241,4635 },
  { 242,4635 }, { 243,4635 }, { 244,4635 }, { 245,4635 }, { 246,4635 },
  { 247,4635 }, { 248,4635 }, { 249,4635 }, { 250,4635 }, { 251,4635 },
- { 252,4635 }, { 253,4635 }, { 254,4635 }, { 255,4635 }, {   0,  64 },
+ { 252,4635 }, { 253,4635 }, { 254,4635 }, { 255,4635 }, {   0,  63 },
  {   0,9293 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -2469,7 +2469,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  48,4378 }, {  49,4378 },
  {  50,4378 }, {  51,4378 }, {  52,4378 }, {  53,4378 }, {  54,4378 },
  {  55,4378 }, {  56,4378 }, {  57,4378 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,   0 }, {  63,-1787 }, {   0,   0 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {  65,4378 }, {  66,4378 }, {  67,4378 }, {  68,4378 }, {  69,4378 },
 
  {  70,4378 }, {  71,4378 }, {  72,4378 }, {  73,4378 }, {  74,4378 },
@@ -3207,14 +3207,14 @@ static const struct yy_trans_info yy_transition[17678] =
  { 237,3647 }, { 238,3647 }, { 239,3647 }, { 240,3647 }, { 241,3647 },
  { 242,3647 }, { 243,3647 }, { 244,3647 }, { 245,3647 }, { 246,3647 },
  { 247,3647 }, { 248,3647 }, { 249,3647 }, { 250,3647 }, { 251,3647 },
- { 252,3647 }, { 253,3647 }, { 254,3647 }, { 255,3647 }, {   0,  56 },
+ { 252,3647 }, { 253,3647 }, { 254,3647 }, { 255,3647 }, {   0,  55 },
 
  {   0,5873 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,  54 }, {   0,5862 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  53 }, {   0,5862 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,  57 }, {   0,5845 }, {   0,   0 },
+ {   0,   0 }, {   0,   0 }, {   0,  56 }, {   0,5845 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  33,   0 }, {   0,   0 },
  {  35,   0 }, {   0,   0 }, {  37,   0 }, {  38,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {  42,   0 }, {  43,   0 }, {  33, -11 },
@@ -3342,12 +3342,12 @@ static const struct yy_trans_info yy_transition[17678] =
  { 247,3638 }, { 248,3638 }, { 249,3638 }, { 250,3638 }, { 251,3638 },
 
  { 252,3638 }, { 253,3638 }, { 254,3638 }, { 255,3638 }, { 256,3638 },
- {   0,  59 }, {   0,5267 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  58 }, {   0,5267 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   3 }, {   0,5242 }, {   0,  59 }, {   0,5240 }, {   0,   0 },
+ {   0,   3 }, {   0,5242 }, {   0,  58 }, {   0,5240 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -3361,12 +3361,12 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {  48,3871 }, {  49,3871 }, {  50,3871 }, {  51,3871 },
  {  52,3871 }, {  53,3871 }, {  54,3871 }, {  55,3871 }, {  56,3871 },
  {  57,3871 }, {  60,3871 }, {  61,3871 }, {  62,3871 }, {  63,3871 },
- {  64,3871 }, {   0,  58 }, {   0,5176 }, {   0,   0 }, {   0,   0 },
+ {  64,3871 }, {   0,  57 }, {   0,5176 }, {   0,   0 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {  69,  86 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, { 101, 113 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,  62 }, {   0,5154 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,  61 }, {   0,5154 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {  94,3871 }, {   0,   0 }, {  96,3871 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, { 101,  86 },
@@ -3375,7 +3375,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {  48,   0 }, {  49,   0 }, {  50,   0 }, {  51,   0 }, {  52,   0 },
 
  {  53,   0 }, {  54,   0 }, {  55,   0 }, {  56,   0 }, {  57,   0 },
- { 124,3871 }, {   0,   0 }, { 126,3871 }, {   0,  51 }, {   0,5114 },
+ { 124,3871 }, {   0,   0 }, { 126,3871 }, {   0,  50 }, {   0,5114 },
  {   0,   0 }, {   0,   0 }, {  43,3807 }, {   0,   0 }, {  45,3807 },
  {   0,   0 }, {  69,  22 }, {  48,3849 }, {  49,3849 }, {  50,3849 },
  {  51,3849 }, {  52,3849 }, {  53,3849 }, {  54,3849 }, {  55,3849 },
@@ -3383,7 +3383,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {  33,-759 }, {   0,   0 }, {  35,-759 },
- {   0,   0 }, {  37,-759 }, {  38,-759 }, { 101,  22 }, {   0,  53 },
+ {   0,   0 }, {  37,-759 }, {  38,-759 }, { 101,  22 }, {   0,  52 },
 
  {   0,5073 }, {  42,-759 }, {  43,-759 }, {   0,   0 }, {  45,-759 },
  {   0,   0 }, {  47,-759 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
@@ -3399,9 +3399,9 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  94,-759 }, {   0,   0 },
  {  96,-759 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {  60,-800 }, {  61,-800 }, {  62,-800 }, {  63,-800 }, {  64,-800 },
- {   0,   0 }, {   0,  50 }, {   0,5006 }, {   0,   0 }, {   0,   0 },
+ {   0,   0 }, {   0,  49 }, {   0,5006 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,  52 }, {   0,4995 }, {   0,   0 },
+ {   0,   0 }, {   0,   0 }, {   0,  51 }, {   0,4995 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, { 124,-759 }, {   0,   0 },
  { 126,-759 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  94,-800 },
@@ -3419,7 +3419,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
 
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, {   0,  64 }, {   0,4915 }, {   0,   0 },
+ {   0,   0 }, {   0,   0 }, {   0,  63 }, {   0,4915 }, {   0,   0 },
  {   0,   0 }, {  94,-867 }, {   0,   0 }, {  96,-867 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {  94,-878 }, {   0,   0 }, {  96,-878 },
@@ -3433,7 +3433,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {  48,   0 }, {  49,   0 }, {  50,   0 }, {  51,   0 },
  {  52,   0 }, {  53,   0 }, {  54,   0 }, {  55,   0 }, {  56,   0 },
  {  57,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {  63,-6165 }, {   0,   0 }, {  65,   0 }, {  66,   0 },
+ {   0,   0 }, {   0,   0 }, {   0,   0 }, {  65,   0 }, {  66,   0 },
  {  67,   0 }, {  68,   0 }, {  69,   0 }, {  70,   0 }, {  71,   0 },
  {  72,   0 }, {  73,   0 }, {  74,   0 }, {  75,   0 }, {  76,   0 },
  {  77,   0 }, {  78,   0 }, {  79,   0 }, {  80,   0 }, {  81,   0 },
@@ -4199,12 +4199,12 @@ static const struct yy_trans_info yy_transition[17678] =
  { 246,-258 }, { 247,-258 }, { 248,-258 }, { 249,-258 }, { 250,-258 },
  { 251,-258 }, { 252,-258 }, { 253,-258 }, { 254,-258 }, { 255,-258 },
 
- { 256,-258 }, {   0,   3 }, {   0,1371 }, {   0,  59 }, {   0,1369 },
+ { 256,-258 }, {   0,   3 }, {   0,1371 }, {   0,  58 }, {   0,1369 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,  63 }, {   0,1347 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
+ {   0,  62 }, {   0,1347 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {  33,   0 }, {   0,   0 }, {  35,   0 }, {   0,   0 }, {  37,   0 },
  {  38,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {  42,   0 },
@@ -4213,7 +4213,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {  48,   0 }, {  49,   0 }, {  50,   0 },
  {  51,   0 }, {  52,   0 }, {  53,   0 }, {  54,   0 }, {  55,   0 },
  {  56,   0 }, {  57,   0 }, {  60,   0 }, {  61,   0 }, {  62,   0 },
- {  63,   0 }, {  64,   0 }, {   0,  61 }, {   0,1305 }, {   0,   0 },
+ {  63,   0 }, {  64,   0 }, {   0,  60 }, {   0,1305 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {  69,-3785 }, {  48,  42 },
  {  49,  42 }, {  50,  42 }, {  51,  42 }, {  52,  42 }, {  53,  42 },
  {  54,  42 }, {  55,  42 }, {  56,  42 }, {  57,  42 }, {   0,   0 },
@@ -4500,7 +4500,7 @@ static const struct yy_trans_info yy_transition[17678] =
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
  {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 }, {   0,   0 },
- {   0,   0 }, {   0,   0 }, { 257,  67 }, {   1,   0 },    };
+ {   0,   0 }, {   0,   0 }, { 257,  66 }, {   1,   0 },    };
 
 static __thread const struct yy_trans_info *yy_start_state_list[25] =
     {
@@ -4576,7 +4576,7 @@ __thread bool		standard_conforming_strings = true;
  * callers need to pass it to scanner_init, if they are using the
  * standard keyword list ScanKeywords.
  */
-#define PG_KEYWORD(kwname, value, category) value,
+#define PG_KEYWORD(kwname, value, category, collabel) value,
 
 const uint16 ScanKeywordTokens[] = {
 #include "parser/kwlist.h"
@@ -4717,7 +4717,6 @@ extern void core_yyset_column(int column_no, yyscan_t yyscanner);
 /* Hexadecimal number */
 /* National character */
 /* Quoted string that allows backslash escapes */
-/* Normalized escaped string */
 /* Extended quote
  * xqdouble implements embedded quote, ''''
  */
@@ -4794,7 +4793,7 @@ extern void core_yyset_column(int column_no, yyscan_t yyscanner);
  * Note that xcstart must appear before operator, as explained above!
  *  Also whitespace (comment) must appear before operator.
  */
-#line 4748 "scan.c"
+#line 4747 "scan.c"
 
 #define INITIAL 0
 #define xb 1
@@ -5087,10 +5086,10 @@ YY_DECL
 		}
 
 	{
-#line 420 "scan.l"
+#line 416 "scan.l"
 
 
-#line 5044 "scan.c"
+#line 5043 "scan.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -5130,14 +5129,14 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 422 "scan.l"
+#line 418 "scan.l"
 {
 					/* ignore */
 				}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 426 "scan.l"
+#line 422 "scan.l"
 {
 					SET_YYLLOC();
 					return SQL_COMMENT;
@@ -5145,7 +5144,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 431 "scan.l"
+#line 427 "scan.l"
 {
 					/* Set location in case of syntax error in comment */
 					SET_YYLLOC();
@@ -5158,7 +5157,7 @@ YY_RULE_SETUP
 
 case 4:
 YY_RULE_SETUP
-#line 441 "scan.l"
+#line 437 "scan.l"
 {
 					(yyextra->xcdepth)++;
 					/* Put back any characters past slash-star; see above */
@@ -5167,7 +5166,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 447 "scan.l"
+#line 443 "scan.l"
 {
 					if (yyextra->xcdepth <= 0)
 					{
@@ -5182,27 +5181,27 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 458 "scan.l"
+#line 454 "scan.l"
 {
 					/* ignore */
 				}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 462 "scan.l"
+#line 458 "scan.l"
 {
 					/* ignore */
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 466 "scan.l"
+#line 462 "scan.l"
 {
 					/* ignore */
 				}
 	YY_BREAK
 case YY_STATE_EOF(xc):
-#line 470 "scan.l"
+#line 466 "scan.l"
 {
 					yyerror("unterminated /* comment");
 				}
@@ -5210,7 +5209,7 @@ case YY_STATE_EOF(xc):
 /* <xc> */
 case 9:
 YY_RULE_SETUP
-#line 475 "scan.l"
+#line 471 "scan.l"
 {
 					/* Binary bit type.
 					 * At some point we should simply pass the string
@@ -5226,22 +5225,22 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
-#line 488 "scan.l"
+#line 484 "scan.l"
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 488 "scan.l"
+#line 484 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
 	YY_BREAK
 case YY_STATE_EOF(xb):
-#line 491 "scan.l"
+#line 487 "scan.l"
 { yyerror("unterminated bit string literal"); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 493 "scan.l"
+#line 489 "scan.l"
 {
 					/* Hexadecimal bit type.
 					 * At some point we should simply pass the string
@@ -5256,12 +5255,12 @@ YY_RULE_SETUP
 				}
 	YY_BREAK
 case YY_STATE_EOF(xh):
-#line 505 "scan.l"
+#line 501 "scan.l"
 { yyerror("unterminated hexadecimal string literal"); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 507 "scan.l"
+#line 503 "scan.l"
 {
 					/* National character.
 					 * We will pass this along as a normal character string,
@@ -5291,7 +5290,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 534 "scan.l"
+#line 530 "scan.l"
 {
 					yyextra->warn_on_first_escape = true;
 					yyextra->saw_non_ascii = false;
@@ -5305,7 +5304,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 544 "scan.l"
+#line 540 "scan.l"
 {
 					yyextra->warn_on_first_escape = false;
 					yyextra->saw_non_ascii = false;
@@ -5316,7 +5315,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 551 "scan.l"
+#line 547 "scan.l"
 {
 					SET_YYLLOC();
 					if (!yyextra->standard_conforming_strings)
@@ -5331,7 +5330,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 563 "scan.l"
+#line 559 "scan.l"
 {
 					/*
 					 * When we are scanning a quoted string and see an end
@@ -5348,7 +5347,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 575 "scan.l"
+#line 571 "scan.l"
 {
 					/*
 					 * Found a quote continuation, so return to the in-quote
@@ -5360,13 +5359,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
-#line 584 "scan.l"
+#line 580 "scan.l"
 case 20:
 /* rule 20 can match eol */
-#line 585 "scan.l"
+#line 581 "scan.l"
 YY_RULE_SETUP
 case YY_STATE_EOF(xqs):
-#line 585 "scan.l"
+#line 581 "scan.l"
 {
 					/*
 					 * Failed to see a quote continuation.  Throw back
@@ -5410,7 +5409,7 @@ case YY_STATE_EOF(xqs):
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 626 "scan.l"
+#line 622 "scan.l"
 {
 					addlitchar('\'', yyscanner);
 				}
@@ -5418,7 +5417,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 629 "scan.l"
+#line 625 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
@@ -5426,14 +5425,14 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 632 "scan.l"
+#line 628 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 635 "scan.l"
+#line 631 "scan.l"
 {
 					pg_wchar	c = strtoul(yytext + 2, NULL, 16);
 
@@ -5465,7 +5464,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 663 "scan.l"
+#line 659 "scan.l"
 {
 					pg_wchar	c = strtoul(yytext + 2, NULL, 16);
 
@@ -5488,13 +5487,13 @@ YY_RULE_SETUP
 				}
 	YY_BREAK
 case 26:
-#line 684 "scan.l"
+#line 680 "scan.l"
 case 27:
 /* rule 27 can match eol */
-#line 685 "scan.l"
+#line 681 "scan.l"
 YY_RULE_SETUP
 case YY_STATE_EOF(xeu):
-#line 685 "scan.l"
+#line 681 "scan.l"
 {
 					/* Set the error cursor to point at missing esc seq */
 					SET_YYLLOC();
@@ -5503,7 +5502,7 @@ case YY_STATE_EOF(xeu):
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 690 "scan.l"
+#line 686 "scan.l"
 {
 					/* Set the error cursor to point at malformed esc seq */
 					SET_YYLLOC();
@@ -5517,7 +5516,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 699 "scan.l"
+#line 695 "scan.l"
 {
 					if (yytext[1] == '\'')
 					{
@@ -5537,7 +5536,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 715 "scan.l"
+#line 711 "scan.l"
 {
 					unsigned char c = strtoul(yytext + 1, NULL, 8);
 
@@ -5549,7 +5548,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 723 "scan.l"
+#line 719 "scan.l"
 {
 					unsigned char c = strtoul(yytext + 2, NULL, 16);
 
@@ -5561,7 +5560,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 731 "scan.l"
+#line 727 "scan.l"
 {
 					/* This is only needed for \ just before EOF */
 					addlitchar(yytext[0], yyscanner);
@@ -5570,12 +5569,12 @@ YY_RULE_SETUP
 case YY_STATE_EOF(xq):
 case YY_STATE_EOF(xe):
 case YY_STATE_EOF(xus):
-#line 735 "scan.l"
+#line 731 "scan.l"
 { yyerror("unterminated quoted string"); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 737 "scan.l"
+#line 733 "scan.l"
 {
 					SET_YYLLOC();
 					yyextra->dolqstart = pstrdup(yytext);
@@ -5585,7 +5584,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 743 "scan.l"
+#line 739 "scan.l"
 {
 					SET_YYLLOC();
 					/* throw back all but the initial "$" */
@@ -5596,7 +5595,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 750 "scan.l"
+#line 746 "scan.l"
 {
 					if (strcmp(yytext, yyextra->dolqstart) == 0)
 					{
@@ -5622,33 +5621,33 @@ YY_RULE_SETUP
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 771 "scan.l"
+#line 767 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 774 "scan.l"
+#line 770 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 777 "scan.l"
+#line 773 "scan.l"
 {
 					/* This is only needed for $ inside the quoted text */
 					addlitchar(yytext[0], yyscanner);
 				}
 	YY_BREAK
 case YY_STATE_EOF(xdolq):
-#line 781 "scan.l"
+#line 777 "scan.l"
 { yyerror("unterminated dollar-quoted string"); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 783 "scan.l"
+#line 779 "scan.l"
 {
 					SET_YYLLOC();
 					BEGIN(xd);
@@ -5657,7 +5656,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 788 "scan.l"
+#line 784 "scan.l"
 {
 					SET_YYLLOC();
 					BEGIN(xui);
@@ -5666,7 +5665,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 793 "scan.l"
+#line 789 "scan.l"
 {
 					char	   *ident;
 
@@ -5683,7 +5682,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 806 "scan.l"
+#line 802 "scan.l"
 {
 					BEGIN(INITIAL);
 					if (yyextra->literallen == 0)
@@ -5696,7 +5695,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 815 "scan.l"
+#line 811 "scan.l"
 {
 					addlitchar('"', yyscanner);
 				}
@@ -5704,19 +5703,19 @@ YY_RULE_SETUP
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 818 "scan.l"
+#line 814 "scan.l"
 {
 					addlit(yytext, yyleng, yyscanner);
 				}
 	YY_BREAK
 case YY_STATE_EOF(xd):
 case YY_STATE_EOF(xui):
-#line 821 "scan.l"
+#line 817 "scan.l"
 { yyerror("unterminated quoted identifier"); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 823 "scan.l"
+#line 819 "scan.l"
 {
 					char	   *ident;
 
@@ -5732,63 +5731,64 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 836 "scan.l"
-{
-					/* ignore E */
-					return yytext[1];
-				}
-	YY_BREAK
-case 47:
-YY_RULE_SETUP
-#line 841 "scan.l"
+#line 832 "scan.l"
 {
 					SET_YYLLOC();
 					return TYPECAST;
 				}
 	YY_BREAK
-case 48:
+case 47:
 YY_RULE_SETUP
-#line 846 "scan.l"
+#line 837 "scan.l"
 {
 					SET_YYLLOC();
 					return DOT_DOT;
 				}
 	YY_BREAK
-case 49:
+case 48:
 YY_RULE_SETUP
-#line 851 "scan.l"
+#line 842 "scan.l"
 {
 					SET_YYLLOC();
 					return COLON_EQUALS;
 				}
 	YY_BREAK
-case 50:
+case 49:
 YY_RULE_SETUP
-#line 856 "scan.l"
+#line 847 "scan.l"
 {
 					SET_YYLLOC();
 					return EQUALS_GREATER;
 				}
 	YY_BREAK
-case 51:
+case 50:
 YY_RULE_SETUP
-#line 861 "scan.l"
+#line 852 "scan.l"
 {
 					SET_YYLLOC();
 					return LESS_EQUALS;
 				}
 	YY_BREAK
-case 52:
+case 51:
 YY_RULE_SETUP
-#line 866 "scan.l"
+#line 857 "scan.l"
 {
 					SET_YYLLOC();
 					return GREATER_EQUALS;
 				}
 	YY_BREAK
+case 52:
+YY_RULE_SETUP
+#line 862 "scan.l"
+{
+					/* We accept both "<>" and "!=" as meaning NOT_EQUALS */
+					SET_YYLLOC();
+					return NOT_EQUALS;
+				}
+	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 871 "scan.l"
+#line 868 "scan.l"
 {
 					/* We accept both "<>" and "!=" as meaning NOT_EQUALS */
 					SET_YYLLOC();
@@ -5797,24 +5797,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 877 "scan.l"
-{
-					/* We accept both "<>" and "!=" as meaning NOT_EQUALS */
-					SET_YYLLOC();
-					return NOT_EQUALS;
-				}
-	YY_BREAK
-case 55:
-YY_RULE_SETUP
-#line 883 "scan.l"
+#line 874 "scan.l"
 {
 					SET_YYLLOC();
 					return yytext[0];
 				}
 	YY_BREAK
-case 56:
+case 55:
 YY_RULE_SETUP
-#line 888 "scan.l"
+#line 879 "scan.l"
 {
 					/*
 					 * Check for embedded slash-star or dash-dash; those
@@ -5874,29 +5865,6 @@ YY_RULE_SETUP
 						}
 					}
 
-					/* We don't accept leading ? in any multi-character operators
-					 * except for those in use by hstore, JSON and geometric operators.
-					 *
-					 * We don't accept contained or trailing ? in any
-					 * multi-character operators, except for those in use by JSON operators.
-					 *
-					 * This is necessary in order to support normalized queries without
-					 * spacing between ? as a substition character and a simple operator (e.g. "?=?")
-					 */
-					if (yytext[0] == '?' &&
-					  strcmp(yytext, "?<@") != 0 && strcmp(yytext, "?@>") != 0 &&
-					  strcmp(yytext, "?~") != 0 && strcmp(yytext, "?@") != 0 &&
-					  strcmp(yytext, "?|") != 0 && strcmp(yytext, "?&") != 0 &&
-					  strcmp(yytext, "?#") != 0 && strcmp(yytext, "?-") != 0 &&
-					  strcmp(yytext, "?-|") != 0 && strcmp(yytext, "?||") != 0)
-						nchars = 1;
-
-					if (yytext[0] != '?' && strchr(yytext, '?') &&
-					  strcmp(yytext, "^?") != 0 && strcmp(yytext, "#?") != 0 &&
-					  strcmp(yytext, "@?") != 0)
-						/* Lex up to just before the ? character */
-						nchars = strchr(yytext, '?') - yytext;
-
 					SET_YYLLOC();
 
 					if (nchars < yyleng)
@@ -5910,7 +5878,7 @@ YY_RULE_SETUP
 						 * that the "self" rule would have.
 						 */
 						if (nchars == 1 &&
-							strchr(",()[].;:+-*/%^<>=?", yytext[0]))
+							strchr(",()[].;:+-*/%^<>=", yytext[0]))
 							return yytext[0];
 						/*
 						 * Likewise, if what we have left is two chars, and
@@ -5946,35 +5914,35 @@ YY_RULE_SETUP
 					return Op;
 				}
 	YY_BREAK
-case 57:
+case 56:
 YY_RULE_SETUP
-#line 1019 "scan.l"
+#line 987 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->ival = atol(yytext + 1);
 					return PARAM;
 				}
 	YY_BREAK
-case 58:
+case 57:
 YY_RULE_SETUP
-#line 1025 "scan.l"
+#line 993 "scan.l"
 {
 					SET_YYLLOC();
 					return process_integer_literal(yytext, yylval);
 				}
 	YY_BREAK
-case 59:
+case 58:
 YY_RULE_SETUP
-#line 1029 "scan.l"
+#line 997 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->str = pstrdup(yytext);
 					return FCONST;
 				}
 	YY_BREAK
-case 60:
+case 59:
 YY_RULE_SETUP
-#line 1034 "scan.l"
+#line 1002 "scan.l"
 {
 					/* throw back the .., and treat as integer */
 					yyless(yyleng - 2);
@@ -5982,18 +5950,18 @@ YY_RULE_SETUP
 					return process_integer_literal(yytext, yylval);
 				}
 	YY_BREAK
-case 61:
+case 60:
 YY_RULE_SETUP
-#line 1040 "scan.l"
+#line 1008 "scan.l"
 {
 					SET_YYLLOC();
 					yylval->str = pstrdup(yytext);
 					return FCONST;
 				}
 	YY_BREAK
-case 62:
+case 61:
 YY_RULE_SETUP
-#line 1045 "scan.l"
+#line 1013 "scan.l"
 {
 					/*
 					 * throw back the [Ee], and figure out whether what
@@ -6004,9 +5972,9 @@ YY_RULE_SETUP
 					return process_integer_literal(yytext, yylval);
 				}
 	YY_BREAK
-case 63:
+case 62:
 YY_RULE_SETUP
-#line 1054 "scan.l"
+#line 1022 "scan.l"
 {
 					/* throw back the [Ee][+-], and proceed as above */
 					yyless(yyleng - 2);
@@ -6014,25 +5982,20 @@ YY_RULE_SETUP
 					return process_integer_literal(yytext, yylval);
 				}
 	YY_BREAK
-case 64:
+case 63:
 YY_RULE_SETUP
-#line 1062 "scan.l"
+#line 1030 "scan.l"
 {
 					int			kwnum;
 					char	   *ident;
-					char *keyword_text = pstrdup(yytext);
 
 					SET_YYLLOC();
 
 					/* Is it a keyword? */
-					if (yytext[yyleng - 1] == '?')
-					  keyword_text[yyleng - 1] = '\0';
-					kwnum = ScanKeywordLookup(keyword_text,
+					kwnum = ScanKeywordLookup(yytext,
 											  yyextra->keywordlist);
 					if (kwnum >= 0)
 					{
-						if (keyword_text[yyleng - 1] == '\0')
-						  yyless(yyleng - 1);
 						yylval->keyword = GetScanKeyword(kwnum,
 														 yyextra->keywordlist);
 						return yyextra->keyword_tokens[kwnum];
@@ -6048,27 +6011,27 @@ YY_RULE_SETUP
 					return IDENT;
 				}
 	YY_BREAK
-case 65:
+case 64:
 YY_RULE_SETUP
-#line 1093 "scan.l"
+#line 1056 "scan.l"
 {
 					SET_YYLLOC();
 					return yytext[0];
 				}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 1098 "scan.l"
+#line 1061 "scan.l"
 {
 					SET_YYLLOC();
 					yyterminate();
 				}
 	YY_BREAK
-case 66:
+case 65:
 YY_RULE_SETUP
-#line 1103 "scan.l"
+#line 1066 "scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 6022 "scan.c"
+#line 5985 "scan.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -6948,7 +6911,7 @@ static int yy_flex_strlen (const char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 1103 "scan.l"
+#line 1066 "scan.l"
 
 
 /* LCOV_EXCL_STOP */

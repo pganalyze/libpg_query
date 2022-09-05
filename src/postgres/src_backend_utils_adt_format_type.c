@@ -10,7 +10,7 @@
  *	  Display type names "nicely".
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -28,6 +28,7 @@
 #include "catalog/pg_type.h"
 #include "mb/pg_wchar.h"
 #include "utils/builtins.h"
+#include "utils/fmgroids.h"
 #include "utils/lsyscache.h"
 #include "utils/numeric.h"
 #include "utils/syscache.h"
@@ -77,13 +78,16 @@ static char *printTypmod(const char *typname, int32 typmod, Oid typmodout);
  * - FORMAT_TYPE_ALLOW_INVALID
  *			if the type OID is invalid or unknown, return ??? or such instead
  *			of failing
+ * - FORMAT_TYPE_INVALID_AS_NULL
+ *			if the type OID is invalid or unknown, return NULL instead of ???
+ *			or such
  * - FORMAT_TYPE_FORCE_QUALIFY
  *			always schema-qualify type names, regardless of search_path
  *
  * Note that TYPEMOD_GIVEN is not interchangeable with "typemod == -1";
  * see the comments above for format_type().
  *
- * Returns a palloc'd string.
+ * Returns a palloc'd string, or NULL.
  */
 
 

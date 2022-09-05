@@ -11,7 +11,7 @@
  * nodeFuncs.c
  *		Various general-purpose manipulations of Node trees
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -522,6 +522,12 @@ exprLocation(const Node *expr)
 			break;
 		case T_OnConflictClause:
 			loc = ((const OnConflictClause *) expr)->location;
+			break;
+		case T_CTESearchClause:
+			loc = ((const CTESearchClause *) expr)->location;
+			break;
+		case T_CTECycleClause:
+			loc = ((const CTECycleClause *) expr)->location;
 			break;
 		case T_CommonTableExpr:
 			loc = ((const CommonTableExpr *) expr)->location;
@@ -1100,6 +1106,16 @@ raw_expression_tree_walker(Node *node,
 					return true;
 			}
 			break;
+		case T_PLAssignStmt:
+			{
+				PLAssignStmt *stmt = (PLAssignStmt *) node;
+
+				if (walker(stmt->indirection, context))
+					return true;
+				if (walker(stmt->val, context))
+					return true;
+			}
+			break;
 		case T_A_Expr:
 			{
 				A_Expr	   *expr = (A_Expr *) node;
@@ -1279,6 +1295,8 @@ raw_expression_tree_walker(Node *node,
 
 				if (walker(coldef->typeName, context))
 					return true;
+				if (walker(coldef->compression, context))
+					return true;
 				if (walker(coldef->raw_default, context))
 					return true;
 				if (walker(coldef->collClause, context))
@@ -1334,6 +1352,7 @@ raw_expression_tree_walker(Node *node,
 			}
 			break;
 		case T_CommonTableExpr:
+			/* search_clause and cycle_clause are not interesting here */
 			return walker(((CommonTableExpr *) node)->ctequery, context);
 		default:
 			elog(ERROR, "unrecognized node type: %d",

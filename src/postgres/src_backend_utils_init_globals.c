@@ -4,7 +4,6 @@
  * - ExitOnAnyError
  * - InterruptHoldoffCount
  * - QueryCancelHoldoffCount
- * - IsPostmasterEnvironment
  * - InterruptPending
  *--------------------------------------------------------------------
  */
@@ -14,7 +13,7 @@
  * globals.c
  *	  global variable declarations
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -39,6 +38,9 @@
 
 
 __thread volatile sig_atomic_t InterruptPending = false;
+
+
+
 
 
 
@@ -120,7 +122,6 @@ char		postgres_exec_path[MAXPGPATH];	/* full path to backend */
  *
  * These are initialized for the bootstrap/standalone case.
  */
-__thread bool		IsPostmasterEnvironment = false;
 
 
 
@@ -163,6 +164,4 @@ __thread bool		ExitOnAnyError = false;
 
 
 	/* working state for vacuum */
-
-
 

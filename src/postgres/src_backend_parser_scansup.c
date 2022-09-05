@@ -10,10 +10,9 @@
 /*-------------------------------------------------------------------------
  *
  * scansup.c
- *	  support routines for the lex/flex scanner, used by both the normal
- * backend as well as the bootstrap backend
+ *	  scanner support routines used by the core lexer
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -28,19 +27,6 @@
 
 #include "mb/pg_wchar.h"
 #include "parser/scansup.h"
-
-/* ----------------
- *		scanstr
- *
- * if the string passed in has escaped codes, map the escape codes to actual
- * chars
- *
- * the string returned is palloc'd and should eventually be pfree'd by the
- * caller!
- * ----------------
- */
-
-
 
 
 /*
@@ -119,20 +105,10 @@ truncate_identifier(char *ident, int len, bool warn)
 	{
 		len = pg_mbcliplen(ident, len, NAMEDATALEN - 1);
 		if (warn)
-		{
-			/*
-			 * We avoid using %.*s here because it can misbehave if the data
-			 * is not valid in what libc thinks is the prevailing encoding.
-			 */
-			char		buf[NAMEDATALEN];
-
-			memcpy(buf, ident, len);
-			buf[len] = '\0';
 			ereport(NOTICE,
 					(errcode(ERRCODE_NAME_TOO_LONG),
-					 errmsg("identifier \"%s\" will be truncated to \"%s\"",
-							ident, buf)));
-		}
+					 errmsg("identifier \"%s\" will be truncated to \"%.*s\"",
+							ident, len, ident)));
 		ident[len] = '\0';
 	}
 }

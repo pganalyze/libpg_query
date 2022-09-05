@@ -63,12 +63,14 @@ SELECT lag(ten) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHER
 SELECT lag(ten, four) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
 SELECT lag(ten, four, 0) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
+SELECT lag(ten, four, 0.7) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10 ORDER BY four, ten;
 
 SELECT lead(ten) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
 SELECT lead(ten * 2, 1) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
 SELECT lead(ten * 2, 1, -1) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
+SELECT lead(ten * 2, 1, -1.4) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10 ORDER BY four, ten;
 
 SELECT first_value(ten) OVER (PARTITION BY four ORDER BY ten), ten, four FROM tenk1 WHERE unique2 < 10;
 
@@ -499,7 +501,7 @@ create temp table numerics(
 );
 
 insert into numerics values
-(0, '-infinity', '-infinity', '-1000'),  -- numeric type lacks infinities
+(0, '-infinity', '-infinity', '-infinity'),
 (1, -3, -3, -3),
 (2, -1, -1, -1),
 (3, 0, 0, 0),
@@ -507,7 +509,7 @@ insert into numerics values
 (5, 1.12, 1.12, 1.12),
 (6, 2, 2, 2),
 (7, 100, 100, 100),
-(8, 'infinity', 'infinity', '1000'),
+(8, 'infinity', 'infinity', 'infinity'),
 (9, 'NaN', 'NaN', 'NaN');
 
 select id, f_float4, first_value(id) over w, last_value(id) over w
@@ -522,6 +524,14 @@ select id, f_float4, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_float4 range between
              'inf' preceding and 'inf' following);
+select id, f_float4, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_float4 range between
+             'inf' preceding and 'inf' preceding);
+select id, f_float4, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_float4 range between
+             'inf' following and 'inf' following);
 select id, f_float4, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_float4 range between
@@ -542,6 +552,14 @@ window w as (order by f_float8 range between
 select id, f_float8, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_float8 range between
+             'inf' preceding and 'inf' preceding);
+select id, f_float8, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_float8 range between
+             'inf' following and 'inf' following);
+select id, f_float8, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_float8 range between
              1.1 preceding and 'NaN' following);  -- error, NaN disallowed
 
 select id, f_numeric, first_value(id) over w, last_value(id) over w
@@ -556,6 +574,18 @@ select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_numeric range between
              1 preceding and 1.1::float8 following);  -- currently unsupported
+select id, f_numeric, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_numeric range between
+             'inf' preceding and 'inf' following);
+select id, f_numeric, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_numeric range between
+             'inf' preceding and 'inf' preceding);
+select id, f_numeric, first_value(id) over w, last_value(id) over w
+from numerics
+window w as (order by f_numeric range between
+             'inf' following and 'inf' following);
 select id, f_numeric, first_value(id) over w, last_value(id) over w
 from numerics
 window w as (order by f_numeric range between
@@ -907,6 +937,28 @@ SELECT
   lead(1) OVER (PARTITION BY depname ORDER BY salary, enroll_date),
   lag(1) OVER (PARTITION BY depname ORDER BY salary,enroll_date,empno)
 FROM empsalary;
+
+-- Test incremental sorting
+EXPLAIN (COSTS OFF)
+SELECT * FROM
+  (SELECT depname,
+          empno,
+          salary,
+          enroll_date,
+          row_number() OVER (PARTITION BY depname ORDER BY enroll_date) AS first_emp,
+          row_number() OVER (PARTITION BY depname ORDER BY enroll_date DESC) AS last_emp
+   FROM empsalary) emp
+WHERE first_emp = 1 OR last_emp = 1;
+
+SELECT * FROM
+  (SELECT depname,
+          empno,
+          salary,
+          enroll_date,
+          row_number() OVER (PARTITION BY depname ORDER BY enroll_date) AS first_emp,
+          row_number() OVER (PARTITION BY depname ORDER BY enroll_date DESC) AS last_emp
+   FROM empsalary) emp
+WHERE first_emp = 1 OR last_emp = 1;
 
 -- cleanup
 DROP TABLE empsalary;

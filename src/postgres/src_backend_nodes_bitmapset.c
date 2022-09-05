@@ -23,7 +23,7 @@
  * bms_is_empty() in preference to testing for NULL.)
  *
  *
- * Copyright (c) 2003-2020, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2021, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/nodes/bitmapset.c
@@ -233,6 +233,8 @@ bms_free(Bitmapset *a)
 
 /*
  * bms_nonempty_difference - do sets have a nonempty difference?
+ *
+ * i.e., are any members set in 'a' that are not also set in 'b'.
  */
 
 

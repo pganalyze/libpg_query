@@ -1,11 +1,11 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - lappend
+ * - list_make1_impl
  * - new_list
+ * - check_list_invariants
+ * - lappend
  * - new_tail_cell
  * - enlarge_list
- * - check_list_invariants
- * - list_make1_impl
  * - list_make2_impl
  * - list_concat
  * - list_copy
@@ -31,7 +31,7 @@
  * See comments in pg_list.h.
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -302,6 +302,8 @@ list_make4_impl(NodeTag t, ListCell datum1, ListCell datum2,
 	return list;
 }
 
+
+
 /*
  * Make room for a new head cell in the given (non-NIL) list.
  *
@@ -352,7 +354,7 @@ lappend(List *list, void *datum)
 	else
 		new_tail_cell(list);
 
-	lfirst(list_tail(list)) = datum;
+	llast(list) = datum;
 	check_list_invariants(list);
 	return list;
 }
@@ -407,7 +409,7 @@ lcons(void *datum, List *list)
 	else
 		new_head_cell(list);
 
-	lfirst(list_head(list)) = datum;
+	linitial(list) = datum;
 	check_list_invariants(list);
 	return list;
 }
@@ -641,6 +643,18 @@ list_delete_cell(List *list, ListCell *cell)
  * with a long list, since no data need be moved.
  */
 
+
+/*
+ * Delete the first N cells of the list.
+ *
+ * The List is pfree'd if the request causes all cells to be deleted.
+ */
+#ifndef DEBUG_LIST_MEMORY_USAGE
+#else
+#ifdef CLOBBER_FREED_MEMORY
+#else
+#endif
+#endif
 
 /*
  * Generate the union of two lists. This is calculated by copying
@@ -913,6 +927,11 @@ list_copy_deep(const List *oldlist)
  *
  * Like qsort(), this provides no guarantees about sort stability
  * for equal keys.
+ */
+
+
+/*
+ * list_sort comparator for sorting a list into ascending int order.
  */
 
 

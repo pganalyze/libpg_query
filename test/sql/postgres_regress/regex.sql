@@ -135,6 +135,23 @@ select 'a' ~ '.. ()|\1';
 select 'a' ~ '()*\1';
 select 'a' ~ '()+\1';
 
+-- Test incorrect removal of capture groups within {0}
+select 'xxx' ~ '(.){0}(\1)' as f;
+select 'xxx' ~ '((.)){0}(\2)' as f;
+select 'xyz' ~ '((.)){0}(\2){0}' as t;
+
+-- Test ancient oversight in when to apply zaptreesubs
+select 'abcdef' ~ '^(.)\1|\1.' as f;
+select 'abadef' ~ '^((.)\2|..)\2' as f;
+
+-- Add coverage for some cases in checkmatchall
+select regexp_match('xy', '.|...');
+select regexp_match('xyz', '.|...');
+select regexp_match('xy', '.*');
+select regexp_match('fooba', '(?:..)*');
+select regexp_match('xyz', repeat('.', 260));
+select regexp_match('foo', '(?:.|){99}');
+
 -- Error conditions
 select 'xyz' ~ 'x(\w)(?=\1)';  -- no backrefs in LACONs
 select 'xyz' ~ 'x(\w)(?=(\1))';

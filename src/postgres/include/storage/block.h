@@ -4,7 +4,7 @@
  *	  POSTGRES disk block definitions.
  *
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/storage/block.h
@@ -115,7 +115,7 @@ typedef BlockIdData *BlockId;	/* block identifier */
 #define BlockIdGetBlockNumber(blockId) \
 ( \
 	AssertMacro(BlockIdIsValid(blockId)), \
-	(BlockNumber) (((blockId)->bi_hi << 16) | ((uint16) (blockId)->bi_lo)) \
+	((((BlockNumber) (blockId)->bi_hi) << 16) | ((BlockNumber) (blockId)->bi_lo)) \
 )
 
 #endif							/* BLOCK_H */

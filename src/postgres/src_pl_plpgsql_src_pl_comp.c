@@ -39,7 +39,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -62,6 +62,7 @@
 #include "parser/parse_type.h"
 #include "plpgsql.h"
 #include "utils/builtins.h"
+#include "utils/fmgroids.h"
 #include "utils/guc.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
@@ -271,6 +272,7 @@ plpgsql_compile_inline(char *proc_source)
 	function->extra_errors = 0;
 
 	function->nstatements = 0;
+	function->requires_procedure_resowner = false;
 
 	plpgsql_ns_init();
 	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
@@ -385,9 +387,11 @@ add_dummy_return(PLpgSQL_function *function)
 	/*
 	 * If the outer block has an EXCEPTION clause, we need to make a new outer
 	 * block, since the added RETURN shouldn't act like it is inside the
-	 * EXCEPTION clause.
+	 * EXCEPTION clause.  Likewise, if it has a label, wrap it in a new outer
+	 * block so that EXIT doesn't skip the RETURN.
 	 */
-	if (function->action->exceptions != NULL)
+	if (function->action->exceptions != NULL ||
+		function->action->label != NULL)
 	{
 		PLpgSQL_stmt_block *new;
 
@@ -544,7 +548,8 @@ plpgsql_parse_dblword(char *word1, char *word2,
 	/*
 	 * We should do nothing in DECLARE sections.  In SQL expressions, we
 	 * really only need to make sure that RECFIELD datums are created when
-	 * needed.
+	 * needed.  In all the cases handled by this function, returning a T_DATUM
+	 * with a two-word idents string is the right thing.
 	 */
 	if (plpgsql_IdentifierLookup != IDENTIFIER_LOOKUP_DECLARE)
 	{
@@ -618,40 +623,53 @@ plpgsql_parse_tripword(char *word1, char *word2, char *word3,
 	List	   *idents;
 	int			nnames;
 
-	idents = list_make3(makeString(word1),
-						makeString(word2),
-						makeString(word3));
-
 	/*
-	 * We should do nothing in DECLARE sections.  In SQL expressions, we
-	 * really only need to make sure that RECFIELD datums are created when
-	 * needed.
+	 * We should do nothing in DECLARE sections.  In SQL expressions, we need
+	 * to make sure that RECFIELD datums are created when needed, and we need
+	 * to be careful about how many names are reported as belonging to the
+	 * T_DATUM: the third word could be a sub-field reference, which we don't
+	 * care about here.
 	 */
 	if (plpgsql_IdentifierLookup != IDENTIFIER_LOOKUP_DECLARE)
 	{
 		/*
-		 * Do a lookup in the current namespace stack. Must find a qualified
+		 * Do a lookup in the current namespace stack.  Must find a record
 		 * reference, else ignore.
 		 */
 		ns = plpgsql_ns_lookup(plpgsql_ns_top(), false,
 							   word1, word2, word3,
 							   &nnames);
-		if (ns != NULL && nnames == 2)
+		if (ns != NULL)
 		{
 			switch (ns->itemtype)
 			{
 				case PLPGSQL_NSTYPE_REC:
 					{
-						/*
-						 * words 1/2 are a record name, so third word could be
-						 * a field in this record.
-						 */
 						PLpgSQL_rec *rec;
 						PLpgSQL_recfield *new;
 
 						rec = (PLpgSQL_rec *) (plpgsql_Datums[ns->itemno]);
-						new = plpgsql_build_recfield(rec, word3);
-
+						if (nnames == 1)
+						{
+							/*
+							 * First word is a record name, so second word
+							 * could be a field in this record (and the third,
+							 * a sub-field).  We build a RECFIELD datum
+							 * whether it is or not --- any error will be
+							 * detected later.
+							 */
+							new = plpgsql_build_recfield(rec, word2);
+							idents = list_make2(makeString(word1),
+												makeString(word2));
+						}
+						else
+						{
+							/* Block-qualified reference to record variable. */
+							new = plpgsql_build_recfield(rec, word3);
+							idents = list_make3(makeString(word1),
+												makeString(word2),
+												makeString(word3));
+						}
 						wdatum->datum = (PLpgSQL_datum *) new;
 						wdatum->ident = NULL;
 						wdatum->quoted = false; /* not used */
@@ -666,6 +684,9 @@ plpgsql_parse_tripword(char *word1, char *word2, char *word3,
 	}
 
 	/* Nothing found */
+	idents = list_make3(makeString(word1),
+						makeString(word2),
+						makeString(word3));
 	cword->idents = idents;
 	return false;
 }

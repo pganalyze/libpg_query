@@ -11,7 +11,7 @@
  * datum.c
  *	  POSTGRES Datum (abstract data type) manipulation routines.
  *
- * Portions Copyright (c) 1996-2020, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -51,6 +51,7 @@
 #include "postgres.h"
 
 #include "access/detoast.h"
+#include "common/hashfn.h"
 #include "fmgr.h"
 #include "utils/builtins.h"
 #include "utils/datum.h"
@@ -258,6 +259,17 @@ datumIsEqual(Datum value1, Datum value2, bool typByVal, int typLen)
  *
  * Compares two datums for identical contents, based on byte images.  Return
  * true if the two datums are equal, false otherwise.
+ *-------------------------------------------------------------------------
+ */
+
+
+/*-------------------------------------------------------------------------
+ * datum_image_hash
+ *
+ * Generate a hash value based on the binary representation of 'value'.  Most
+ * use cases will want to use the hash function specific to the Datum's type,
+ * however, some corner cases require generating a hash value based on the
+ * actual bits rather than the logical value.
  *-------------------------------------------------------------------------
  */
 

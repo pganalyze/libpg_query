@@ -20,7 +20,7 @@ SELECT p1.oid, p1.typname
 FROM pg_type as p1
 WHERE p1.typnamespace = 0 OR
     (p1.typlen <= 0 AND p1.typlen != -1 AND p1.typlen != -2) OR
-    (p1.typtype not in ('b', 'c', 'd', 'e', 'p', 'r')) OR
+    (p1.typtype not in ('b', 'c', 'd', 'e', 'p', 'r', 'm')) OR
     NOT p1.typisdefined OR
     (p1.typalign not in ('c', 's', 'i', 'd')) OR
     (p1.typstorage not in ('p', 'x', 'e', 'm'));
@@ -50,25 +50,26 @@ FROM pg_type as p1
 WHERE (p1.typtype = 'c' AND p1.typrelid = 0) OR
     (p1.typtype != 'c' AND p1.typrelid != 0);
 
--- Look for types that should have an array type according to their typtype,
--- but don't.  We exclude composites here because we have not bothered to
--- make array types corresponding to the system catalogs' rowtypes.
--- NOTE: as of v10, this check finds pg_node_tree, pg_ndistinct, smgr.
+-- Look for types that should have an array type but don't.
+-- Generally anything that's not a pseudotype should have an array type.
+-- However, we do have a small number of exceptions.
 
 SELECT p1.oid, p1.typname
 FROM pg_type as p1
-WHERE p1.typtype not in ('c','d','p') AND p1.typname NOT LIKE E'\\_%'
+WHERE p1.typtype not in ('p') AND p1.typname NOT LIKE E'\\_%'
     AND NOT EXISTS
     (SELECT 1 FROM pg_type as p2
      WHERE p2.typname = ('_' || p1.typname)::name AND
-           p2.typelem = p1.oid and p1.typarray = p2.oid);
+           p2.typelem = p1.oid and p1.typarray = p2.oid)
+ORDER BY p1.oid;
 
--- Make sure typarray points to a varlena array type of our own base
+-- Make sure typarray points to a "true" array type of our own base
 SELECT p1.oid, p1.typname as basetype, p2.typname as arraytype,
-       p2.typelem, p2.typlen
+       p2.typsubscript
 FROM   pg_type p1 LEFT JOIN pg_type p2 ON (p1.typarray = p2.oid)
 WHERE  p1.typarray <> 0 AND
-       (p2.oid IS NULL OR p2.typelem <> p1.oid OR p2.typlen <> -1);
+       (p2.oid IS NULL OR
+        p2.typsubscript <> 'array_subscript_handler'::regproc);
 
 -- Look for range types that do not have a pg_range entry
 SELECT p1.oid, p1.typname
@@ -153,7 +154,7 @@ SELECT p1.oid, p1.typname, p2.oid, p2.proname
 FROM pg_type AS p1, pg_proc AS p2
 WHERE p1.typinput = p2.oid AND p2.provolatile NOT IN ('i', 's');
 
--- Composites, domains, enums, ranges should all use the same input routines
+-- Composites, domains, enums, multiranges, ranges should all use the same input routines
 SELECT DISTINCT typtype, typinput
 FROM pg_type AS p1
 WHERE p1.typtype not in ('b', 'p')
@@ -182,7 +183,7 @@ SELECT p1.oid, p1.typname, p2.oid, p2.proname
 FROM pg_type AS p1, pg_proc AS p2
 WHERE p1.typoutput = p2.oid AND p2.provolatile NOT IN ('i', 's');
 
--- Composites, enums, ranges should all use the same output routines
+-- Composites, enums, multiranges, ranges should all use the same output routines
 SELECT DISTINCT typtype, typoutput
 FROM pg_type AS p1
 WHERE p1.typtype not in ('b', 'd', 'p')
@@ -234,7 +235,7 @@ SELECT p1.oid, p1.typname, p2.oid, p2.proname
 FROM pg_type AS p1, pg_proc AS p2
 WHERE p1.typreceive = p2.oid AND p2.provolatile NOT IN ('i', 's');
 
--- Composites, domains, enums, ranges should all use the same receive routines
+-- Composites, domains, enums, multiranges, ranges should all use the same receive routines
 SELECT DISTINCT typtype, typreceive
 FROM pg_type AS p1
 WHERE p1.typtype not in ('b', 'p')
@@ -263,7 +264,7 @@ SELECT p1.oid, p1.typname, p2.oid, p2.proname
 FROM pg_type AS p1, pg_proc AS p2
 WHERE p1.typsend = p2.oid AND p2.provolatile NOT IN ('i', 's');
 
--- Composites, enums, ranges should all use the same send routines
+-- Composites, enums, multiranges, ranges should all use the same send routines
 SELECT DISTINCT typtype, typsend
 FROM pg_type AS p1
 WHERE p1.typtype not in ('b', 'd', 'p')
@@ -323,6 +324,26 @@ WHERE p1.typarray = p2.oid AND
     p2.typalign != (CASE WHEN p1.typalign = 'd' THEN 'd'::"char"
                          ELSE 'i'::"char" END);
 
+-- Check for typelem set without a handler
+
+SELECT p1.oid, p1.typname, p1.typelem
+FROM pg_type AS p1
+WHERE p1.typelem != 0 AND p1.typsubscript = 0;
+
+-- Check for misuse of standard subscript handlers
+
+SELECT p1.oid, p1.typname,
+       p1.typelem, p1.typlen, p1.typbyval
+FROM pg_type AS p1
+WHERE p1.typsubscript = 'array_subscript_handler'::regproc AND NOT
+    (p1.typelem != 0 AND p1.typlen = -1 AND NOT p1.typbyval);
+
+SELECT p1.oid, p1.typname,
+       p1.typelem, p1.typlen, p1.typbyval
+FROM pg_type AS p1
+WHERE p1.typsubscript = 'raw_array_subscript_handler'::regproc AND NOT
+    (p1.typelem != 0 AND p1.typlen > 0 AND NOT p1.typbyval);
+
 -- Check for bogus typanalyze routines
 
 SELECT p1.oid, p1.typname, p2.oid, p2.proname
@@ -356,7 +377,7 @@ SELECT t.oid, t.typname, t.typanalyze
 FROM pg_type t
 WHERE t.typbasetype = 0 AND
     (t.typanalyze = 'array_typanalyze'::regproc) !=
-    (typelem != 0 AND typlen < 0)
+    (t.typsubscript = 'array_subscript_handler'::regproc)
 ORDER BY 1;
 
 -- **************** pg_class ****************
@@ -444,7 +465,7 @@ FROM pg_range p1 JOIN pg_type t ON t.oid = p1.rngsubtype
 WHERE (rngcollation = 0) != (typcollation = 0);
 
 -- opclass had better be a btree opclass accepting the subtype.
--- We must allow anyarray matches, cf opr_sanity's binary_coercible()
+-- We must allow anyarray matches, cf IsBinaryCoercible()
 
 SELECT p1.rngtypid, p1.rngsubtype, o.opcmethod, o.opcname
 FROM pg_range p1 JOIN pg_opclass o ON o.oid = p1.rngsubopc
@@ -452,7 +473,8 @@ WHERE o.opcmethod != 403 OR
     ((o.opcintype != p1.rngsubtype) AND NOT
      (o.opcintype = 'pg_catalog.anyarray'::regtype AND
       EXISTS(select 1 from pg_catalog.pg_type where
-             oid = p1.rngsubtype and typelem != 0 and typlen = -1)));
+             oid = p1.rngsubtype and typelem != 0 and
+             typsubscript = 'array_subscript_handler'::regproc)));
 
 -- canonical function, if any, had better match the range type
 
@@ -467,3 +489,109 @@ FROM pg_range p1 JOIN pg_proc p ON p.oid = p1.rngsubdiff
 WHERE pronargs != 2
     OR proargtypes[0] != rngsubtype OR proargtypes[1] != rngsubtype
     OR prorettype != 'pg_catalog.float8'::regtype;
+
+-- every range should have a valid multirange
+
+SELECT p1.rngtypid, p1.rngsubtype, p1.rngmultitypid
+FROM pg_range p1
+WHERE p1.rngmultitypid IS NULL OR p1.rngmultitypid = 0;
+
+-- Create a table that holds all the known in-core data types and leave it
+-- around so as pg_upgrade is able to test their binary compatibility.
+CREATE TABLE tab_core_types AS SELECT
+  '(11,12)'::point,
+  '(1,1),(2,2)'::line,
+  '((11,11),(12,12))'::lseg,
+  '((11,11),(13,13))'::box,
+  '((11,12),(13,13),(14,14))'::path AS openedpath,
+  '[(11,12),(13,13),(14,14)]'::path AS closedpath,
+  '((11,12),(13,13),(14,14))'::polygon,
+  '1,1,1'::circle,
+  'today'::date,
+  'now'::time,
+  'now'::timestamp,
+  'now'::timetz,
+  'now'::timestamptz,
+  '12 seconds'::interval,
+  '{"reason":"because"}'::json,
+  '{"when":"now"}'::jsonb,
+  '$.a[*] ? (@ > 2)'::jsonpath,
+  '127.0.0.1'::inet,
+  '127.0.0.0/8'::cidr,
+  '00:01:03:86:1c:ba'::macaddr8,
+  '00:01:03:86:1c:ba'::macaddr,
+  2::int2, 4::int4, 8::int8,
+  4::float4, '8'::float8, pi()::numeric,
+  'foo'::"char",
+  'c'::bpchar,
+  'abc'::varchar,
+  'name'::name,
+  'txt'::text,
+  true::bool,
+  E'\\xDEADBEEF'::bytea,
+  B'10001'::bit,
+  B'10001'::varbit AS varbit,
+  '12.34'::money,
+  'abc'::refcursor,
+  '1 2'::int2vector,
+  '1 2'::oidvector,
+  format('%I=UC/%I', USER, USER)::aclitem AS aclitem,
+  'a fat cat sat on a mat and ate a fat rat'::tsvector,
+  'fat & rat'::tsquery,
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'::uuid,
+  '11'::xid8,
+  'pg_class'::regclass,
+  'regtype'::regtype type,
+  'pg_monitor'::regrole,
+  'pg_class'::regclass::oid,
+  '(1,1)'::tid, '2'::xid, '3'::cid,
+  '10:20:10,14,15'::txid_snapshot,
+  '10:20:10,14,15'::pg_snapshot,
+  '16/B374D848'::pg_lsn,
+  1::information_schema.cardinal_number,
+  'l'::information_schema.character_data,
+  'n'::information_schema.sql_identifier,
+  'now'::information_schema.time_stamp,
+  'YES'::information_schema.yes_or_no,
+  'venus'::planets,
+  'i16'::insenum,
+  '(1,2)'::int4range, '{(1,2)}'::int4multirange,
+  '(3,4)'::int8range, '{(3,4)}'::int8multirange,
+  '(1,2)'::float8range, '{(1,2)}'::float8multirange,
+  '(3,4)'::numrange, '{(3,4)}'::nummultirange,
+  '(a,b)'::textrange, '{(a,b)}'::textmultirange,
+  '(12.34, 56.78)'::cashrange, '{(12.34, 56.78)}'::cashmultirange,
+  '(2020-01-02, 2021-02-03)'::daterange,
+  '{(2020-01-02, 2021-02-03)}'::datemultirange,
+  '(2020-01-02 03:04:05, 2021-02-03 06:07:08)'::tsrange,
+  '{(2020-01-02 03:04:05, 2021-02-03 06:07:08)}'::tsmultirange,
+  '(2020-01-02 03:04:05, 2021-02-03 06:07:08)'::tstzrange,
+  '{(2020-01-02 03:04:05, 2021-02-03 06:07:08)}'::tstzmultirange,
+  arrayrange(ARRAY[1,2], ARRAY[2,1]),
+  arraymultirange(arrayrange(ARRAY[1,2], ARRAY[2,1]));
+
+-- Sanity check on the previous table, checking that all core types are
+-- included in this table.
+SELECT oid, typname, typtype, typelem, typarray, typarray
+  FROM pg_type t
+  WHERE typtype NOT IN ('p', 'c') AND
+    -- reg* types cannot be pg_upgraded, so discard them.
+    oid != ALL(ARRAY['regproc', 'regprocedure', 'regoper',
+                     'regoperator', 'regconfig', 'regdictionary',
+                     'regnamespace', 'regcollation']::regtype[]) AND
+    -- Discard types that do not accept input values as these cannot be
+    -- tested easily.
+    -- Note: XML might be disabled at compile-time.
+    oid != ALL(ARRAY['gtsvector', 'pg_node_tree',
+                     'pg_ndistinct', 'pg_dependencies', 'pg_mcv_list',
+                     'pg_brin_bloom_summary',
+                     'pg_brin_minmax_multi_summary', 'xml']::regtype[]) AND
+    -- Discard arrays.
+    NOT EXISTS (SELECT 1 FROM pg_type u WHERE u.typarray = t.oid)
+    -- Exclude everything from the table created above.  This checks
+    -- that no in-core types are missing in tab_core_types.
+    AND NOT EXISTS (SELECT 1
+                    FROM pg_attribute a
+                    WHERE a.atttypid=t.oid AND
+                          a.attnum > 0 AND
+                          a.attrelid='tab_core_types'::regclass);

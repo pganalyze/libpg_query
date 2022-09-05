@@ -1,10 +1,27 @@
 /*
  * simplehash.h
  *
- *	  Hash table implementation which will be specialized to user-defined
- *	  types, by including this file to generate the required code.  It's
- *	  probably not worthwhile to do so for hash tables that aren't performance
- *	  or space sensitive.
+ *	  When included this file generates a "templated" (by way of macros)
+ *	  open-addressing hash table implementation specialized to user-defined
+ *	  types.
+ *
+ *	  It's probably not worthwhile to generate such a specialized implementation
+ *	  for hash tables that aren't performance or space sensitive.
+ *
+ *	  Compared to dynahash, simplehash has the following benefits:
+ *
+ *	  - Due to the "templated" code generation has known structure sizes and no
+ *	    indirect function calls (which show up substantially in dynahash
+ *	    profiles). These features considerably increase speed for small
+ *	    entries.
+ *	  - Open addressing has better CPU cache behavior than dynahash's chained
+ *	    hashtables.
+ *	  - The generated interface is type-safe and easier to use than dynahash,
+ *	    though at the cost of more complex setup.
+ *	  - Allocates memory in a MemoryContext or another allocator with a
+ *	    malloc/free style interface (which isn't easily usable in a shared
+ *	    memory context)
+ *	  - Does not require the overhead of a separate memory context.
  *
  * Usage notes:
  *
@@ -34,6 +51,20 @@
  *	  - SH_STORE_HASH - if defined the hash is stored in the elements
  *	  - SH_GET_HASH(tb, a) - return the field to store the hash in
  *
+ *	  The element type is required to contain a "status" member that can store
+ *	  the range of values defined in the SH_STATUS enum.
+ *
+ *	  While SH_STORE_HASH (and subsequently SH_GET_HASH) are optional, because
+ *	  the hash table implementation needs to compare hashes to move elements
+ *	  (particularly when growing the hash), it's preferable, if possible, to
+ *	  store the element's hash in the element's data type. If the hash is so
+ *	  stored, the hash table will also compare hashes before calling SH_EQUAL
+ *	  when comparing two keys.
+ *
+ *	  For convenience the hash table create functions accept a void pointer
+ *	  that will be stored in the hash table type's member private_data. This
+ *	  allows callbacks to reference caller provided data.
+ *
  *	  For examples of usage look at tidbitmap.c (file local definition) and
  *	  execnodes.h/execGrouping.c (exposed declaration, file local
  *	  implementation).
@@ -55,6 +86,11 @@
  *	  presence is relevant to determine whether a lookup needs to continue
  *	  looking or is done - buckets following a deleted element are shifted
  *	  backwards, unless they're empty or already at their optimal position.
+ *
+ * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1994, Regents of the University of California
+ *
+ * src/include/lib/simplehash.h
  */
 
 #include "port/pg_bitutils.h"
@@ -79,6 +115,7 @@
 #define SH_RESET SH_MAKE_NAME(reset)
 #define SH_INSERT SH_MAKE_NAME(insert)
 #define SH_INSERT_HASH SH_MAKE_NAME(insert_hash)
+#define SH_DELETE_ITEM SH_MAKE_NAME(delete_item)
 #define SH_DELETE SH_MAKE_NAME(delete)
 #define SH_LOOKUP SH_MAKE_NAME(lookup)
 #define SH_LOOKUP_HASH SH_MAKE_NAME(lookup_hash)
@@ -149,24 +186,62 @@ typedef struct SH_ITERATOR
 
 /* externally visible function prototypes */
 #ifdef SH_RAW_ALLOCATOR
+/* <prefix>_hash <prefix>_create(uint32 nelements, void *private_data) */
 SH_SCOPE	SH_TYPE *SH_CREATE(uint32 nelements, void *private_data);
 #else
+/*
+ * <prefix>_hash <prefix>_create(MemoryContext ctx, uint32 nelements,
+ *								 void *private_data)
+ */
 SH_SCOPE	SH_TYPE *SH_CREATE(MemoryContext ctx, uint32 nelements,
 							   void *private_data);
 #endif
+
+/* void <prefix>_destroy(<prefix>_hash *tb) */
 SH_SCOPE void SH_DESTROY(SH_TYPE * tb);
+
+/* void <prefix>_reset(<prefix>_hash *tb) */
 SH_SCOPE void SH_RESET(SH_TYPE * tb);
-SH_SCOPE void SH_GROW(SH_TYPE * tb, uint32 newsize);
+
+/* void <prefix>_grow(<prefix>_hash *tb, uint64 newsize) */
+SH_SCOPE void SH_GROW(SH_TYPE * tb, uint64 newsize);
+
+/* <element> *<prefix>_insert(<prefix>_hash *tb, <key> key, bool *found) */
 SH_SCOPE	SH_ELEMENT_TYPE *SH_INSERT(SH_TYPE * tb, SH_KEY_TYPE key, bool *found);
+
+/*
+ * <element> *<prefix>_insert_hash(<prefix>_hash *tb, <key> key, uint32 hash,
+ * 								  bool *found)
+ */
 SH_SCOPE	SH_ELEMENT_TYPE *SH_INSERT_HASH(SH_TYPE * tb, SH_KEY_TYPE key,
 											uint32 hash, bool *found);
+
+/* <element> *<prefix>_lookup(<prefix>_hash *tb, <key> key) */
 SH_SCOPE	SH_ELEMENT_TYPE *SH_LOOKUP(SH_TYPE * tb, SH_KEY_TYPE key);
+
+/* <element> *<prefix>_lookup_hash(<prefix>_hash *tb, <key> key, uint32 hash) */
 SH_SCOPE	SH_ELEMENT_TYPE *SH_LOOKUP_HASH(SH_TYPE * tb, SH_KEY_TYPE key,
 											uint32 hash);
+
+/* void <prefix>_delete_item(<prefix>_hash *tb, <element> *entry) */
+SH_SCOPE void SH_DELETE_ITEM(SH_TYPE * tb, SH_ELEMENT_TYPE * entry);
+
+/* bool <prefix>_delete(<prefix>_hash *tb, <key> key) */
 SH_SCOPE bool SH_DELETE(SH_TYPE * tb, SH_KEY_TYPE key);
+
+/* void <prefix>_start_iterate(<prefix>_hash *tb, <prefix>_iterator *iter) */
 SH_SCOPE void SH_START_ITERATE(SH_TYPE * tb, SH_ITERATOR * iter);
+
+/*
+ * void <prefix>_start_iterate_at(<prefix>_hash *tb, <prefix>_iterator *iter,
+ *								  uint32 at)
+ */
 SH_SCOPE void SH_START_ITERATE_AT(SH_TYPE * tb, SH_ITERATOR * iter, uint32 at);
+
+/* <element> *<prefix>_iterate(<prefix>_hash *tb, <prefix>_iterator *iter) */
 SH_SCOPE	SH_ELEMENT_TYPE *SH_ITERATE(SH_TYPE * tb, SH_ITERATOR * iter);
+
+/* void <prefix>_stat(<prefix>_hash *tb */
 SH_SCOPE void SH_STAT(SH_TYPE * tb);
 
 #endif							/* SH_DECLARE */
@@ -218,7 +293,8 @@ SH_SCOPE void SH_STAT(SH_TYPE * tb);
 #define SIMPLEHASH_H
 
 #ifdef FRONTEND
-#define sh_error(...) pg_log_error(__VA_ARGS__)
+#define sh_error(...) \
+	do { pg_log_fatal(__VA_ARGS__); exit(1); } while(0)
 #define sh_log(...) pg_log_info(__VA_ARGS__)
 #else
 #define sh_error(...) elog(ERROR, __VA_ARGS__)
@@ -232,7 +308,7 @@ SH_SCOPE void SH_STAT(SH_TYPE * tb);
  * the hashtable.
  */
 static inline void
-SH_COMPUTE_PARAMETERS(SH_TYPE * tb, uint32 newsize)
+SH_COMPUTE_PARAMETERS(SH_TYPE * tb, uint64 newsize)
 {
 	uint64		size;
 
@@ -247,16 +323,12 @@ SH_COMPUTE_PARAMETERS(SH_TYPE * tb, uint32 newsize)
 	 * Verify that allocation of ->data is possible on this platform, without
 	 * overflowing Size.
 	 */
-	if ((((uint64) sizeof(SH_ELEMENT_TYPE)) * size) >= SIZE_MAX / 2)
+	if (unlikely((((uint64) sizeof(SH_ELEMENT_TYPE)) * size) >= SIZE_MAX / 2))
 		sh_error("hash table too large");
 
 	/* now set size */
 	tb->size = size;
-
-	if (tb->size == SH_MAX_SIZE)
-		tb->sizemask = 0;
-	else
-		tb->sizemask = tb->size - 1;
+	tb->sizemask = (uint32) (size - 1);
 
 	/*
 	 * Compute the next threshold at which we need to grow the hash table
@@ -406,7 +478,7 @@ SH_RESET(SH_TYPE * tb)
  * performance-wise, when known at some point.
  */
 SH_SCOPE void
-SH_GROW(SH_TYPE * tb, uint32 newsize)
+SH_GROW(SH_TYPE * tb, uint64 newsize)
 {
 	uint64		oldsize = tb->size;
 	SH_ELEMENT_TYPE *olddata = tb->data;
@@ -536,10 +608,8 @@ restart:
 	 */
 	if (unlikely(tb->members >= tb->grow_threshold))
 	{
-		if (tb->size == SH_MAX_SIZE)
-		{
+		if (unlikely(tb->size == SH_MAX_SIZE))
 			sh_error("hash table size exceeded");
-		}
 
 		/*
 		 * When optimizing, it can be very useful to print these out.
@@ -763,7 +833,7 @@ SH_LOOKUP_HASH(SH_TYPE * tb, SH_KEY_TYPE key, uint32 hash)
 }
 
 /*
- * Delete entry from hash table.  Returns whether to-be-deleted key was
+ * Delete entry from hash table by key.  Returns whether to-be-deleted key was
  * present.
  */
 SH_SCOPE bool
@@ -831,6 +901,61 @@ SH_DELETE(SH_TYPE * tb, SH_KEY_TYPE key)
 		/* TODO: return false; if distance too big */
 
 		curelem = SH_NEXT(tb, curelem, startelem);
+	}
+}
+
+/*
+ * Delete entry from hash table by entry pointer
+ */
+SH_SCOPE void
+SH_DELETE_ITEM(SH_TYPE * tb, SH_ELEMENT_TYPE * entry)
+{
+	SH_ELEMENT_TYPE *lastentry = entry;
+	uint32		hash = SH_ENTRY_HASH(tb, entry);
+	uint32		startelem = SH_INITIAL_BUCKET(tb, hash);
+	uint32		curelem;
+
+	/* Calculate the index of 'entry' */
+	curelem = entry - &tb->data[0];
+
+	tb->members--;
+
+	/*
+	 * Backward shift following elements till either an empty element or an
+	 * element at its optimal position is encountered.
+	 *
+	 * While that sounds expensive, the average chain length is short, and
+	 * deletions would otherwise require tombstones.
+	 */
+	while (true)
+	{
+		SH_ELEMENT_TYPE *curentry;
+		uint32		curhash;
+		uint32		curoptimal;
+
+		curelem = SH_NEXT(tb, curelem, startelem);
+		curentry = &tb->data[curelem];
+
+		if (curentry->status != SH_STATUS_IN_USE)
+		{
+			lastentry->status = SH_STATUS_EMPTY;
+			break;
+		}
+
+		curhash = SH_ENTRY_HASH(tb, curentry);
+		curoptimal = SH_INITIAL_BUCKET(tb, curhash);
+
+		/* current is at optimal position, done */
+		if (curoptimal == curelem)
+		{
+			lastentry->status = SH_STATUS_EMPTY;
+			break;
+		}
+
+		/* shift */
+		memcpy(lastentry, curentry, sizeof(SH_ELEMENT_TYPE));
+
+		lastentry = curentry;
 	}
 }
 
@@ -1036,6 +1161,7 @@ SH_STAT(SH_TYPE * tb)
 #undef SH_RESET
 #undef SH_INSERT
 #undef SH_INSERT_HASH
+#undef SH_DELETE_ITEM
 #undef SH_DELETE
 #undef SH_LOOKUP
 #undef SH_LOOKUP_HASH
