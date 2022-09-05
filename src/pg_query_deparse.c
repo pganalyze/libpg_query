@@ -3925,6 +3925,10 @@ static void deparseCreateCastStmt(StringInfo str, CreateCastStmt *create_cast_st
 		case COERCION_ASSIGNMENT:
 			appendStringInfoString(str, "AS ASSIGNMENT");
 			break;
+		case COERCION_PLPGSQL:
+			// Not present in raw parser output
+			Assert(false);
+			break;
 		case COERCION_EXPLICIT:
 			// Default
 			break;
