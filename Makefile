@@ -103,7 +103,6 @@ $(PGDIR):
 	tar -xjf $(PGDIRBZ2)
 	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parser_additional_param_ref_support.patch
-	cd $(PGDIR); patch -p1 < $(root_dir)/patches/02_parser_support_question_mark_as_param_ref.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_lexer_track_yyllocend.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/04_lexer_comments_as_tokens.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/05_limit_option_enum_value_default.patch
