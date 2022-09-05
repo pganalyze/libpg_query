@@ -5085,7 +5085,7 @@ static void deparseCreateTableAsStmt(StringInfo str, CreateTableAsStmt *create_t
 
 	deparseOptTemp(str, create_table_as_stmt->into->rel->relpersistence);
 
-	switch (create_table_as_stmt->relkind)
+	switch (create_table_as_stmt->objtype)
 	{
 		case OBJECT_TABLE:
 			appendStringInfoString(str, "TABLE ");
@@ -5964,7 +5964,7 @@ static void deparseAlterTableStmt(StringInfo str, AlterTableStmt *alter_table_st
 
 	appendStringInfoString(str, "ALTER ");
 
-	switch (alter_table_stmt->relkind)
+	switch (alter_table_stmt->objtype)
 	{
 		case OBJECT_TABLE:
 			appendStringInfoString(str, "TABLE ");
