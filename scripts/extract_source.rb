@@ -113,8 +113,10 @@ class Runner
       @basepath + 'src/backend/jit/llvm/llvmjit_expr.c', # Requires LLVM-C library (which we don't want to require)
       @basepath + 'src/backend/jit/llvm/llvmjit_deform.c', # Requires LLVM-C library (which we don't want to require)
       @basepath + 'src/backend/jit/llvm/llvmjit.c', # Requires LLVM-C library (which we don't want to require)
+      @basepath + 'src/backend/libpq/be-gssapi-common.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/backend/libpq/be-secure-gssapi.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/common/protocol_openssl.c', # Requires OpenSSL (which we don't want to require)
+      @basepath + 'src/port/pthread_barrier_wait.c',
     ] -
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -
