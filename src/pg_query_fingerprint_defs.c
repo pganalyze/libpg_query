@@ -11639,6 +11639,13 @@ _fingerprintTableLikeClause(FingerprintContext *ctx, const TableLikeClause *node
     XXH3_freeState(prev);
   }
 
+  if (node->relationOid != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->relationOid);
+    _fingerprintString(ctx, "relationOid");
+    _fingerprintString(ctx, buffer);
+  }
+
 }
 
 static void
