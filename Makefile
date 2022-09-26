@@ -3,7 +3,6 @@ word-dot = $(word $2,$(subst ., ,$1))
 
 TARGET = pg_query
 ARLIB = lib$(TARGET).a
-SOLIB = lib$(TARGET).so
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
@@ -16,8 +15,19 @@ VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
 
-SONAME = $(SOLIB).$(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR)).$(VERSION_MINOR)
-SOLIBVER = $(SONAME).$(VERSION_PATCH)
+SO_VERSION = $(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR)).$(VERSION_MINOR)
+
+ifeq ($(shell uname -s), Darwin)
+	SOLIB = lib$(TARGET).dylib
+	SONAME = lib$(TARGET).$(SO_VERSION).dylib
+	SOLIBVER = lib$(TARGET).$(SO_VERSION).$(VERSION_PATCH).dylib
+	SOFLAG = -install_name
+else
+	SOLIB = lib$(TARGET).so
+	SONAME = $(SOLIB).$(SO_VERSION)
+	SOLIBVER = $(SONAME).$(VERSION_PATCH)
+	SOFLAG = -soname
+endif
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
 NOT_OBJ_FILES := src/pg_query_enum_defs.o src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
@@ -166,7 +176,7 @@ $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
 $(SOLIB): $(OBJ_FILES) Makefile
-	@$(CC) $(CFLAGS) -shared -Wl,-soname,$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
+	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )
