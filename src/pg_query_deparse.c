@@ -4637,6 +4637,8 @@ static void deparsePartitionCmd(StringInfo str, PartitionCmd *partition_cmd)
 		appendStringInfoChar(str, ' ');
 		deparsePartitionBoundSpec(str, partition_cmd->bound);
 	}
+	if (partition_cmd->concurrent)
+		appendStringInfoString(str, " CONCURRENTLY ");
 }
 
 // "TableElement" in gram.y
