@@ -249,6 +249,8 @@ static void deparseAnyNameSkipLast(StringInfo str, List *parts)
 // "a_expr" / "b_expr" in gram.y
 static void deparseExpr(StringInfo str, Node *node)
 {
+	if (node == NULL)
+		return;
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
@@ -381,7 +383,6 @@ static void deparseCExpr(StringInfo str, Node *node)
 static void deparseExprList(StringInfo str, List *exprs)
 {
 	ListCell *lc;
-
 	foreach(lc, exprs)
 	{
 		deparseExpr(str, lfirst(lc));
@@ -4429,6 +4430,12 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 	removeTrailingSpace(str);
 }
 
+static void deparseReturnStmt(StringInfo str, ReturnStmt *return_stmt)
+{
+	appendStringInfoString(str, "RETURN ");
+	deparseExpr(str, return_stmt->returnval);
+}
+
 static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create_function_stmt)
 {
 	ListCell *lc;
@@ -4487,6 +4494,20 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 	{
 		deparseCreateFuncOptItem(str, castNode(DefElem, lfirst(lc)));
 		appendStringInfoChar(str, ' ');
+	}
+
+	if (create_function_stmt->sql_body)
+	{
+		/* RETURN or BEGIN ... END
+		 */
+		if (IsA(create_function_stmt->sql_body, ReturnStmt))
+			deparseReturnStmt(str, castNode(ReturnStmt, create_function_stmt->sql_body));
+		else
+		{
+			appendStringInfoString(str, "BEGIN ATOMIC ");
+			deparseExprList(str, castNode(List, create_function_stmt->sql_body));
+			appendStringInfoString(str, "END ");
+		}
 	}
 
 	removeTrailingSpace(str);
@@ -8686,7 +8707,12 @@ static void deparseStatsElem(StringInfo str, StatsElem *stats_elem)
 	if (stats_elem->name)
 		appendStringInfoString(str, stats_elem->name);
 	else if (stats_elem->expr)
-		deparseExpr(str, stats_elem->expr);
+	{
+		if (nodeTag(stats_elem->expr) == T_A_Expr)
+			deparseCExpr(str, stats_elem->expr);
+		else
+			deparseExpr(str, stats_elem->expr);
+	}
 }
 
 static void deparseCreateStatsStmt(StringInfo str, CreateStatsStmt *create_stats_stmt)
