@@ -2480,6 +2480,35 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		deparseExpr(str, lfourth(func_call->args));
 		appendStringInfoString(str, ") ");
 		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		(
+			strcmp(strVal(lsecond(func_call->funcname)), "ltrim") == 0 ||
+			strcmp(strVal(lsecond(func_call->funcname)), "btrim") == 0 ||
+			strcmp(strVal(lsecond(func_call->funcname)), "rtrim") == 0
+		))
+	{
+		/*
+		 * "TRIM " is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.ltrim)
+		 * Note that the first and second arguments are switched in this format
+		 */
+		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
+		appendStringInfoString(str, "TRIM (");
+		if (strcmp(strVal(lsecond(func_call->funcname)), "ltrim") == 0)
+			appendStringInfoString(str, "LEADING ");
+		else if (strcmp(strVal(lsecond(func_call->funcname)), "btrim") == 0)
+			appendStringInfoString(str, "BOTH ");
+		else if (strcmp(strVal(lsecond(func_call->funcname)), "rtrim") == 0)
+			appendStringInfoString(str, "TRAILING ");
+
+		if (list_length(func_call->args) == 2)
+			deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " FROM ");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
 	}
 		
 	deparseFuncName(str, func_call->funcname);
@@ -8770,10 +8799,9 @@ static void deparseStatsElem(StringInfo str, StatsElem *stats_elem)
 		appendStringInfoString(str, stats_elem->name);
 	else if (stats_elem->expr)
 	{
-		if (nodeTag(stats_elem->expr) == T_A_Expr)
-			deparseCExpr(str, stats_elem->expr);
-		else
-			deparseExpr(str, stats_elem->expr);
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, stats_elem->expr);
+		appendStringInfoChar(str, ')');
 	}
 }
 
