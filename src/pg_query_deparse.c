@@ -993,19 +993,22 @@ static void deparseFuncName(StringInfo str, List *func_name)
 static void deparseFunctionWithArgtypes(StringInfo str, ObjectWithArgs *object_with_args)
 {
 	ListCell *lc;
-
 	deparseFuncName(str, object_with_args->objname);
 
 	if (!object_with_args->args_unspecified)
 	{
 		appendStringInfoChar(str, '(');
-		foreach(lc, object_with_args->objargs)
+		List *objargs = object_with_args->objargs;
+		if (object_with_args->objfuncargs)
+			objargs = object_with_args->objfuncargs;
+
+		foreach(lc, objargs)
 		{
-			if (IsA(lfirst(lc), TypeName))
-				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
-			else
+			if (IsA(lfirst(lc), FunctionParameter))
 				deparseFunctionParameter(str, castNode(FunctionParameter, lfirst(lc)));
-			if (lnext(object_with_args->objargs, lc))
+			else
+				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
+			if (lnext(objargs, lc))
 				appendStringInfoString(str, ", ");
 		}
 		appendStringInfoChar(str, ')');
@@ -1095,16 +1098,23 @@ static void deparseAggregateWithArgtypes(StringInfo str, ObjectWithArgs *object_
 	deparseFuncName(str, object_with_args->objname);
 
 	appendStringInfoChar(str, '(');
-	if (object_with_args->objargs == NULL)
+	if (object_with_args->objargs == NULL && object_with_args->objfuncargs == NULL)
 	{
 		appendStringInfoChar(str, '*');
 	}
 	else
 	{
-		foreach(lc, object_with_args->objargs)
+		List *objargs = object_with_args->objargs;
+		if (object_with_args->objfuncargs)
+			objargs = object_with_args->objfuncargs;
+
+		foreach(lc, objargs)
 		{
-			deparseTypeName(str, castNode(TypeName, lfirst(lc)));
-			if (lnext(object_with_args->objargs, lc))
+			if (IsA(lfirst(lc), FunctionParameter))
+				deparseFunctionParameter(str, castNode(FunctionParameter, lfirst(lc)));
+			else
+				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
+			if (lnext(objargs, lc))
 				appendStringInfoString(str, ", ");
 		}
 	}
@@ -4487,7 +4497,7 @@ static void deparseFunctionParameter(StringInfo str, FunctionParameter *function
 	switch (function_parameter->mode)
 	{
 		case FUNC_PARAM_IN: /* input only */
-			// Default
+			appendStringInfoString(str, "IN ");
 			break;
 		case FUNC_PARAM_OUT: /* output only */
 			appendStringInfoString(str, "OUT ");
@@ -4501,6 +4511,9 @@ static void deparseFunctionParameter(StringInfo str, FunctionParameter *function
 		case FUNC_PARAM_TABLE: /* table function output column */
 			// No special annotation, the caller is expected to correctly put
 			// this into the RETURNS part of the CREATE FUNCTION statement
+			break;
+		case FUNC_PARAM_DEFAULT:
+			// Default
 			break;
 		default:
 			Assert(false);
