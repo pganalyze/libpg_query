@@ -2117,6 +2117,8 @@ static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 			if (list_length(stmt->groupClause) > 0)
 			{
 				appendStringInfoString(str, "GROUP BY ");
+				if (stmt->groupDistinct)
+					appendStringInfoString(str, "DISTINCT ");
 				deparseGroupByList(str, stmt->groupClause);
 				appendStringInfoChar(str, ' ');
 			}
@@ -2437,6 +2439,46 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		appendStringInfoString(str, "collation for (");
 		deparseExpr(str, linitial(func_call->args));
 		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "extract") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "EXTRACT" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.extract)
+		 */
+		appendStringInfoString(str, "extract (");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, "FROM ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "overlaps") == 0 &&
+		list_length(func_call->args) == 4)
+	{
+		/*
+		 * "OVERLAPS" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlaps)
+		 * format: (start_1, end_1) overlaps (start_2, end_2)
+		 */
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, ", ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, ") ");
+
+		appendStringInfoString(str, "overlaps ");
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, lthird(func_call->args));
+		appendStringInfoString(str, ", ");
+		deparseExpr(str, lfourth(func_call->args));
+		appendStringInfoString(str, ") ");
 		return;
 	}
 		
@@ -3125,6 +3167,12 @@ static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 		appendStringInfoString(str, "USING (");
 		deparseNameList(str, join_expr->usingClause);
 		appendStringInfoString(str, ") ");
+
+		if (join_expr->join_using_alias)
+		{
+			appendStringInfoString(str, "AS ");
+			appendStringInfoString(str, join_expr->join_using_alias->aliasname);
+		}
 	}
 
 	if (need_alias_parens)

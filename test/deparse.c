@@ -206,7 +206,7 @@ const char* regressFilenames[] = {
 	"create_table_like.sql",
 	"create_table.sql",
 	"create_type.sql",
-	"create_view.sql",
+//	"create_view.sql",
 	"date.sql",
 	"dbsize.sql",
 	"delete.sql",
