@@ -2336,6 +2336,8 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 
 	Assert(list_length(func_call->funcname) > 0);
 
+	
+
 	if (list_length(func_call->funcname) == 2 &&
 		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
 		strcmp(strVal(lsecond(func_call->funcname)), "overlay") == 0 &&
@@ -2355,8 +2357,65 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		deparseExpr(str, lfourth(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "substring") == 0)
+	{
+		/*
+		 * "SUBSTRING" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.substring)
+		 */
+		Assert(list_length(func_call->args) == 2 || list_length(func_call->args) == 3);
+		appendStringInfoString(str, "SUBSTRING(");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " FROM ");
+		deparseExpr(str, lsecond(func_call->args));
+		if (list_length(func_call->args) == 3)
+		{
+			appendStringInfoString(str, " FOR ");
+			deparseExpr(str, lthird(func_call->args));
+		}
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "position") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "POSITION" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.position)
+		 * Note that the first and second arguments are switched in this format
+		 */
+		appendStringInfoString(str, "POSITION(");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " IN ");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "overlay") == 0 &&
+		list_length(func_call->args) == 3)
+	{
+		/*
+		 * "OVERLAY" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 */
+		Assert(list_length(func_call->args) == 2 || list_length(func_call->args) == 3);
+		appendStringInfoString(str, "overlay(");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " placing ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " from ");
+		deparseExpr(str, lthird(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
 	}
-
+		
 	deparseFuncName(str, func_call->funcname);
 	appendStringInfoChar(str, '(');
 
