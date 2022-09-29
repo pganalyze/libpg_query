@@ -8593,6 +8593,15 @@ static void deparseCommentStmt(StringInfo str, CommentStmt *comment_stmt)
 		appendStringInfoString(str, "NULL");
 }
 
+static void deparseStatsElem(StringInfo str, StatsElem *stats_elem)
+{
+	// only one of stats_elem->name or stats_elem->expr can be non-null
+	if (stats_elem->name)
+		appendStringInfoString(str, stats_elem->name);
+	else if (stats_elem->expr)
+		deparseExpr(str, stats_elem->expr);
+}
+
 static void deparseCreateStatsStmt(StringInfo str, CreateStatsStmt *create_stats_stmt)
 {
 	ListCell *lc;
@@ -8613,7 +8622,12 @@ static void deparseCreateStatsStmt(StringInfo str, CreateStatsStmt *create_stats
 	}
 
 	appendStringInfoString(str, "ON ");
-	deparseExprList(str, create_stats_stmt->exprs);
+	foreach (lc, create_stats_stmt->exprs)
+	{
+		deparseStatsElem(str, lfirst(lc));
+		if (lnext(create_stats_stmt->exprs, lc))
+			appendStringInfoString(str, ", ");
+	}
 
 	appendStringInfoString(str, " FROM ");
 	deparseFromList(str, create_stats_stmt->relations);
