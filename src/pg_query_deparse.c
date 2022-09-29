@@ -2405,13 +2405,26 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		 * "OVERLAY" is a keyword on its own merit, and only accepts the
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
 		 */
-		Assert(list_length(func_call->args) == 2 || list_length(func_call->args) == 3);
 		appendStringInfoString(str, "overlay(");
 		deparseExpr(str, linitial(func_call->args));
 		appendStringInfoString(str, " placing ");
 		deparseExpr(str, lsecond(func_call->args));
 		appendStringInfoString(str, " from ");
 		deparseExpr(str, lthird(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "pg_collation_for") == 0 &&
+		list_length(func_call->args) == 1)
+	{
+		/*
+		 * "collation for" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 */
+		appendStringInfoString(str, "collation for (");
+		deparseExpr(str, linitial(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
 	}
