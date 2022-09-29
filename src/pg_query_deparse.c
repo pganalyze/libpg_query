@@ -7396,7 +7396,6 @@ static void deparseAccessPriv(StringInfo str, AccessPriv *access_priv)
 static void deparseGrantStmt(StringInfo str, GrantStmt *grant_stmt)
 {
 	ListCell *lc;
-
 	if (grant_stmt->is_grant)
 		appendStringInfoString(str, "GRANT ");
 	else
@@ -7443,6 +7442,12 @@ static void deparseGrantStmt(StringInfo str, GrantStmt *grant_stmt)
 
 	deparseOptDropBehavior(str, grant_stmt->behavior);
 
+	if (grant_stmt->grantor)
+	{
+		appendStringInfoString(str, "GRANTED BY ");
+		deparseRoleSpec(str, castNode(RoleSpec, grant_stmt->grantor));
+	}
+
 	removeTrailingSpace(str);
 }
 
@@ -7454,6 +7459,9 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 		appendStringInfoString(str, "GRANT ");
 	else
 		appendStringInfoString(str, "REVOKE ");
+
+	if (!grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
+		appendStringInfoString(str, "ADMIN OPTION FOR ");
 
 	foreach(lc, grant_role_stmt->granted_roles)
 	{
@@ -7471,8 +7479,14 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 	deparseRoleList(str, grant_role_stmt->grantee_roles);
 	appendStringInfoChar(str, ' ');
 
-	if (grant_role_stmt->admin_opt)
+	if (grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
 		appendStringInfoString(str, "WITH ADMIN OPTION ");
+
+	if (grant_role_stmt->grantor)
+	{
+		appendStringInfoString(str, "GRANTED BY ");
+		deparseRoleSpec(str, castNode(RoleSpec, grant_role_stmt->grantor));
+	}
 
 	removeTrailingSpace(str);
 }

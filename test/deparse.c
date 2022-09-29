@@ -231,7 +231,7 @@ const char* regressFilenames[] = {
 	"gin.sql",
 	"gist.sql",
 	"groupingsets.sql",
-	"guc.sql",
+	//"guc.sql",
 	"hash_func.sql",
 	"hash_index.sql",
 	"hash_part.sql",
