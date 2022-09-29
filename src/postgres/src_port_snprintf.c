@@ -4,6 +4,7 @@
  * - dopr
  * - pg_snprintf
  * - pg_vsnprintf
+ * - strchrnul
  * - dostr
  * - find_arguments
  * - fmtint
