@@ -5358,7 +5358,7 @@ static void deparseDropStmt(StringInfo str, DropStmt *drop_stmt)
 			appendStringInfoChar(str, ' ');
 			break;
 		case OBJECT_LANGUAGE:
-			deparseStringLiteral(str, strVal(linitial(drop_stmt->objects)));
+			deparseNameList(str, drop_stmt->objects);
 			appendStringInfoChar(str, ' ');
 			break;
 		case OBJECT_TYPE:
