@@ -2509,6 +2509,21 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		deparseExpr(str, linitial(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "timezone") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "AT TIME ZONE" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 * Note that the arguments are swapped in this case
+		 */
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " AT TIME ZONE ");
+		deparseExpr(str, linitial(func_call->args));
+		return;
 	}
 		
 	deparseFuncName(str, func_call->funcname);
