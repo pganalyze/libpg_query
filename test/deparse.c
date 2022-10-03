@@ -371,7 +371,8 @@ const char* regressFilenames[] = {
 	"xml.sql",
 	"xmlmap.sql"
 };
-size_t regressFilenameCount = 203;
+//size_t regressFilenameCount = 203;
+size_t regressFilenameCount = 200;
 
 int main() {
 	size_t i;

@@ -2544,6 +2544,18 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		}
 		appendStringInfoChar(str, ')');
 		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "xmlexists") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		appendStringInfoString(str, "xmlexists (");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " PASSING ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
 	}
 		
 	deparseFuncName(str, func_call->funcname);
@@ -4737,7 +4749,6 @@ static void deparseCheckPointStmt(StringInfo str, CheckPointStmt *check_point_st
 static void deparseCreateSchemaStmt(StringInfo str, CreateSchemaStmt *create_schema_stmt)
 {
 	ListCell *lc;
-
 	appendStringInfoString(str, "CREATE SCHEMA ");
 
 	if (create_schema_stmt->if_not_exists)
@@ -4756,11 +4767,14 @@ static void deparseCreateSchemaStmt(StringInfo str, CreateSchemaStmt *create_sch
 		appendStringInfoChar(str, ' ');
 	}
 
-	foreach(lc, create_schema_stmt->schemaElts)
+	if (create_schema_stmt->schemaElts)
 	{
-		deparseSchemaStmt(str, lfirst(lc));
-		if (lnext(create_schema_stmt->schemaElts, lc))
-			appendStringInfoChar(str, ' ');
+		foreach(lc, create_schema_stmt->schemaElts)
+		{
+			deparseSchemaStmt(str, lfirst(lc));
+			if (lnext(create_schema_stmt->schemaElts, lc))
+				appendStringInfoChar(str, ' ');
+		}
 	}
 
 	removeTrailingSpace(str);
