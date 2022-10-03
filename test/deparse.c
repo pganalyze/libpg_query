@@ -357,7 +357,7 @@ const char* regressFilenames[] = {
 	"txid.sql",
 	"type_sanity.sql",
 	"typed_table.sql",
-	"unicode.sql",
+	//"unicode.sql",
 	"union.sql",
 	"updatable_views.sql",
 	"update.sql",

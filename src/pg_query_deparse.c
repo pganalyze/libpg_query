@@ -2517,12 +2517,32 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 	{
 		/*
 		 * "AT TIME ZONE" is a keyword on its own merit, and only accepts the
-		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
 		 * Note that the arguments are swapped in this case
 		 */
 		deparseExpr(str, lsecond(func_call->args));
 		appendStringInfoString(str, " AT TIME ZONE ");
 		deparseExpr(str, linitial(func_call->args));
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "normalize") == 0)
+	{
+		/*
+		 * "NORMALIZE" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.normalize)
+		 */
+		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
+		appendStringInfoString(str, "normalize (");
+
+		deparseExpr(str, linitial(func_call->args));
+		if (list_length(func_call->args) == 2)
+		{
+			appendStringInfoString(str, ", ");
+			deparseExpr(str, lsecond(func_call->args));
+		}
+		appendStringInfoChar(str, ')');
 		return;
 	}
 		
@@ -3228,6 +3248,49 @@ static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 	removeTrailingSpace(str);
 }
 
+static void deparseCTESearchClause(StringInfo str, CTESearchClause *search_clause)
+{
+	appendStringInfoString(str, " SEARCH ");
+	if (search_clause->search_breadth_first)
+		appendStringInfoString(str, "BREADTH ");
+	else
+		appendStringInfoString(str, "DEPTH ");
+
+	appendStringInfoString(str, "FIRST BY ");
+
+	if (search_clause->search_col_list)
+		deparseColumnList(str, search_clause->search_col_list);
+
+	appendStringInfoString(str, " SET ");
+	appendStringInfoString(str, quote_identifier(search_clause->search_seq_column));
+}
+
+static void deparseCTECycleClause(StringInfo str, CTECycleClause *cycle_clause)
+{
+	appendStringInfoString(str, " CYCLE ");
+
+	if (cycle_clause->cycle_col_list)
+		deparseColumnList(str, cycle_clause->cycle_col_list);
+
+	appendStringInfoString(str, " SET ");
+	appendStringInfoString(str, quote_identifier(cycle_clause->cycle_mark_column));
+
+	if (cycle_clause->cycle_mark_value)
+	{
+		appendStringInfoString(str, " TO ");
+		deparseExpr(str, cycle_clause->cycle_mark_value);
+	}
+	
+	if (cycle_clause->cycle_mark_default)
+	{
+		appendStringInfoString(str, " DEFAULT ");
+		deparseExpr(str, cycle_clause->cycle_mark_default);
+	}
+	
+	appendStringInfoString(str, " USING ");
+	appendStringInfoString(str, quote_identifier(cycle_clause->cycle_path_column));
+}
+
 static void deparseCommonTableExpr(StringInfo str, CommonTableExpr *cte)
 {
 	deparseColId(str, cte->ctename);
@@ -3255,6 +3318,11 @@ static void deparseCommonTableExpr(StringInfo str, CommonTableExpr *cte)
 	appendStringInfoChar(str, '(');
 	deparsePreparableStmt(str, cte->ctequery);
 	appendStringInfoChar(str, ')');
+
+	if (cte->search_clause)
+		deparseCTESearchClause(str, cte->search_clause);
+	if (cte->cycle_clause)
+		deparseCTECycleClause(str, cte->cycle_clause);
 }
 
 static void deparseRangeSubselect(StringInfo str, RangeSubselect *range_subselect)
@@ -3429,7 +3497,17 @@ static void deparseTypeCast(StringInfo str, TypeCast *type_cast)
 		{
 			need_parens = true;
 		}
+
+		if (list_length(type_cast->typeName->names) == 1 &&
+			strcmp(strVal(linitial(type_cast->typeName->names)), "point") == 0 &&
+			a_const->location > type_cast->typeName->location)
+		{
+			appendStringInfoString(str, " point ");
+			deparseAConst(str, a_const);
+			return;
+		}
 	}
+
 
 	if (need_parens)
 		appendStringInfoChar(str, '(');
@@ -9303,6 +9381,8 @@ static void deparseCreateTrigStmt(StringInfo str, CreateTrigStmt *create_trig_st
 	bool skip_events_or = true;
 
 	appendStringInfoString(str, "CREATE ");
+	if (create_trig_stmt->replace)
+		appendStringInfoString(str, "OR REPLACE ");
 	if (create_trig_stmt->isconstraint)
 		appendStringInfoString(str, "CONSTRAINT ");
 	appendStringInfoString(str, "TRIGGER ");
