@@ -373,6 +373,22 @@ const char* regressFilenames[] = {
 };
 size_t regressFilenameCount = 203;
 
+const char* plpgsqlRegressFilenames[] =
+{
+	"plpgsql_array.sql",
+	"plpgsql_cache.sql",
+	"plpgsql_call.sql",
+	"plpgsql_control.sql",
+	"plpgsql_domain.sql",
+	"plpgsql_record.sql",
+	"plpgsql_simple.sql",
+	"plpgsql_transaction.sql",
+	"plpgsql_trap.sql",
+	"plpgsql_trigger.sql",
+	"plpgsql_varprops.sql"
+};
+size_t plpgsqlRegressFilenameCount = 11;
+
 int main() {
 	size_t i;
 	int ret_code = EXIT_SUCCESS;
@@ -389,6 +405,19 @@ int main() {
 		char *filename = malloc(sizeof(char) * strlen("test/sql/postgres_regress/") + strlen(regressFilenames[i]) + 1);
 		strcpy(filename, "test/sql/postgres_regress/");
 		strcat(filename, regressFilenames[i]);
+		test_ret_code = run_tests_from_file(filename);
+		free(filename);
+		if (test_ret_code != EXIT_SUCCESS) {
+			ret_code = test_ret_code;
+			break;
+		}
+	}
+
+	for (i = 0; i < plpgsqlRegressFilenameCount; i += 1) {
+		printf("\n%s\n", plpgsqlRegressFilenames[i]);
+		char *filename = malloc(sizeof(char) * strlen("test/sql/postgres_regress/") + strlen(plpgsqlRegressFilenames[i]) + 1);
+		strcpy(filename, "test/sql/plpgsql_regress/");
+		strcat(filename, plpgsqlRegressFilenames[i]);
 		test_ret_code = run_tests_from_file(filename);
 		free(filename);
 		if (test_ret_code != EXIT_SUCCESS) {
