@@ -407,10 +407,8 @@ int main() {
 		strcat(filename, regressFilenames[i]);
 		test_ret_code = run_tests_from_file(filename);
 		free(filename);
-		if (test_ret_code != EXIT_SUCCESS) {
+		if (test_ret_code != EXIT_SUCCESS)
 			ret_code = test_ret_code;
-			break;
-		}
 	}
 
 	for (i = 0; i < plpgsqlRegressFilenameCount; i += 1) {
@@ -420,10 +418,8 @@ int main() {
 		strcat(filename, plpgsqlRegressFilenames[i]);
 		test_ret_code = run_tests_from_file(filename);
 		free(filename);
-		if (test_ret_code != EXIT_SUCCESS) {
+		if (test_ret_code != EXIT_SUCCESS)
 			ret_code = test_ret_code;
-			break;
-		}
 	}
 
 	printf("\n");
