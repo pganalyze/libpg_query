@@ -249,8 +249,6 @@ static void deparseAnyNameSkipLast(StringInfo str, List *parts)
 // "a_expr" / "b_expr" in gram.y
 static void deparseExpr(StringInfo str, Node *node)
 {
-	if (node == NULL)
-		return;
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
@@ -2348,8 +2346,6 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 	const ListCell *lc = NULL;
 
 	Assert(list_length(func_call->funcname) > 0);
-
-	
 
 	if (list_length(func_call->funcname) == 2 &&
 		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
