@@ -17,5 +17,3 @@ test/*.dSYM
 
 tmp/*
 !tmp/.gitkeep
-
-.vscode/*
