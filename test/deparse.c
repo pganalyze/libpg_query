@@ -394,8 +394,7 @@ int main() {
 		if (test_ret_code != EXIT_SUCCESS) {
 			ret_code = test_ret_code;
 			break;
-		} else
-			printf("SUCCESS!");
+		}
 	}
 
 	printf("\n");

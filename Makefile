@@ -214,7 +214,7 @@ examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 TESTS = test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan test/split
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
-	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
+	# $(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)

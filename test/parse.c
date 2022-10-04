@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #include "parse_tests.c"
+//#include "src/postgres/include/parser/parser.h"
 
 int main() {
   size_t i;
@@ -25,6 +26,7 @@ int main() {
     }
 
     pg_query_free_parse_result(result);
+    //printf("%s\n", raw_parser(tests[i], RAW_PARSE_DEFAULT));
   }
 
   printf("\n");
