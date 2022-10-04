@@ -206,7 +206,7 @@ const char* regressFilenames[] = {
 	"create_table_like.sql",
 	"create_table.sql",
 	"create_type.sql",
-//	"create_view.sql",
+	"create_view.sql",
 	"date.sql",
 	"dbsize.sql",
 	"delete.sql",
@@ -372,7 +372,7 @@ const char* regressFilenames[] = {
 	"xmlmap.sql"
 };
 //size_t regressFilenameCount = 203;
-size_t regressFilenameCount = 200;
+size_t regressFilenameCount = 201;
 
 int main() {
 	size_t i;
