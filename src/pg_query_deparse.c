@@ -9072,7 +9072,7 @@ static void deparseVariableShowStmt(StringInfo str, VariableShowStmt *variable_s
 	else if (strcmp(variable_show_stmt->name, "all") == 0)
 		appendStringInfoString(str, "SESSION ALL");
 	else
-		appendStringInfoString(str, variable_show_stmt->name);
+		appendStringInfoString(str, quote_identifier(variable_show_stmt->name));
 }
 
 static void deparseRangeTableSample(StringInfo str, RangeTableSample *range_table_sample)

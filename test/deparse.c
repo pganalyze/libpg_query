@@ -231,7 +231,7 @@ const char* regressFilenames[] = {
 	"gin.sql",
 	"gist.sql",
 	"groupingsets.sql",
-	//"guc.sql",
+	"guc.sql",
 	"hash_func.sql",
 	"hash_index.sql",
 	"hash_part.sql",
@@ -357,7 +357,7 @@ const char* regressFilenames[] = {
 	"txid.sql",
 	"type_sanity.sql",
 	"typed_table.sql",
-	//"unicode.sql",
+	"unicode.sql",
 	"union.sql",
 	"updatable_views.sql",
 	"update.sql",
@@ -371,8 +371,7 @@ const char* regressFilenames[] = {
 	"xml.sql",
 	"xmlmap.sql"
 };
-//size_t regressFilenameCount = 203;
-size_t regressFilenameCount = 201;
+size_t regressFilenameCount = 203;
 
 int main() {
 	size_t i;
