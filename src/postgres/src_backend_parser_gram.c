@@ -46839,7 +46839,7 @@ yyreduce:
     {
 					TypeName *t = (yyvsp[(1) - (3)].typnam);
 					t->typmods = (yyvsp[(3) - (3)].list);
-					(yyval.node) = makeParamRefCast((yyvsp[(2) - (3)].ival), (yylsp[(3) - (3)]), t);
+					(yyval.node) = makeParamRefCast((yyvsp[(2) - (3)].ival), (yylsp[(2) - (3)]), t);
 				;}
     break;
 

@@ -249,6 +249,8 @@ static void deparseAnyNameSkipLast(StringInfo str, List *parts)
 // "a_expr" / "b_expr" in gram.y
 static void deparseExpr(StringInfo str, Node *node)
 {
+	if (node == NULL)
+		return;
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:

@@ -117,7 +117,7 @@ $(PGDIR):
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
 
 extract_source: $(PGDIR)
-	#-@ $(RM) -rf ./src/postgres/
+	-@ $(RM) -rf ./src/postgres/
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
 	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
