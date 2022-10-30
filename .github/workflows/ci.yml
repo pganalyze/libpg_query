@@ -11,7 +11,11 @@ jobs:
         os: [ubuntu-20.04]
         compiler: [clang, gcc]
         protobuf_lib: [protobuf-c, protobuf-cpp]
-        valgrind: [valgrind,no-valgrind]
+        valgrind: [valgrind, no-valgrind]
+        swig: [java, none]      # NS: Add swig matrix.
+        exclude:                # NS: Excluding combinations (for now) that break the build.
+          - protobuf_lib: protobuf-cpp
+            swig: java
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -39,6 +43,9 @@ jobs:
     - name: Install Valgrind
       if: matrix.valgrind == 'valgrind'
       run: sudo apt update && sudo apt install -y valgrind
+    - name: Install SWIG        # NS: Install swig if needed.
+      if: matrix.swig != 'none'
+      run: sudo apt update && sudo apt install -y swig
     - name: Determine make flags
       id: make_flags
       run: |
@@ -67,7 +74,23 @@ jobs:
         PROTOBUF_LIB: ${{ matrix.protobuf_lib }}
         COMPILER: ${{ matrix.compiler }}
         VALGRIND: ${{ matrix.valgrind }}
+    - name: Generate SWIG-Java Bindings # NS: Generate Java and C code.
+      if: matrix.swig == 'java'
+      run: |
+        mkdir -p bindings/java/src/main/java/pg_query
+        swig -java -package pg_query -outdir bindings/java/src/main/java/pg_query -o src/pg_query_wrap_java.c pg_query.i
     - name: Build and run tests
       run: make $FLAGS
       env:
         FLAGS: ${{ format('{0} {1} {2}', steps.make_flags.outputs.proto_flags, steps.make_flags.outputs.compiler_flags, steps.make_flags.outputs.debug_flags) }}
+        CFLAGS: "-I${JAVA_HOME_11_X64}/include -I${JAVA_HOME_11_X64}/include/linux" # NS: Set CFLAGS env var to pick up jni.h headers.
+    - name: Build Shared Library # NS: Now build the shared library so we can use it in bindings (like Java JNI).
+      if: matrix.swig != 'none'
+      run: make build_shared $FLAGS
+      env:
+        FLAGS: ${{ format('{0} {1} {2}', steps.make_flags.outputs.proto_flags, steps.make_flags.outputs.compiler_flags, steps.make_flags.outputs.debug_flags) }}
+    - name: Compile SWIG-Java Bindings # NS: Now build the Java package using the libpg_query.so shared library.
+      if: matrix.swig == 'java'
+      run: |
+        cp libpg_query.so bindings/java
+        mvn -f bindings/java/pom.xml package
