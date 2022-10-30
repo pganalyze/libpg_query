@@ -280,3 +280,67 @@ Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2017, Lukas Fittl <lukas@fittl.com>
+
+## SWIG-Java Bindings ##
+
+David A. Ventimiglia (DAV) at NeptuneStation.org added SWIG-Java bindings.
+
+### What ###
+
+There are projects that use libpg_query as a base library for Ruby,
+Go, Node, Python, and Python 3.  However, there may not be a project
+that uses libpg_query as a base library for Java.  Moreover, those
+other projects may each diverge from a standard approach.  Therefore,
+this project attempts to use libpg_query as a base library for Java
+and it does so using SWIG.
+
+### Why ###
+
+There are two primary objectives for this project.
+
+1. Add Java bindings for libpg_query.
+2. Create opportunities for standardization by using SWIG.
+
+There also are two secondary objectives for this project.
+
+1. Explore adding different language bindings directly into the
+   libpg_query project and library rather than as external projects
+   and libraries.
+2. Do so with as light a "footprint" as possible.
+
+### How ###
+
+1. Add a top-level `bindings` directory to contain language-specific
+   material for different language bindings (e.g. Java, Python, etc.).
+2. Add a next-level `bindings/java` directory to contain
+   language-specific material for a Java language binding.  This is a
+   Maven project directory.
+3. Add a `bindings/java/pom.xml` file to configure a Maven project.
+4. Within `bindings/java/pom.xml` configure the
+   `maven-surefire-plugin` (which runs tests) to set a system property
+   so that Java can load the `libpg_query.so` shared library, since
+   the Java code uses JNI (via SWIG) to access the library.
+5. Add a `bindings/java/src/main/java` standard Maven sub-directory
+   tree to hold the language-specific output from SWIG.
+6. Add a `bindings/java/src/test/java` standard Maven sub-directory
+   tree to hold the language-specific (Java) source code for tests.
+7. Modified `.github/workflows/ci.yml`:
+   1. Added GitHub Action matrix dimension for `swig` (currently:
+      `java`, `none`).
+   2. Added matrix exclusions for combinations that currently break
+      the build.
+   3. Added a step to install SWIG when needed.
+   4. Added a step *before* compiling the C code to invoke SWIG to
+      generate the C (and Java) wrappers, as the C wrappers are needed
+      before compiling the library.
+   5. Modified the step to compile the C code using `make` by setting
+      the `CFLAGS` environment variable to pick up the needed Java JNI
+      headers `jni.h`.
+   6. Added a step *after* compiling the C code to call `make
+      build_shared` to build the `libpg_query.so` shared object
+      library. 
+   7. Added a final step to run a Maven build in the `bindings/java`
+      Maven project directory, to compile and package the Java portion
+      of the code into a JAR file.  This also runs Java tests that
+      *use* the `libpg_query.so` shared object library created
+      previously. 

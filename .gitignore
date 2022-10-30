@@ -3,6 +3,7 @@ postgres.tar.bz2
 
 *.o
 *.a
+*.so
 
 examples/*
 !examples/*.c
@@ -17,3 +18,8 @@ test/*.dSYM
 
 tmp/*
 !tmp/.gitkeep
+
+bindings/java/src
+bindings/java/target
+
+src/pg_query_wrap_java.c
