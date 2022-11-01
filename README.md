@@ -179,7 +179,7 @@ This will output:
 
 See https://github.com/pganalyze/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
-## Usage: Parsing a PL/pgSQL function (Experimental)
+## Usage: Parsing a PL/pgSQL function
 
 A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
 
