@@ -260,6 +260,17 @@ _outNode(StringInfo out, const void *obj)
 }
 
 char *
+pg_query_node_to_json(const void *obj)
+{
+	StringInfoData out;
+
+	initStringInfo(&out);
+	_outNode(&out, obj);
+
+	return out.data;
+}
+
+char *
 pg_query_nodes_to_json(const void *obj)
 {
 	StringInfoData out;
