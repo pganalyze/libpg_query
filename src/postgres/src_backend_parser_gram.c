@@ -457,7 +457,7 @@
      REASSIGN = 579,
      RECHECK = 580,
      RECURSIVE = 581,
-     REF = 582,
+     REF_P = 582,
      REFERENCES = 583,
      REFERENCING = 584,
      REFRESH = 585,
@@ -934,7 +934,7 @@
 #define REASSIGN 579
 #define RECHECK 580
 #define RECURSIVE 581
-#define REF 582
+#define REF_P 582
 #define REFERENCES 583
 #define REFERENCING 584
 #define REFRESH 585
@@ -3354,7 +3354,7 @@ static const char *const yytname[] =
   "PRESERVE", "PREPARE", "PREPARED", "PRIMARY", "PRIOR", "PRIVILEGES",
   "PROCEDURAL", "PROCEDURE", "PROCEDURES", "PROGRAM", "PUBLICATION",
   "QUOTE", "RANGE", "READ", "REAL", "REASSIGN", "RECHECK", "RECURSIVE",
-  "REF", "REFERENCES", "REFERENCING", "REFRESH", "REINDEX", "RELATIVE_P",
+  "REF_P", "REFERENCES", "REFERENCING", "REFRESH", "REINDEX", "RELATIVE_P",
   "RELEASE", "RENAME", "REPEATABLE", "REPLACE", "REPLICA", "RESET",
   "RESTART", "RESTRICT", "RETURNING", "RETURNS", "REVOKE", "RIGHT", "ROLE",
   "ROLLBACK", "ROLLUP", "ROUTINE", "ROUTINES", "ROW", "ROWS", "RULE",
@@ -46994,6 +46994,21 @@ insertSelectOptions(SelectStmt *stmt,
 			ereport(ERROR,
 					(errcode(ERRCODE_SYNTAX_ERROR),
 					 errmsg("WITH TIES cannot be specified without ORDER BY clause")));
+		if (limitClause->limitOption == LIMIT_OPTION_WITH_TIES && stmt->lockingClause)
+		{
+			ListCell   *lc;
+
+			foreach(lc, stmt->lockingClause)
+			{
+				LockingClause *lock = lfirst_node(LockingClause, lc);
+
+				if (lock->waitPolicy == LockWaitSkip)
+					ereport(ERROR,
+							(errcode(ERRCODE_SYNTAX_ERROR),
+							 errmsg("%s and %s options cannot be used together",
+									"SKIP LOCKED", "WITH TIES")));
+			}
+		}
 		stmt->limitOption = limitClause->limitOption;
 	}
 	if (withClause)

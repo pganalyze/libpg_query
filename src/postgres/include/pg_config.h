@@ -317,9 +317,6 @@
 /* Define to 1 if you have the `ldap' library (-lldap). */
 /* #undef HAVE_LIBLDAP */
 
-/* Define to 1 if you have the `ldap_r' library (-lldap_r). */
-/* #undef HAVE_LIBLDAP_R */
-
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
 
@@ -473,6 +470,9 @@
 
 /* Define to 1 if you have the <security/pam_appl.h> header file. */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
+
+/* Define to 1 if you have the `setenv' function. */
+#define HAVE_SETENV 1
 
 /* Define to 1 if you have the `setproctitle' function. */
 /* #undef HAVE_SETPROCTITLE */
@@ -685,7 +685,7 @@
 /* #undef HAVE_X509_GET_SIGNATURE_NID */
 
 /* Define to 1 if the assembler supports X86_64's POPCNTQ instruction. */
-#define HAVE_X86_64_POPCNTQ 1
+/* #undef HAVE_X86_64_POPCNTQ */
 
 /* Define to 1 if the system has the type `_Bool'. */
 #define HAVE__BOOL 1
@@ -708,6 +708,9 @@
 /* Define to 1 if your compiler understands __builtin_ctz. */
 #define HAVE__BUILTIN_CTZ 1
 
+/* Define to 1 if your compiler understands __builtin_frame_address. */
+#define HAVE__BUILTIN_FRAME_ADDRESS 1
+
 /* Define to 1 if your compiler understands __builtin_$op_overflow. */
 #define HAVE__BUILTIN_OP_OVERFLOW 1
 
@@ -727,7 +730,7 @@
 /* #undef HAVE__CPUID */
 
 /* Define to 1 if you have __get_cpuid. */
-#define HAVE__GET_CPUID 1
+/* #undef HAVE__GET_CPUID */
 
 /* Define to 1 if your compiler understands _Static_assert. */
 #define HAVE__STATIC_ASSERT 1
@@ -757,7 +760,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 13.3"
+#define PACKAGE_STRING "PostgreSQL 13.8"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -766,7 +769,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "13.3"
+#define PACKAGE_VERSION "13.8"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -785,7 +788,7 @@
 #define PG_MAJORVERSION_NUM 13
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 3
+#define PG_MINORVERSION_NUM 8
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -794,13 +797,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "13.3"
+#define PG_VERSION "13.8"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 130003
+#define PG_VERSION_NUM 130008
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 13.3 on x86_64-apple-darwin19.6.0, compiled by Apple clang version 12.0.0 (clang-1200.0.32.29), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 13.8 on arm-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -845,7 +848,7 @@
 #define STRERROR_R_INT 1
 
 /* Define to 1 to use ARMv8 CRC Extension. */
-/* #undef USE_ARMV8_CRC32C */
+#define USE_ARMV8_CRC32C 1
 
 /* Define to 1 to use ARMv8 CRC Extension with a runtime check. */
 /* #undef USE_ARMV8_CRC32C_WITH_RUNTIME_CHECK */
@@ -897,7 +900,7 @@
 /* #undef USE_SSE42_CRC32C */
 
 /* Define to 1 to use Intel SSE 4.2 CRC instructions with a runtime check. */
-#define USE_SSE42_CRC32C_WITH_RUNTIME_CHECK 1
+/* #undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK */
 
 /* Define to build with systemd support. (--with-systemd) */
 /* #undef USE_SYSTEMD */

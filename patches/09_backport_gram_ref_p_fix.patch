@@ -1,0 +1,71 @@
+commit c3506d3dd7ca1fd2ad88a038bce507f104b1e53f
+Author: Tom Lane <tgl@sss.pgh.pa.us>
+Date:   Sun Oct 16 15:27:04 2022 -0400
+
+    Rename parser token REF to REF_P to avoid a symbol conflict.
+    
+    In the latest version of Apple's macOS SDK, <sys/socket.h>
+    fails to compile if "REF" is #define'd as something.
+    Apple may or may not agree that this is a bug, and even if
+    they do accept the bug report I filed, they probably won't
+    fix it very quickly.  In the meantime, our back branches will all
+    fail to compile gram.y.  v15 and HEAD currently escape the problem
+    thanks to the refactoring done in 98e93a1fc, but that's purely
+    accidental.  Moreover, since that patch removed a widely-visible
+    inclusion of <netdb.h>, back-patching it seems too likely to break
+    third-party code.
+    
+    Instead, change the token's code name to REF_P, following our usual
+    convention for naming parser tokens that are likely to have symbol
+    conflicts.  The effects of that should be localized to the grammar
+    and immediately surrounding files, so it seems like a safer answer.
+    
+    Per project policy that we want to keep recently-out-of-support
+    branches buildable on modern systems, back-patch all the way to 9.2.
+    
+    Discussion: https://postgr.es/m/1803927.1665938411@sss.pgh.pa.us
+
+diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
+index f2c963e801..fc1de59430 100644
+--- a/src/backend/parser/gram.y
++++ b/src/backend/parser/gram.y
+@@ -692,7 +692,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+ 
+ 	QUOTE
+ 
+-	RANGE READ REAL REASSIGN RECHECK RECURSIVE REF REFERENCES REFERENCING
++	RANGE READ REAL REASSIGN RECHECK RECURSIVE REF_P REFERENCES REFERENCING
+ 	REFRESH REINDEX RELATIVE_P RELEASE RENAME REPEATABLE REPLACE REPLICA
+ 	RESET RESTART RESTRICT RETURNING RETURNS REVOKE RIGHT ROLE ROLLBACK ROLLUP
+ 	ROUTINE ROUTINES ROW ROWS RULE
+@@ -14369,7 +14369,7 @@ xmlexists_argument:
+ 		;
+ 
+ xml_passing_mech:
+-			BY REF
++			BY REF_P
+ 			| BY VALUE_P
+ 		;
+ 
+@@ -15660,7 +15660,7 @@ unreserved_keyword:
+ 			| REASSIGN
+ 			| RECHECK
+ 			| RECURSIVE
+-			| REF
++			| REF_P
+ 			| REFERENCING
+ 			| REFRESH
+ 			| REINDEX
+diff --git a/src/include/parser/kwlist.h b/src/include/parser/kwlist.h
+index 08f22ce211..4121a53ba0 100644
+--- a/src/include/parser/kwlist.h
++++ b/src/include/parser/kwlist.h
+@@ -330,7 +330,7 @@ PG_KEYWORD("real", REAL, COL_NAME_KEYWORD)
+ PG_KEYWORD("reassign", REASSIGN, UNRESERVED_KEYWORD)
+ PG_KEYWORD("recheck", RECHECK, UNRESERVED_KEYWORD)
+ PG_KEYWORD("recursive", RECURSIVE, UNRESERVED_KEYWORD)
+-PG_KEYWORD("ref", REF, UNRESERVED_KEYWORD)
++PG_KEYWORD("ref", REF_P, UNRESERVED_KEYWORD)
+ PG_KEYWORD("references", REFERENCES, RESERVED_KEYWORD)
+ PG_KEYWORD("referencing", REFERENCING, UNRESERVED_KEYWORD)
+ PG_KEYWORD("refresh", REFRESH, UNRESERVED_KEYWORD)

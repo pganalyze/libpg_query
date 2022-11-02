@@ -363,7 +363,7 @@
      REASSIGN = 579,
      RECHECK = 580,
      RECURSIVE = 581,
-     REF = 582,
+     REF_P = 582,
      REFERENCES = 583,
      REFERENCING = 584,
      REFRESH = 585,
@@ -840,7 +840,7 @@
 #define REASSIGN 579
 #define RECHECK 580
 #define RECURSIVE 581
-#define REF 582
+#define REF_P 582
 #define REFERENCES 583
 #define REFERENCING 584
 #define REFRESH 585
