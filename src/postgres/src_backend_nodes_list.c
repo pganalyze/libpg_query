@@ -643,6 +643,18 @@ list_delete_cell(List *list, ListCell *cell)
 
 
 /*
+ * Delete the first N cells of the list.
+ *
+ * The List is pfree'd if the request causes all cells to be deleted.
+ */
+#ifndef DEBUG_LIST_MEMORY_USAGE
+#else
+#ifdef CLOBBER_FREED_MEMORY
+#else
+#endif
+#endif
+
+/*
  * Generate the union of two lists. This is calculated by copying
  * list1 via list_copy(), then adding to it all the members of list2
  * that aren't already in list1.

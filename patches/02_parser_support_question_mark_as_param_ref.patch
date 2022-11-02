@@ -1,4 +1,4 @@
-commit 911e2c633fc9f75ea587f9763470ee6140cea0f1
+commit c813b6930bd68577f7db381ff9178a807c989942
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:56:21 2021 -0800
 
@@ -14,7 +14,7 @@ Date:   Sun Jan 3 15:56:21 2021 -0800
     should be considered deprecated.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index cf2b521c23..ad796b87e1 100644
+index 4529fea74e..8beb6fef5e 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -164,6 +164,7 @@ static Node *makeAConst(Value *v, int location);
@@ -250,7 +250,7 @@ index cf2b521c23..ad796b87e1 100644
   * Create a RoleSpec with the given type
   */
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index b1ea0cb538..9ba31f418c 100644
+index b1ea0cb538..a0dfcf3b99 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
 @@ -277,6 +277,9 @@ xehexesc		[\\]x[0-9A-Fa-f]{1,2}

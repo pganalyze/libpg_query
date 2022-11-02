@@ -4166,6 +4166,11 @@ _fingerprintAlterTableCmd(FingerprintContext *ctx, const AlterTableCmd *node, co
     _fingerprintString(ctx, buffer);
   }
 
+  if (node->recurse) {
+    _fingerprintString(ctx, "recurse");
+    _fingerprintString(ctx, "true");
+  }
+
   if (true) {
     _fingerprintString(ctx, "subtype");
     _fingerprintString(ctx, _enumToStringAlterTableType(node->subtype));

@@ -1,4 +1,4 @@
-commit 80cb7dcdd721b21fd1e56e915482fd4345a80b17
+commit 4850baf8039f2714d01c45a64af7ccbd12bbbd64
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 10 00:28:33 2021 -0800
 
@@ -8,7 +8,7 @@ Date:   Sun Jan 10 00:28:33 2021 -0800
     the already exported plpgsql_adddatum.
 
 diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
-index 828ff5a288..4670fcafa2 100644
+index cb0ce3900b..fbd0ad8bd0 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
 @@ -105,8 +105,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
@@ -20,7 +20,7 @@ index 828ff5a288..4670fcafa2 100644
  static void compute_function_hashkey(FunctionCallInfo fcinfo,
  									 Form_pg_proc procStruct,
  									 PLpgSQL_func_hashkey *hashkey,
-@@ -2270,7 +2268,7 @@ plpgsql_parse_err_condition(char *condname)
+@@ -2272,7 +2270,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +29,7 @@ index 828ff5a288..4670fcafa2 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2304,7 +2302,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2306,7 +2304,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -39,7 +39,7 @@ index 828ff5a288..4670fcafa2 100644
  {
  	Size		copiable_size = 0;
 diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
-index 0c3d30fb13..25fdd20bbf 100644
+index bc6eefb60b..53864ca881 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
 @@ -1263,6 +1263,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,

@@ -1,4 +1,4 @@
-commit 70279ba982378d70ba19e312bf5acd627109acce
+commit 386cf95ca17d28ae4bc7db92a784ab8f6dde9f8b
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:59:40 2021 -0800
 
@@ -8,7 +8,7 @@ Date:   Sun Jan 3 15:59:40 2021 -0800
     as this is made available by pg_query for uses such as syntax highlighting.
 
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index 9ba31f418c..5caa03e395 100644
+index a0dfcf3b99..768170bb30 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
 @@ -517,6 +517,7 @@ other			.
@@ -75,7 +75,7 @@ index 9ba31f418c..5caa03e395 100644
  					return IDENT;
  				}
  
-@@ -1065,6 +1074,7 @@ other			.
+@@ -1068,6 +1077,7 @@ other			.
  					 */
  					ident = downcase_truncate_identifier(yytext, yyleng, true);
  					yylval->str = ident;

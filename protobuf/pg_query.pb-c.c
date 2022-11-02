@@ -20686,7 +20686,7 @@ const ProtobufCMessageDescriptor pg_query__alter_table_stmt__descriptor =
   (ProtobufCMessageInit) pg_query__alter_table_stmt__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__alter_table_cmd__field_descriptors[7] =
+static const ProtobufCFieldDescriptor pg_query__alter_table_cmd__field_descriptors[8] =
 {
   {
     "subtype",
@@ -20772,6 +20772,18 @@ static const ProtobufCFieldDescriptor pg_query__alter_table_cmd__field_descripto
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "recurse",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__AlterTableCmd, recurse),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__alter_table_cmd__field_indices_by_name[] = {
   5,   /* field[5] = behavior */
@@ -20780,12 +20792,13 @@ static const unsigned pg_query__alter_table_cmd__field_indices_by_name[] = {
   1,   /* field[1] = name */
   3,   /* field[3] = newowner */
   2,   /* field[2] = num */
+  7,   /* field[7] = recurse */
   0,   /* field[0] = subtype */
 };
 static const ProtobufCIntRange pg_query__alter_table_cmd__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 7 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__alter_table_cmd__descriptor =
 {
@@ -20795,7 +20808,7 @@ const ProtobufCMessageDescriptor pg_query__alter_table_cmd__descriptor =
   "PgQuery__AlterTableCmd",
   "pg_query",
   sizeof(PgQuery__AlterTableCmd),
-  7,
+  8,
   pg_query__alter_table_cmd__field_descriptors,
   pg_query__alter_table_cmd__field_indices_by_name,
   1,  pg_query__alter_table_cmd__number_ranges,
@@ -36975,7 +36988,7 @@ static const ProtobufCEnumValue pg_query__token__enum_values_by_number[494] =
   { "REASSIGN", "PG_QUERY__TOKEN__REASSIGN", 579 },
   { "RECHECK", "PG_QUERY__TOKEN__RECHECK", 580 },
   { "RECURSIVE", "PG_QUERY__TOKEN__RECURSIVE", 581 },
-  { "REF", "PG_QUERY__TOKEN__REF", 582 },
+  { "REF_P", "PG_QUERY__TOKEN__REF_P", 582 },
   { "REFERENCES", "PG_QUERY__TOKEN__REFERENCES", 583 },
   { "REFERENCING", "PG_QUERY__TOKEN__REFERENCING", 584 },
   { "REFRESH", "PG_QUERY__TOKEN__REFRESH", 585 },
@@ -37472,10 +37485,10 @@ static const ProtobufCEnumValueIndex pg_query__token__enum_values_by_name[494] =
   { "REASSIGN", 341 },
   { "RECHECK", 342 },
   { "RECURSIVE", 343 },
-  { "REF", 344 },
   { "REFERENCES", 345 },
   { "REFERENCING", 346 },
   { "REFRESH", 347 },
+  { "REF_P", 344 },
   { "REINDEX", 348 },
   { "RELATIVE_P", 349 },
   { "RELEASE", 350 },

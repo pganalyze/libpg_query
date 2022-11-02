@@ -431,6 +431,16 @@ ORDER BY 1;
 SELECT * FROM information_schema.foreign_data_wrapper_options
 ORDER BY 1, 2, 3;
 
+EXPLAIN (VERBOSE, COSTS OFF)
+SELECT generate_series(1, two), array(select generate_series(1, two))
+  FROM tenk1 ORDER BY tenthous;
+
+-- must disallow pushing sort below gather when pathkey contains an SRF
+EXPLAIN (VERBOSE, COSTS OFF)
+SELECT unnest(ARRAY[]::integer[]) + 1 AS pathkey
+  FROM tenk1 t1 JOIN tenk1 t2 ON TRUE
+  ORDER BY pathkey;
+
 -- test passing expanded-value representations to workers
 CREATE FUNCTION make_some_array(int,int) returns int[] as
 $$declare x int[];

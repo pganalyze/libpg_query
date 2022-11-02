@@ -6,7 +6,7 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 13.3
+PG_VERSION = 13.8
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PROTOC_VERSION = 3.14.0
 
@@ -120,6 +120,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_alloc_set_delete_free_list.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_backport_gram_ref_p_fix.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
@@ -133,6 +134,7 @@ extract_source: $(PGDIR)
 	mkdir ./src/postgres/include
 	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
+	cp $(PGDIR)/src/include/port/atomics/arch-x86.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
 	touch ./src/postgres/guc-file.c

@@ -915,10 +915,10 @@ typedef struct PartitionCmd
  *	  inFromCl marks those range variables that are listed in the FROM clause.
  *	  It's false for RTEs that are added to a query behind the scenes, such
  *	  as the NEW and OLD variables for a rule, or the subqueries of a UNION.
- *	  This flag is not used anymore during parsing, since the parser now uses
- *	  a separate "namespace" data structure to control visibility, but it is
- *	  needed by ruleutils.c to determine whether RTEs should be shown in
- *	  decompiled queries.
+ *	  This flag is not used during parsing (except in transformLockingClause,
+ *	  q.v.); the parser now uses a separate "namespace" data structure to
+ *	  control visibility.  But it is needed by ruleutils.c to determine
+ *	  whether RTEs should be shown in decompiled queries.
  *
  *	  requiredPerms and checkAsUser specify run-time access permissions
  *	  checks to be performed at query startup.  The user must have *all*
@@ -1876,6 +1876,7 @@ typedef struct AlterTableCmd	/* one subcommand of an ALTER TABLE */
 								 * constraint, or parent table */
 	DropBehavior behavior;		/* RESTRICT or CASCADE for DROP cases */
 	bool		missing_ok;		/* skip error if missing? */
+	bool		recurse;		/* exec-time recursion */
 } AlterTableCmd;
 
 

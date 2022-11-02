@@ -404,6 +404,14 @@ const PQcommMethods *PqCommMethods = NULL;
  */
 
 
+/* --------------------------------
+ *		pq_buffer_has_data		- is any buffered data available to read?
+ *
+ * This will *not* attempt to read more data.
+ * --------------------------------
+ */
+
+
 
 /* --------------------------------
  *		pq_startmsgread - begin reading a message from the client.

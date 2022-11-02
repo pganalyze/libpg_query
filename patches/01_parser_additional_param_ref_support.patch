@@ -1,4 +1,4 @@
-commit 2be7057a595bdf4794dd4f9397de19a0fcd0dc23
+commit 708fe3468d0f373c2208ae927d0de52247f2fda8
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 15:06:25 2021 -0800
 
@@ -23,7 +23,7 @@ Date:   Sun Jan 3 15:06:25 2021 -0800
     SELECT INTERVAL (6) $1;
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 3adc087e3f..cf2b521c23 100644
+index 74339aa4db..4529fea74e 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -162,6 +162,8 @@ static Node *makeBitStringConst(char *str, int location);

@@ -55,7 +55,6 @@
 #include "catalog/pg_type.h"
 #include "commands/async.h"
 #include "commands/prepare.h"
-#include "executor/spi.h"
 #include "jit/jit.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
@@ -520,6 +519,12 @@ static void disable_statement_timeout(void);
  * If an interrupt condition is pending, and it's safe to service it,
  * then clear the flag and accept the interrupt.  Called only when
  * InterruptPending is true.
+ *
+ * Note: if INTERRUPTS_CAN_BE_PROCESSED() is true, then ProcessInterrupts
+ * is guaranteed to clear the InterruptPending flag before returning.
+ * (This is not the same as guaranteeing that it's still clear when we
+ * return; another interrupt could have arrived.  But we promise that
+ * any pre-existing one will have been serviced.)
  */
 void ProcessInterrupts(void) {}
 
@@ -568,7 +573,12 @@ ia64_get_bsp(void)
  *
  * Returns the old reference point, if any.
  */
+#ifndef HAVE__BUILTIN_FRAME_ADDRESS
+#endif
 #if defined(__ia64__) || defined(__ia64)
+#else
+#endif
+#ifdef HAVE__BUILTIN_FRAME_ADDRESS
 #else
 #endif
 #if defined(__ia64__) || defined(__ia64)
