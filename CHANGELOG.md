@@ -2,6 +2,24 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 13-2.2.0   2022-11-02
+
+* Update to Postgres 13.8 patch release [#156](https://github.com/pganalyze/libpg_query/pull/156)
+* Backport Xcode 14.1 build fix from upcoming 13.9 release [#156](https://github.com/pganalyze/libpg_query/pull/156)
+* Fingerprinting version 3.1 [#155](https://github.com/pganalyze/libpg_query/pull/155)
+  - Fixes issue with "SELECT DISTINCT" having the same fingerprint as "SELECT"
+    (fingerprints for "SELECT DISTINCT" will change with this revision)
+  - Group additional DDL statements together that otherwise generate a lot of
+    unique fingerprints (ListenStmt, UnlistenStmt, NotifyStmt, CreateFunctionStmt,
+    FunctionParameter and DoStmt)
+* Normalize additional DDL statements [#155](https://github.com/pganalyze/libpg_query/pull/155)
+  - Normalizes arguments to CreateFunctionStmt, DoStmt,
+    CreateSubscriptionStmt, AlterSubscriptionStmt, CreateUserMapping and
+    AlterUserMapping.
+  - Note that this is different from pg_stat_statements itself, which does
+    not normalize utility statements at all today.
+
+
 ## 13-2.1.2   2022-06-28
 
 * Add support for analyzing PL/pgSQL code inside DO blocks [#142](https://github.com/pganalyze/libpg_query/pull/142)
