@@ -198,7 +198,7 @@ index 74339aa4db..4529fea74e 100644
 +				{
 +					TypeName *t = $1;
 +					t->typmods = $3;
-+					$$ = makeParamRefCast($2, @3, t);
++					$$ = makeParamRefCast($2, @2, t);
 +				}
 +			| ConstInterval '(' Iconst ')' PARAM
 +				{

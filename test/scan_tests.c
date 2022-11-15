@@ -17,9 +17,6 @@ const char* tests[] = {
   "SELECT $1",
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "$1 = PARAM, NO_KEYWORD\n",
-  "SELECT ?",
-    "SELECT = SELECT, RESERVED_KEYWORD\n"
-    "? = ASCII_63, NO_KEYWORD\n",
 	"SELECT update AS left /* comment */ FROM between",
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "update = UPDATE, UNRESERVED_KEYWORD\n"
@@ -93,4 +90,4 @@ const char* tests[] = {
     ") = ASCII_41, NO_KEYWORD\n"
 };
 
-size_t testsCount = 12;
+size_t testsCount = 11;

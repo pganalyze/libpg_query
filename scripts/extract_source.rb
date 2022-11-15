@@ -123,6 +123,9 @@ class Runner
     Dir.glob(@basepath + 'src/backend/port/win32_*.c') -
     Dir.glob(@basepath + 'src/backend/snowball/**/*.c')
 
+    # for pg_qsort
+    @include_files_to_output << @basepath + 'src/include/lib/sort_template.h'
+
     #files = [@basepath + 'src/backend/parser/keywords.c']
 
     files.each do |file|
@@ -555,6 +558,7 @@ runner.deep_resolve('pg_toupper')
 
 # Needed for normalize
 runner.deep_resolve('pg_qsort')
+runner.deep_resolve('pg_qsort_strcmp')
 runner.deep_resolve('raw_expression_tree_walker')
 
 # Needed to work with simplehash (in fingerprinting logic)

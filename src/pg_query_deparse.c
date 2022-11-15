@@ -249,6 +249,8 @@ static void deparseAnyNameSkipLast(StringInfo str, List *parts)
 // "a_expr" / "b_expr" in gram.y
 static void deparseExpr(StringInfo str, Node *node)
 {
+	if (node == NULL)
+		return;
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
@@ -381,7 +383,6 @@ static void deparseCExpr(StringInfo str, Node *node)
 static void deparseExprList(StringInfo str, List *exprs)
 {
 	ListCell *lc;
-
 	foreach(lc, exprs)
 	{
 		deparseExpr(str, lfirst(lc));
@@ -993,19 +994,22 @@ static void deparseFuncName(StringInfo str, List *func_name)
 static void deparseFunctionWithArgtypes(StringInfo str, ObjectWithArgs *object_with_args)
 {
 	ListCell *lc;
-
 	deparseFuncName(str, object_with_args->objname);
 
 	if (!object_with_args->args_unspecified)
 	{
 		appendStringInfoChar(str, '(');
-		foreach(lc, object_with_args->objargs)
+		List *objargs = object_with_args->objargs;
+		if (object_with_args->objfuncargs)
+			objargs = object_with_args->objfuncargs;
+
+		foreach(lc, objargs)
 		{
-			if (IsA(lfirst(lc), TypeName))
-				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
-			else
+			if (IsA(lfirst(lc), FunctionParameter))
 				deparseFunctionParameter(str, castNode(FunctionParameter, lfirst(lc)));
-			if (lnext(object_with_args->objargs, lc))
+			else
+				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
+			if (lnext(objargs, lc))
 				appendStringInfoString(str, ", ");
 		}
 		appendStringInfoChar(str, ')');
@@ -1095,16 +1099,23 @@ static void deparseAggregateWithArgtypes(StringInfo str, ObjectWithArgs *object_
 	deparseFuncName(str, object_with_args->objname);
 
 	appendStringInfoChar(str, '(');
-	if (object_with_args->objargs == NULL)
+	if (object_with_args->objargs == NULL && object_with_args->objfuncargs == NULL)
 	{
 		appendStringInfoChar(str, '*');
 	}
 	else
 	{
-		foreach(lc, object_with_args->objargs)
+		List *objargs = object_with_args->objargs;
+		if (object_with_args->objfuncargs)
+			objargs = object_with_args->objfuncargs;
+
+		foreach(lc, objargs)
 		{
-			deparseTypeName(str, castNode(TypeName, lfirst(lc)));
-			if (lnext(object_with_args->objargs, lc))
+			if (IsA(lfirst(lc), FunctionParameter))
+				deparseFunctionParameter(str, castNode(FunctionParameter, lfirst(lc)));
+			else
+				deparseTypeName(str, castNode(TypeName, lfirst(lc)));
+			if (lnext(objargs, lc))
 				appendStringInfoString(str, ", ");
 		}
 	}
@@ -2106,6 +2117,8 @@ static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 			if (list_length(stmt->groupClause) > 0)
 			{
 				appendStringInfoString(str, "GROUP BY ");
+				if (stmt->groupDistinct)
+					appendStringInfoString(str, "DISTINCT ");
 				deparseGroupByList(str, stmt->groupClause);
 				appendStringInfoChar(str, ' ');
 			}
@@ -2355,8 +2368,217 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		deparseExpr(str, lfourth(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
-	}
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "substring") == 0)
+	{
+		/*
+		 * "SUBSTRING" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.substring)
+		 */
+		Assert(list_length(func_call->args) == 2 || list_length(func_call->args) == 3);
+		appendStringInfoString(str, "SUBSTRING(");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " FROM ");
+		deparseExpr(str, lsecond(func_call->args));
+		if (list_length(func_call->args) == 3)
+		{
+			appendStringInfoString(str, " FOR ");
+			deparseExpr(str, lthird(func_call->args));
+		}
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "position") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "POSITION" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.position)
+		 * Note that the first and second arguments are switched in this format
+		 */
+		appendStringInfoString(str, "POSITION(");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " IN ");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "overlay") == 0 &&
+		list_length(func_call->args) == 3)
+	{
+		/*
+		 * "OVERLAY" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 */
+		appendStringInfoString(str, "overlay(");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " placing ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " from ");
+		deparseExpr(str, lthird(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "pg_collation_for") == 0 &&
+		list_length(func_call->args) == 1)
+	{
+		/*
+		 * "collation for" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlay)
+		 */
+		appendStringInfoString(str, "collation for (");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "extract") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "EXTRACT" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.extract)
+		 */
+		appendStringInfoString(str, "extract (");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " FROM ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "overlaps") == 0 &&
+		list_length(func_call->args) == 4)
+	{
+		/*
+		 * "OVERLAPS" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlaps)
+		 * format: (start_1, end_1) overlaps (start_2, end_2)
+		 */
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, ", ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, ") ");
 
+		appendStringInfoString(str, "overlaps ");
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, lthird(func_call->args));
+		appendStringInfoString(str, ", ");
+		deparseExpr(str, lfourth(func_call->args));
+		appendStringInfoString(str, ") ");
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		(
+			strcmp(strVal(lsecond(func_call->funcname)), "ltrim") == 0 ||
+			strcmp(strVal(lsecond(func_call->funcname)), "btrim") == 0 ||
+			strcmp(strVal(lsecond(func_call->funcname)), "rtrim") == 0
+		))
+	{
+		/*
+		 * "TRIM " is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.ltrim)
+		 * Note that the first and second arguments are switched in this format
+		 */
+		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
+		appendStringInfoString(str, "TRIM (");
+		if (strcmp(strVal(lsecond(func_call->funcname)), "ltrim") == 0)
+			appendStringInfoString(str, "LEADING ");
+		else if (strcmp(strVal(lsecond(func_call->funcname)), "btrim") == 0)
+			appendStringInfoString(str, "BOTH ");
+		else if (strcmp(strVal(lsecond(func_call->funcname)), "rtrim") == 0)
+			appendStringInfoString(str, "TRAILING ");
+
+		if (list_length(func_call->args) == 2)
+			deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " FROM ");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "timezone") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		/*
+		 * "AT TIME ZONE" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
+		 * Note that the arguments are swapped in this case
+		 */
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoString(str, " AT TIME ZONE ");
+		deparseExpr(str, linitial(func_call->args));
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "normalize") == 0)
+	{
+		/*
+		 * "NORMALIZE" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.normalize)
+		 */
+		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
+		appendStringInfoString(str, "normalize (");
+
+		deparseExpr(str, linitial(func_call->args));
+		if (list_length(func_call->args) == 2)
+		{
+			appendStringInfoString(str, ", ");
+			Assert(IsA(lsecond(func_call->args), A_Const));
+			A_Const *aconst = lsecond(func_call->args);
+			deparseValue(str, &aconst->val, DEPARSE_NODE_CONTEXT_NONE);
+		}
+		appendStringInfoChar(str, ')');
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "is_normalized") == 0)
+	{
+		/*
+		 * "IS NORMALIZED" is a keyword on its own merit, and only accepts the
+		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.is_normalized)
+		 */
+		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
+
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " IS ");
+		if (list_length(func_call->args) == 2)
+		{
+			Assert(IsA(lsecond(func_call->args), A_Const));
+			A_Const *aconst = lsecond(func_call->args);
+			deparseValue(str, &aconst->val, DEPARSE_NODE_CONTEXT_NONE);
+		}
+		appendStringInfoString(str, " NORMALIZED ");
+		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "xmlexists") == 0 &&
+		list_length(func_call->args) == 2)
+	{
+		appendStringInfoString(str, "xmlexists (");
+		deparseExpr(str, linitial(func_call->args));
+		appendStringInfoString(str, " PASSING ");
+		deparseExpr(str, lsecond(func_call->args));
+		appendStringInfoChar(str, ')');
+		return;
+	}
+		
 	deparseFuncName(str, func_call->funcname);
 	appendStringInfoChar(str, '(');
 
@@ -3042,6 +3264,12 @@ static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 		appendStringInfoString(str, "USING (");
 		deparseNameList(str, join_expr->usingClause);
 		appendStringInfoString(str, ") ");
+
+		if (join_expr->join_using_alias)
+		{
+			appendStringInfoString(str, "AS ");
+			appendStringInfoString(str, join_expr->join_using_alias->aliasname);
+		}
 	}
 
 	if (need_alias_parens)
@@ -3051,6 +3279,49 @@ static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 		deparseAlias(str, join_expr->alias);
 
 	removeTrailingSpace(str);
+}
+
+static void deparseCTESearchClause(StringInfo str, CTESearchClause *search_clause)
+{
+	appendStringInfoString(str, " SEARCH ");
+	if (search_clause->search_breadth_first)
+		appendStringInfoString(str, "BREADTH ");
+	else
+		appendStringInfoString(str, "DEPTH ");
+
+	appendStringInfoString(str, "FIRST BY ");
+
+	if (search_clause->search_col_list)
+		deparseColumnList(str, search_clause->search_col_list);
+
+	appendStringInfoString(str, " SET ");
+	appendStringInfoString(str, quote_identifier(search_clause->search_seq_column));
+}
+
+static void deparseCTECycleClause(StringInfo str, CTECycleClause *cycle_clause)
+{
+	appendStringInfoString(str, " CYCLE ");
+
+	if (cycle_clause->cycle_col_list)
+		deparseColumnList(str, cycle_clause->cycle_col_list);
+
+	appendStringInfoString(str, " SET ");
+	appendStringInfoString(str, quote_identifier(cycle_clause->cycle_mark_column));
+
+	if (cycle_clause->cycle_mark_value)
+	{
+		appendStringInfoString(str, " TO ");
+		deparseExpr(str, cycle_clause->cycle_mark_value);
+	}
+	
+	if (cycle_clause->cycle_mark_default)
+	{
+		appendStringInfoString(str, " DEFAULT ");
+		deparseExpr(str, cycle_clause->cycle_mark_default);
+	}
+	
+	appendStringInfoString(str, " USING ");
+	appendStringInfoString(str, quote_identifier(cycle_clause->cycle_path_column));
 }
 
 static void deparseCommonTableExpr(StringInfo str, CommonTableExpr *cte)
@@ -3080,6 +3351,11 @@ static void deparseCommonTableExpr(StringInfo str, CommonTableExpr *cte)
 	appendStringInfoChar(str, '(');
 	deparsePreparableStmt(str, cte->ctequery);
 	appendStringInfoChar(str, ')');
+
+	if (cte->search_clause)
+		deparseCTESearchClause(str, cte->search_clause);
+	if (cte->cycle_clause)
+		deparseCTECycleClause(str, cte->cycle_clause);
 }
 
 static void deparseRangeSubselect(StringInfo str, RangeSubselect *range_subselect)
@@ -3254,7 +3530,17 @@ static void deparseTypeCast(StringInfo str, TypeCast *type_cast)
 		{
 			need_parens = true;
 		}
+
+		if (list_length(type_cast->typeName->names) == 1 &&
+			strcmp(strVal(linitial(type_cast->typeName->names)), "point") == 0 &&
+			a_const->location > type_cast->typeName->location)
+		{
+			appendStringInfoString(str, " point ");
+			deparseAConst(str, a_const);
+			return;
+		}
 	}
+
 
 	if (need_parens)
 		appendStringInfoChar(str, '(');
@@ -4347,6 +4633,12 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 	removeTrailingSpace(str);
 }
 
+static void deparseReturnStmt(StringInfo str, ReturnStmt *return_stmt)
+{
+	appendStringInfoString(str, "RETURN ");
+	deparseExpr(str, return_stmt->returnval);
+}
+
 static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create_function_stmt)
 {
 	ListCell *lc;
@@ -4407,6 +4699,20 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 		appendStringInfoChar(str, ' ');
 	}
 
+	if (create_function_stmt->sql_body)
+	{
+		/* RETURN or BEGIN ... END
+		 */
+		if (IsA(create_function_stmt->sql_body, ReturnStmt))
+			deparseReturnStmt(str, castNode(ReturnStmt, create_function_stmt->sql_body));
+		else
+		{
+			appendStringInfoString(str, "BEGIN ATOMIC ");
+			deparseExprList(str, castNode(List, create_function_stmt->sql_body));
+			appendStringInfoString(str, "END ");
+		}
+	}
+
 	removeTrailingSpace(str);
 }
 
@@ -4415,7 +4721,7 @@ static void deparseFunctionParameter(StringInfo str, FunctionParameter *function
 	switch (function_parameter->mode)
 	{
 		case FUNC_PARAM_IN: /* input only */
-			// Default
+			appendStringInfoString(str, "IN ");
 			break;
 		case FUNC_PARAM_OUT: /* output only */
 			appendStringInfoString(str, "OUT ");
@@ -4429,6 +4735,9 @@ static void deparseFunctionParameter(StringInfo str, FunctionParameter *function
 		case FUNC_PARAM_TABLE: /* table function output column */
 			// No special annotation, the caller is expected to correctly put
 			// this into the RETURNS part of the CREATE FUNCTION statement
+			break;
+		case FUNC_PARAM_DEFAULT:
+			// Default
 			break;
 		default:
 			Assert(false);
@@ -4461,7 +4770,6 @@ static void deparseCheckPointStmt(StringInfo str, CheckPointStmt *check_point_st
 static void deparseCreateSchemaStmt(StringInfo str, CreateSchemaStmt *create_schema_stmt)
 {
 	ListCell *lc;
-
 	appendStringInfoString(str, "CREATE SCHEMA ");
 
 	if (create_schema_stmt->if_not_exists)
@@ -4480,11 +4788,14 @@ static void deparseCreateSchemaStmt(StringInfo str, CreateSchemaStmt *create_sch
 		appendStringInfoChar(str, ' ');
 	}
 
-	foreach(lc, create_schema_stmt->schemaElts)
+	if (create_schema_stmt->schemaElts)
 	{
-		deparseSchemaStmt(str, lfirst(lc));
-		if (lnext(create_schema_stmt->schemaElts, lc))
-			appendStringInfoChar(str, ' ');
+		foreach(lc, create_schema_stmt->schemaElts)
+		{
+			deparseSchemaStmt(str, lfirst(lc));
+			if (lnext(create_schema_stmt->schemaElts, lc))
+				appendStringInfoChar(str, ' ');
+		}
 	}
 
 	removeTrailingSpace(str);
@@ -4637,6 +4948,8 @@ static void deparsePartitionCmd(StringInfo str, PartitionCmd *partition_cmd)
 		appendStringInfoChar(str, ' ');
 		deparsePartitionBoundSpec(str, partition_cmd->bound);
 	}
+	if (partition_cmd->concurrent)
+		appendStringInfoString(str, " CONCURRENTLY ");
 }
 
 // "TableElement" in gram.y
@@ -5358,7 +5671,7 @@ static void deparseDropStmt(StringInfo str, DropStmt *drop_stmt)
 			appendStringInfoChar(str, ' ');
 			break;
 		case OBJECT_LANGUAGE:
-			deparseStringLiteral(str, strVal(linitial(drop_stmt->objects)));
+			deparseNameList(str, drop_stmt->objects);
 			appendStringInfoChar(str, ' ');
 			break;
 		case OBJECT_TYPE:
@@ -7240,7 +7553,6 @@ static void deparseAccessPriv(StringInfo str, AccessPriv *access_priv)
 static void deparseGrantStmt(StringInfo str, GrantStmt *grant_stmt)
 {
 	ListCell *lc;
-
 	if (grant_stmt->is_grant)
 		appendStringInfoString(str, "GRANT ");
 	else
@@ -7287,6 +7599,12 @@ static void deparseGrantStmt(StringInfo str, GrantStmt *grant_stmt)
 
 	deparseOptDropBehavior(str, grant_stmt->behavior);
 
+	if (grant_stmt->grantor)
+	{
+		appendStringInfoString(str, "GRANTED BY ");
+		deparseRoleSpec(str, castNode(RoleSpec, grant_stmt->grantor));
+	}
+
 	removeTrailingSpace(str);
 }
 
@@ -7298,6 +7616,9 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 		appendStringInfoString(str, "GRANT ");
 	else
 		appendStringInfoString(str, "REVOKE ");
+
+	if (!grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
+		appendStringInfoString(str, "ADMIN OPTION FOR ");
 
 	foreach(lc, grant_role_stmt->granted_roles)
 	{
@@ -7315,8 +7636,14 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 	deparseRoleList(str, grant_role_stmt->grantee_roles);
 	appendStringInfoChar(str, ' ');
 
-	if (grant_role_stmt->admin_opt)
+	if (grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
 		appendStringInfoString(str, "WITH ADMIN OPTION ");
+
+	if (grant_role_stmt->grantor)
+	{
+		appendStringInfoString(str, "GRANTED BY ");
+		deparseRoleSpec(str, castNode(RoleSpec, grant_role_stmt->grantor));
+	}
 
 	removeTrailingSpace(str);
 }
@@ -8593,6 +8920,19 @@ static void deparseCommentStmt(StringInfo str, CommentStmt *comment_stmt)
 		appendStringInfoString(str, "NULL");
 }
 
+static void deparseStatsElem(StringInfo str, StatsElem *stats_elem)
+{
+	// only one of stats_elem->name or stats_elem->expr can be non-null
+	if (stats_elem->name)
+		appendStringInfoString(str, stats_elem->name);
+	else if (stats_elem->expr)
+	{
+		appendStringInfoChar(str, '(');
+		deparseExpr(str, stats_elem->expr);
+		appendStringInfoChar(str, ')');
+	}
+}
+
 static void deparseCreateStatsStmt(StringInfo str, CreateStatsStmt *create_stats_stmt)
 {
 	ListCell *lc;
@@ -8613,7 +8953,12 @@ static void deparseCreateStatsStmt(StringInfo str, CreateStatsStmt *create_stats
 	}
 
 	appendStringInfoString(str, "ON ");
-	deparseExprList(str, create_stats_stmt->exprs);
+	foreach (lc, create_stats_stmt->exprs)
+	{
+		deparseStatsElem(str, lfirst(lc));
+		if (lnext(create_stats_stmt->exprs, lc))
+			appendStringInfoString(str, ", ");
+	}
 
 	appendStringInfoString(str, " FROM ");
 	deparseFromList(str, create_stats_stmt->relations);
@@ -8725,7 +9070,7 @@ static void deparseVariableShowStmt(StringInfo str, VariableShowStmt *variable_s
 	else if (strcmp(variable_show_stmt->name, "all") == 0)
 		appendStringInfoString(str, "SESSION ALL");
 	else
-		appendStringInfoString(str, variable_show_stmt->name);
+		appendStringInfoString(str, quote_identifier(variable_show_stmt->name));
 }
 
 static void deparseRangeTableSample(StringInfo str, RangeTableSample *range_table_sample)
@@ -9071,6 +9416,8 @@ static void deparseCreateTrigStmt(StringInfo str, CreateTrigStmt *create_trig_st
 	bool skip_events_or = true;
 
 	appendStringInfoString(str, "CREATE ");
+	if (create_trig_stmt->replace)
+		appendStringInfoString(str, "OR REPLACE ");
 	if (create_trig_stmt->isconstraint)
 		appendStringInfoString(str, "CONSTRAINT ");
 	appendStringInfoString(str, "TRIGGER ");

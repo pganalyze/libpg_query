@@ -845,7 +845,11 @@
 #define PG_VERSION_NUM 140005
 
 /* A string containing the version number, platform, and C compiler */
+<<<<<<< HEAD
 #define PG_VERSION_STR "PostgreSQL 14.5 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
+=======
+#define PG_VERSION_STR "PostgreSQL 14.5 on x86_64-apple-darwin21.6.0, compiled by Apple clang version 13.1.6 (clang-1316.0.21.2.5), 64-bit"
+>>>>>>> refs/rewritten/tlisanti-14-latest
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
