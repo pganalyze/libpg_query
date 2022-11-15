@@ -425,5 +425,55 @@
     "input": "SELECT * FROM t_2",
     "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "t_2", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "3f1444da570c1a66"
+  },
+  {
+    "input": "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $func_12345$ BEGIN INSERT INTO \"mytable\" (\"mycolumn\") VALUES ('myvalue') RETURNING * INTO response; EXCEPTION WHEN unique_violation THEN GET STACKED DIAGNOSTICS sequelize_caught_exception = PG_EXCEPTION_DETAIL; END $func_12345$ LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
+    "expectedParts": ["RawStmt", "stmt", "CreateFunctionStmt", "funcname", "String", "str", "pg_temp", "String", "str", "testfunc", "parameters", "FunctionParameter", "argType", "names", "String", "str", "mytable", "typemod", "-1", "mode", "FUNC_PARAM_OUT", "FunctionParameter", "argType", "names", "String", "str", "text", "typemod", "-1", "mode", "FUNC_PARAM_OUT", "replace", "true", "returnType", "names", "String", "str", "record", "typemod", "-1", "RawStmt", "stmt", "SelectStmt", "fromClause", "RangeFunction", "functions", "FuncCall", "funcname", "String", "str", "pg_temp", "String", "str", "testfunc", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "A_Indirection", "arg", "ColumnRef", "fields", "String", "str", "testfunc", "String", "str", "response", "indirection", "String", "str", "mycolumn", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "testfunc", "String", "str", "sequelize_caught_exception", "RawStmt", "stmt", "DropStmt", "behavior", "DROP_RESTRICT", "missing_ok", "true", "objects", "ObjectWithArgs", "objname", "String", "str", "pg_temp", "String", "str", "testfunc", "removeType", "OBJECT_FUNCTION"],
+    "expectedHash": "8644cf89251e2157"
+  },
+  {
+    "input": "CREATE PROCEDURE insert_data(a integer, b integer) LANGUAGE SQL AS $$ INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); $$;",
+    "expectedParts": ["RawStmt", "stmt", "CreateFunctionStmt", "funcname", "String", "str", "insert_data", "is_procedure", "true", "parameters", "FunctionParameter", "argType", "names", "String", "str", "pg_catalog", "String", "str", "int4", "typemod", "-1", "mode", "FUNC_PARAM_IN", "FunctionParameter", "argType", "names", "String", "str", "pg_catalog", "String", "str", "int4", "typemod", "-1", "mode", "FUNC_PARAM_IN"],
+    "expectedHash": "3d7c3d242d7990a5"
+  },
+  {
+    "input": "DO $$DECLARE r record; BEGIN FOR r IN SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'VIEW' AND table_schema = 'public' LOOP EXECUTE 'GRANT ALL ON ' || quote_ident(r.table_schema) || '.' || quote_ident(r.table_name) || ' TO webuser'; END LOOP; END$$;",
+    "expectedParts": ["RawStmt", "stmt", "DoStmt"],
+    "expectedHash": "f936eab75b8c1b90"
+  },
+  {
+    "input": "LISTEN virtual",
+    "expectedParts": ["RawStmt", "stmt", "ListenStmt"],
+    "expectedHash": "6e5bf26e5fc272a5"
+  },
+  {
+    "input": "UNLISTEN virtual",
+    "expectedParts": ["RawStmt", "stmt", "UnlistenStmt"],
+    "expectedHash": "9348a760200458ff"
+  },
+  {
+    "input": "UNLISTEN *",
+    "expectedParts": ["RawStmt", "stmt", "UnlistenStmt"],
+    "expectedHash": "9348a760200458ff"
+  },
+  {
+    "input": "NOTIFY virtual",
+    "expectedParts": ["RawStmt", "stmt", "NotifyStmt"],
+    "expectedHash": "92f42ef7b6fa8f62"
+  },
+  {
+    "input": "SELECT DISTINCT id FROM mytable",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "distinctClause", "fromClause", "RangeVar", "inh", "true", "relname", "mytable", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "id"],
+    "expectedHash": "3a7e897d3710fa93"
+  },
+  {
+    "input": "SELECT DISTINCT ON (id) id FROM mytable",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "distinctClause", "ColumnRef", "fields", "String", "str", "id", "fromClause", "RangeVar", "inh", "true", "relname", "mytable", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "id"],
+    "expectedHash": "44bc30469a1802ea"
+  },
+  {
+    "input": "SELECT id FROM mytable",
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "mytable", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "id"],
+    "expectedHash": "40991573eb85c5f6"
   }
 ]

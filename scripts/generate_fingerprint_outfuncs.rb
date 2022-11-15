@@ -126,7 +126,7 @@ class Generator
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
     _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->%<name>s) == 1 && linitial(node->%<name>s) == NIL)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
         dlist_delete(dlist_tail_node(&ctx->tokens));
@@ -245,6 +245,12 @@ class Generator
     ['TransactionStmt', 'options'] => :skip,
     ['TransactionStmt', 'gid'] => :skip,
     ['TransactionStmt', 'savepoint_name'] => :skip,
+    ['CreateFunctionStmt', 'options'] => :skip,
+    ['FunctionParameter', 'name'] => :skip,
+    ['DoStmt', 'args'] => :skip,
+    ['ListenStmt', 'conditionname'] => :skip,
+    ['UnlistenStmt', 'conditionname'] => :skip,
+    ['NotifyStmt', 'conditionname'] => :skip,
     ['DeclareCursorStmt', 'portalname'] => :skip,
     ['FetchStmt', 'portalname'] => :skip,
     ['ClosePortalStmt', 'portalname'] => :skip,

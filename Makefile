@@ -3,7 +3,6 @@ word-dot = $(word $2,$(subst ., ,$1))
 
 TARGET = pg_query
 ARLIB = lib$(TARGET).a
-SOLIB = lib$(TARGET).so
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
@@ -11,13 +10,24 @@ PG_VERSION = 14.5
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PROTOC_VERSION = 3.14.0
 
-VERSION = 2.1.2
+VERSION = 2.2.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
 
-SONAME = $(SOLIB).$(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR)).$(VERSION_MINOR)
-SOLIBVER = $(SONAME).$(VERSION_PATCH)
+SO_VERSION = $(shell printf '%02d%02d' $(PG_VERSION_MAJOR) $(VERSION_MAJOR)).$(VERSION_MINOR)
+
+ifeq ($(shell uname -s), Darwin)
+	SOLIB = lib$(TARGET).dylib
+	SONAME = lib$(TARGET).$(SO_VERSION).dylib
+	SOLIBVER = lib$(TARGET).$(SO_VERSION).$(VERSION_PATCH).dylib
+	SOFLAG = -install_name
+else
+	SOLIB = lib$(TARGET).so
+	SONAME = $(SOLIB).$(SO_VERSION)
+	SOLIBVER = $(SONAME).$(VERSION_PATCH)
+	SOFLAG = -soname
+endif
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
 NOT_OBJ_FILES := src/pg_query_enum_defs.o src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o
@@ -109,7 +119,8 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/06_alloc_set_delete_free_list.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
-	cd $(PGDIR); CC=clang ./configure $(PG_CONFIGURE_FLAGS)
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_backport_gram_ref_p_fix.patch
+	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -120,8 +131,9 @@ extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
-	ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
+	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
 	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
+	cp $(PGDIR)/src/include/port/atomics/arch-x86.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
 	touch ./src/postgres/guc-file.c
@@ -146,9 +158,9 @@ extract_source: $(PGDIR)
 	echo "#define HAVE_STRCHRNUL" >> ./src/postgres/include/pg_config.h
 	echo "#endif" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
@@ -165,7 +177,7 @@ $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $@ $(OBJ_FILES)
 
 $(SOLIB): $(OBJ_FILES) Makefile
-	@$(CC) $(CFLAGS) -shared -Wl,-soname,$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
+	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )

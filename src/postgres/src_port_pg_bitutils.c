@@ -1,13 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - pg_popcount64
- * - pg_popcount64_choose
- * - pg_popcount32
- * - pg_popcount32_choose
- * - pg_popcount_available
- * - pg_popcount32_asm
- * - pg_popcount64_asm
- * - pg_popcount32_slow
  * - pg_popcount64_slow
  *--------------------------------------------------------------------
  */
@@ -92,7 +85,7 @@ static int	pg_popcount64_asm(uint64 word);
 int			(*pg_popcount32) (uint32 word) = pg_popcount32_choose;
 int			(*pg_popcount64) (uint64 word) = pg_popcount64_choose;
 #else
-int			(*pg_popcount32) (uint32 word) = pg_popcount32_slow;
+
 int			(*pg_popcount64) (uint64 word) = pg_popcount64_slow;
 #endif							/* USE_POPCNT_ASM */
 
@@ -190,23 +183,9 @@ __asm__ __volatile__(" popcntq %1,%0\n":"=q"(res):"rm"(word):"cc");
  * pg_popcount32_slow
  *		Return the number of 1 bits set in word
  */
-static int
-pg_popcount32_slow(uint32 word)
-{
 #ifdef HAVE__BUILTIN_POPCOUNT
-	return __builtin_popcount(word);
 #else							/* !HAVE__BUILTIN_POPCOUNT */
-	int			result = 0;
-
-	while (word != 0)
-	{
-		result += pg_number_of_ones[word & 255];
-		word >>= 8;
-	}
-
-	return result;
 #endif							/* HAVE__BUILTIN_POPCOUNT */
-}
 
 /*
  * pg_popcount64_slow

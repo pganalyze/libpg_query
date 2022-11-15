@@ -8847,7 +8847,7 @@
           "comment": null
         }
       ],
-      "comment": null
+      "comment": "/* Line 1529 of yacc.c.  */\n"
     }
   },
   "nodes/value": {

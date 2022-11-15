@@ -8,6 +8,8 @@
 #include "mb/pg_wchar.h"
 #include "nodes/nodeFuncs.h"
 
+#include "pg_query_outfuncs.h"
+
 /*
  * Struct for tracking locations/lengths of constants during normalization
  */
@@ -331,6 +333,27 @@ static void RecordConstLocation(pgssConstLocations *jstate, int location)
 	}
 }
 
+static void record_defelem_arg_location(pgssConstLocations *jstate, int location)
+{
+	for (int i = location; i < jstate->query_len; i++) {
+		if (jstate->query[i] == '\'' || jstate->query[i] == '$') {
+			RecordConstLocation(jstate, i);
+			break;
+		}
+	}
+}
+
+static void record_matching_string(pgssConstLocations *jstate, const char *str)
+{
+	char *loc = NULL;
+	if (str == NULL)
+		return;
+
+	loc = strstr(jstate->query, str);
+	if (loc != NULL)
+		RecordConstLocation(jstate, loc - jstate->query - 1);
+}
+
 static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 {
 	bool result;
@@ -362,13 +385,12 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 		case T_DefElem:
 			{
 				DefElem * defElem = (DefElem *) node;
-				if (defElem->arg != NULL && IsA(defElem->arg, String)) {
-					for (int i = defElem->location; i < jstate->query_len; i++) {
-						if (jstate->query[i] == '\'') {
-							RecordConstLocation(jstate, i);
-							break;
-						}
-					}
+				if (defElem->arg == NULL) {
+					// No argument
+				} else if (IsA(defElem->arg, String)) {
+					record_defelem_arg_location(jstate, defElem->location);
+				} else if (IsA(defElem->arg, List) && list_length((List *) defElem->arg) == 1 && IsA(linitial((List *) defElem->arg), String)) {
+					record_defelem_arg_location(jstate, defElem->location);
 				}
 				return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
 			}
@@ -387,6 +409,20 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			return const_record_walker((Node *) ((AlterRoleStmt *) node)->options, jstate);
 		case T_DeclareCursorStmt:
 			return const_record_walker((Node *) ((DeclareCursorStmt *) node)->query, jstate);
+		case T_CreateFunctionStmt:
+			return const_record_walker((Node *) ((CreateFunctionStmt *) node)->options, jstate);
+		case T_DoStmt:
+			return const_record_walker((Node *) ((DoStmt *) node)->args, jstate);
+		case T_CreateSubscriptionStmt:
+			record_matching_string(jstate, ((CreateSubscriptionStmt *) node)->conninfo);
+			break;
+		case T_AlterSubscriptionStmt:
+			record_matching_string(jstate, ((CreateSubscriptionStmt *) node)->conninfo);
+			break;
+		case T_CreateUserMappingStmt:
+			return const_record_walker((Node *) ((CreateUserMappingStmt *) node)->options, jstate);
+		case T_AlterUserMappingStmt:
+			return const_record_walker((Node *) ((AlterUserMappingStmt *) node)->options, jstate);
 		case T_TypeName:
 			/* Don't normalize constants in typmods or arrayBounds */
 			return false;

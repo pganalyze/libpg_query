@@ -4425,2453 +4425,1947 @@
     "yytokentype": {
       "values": [
         {
-          "comment": ""
-        },
-        {
-          "name": "YYEMPTY",
-          "value": 0
-        },
-        {
-          "name": "YYEOF",
-          "value": 0,
-          "comment": "/* \"end of file\"  */"
-        },
-        {
-          "name": "YYerror",
-          "value": 256,
-          "comment": "/* error  */"
-        },
-        {
-          "name": "YYUNDEF",
-          "value": 257,
-          "comment": "/* \"invalid token\"  */"
-        },
-        {
           "name": "IDENT",
-          "value": 258,
-          "comment": "/* IDENT  */"
+          "value": 258
         },
         {
           "name": "UIDENT",
-          "value": 259,
-          "comment": "/* UIDENT  */"
+          "value": 259
         },
         {
           "name": "FCONST",
-          "value": 260,
-          "comment": "/* FCONST  */"
+          "value": 260
         },
         {
           "name": "SCONST",
-          "value": 261,
-          "comment": "/* SCONST  */"
+          "value": 261
         },
         {
           "name": "USCONST",
-          "value": 262,
-          "comment": "/* USCONST  */"
+          "value": 262
         },
         {
           "name": "BCONST",
-          "value": 263,
-          "comment": "/* BCONST  */"
+          "value": 263
         },
         {
           "name": "XCONST",
-          "value": 264,
-          "comment": "/* XCONST  */"
+          "value": 264
         },
         {
           "name": "Op",
-          "value": 265,
-          "comment": "/* Op  */"
+          "value": 265
         },
         {
           "name": "ICONST",
-          "value": 266,
-          "comment": "/* ICONST  */"
+          "value": 266
         },
         {
           "name": "PARAM",
-          "value": 267,
-          "comment": "/* PARAM  */"
+          "value": 267
         },
         {
           "name": "TYPECAST",
-          "value": 268,
-          "comment": "/* TYPECAST  */"
+          "value": 268
         },
         {
           "name": "DOT_DOT",
-          "value": 269,
-          "comment": "/* DOT_DOT  */"
+          "value": 269
         },
         {
           "name": "COLON_EQUALS",
-          "value": 270,
-          "comment": "/* COLON_EQUALS  */"
+          "value": 270
         },
         {
           "name": "EQUALS_GREATER",
-          "value": 271,
-          "comment": "/* EQUALS_GREATER  */"
+          "value": 271
         },
         {
           "name": "LESS_EQUALS",
-          "value": 272,
-          "comment": "/* LESS_EQUALS  */"
+          "value": 272
         },
         {
           "name": "GREATER_EQUALS",
-          "value": 273,
-          "comment": "/* GREATER_EQUALS  */"
+          "value": 273
         },
         {
           "name": "NOT_EQUALS",
-          "value": 274,
-          "comment": "/* NOT_EQUALS  */"
+          "value": 274
         },
         {
           "name": "SQL_COMMENT",
-          "value": 275,
-          "comment": "/* SQL_COMMENT  */"
+          "value": 275
         },
         {
           "name": "C_COMMENT",
-          "value": 276,
-          "comment": "/* C_COMMENT  */"
+          "value": 276
         },
         {
           "name": "ABORT_P",
-          "value": 277,
-          "comment": "/* ABORT_P  */"
+          "value": 277
         },
         {
           "name": "ABSOLUTE_P",
-          "value": 278,
-          "comment": "/* ABSOLUTE_P  */"
+          "value": 278
         },
         {
           "name": "ACCESS",
-          "value": 279,
-          "comment": "/* ACCESS  */"
+          "value": 279
         },
         {
           "name": "ACTION",
-          "value": 280,
-          "comment": "/* ACTION  */"
+          "value": 280
         },
         {
           "name": "ADD_P",
-          "value": 281,
-          "comment": "/* ADD_P  */"
+          "value": 281
         },
         {
           "name": "ADMIN",
-          "value": 282,
-          "comment": "/* ADMIN  */"
+          "value": 282
         },
         {
           "name": "AFTER",
-          "value": 283,
-          "comment": "/* AFTER  */"
+          "value": 283
         },
         {
           "name": "AGGREGATE",
-          "value": 284,
-          "comment": "/* AGGREGATE  */"
+          "value": 284
         },
         {
           "name": "ALL",
-          "value": 285,
-          "comment": "/* ALL  */"
+          "value": 285
         },
         {
           "name": "ALSO",
-          "value": 286,
-          "comment": "/* ALSO  */"
+          "value": 286
         },
         {
           "name": "ALTER",
-          "value": 287,
-          "comment": "/* ALTER  */"
+          "value": 287
         },
         {
           "name": "ALWAYS",
-          "value": 288,
-          "comment": "/* ALWAYS  */"
+          "value": 288
         },
         {
           "name": "ANALYSE",
-          "value": 289,
-          "comment": "/* ANALYSE  */"
+          "value": 289
         },
         {
           "name": "ANALYZE",
-          "value": 290,
-          "comment": "/* ANALYZE  */"
+          "value": 290
         },
         {
           "name": "AND",
-          "value": 291,
-          "comment": "/* AND  */"
+          "value": 291
         },
         {
           "name": "ANY",
-          "value": 292,
-          "comment": "/* ANY  */"
+          "value": 292
         },
         {
           "name": "ARRAY",
-          "value": 293,
-          "comment": "/* ARRAY  */"
+          "value": 293
         },
         {
           "name": "AS",
-          "value": 294,
-          "comment": "/* AS  */"
+          "value": 294
         },
         {
           "name": "ASC",
-          "value": 295,
-          "comment": "/* ASC  */"
+          "value": 295
         },
         {
           "name": "ASENSITIVE",
-          "value": 296,
-          "comment": "/* ASENSITIVE  */"
+          "value": 296
         },
         {
           "name": "ASSERTION",
-          "value": 297,
-          "comment": "/* ASSERTION  */"
+          "value": 297
         },
         {
           "name": "ASSIGNMENT",
-          "value": 298,
-          "comment": "/* ASSIGNMENT  */"
+          "value": 298
         },
         {
           "name": "ASYMMETRIC",
-          "value": 299,
-          "comment": "/* ASYMMETRIC  */"
+          "value": 299
         },
         {
           "name": "ATOMIC",
-          "value": 300,
-          "comment": "/* ATOMIC  */"
+          "value": 300
         },
         {
           "name": "AT",
-          "value": 301,
-          "comment": "/* AT  */"
+          "value": 301
         },
         {
           "name": "ATTACH",
-          "value": 302,
-          "comment": "/* ATTACH  */"
+          "value": 302
         },
         {
           "name": "ATTRIBUTE",
-          "value": 303,
-          "comment": "/* ATTRIBUTE  */"
+          "value": 303
         },
         {
           "name": "AUTHORIZATION",
-          "value": 304,
-          "comment": "/* AUTHORIZATION  */"
+          "value": 304
         },
         {
           "name": "BACKWARD",
-          "value": 305,
-          "comment": "/* BACKWARD  */"
+          "value": 305
         },
         {
           "name": "BEFORE",
-          "value": 306,
-          "comment": "/* BEFORE  */"
+          "value": 306
         },
         {
           "name": "BEGIN_P",
-          "value": 307,
-          "comment": "/* BEGIN_P  */"
+          "value": 307
         },
         {
           "name": "BETWEEN",
-          "value": 308,
-          "comment": "/* BETWEEN  */"
+          "value": 308
         },
         {
           "name": "BIGINT",
-          "value": 309,
-          "comment": "/* BIGINT  */"
+          "value": 309
         },
         {
           "name": "BINARY",
-          "value": 310,
-          "comment": "/* BINARY  */"
+          "value": 310
         },
         {
           "name": "BIT",
-          "value": 311,
-          "comment": "/* BIT  */"
+          "value": 311
         },
         {
           "name": "BOOLEAN_P",
-          "value": 312,
-          "comment": "/* BOOLEAN_P  */"
+          "value": 312
         },
         {
           "name": "BOTH",
-          "value": 313,
-          "comment": "/* BOTH  */"
+          "value": 313
         },
         {
           "name": "BREADTH",
-          "value": 314,
-          "comment": "/* BREADTH  */"
+          "value": 314
         },
         {
           "name": "BY",
-          "value": 315,
-          "comment": "/* BY  */"
+          "value": 315
         },
         {
           "name": "CACHE",
-          "value": 316,
-          "comment": "/* CACHE  */"
+          "value": 316
         },
         {
           "name": "CALL",
-          "value": 317,
-          "comment": "/* CALL  */"
+          "value": 317
         },
         {
           "name": "CALLED",
-          "value": 318,
-          "comment": "/* CALLED  */"
+          "value": 318
         },
         {
           "name": "CASCADE",
-          "value": 319,
-          "comment": "/* CASCADE  */"
+          "value": 319
         },
         {
           "name": "CASCADED",
-          "value": 320,
-          "comment": "/* CASCADED  */"
+          "value": 320
         },
         {
           "name": "CASE",
-          "value": 321,
-          "comment": "/* CASE  */"
+          "value": 321
         },
         {
           "name": "CAST",
-          "value": 322,
-          "comment": "/* CAST  */"
+          "value": 322
         },
         {
           "name": "CATALOG_P",
-          "value": 323,
-          "comment": "/* CATALOG_P  */"
+          "value": 323
         },
         {
           "name": "CHAIN",
-          "value": 324,
-          "comment": "/* CHAIN  */"
+          "value": 324
         },
         {
           "name": "CHAR_P",
-          "value": 325,
-          "comment": "/* CHAR_P  */"
+          "value": 325
         },
         {
           "name": "CHARACTER",
-          "value": 326,
-          "comment": "/* CHARACTER  */"
+          "value": 326
         },
         {
           "name": "CHARACTERISTICS",
-          "value": 327,
-          "comment": "/* CHARACTERISTICS  */"
+          "value": 327
         },
         {
           "name": "CHECK",
-          "value": 328,
-          "comment": "/* CHECK  */"
+          "value": 328
         },
         {
           "name": "CHECKPOINT",
-          "value": 329,
-          "comment": "/* CHECKPOINT  */"
+          "value": 329
         },
         {
           "name": "CLASS",
-          "value": 330,
-          "comment": "/* CLASS  */"
+          "value": 330
         },
         {
           "name": "CLOSE",
-          "value": 331,
-          "comment": "/* CLOSE  */"
+          "value": 331
         },
         {
           "name": "CLUSTER",
-          "value": 332,
-          "comment": "/* CLUSTER  */"
+          "value": 332
         },
         {
           "name": "COALESCE",
-          "value": 333,
-          "comment": "/* COALESCE  */"
+          "value": 333
         },
         {
           "name": "COLLATE",
-          "value": 334,
-          "comment": "/* COLLATE  */"
+          "value": 334
         },
         {
           "name": "COLLATION",
-          "value": 335,
-          "comment": "/* COLLATION  */"
+          "value": 335
         },
         {
           "name": "COLUMN",
-          "value": 336,
-          "comment": "/* COLUMN  */"
+          "value": 336
         },
         {
           "name": "COLUMNS",
-          "value": 337,
-          "comment": "/* COLUMNS  */"
+          "value": 337
         },
         {
           "name": "COMMENT",
-          "value": 338,
-          "comment": "/* COMMENT  */"
+          "value": 338
         },
         {
           "name": "COMMENTS",
-          "value": 339,
-          "comment": "/* COMMENTS  */"
+          "value": 339
         },
         {
           "name": "COMMIT",
-          "value": 340,
-          "comment": "/* COMMIT  */"
+          "value": 340
         },
         {
           "name": "COMMITTED",
-          "value": 341,
-          "comment": "/* COMMITTED  */"
+          "value": 341
         },
         {
           "name": "COMPRESSION",
-          "value": 342,
-          "comment": "/* COMPRESSION  */"
+          "value": 342
         },
         {
           "name": "CONCURRENTLY",
-          "value": 343,
-          "comment": "/* CONCURRENTLY  */"
+          "value": 343
         },
         {
           "name": "CONFIGURATION",
-          "value": 344,
-          "comment": "/* CONFIGURATION  */"
+          "value": 344
         },
         {
           "name": "CONFLICT",
-          "value": 345,
-          "comment": "/* CONFLICT  */"
+          "value": 345
         },
         {
           "name": "CONNECTION",
-          "value": 346,
-          "comment": "/* CONNECTION  */"
+          "value": 346
         },
         {
           "name": "CONSTRAINT",
-          "value": 347,
-          "comment": "/* CONSTRAINT  */"
+          "value": 347
         },
         {
           "name": "CONSTRAINTS",
-          "value": 348,
-          "comment": "/* CONSTRAINTS  */"
+          "value": 348
         },
         {
           "name": "CONTENT_P",
-          "value": 349,
-          "comment": "/* CONTENT_P  */"
+          "value": 349
         },
         {
           "name": "CONTINUE_P",
-          "value": 350,
-          "comment": "/* CONTINUE_P  */"
+          "value": 350
         },
         {
           "name": "CONVERSION_P",
-          "value": 351,
-          "comment": "/* CONVERSION_P  */"
+          "value": 351
         },
         {
           "name": "COPY",
-          "value": 352,
-          "comment": "/* COPY  */"
+          "value": 352
         },
         {
           "name": "COST",
-          "value": 353,
-          "comment": "/* COST  */"
+          "value": 353
         },
         {
           "name": "CREATE",
-          "value": 354,
-          "comment": "/* CREATE  */"
+          "value": 354
         },
         {
           "name": "CROSS",
-          "value": 355,
-          "comment": "/* CROSS  */"
+          "value": 355
         },
         {
           "name": "CSV",
-          "value": 356,
-          "comment": "/* CSV  */"
+          "value": 356
         },
         {
           "name": "CUBE",
-          "value": 357,
-          "comment": "/* CUBE  */"
+          "value": 357
         },
         {
           "name": "CURRENT_P",
-          "value": 358,
-          "comment": "/* CURRENT_P  */"
+          "value": 358
         },
         {
           "name": "CURRENT_CATALOG",
-          "value": 359,
-          "comment": "/* CURRENT_CATALOG  */"
+          "value": 359
         },
         {
           "name": "CURRENT_DATE",
-          "value": 360,
-          "comment": "/* CURRENT_DATE  */"
+          "value": 360
         },
         {
           "name": "CURRENT_ROLE",
-          "value": 361,
-          "comment": "/* CURRENT_ROLE  */"
+          "value": 361
         },
         {
           "name": "CURRENT_SCHEMA",
-          "value": 362,
-          "comment": "/* CURRENT_SCHEMA  */"
+          "value": 362
         },
         {
           "name": "CURRENT_TIME",
-          "value": 363,
-          "comment": "/* CURRENT_TIME  */"
+          "value": 363
         },
         {
           "name": "CURRENT_TIMESTAMP",
-          "value": 364,
-          "comment": "/* CURRENT_TIMESTAMP  */"
+          "value": 364
         },
         {
           "name": "CURRENT_USER",
-          "value": 365,
-          "comment": "/* CURRENT_USER  */"
+          "value": 365
         },
         {
           "name": "CURSOR",
-          "value": 366,
-          "comment": "/* CURSOR  */"
+          "value": 366
         },
         {
           "name": "CYCLE",
-          "value": 367,
-          "comment": "/* CYCLE  */"
+          "value": 367
         },
         {
           "name": "DATA_P",
-          "value": 368,
-          "comment": "/* DATA_P  */"
+          "value": 368
         },
         {
           "name": "DATABASE",
-          "value": 369,
-          "comment": "/* DATABASE  */"
+          "value": 369
         },
         {
           "name": "DAY_P",
-          "value": 370,
-          "comment": "/* DAY_P  */"
+          "value": 370
         },
         {
           "name": "DEALLOCATE",
-          "value": 371,
-          "comment": "/* DEALLOCATE  */"
+          "value": 371
         },
         {
           "name": "DEC",
-          "value": 372,
-          "comment": "/* DEC  */"
+          "value": 372
         },
         {
           "name": "DECIMAL_P",
-          "value": 373,
-          "comment": "/* DECIMAL_P  */"
+          "value": 373
         },
         {
           "name": "DECLARE",
-          "value": 374,
-          "comment": "/* DECLARE  */"
+          "value": 374
         },
         {
           "name": "DEFAULT",
-          "value": 375,
-          "comment": "/* DEFAULT  */"
+          "value": 375
         },
         {
           "name": "DEFAULTS",
-          "value": 376,
-          "comment": "/* DEFAULTS  */"
+          "value": 376
         },
         {
           "name": "DEFERRABLE",
-          "value": 377,
-          "comment": "/* DEFERRABLE  */"
+          "value": 377
         },
         {
           "name": "DEFERRED",
-          "value": 378,
-          "comment": "/* DEFERRED  */"
+          "value": 378
         },
         {
           "name": "DEFINER",
-          "value": 379,
-          "comment": "/* DEFINER  */"
+          "value": 379
         },
         {
           "name": "DELETE_P",
-          "value": 380,
-          "comment": "/* DELETE_P  */"
+          "value": 380
         },
         {
           "name": "DELIMITER",
-          "value": 381,
-          "comment": "/* DELIMITER  */"
+          "value": 381
         },
         {
           "name": "DELIMITERS",
-          "value": 382,
-          "comment": "/* DELIMITERS  */"
+          "value": 382
         },
         {
           "name": "DEPENDS",
-          "value": 383,
-          "comment": "/* DEPENDS  */"
+          "value": 383
         },
         {
           "name": "DEPTH",
-          "value": 384,
-          "comment": "/* DEPTH  */"
+          "value": 384
         },
         {
           "name": "DESC",
-          "value": 385,
-          "comment": "/* DESC  */"
+          "value": 385
         },
         {
           "name": "DETACH",
-          "value": 386,
-          "comment": "/* DETACH  */"
+          "value": 386
         },
         {
           "name": "DICTIONARY",
-          "value": 387,
-          "comment": "/* DICTIONARY  */"
+          "value": 387
         },
         {
           "name": "DISABLE_P",
-          "value": 388,
-          "comment": "/* DISABLE_P  */"
+          "value": 388
         },
         {
           "name": "DISCARD",
-          "value": 389,
-          "comment": "/* DISCARD  */"
+          "value": 389
         },
         {
           "name": "DISTINCT",
-          "value": 390,
-          "comment": "/* DISTINCT  */"
+          "value": 390
         },
         {
           "name": "DO",
-          "value": 391,
-          "comment": "/* DO  */"
+          "value": 391
         },
         {
           "name": "DOCUMENT_P",
-          "value": 392,
-          "comment": "/* DOCUMENT_P  */"
+          "value": 392
         },
         {
           "name": "DOMAIN_P",
-          "value": 393,
-          "comment": "/* DOMAIN_P  */"
+          "value": 393
         },
         {
           "name": "DOUBLE_P",
-          "value": 394,
-          "comment": "/* DOUBLE_P  */"
+          "value": 394
         },
         {
           "name": "DROP",
-          "value": 395,
-          "comment": "/* DROP  */"
+          "value": 395
         },
         {
           "name": "EACH",
-          "value": 396,
-          "comment": "/* EACH  */"
+          "value": 396
         },
         {
           "name": "ELSE",
-          "value": 397,
-          "comment": "/* ELSE  */"
+          "value": 397
         },
         {
           "name": "ENABLE_P",
-          "value": 398,
-          "comment": "/* ENABLE_P  */"
+          "value": 398
         },
         {
           "name": "ENCODING",
-          "value": 399,
-          "comment": "/* ENCODING  */"
+          "value": 399
         },
         {
           "name": "ENCRYPTED",
-          "value": 400,
-          "comment": "/* ENCRYPTED  */"
+          "value": 400
         },
         {
           "name": "END_P",
-          "value": 401,
-          "comment": "/* END_P  */"
+          "value": 401
         },
         {
           "name": "ENUM_P",
-          "value": 402,
-          "comment": "/* ENUM_P  */"
+          "value": 402
         },
         {
           "name": "ESCAPE",
-          "value": 403,
-          "comment": "/* ESCAPE  */"
+          "value": 403
         },
         {
           "name": "EVENT",
-          "value": 404,
-          "comment": "/* EVENT  */"
+          "value": 404
         },
         {
           "name": "EXCEPT",
-          "value": 405,
-          "comment": "/* EXCEPT  */"
+          "value": 405
         },
         {
           "name": "EXCLUDE",
-          "value": 406,
-          "comment": "/* EXCLUDE  */"
+          "value": 406
         },
         {
           "name": "EXCLUDING",
-          "value": 407,
-          "comment": "/* EXCLUDING  */"
+          "value": 407
         },
         {
           "name": "EXCLUSIVE",
-          "value": 408,
-          "comment": "/* EXCLUSIVE  */"
+          "value": 408
         },
         {
           "name": "EXECUTE",
-          "value": 409,
-          "comment": "/* EXECUTE  */"
+          "value": 409
         },
         {
           "name": "EXISTS",
-          "value": 410,
-          "comment": "/* EXISTS  */"
+          "value": 410
         },
         {
           "name": "EXPLAIN",
-          "value": 411,
-          "comment": "/* EXPLAIN  */"
+          "value": 411
         },
         {
           "name": "EXPRESSION",
-          "value": 412,
-          "comment": "/* EXPRESSION  */"
+          "value": 412
         },
         {
           "name": "EXTENSION",
-          "value": 413,
-          "comment": "/* EXTENSION  */"
+          "value": 413
         },
         {
           "name": "EXTERNAL",
-          "value": 414,
-          "comment": "/* EXTERNAL  */"
+          "value": 414
         },
         {
           "name": "EXTRACT",
-          "value": 415,
-          "comment": "/* EXTRACT  */"
+          "value": 415
         },
         {
           "name": "FALSE_P",
-          "value": 416,
-          "comment": "/* FALSE_P  */"
+          "value": 416
         },
         {
           "name": "FAMILY",
-          "value": 417,
-          "comment": "/* FAMILY  */"
+          "value": 417
         },
         {
           "name": "FETCH",
-          "value": 418,
-          "comment": "/* FETCH  */"
+          "value": 418
         },
         {
           "name": "FILTER",
-          "value": 419,
-          "comment": "/* FILTER  */"
+          "value": 419
         },
         {
           "name": "FINALIZE",
-          "value": 420,
-          "comment": "/* FINALIZE  */"
+          "value": 420
         },
         {
           "name": "FIRST_P",
-          "value": 421,
-          "comment": "/* FIRST_P  */"
+          "value": 421
         },
         {
           "name": "FLOAT_P",
-          "value": 422,
-          "comment": "/* FLOAT_P  */"
+          "value": 422
         },
         {
           "name": "FOLLOWING",
-          "value": 423,
-          "comment": "/* FOLLOWING  */"
+          "value": 423
         },
         {
           "name": "FOR",
-          "value": 424,
-          "comment": "/* FOR  */"
+          "value": 424
         },
         {
           "name": "FORCE",
-          "value": 425,
-          "comment": "/* FORCE  */"
+          "value": 425
         },
         {
           "name": "FOREIGN",
-          "value": 426,
-          "comment": "/* FOREIGN  */"
+          "value": 426
         },
         {
           "name": "FORWARD",
-          "value": 427,
-          "comment": "/* FORWARD  */"
+          "value": 427
         },
         {
           "name": "FREEZE",
-          "value": 428,
-          "comment": "/* FREEZE  */"
+          "value": 428
         },
         {
           "name": "FROM",
-          "value": 429,
-          "comment": "/* FROM  */"
+          "value": 429
         },
         {
           "name": "FULL",
-          "value": 430,
-          "comment": "/* FULL  */"
+          "value": 430
         },
         {
           "name": "FUNCTION",
-          "value": 431,
-          "comment": "/* FUNCTION  */"
+          "value": 431
         },
         {
           "name": "FUNCTIONS",
-          "value": 432,
-          "comment": "/* FUNCTIONS  */"
+          "value": 432
         },
         {
           "name": "GENERATED",
-          "value": 433,
-          "comment": "/* GENERATED  */"
+          "value": 433
         },
         {
           "name": "GLOBAL",
-          "value": 434,
-          "comment": "/* GLOBAL  */"
+          "value": 434
         },
         {
           "name": "GRANT",
-          "value": 435,
-          "comment": "/* GRANT  */"
+          "value": 435
         },
         {
           "name": "GRANTED",
-          "value": 436,
-          "comment": "/* GRANTED  */"
+          "value": 436
         },
         {
           "name": "GREATEST",
-          "value": 437,
-          "comment": "/* GREATEST  */"
+          "value": 437
         },
         {
           "name": "GROUP_P",
-          "value": 438,
-          "comment": "/* GROUP_P  */"
+          "value": 438
         },
         {
           "name": "GROUPING",
-          "value": 439,
-          "comment": "/* GROUPING  */"
+          "value": 439
         },
         {
           "name": "GROUPS",
-          "value": 440,
-          "comment": "/* GROUPS  */"
+          "value": 440
         },
         {
           "name": "HANDLER",
-          "value": 441,
-          "comment": "/* HANDLER  */"
+          "value": 441
         },
         {
           "name": "HAVING",
-          "value": 442,
-          "comment": "/* HAVING  */"
+          "value": 442
         },
         {
           "name": "HEADER_P",
-          "value": 443,
-          "comment": "/* HEADER_P  */"
+          "value": 443
         },
         {
           "name": "HOLD",
-          "value": 444,
-          "comment": "/* HOLD  */"
+          "value": 444
         },
         {
           "name": "HOUR_P",
-          "value": 445,
-          "comment": "/* HOUR_P  */"
+          "value": 445
         },
         {
           "name": "IDENTITY_P",
-          "value": 446,
-          "comment": "/* IDENTITY_P  */"
+          "value": 446
         },
         {
           "name": "IF_P",
-          "value": 447,
-          "comment": "/* IF_P  */"
+          "value": 447
         },
         {
           "name": "ILIKE",
-          "value": 448,
-          "comment": "/* ILIKE  */"
+          "value": 448
         },
         {
           "name": "IMMEDIATE",
-          "value": 449,
-          "comment": "/* IMMEDIATE  */"
+          "value": 449
         },
         {
           "name": "IMMUTABLE",
-          "value": 450,
-          "comment": "/* IMMUTABLE  */"
+          "value": 450
         },
         {
           "name": "IMPLICIT_P",
-          "value": 451,
-          "comment": "/* IMPLICIT_P  */"
+          "value": 451
         },
         {
           "name": "IMPORT_P",
-          "value": 452,
-          "comment": "/* IMPORT_P  */"
+          "value": 452
         },
         {
           "name": "IN_P",
-          "value": 453,
-          "comment": "/* IN_P  */"
+          "value": 453
         },
         {
           "name": "INCLUDE",
-          "value": 454,
-          "comment": "/* INCLUDE  */"
+          "value": 454
         },
         {
           "name": "INCLUDING",
-          "value": 455,
-          "comment": "/* INCLUDING  */"
+          "value": 455
         },
         {
           "name": "INCREMENT",
-          "value": 456,
-          "comment": "/* INCREMENT  */"
+          "value": 456
         },
         {
           "name": "INDEX",
-          "value": 457,
-          "comment": "/* INDEX  */"
+          "value": 457
         },
         {
           "name": "INDEXES",
-          "value": 458,
-          "comment": "/* INDEXES  */"
+          "value": 458
         },
         {
           "name": "INHERIT",
-          "value": 459,
-          "comment": "/* INHERIT  */"
+          "value": 459
         },
         {
           "name": "INHERITS",
-          "value": 460,
-          "comment": "/* INHERITS  */"
+          "value": 460
         },
         {
           "name": "INITIALLY",
-          "value": 461,
-          "comment": "/* INITIALLY  */"
+          "value": 461
         },
         {
           "name": "INLINE_P",
-          "value": 462,
-          "comment": "/* INLINE_P  */"
+          "value": 462
         },
         {
           "name": "INNER_P",
-          "value": 463,
-          "comment": "/* INNER_P  */"
+          "value": 463
         },
         {
           "name": "INOUT",
-          "value": 464,
-          "comment": "/* INOUT  */"
+          "value": 464
         },
         {
           "name": "INPUT_P",
-          "value": 465,
-          "comment": "/* INPUT_P  */"
+          "value": 465
         },
         {
           "name": "INSENSITIVE",
-          "value": 466,
-          "comment": "/* INSENSITIVE  */"
+          "value": 466
         },
         {
           "name": "INSERT",
-          "value": 467,
-          "comment": "/* INSERT  */"
+          "value": 467
         },
         {
           "name": "INSTEAD",
-          "value": 468,
-          "comment": "/* INSTEAD  */"
+          "value": 468
         },
         {
           "name": "INT_P",
-          "value": 469,
-          "comment": "/* INT_P  */"
+          "value": 469
         },
         {
           "name": "INTEGER",
-          "value": 470,
-          "comment": "/* INTEGER  */"
+          "value": 470
         },
         {
           "name": "INTERSECT",
-          "value": 471,
-          "comment": "/* INTERSECT  */"
+          "value": 471
         },
         {
           "name": "INTERVAL",
-          "value": 472,
-          "comment": "/* INTERVAL  */"
+          "value": 472
         },
         {
           "name": "INTO",
-          "value": 473,
-          "comment": "/* INTO  */"
+          "value": 473
         },
         {
           "name": "INVOKER",
-          "value": 474,
-          "comment": "/* INVOKER  */"
+          "value": 474
         },
         {
           "name": "IS",
-          "value": 475,
-          "comment": "/* IS  */"
+          "value": 475
         },
         {
           "name": "ISNULL",
-          "value": 476,
-          "comment": "/* ISNULL  */"
+          "value": 476
         },
         {
           "name": "ISOLATION",
-          "value": 477,
-          "comment": "/* ISOLATION  */"
+          "value": 477
         },
         {
           "name": "JOIN",
-          "value": 478,
-          "comment": "/* JOIN  */"
+          "value": 478
         },
         {
           "name": "KEY",
-          "value": 479,
-          "comment": "/* KEY  */"
+          "value": 479
         },
         {
           "name": "LABEL",
-          "value": 480,
-          "comment": "/* LABEL  */"
+          "value": 480
         },
         {
           "name": "LANGUAGE",
-          "value": 481,
-          "comment": "/* LANGUAGE  */"
+          "value": 481
         },
         {
           "name": "LARGE_P",
-          "value": 482,
-          "comment": "/* LARGE_P  */"
+          "value": 482
         },
         {
           "name": "LAST_P",
-          "value": 483,
-          "comment": "/* LAST_P  */"
+          "value": 483
         },
         {
           "name": "LATERAL_P",
-          "value": 484,
-          "comment": "/* LATERAL_P  */"
+          "value": 484
         },
         {
           "name": "LEADING",
-          "value": 485,
-          "comment": "/* LEADING  */"
+          "value": 485
         },
         {
           "name": "LEAKPROOF",
-          "value": 486,
-          "comment": "/* LEAKPROOF  */"
+          "value": 486
         },
         {
           "name": "LEAST",
-          "value": 487,
-          "comment": "/* LEAST  */"
+          "value": 487
         },
         {
           "name": "LEFT",
-          "value": 488,
-          "comment": "/* LEFT  */"
+          "value": 488
         },
         {
           "name": "LEVEL",
-          "value": 489,
-          "comment": "/* LEVEL  */"
+          "value": 489
         },
         {
           "name": "LIKE",
-          "value": 490,
-          "comment": "/* LIKE  */"
+          "value": 490
         },
         {
           "name": "LIMIT",
-          "value": 491,
-          "comment": "/* LIMIT  */"
+          "value": 491
         },
         {
           "name": "LISTEN",
-          "value": 492,
-          "comment": "/* LISTEN  */"
+          "value": 492
         },
         {
           "name": "LOAD",
-          "value": 493,
-          "comment": "/* LOAD  */"
+          "value": 493
         },
         {
           "name": "LOCAL",
-          "value": 494,
-          "comment": "/* LOCAL  */"
+          "value": 494
         },
         {
           "name": "LOCALTIME",
-          "value": 495,
-          "comment": "/* LOCALTIME  */"
+          "value": 495
         },
         {
           "name": "LOCALTIMESTAMP",
-          "value": 496,
-          "comment": "/* LOCALTIMESTAMP  */"
+          "value": 496
         },
         {
           "name": "LOCATION",
-          "value": 497,
-          "comment": "/* LOCATION  */"
+          "value": 497
         },
         {
           "name": "LOCK_P",
-          "value": 498,
-          "comment": "/* LOCK_P  */"
+          "value": 498
         },
         {
           "name": "LOCKED",
-          "value": 499,
-          "comment": "/* LOCKED  */"
+          "value": 499
         },
         {
           "name": "LOGGED",
-          "value": 500,
-          "comment": "/* LOGGED  */"
+          "value": 500
         },
         {
           "name": "MAPPING",
-          "value": 501,
-          "comment": "/* MAPPING  */"
+          "value": 501
         },
         {
           "name": "MATCH",
-          "value": 502,
-          "comment": "/* MATCH  */"
+          "value": 502
         },
         {
           "name": "MATERIALIZED",
-          "value": 503,
-          "comment": "/* MATERIALIZED  */"
+          "value": 503
         },
         {
           "name": "MAXVALUE",
-          "value": 504,
-          "comment": "/* MAXVALUE  */"
+          "value": 504
         },
         {
           "name": "METHOD",
-          "value": 505,
-          "comment": "/* METHOD  */"
+          "value": 505
         },
         {
           "name": "MINUTE_P",
-          "value": 506,
-          "comment": "/* MINUTE_P  */"
+          "value": 506
         },
         {
           "name": "MINVALUE",
-          "value": 507,
-          "comment": "/* MINVALUE  */"
+          "value": 507
         },
         {
           "name": "MODE",
-          "value": 508,
-          "comment": "/* MODE  */"
+          "value": 508
         },
         {
           "name": "MONTH_P",
-          "value": 509,
-          "comment": "/* MONTH_P  */"
+          "value": 509
         },
         {
           "name": "MOVE",
-          "value": 510,
-          "comment": "/* MOVE  */"
+          "value": 510
         },
         {
           "name": "NAME_P",
-          "value": 511,
-          "comment": "/* NAME_P  */"
+          "value": 511
         },
         {
           "name": "NAMES",
-          "value": 512,
-          "comment": "/* NAMES  */"
+          "value": 512
         },
         {
           "name": "NATIONAL",
-          "value": 513,
-          "comment": "/* NATIONAL  */"
+          "value": 513
         },
         {
           "name": "NATURAL",
-          "value": 514,
-          "comment": "/* NATURAL  */"
+          "value": 514
         },
         {
           "name": "NCHAR",
-          "value": 515,
-          "comment": "/* NCHAR  */"
+          "value": 515
         },
         {
           "name": "NEW",
-          "value": 516,
-          "comment": "/* NEW  */"
+          "value": 516
         },
         {
           "name": "NEXT",
-          "value": 517,
-          "comment": "/* NEXT  */"
+          "value": 517
         },
         {
           "name": "NFC",
-          "value": 518,
-          "comment": "/* NFC  */"
+          "value": 518
         },
         {
           "name": "NFD",
-          "value": 519,
-          "comment": "/* NFD  */"
+          "value": 519
         },
         {
           "name": "NFKC",
-          "value": 520,
-          "comment": "/* NFKC  */"
+          "value": 520
         },
         {
           "name": "NFKD",
-          "value": 521,
-          "comment": "/* NFKD  */"
+          "value": 521
         },
         {
           "name": "NO",
-          "value": 522,
-          "comment": "/* NO  */"
+          "value": 522
         },
         {
           "name": "NONE",
-          "value": 523,
-          "comment": "/* NONE  */"
+          "value": 523
         },
         {
           "name": "NORMALIZE",
-          "value": 524,
-          "comment": "/* NORMALIZE  */"
+          "value": 524
         },
         {
           "name": "NORMALIZED",
-          "value": 525,
-          "comment": "/* NORMALIZED  */"
+          "value": 525
         },
         {
           "name": "NOT",
-          "value": 526,
-          "comment": "/* NOT  */"
+          "value": 526
         },
         {
           "name": "NOTHING",
-          "value": 527,
-          "comment": "/* NOTHING  */"
+          "value": 527
         },
         {
           "name": "NOTIFY",
-          "value": 528,
-          "comment": "/* NOTIFY  */"
+          "value": 528
         },
         {
           "name": "NOTNULL",
-          "value": 529,
-          "comment": "/* NOTNULL  */"
+          "value": 529
         },
         {
           "name": "NOWAIT",
-          "value": 530,
-          "comment": "/* NOWAIT  */"
+          "value": 530
         },
         {
           "name": "NULL_P",
-          "value": 531,
-          "comment": "/* NULL_P  */"
+          "value": 531
         },
         {
           "name": "NULLIF",
-          "value": 532,
-          "comment": "/* NULLIF  */"
+          "value": 532
         },
         {
           "name": "NULLS_P",
-          "value": 533,
-          "comment": "/* NULLS_P  */"
+          "value": 533
         },
         {
           "name": "NUMERIC",
-          "value": 534,
-          "comment": "/* NUMERIC  */"
+          "value": 534
         },
         {
           "name": "OBJECT_P",
-          "value": 535,
-          "comment": "/* OBJECT_P  */"
+          "value": 535
         },
         {
           "name": "OF",
-          "value": 536,
-          "comment": "/* OF  */"
+          "value": 536
         },
         {
           "name": "OFF",
-          "value": 537,
-          "comment": "/* OFF  */"
+          "value": 537
         },
         {
           "name": "OFFSET",
-          "value": 538,
-          "comment": "/* OFFSET  */"
+          "value": 538
         },
         {
           "name": "OIDS",
-          "value": 539,
-          "comment": "/* OIDS  */"
+          "value": 539
         },
         {
           "name": "OLD",
-          "value": 540,
-          "comment": "/* OLD  */"
+          "value": 540
         },
         {
           "name": "ON",
-          "value": 541,
-          "comment": "/* ON  */"
+          "value": 541
         },
         {
           "name": "ONLY",
-          "value": 542,
-          "comment": "/* ONLY  */"
+          "value": 542
         },
         {
           "name": "OPERATOR",
-          "value": 543,
-          "comment": "/* OPERATOR  */"
+          "value": 543
         },
         {
           "name": "OPTION",
-          "value": 544,
-          "comment": "/* OPTION  */"
+          "value": 544
         },
         {
           "name": "OPTIONS",
-          "value": 545,
-          "comment": "/* OPTIONS  */"
+          "value": 545
         },
         {
           "name": "OR",
-          "value": 546,
-          "comment": "/* OR  */"
+          "value": 546
         },
         {
           "name": "ORDER",
-          "value": 547,
-          "comment": "/* ORDER  */"
+          "value": 547
         },
         {
           "name": "ORDINALITY",
-          "value": 548,
-          "comment": "/* ORDINALITY  */"
+          "value": 548
         },
         {
           "name": "OTHERS",
-          "value": 549,
-          "comment": "/* OTHERS  */"
+          "value": 549
         },
         {
           "name": "OUT_P",
-          "value": 550,
-          "comment": "/* OUT_P  */"
+          "value": 550
         },
         {
           "name": "OUTER_P",
-          "value": 551,
-          "comment": "/* OUTER_P  */"
+          "value": 551
         },
         {
           "name": "OVER",
-          "value": 552,
-          "comment": "/* OVER  */"
+          "value": 552
         },
         {
           "name": "OVERLAPS",
-          "value": 553,
-          "comment": "/* OVERLAPS  */"
+          "value": 553
         },
         {
           "name": "OVERLAY",
-          "value": 554,
-          "comment": "/* OVERLAY  */"
+          "value": 554
         },
         {
           "name": "OVERRIDING",
-          "value": 555,
-          "comment": "/* OVERRIDING  */"
+          "value": 555
         },
         {
           "name": "OWNED",
-          "value": 556,
-          "comment": "/* OWNED  */"
+          "value": 556
         },
         {
           "name": "OWNER",
-          "value": 557,
-          "comment": "/* OWNER  */"
+          "value": 557
         },
         {
           "name": "PARALLEL",
-          "value": 558,
-          "comment": "/* PARALLEL  */"
+          "value": 558
         },
         {
           "name": "PARSER",
-          "value": 559,
-          "comment": "/* PARSER  */"
+          "value": 559
         },
         {
           "name": "PARTIAL",
-          "value": 560,
-          "comment": "/* PARTIAL  */"
+          "value": 560
         },
         {
           "name": "PARTITION",
-          "value": 561,
-          "comment": "/* PARTITION  */"
+          "value": 561
         },
         {
           "name": "PASSING",
-          "value": 562,
-          "comment": "/* PASSING  */"
+          "value": 562
         },
         {
           "name": "PASSWORD",
-          "value": 563,
-          "comment": "/* PASSWORD  */"
+          "value": 563
         },
         {
           "name": "PLACING",
-          "value": 564,
-          "comment": "/* PLACING  */"
+          "value": 564
         },
         {
           "name": "PLANS",
-          "value": 565,
-          "comment": "/* PLANS  */"
+          "value": 565
         },
         {
           "name": "POLICY",
-          "value": 566,
-          "comment": "/* POLICY  */"
+          "value": 566
         },
         {
           "name": "POSITION",
-          "value": 567,
-          "comment": "/* POSITION  */"
+          "value": 567
         },
         {
           "name": "PRECEDING",
-          "value": 568,
-          "comment": "/* PRECEDING  */"
+          "value": 568
         },
         {
           "name": "PRECISION",
-          "value": 569,
-          "comment": "/* PRECISION  */"
+          "value": 569
         },
         {
           "name": "PRESERVE",
-          "value": 570,
-          "comment": "/* PRESERVE  */"
+          "value": 570
         },
         {
           "name": "PREPARE",
-          "value": 571,
-          "comment": "/* PREPARE  */"
+          "value": 571
         },
         {
           "name": "PREPARED",
-          "value": 572,
-          "comment": "/* PREPARED  */"
+          "value": 572
         },
         {
           "name": "PRIMARY",
-          "value": 573,
-          "comment": "/* PRIMARY  */"
+          "value": 573
         },
         {
           "name": "PRIOR",
-          "value": 574,
-          "comment": "/* PRIOR  */"
+          "value": 574
         },
         {
           "name": "PRIVILEGES",
-          "value": 575,
-          "comment": "/* PRIVILEGES  */"
+          "value": 575
         },
         {
           "name": "PROCEDURAL",
-          "value": 576,
-          "comment": "/* PROCEDURAL  */"
+          "value": 576
         },
         {
           "name": "PROCEDURE",
-          "value": 577,
-          "comment": "/* PROCEDURE  */"
+          "value": 577
         },
         {
           "name": "PROCEDURES",
-          "value": 578,
-          "comment": "/* PROCEDURES  */"
+          "value": 578
         },
         {
           "name": "PROGRAM",
-          "value": 579,
-          "comment": "/* PROGRAM  */"
+          "value": 579
         },
         {
           "name": "PUBLICATION",
-          "value": 580,
-          "comment": "/* PUBLICATION  */"
+          "value": 580
         },
         {
           "name": "QUOTE",
-          "value": 581,
-          "comment": "/* QUOTE  */"
+          "value": 581
         },
         {
           "name": "RANGE",
-          "value": 582,
-          "comment": "/* RANGE  */"
+          "value": 582
         },
         {
           "name": "READ",
-          "value": 583,
-          "comment": "/* READ  */"
+          "value": 583
         },
         {
           "name": "REAL",
-          "value": 584,
-          "comment": "/* REAL  */"
+          "value": 584
         },
         {
           "name": "REASSIGN",
-          "value": 585,
-          "comment": "/* REASSIGN  */"
+          "value": 585
         },
         {
           "name": "RECHECK",
-          "value": 586,
-          "comment": "/* RECHECK  */"
+          "value": 586
         },
         {
           "name": "RECURSIVE",
-          "value": 587,
-          "comment": "/* RECURSIVE  */"
+          "value": 587
         },
         {
-          "name": "REF",
-          "value": 588,
-          "comment": "/* REF  */"
+          "name": "REF_P",
+          "value": 588
         },
         {
           "name": "REFERENCES",
-          "value": 589,
-          "comment": "/* REFERENCES  */"
+          "value": 589
         },
         {
           "name": "REFERENCING",
-          "value": 590,
-          "comment": "/* REFERENCING  */"
+          "value": 590
         },
         {
           "name": "REFRESH",
-          "value": 591,
-          "comment": "/* REFRESH  */"
+          "value": 591
         },
         {
           "name": "REINDEX",
-          "value": 592,
-          "comment": "/* REINDEX  */"
+          "value": 592
         },
         {
           "name": "RELATIVE_P",
-          "value": 593,
-          "comment": "/* RELATIVE_P  */"
+          "value": 593
         },
         {
           "name": "RELEASE",
-          "value": 594,
-          "comment": "/* RELEASE  */"
+          "value": 594
         },
         {
           "name": "RENAME",
-          "value": 595,
-          "comment": "/* RENAME  */"
+          "value": 595
         },
         {
           "name": "REPEATABLE",
-          "value": 596,
-          "comment": "/* REPEATABLE  */"
+          "value": 596
         },
         {
           "name": "REPLACE",
-          "value": 597,
-          "comment": "/* REPLACE  */"
+          "value": 597
         },
         {
           "name": "REPLICA",
-          "value": 598,
-          "comment": "/* REPLICA  */"
+          "value": 598
         },
         {
           "name": "RESET",
-          "value": 599,
-          "comment": "/* RESET  */"
+          "value": 599
         },
         {
           "name": "RESTART",
-          "value": 600,
-          "comment": "/* RESTART  */"
+          "value": 600
         },
         {
           "name": "RESTRICT",
-          "value": 601,
-          "comment": "/* RESTRICT  */"
+          "value": 601
         },
         {
           "name": "RETURN",
-          "value": 602,
-          "comment": "/* RETURN  */"
+          "value": 602
         },
         {
           "name": "RETURNING",
-          "value": 603,
-          "comment": "/* RETURNING  */"
+          "value": 603
         },
         {
           "name": "RETURNS",
-          "value": 604,
-          "comment": "/* RETURNS  */"
+          "value": 604
         },
         {
           "name": "REVOKE",
-          "value": 605,
-          "comment": "/* REVOKE  */"
+          "value": 605
         },
         {
           "name": "RIGHT",
-          "value": 606,
-          "comment": "/* RIGHT  */"
+          "value": 606
         },
         {
           "name": "ROLE",
-          "value": 607,
-          "comment": "/* ROLE  */"
+          "value": 607
         },
         {
           "name": "ROLLBACK",
-          "value": 608,
-          "comment": "/* ROLLBACK  */"
+          "value": 608
         },
         {
           "name": "ROLLUP",
-          "value": 609,
-          "comment": "/* ROLLUP  */"
+          "value": 609
         },
         {
           "name": "ROUTINE",
-          "value": 610,
-          "comment": "/* ROUTINE  */"
+          "value": 610
         },
         {
           "name": "ROUTINES",
-          "value": 611,
-          "comment": "/* ROUTINES  */"
+          "value": 611
         },
         {
           "name": "ROW",
-          "value": 612,
-          "comment": "/* ROW  */"
+          "value": 612
         },
         {
           "name": "ROWS",
-          "value": 613,
-          "comment": "/* ROWS  */"
+          "value": 613
         },
         {
           "name": "RULE",
-          "value": 614,
-          "comment": "/* RULE  */"
+          "value": 614
         },
         {
           "name": "SAVEPOINT",
-          "value": 615,
-          "comment": "/* SAVEPOINT  */"
+          "value": 615
         },
         {
           "name": "SCHEMA",
-          "value": 616,
-          "comment": "/* SCHEMA  */"
+          "value": 616
         },
         {
           "name": "SCHEMAS",
-          "value": 617,
-          "comment": "/* SCHEMAS  */"
+          "value": 617
         },
         {
           "name": "SCROLL",
-          "value": 618,
-          "comment": "/* SCROLL  */"
+          "value": 618
         },
         {
           "name": "SEARCH",
-          "value": 619,
-          "comment": "/* SEARCH  */"
+          "value": 619
         },
         {
           "name": "SECOND_P",
-          "value": 620,
-          "comment": "/* SECOND_P  */"
+          "value": 620
         },
         {
           "name": "SECURITY",
-          "value": 621,
-          "comment": "/* SECURITY  */"
+          "value": 621
         },
         {
           "name": "SELECT",
-          "value": 622,
-          "comment": "/* SELECT  */"
+          "value": 622
         },
         {
           "name": "SEQUENCE",
-          "value": 623,
-          "comment": "/* SEQUENCE  */"
+          "value": 623
         },
         {
           "name": "SEQUENCES",
-          "value": 624,
-          "comment": "/* SEQUENCES  */"
+          "value": 624
         },
         {
           "name": "SERIALIZABLE",
-          "value": 625,
-          "comment": "/* SERIALIZABLE  */"
+          "value": 625
         },
         {
           "name": "SERVER",
-          "value": 626,
-          "comment": "/* SERVER  */"
+          "value": 626
         },
         {
           "name": "SESSION",
-          "value": 627,
-          "comment": "/* SESSION  */"
+          "value": 627
         },
         {
           "name": "SESSION_USER",
-          "value": 628,
-          "comment": "/* SESSION_USER  */"
+          "value": 628
         },
         {
           "name": "SET",
-          "value": 629,
-          "comment": "/* SET  */"
+          "value": 629
         },
         {
           "name": "SETS",
-          "value": 630,
-          "comment": "/* SETS  */"
+          "value": 630
         },
         {
           "name": "SETOF",
-          "value": 631,
-          "comment": "/* SETOF  */"
+          "value": 631
         },
         {
           "name": "SHARE",
-          "value": 632,
-          "comment": "/* SHARE  */"
+          "value": 632
         },
         {
           "name": "SHOW",
-          "value": 633,
-          "comment": "/* SHOW  */"
+          "value": 633
         },
         {
           "name": "SIMILAR",
-          "value": 634,
-          "comment": "/* SIMILAR  */"
+          "value": 634
         },
         {
           "name": "SIMPLE",
-          "value": 635,
-          "comment": "/* SIMPLE  */"
+          "value": 635
         },
         {
           "name": "SKIP",
-          "value": 636,
-          "comment": "/* SKIP  */"
+          "value": 636
         },
         {
           "name": "SMALLINT",
-          "value": 637,
-          "comment": "/* SMALLINT  */"
+          "value": 637
         },
         {
           "name": "SNAPSHOT",
-          "value": 638,
-          "comment": "/* SNAPSHOT  */"
+          "value": 638
         },
         {
           "name": "SOME",
-          "value": 639,
-          "comment": "/* SOME  */"
+          "value": 639
         },
         {
           "name": "SQL_P",
-          "value": 640,
-          "comment": "/* SQL_P  */"
+          "value": 640
         },
         {
           "name": "STABLE",
-          "value": 641,
-          "comment": "/* STABLE  */"
+          "value": 641
         },
         {
           "name": "STANDALONE_P",
-          "value": 642,
-          "comment": "/* STANDALONE_P  */"
+          "value": 642
         },
         {
           "name": "START",
-          "value": 643,
-          "comment": "/* START  */"
+          "value": 643
         },
         {
           "name": "STATEMENT",
-          "value": 644,
-          "comment": "/* STATEMENT  */"
+          "value": 644
         },
         {
           "name": "STATISTICS",
-          "value": 645,
-          "comment": "/* STATISTICS  */"
+          "value": 645
         },
         {
           "name": "STDIN",
-          "value": 646,
-          "comment": "/* STDIN  */"
+          "value": 646
         },
         {
           "name": "STDOUT",
-          "value": 647,
-          "comment": "/* STDOUT  */"
+          "value": 647
         },
         {
           "name": "STORAGE",
-          "value": 648,
-          "comment": "/* STORAGE  */"
+          "value": 648
         },
         {
           "name": "STORED",
-          "value": 649,
-          "comment": "/* STORED  */"
+          "value": 649
         },
         {
           "name": "STRICT_P",
-          "value": 650,
-          "comment": "/* STRICT_P  */"
+          "value": 650
         },
         {
           "name": "STRIP_P",
-          "value": 651,
-          "comment": "/* STRIP_P  */"
+          "value": 651
         },
         {
           "name": "SUBSCRIPTION",
-          "value": 652,
-          "comment": "/* SUBSCRIPTION  */"
+          "value": 652
         },
         {
           "name": "SUBSTRING",
-          "value": 653,
-          "comment": "/* SUBSTRING  */"
+          "value": 653
         },
         {
           "name": "SUPPORT",
-          "value": 654,
-          "comment": "/* SUPPORT  */"
+          "value": 654
         },
         {
           "name": "SYMMETRIC",
-          "value": 655,
-          "comment": "/* SYMMETRIC  */"
+          "value": 655
         },
         {
           "name": "SYSID",
-          "value": 656,
-          "comment": "/* SYSID  */"
+          "value": 656
         },
         {
           "name": "SYSTEM_P",
-          "value": 657,
-          "comment": "/* SYSTEM_P  */"
+          "value": 657
         },
         {
           "name": "TABLE",
-          "value": 658,
-          "comment": "/* TABLE  */"
+          "value": 658
         },
         {
           "name": "TABLES",
-          "value": 659,
-          "comment": "/* TABLES  */"
+          "value": 659
         },
         {
           "name": "TABLESAMPLE",
-          "value": 660,
-          "comment": "/* TABLESAMPLE  */"
+          "value": 660
         },
         {
           "name": "TABLESPACE",
-          "value": 661,
-          "comment": "/* TABLESPACE  */"
+          "value": 661
         },
         {
           "name": "TEMP",
-          "value": 662,
-          "comment": "/* TEMP  */"
+          "value": 662
         },
         {
           "name": "TEMPLATE",
-          "value": 663,
-          "comment": "/* TEMPLATE  */"
+          "value": 663
         },
         {
           "name": "TEMPORARY",
-          "value": 664,
-          "comment": "/* TEMPORARY  */"
+          "value": 664
         },
         {
           "name": "TEXT_P",
-          "value": 665,
-          "comment": "/* TEXT_P  */"
+          "value": 665
         },
         {
           "name": "THEN",
-          "value": 666,
-          "comment": "/* THEN  */"
+          "value": 666
         },
         {
           "name": "TIES",
-          "value": 667,
-          "comment": "/* TIES  */"
+          "value": 667
         },
         {
           "name": "TIME",
-          "value": 668,
-          "comment": "/* TIME  */"
+          "value": 668
         },
         {
           "name": "TIMESTAMP",
-          "value": 669,
-          "comment": "/* TIMESTAMP  */"
+          "value": 669
         },
         {
           "name": "TO",
-          "value": 670,
-          "comment": "/* TO  */"
+          "value": 670
         },
         {
           "name": "TRAILING",
-          "value": 671,
-          "comment": "/* TRAILING  */"
+          "value": 671
         },
         {
           "name": "TRANSACTION",
-          "value": 672,
-          "comment": "/* TRANSACTION  */"
+          "value": 672
         },
         {
           "name": "TRANSFORM",
-          "value": 673,
-          "comment": "/* TRANSFORM  */"
+          "value": 673
         },
         {
           "name": "TREAT",
-          "value": 674,
-          "comment": "/* TREAT  */"
+          "value": 674
         },
         {
           "name": "TRIGGER",
-          "value": 675,
-          "comment": "/* TRIGGER  */"
+          "value": 675
         },
         {
           "name": "TRIM",
-          "value": 676,
-          "comment": "/* TRIM  */"
+          "value": 676
         },
         {
           "name": "TRUE_P",
-          "value": 677,
-          "comment": "/* TRUE_P  */"
+          "value": 677
         },
         {
           "name": "TRUNCATE",
-          "value": 678,
-          "comment": "/* TRUNCATE  */"
+          "value": 678
         },
         {
           "name": "TRUSTED",
-          "value": 679,
-          "comment": "/* TRUSTED  */"
+          "value": 679
         },
         {
           "name": "TYPE_P",
-          "value": 680,
-          "comment": "/* TYPE_P  */"
+          "value": 680
         },
         {
           "name": "TYPES_P",
-          "value": 681,
-          "comment": "/* TYPES_P  */"
+          "value": 681
         },
         {
           "name": "UESCAPE",
-          "value": 682,
-          "comment": "/* UESCAPE  */"
+          "value": 682
         },
         {
           "name": "UNBOUNDED",
-          "value": 683,
-          "comment": "/* UNBOUNDED  */"
+          "value": 683
         },
         {
           "name": "UNCOMMITTED",
-          "value": 684,
-          "comment": "/* UNCOMMITTED  */"
+          "value": 684
         },
         {
           "name": "UNENCRYPTED",
-          "value": 685,
-          "comment": "/* UNENCRYPTED  */"
+          "value": 685
         },
         {
           "name": "UNION",
-          "value": 686,
-          "comment": "/* UNION  */"
+          "value": 686
         },
         {
           "name": "UNIQUE",
-          "value": 687,
-          "comment": "/* UNIQUE  */"
+          "value": 687
         },
         {
           "name": "UNKNOWN",
-          "value": 688,
-          "comment": "/* UNKNOWN  */"
+          "value": 688
         },
         {
           "name": "UNLISTEN",
-          "value": 689,
-          "comment": "/* UNLISTEN  */"
+          "value": 689
         },
         {
           "name": "UNLOGGED",
-          "value": 690,
-          "comment": "/* UNLOGGED  */"
+          "value": 690
         },
         {
           "name": "UNTIL",
-          "value": 691,
-          "comment": "/* UNTIL  */"
+          "value": 691
         },
         {
           "name": "UPDATE",
-          "value": 692,
-          "comment": "/* UPDATE  */"
+          "value": 692
         },
         {
           "name": "USER",
-          "value": 693,
-          "comment": "/* USER  */"
+          "value": 693
         },
         {
           "name": "USING",
-          "value": 694,
-          "comment": "/* USING  */"
+          "value": 694
         },
         {
           "name": "VACUUM",
-          "value": 695,
-          "comment": "/* VACUUM  */"
+          "value": 695
         },
         {
           "name": "VALID",
-          "value": 696,
-          "comment": "/* VALID  */"
+          "value": 696
         },
         {
           "name": "VALIDATE",
-          "value": 697,
-          "comment": "/* VALIDATE  */"
+          "value": 697
         },
         {
           "name": "VALIDATOR",
-          "value": 698,
-          "comment": "/* VALIDATOR  */"
+          "value": 698
         },
         {
           "name": "VALUE_P",
-          "value": 699,
-          "comment": "/* VALUE_P  */"
+          "value": 699
         },
         {
           "name": "VALUES",
-          "value": 700,
-          "comment": "/* VALUES  */"
+          "value": 700
         },
         {
           "name": "VARCHAR",
-          "value": 701,
-          "comment": "/* VARCHAR  */"
+          "value": 701
         },
         {
           "name": "VARIADIC",
-          "value": 702,
-          "comment": "/* VARIADIC  */"
+          "value": 702
         },
         {
           "name": "VARYING",
-          "value": 703,
-          "comment": "/* VARYING  */"
+          "value": 703
         },
         {
           "name": "VERBOSE",
-          "value": 704,
-          "comment": "/* VERBOSE  */"
+          "value": 704
         },
         {
           "name": "VERSION_P",
-          "value": 705,
-          "comment": "/* VERSION_P  */"
+          "value": 705
         },
         {
           "name": "VIEW",
-          "value": 706,
-          "comment": "/* VIEW  */"
+          "value": 706
         },
         {
           "name": "VIEWS",
-          "value": 707,
-          "comment": "/* VIEWS  */"
+          "value": 707
         },
         {
           "name": "VOLATILE",
-          "value": 708,
-          "comment": "/* VOLATILE  */"
+          "value": 708
         },
         {
           "name": "WHEN",
-          "value": 709,
-          "comment": "/* WHEN  */"
+          "value": 709
         },
         {
           "name": "WHERE",
-          "value": 710,
-          "comment": "/* WHERE  */"
+          "value": 710
         },
         {
           "name": "WHITESPACE_P",
-          "value": 711,
-          "comment": "/* WHITESPACE_P  */"
+          "value": 711
         },
         {
           "name": "WINDOW",
-          "value": 712,
-          "comment": "/* WINDOW  */"
+          "value": 712
         },
         {
           "name": "WITH",
-          "value": 713,
-          "comment": "/* WITH  */"
+          "value": 713
         },
         {
           "name": "WITHIN",
-          "value": 714,
-          "comment": "/* WITHIN  */"
+          "value": 714
         },
         {
           "name": "WITHOUT",
-          "value": 715,
-          "comment": "/* WITHOUT  */"
+          "value": 715
         },
         {
           "name": "WORK",
-          "value": 716,
-          "comment": "/* WORK  */"
+          "value": 716
         },
         {
           "name": "WRAPPER",
-          "value": 717,
-          "comment": "/* WRAPPER  */"
+          "value": 717
         },
         {
           "name": "WRITE",
-          "value": 718,
-          "comment": "/* WRITE  */"
+          "value": 718
         },
         {
           "name": "XML_P",
-          "value": 719,
-          "comment": "/* XML_P  */"
+          "value": 719
         },
         {
           "name": "XMLATTRIBUTES",
-          "value": 720,
-          "comment": "/* XMLATTRIBUTES  */"
+          "value": 720
         },
         {
           "name": "XMLCONCAT",
-          "value": 721,
-          "comment": "/* XMLCONCAT  */"
+          "value": 721
         },
         {
           "name": "XMLELEMENT",
-          "value": 722,
-          "comment": "/* XMLELEMENT  */"
+          "value": 722
         },
         {
           "name": "XMLEXISTS",
-          "value": 723,
-          "comment": "/* XMLEXISTS  */"
+          "value": 723
         },
         {
           "name": "XMLFOREST",
-          "value": 724,
-          "comment": "/* XMLFOREST  */"
+          "value": 724
         },
         {
           "name": "XMLNAMESPACES",
-          "value": 725,
-          "comment": "/* XMLNAMESPACES  */"
+          "value": 725
         },
         {
           "name": "XMLPARSE",
-          "value": 726,
-          "comment": "/* XMLPARSE  */"
+          "value": 726
         },
         {
           "name": "XMLPI",
-          "value": 727,
-          "comment": "/* XMLPI  */"
+          "value": 727
         },
         {
           "name": "XMLROOT",
-          "value": 728,
-          "comment": "/* XMLROOT  */"
+          "value": 728
         },
         {
           "name": "XMLSERIALIZE",
-          "value": 729,
-          "comment": "/* XMLSERIALIZE  */"
+          "value": 729
         },
         {
           "name": "XMLTABLE",
-          "value": 730,
-          "comment": "/* XMLTABLE  */"
+          "value": 730
         },
         {
           "name": "YEAR_P",
-          "value": 731,
-          "comment": "/* YEAR_P  */"
+          "value": 731
         },
         {
           "name": "YES_P",
-          "value": 732,
-          "comment": "/* YES_P  */"
+          "value": 732
         },
         {
           "name": "ZONE",
-          "value": 733,
-          "comment": "/* ZONE  */"
+          "value": 733
         },
         {
           "name": "NOT_LA",
-          "value": 734,
-          "comment": "/* NOT_LA  */"
+          "value": 734
         },
         {
           "name": "NULLS_LA",
-          "value": 735,
-          "comment": "/* NULLS_LA  */"
+          "value": 735
         },
         {
           "name": "WITH_LA",
-          "value": 736,
-          "comment": "/* WITH_LA  */"
+          "value": 736
         },
         {
           "name": "MODE_TYPE_NAME",
-          "value": 737,
-          "comment": "/* MODE_TYPE_NAME  */"
+          "value": 737
         },
         {
           "name": "MODE_PLPGSQL_EXPR",
-          "value": 738,
-          "comment": "/* MODE_PLPGSQL_EXPR  */"
+          "value": 738
         },
         {
           "name": "MODE_PLPGSQL_ASSIGN1",
-          "value": 739,
-          "comment": "/* MODE_PLPGSQL_ASSIGN1  */"
+          "value": 739
         },
         {
           "name": "MODE_PLPGSQL_ASSIGN2",
-          "value": 740,
-          "comment": "/* MODE_PLPGSQL_ASSIGN2  */"
+          "value": 740
         },
         {
           "name": "MODE_PLPGSQL_ASSIGN3",
-          "value": 741,
-          "comment": "/* MODE_PLPGSQL_ASSIGN3  */"
+          "value": 741
         },
         {
           "name": "UMINUS",
-          "value": 742,
-          "comment": "/* UMINUS  */"
+          "value": 742
         }
       ],
-      "comment": "/* Token kinds.  */\n"
+      "comment": "   /* Put the tokens into the symbol table, so that GDB and other debuggers\n      know about them.  */\n"
     }
   }
+}

@@ -213,7 +213,15 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, ['-I', @basepath + 'src/include', '-I' '/usr/lib/clang/14.0.6/include', '-DDLSUFFIX=".bundle"', '-msse4.2', '-g', '-DUSE_ASSERT_CHECKING'])
+    translation_unit = index.parse_translation_unit(file, [
+      '-I', @basepath + 'src/include',
+      '-I', '/usr/local/opt/openssl/include',
+      '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include',
+      '-DDLSUFFIX=".bundle"',
+      '-msse4.2',
+      '-g',
+      '-DUSE_ASSERT_CHECKING'
+    ])
     cursor = translation_unit.cursor
 
     func_cursor = nil
@@ -255,10 +263,15 @@ class Runner
             analysis.file_to_symbol_positions[cursor.location.file][cursor.spelling] = [start_offset, end_offset]
 
             cursor.visit_children do |child_cursor, parent|
+              # There seems to be a bug here on modern Clang versions where the
+              # cursor kind gets modified once we call "child_cursor.definition"
+              # - thus we make a copy ahead of calling that, for later use
+              child_cursor_kind = child_cursor.kind
+
               # Ignore variable definitions from the local scope
               next :recurse if child_cursor.definition.semantic_parent == cursor
 
-              if child_cursor.kind == :cursor_decl_ref_expr || child_cursor.kind == :cursor_call_expr
+              if child_cursor_kind == :cursor_decl_ref_expr || child_cursor_kind == :cursor_call_expr
                 analysis.references[cursor.spelling] ||= []
                 (analysis.references[cursor.spelling] << child_cursor.spelling).uniq!
               end

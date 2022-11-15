@@ -51,7 +51,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 130003,
+    "version": 130008,
     "stmts": [
         {
             "stmt": {
@@ -124,7 +124,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 130003, tokens: 7, size: 77
+  version: 130008, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -179,7 +179,7 @@ This will output:
 
 See https://github.com/pganalyze/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
-## Usage: Parsing a PL/pgSQL function (Experimental)
+## Usage: Parsing a PL/pgSQL function
 
 A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
 

@@ -3070,7 +3070,6 @@ enum KeywordKind {
 }
 
 enum Token {
-  option allow_alias = true;
   NUL = 0;
   // Single-character tokens that are returned 1:1 (identical with "self" list in scan.l)
   // Either supporting syntax, or single-character operators (some can be both)
@@ -3095,10 +3094,6 @@ enum Token {
   ASCII_93 = 93; // "]"
   ASCII_94 = 94; // "^"
   // Named tokens in scan.l
-  YYEMPTY = 0;
-  YYEOF = 0;
-  YYerror = 256;
-  YYUNDEF = 257;
   IDENT = 258;
   UIDENT = 259;
   FCONST = 260;
@@ -3429,7 +3424,7 @@ enum Token {
   REASSIGN = 585;
   RECHECK = 586;
   RECURSIVE = 587;
-  REF = 588;
+  REF_P = 588;
   REFERENCES = 589;
   REFERENCING = 590;
   REFRESH = 591;
