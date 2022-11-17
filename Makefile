@@ -223,10 +223,10 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan test/split
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan test/split
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
-	# $(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
@@ -239,7 +239,7 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 else
-	# test/complex
+	test/complex
 	test/concurrency
 	test/deparse
 	test/fingerprint
