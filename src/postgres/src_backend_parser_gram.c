@@ -462,11 +462,7 @@
      REASSIGN = 585,
      RECHECK = 586,
      RECURSIVE = 587,
-<<<<<<< HEAD
      REF_P = 588,
-=======
-     REF = 588,
->>>>>>> refs/rewritten/tlisanti-14-latest
      REFERENCES = 589,
      REFERENCING = 590,
      REFRESH = 591,
@@ -954,11 +950,7 @@
 #define REASSIGN 585
 #define RECHECK 586
 #define RECURSIVE 587
-<<<<<<< HEAD
 #define REF_P 588
-=======
-#define REF 588
->>>>>>> refs/rewritten/tlisanti-14-latest
 #define REFERENCES 589
 #define REFERENCING 590
 #define REFRESH 591
@@ -3542,11 +3534,7 @@ static const char *const yytname[] =
   "POLICY", "POSITION", "PRECEDING", "PRECISION", "PRESERVE", "PREPARE",
   "PREPARED", "PRIMARY", "PRIOR", "PRIVILEGES", "PROCEDURAL", "PROCEDURE",
   "PROCEDURES", "PROGRAM", "PUBLICATION", "QUOTE", "RANGE", "READ", "REAL",
-<<<<<<< HEAD
   "REASSIGN", "RECHECK", "RECURSIVE", "REF_P", "REFERENCES", "REFERENCING",
-=======
-  "REASSIGN", "RECHECK", "RECURSIVE", "REF", "REFERENCES", "REFERENCING",
->>>>>>> refs/rewritten/tlisanti-14-latest
   "REFRESH", "REINDEX", "RELATIVE_P", "RELEASE", "RENAME", "REPEATABLE",
   "REPLACE", "REPLICA", "RESET", "RESTART", "RESTRICT", "RETURN",
   "RETURNING", "RETURNS", "REVOKE", "RIGHT", "ROLE", "ROLLBACK", "ROLLUP",
@@ -46851,11 +46839,7 @@ yyreduce:
     {
 					TypeName *t = (yyvsp[(1) - (3)].typnam);
 					t->typmods = (yyvsp[(3) - (3)].list);
-<<<<<<< HEAD
-					(yyval.node) = makeParamRefCast((yyvsp[(2) - (3)].ival), (yylsp[(3) - (3)]), t);
-=======
 					(yyval.node) = makeParamRefCast((yyvsp[(2) - (3)].ival), (yylsp[(2) - (3)]), t);
->>>>>>> refs/rewritten/tlisanti-14-latest
 				;}
     break;
 

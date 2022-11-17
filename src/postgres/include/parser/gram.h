@@ -369,11 +369,7 @@
      REASSIGN = 585,
      RECHECK = 586,
      RECURSIVE = 587,
-<<<<<<< HEAD
      REF_P = 588,
-=======
-     REF = 588,
->>>>>>> refs/rewritten/tlisanti-14-latest
      REFERENCES = 589,
      REFERENCING = 590,
      REFRESH = 591,
@@ -861,11 +857,7 @@
 #define REASSIGN 585
 #define RECHECK 586
 #define RECURSIVE 587
-<<<<<<< HEAD
 #define REF_P 588
-=======
-#define REF 588
->>>>>>> refs/rewritten/tlisanti-14-latest
 #define REFERENCES 589
 #define REFERENCING 590
 #define REFRESH 591
