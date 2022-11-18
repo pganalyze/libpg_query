@@ -5,8 +5,6 @@ const char* tests[] = {
   "50fde20626009aba",
   "SELECT $1",
   "50fde20626009aba",
-  "SELECT $1",
-  "50fde20626009aba",
   "SELECT 1; SELECT a FROM b",
   "3efa3b10d558d06d",
   "SELECT COUNT(DISTINCT id), * FROM targets WHERE something IS NOT NULL AND elsewhere::interval < now()",

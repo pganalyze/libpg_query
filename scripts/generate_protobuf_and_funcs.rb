@@ -386,7 +386,6 @@ enum KeywordKind {
 }
 
 enum Token {
-  option allow_alias = true;
   NUL = 0;
   // Single-character tokens that are returned 1:1 (identical with \"self\" list in scan.l)
   // Either supporting syntax, or single-character operators (some can be both)
