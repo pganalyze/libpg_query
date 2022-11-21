@@ -61,6 +61,7 @@ PgQuerySplitResult pg_query_split_with_scanner(const char* input)
       switch (tok) {
       #define PG_KEYWORD(a,b,c,d) case b: is_keyword = true; break;
       #include "parser/kwlist.h"
+      #undef PG_KEYWORD
       default: is_keyword = false;
       }
       if (is_keyword)

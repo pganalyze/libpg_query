@@ -116,15 +116,11 @@ class Runner
       @basepath + 'src/backend/libpq/be-gssapi-common.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/backend/libpq/be-secure-gssapi.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/common/protocol_openssl.c', # Requires OpenSSL (which we don't want to require)
-      @basepath + 'src/port/pthread_barrier_wait.c',
     ] -
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32_*.c') -
     Dir.glob(@basepath + 'src/backend/snowball/**/*.c')
-
-    # for pg_qsort
-    @include_files_to_output << @basepath + 'src/include/lib/sort_template.h'
 
     #files = [@basepath + 'src/backend/parser/keywords.c']
 
