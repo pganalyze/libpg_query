@@ -17,6 +17,7 @@ int main() {
   PgQuery__ScanToken *scan_token;
   const ProtobufCEnumValue *token_kind;
   const ProtobufCEnumValue *keyword_kind;
+  const ProtobufCEnumValue *label_kind;
   PgQueryScanResult result;
 
   for (i = 0; i < testsCount * 2; i += 2) {
@@ -36,7 +37,8 @@ int main() {
         scan_token = scan_result->tokens[j];
         token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
         keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-        sprintf(buffer2, "%.*s = %s, %s\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), token_kind->name, keyword_kind->name);
+        label_kind = protobuf_c_enum_descriptor_get_value(&pg_query__label_kind__descriptor, scan_token->label_kind);
+        sprintf(buffer2, "%.*s = %s, %s, %s\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), token_kind->name, keyword_kind->name, label_kind->name);
         strcat(buffer, buffer2);
       }
 

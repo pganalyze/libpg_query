@@ -35341,22 +35341,22 @@ static const ProtobufCFieldDescriptor pg_query__scan_token__field_descriptors[5]
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "bare_label",
+    "label_kind",
     6,
     PROTOBUF_C_LABEL_NONE,
-    PROTOBUF_C_TYPE_BOOL,
+    PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
-    offsetof(PgQuery__ScanToken, bare_label),
-    NULL,
+    offsetof(PgQuery__ScanToken, label_kind),
+    &pg_query__label_kind__descriptor,
     NULL,
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
 static const unsigned pg_query__scan_token__field_indices_by_name[] = {
-  4,   /* field[4] = bare_label */
   1,   /* field[1] = end */
   3,   /* field[3] = keyword_kind */
+  4,   /* field[4] = label_kind */
   0,   /* field[0] = start */
   2,   /* field[2] = token */
 };
@@ -37619,6 +37619,36 @@ const ProtobufCEnumDescriptor pg_query__keyword_kind__descriptor =
   pg_query__keyword_kind__enum_values_by_name,
   1,
   pg_query__keyword_kind__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__label_kind__enum_values_by_number[3] =
+{
+  { "UNKNOWN_LABEL", "PG_QUERY__LABEL_KIND__UNKNOWN_LABEL", 0 },
+  { "BARE_LABEL", "PG_QUERY__LABEL_KIND__BARE_LABEL", 1 },
+  { "AS_LABEL", "PG_QUERY__LABEL_KIND__AS_LABEL", 2 },
+};
+static const ProtobufCIntRange pg_query__label_kind__value_ranges[] = {
+{0, 0},{0, 3}
+};
+static const ProtobufCEnumValueIndex pg_query__label_kind__enum_values_by_name[3] =
+{
+  { "AS_LABEL", 2 },
+  { "BARE_LABEL", 1 },
+  { "UNKNOWN_LABEL", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__label_kind__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.LabelKind",
+  "LabelKind",
+  "PgQuery__LabelKind",
+  "pg_query",
+  3,
+  pg_query__label_kind__enum_values_by_number,
+  3,
+  pg_query__label_kind__enum_values_by_name,
+  1,
+  pg_query__label_kind__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
 static const ProtobufCEnumValue pg_query__token__enum_values_by_number[505] =

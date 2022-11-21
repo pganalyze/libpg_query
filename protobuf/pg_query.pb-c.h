@@ -872,6 +872,12 @@ typedef enum _PgQuery__KeywordKind {
   PG_QUERY__KEYWORD_KIND__RESERVED_KEYWORD = 4
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__KEYWORD_KIND)
 } PgQuery__KeywordKind;
+typedef enum _PgQuery__LabelKind {
+  PG_QUERY__LABEL_KIND__UNKNOWN_LABEL = 0,
+  PG_QUERY__LABEL_KIND__BARE_LABEL = 1,
+  PG_QUERY__LABEL_KIND__AS_LABEL = 2
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__LABEL_KIND)
+} PgQuery__LabelKind;
 typedef enum _PgQuery__Token {
   PG_QUERY__TOKEN__NUL = 0,
   /*
@@ -5566,11 +5572,11 @@ struct  PgQuery__ScanToken
   int32_t end;
   PgQuery__Token token;
   PgQuery__KeywordKind keyword_kind;
-  protobuf_c_boolean bare_label;
+  PgQuery__LabelKind label_kind;
 };
 #define PG_QUERY__SCAN_TOKEN__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__scan_token__descriptor) \
-    , 0, 0, PG_QUERY__TOKEN__NUL, PG_QUERY__KEYWORD_KIND__NO_KEYWORD, 0 }
+    , 0, 0, PG_QUERY__TOKEN__NUL, PG_QUERY__KEYWORD_KIND__NO_KEYWORD, PG_QUERY__LABEL_KIND__UNKNOWN_LABEL }
 
 
 /* PgQuery__ParseResult methods */
@@ -10851,6 +10857,7 @@ extern const ProtobufCEnumDescriptor    pg_query__lock_clause_strength__descript
 extern const ProtobufCEnumDescriptor    pg_query__lock_wait_policy__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__lock_tuple_mode__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__keyword_kind__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__label_kind__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__token__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__parse_result__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__scan_result__descriptor;

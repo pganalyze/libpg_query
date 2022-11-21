@@ -44,7 +44,16 @@ int main() {
         scan_token = scan_result->tokens[j];
         token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
         keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-        printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name);
+        printf(
+          "  \"%.*s\" = [ %d, %d, %s, %s, %s ]\n",
+          scan_token->end - scan_token->start,
+          &(tests[i][scan_token->start]),
+          scan_token->start,
+          scan_token->end,
+          token_kind->name,
+          keyword_kind->name,
+          scan_token->bare_label ? "BARE_LABEL" : "AS_LABEL",
+        );
       }
 
       pg_query__scan_result__free_unpacked(scan_result, NULL);
