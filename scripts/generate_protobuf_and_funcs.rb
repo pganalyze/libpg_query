@@ -374,7 +374,6 @@ message ScanToken {
   int32 end = 2;
   Token token = 4;
   KeywordKind keyword_kind = 5;
-  LabelKind label_kind = 6;
 }
 
 enum KeywordKind {
@@ -383,12 +382,6 @@ enum KeywordKind {
   COL_NAME_KEYWORD = 2;
   TYPE_FUNC_NAME_KEYWORD = 3;
   RESERVED_KEYWORD = 4;
-}
-
-enum LabelKind {
-  UNKNOWN_LABEL = 0;
-  BARE_LABEL = 1;
-  AS_LABEL = 2;
 }
 
 enum Token {

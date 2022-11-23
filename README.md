@@ -111,7 +111,7 @@ int main() {
     scan_token = scan_result->tokens[j];
     token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
     keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-    printf("  \"%.*s\" = [ %d, %d, %s, %s, %s ]\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name, scan_token->bare_label ? "BARE_LABEL" : "AS_LABEL");
+    printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", scan_token->end - scan_token->start, &(input[scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name);
   }
 
   pg_query__scan_result__free_unpacked(scan_result, NULL);
@@ -125,13 +125,13 @@ This will output the following:
 
 ```
   version: 130008, tokens: 7, size: 77
-  "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD, BARE_LABEL ]
-  "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD, BARE_LABEL ]
-  "AS" = [ 14, 16, AS, RESERVED_KEYWORD, AS_LABEL ]
-  "left" = [ 17, 21, LEFT, TYPE_FUNC_NAME_KEYWORD, BARE_LABEL ]
-  "/* comment */" = [ 22, 35, C_COMMENT, NO_KEYWORD, UNKNOWN_LABEL ]
-  "FROM" = [ 36, 40, FROM, RESERVED_KEYWORD, AS_LABEL ]
-  "between" = [ 41, 48, BETWEEN, COL_NAME_KEYWORD, BARE_LABEL ]
+  "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
+  "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
+  "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
+  "left" = [ 17, 21, LEFT, TYPE_FUNC_NAME_KEYWORD ]
+  "/* comment */" = [ 22, 35, C_COMMENT, NO_KEYWORD ]
+  "FROM" = [ 36, 40, FROM, RESERVED_KEYWORD ]
+  "between" = [ 41, 48, BETWEEN, COL_NAME_KEYWORD ]
 ```
 
 Where the each element in the token list has the following fields:
@@ -145,10 +145,6 @@ Where the each element in the token list has the following fields:
   `COL_NAME_KEYWORD`: Unreserved keyword (can be unescaped column/table/etc names, cannot be unescaped function or type name)
   `TYPE_FUNC_NAME_KEYWORD`: Reserved keyword (can be unescaped function or type name, cannot be unescaped column/table/etc names)
   `RESERVED_KEYWORD`: Reserved keyword (cannot be unescaped column/table/variable/type/function names)
-5. Label type, if the keyword is not `NO_KEYWORD`, indicates whether it requires a preceding `AS` to parse, possible values:
-  `AS_LABEL`: Requires `AS`
-  `BARE_LABEL`: Does not require `AS`
-  `UNKNOWN_LABEL`: Token is not a keyword
 
 Note that whitespace does not show as tokens.
 

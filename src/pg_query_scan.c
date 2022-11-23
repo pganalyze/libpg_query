@@ -101,17 +101,10 @@ PgQueryScanResult pg_query_scan(const char* input)
       output_tokens[i]->token = tok;
 
       switch (tok) {
-        #define BARE_LABEL 1
-        #define AS_LABEL 2
-        #define PG_KEYWORD(a,b,c,d) case b: output_tokens[i]->keyword_kind = c + 1; output_tokens[i]->label_kind = d; break;
-        #include "parser/kwlist.h"
-        #undef PG_KEYWORD
-        #undef AS_LABEL
-        #undef BARE_LABEL
-        default: {
-          output_tokens[i]->keyword_kind = 0;
-          output_tokens[i]->label_kind = 0;
-        }
+      #define PG_KEYWORD(a,b,c,d) case b: output_tokens[i]->keyword_kind = c + 1; break;
+      #include "parser/kwlist.h"
+      #undef PG_KEYWORD
+      default: output_tokens[i]->keyword_kind = 0;
       }
     }
 
