@@ -802,7 +802,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 14.5"
+#define PACKAGE_STRING "PostgreSQL 14.6"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -811,7 +811,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "14.5"
+#define PACKAGE_VERSION "14.6"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -830,7 +830,7 @@
 #define PG_MAJORVERSION_NUM 14
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 5
+#define PG_MINORVERSION_NUM 6
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -839,13 +839,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "14.5"
+#define PG_VERSION "14.6"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 140005
+#define PG_VERSION_NUM 140006
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 14.5 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 14.6 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */

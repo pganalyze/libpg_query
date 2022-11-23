@@ -1122,9 +1122,15 @@ plpgsql_add_initdatums(int **varnos)
 
 /*
  * This is the same as the standard resolve_polymorphic_argtypes() function,
- * but with a special case for validation: assume that polymorphic arguments
- * are integer, integer-array or integer-range.  Also, we go ahead and report
- * the error if we can't resolve the types.
+ * except that:
+ * 1. We go ahead and report the error if we can't resolve the types.
+ * 2. We treat RECORD-type input arguments (not output arguments) as if
+ *    they were polymorphic, replacing their types with the actual input
+ *    types if we can determine those.  This allows us to create a separate
+ *    function cache entry for each named composite type passed to such an
+ *    argument.
+ * 3. In validation mode, we have no inputs to look at, so assume that
+ *    polymorphic arguments are integer, integer-array or integer-range.
  */
 
 
