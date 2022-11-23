@@ -413,7 +413,6 @@ class Runner
         else
           # In the off chance that part of a macro is before a symbol (e.g. ifdef),
           # but the closing part is inside (e.g. endif) we need to output all macros inside skipped parts
-          # include is removed from the list, to make src_common_keywords.c work
           str += "\n" + skipped_code.scan(/^(#\s*(?:define|undef|if|ifdef|ifndef|else|endif))((?:[^\n]*\\\s*\n)*)([^\n]*)$/m).map { |m| m.compact.join }.join("\n")
         end
 

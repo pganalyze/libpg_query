@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 14-3.0.0   2022-11-17
+
+Special thanks to @wolfgangwalther and @tlisanti for most of the work done on this release.
+
+* Update to Postgres 14.6
+* Drop support for `?` parameter syntax
+* Update `fingerprint.json` to include newly added tests, regeneate tests
+
 ## 13-2.2.0   2022-11-02
 
 * Update to Postgres 13.8 patch release [#156](https://github.com/pganalyze/libpg_query/pull/156)
