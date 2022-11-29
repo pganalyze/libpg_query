@@ -230,43 +230,38 @@ _outBitString(StringInfo out, const BitString *node)
 static void
 _outAConst(StringInfo out, const A_Const *node)
 {
-	appendStringInfo(out, "\"val\":");
-
 	if (node->isnull) {
-		appendStringInfo(out, "null");
+		appendStringInfo(out, "\"isnull\":true");
 	} else {
-		appendStringInfo(out, "{");
 		switch (node->val.node.type) {
 			case T_Integer:
-				appendStringInfo(out, "\"Integer\":{");
+				appendStringInfoString(out, "\"ival\":{");
 				_outInteger(out, &node->val.ival);
-				appendStringInfo(out, "}");
+				appendStringInfoChar(out, '}');
 				break;
 			case T_Float:
-				appendStringInfo(out, "\"Float\":{");
+				appendStringInfoString(out, "\"fval\":{");
 				_outFloat(out, &node->val.fval);
-				appendStringInfo(out, "}");
+				appendStringInfoChar(out, '}');
 				break;
 			case T_Boolean:
-				appendStringInfo(out, "\"Boolean\":{\"boolval\":%s}", booltostr(node->val.boolval.boolval));
+				appendStringInfo(out, "\"boolval\":{\"boolval\":%s}", booltostr(node->val.boolval.boolval));
 				break;
 			case T_String:
-				appendStringInfo(out, "\"String\":{");
+				appendStringInfoString(out, "\"sval\":{");
 				_outString(out, &node->val.sval);
-				appendStringInfo(out, "}");
+				appendStringInfoChar(out, '}');
 				break;
 			case T_BitString:
-				appendStringInfo(out, "\"BitString\":{");
+				appendStringInfoString(out, "\"bsval\":{");
 				_outBitString(out, &node->val.bsval);
-				appendStringInfo(out, "}");
+				appendStringInfoChar(out, '}');
 				break;
 
 			// Unreachable, A_Const cannot contain any other nodes.
 			default:
 				Assert(false);
 		}
-
-		appendStringInfo(out, "}");
 	}
 
 	appendStringInfo(out, ",\"location\":%d", node->location);
