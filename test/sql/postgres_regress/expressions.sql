@@ -3,7 +3,7 @@
 --
 
 --
--- Tests for SQLVAlueFunction
+-- Tests for SQLValueFunction
 --
 
 
@@ -36,35 +36,6 @@ SELECT current_schema;
 SET search_path = 'pg_catalog';
 SELECT current_schema;
 RESET search_path;
-
-
---
--- Tests for BETWEEN
---
-
-explain (costs off)
-select count(*) from date_tbl
-  where f1 between '1997-01-01' and '1998-01-01';
-select count(*) from date_tbl
-  where f1 between '1997-01-01' and '1998-01-01';
-
-explain (costs off)
-select count(*) from date_tbl
-  where f1 not between '1997-01-01' and '1998-01-01';
-select count(*) from date_tbl
-  where f1 not between '1997-01-01' and '1998-01-01';
-
-explain (costs off)
-select count(*) from date_tbl
-  where f1 between symmetric '1997-01-01' and '1998-01-01';
-select count(*) from date_tbl
-  where f1 between symmetric '1997-01-01' and '1998-01-01';
-
-explain (costs off)
-select count(*) from date_tbl
-  where f1 not between symmetric '1997-01-01' and '1998-01-01';
-select count(*) from date_tbl
-  where f1 not between symmetric '1997-01-01' and '1998-01-01';
 
 
 --
@@ -146,6 +117,15 @@ select return_int_input(1) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null);
 select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
 select return_int_input(null::int) in (10, 9, 2, 8, 3, 7, 4, 6, 5, null);
 select return_text_input('a') in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
+-- NOT IN
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 0);
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 2, null);
+select return_int_input(1) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1, null);
+select return_int_input(1) not in (null, null, null, null, null, null, null, null, null, null, null);
+select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, 1);
+select return_int_input(null::int) not in (10, 9, 2, 8, 3, 7, 4, 6, 5, null);
+select return_text_input('a') not in ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j');
 
 rollback;
 
@@ -177,12 +157,29 @@ begin
 end;
 $$ language plpgsql immutable;
 
+create function myintne(myint, myint) returns bool as $$
+begin
+  return not myinteq($1, $2);
+end;
+$$ language plpgsql immutable;
+
 create operator = (
   leftarg    = myint,
   rightarg   = myint,
   commutator = =,
   negator    = <>,
   procedure  = myinteq,
+  restrict   = eqsel,
+  join       = eqjoinsel,
+  merges
+);
+
+create operator <> (
+  leftarg    = myint,
+  rightarg   = myint,
+  commutator = <>,
+  negator    = =,
+  procedure  = myintne,
   restrict   = eqsel,
   join       = eqjoinsel,
   merges
@@ -198,8 +195,12 @@ insert into inttest values(1::myint),(null);
 
 -- try an array with enough elements to cause hashing
 select * from inttest where a in (1::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
+select * from inttest where a not in (1::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
+select * from inttest where a not in (0::myint,2::myint,3::myint,4::myint,5::myint,6::myint,7::myint,8::myint,9::myint, null);
 -- ensure the result matched with the non-hashed version.  We simply remove
 -- some array elements so that we don't reach the hashing threshold.
 select * from inttest where a in (1::myint,2::myint,3::myint,4::myint,5::myint, null);
+select * from inttest where a not in (1::myint,2::myint,3::myint,4::myint,5::myint, null);
+select * from inttest where a not in (0::myint,2::myint,3::myint,4::myint,5::myint, null);
 
 rollback;

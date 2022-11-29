@@ -183,9 +183,9 @@ class Generator
   EOL
 
   FINGERPRINT_STRING = <<-EOL
-  if (strlen(node->%<name>s) > 0) {
+  if (strlen(node->%<name>s->sval) > 0) {
     _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, node->%<name>s);
+    _fingerprintString(ctx, node->%<name>s->sval);
   }
 
   EOL
@@ -260,7 +260,7 @@ class Generator
   INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AclMode', 'AttrNumber', 'SubTransactionId']
   LONG_INT_TYPES = ['long', 'uint64']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
-  FLOAT_TYPES = ['Cost', 'double']
+  FLOAT_TYPES = ['Cost', 'double', 'Cardinality']
 
   IGNORE_FOR_GENERATOR = ['Integer', 'Float', 'String', 'BitString', 'List']
 
@@ -307,7 +307,7 @@ class Generator
               fingerprint_def += format(FINGERPRINT_CHAR, name: name)
             when 'char*'
               fingerprint_def += format(FINGERPRINT_CHAR_PTR, name: name)
-            when 'string'
+            when 'String*'
               fingerprint_def += format(FINGERPRINT_STRING, name: name)
             when 'bool'
               fingerprint_def += format(FINGERPRINT_BOOL, name: name)
@@ -324,7 +324,6 @@ class Generator
             else
               if field_type.end_with?('*') && @nodetypes.include?(field_type[0..-2])
                 typename = field_type[0..-2]
-                typename = 'Node' if typename == 'Value'
                 fingerprint_def += format(FINGERPRINT_SPECIFIC_NODE_PTR, name: name, typename: typename)
               elsif @all_known_enums.include?(field_type)
                 fingerprint_def += format(FINGERPRINT_ENUM, name: name, typename: field_type)

@@ -195,39 +195,81 @@ _outOidList(StringInfo out, const List *node)
 }
 
 static void
-_outInteger(StringInfo out, const Value *node)
+_outInteger(StringInfo out, const Integer *node)
 {
-	appendStringInfo(out, "\"ival\":%d,", node->val.ival);
+	appendStringInfo(out, "\"ival\":%d", node->ival);
 }
 
 static void
-_outFloat(StringInfo out, const Value *node)
+_outBoolean(StringInfo out, const Boolean *node)
 {
-	appendStringInfo(out, "\"str\":");
-	_outToken(out, node->val.str);
-	appendStringInfo(out, ",");
+	appendStringInfo(out, "\"boolval\":%s", booltostr(node->boolval));
 }
 
 static void
-_outString(StringInfo out, const Value *node)
+_outFloat(StringInfo out, const Float *node)
 {
-	appendStringInfo(out, "\"str\":");
-	_outToken(out, node->val.str);
-	appendStringInfo(out, ",");
+	appendStringInfo(out, "\"fval\":");
+	_outToken(out, node->fval);
 }
 
 static void
-_outBitString(StringInfo out, const Value *node)
+_outString(StringInfo out, const String *node)
 {
-	appendStringInfo(out, "\"str\":");
-	_outToken(out, node->val.str);
-	appendStringInfo(out, ",");
+	appendStringInfo(out, "\"sval\":");
+	_outToken(out, node->sval);
 }
 
 static void
-_outNull(StringInfo out, const Value *node)
+_outBitString(StringInfo out, const BitString *node)
 {
-	// No fields
+	appendStringInfo(out, "\"bsval\":");
+	_outToken(out, node->bsval);
+}
+
+static void
+_outAConst(StringInfo out, const A_Const *node)
+{
+	appendStringInfo(out, "\"val\":");
+
+	if (node->isnull) {
+		appendStringInfo(out, "null");
+	} else {
+		appendStringInfo(out, "{");
+		switch (node->val.node.type) {
+			case T_Integer:
+				appendStringInfo(out, "\"Integer\":{");
+				_outInteger(out, &node->val.ival);
+				appendStringInfo(out, "}");
+				break;
+			case T_Float:
+				appendStringInfo(out, "\"Float\":{");
+				_outFloat(out, &node->val.fval);
+				appendStringInfo(out, "}");
+				break;
+			case T_Boolean:
+				appendStringInfo(out, "\"Boolean\":{\"boolval\":%s}", booltostr(node->val.boolval.boolval));
+				break;
+			case T_String:
+				appendStringInfo(out, "\"String\":{");
+				_outString(out, &node->val.sval);
+				appendStringInfo(out, "}");
+				break;
+			case T_BitString:
+				appendStringInfo(out, "\"BitString\":{");
+				_outBitString(out, &node->val.bsval);
+				appendStringInfo(out, "}");
+				break;
+
+			// Unreachable, A_Const cannot contain any other nodes.
+			default:
+				Assert(false);
+		}
+
+		appendStringInfo(out, "}");
+	}
+
+	appendStringInfo(out, ",\"location\":%d", node->location);
 }
 
 #include "pg_query_enum_defs.c"

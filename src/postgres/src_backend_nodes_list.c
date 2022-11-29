@@ -31,7 +31,7 @@
  * See comments in pg_list.h.
  *
  *
- * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -381,6 +381,9 @@ lappend(List *list, void *datum)
 /*
  * Insert the given datum at position 'pos' (measured from 0) in the list.
  * 'pos' must be valid, ie, 0 <= pos <= list's length.
+ *
+ * Note that this takes time proportional to the distance to the end of the
+ * list, since the following entries must be moved.
  */
 
 
@@ -394,6 +397,9 @@ lappend(List *list, void *datum)
  * modify the list; callers should always use this function's return
  * value, rather than continuing to use the pointer passed as the
  * second argument.
+ *
+ * Note that this takes time proportional to the length of the list,
+ * since the existing entries must be moved.
  *
  * Caution: before Postgres 8.0, the original List was unmodified and
  * could be considered to retain its separate identity.  This is no longer
@@ -434,6 +440,10 @@ lcons(void *datum, List *list)
  * Callers should be sure to use the return value as the new pointer to the
  * concatenated list: the 'list1' input pointer may or may not be the same
  * as the returned pointer.
+ *
+ * Note that this takes at least time proportional to the length of list2.
+ * It'd typically be the case that we have to enlarge list1's storage,
+ * probably adding time proportional to the length of list1.
  */
 List *
 list_concat(List *list1, const List *list2)
@@ -510,6 +520,8 @@ list_truncate(List *list, int new_size)
  * Return true iff 'datum' is a member of the list. Equality is
  * determined via equal(), so callers should ensure that they pass a
  * Node as 'datum'.
+ *
+ * This does a simple linear search --- avoid using it on long lists.
  */
 
 
@@ -533,6 +545,9 @@ list_truncate(List *list, int new_size)
  * Delete the n'th cell (counting from 0) in list.
  *
  * The List is pfree'd if this was the last member.
+ *
+ * Note that this takes time proportional to the distance to the end of the
+ * list, since the following entries must be moved.
  */
 List *
 list_delete_nth_cell(List *list, int n)
@@ -604,6 +619,9 @@ list_delete_nth_cell(List *list, int n)
  *
  * The List is pfree'd if this was the last member.  However, we do not
  * touch any data the cell might've been pointing to.
+ *
+ * Note that this takes time proportional to the distance to the end of the
+ * list, since the following entries must be moved.
  */
 List *
 list_delete_cell(List *list, ListCell *cell)
@@ -614,6 +632,8 @@ list_delete_cell(List *list, ListCell *cell)
 /*
  * Delete the first cell in list that matches datum, if any.
  * Equality is determined via equal().
+ *
+ * This does a simple linear search --- avoid using it on long lists.
  */
 
 
@@ -633,14 +653,18 @@ list_delete_cell(List *list, ListCell *cell)
  * where the intent is to alter the list rather than just traverse it.
  * Beware that the list is modified, whereas the Lisp-y coding leaves
  * the original list head intact in case there's another pointer to it.
+ *
+ * Note that this takes time proportional to the length of the list,
+ * since the remaining entries must be moved.  Consider reversing the
+ * list order so that you can use list_delete_last() instead.  However,
+ * if that causes you to replace lappend() with lcons(), you haven't
+ * improved matters.  (In short, you can make an efficient stack from
+ * a List, but not an efficient FIFO queue.)
  */
 
 
 /*
  * Delete the last element of the list.
- *
- * This is the opposite of list_delete_first(), but is noticeably cheaper
- * with a long list, since no data need be moved.
  */
 
 
@@ -648,6 +672,9 @@ list_delete_cell(List *list, ListCell *cell)
  * Delete the first N cells of the list.
  *
  * The List is pfree'd if the request causes all cells to be deleted.
+ *
+ * Note that this takes time proportional to the distance to the end of the
+ * list, since the following entries must be moved.
  */
 #ifndef DEBUG_LIST_MEMORY_USAGE
 #else
@@ -673,8 +700,10 @@ list_delete_cell(List *list, ListCell *cell)
  * you probably want to use list_concat_unique() instead to avoid wasting
  * the storage of the old x list.
  *
- * This function could probably be implemented a lot faster if it is a
- * performance bottleneck.
+ * Note that this takes time proportional to the product of the list
+ * lengths, so beware of using it on long lists.  (We could probably
+ * improve that, but really you should be using some other data structure
+ * if this'd be a performance bottleneck.)
  */
 
 
@@ -706,6 +735,11 @@ list_delete_cell(List *list, ListCell *cell)
  * This variant works on lists of pointers, and determines list
  * membership via equal().  Note that the list1 member will be pointed
  * to in the result.
+ *
+ * Note that this takes time proportional to the product of the list
+ * lengths, so beware of using it on long lists.  (We could probably
+ * improve that, but really you should be using some other data structure
+ * if this'd be a performance bottleneck.)
  */
 
 
@@ -722,6 +756,11 @@ list_delete_cell(List *list, ListCell *cell)
  *
  * This variant works on lists of pointers, and determines list
  * membership via equal()
+ *
+ * Note that this takes time proportional to the product of the list
+ * lengths, so beware of using it on long lists.  (We could probably
+ * improve that, but really you should be using some other data structure
+ * if this'd be a performance bottleneck.)
  */
 
 
@@ -746,6 +785,8 @@ list_delete_cell(List *list, ListCell *cell)
  *
  * Whether an element is already a member of the list is determined
  * via equal().
+ *
+ * This does a simple linear search --- avoid using it on long lists.
  */
 
 
@@ -775,6 +816,11 @@ list_delete_cell(List *list, ListCell *cell)
  * modified in-place rather than being copied. However, callers of this
  * function may have strict ordering expectations -- i.e. that the relative
  * order of those list2 elements that are not duplicates is preserved.
+ *
+ * Note that this takes time proportional to the product of the list
+ * lengths, so beware of using it on long lists.  (We could probably
+ * improve that, but really you should be using some other data structure
+ * if this'd be a performance bottleneck.)
  */
 
 
@@ -799,6 +845,8 @@ list_delete_cell(List *list, ListCell *cell)
  *
  * It is caller's responsibility to have sorted the list to bring duplicates
  * together, perhaps via list_sort(list, list_oid_cmp).
+ *
+ * Note that this takes time proportional to the length of the list.
  */
 
 
@@ -867,6 +915,12 @@ list_copy(const List *oldlist)
 }
 
 /*
+ * Return a shallow copy of the specified list containing only the first 'len'
+ * elements.  If oldlist is shorter than 'len' then we copy the entire list.
+ */
+
+
+/*
  * Return a shallow copy of the specified list, without the first N elements.
  */
 List *
@@ -927,6 +981,8 @@ list_copy_deep(const List *oldlist)
  *
  * Like qsort(), this provides no guarantees about sort stability
  * for equal keys.
+ *
+ * This is based on qsort(), so it likewise has O(N log N) runtime.
  */
 
 

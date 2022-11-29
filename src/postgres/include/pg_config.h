@@ -1,18 +1,6 @@
 /* src/include/pg_config.h.  Generated from pg_config.h.in by configure.  */
 /* src/include/pg_config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define to the type of arg 1 of 'accept' */
-#define ACCEPT_TYPE_ARG1 int
-
-/* Define to the type of arg 2 of 'accept' */
-#define ACCEPT_TYPE_ARG2 struct sockaddr *
-
-/* Define to the type of arg 3 of 'accept' */
-#define ACCEPT_TYPE_ARG3 socklen_t
-
-/* Define to the return type of 'accept' */
-#define ACCEPT_TYPE_RETURN int
-
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
@@ -54,6 +42,9 @@
 
 /* Define to the default TCP port number as a string constant. */
 #define DEF_PGPORT_STR "5432"
+
+/* Define to the file name extension of dynamically-loadable modules. */
+#define DLSUFFIX ".so"
 
 /* Define to build with GSSAPI support. (--with-gssapi) */
 /* #undef ENABLE_GSS */
@@ -158,6 +149,10 @@
 /* Define to 1 if you have the declaration of `RTLD_NOW', and to 0 if you
    don't. */
 #define HAVE_DECL_RTLD_NOW 1
+
+/* Define to 1 if you have the declaration of `sigwait', and to 0 if you
+   don't. */
+#define HAVE_DECL_SIGWAIT 1
 
 /* Define to 1 if you have the declaration of `strlcat', and to 0 if you
    don't. */
@@ -289,6 +284,9 @@
 /* Define to 1 if you have the `inet_aton' function. */
 #define HAVE_INET_ATON 1
 
+/* Define to 1 if you have the `inet_pton' function. */
+#define HAVE_INET_PTON 1
+
 /* Define to 1 if the system has the type `int64'. */
 /* #undef HAVE_INT64 */
 
@@ -361,6 +359,9 @@
 /* Define to 1 if you have the `z' library (-lz). */
 /* #undef HAVE_LIBZ */
 
+/* Define to 1 if you have the `zstd' library (-lzstd). */
+/* #undef HAVE_LIBZSTD */
+
 /* Define to 1 if you have the `link' function. */
 #define HAVE_LINK 1
 
@@ -372,9 +373,6 @@
 
 /* Define to 1 if `long long int' works and is 64 bits. */
 /* #undef HAVE_LONG_LONG_INT_64 */
-
-/* Define to 1 if you have the <lz4.h> header file. */
-/* #undef HAVE_LZ4_H */
 
 /* Define to 1 if you have the <mbarrier.h> header file. */
 /* #undef HAVE_MBARRIER_H */
@@ -415,6 +413,9 @@
 /* Define to 1 if you have the <poll.h> header file. */
 #define HAVE_POLL_H 1
 
+/* Define to 1 if you have a POSIX-conforming sigwait declaration. */
+#define HAVE_POSIX_DECL_SIGWAIT 1
+
 /* Define to 1 if you have the `posix_fadvise' function. */
 /* #undef HAVE_POSIX_FADVISE */
 
@@ -451,9 +452,6 @@
 /* Define to 1 if you have the `pwrite' function. */
 #define HAVE_PWRITE 1
 
-/* Define to 1 if you have the `random' function. */
-#define HAVE_RANDOM 1
-
 /* Define to 1 if you have the <readline.h> header file. */
 /* #undef HAVE_READLINE_H */
 
@@ -468,10 +466,6 @@
 
 /* Define to 1 if you have the `readv' function. */
 #define HAVE_READV 1
-
-/* Define to 1 if you have the global variable
-   'rl_completion_append_character'. */
-/* #undef HAVE_RL_COMPLETION_APPEND_CHARACTER */
 
 /* Define to 1 if you have the `rl_completion_matches' function. */
 /* #undef HAVE_RL_COMPLETION_MATCHES */
@@ -494,6 +488,9 @@
 /* Define to 1 if you have the `rl_reset_screen_size' function. */
 /* #undef HAVE_RL_RESET_SCREEN_SIZE */
 
+/* Define to 1 if you have the `rl_variable_bind' function. */
+/* #undef HAVE_RL_VARIABLE_BIND */
+
 /* Define to 1 if you have the <security/pam_appl.h> header file. */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
 
@@ -512,11 +509,11 @@
 /* Define to 1 if you have the `shm_open' function. */
 #define HAVE_SHM_OPEN 1
 
+/* Define to 1 if the system has the type `socklen_t'. */
+#define HAVE_SOCKLEN_T 1
+
 /* Define to 1 if you have spinlocks. */
 #define HAVE_SPINLOCKS 1
-
-/* Define to 1 if you have the `srandom' function. */
-#define HAVE_SRANDOM 1
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #define HAVE_STDBOOL_H 1
@@ -619,6 +616,9 @@
 
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #define HAVE_SYS_IPC_H 1
+
+/* Define to 1 if you have the <sys/personality.h> header file. */
+/* #undef HAVE_SYS_PERSONALITY_H */
 
 /* Define to 1 if you have the <sys/prctl.h> header file. */
 /* #undef HAVE_SYS_PRCTL_H */
@@ -802,7 +802,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 14.6"
+#define PACKAGE_STRING "PostgreSQL 15.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -811,7 +811,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "14.6"
+#define PACKAGE_VERSION "15.1"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -824,13 +824,13 @@
 #define PG_KRB_SRVNAM "postgres"
 
 /* PostgreSQL major version as a string */
-#define PG_MAJORVERSION "14"
+#define PG_MAJORVERSION "15"
 
 /* PostgreSQL major version number */
-#define PG_MAJORVERSION_NUM 14
+#define PG_MAJORVERSION_NUM 15
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 6
+#define PG_MINORVERSION_NUM 1
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -839,13 +839,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "14.6"
+#define PG_VERSION "15.1"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 140006
+#define PG_VERSION_NUM 150001
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 14.6 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 15.1 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -958,6 +958,9 @@
 
 /* Define to select Win32-style shared memory. */
 /* #undef USE_WIN32_SHARED_MEMORY */
+
+/* Define to 1 to build with ZSTD support. (--with-zstd) */
+/* #undef USE_ZSTD */
 
 /* Define to 1 if `wcstombs_l' requires <xlocale.h>. */
 #define WCSTOMBS_L_IN_XLOCALE 1

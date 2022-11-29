@@ -9,7 +9,7 @@
  * fmgr.c
  *	  The Postgres function manager.
  *
- * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -177,14 +177,6 @@ extern Datum fmgr_security_definer(PG_FUNCTION_ARGS);
 
 /*
  * record_C_func: enter (or update) info about a C function in the hash table
- */
-
-
-/*
- * clear_external_function_hash: remove entries for a library being closed
- *
- * Presently we just zap the entire hash table, but later it might be worth
- * the effort to remove only the entries associated with the given handle.
  */
 
 

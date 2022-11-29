@@ -27,9 +27,9 @@ index 74339aa4db..4529fea74e 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
 @@ -168,6 +168,8 @@ static Node *makeBitStringConst(char *str, int location);
+ static Node *makeBitStringConst(char *str, int location);
  static Node *makeNullAConst(int location);
- static Node *makeAConst(Value *v, int location);
- static Node *makeBoolAConst(bool state, int location);
+ static Node *makeAConst(Node *v, int location);
 +static Node *makeParamRef(int number, int location);
 +static Node *makeParamRefCast(int number, int location, TypeName *typename);
  static RoleSpec *makeRoleSpec(RoleSpecType type, int location);

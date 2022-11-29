@@ -204,7 +204,7 @@ static void deparsePreparableStmt(StringInfo str, Node *node);
 static void deparseRuleActionStmt(StringInfo str, Node *node);
 static void deparseExplainableStmt(StringInfo str, Node *node);
 static void deparseStmt(StringInfo str, Node *node);
-static void deparseValue(StringInfo str, Value *value, DeparseNodeContext context);
+static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context);
 
 // "any_name" in gram.y
 static void deparseAnyName(StringInfo str, List *parts)
@@ -461,15 +461,15 @@ static void deparseSimpleTypename(StringInfo str, Node *node)
 }
 
 // "NumericOnly" in gram.y
-static void deparseNumericOnly(StringInfo str, Value *value)
+static void deparseNumericOnly(StringInfo str, union ValUnion *value)
 {
 	switch (nodeTag(value))
 	{
 		case T_Integer:
-			appendStringInfo(str, "%d", value->val.ival);
+			appendStringInfo(str, "%d", value->ival.ival);
 			break;
 		case T_Float:
-			appendStringInfoString(str, value->val.str);
+			appendStringInfoString(str, value->sval.sval);
 			break;
 		default:
 			Assert(false);
@@ -483,7 +483,7 @@ static void deparseNumericOnlyList(StringInfo str, List *l)
 
 	foreach(lc, l)
 	{
-		deparseNumericOnly(str, (Value *) lfirst(lc));
+		deparseNumericOnly(str, (union ValUnion *) lfirst(lc));
 		if (lnext(l, lc))
 			appendStringInfoString(str, ", ");
 	}
@@ -502,25 +502,25 @@ static void deparseSeqOptElem(StringInfo str, DefElem *def_elem)
 	else if (strcmp(def_elem->defname, "cache") == 0)
 	{
 		appendStringInfoString(str, "CACHE ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
-	else if (strcmp(def_elem->defname, "cycle") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "cycle") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "CYCLE");
 	}
-	else if (strcmp(def_elem->defname, "cycle") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "cycle") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NO CYCLE");
 	}
 	else if (strcmp(def_elem->defname, "increment") == 0)
 	{
 		appendStringInfoString(str, "INCREMENT ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
 	else if (strcmp(def_elem->defname, "maxvalue") == 0 && def_elem->arg != NULL)
 	{
 		appendStringInfoString(str, "MAXVALUE ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
 	else if (strcmp(def_elem->defname, "maxvalue") == 0 && def_elem->arg == NULL)
 	{
@@ -529,7 +529,7 @@ static void deparseSeqOptElem(StringInfo str, DefElem *def_elem)
 	else if (strcmp(def_elem->defname, "minvalue") == 0 && def_elem->arg != NULL)
 	{
 		appendStringInfoString(str, "MINVALUE ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
 	else if (strcmp(def_elem->defname, "minvalue") == 0 && def_elem->arg == NULL)
 	{
@@ -548,7 +548,7 @@ static void deparseSeqOptElem(StringInfo str, DefElem *def_elem)
 	else if (strcmp(def_elem->defname, "start") == 0)
 	{
 		appendStringInfoString(str, "START ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
 	else if (strcmp(def_elem->defname, "restart") == 0 && def_elem->arg == NULL)
 	{
@@ -557,7 +557,7 @@ static void deparseSeqOptElem(StringInfo str, DefElem *def_elem)
 	else if (strcmp(def_elem->defname, "restart") == 0 && def_elem->arg != NULL)
 	{
 		appendStringInfoString(str, "RESTART ");
-		deparseNumericOnly(str, (Value *) def_elem->arg);
+		deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 	}
 	else
 	{
@@ -712,7 +712,7 @@ static void deparseDefArg(StringInfo str, Node *arg, bool is_operator_def_arg)
 	}
 	else if (IsA(arg, Float) || IsA(arg, Integer)) // NumericOnly
 	{
-		deparseValue(str, (Value *) arg, DEPARSE_NODE_CONTEXT_NONE);
+		deparseValue(str, (union ValUnion *) arg, DEPARSE_NODE_CONTEXT_NONE);
 	}
 	else if (IsA(arg, String))
 	{
@@ -793,11 +793,11 @@ static void deparseCreateGenericOptions(StringInfo str, List *options)
 // "common_func_opt_item" in gram.y
 static void deparseCommonFuncOptItem(StringInfo str, DefElem *def_elem)
 {
-	if (strcmp(def_elem->defname, "strict") == 0 && intVal(def_elem->arg) == 1)
+	if (strcmp(def_elem->defname, "strict") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "RETURNS NULL ON NULL INPUT");
 	}
-	else if (strcmp(def_elem->defname, "strict") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "strict") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "CALLED ON NULL INPUT");
 	}
@@ -813,31 +813,31 @@ static void deparseCommonFuncOptItem(StringInfo str, DefElem *def_elem)
 	{
 		appendStringInfoString(str, "VOLATILE");
 	}
-	else if (strcmp(def_elem->defname, "security") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "security") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "SECURITY DEFINER");
 	}
-	else if (strcmp(def_elem->defname, "security") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "security") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "SECURITY INVOKER");
 	}
-	else if (strcmp(def_elem->defname, "leakproof") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "leakproof") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "LEAKPROOF");
 	}
-	else if (strcmp(def_elem->defname, "leakproof") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "leakproof") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOT LEAKPROOF");
 	}
 	else if (strcmp(def_elem->defname, "cost") == 0)
 	{
 		appendStringInfoString(str, "COST ");
-		deparseValue(str, (Value *) def_elem->arg, DEPARSE_NODE_CONTEXT_NONE);
+		deparseValue(str, (union ValUnion *) def_elem->arg, DEPARSE_NODE_CONTEXT_NONE);
 	}
 	else if (strcmp(def_elem->defname, "rows") == 0)
 	{
 		appendStringInfoString(str, "ROWS ");
-		deparseValue(str, (Value *) def_elem->arg, DEPARSE_NODE_CONTEXT_NONE);
+		deparseValue(str, (union ValUnion *) def_elem->arg, DEPARSE_NODE_CONTEXT_NONE);
 	}
 	else if (strcmp(def_elem->defname, "support") == 0)
 	{
@@ -1246,6 +1246,64 @@ static void deparseOptBooleanOrString(StringInfo str, char *s)
 		deparseNonReservedWordOrSconst(str, s);
 }
 
+static void deparseOptBoolean(StringInfo str, Node *node)
+{
+	if (node == NULL)
+	{
+		return;
+	}
+
+	switch (nodeTag(node))
+	{
+		case T_String:
+			appendStringInfo(str, " %s", strVal(node));
+			break;
+		case T_Integer:
+			appendStringInfo(str, " %d", intVal(node));
+			break;
+		case T_Boolean:
+			appendStringInfo(str, " %s", boolVal(node) ? "TRUE" : "FALSE");
+			break;
+		default:
+			Assert(false);
+			break;
+	}
+}
+
+bool optBooleanValue(Node *node)
+{
+	if (node == NULL)
+	{
+		return true;
+	}
+
+	switch (nodeTag(node))
+	{
+		case T_String: {
+			// Longest valid string is "off\0"
+			char lower[4];
+			strncpy(lower, strVal(node), 4);
+			lower[3] = 0;
+
+			if (strcmp(lower, "on") == 0) {
+				return true;
+			} else if (strcmp(lower, "off") == 0) {
+				return false;
+			}
+
+			// No sane way to handle this.
+			return false;
+		}
+		case T_Integer:
+			return intVal(node) != 0;
+		case T_Boolean:
+			return boolVal(node);
+		default:
+			Assert(false);
+			return false;
+	}
+}
+
 // "var_name"
 //
 // Note this is kept separate from ColId in case we want to improve the
@@ -1270,7 +1328,7 @@ static void deparseVarList(StringInfo str, List *l)
 		{
 			A_Const *a_const = castNode(A_Const, lfirst(lc));
 			if (IsA(&a_const->val, Integer) || IsA(&a_const->val, Float))
-				deparseNumericOnly(str, (Value *) &a_const->val);
+				deparseNumericOnly(str, (union ValUnion *) &a_const->val);
 			else if (IsA(&a_const->val, String))
 				deparseOptBooleanOrString(str, strVal(&a_const->val));
 			else
@@ -1351,7 +1409,7 @@ static void deparseAlterIdentityColumnOptionList(StringInfo str, List *l)
 		else if (strcmp(def_elem->defname, "restart") == 0 && def_elem->arg != NULL)
 		{
 			appendStringInfoString(str, "RESTART ");
-			deparseNumericOnly(str, (Value *) def_elem->arg);
+			deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 		}
 		else if (strcmp(def_elem->defname, "generated") == 0)
 		{
@@ -2039,7 +2097,7 @@ static void deparseUtilityOptionList(StringInfo str, List *options)
 			{
 				appendStringInfoChar(str, ' ');
 				if (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float))
-					deparseNumericOnly(str, (Value *) def_elem->arg);
+					deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
 				else if (IsA(def_elem->arg, String))
 					deparseOptBooleanOrString(str, strVal(def_elem->arg));
 				else
@@ -2204,7 +2262,7 @@ static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 		else if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
 			appendStringInfoString(str, "FETCH FIRST ");
 
-		if (IsA(stmt->limitCount, A_Const) && IsA(&castNode(A_Const, stmt->limitCount)->val, Null))
+		if (IsA(stmt->limitCount, A_Const) && castNode(A_Const, stmt->limitCount)->isnull)
 			appendStringInfoString(str, "ALL");
 		else
 			deparseCExpr(str, stmt->limitCount);
@@ -2340,7 +2398,8 @@ static void deparseAlias(StringInfo str, Alias *alias)
 
 static void deparseAConst(StringInfo str, A_Const *a_const)
 {
-	deparseValue(str, &a_const->val, DEPARSE_NODE_CONTEXT_CONSTANT);
+	union ValUnion *val = a_const->isnull ? NULL : &a_const->val;
+	deparseValue(str, val, DEPARSE_NODE_CONTEXT_CONSTANT);
 }
 
 static void deparseFuncCall(StringInfo str, FuncCall *func_call)
@@ -2908,7 +2967,7 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			Assert(IsA(a_expr->rexpr, List));
 			deparseExpr(str, a_expr->lexpr);
 			appendStringInfoChar(str, ' ');
-			name = ((Value *) linitial(a_expr->name))->val.str;
+			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "=") == 0) {
 				appendStringInfoString(str, "IN ");
 			} else if (strcmp(name, "<>") == 0) {
@@ -2929,7 +2988,7 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			deparseExpr(str, a_expr->lexpr);
 			appendStringInfoChar(str, ' ');
 
-			name = ((Value *) linitial(a_expr->name))->val.str;
+			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "~~") == 0) {
 				appendStringInfoString(str, "LIKE ");
 			} else if (strcmp(name, "!~~") == 0) {
@@ -2946,7 +3005,7 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			deparseExpr(str, a_expr->lexpr);
 			appendStringInfoChar(str, ' ');
 
-			name = ((Value *) linitial(a_expr->name))->val.str;
+			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "~~*") == 0) {
 				appendStringInfoString(str, "ILIKE ");
 			} else if (strcmp(name, "!~~*") == 0) {
@@ -2963,7 +3022,7 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 			deparseExpr(str, a_expr->lexpr);
 			appendStringInfoChar(str, ' ');
 
-			name = ((Value *) linitial(a_expr->name))->val.str;
+			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "~") == 0) {
 				appendStringInfoString(str, "SIMILAR TO ");
 			} else if (strcmp(name, "!~") == 0) {
@@ -3899,7 +3958,7 @@ static void deparseColumnDef(StringInfo str, ColumnDef *column_def)
 
 	if (column_def->colname != NULL)
 	{
-		appendStringInfoString(str, column_def->colname);
+		appendStringInfoString(str, quote_identifier(column_def->colname));
 		appendStringInfoChar(str, ' ');
 	}
 
@@ -3936,6 +3995,22 @@ static void deparseColumnDef(StringInfo str, ColumnDef *column_def)
 	removeTrailingSpace(str);
 }
 
+static void deparseInsertOverride(StringInfo str, OverridingKind override)
+{
+	switch (override)
+	{
+		case OVERRIDING_NOT_SET:
+			// Do nothing
+			break;
+		case OVERRIDING_USER_VALUE:
+			appendStringInfoString(str, "OVERRIDING USER VALUE ");
+			break;
+		case OVERRIDING_SYSTEM_VALUE:
+			appendStringInfoString(str, "OVERRIDING SYSTEM VALUE ");
+			break;
+	}
+}
+
 static void deparseInsertStmt(StringInfo str, InsertStmt *insert_stmt)
 {
 	ListCell *lc;
@@ -3958,18 +4033,7 @@ static void deparseInsertStmt(StringInfo str, InsertStmt *insert_stmt)
 		appendStringInfoString(str, ") ");
 	}
 
-	switch (insert_stmt->override)
-	{
-		case OVERRIDING_NOT_SET:
-			// Do nothing
-			break;
-		case OVERRIDING_USER_VALUE:
-			appendStringInfoString(str, "OVERRIDING USER VALUE ");
-			break;
-		case OVERRIDING_SYSTEM_VALUE:
-			appendStringInfoString(str, "OVERRIDING SYSTEM VALUE ");
-			break;
-	}
+	deparseInsertOverride(str, insert_stmt->override);
 
 	if (insert_stmt->selectStmt != NULL)
 	{
@@ -4094,6 +4158,90 @@ static void deparseUpdateStmt(StringInfo str, UpdateStmt *update_stmt)
 	}
 
 	removeTrailingSpace(str);
+}
+
+static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
+{
+	if (merge_stmt->withClause != NULL)
+	{
+		deparseWithClause(str, merge_stmt->withClause);
+		appendStringInfoChar(str, ' ');
+	}
+
+	appendStringInfoString(str, "MERGE INTO ");
+	deparseRangeVar(str, merge_stmt->relation, DEPARSE_NODE_CONTEXT_NONE);
+	appendStringInfoChar(str, ' ');
+
+	appendStringInfoString(str, "USING ");
+	deparseTableRef(str, merge_stmt->sourceRelation);
+	appendStringInfoChar(str, ' ');
+
+	appendStringInfoString(str, "ON ");
+	deparseExpr(str, merge_stmt->joinCondition);
+	appendStringInfoChar(str, ' ');
+
+	ListCell *lc, *lc2;
+	foreach (lc, merge_stmt->mergeWhenClauses)
+	{
+		MergeWhenClause *clause = castNode(MergeWhenClause, lfirst(lc));
+
+		appendStringInfoString(str, "WHEN ");
+
+		if (!clause->matched)
+		{
+			appendStringInfoString(str, "NOT ");
+		}
+
+		appendStringInfoString(str, "MATCHED ");
+
+		if (clause->condition)
+		{
+			appendStringInfoString(str, "AND ");
+			deparseExpr(str, clause->condition);
+			appendStringInfoChar(str, ' ');
+		}
+
+		appendStringInfoString(str, "THEN ");
+
+		switch (clause->commandType) {
+			case CMD_INSERT:
+				appendStringInfoString(str, "INSERT ");
+
+				if (clause->targetList) {
+					appendStringInfoChar(str, '(');
+					deparseInsertColumnList(str, clause->targetList);
+					appendStringInfoString(str, ") ");
+				}
+
+				deparseInsertOverride(str, clause->override);
+
+				if (clause->values) {
+					appendStringInfoString(str, "VALUES (");
+					deparseExprList(str, clause->values);
+					appendStringInfoString(str, ")");
+				} else {
+					appendStringInfoString(str, "DEFAULT VALUES ");
+				}
+
+				break;
+			case CMD_UPDATE:
+				appendStringInfoString(str, "UPDATE SET ");
+				deparseSetClauseList(str, clause->targetList);
+				break;
+			case CMD_DELETE:
+				appendStringInfoString(str, "DELETE");
+				break;
+			case CMD_NOTHING:
+				appendStringInfoString(str, "DO NOTHING");
+				break;
+			default:
+				elog(ERROR, "deparse: unpermitted command type in merge statement: %d", clause->commandType);
+				break;
+		}
+
+		if (lfirst(lc) != llast(merge_stmt->mergeWhenClauses))
+			appendStringInfoChar(str, ' ');
+	}
 }
 
 static void deparseDeleteStmt(StringInfo str, DeleteStmt *delete_stmt)
@@ -4595,10 +4743,24 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 			appendStringInfoString(str, "ON DELETE CASCADE ");
 			break;
 		case FKCONSTR_ACTION_SETNULL:
-			appendStringInfoString(str, "ON DELETE SET NULL ");
-			break;
 		case FKCONSTR_ACTION_SETDEFAULT:
-			appendStringInfoString(str, "ON DELETE SET DEFAULT ");
+			appendStringInfoString(str, "ON DELETE SET ");
+
+			switch (constraint->fk_del_action) {
+				case FKCONSTR_ACTION_SETDEFAULT: appendStringInfoString(str, "DEFAULT "); break;
+				case FKCONSTR_ACTION_SETNULL:    appendStringInfoString(str, "NULL "); break;
+			}
+
+			if (constraint->fk_del_set_cols) {
+				appendStringInfoString(str, "(");
+				ListCell *lc;
+				foreach (lc, constraint->fk_del_set_cols) {
+					appendStringInfoString(str, strVal(lfirst(lc)));
+					if (lfirst(lc) != llast(constraint->fk_del_set_cols))
+						appendStringInfoString(str, ", ");
+				}
+				appendStringInfoString(str, ")");
+			}
 			break;
 		default:
 			// Not specified
@@ -5314,7 +5476,7 @@ static void deparseSecLabelStmt(StringInfo str, SecLabelStmt *sec_label_stmt)
 			break;
 		case OBJECT_LARGEOBJECT:
 			appendStringInfoString(str, "LARGE OBJECT ");
-			deparseValue(str, (Value *) sec_label_stmt->object, DEPARSE_NODE_CONTEXT_CONSTANT);
+			deparseValue(str, (union ValUnion *) sec_label_stmt->object, DEPARSE_NODE_CONTEXT_CONSTANT);
 			break;
 		case OBJECT_PROCEDURE:
 			appendStringInfoString(str, "PROCEDURE ");
@@ -5802,8 +5964,7 @@ static void deparseAlterObjectDependsStmt(StringInfo str, AlterObjectDependsStmt
 	if (alter_object_depends_stmt->remove)
 		appendStringInfoString(str, "NO ");
 
-	appendStringInfoString(str, "DEPENDS ON EXTENSION ");
-	deparseColId(str, strVal(alter_object_depends_stmt->extname));
+	appendStringInfo(str, "DEPENDS ON EXTENSION %s", alter_object_depends_stmt->extname->sval);
 }
 
 static void deparseAlterObjectSchemaStmt(StringInfo str, AlterObjectSchemaStmt *alter_object_schema_stmt)
@@ -6083,6 +6244,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_SetRelOptions: /* SET (...) -- AM specific parameters */
 			appendStringInfoString(str, "SET ");
 			break;
+		case AT_SetAccessMethod:
+			appendStringInfo(str, "SET ACCESS METHOD ");
+			break;
 		case AT_ResetRelOptions: /* RESET (...) -- AM specific parameters */
 			appendStringInfoString(str, "RESET ");
 			break;
@@ -6289,14 +6453,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 	removeTrailingSpace(str);
 }
 
-static void deparseAlterTableStmt(StringInfo str, AlterTableStmt *alter_table_stmt)
+static DeparseNodeContext deparseAlterTableObjType(StringInfo str, ObjectType type)
 {
-	ListCell *lc;
-	DeparseNodeContext context = DEPARSE_NODE_CONTEXT_NONE;
-
-	appendStringInfoString(str, "ALTER ");
-
-	switch (alter_table_stmt->objtype)
+	switch (type)
 	{
 		case OBJECT_TABLE:
 			appendStringInfoString(str, "TABLE ");
@@ -6318,12 +6477,48 @@ static void deparseAlterTableStmt(StringInfo str, AlterTableStmt *alter_table_st
 			break;
 		case OBJECT_TYPE:
 			appendStringInfoString(str, "TYPE ");
-			context = DEPARSE_NODE_CONTEXT_ALTER_TYPE;
+			return DEPARSE_NODE_CONTEXT_ALTER_TYPE;
 			break;
 		default:
 			Assert(false);
 			break;
 	}
+
+	return DEPARSE_NODE_CONTEXT_NONE;
+}
+
+static void deparseAlterTableMoveAllStmt(StringInfo str, AlterTableMoveAllStmt *move_all_stmt)
+{
+	appendStringInfoString(str, "ALTER ");
+	deparseAlterTableObjType(str, move_all_stmt->objtype);
+
+	appendStringInfoString(str, "ALL IN TABLESPACE ");
+	appendStringInfoString(str, move_all_stmt->orig_tablespacename);
+	appendStringInfoChar(str, ' ');
+
+	if (move_all_stmt->roles)
+	{
+		appendStringInfoString(str, "OWNED BY ");
+		deparseRoleList(str, move_all_stmt->roles);
+		appendStringInfoChar(str, ' ');
+	}
+
+	appendStringInfoString(str, "SET TABLESPACE ");
+	appendStringInfoString(str, move_all_stmt->new_tablespacename);
+	appendStringInfoChar(str, ' ');
+
+	if (move_all_stmt->nowait)
+	{
+		appendStringInfoString(str, "NOWAIT");
+	}
+}
+
+static void deparseAlterTableStmt(StringInfo str, AlterTableStmt *alter_table_stmt)
+{
+	ListCell *lc;
+
+	appendStringInfoString(str, "ALTER ");
+	DeparseNodeContext context = deparseAlterTableObjType(str, alter_table_stmt->objtype);
 
 	if (alter_table_stmt->missing_ok)
 		appendStringInfoString(str, "IF EXISTS ");
@@ -6973,130 +7168,194 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 
 	if (list_length(copy_stmt->options) > 0)
 	{
-		appendStringInfoString(str, "WITH (");
+		// In some cases, equivalent expressions may have slightly different parse trees for `COPY`
+		// statements. For example the following two statements result in different (but equivalent) parse
+		// trees:
+		//
+		//   - COPY foo FROM STDIN CSV FREEZE
+		//   - COPY foo FROM STDIN WITH (FORMAT CSV, FREEZE)
+		//
+		// In order to make sure we deparse to the "correct" version, we always try to deparse to the older
+		// compact syntax first.
+		//
+		// The old syntax can be seen here in the Postgres 8.4 Reference:
+		//     https://www.postgresql.org/docs/8.4/sql-copy.html
+
+		bool old_fmt = true;
+
+		// Loop over the options to see if any require the new `WITH (...)` syntax.
 		foreach(lc, copy_stmt->options)
 		{
 			DefElem *def_elem = castNode(DefElem, lfirst(lc));
 
-			if (strcmp(def_elem->defname, "format") == 0)
+			if (strcmp(def_elem->defname, "freeze") == 0 && optBooleanValue(def_elem->arg))
+			{}
+			else if (strcmp(def_elem->defname, "header") == 0 && def_elem->arg && optBooleanValue(def_elem->arg))
+			{}
+			else if (strcmp(def_elem->defname, "format") == 0 && strcmp(strVal(def_elem->arg), "csv") == 0)
+			{}
+			else if (strcmp(def_elem->defname, "force_quote") == 0 && def_elem->arg && nodeTag(def_elem->arg) == T_List)
+			{}
+			else
 			{
-				appendStringInfoString(str, "FORMAT ");
+				old_fmt = false;
+				break;
+			}
+		}
 
-				char *format = strVal(def_elem->arg);
-				if (strcmp(format, "binary") == 0)
-					appendStringInfoString(str, "BINARY");
-				else if (strcmp(format, "csv") == 0)
-					appendStringInfoString(str, "CSV");
-				else
-					Assert(false);
-			}
-			else if (strcmp(def_elem->defname, "freeze") == 0 && (def_elem->arg == NULL || intVal(def_elem->arg) == 1))
+		// Branch to differing output modes, depending on if we can use the old syntax.
+		if (old_fmt) {
+			foreach(lc, copy_stmt->options)
 			{
-				appendStringInfoString(str, "FREEZE");
-				if (def_elem->arg != NULL && intVal(def_elem->arg) == 1)
-					appendStringInfoString(str, " 1");
-			}
-			else if (strcmp(def_elem->defname, "delimiter") == 0)
-			{
-				appendStringInfoString(str, "DELIMITER ");
-				deparseStringLiteral(str, strVal(def_elem->arg));
-			}
-			else if (strcmp(def_elem->defname, "null") == 0)
-			{
-				appendStringInfoString(str, "NULL ");
-				deparseStringLiteral(str, strVal(def_elem->arg));
-			}
-			else if (strcmp(def_elem->defname, "header") == 0 && (def_elem->arg == NULL || intVal(def_elem->arg) == 1))
-			{
-				appendStringInfoString(str, "HEADER");
-				if (def_elem->arg != NULL && intVal(def_elem->arg) == 1)
-					appendStringInfoString(str, " 1");
-			}
-			else if (strcmp(def_elem->defname, "quote") == 0)
-			{
-				appendStringInfoString(str, "QUOTE ");
-				deparseStringLiteral(str, strVal(def_elem->arg));
-			}
-			else if (strcmp(def_elem->defname, "escape") == 0)
-			{
-				appendStringInfoString(str, "ESCAPE ");
-				deparseStringLiteral(str, strVal(def_elem->arg));
-			}
-			else if (strcmp(def_elem->defname, "force_quote") == 0)
-			{
-				appendStringInfoString(str, "FORCE_QUOTE ");
-				if (IsA(def_elem->arg, A_Star))
+				DefElem *def_elem = castNode(DefElem, lfirst(lc));
+
+				if (strcmp(def_elem->defname, "freeze") == 0 && optBooleanValue(def_elem->arg))
 				{
-					appendStringInfoChar(str, '*');
+					appendStringInfoString(str, "FREEZE ");
 				}
-				else if (IsA(def_elem->arg, List))
+				else if (strcmp(def_elem->defname, "header") == 0 && def_elem->arg && optBooleanValue(def_elem->arg))
 				{
-					appendStringInfoChar(str, '(');
+					appendStringInfoString(str, "HEADER ");
+				}
+				else if (strcmp(def_elem->defname, "format") == 0 && strcmp(strVal(def_elem->arg), "csv") == 0)
+				{
+					appendStringInfoString(str, "CSV ");
+				}
+				else if (strcmp(def_elem->defname, "force_quote") == 0 && def_elem->arg && nodeTag(def_elem->arg) == T_List)
+				{
+					appendStringInfoString(str, "FORCE QUOTE ");
+					deparseColumnList(str, castNode(List, def_elem->arg));
+				}
+				else
+				{
+					// This isn't reachable, the conditions here are exactly the same as the first loop above.
+					Assert(false);
+				}
+			}
+		} else {
+			appendStringInfoString(str, "WITH (");
+			foreach(lc, copy_stmt->options)
+			{
+				DefElem *def_elem = castNode(DefElem, lfirst(lc));
+
+				if (strcmp(def_elem->defname, "format") == 0)
+				{
+					appendStringInfoString(str, "FORMAT ");
+
+					char *format = strVal(def_elem->arg);
+					if (strcmp(format, "binary") == 0)
+						appendStringInfoString(str, "BINARY");
+					else if (strcmp(format, "csv") == 0)
+						appendStringInfoString(str, "CSV");
+					else
+						Assert(false);
+				}
+				else if (strcmp(def_elem->defname, "freeze") == 0)
+				{
+					appendStringInfoString(str, "FREEZE");
+					deparseOptBoolean(str, def_elem->arg);
+				}
+				else if (strcmp(def_elem->defname, "delimiter") == 0)
+				{
+					appendStringInfoString(str, "DELIMITER ");
+					deparseStringLiteral(str, strVal(def_elem->arg));
+				}
+				else if (strcmp(def_elem->defname, "null") == 0)
+				{
+					appendStringInfoString(str, "NULL ");
+					deparseStringLiteral(str, strVal(def_elem->arg));
+				}
+				else if (strcmp(def_elem->defname, "header") == 0)
+				{
+					appendStringInfoString(str, "HEADER");
+					deparseOptBoolean(str, def_elem->arg);
+				}
+				else if (strcmp(def_elem->defname, "quote") == 0)
+				{
+					appendStringInfoString(str, "QUOTE ");
+					deparseStringLiteral(str, strVal(def_elem->arg));
+				}
+				else if (strcmp(def_elem->defname, "escape") == 0)
+				{
+					appendStringInfoString(str, "ESCAPE ");
+					deparseStringLiteral(str, strVal(def_elem->arg));
+				}
+				else if (strcmp(def_elem->defname, "force_quote") == 0)
+				{
+					appendStringInfoString(str, "FORCE_QUOTE ");
+					if (IsA(def_elem->arg, A_Star))
+					{
+						appendStringInfoChar(str, '*');
+					}
+					else if (IsA(def_elem->arg, List))
+					{
+						appendStringInfoChar(str, '(');
+						deparseColumnList(str, castNode(List, def_elem->arg));
+						appendStringInfoChar(str, ')');
+					}
+					else
+					{
+						Assert(false);
+					}
+				}
+				else if (strcmp(def_elem->defname, "force_not_null") == 0)
+				{
+					appendStringInfoString(str, "FORCE_NOT_NULL (");
 					deparseColumnList(str, castNode(List, def_elem->arg));
 					appendStringInfoChar(str, ')');
 				}
-				else
+				else if (strcmp(def_elem->defname, "force_null") == 0)
 				{
-					Assert(false);
-				}
-			}
-			else if (strcmp(def_elem->defname, "force_not_null") == 0)
-			{
-				appendStringInfoString(str, "FORCE_NOT_NULL (");
-				deparseColumnList(str, castNode(List, def_elem->arg));
-				appendStringInfoChar(str, ')');
-			}
-			else if (strcmp(def_elem->defname, "force_null") == 0)
-			{
-				appendStringInfoString(str, "FORCE_NULL (");
-				deparseColumnList(str, castNode(List, def_elem->arg));
-				appendStringInfoChar(str, ')');
-			}
-			else if (strcmp(def_elem->defname, "encoding") == 0)
-			{
-				appendStringInfoString(str, "ENCODING ");
-				deparseStringLiteral(str, strVal(def_elem->arg));
-			}
-			else
-			{
-				appendStringInfoString(str, quote_identifier(def_elem->defname));
-				if (def_elem->arg != NULL)
-					appendStringInfoChar(str, ' ');
-				
-				if (def_elem->arg == NULL)
-				{
-					// Nothing
-				}
-				else if (IsA(def_elem->arg, String))
-				{
-					deparseOptBooleanOrString(str, strVal(def_elem->arg));
-				}
-				else if (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float))
-				{
-					deparseNumericOnly(str, (Value *) def_elem->arg);
-				}
-				else if (IsA(def_elem->arg, A_Star))
-				{
-					deparseAStar(str, castNode(A_Star, def_elem->arg));
-				}
-				else if (IsA(def_elem->arg, List))
-				{
-					List *l = castNode(List, def_elem->arg);
-					appendStringInfoChar(str, '(');
-					foreach(lc2, l)
-					{
-						deparseOptBooleanOrString(str, strVal(lfirst(lc2)));
-						if (lnext(l, lc2))
-							appendStringInfoString(str, ", ");
-					}
+					appendStringInfoString(str, "FORCE_NULL (");
+					deparseColumnList(str, castNode(List, def_elem->arg));
 					appendStringInfoChar(str, ')');
 				}
-			}
+				else if (strcmp(def_elem->defname, "encoding") == 0)
+				{
+					appendStringInfoString(str, "ENCODING ");
+					deparseStringLiteral(str, strVal(def_elem->arg));
+				}
+				else
+				{
+					appendStringInfoString(str, quote_identifier(def_elem->defname));
+					if (def_elem->arg != NULL)
+						appendStringInfoChar(str, ' ');
+					
+					if (def_elem->arg == NULL)
+					{
+						// Nothing
+					}
+					else if (IsA(def_elem->arg, String))
+					{
+						deparseOptBooleanOrString(str, strVal(def_elem->arg));
+					}
+					else if (IsA(def_elem->arg, Integer) || IsA(def_elem->arg, Float))
+					{
+						deparseNumericOnly(str, (union ValUnion *) def_elem->arg);
+					}
+					else if (IsA(def_elem->arg, A_Star))
+					{
+						deparseAStar(str, castNode(A_Star, def_elem->arg));
+					}
+					else if (IsA(def_elem->arg, List))
+					{
+						List *l = castNode(List, def_elem->arg);
+						appendStringInfoChar(str, '(');
+						foreach(lc2, l)
+						{
+							deparseOptBooleanOrString(str, strVal(lfirst(lc2)));
+							if (lnext(l, lc2))
+								appendStringInfoString(str, ", ");
+						}
+						appendStringInfoChar(str, ')');
+					}
+				}
 
-			if (lnext(copy_stmt->options, lc))
-				appendStringInfoString(str, ", ");
+				if (lnext(copy_stmt->options, lc))
+					appendStringInfoString(str, ", ");
+			}
+			appendStringInfoString(str, ") ");
 		}
-		appendStringInfoString(str, ") ");
 	}
 
 	deparseWhereClause(str, copy_stmt->whereClause);
@@ -7715,6 +7974,11 @@ static void deparseIndexStmt(StringInfo str, IndexStmt *index_stmt)
 		appendStringInfoString(str, ") ");
 	}
 
+	if (index_stmt->nulls_not_distinct)
+	{
+		appendStringInfoString(str, "NULLS NOT DISTINCT ");
+	}
+
 	deparseOptWith(str, index_stmt->options);
 
 	if (index_stmt->tableSpace != NULL)
@@ -7818,59 +8082,59 @@ static void deparseAlterRoleElem(StringInfo str, DefElem *def_elem)
 		appendStringInfoString(str, "VALID UNTIL ");
 		deparseStringLiteral(str, strVal(def_elem->arg));
 	}
-	else if (strcmp(def_elem->defname, "superuser") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "superuser") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "SUPERUSER");
 	}
-	else if (strcmp(def_elem->defname, "superuser") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "superuser") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOSUPERUSER");
 	}
-	else if (strcmp(def_elem->defname, "createrole") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "createrole") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "CREATEROLE");
 	}
-	else if (strcmp(def_elem->defname, "createrole") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "createrole") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOCREATEROLE");
 	}
-	else if (strcmp(def_elem->defname, "isreplication") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "isreplication") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "REPLICATION");
 	}
-	else if (strcmp(def_elem->defname, "isreplication") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "isreplication") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOREPLICATION");
 	}
-	else if (strcmp(def_elem->defname, "createdb") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "createdb") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "CREATEDB");
 	}
-	else if (strcmp(def_elem->defname, "createdb") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "createdb") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOCREATEDB");
 	}
-	else if (strcmp(def_elem->defname, "canlogin") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "canlogin") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "LOGIN");
 	}
-	else if (strcmp(def_elem->defname, "canlogin") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "canlogin") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOLOGIN");
 	}
-	else if (strcmp(def_elem->defname, "bypassrls") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "bypassrls") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "BYPASSRLS");
 	}
-	else if (strcmp(def_elem->defname, "bypassrls") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "bypassrls") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOBYPASSRLS");
 	}
-	else if (strcmp(def_elem->defname, "inherit") == 0 && intVal(def_elem->arg) == 1)
+	else if (strcmp(def_elem->defname, "inherit") == 0 && boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "INHERIT");
 	}
-	else if (strcmp(def_elem->defname, "inherit") == 0 && intVal(def_elem->arg) == 0)
+	else if (strcmp(def_elem->defname, "inherit") == 0 && !boolVal(def_elem->arg))
 	{
 		appendStringInfoString(str, "NOINHERIT");
 	}
@@ -8207,6 +8471,9 @@ static void deparseRuleStmt(StringInfo str, RuleStmt* rule_stmt)
 		case CMD_DELETE:
 			appendStringInfoString(str, "DELETE ");
 			break;
+		case CMD_MERGE:
+			appendStringInfoString(str, "MERGE ");
+			break;
 	}
 
 	appendStringInfoString(str, "TO ");
@@ -8529,7 +8796,12 @@ static void deparseCreateTableSpaceStmt(StringInfo str, CreateTableSpaceStmt *cr
 	}
 
 	appendStringInfoString(str, "LOCATION ");
-	deparseStringLiteral(str, create_table_space_stmt->location);
+
+	if (create_table_space_stmt->location != NULL)
+		deparseStringLiteral(str, create_table_space_stmt->location);
+	else
+		appendStringInfoString(str, "''");
+
 	appendStringInfoChar(str, ' ');
 
 	deparseOptWith(str, create_table_space_stmt->options);
@@ -8592,6 +8864,50 @@ static void deparseCreateAmStmt(StringInfo str, CreateAmStmt *create_am_stmt)
 	deparseHandlerName(str, create_am_stmt->handler_name);
 }
 
+static void deparsePublicationObjectList(StringInfo str, List *pubobjects) {
+	const ListCell *lc;
+	foreach(lc, pubobjects) {
+		PublicationObjSpec *obj = lfirst(lc);
+
+		switch (obj->pubobjtype) {
+			case PUBLICATIONOBJ_TABLE:
+				appendStringInfoString(str, "TABLE ");
+				deparseRangeVar(str, obj->pubtable->relation, DEPARSE_NODE_CONTEXT_NONE);
+				
+				if (obj->pubtable->columns)
+				{
+					appendStringInfoChar(str, '(');
+					deparseColumnList(str, obj->pubtable->columns);
+					appendStringInfoChar(str, ')');
+				}
+
+				if (obj->pubtable->whereClause)
+				{
+					appendStringInfoString(str, " WHERE (");
+					deparseExpr(str, obj->pubtable->whereClause);
+					appendStringInfoString(str, ")");
+				}
+
+				break;
+			case PUBLICATIONOBJ_TABLES_IN_SCHEMA:
+				appendStringInfoString(str, "TABLES IN SCHEMA ");
+				appendStringInfoString(str, quote_identifier(obj->name));
+				break;
+			case PUBLICATIONOBJ_TABLES_IN_CUR_SCHEMA:
+				appendStringInfoString(str, "TABLES IN SCHEMA CURRENT_SCHEMA");
+				break;
+			case PUBLICATIONOBJ_CONTINUATION:
+				// This should be unreachable, the parser merges these before we can even get here.
+				Assert(false);
+				break;
+		}
+		
+		if (lnext(pubobjects, lc)) {
+			appendStringInfoString(str, ", ");
+		}
+	}
+}
+
 static void deparseCreatePublicationStmt(StringInfo str, CreatePublicationStmt *create_publication_stmt)
 {
 	ListCell *lc = NULL;
@@ -8600,10 +8916,10 @@ static void deparseCreatePublicationStmt(StringInfo str, CreatePublicationStmt *
 	appendStringInfoString(str, quote_identifier(create_publication_stmt->pubname));
 	appendStringInfoChar(str, ' ');
 
-	if (list_length(create_publication_stmt->tables) > 0)
+	if (list_length(create_publication_stmt->pubobjects) > 0)
 	{
-		appendStringInfoString(str, "FOR TABLE ");
-		deparseRelationExprList(str, create_publication_stmt->tables);
+		appendStringInfoString(str, "FOR ");
+		deparsePublicationObjectList(str, create_publication_stmt->pubobjects);
 		appendStringInfoChar(str, ' ');
 	}
 	else if (create_publication_stmt->for_all_tables)
@@ -8621,25 +8937,22 @@ static void deparseAlterPublicationStmt(StringInfo str, AlterPublicationStmt *al
 	deparseColId(str, alter_publication_stmt->pubname);
 	appendStringInfoChar(str, ' ');
 
-	if (list_length(alter_publication_stmt->tables) > 0)
+	if (list_length(alter_publication_stmt->pubobjects) > 0)
 	{
-		switch (alter_publication_stmt->tableAction)
+		switch (alter_publication_stmt->action)
 		{
-			case DEFELEM_SET:
-				appendStringInfoString(str, "SET TABLE ");
+			case AP_SetObjects:
+				appendStringInfoString(str, "SET ");
 				break;
-			case DEFELEM_ADD:
-				appendStringInfoString(str, "ADD TABLE ");
+			case AP_AddObjects:
+				appendStringInfoString(str, "ADD ");
 				break;
-			case DEFELEM_DROP:
-				appendStringInfoString(str, "DROP TABLE ");
-				break;
-			case DEFELEM_UNSPEC:
-				Assert(false);
+			case AP_DropObjects:
+				appendStringInfoString(str, "DROP ");
 				break;
 		}
 
-		deparseRelationExprList(str, alter_publication_stmt->tables);
+		deparsePublicationObjectList(str, alter_publication_stmt->pubobjects);
 	}
 	else if (list_length(alter_publication_stmt->options) > 0)
 	{
@@ -8896,7 +9209,7 @@ static void deparseCommentStmt(StringInfo str, CommentStmt *comment_stmt)
 			appendStringInfoString(str, quote_identifier(strVal(linitial(l))));
 			break;
 		case OBJECT_LARGEOBJECT:
-			deparseValue(str, (Value *) comment_stmt->object, DEPARSE_NODE_CONTEXT_NONE);
+			deparseValue(str, (union ValUnion *) comment_stmt->object, DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		case OBJECT_CAST:
 			l = castNode(List, comment_stmt->object);
@@ -9135,6 +9448,10 @@ static void deparseAlterSubscriptionStmt(StringInfo str, AlterSubscriptionStmt *
 			appendStringInfoString(str, "SET ");
 			deparseDefinition(str, alter_subscription_stmt->options);
 			break;
+		case ALTER_SUBSCRIPTION_SKIP:
+			appendStringInfoString(str, "SKIP ");
+			deparseDefinition(str, alter_subscription_stmt->options);
+			break;
 		case ALTER_SUBSCRIPTION_CONNECTION:
 			appendStringInfoString(str, "CONNECTION ");
 			deparseStringLiteral(str, alter_subscription_stmt->conninfo);
@@ -9181,17 +9498,13 @@ static void deparseAlterSubscriptionStmt(StringInfo str, AlterSubscriptionStmt *
 			Assert(list_length(alter_subscription_stmt->options) == 1);
 			DefElem *defelem = castNode(DefElem, linitial(alter_subscription_stmt->options));
 			Assert(strcmp(defelem->defname, "enabled") == 0);
-			if (intVal(defelem->arg) == 1)
+			if (optBooleanValue(defelem->arg))
 			{
 				appendStringInfoString(str, " ENABLE ");
 			}
-			else if (intVal(defelem->arg) == 0)
-			{
-				appendStringInfoString(str, " DISABLE ");
-			}
 			else
 			{
-				Assert(false);
+				appendStringInfoString(str, " DISABLE ");
 			}
 			break;
 	}
@@ -9253,7 +9566,7 @@ static void deparseAlterOwnerStmt(StringInfo str, AlterOwnerStmt *alter_owner_st
 			break;
 		case OBJECT_LARGEOBJECT:
 			appendStringInfoString(str, "LARGE OBJECT ");
-			deparseNumericOnly(str, (Value *) alter_owner_stmt->object);
+			deparseNumericOnly(str, (union ValUnion *) alter_owner_stmt->object);
 			break;
 		case OBJECT_OPERATOR:
 			appendStringInfoString(str, "OPERATOR ");
@@ -9581,8 +9894,6 @@ static void deparseXmlExpr(StringInfo str, XmlExpr* xml_expr)
 					Assert(false);
 			}
 			deparseExpr(str, linitial(xml_expr->args));
-			if (strcmp(strVal(&castNode(A_Const, castNode(TypeCast, lsecond(xml_expr->args))->arg)->val), "t") == 0)
-				appendStringInfoString(str, " PRESERVE WHITESPACE");
 			appendStringInfoChar(str, ')');
 			break;
 		case IS_XMLPI: /* XMLPI(name [, args]) */
@@ -9599,7 +9910,7 @@ static void deparseXmlExpr(StringInfo str, XmlExpr* xml_expr)
 			appendStringInfoString(str, "xmlroot(");
 			deparseExpr(str, linitial(xml_expr->args));
 			appendStringInfoString(str, ", version ");
-			if (nodeTag(&castNode(A_Const, lsecond(xml_expr->args))->val) == T_Null)
+			if (castNode(A_Const, lsecond(xml_expr->args))->isnull)
 				appendStringInfoString(str, "NO VALUE");
 			else
 				deparseExpr(str, lsecond(xml_expr->args));
@@ -9748,41 +10059,46 @@ static void deparseClusterStmt(StringInfo str, ClusterStmt *cluster_stmt)
 	removeTrailingSpace(str);
 }
 
-static void deparseValue(StringInfo str, Value *value, DeparseNodeContext context)
+static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context)
 {
+	if (!value) {
+		appendStringInfoString(str, "NULL");
+		return;
+	}
+
 	switch (nodeTag(value))
 	{
 		case T_Integer:
 		case T_Float:
 			deparseNumericOnly(str, value);
 			break;
+		case T_Boolean:
+			appendStringInfoString(str, value->boolval.boolval ? "true" : "false");
+			break;
 		case T_String:
 			if (context == DEPARSE_NODE_CONTEXT_IDENTIFIER) {
-				appendStringInfoString(str, quote_identifier(value->val.str));
+				appendStringInfoString(str, quote_identifier(value->sval.sval));
 			} else if (context == DEPARSE_NODE_CONTEXT_CONSTANT) {
-				deparseStringLiteral(str, value->val.str);
+				deparseStringLiteral(str, value->sval.sval);
 			} else {
-				appendStringInfoString(str, value->val.str);
+				appendStringInfoString(str, value->sval.sval);
 			}
 			break;
 		case T_BitString:
-			if (strlen(value->val.str) >= 1 && value->val.str[0] == 'x')
+			if (strlen(value->sval.sval) >= 1 && value->sval.sval[0] == 'x')
 			{
 				appendStringInfoChar(str, 'x');
-				deparseStringLiteral(str, value->val.str + 1);
+				deparseStringLiteral(str, value->sval.sval + 1);
 			}
-			else if (strlen(value->val.str) >= 1 && value->val.str[0] == 'b')
+			else if (strlen(value->sval.sval) >= 1 && value->sval.sval[0] == 'b')
 			{
 				appendStringInfoChar(str, 'b');
-				deparseStringLiteral(str, value->val.str + 1);
+				deparseStringLiteral(str, value->sval.sval + 1);
 			}
 			else
 			{
 				Assert(false);
 			}
-			break;
-		case T_Null:
-			appendStringInfoString(str, "NULL");
 			break;
 		default:
 			elog(ERROR, "deparse: unrecognized value node type: %d",
@@ -9807,6 +10123,9 @@ static void deparsePreparableStmt(StringInfo str, Node *node)
 			break;
 		case T_DeleteStmt:
 			deparseDeleteStmt(str, castNode(DeleteStmt, node));
+			break;
+		case T_MergeStmt:
+			deparseMergeStmt(str, castNode(MergeStmt, node));
 			break;
 		default:
 			Assert(false);
@@ -9866,6 +10185,9 @@ static void deparseExplainableStmt(StringInfo str, Node *node)
 			break;
 		case T_ExecuteStmt:
 			deparseExecuteStmt(str, castNode(ExecuteStmt, node));
+			break;
+		case T_MergeStmt:
+			deparseMergeStmt(str, castNode(MergeStmt, node));
 			break;
 		default:
 			Assert(false);
@@ -9988,6 +10310,9 @@ static void deparseStmt(StringInfo str, Node *node)
 			break;
 		case T_AlterSystemStmt:
 			deparseAlterSystemStmt(str, castNode(AlterSystemStmt, node));
+			break;
+		case T_AlterTableMoveAllStmt:
+			deparseAlterTableMoveAllStmt(str, castNode(AlterTableMoveAllStmt, node));
 			break;
 		case T_AlterTableStmt:
 			deparseAlterTableStmt(str, castNode(AlterTableStmt, node));
@@ -10198,6 +10523,9 @@ static void deparseStmt(StringInfo str, Node *node)
 			break;
 		case T_LockStmt:
 			deparseLockStmt(str, castNode(LockStmt, node));
+			break;
+		case T_MergeStmt:
+			deparseMergeStmt(str, castNode(MergeStmt, node));
 			break;
 		case T_NotifyStmt:
 			deparseNotifyStmt(str, castNode(NotifyStmt, node));

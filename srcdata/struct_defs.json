@@ -13,7 +13,7 @@
         {
           "name": "commandType",
           "c_type": "CmdType",
-          "comment": "/* select|insert|update|delete|utility */"
+          "comment": "/* select|insert|update|delete|merge|utility */"
         },
         {
           "comment": ""
@@ -53,7 +53,7 @@
         {
           "name": "resultRelation",
           "c_type": "int",
-          "comment": "/* rtable index of target relation for\n\t\t\t\t\t\t\t\t * INSERT/UPDATE/DELETE; 0 for SELECT */\n"
+          "comment": "/* rtable index of target relation for\n\t\t\t\t\t\t\t\t * INSERT/UPDATE/DELETE/MERGE; 0 for SELECT */\n"
         },
         {
           "comment": ""
@@ -130,7 +130,20 @@
         {
           "name": "jointree",
           "c_type": "FromExpr*",
-          "comment": "/* table join tree (FROM and WHERE clauses) */"
+          "comment": "/* table join tree (FROM and WHERE clauses);\n\t\t\t\t\t\t\t\t * also USING clause for MERGE */\n"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "mergeActionList",
+          "c_type": "List*",
+          "comment": "/* list of actions for MERGE (only) */"
+        },
+        {
+          "name": "mergeUseOuterJoin",
+          "c_type": "bool",
+          "comment": "/* whether to use outer join */"
         },
         {
           "comment": ""
@@ -296,7 +309,7 @@
         {
           "name": "names",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String nodes) */"
         },
         {
           "name": "typeOid",
@@ -346,7 +359,7 @@
         {
           "name": "fields",
           "c_type": "List*",
-          "comment": "/* field names (Value strings) or A_Star */"
+          "comment": "/* field names (String nodes) or A_Star */"
         },
         {
           "name": "location",
@@ -354,7 +367,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * ColumnRef - specifies a reference to a column, or possibly a whole tuple\n *\n * The \"fields\" list must be nonempty.  It can contain string Value nodes\n * (representing names) and A_Star nodes (representing occurrence of a '*').\n * Currently, A_Star must appear only as the last list element --- the grammar\n * is responsible for enforcing this!\n *\n * Note: any container subscripting or selection of fields from composite columns\n * is represented by an A_Indirection node above the ColumnRef.  However,\n * for simplicity in the normal case, initial field selection from a table\n * name is represented within ColumnRef and not by adding A_Indirection.\n */\n"
+      "comment": "/*\n * ColumnRef - specifies a reference to a column, or possibly a whole tuple\n *\n * The \"fields\" list must be nonempty.  It can contain String nodes\n * (representing names) and A_Star nodes (representing occurrence of a '*').\n * Currently, A_Star must appear only as the last list element --- the grammar\n * is responsible for enforcing this!\n *\n * Note: any container subscripting or selection of fields from composite columns\n * is represented by an A_Indirection node above the ColumnRef.  However,\n * for simplicity in the normal case, initial field selection from a table\n * name is represented within ColumnRef and not by adding A_Indirection.\n */\n"
     },
     "ParamRef": {
       "fields": [
@@ -410,26 +423,6 @@
         }
       ],
       "comment": "/*\n * A_Expr - infix, prefix, and postfix expressions\n */\n"
-    },
-    "A_Const": {
-      "fields": [
-        {
-          "name": "type",
-          "c_type": "NodeTag",
-          "comment": null
-        },
-        {
-          "name": "val",
-          "c_type": "Value",
-          "comment": "/* value (includes type info, see value.h) */"
-        },
-        {
-          "name": "location",
-          "c_type": "int",
-          "comment": "/* token location, or -1 if unknown */"
-        }
-      ],
-      "comment": "/*\n * A_Const - a literal constant\n */\n"
     },
     "TypeCast": {
       "fields": [
@@ -624,7 +617,7 @@
           "comment": "/* subscripts and/or field names and/or * */"
         }
       ],
-      "comment": "/*\n * A_Indirection - select a field and/or array element from an expression\n *\n * The indirection list can contain A_Indices nodes (representing\n * subscripting), string Value nodes (representing field selection --- the\n * string value is the name of the field to select), and A_Star nodes\n * (representing selection of all fields of a composite type).\n * For example, a complex selection operation like\n *\t\t\t\t(foo).field1[42][7].field2\n * would be represented with a single A_Indirection node having a 4-element\n * indirection list.\n *\n * Currently, A_Star must appear only as the last list element --- the grammar\n * is responsible for enforcing this!\n */\n"
+      "comment": "/*\n * A_Indirection - select a field and/or array element from an expression\n *\n * The indirection list can contain A_Indices nodes (representing\n * subscripting), String nodes (representing field selection --- the\n * string value is the name of the field to select), and A_Star nodes\n * (representing selection of all fields of a composite type).\n * For example, a complex selection operation like\n *\t\t\t\t(foo).field1[42][7].field2\n * would be represented with a single A_Indirection node having a 4-element\n * indirection list.\n *\n * Currently, A_Star must appear only as the last list element --- the grammar\n * is responsible for enforcing this!\n */\n"
     },
     "A_ArrayExpr": {
       "fields": [
@@ -1171,7 +1164,7 @@
         {
           "name": "arg",
           "c_type": "Node*",
-          "comment": "/* a (Value *) or a (TypeName *) */"
+          "comment": "/* typically Integer, Float, String, or\n\t\t\t\t\t\t\t\t * TypeName */\n"
         },
         {
           "name": "defaction",
@@ -1456,7 +1449,7 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t *\n\t * As a special case, RTE_NAMEDTUPLESTORE can also set relid to indicate\n\t * that the tuple format of the tuplestore is the same as the referenced\n\t * relation.  This allows plans referencing AFTER trigger transition\n\t * tables to be invalidated if the underlying table is altered.\n\t *\n\t * rellockmode is really LOCKMODE, but it's declared int to avoid having\n\t * to include lock-related headers here.  It must be RowExclusiveLock if\n\t * the RTE is an INSERT/UPDATE/DELETE target, else RowShareLock if the RTE\n\t * is a SELECT FOR UPDATE/FOR SHARE target, else AccessShareLock.\n\t *\n\t * Note: in some cases, rule expansion may result in RTEs that are marked\n\t * with RowExclusiveLock even though they are not the target of the\n\t * current query; this happens if a DO ALSO rule simply scans the original\n\t * target table.  We leave such RTEs with their original lockmode so as to\n\t * avoid getting an additional, lesser lock.\n\t */\n"
+          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t *\n\t * As a special case, RTE_NAMEDTUPLESTORE can also set relid to indicate\n\t * that the tuple format of the tuplestore is the same as the referenced\n\t * relation.  This allows plans referencing AFTER trigger transition\n\t * tables to be invalidated if the underlying table is altered.\n\t *\n\t * rellockmode is really LOCKMODE, but it's declared int to avoid having\n\t * to include lock-related headers here.  It must be RowExclusiveLock if\n\t * the RTE is an INSERT/UPDATE/DELETE/MERGE target, else RowShareLock if\n\t * the RTE is a SELECT FOR UPDATE/FOR SHARE target, else AccessShareLock.\n\t *\n\t * Note: in some cases, rule expansion may result in RTEs that are marked\n\t * with RowExclusiveLock even though they are not the target of the\n\t * current query; this happens if a DO ALSO rule simply scans the original\n\t * target table.  We leave such RTEs with their original lockmode so as to\n\t * avoid getting an additional, lesser lock.\n\t */\n"
         },
         {
           "name": "relid",
@@ -1629,7 +1622,7 @@
         },
         {
           "name": "enrtuples",
-          "c_type": "double",
+          "c_type": "Cardinality",
           "comment": "/* estimated or actual from caller */"
         },
         {
@@ -1916,6 +1909,11 @@
           "name": "endOffset",
           "c_type": "Node*",
           "comment": "/* expression for ending bound, if any */"
+        },
+        {
+          "name": "runCondition",
+          "c_type": "List*",
+          "comment": "/* qual to help short-circuit execution */"
         },
         {
           "name": "startInRangeFunc",
@@ -2249,6 +2247,89 @@
       ],
       "comment": null
     },
+    "MergeWhenClause": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "matched",
+          "c_type": "bool",
+          "comment": "/* true=MATCHED, false=NOT MATCHED */"
+        },
+        {
+          "name": "commandType",
+          "c_type": "CmdType",
+          "comment": "/* INSERT/UPDATE/DELETE/DO NOTHING */"
+        },
+        {
+          "name": "override",
+          "c_type": "OverridingKind",
+          "comment": "/* OVERRIDING clause */"
+        },
+        {
+          "name": "condition",
+          "c_type": "Node*",
+          "comment": "/* WHEN conditions (raw parser) */"
+        },
+        {
+          "name": "targetList",
+          "c_type": "List*",
+          "comment": "/* INSERT/UPDATE targetlist */"
+        },
+        {
+          "comment": "\t/* the following members are only used in INSERT actions */\n"
+        },
+        {
+          "name": "values",
+          "c_type": "List*",
+          "comment": "/* VALUES to INSERT, or NULL */"
+        }
+      ],
+      "comment": "/*\n * MergeWhenClause -\n *\t\traw parser representation of a WHEN clause in a MERGE statement\n *\n * This is transformed into MergeAction by parse analysis\n */\n"
+    },
+    "MergeAction": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "matched",
+          "c_type": "bool",
+          "comment": "/* true=MATCHED, false=NOT MATCHED */"
+        },
+        {
+          "name": "commandType",
+          "c_type": "CmdType",
+          "comment": "/* INSERT/UPDATE/DELETE/DO NOTHING */"
+        },
+        {
+          "name": "override",
+          "c_type": "OverridingKind",
+          "comment": "/* OVERRIDING clause */"
+        },
+        {
+          "name": "qual",
+          "c_type": "Node*",
+          "comment": "/* transformed WHEN conditions */"
+        },
+        {
+          "name": "targetList",
+          "c_type": "List*",
+          "comment": "/* the target list (of TargetEntry) */"
+        },
+        {
+          "name": "updateColnos",
+          "c_type": "List*",
+          "comment": "/* target attribute numbers of an UPDATE */"
+        }
+      ],
+      "comment": "/*\n * MergeAction -\n *\t\tTransformed representation of a WHEN clause in a MERGE statement\n */\n"
+    },
     "TriggerTransition": {
       "fields": [
         {
@@ -2418,6 +2499,41 @@
         }
       ],
       "comment": "/* ----------------------\n *\t\tUpdate Statement\n * ----------------------\n */\n"
+    },
+    "MergeStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "relation",
+          "c_type": "RangeVar*",
+          "comment": "/* target relation to merge into */"
+        },
+        {
+          "name": "sourceRelation",
+          "c_type": "Node*",
+          "comment": "/* source relation */"
+        },
+        {
+          "name": "joinCondition",
+          "c_type": "Node*",
+          "comment": "/* join condition between source and target */"
+        },
+        {
+          "name": "mergeWhenClauses",
+          "c_type": "List*",
+          "comment": "/* list of MergeWhenClause(es) */"
+        },
+        {
+          "name": "withClause",
+          "c_type": "WithClause*",
+          "comment": "/* WITH clause */"
+        }
+      ],
+      "comment": "/* ----------------------\n *\t\tMerge Statement\n * ----------------------\n */\n"
     },
     "SelectStmt": {
       "fields": [
@@ -2881,7 +2997,7 @@
         {
           "name": "objects",
           "c_type": "List*",
-          "comment": "/* list of RangeVar nodes, ObjectWithArgs\n\t\t\t\t\t\t\t\t * nodes, or plain names (as Value strings) */\n"
+          "comment": "/* list of RangeVar nodes, ObjectWithArgs\n\t\t\t\t\t\t\t\t * nodes, or plain names (as String values) */\n"
         },
         {
           "name": "privileges",
@@ -2959,7 +3075,7 @@
         {
           "name": "cols",
           "c_type": "List*",
-          "comment": "/* list of Value strings */"
+          "comment": "/* list of String */"
         }
       ],
       "comment": "/*\n * An access privilege, with optional list of column names\n * priv_name == NULL denotes ALL PRIVILEGES (only used with a column list)\n * cols == NIL denotes \"all columns\"\n * Note that simple \"ALL PRIVILEGES\" is represented as a NIL list, not\n * an AccessPriv with both fields null.\n */\n"
@@ -3002,7 +3118,7 @@
           "comment": "/* drop behavior (for REVOKE) */"
         }
       ],
-      "comment": "/* ----------------------\n *\t\tGrant/Revoke Role Statement\n *\n * Note: because of the parsing ambiguity with the GRANT <privileges>\n * statement, granted_roles is a list of AccessPriv; the execution code\n * should complain if any column lists appear.  grantee_roles is a list\n * of role names, as Value strings.\n * ----------------------\n */\n"
+      "comment": "/* ----------------------\n *\t\tGrant/Revoke Role Statement\n *\n * Note: because of the parsing ambiguity with the GRANT <privileges>\n * statement, granted_roles is a list of AccessPriv; the execution code\n * should complain if any column lists appear.  grantee_roles is a list\n * of role names, as String values.\n * ----------------------\n */\n"
     },
     "AlterDefaultPrivilegesStmt": {
       "fields": [
@@ -3260,6 +3376,11 @@
           "comment": "\t/* Fields used for unique constraints (UNIQUE and PRIMARY KEY): */\n"
         },
         {
+          "name": "nulls_not_distinct",
+          "c_type": "bool",
+          "comment": "/* null treatment for UNIQUE constraints */"
+        },
+        {
           "name": "keys",
           "c_type": "List*",
           "comment": "/* String nodes naming referenced key\n\t\t\t\t\t\t\t\t * column(s) */\n"
@@ -3354,6 +3475,11 @@
           "name": "fk_del_action",
           "c_type": "char",
           "comment": "/* ON DELETE action */"
+        },
+        {
+          "name": "fk_del_set_cols",
+          "c_type": "List*",
+          "comment": "/* ON DELETE SET NULL/DEFAULT (col1, col2) */"
         },
         {
           "name": "old_conpfeqop",
@@ -3969,7 +4095,7 @@
         {
           "name": "args",
           "c_type": "List*",
-          "comment": "/* list of (T_String) Values or NIL */"
+          "comment": "/* list of String or NIL */"
         },
         {
           "name": "row",
@@ -4301,7 +4427,7 @@
         {
           "name": "defnames",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "args",
@@ -4336,7 +4462,7 @@
         {
           "name": "domainname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "typeName",
@@ -4366,7 +4492,7 @@
         {
           "name": "opclassname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "opfamilyname",
@@ -4449,7 +4575,7 @@
         {
           "name": "opfamilyname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "amname",
@@ -4469,7 +4595,7 @@
         {
           "name": "opfamilyname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "amname",
@@ -4760,6 +4886,11 @@
           "comment": "/* is index unique? */"
         },
         {
+          "name": "nulls_not_distinct",
+          "c_type": "bool",
+          "comment": "/* null treatment for UNIQUE constraints */"
+        },
+        {
           "name": "primary",
           "c_type": "bool",
           "comment": "/* is index a primary key? */"
@@ -4812,12 +4943,12 @@
         {
           "name": "defnames",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "stat_types",
           "c_type": "List*",
-          "comment": "/* stat types (list of Value strings) */"
+          "comment": "/* stat types (list of String) */"
         },
         {
           "name": "exprs",
@@ -4877,7 +5008,7 @@
         {
           "name": "defnames",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "stxstattarget",
@@ -5151,7 +5282,7 @@
         },
         {
           "name": "extname",
-          "c_type": "Value*",
+          "c_type": "String*",
           "comment": "/* extension name */"
         },
         {
@@ -5427,12 +5558,12 @@
         {
           "name": "typeName",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "vals",
           "c_type": "List*",
-          "comment": "/* enum values (list of Value strings) */"
+          "comment": "/* enum values (list of String) */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Type Statement, enum types\n * ----------------------\n */\n"
@@ -5447,7 +5578,7 @@
         {
           "name": "typeName",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "params",
@@ -5467,7 +5598,7 @@
         {
           "name": "typeName",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "oldVal",
@@ -5591,6 +5722,21 @@
         }
       ],
       "comment": "/* ----------------------\n *\tAlter Database\n * ----------------------\n */\n"
+    },
+    "AlterDatabaseRefreshCollStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "dbname",
+          "c_type": "char*",
+          "comment": null
+        }
+      ],
+      "comment": null
     },
     "AlterDatabaseSetStmt": {
       "fields": [
@@ -6125,7 +6271,7 @@
         {
           "name": "dictname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "name": "options",
@@ -6150,7 +6296,7 @@
         {
           "name": "cfgname",
           "c_type": "List*",
-          "comment": "/* qualified name (list of Value strings) */"
+          "comment": "/* qualified name (list of String) */"
         },
         {
           "comment": ""
@@ -6161,12 +6307,12 @@
         {
           "name": "tokentype",
           "c_type": "List*",
-          "comment": "/* list of Value strings */"
+          "comment": "/* list of String */"
         },
         {
           "name": "dicts",
           "c_type": "List*",
-          "comment": "/* list of list of Value strings */"
+          "comment": "/* list of list of String */"
         },
         {
           "name": "override",
@@ -6182,6 +6328,61 @@
           "name": "missing_ok",
           "c_type": "bool",
           "comment": "/* for DROP - skip error if missing? */"
+        }
+      ],
+      "comment": null
+    },
+    "PublicationTable": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "relation",
+          "c_type": "RangeVar*",
+          "comment": "/* relation to be published */"
+        },
+        {
+          "name": "whereClause",
+          "c_type": "Node*",
+          "comment": "/* qualifications */"
+        },
+        {
+          "name": "columns",
+          "c_type": "List*",
+          "comment": "/* List of columns in a publication table */"
+        }
+      ],
+      "comment": null
+    },
+    "PublicationObjSpec": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "pubobjtype",
+          "c_type": "PublicationObjSpecType",
+          "comment": "/* type of this publication object */"
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "pubtable",
+          "c_type": "PublicationTable*",
+          "comment": null
+        },
+        {
+          "name": "location",
+          "c_type": "int",
+          "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": null
@@ -6204,9 +6405,9 @@
           "comment": "/* List of DefElem nodes */"
         },
         {
-          "name": "tables",
+          "name": "pubobjects",
           "c_type": "List*",
-          "comment": "/* Optional list of tables to add */"
+          "comment": "/* Optional list of publication objects */"
         },
         {
           "name": "for_all_tables",
@@ -6243,12 +6444,12 @@
           "comment": ""
         },
         {
-          "comment": "\t/* parameters used for ALTER PUBLICATION ... ADD/DROP TABLE */\n"
+          "comment": "\t/*\n\t * Parameters used for ALTER PUBLICATION ... ADD/DROP/SET publication\n\t * objects.\n\t */\n"
         },
         {
-          "name": "tables",
+          "name": "pubobjects",
           "c_type": "List*",
-          "comment": "/* List of tables to add/drop */"
+          "comment": "/* Optional list of publication objects */"
         },
         {
           "name": "for_all_tables",
@@ -6256,9 +6457,9 @@
           "comment": "/* Special publication for all tables in db */"
         },
         {
-          "name": "tableAction",
-          "c_type": "DefElemAction",
-          "comment": "/* What action to perform with the tables */"
+          "name": "action",
+          "c_type": "AlterPublicationAction",
+          "comment": "/* What action to perform with the given\n\t\t\t\t\t\t\t\t\t * objects */\n"
         }
       ],
       "comment": null
@@ -6373,7 +6574,7 @@
           "comment": "/* optional list of column aliases */"
         }
       ],
-      "comment": "/*\n * Alias -\n *\t  specifies an alias for a range variable; the alias might also\n *\t  specify renaming of columns within the table.\n *\n * Note: colnames is a list of Value nodes (always strings).  In Alias structs\n * associated with RTEs, there may be entries corresponding to dropped\n * columns; these are normally empty strings (\"\").  See parsenodes.h for info.\n */\n"
+      "comment": "/*\n * Alias -\n *\t  specifies an alias for a range variable; the alias might also\n *\t  specify renaming of columns within the table.\n *\n * Note: colnames is a list of String nodes.  In Alias structs\n * associated with RTEs, there may be entries corresponding to dropped\n * columns; these are normally empty strings (\"\").  See parsenodes.h for info.\n */\n"
     },
     "RangeVar": {
       "fields": [
@@ -6493,7 +6694,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * TableFunc - node for a table function, such as XMLTABLE.\n *\n * Entries in the ns_names list are either string Value nodes containing\n * literal namespace names, or NULL pointers to represent DEFAULT.\n */\n"
+      "comment": "/*\n * TableFunc - node for a table function, such as XMLTABLE.\n *\n * Entries in the ns_names list are either String nodes containing\n * literal namespace names, or NULL pointers to represent DEFAULT.\n */\n"
     },
     "IntoClause": {
       "fields": [
@@ -6567,8 +6768,8 @@
         },
         {
           "name": "varno",
-          "c_type": "Index",
-          "comment": "/* index of this var's relation in the range\n\t\t\t\t\t\t\t\t * table, or INNER_VAR/OUTER_VAR/INDEX_VAR */\n"
+          "c_type": "int",
+          "comment": "/* index of this var's relation in the range\n\t\t\t\t\t\t\t\t * table, or INNER_VAR/OUTER_VAR/etc */\n"
         },
         {
           "name": "varattno",
@@ -7116,6 +7317,11 @@
           "comment": "/* PG_PROC OID of hash func or InvalidOid */"
         },
         {
+          "name": "negfuncid",
+          "c_type": "Oid",
+          "comment": "/* PG_PROC OID of negator of opfuncid function\n\t\t\t\t\t\t\t\t * or InvalidOid.  See above */\n"
+        },
+        {
           "name": "useOr",
           "c_type": "bool",
           "comment": "/* true for ANY, false for ALL */"
@@ -7136,7 +7342,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * ScalarArrayOpExpr - expression node for \"scalar op ANY/ALL (array)\"\n *\n * The operator must yield boolean.  It is applied to the left operand\n * and each element of the righthand array, and the results are combined\n * with OR or AND (for ANY or ALL respectively).  The node representation\n * is almost the same as for the underlying operator, but we need a useOr\n * flag to remember whether it's ANY or ALL, and we don't have to store\n * the result type (or the collation) because it must be boolean.\n *\n * A ScalarArrayOpExpr with a valid hashfuncid is evaluated during execution\n * by building a hash table containing the Const values from the rhs arg.\n * This table is probed during expression evaluation.  Only useOr=true\n * ScalarArrayOpExpr with Const arrays on the rhs can have the hashfuncid\n * field set. See convert_saop_to_hashed_saop().\n */\n"
+      "comment": "/*\n * ScalarArrayOpExpr - expression node for \"scalar op ANY/ALL (array)\"\n *\n * The operator must yield boolean.  It is applied to the left operand\n * and each element of the righthand array, and the results are combined\n * with OR or AND (for ANY or ALL respectively).  The node representation\n * is almost the same as for the underlying operator, but we need a useOr\n * flag to remember whether it's ANY or ALL, and we don't have to store\n * the result type (or the collation) because it must be boolean.\n *\n * A ScalarArrayOpExpr with a valid hashfuncid is evaluated during execution\n * by building a hash table containing the Const values from the RHS arg.\n * This table is probed during expression evaluation.  The planner will set\n * hashfuncid to the hash function which must be used to build and probe the\n * hash table.  The executor determines if it should use hash-based checks or\n * the more traditional means based on if the hashfuncid is set or not.\n *\n * When performing hashed NOT IN, the negfuncid will also be set to the\n * equality function which the hash table must use to build and probe the hash\n * table.  opno and opfuncid will remain set to the <> operator and its\n * corresponding function and won't be used during execution.  For\n * non-hashtable based NOT INs, negfuncid will be set to InvalidOid.  See\n * convert_saop_to_hashed_saop().\n */\n"
     },
     "BoolExpr": {
       "fields": [
@@ -7756,7 +7962,7 @@
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * RowExpr - a ROW() expression\n *\n * Note: the list of fields must have a one-for-one correspondence with\n * physical fields of the associated rowtype, although it is okay for it\n * to be shorter than the rowtype.  That is, the N'th list element must\n * match up with the N'th physical field.  When the N'th physical field\n * is a dropped column (attisdropped) then the N'th list element can just\n * be a NULL constant.  (This case can only occur for named composite types,\n * not RECORD types, since those are built from the RowExpr itself rather\n * than vice versa.)  It is important not to assume that length(args) is\n * the same as the number of columns logically present in the rowtype.\n *\n * colnames provides field names in cases where the names can't easily be\n * obtained otherwise.  Names *must* be provided if row_typeid is RECORDOID.\n * If row_typeid identifies a known composite type, colnames can be NIL to\n * indicate the type's cataloged field names apply.  Note that colnames can\n * be non-NIL even for a composite type, and typically is when the RowExpr\n * was created by expanding a whole-row Var.  This is so that we can retain\n * the column alias names of the RTE that the Var referenced (which would\n * otherwise be very difficult to extract from the parsetree).  Like the\n * args list, colnames is one-for-one with physical fields of the rowtype.\n */\n"
+      "comment": "/*\n * RowExpr - a ROW() expression\n *\n * Note: the list of fields must have a one-for-one correspondence with\n * physical fields of the associated rowtype, although it is okay for it\n * to be shorter than the rowtype.  That is, the N'th list element must\n * match up with the N'th physical field.  When the N'th physical field\n * is a dropped column (attisdropped) then the N'th list element can just\n * be a NULL constant.  (This case can only occur for named composite types,\n * not RECORD types, since those are built from the RowExpr itself rather\n * than vice versa.)  It is important not to assume that length(args) is\n * the same as the number of columns logically present in the rowtype.\n *\n * colnames provides field names if the ROW() result is of type RECORD.\n * Names *must* be provided if row_typeid is RECORDOID; but if it is a\n * named composite type, colnames will be ignored in favor of using the\n * type's cataloged field names, so colnames should be NIL.  Like the\n * args list, colnames is defined to be one-for-one with physical fields\n * of the rowtype (although dropped columns shouldn't appear in the\n * RECORD case, so this fine point is currently moot).\n */\n"
     },
     "RowCompareExpr": {
       "fields": [
@@ -7923,7 +8129,7 @@
         {
           "name": "arg_names",
           "c_type": "List*",
-          "comment": "/* parallel list of Value strings */"
+          "comment": "/* parallel list of String values */"
         },
         {
           "name": "args",
@@ -8131,7 +8337,7 @@
           "comment": "/* refcursor parameter number, or 0 */"
         }
       ],
-      "comment": "/*\n * Node representing [WHERE] CURRENT OF cursor_name\n *\n * CURRENT OF is a bit like a Var, in that it carries the rangetable index\n * of the target relation being constrained; this aids placing the expression\n * correctly during planning.  We can assume however that its \"levelsup\" is\n * always zero, due to the syntactic constraints on where it can appear.\n *\n * The referenced cursor can be represented either as a hardwired string\n * or as a reference to a run-time parameter of type REFCURSOR.  The latter\n * case is for the convenience of plpgsql.\n */\n"
+      "comment": "/*\n * Node representing [WHERE] CURRENT OF cursor_name\n *\n * CURRENT OF is a bit like a Var, in that it carries the rangetable index\n * of the target relation being constrained; this aids placing the expression\n * correctly during planning.  We can assume however that its \"levelsup\" is\n * always zero, due to the syntactic constraints on where it can appear.\n * Also, cvarno will always be a true RT index, never INNER_VAR etc.\n *\n * The referenced cursor can be represented either as a hardwired string\n * or as a reference to a run-time parameter of type REFCURSOR.  The latter\n * case is for the convenience of plpgsql.\n */\n"
     },
     "NextValueExpr": {
       "fields": [
@@ -8775,7 +8981,7 @@
         {
           "name": "log_min_duration",
           "c_type": "int",
-          "comment": "/* minimum execution threshold in ms at\n\t\t\t\t\t\t\t\t\t * which  verbose logs are activated, -1\n\t\t\t\t\t\t\t\t\t * to use default */\n"
+          "comment": "/* minimum execution threshold in ms at\n\t\t\t\t\t\t\t\t\t * which autovacuum is logged, -1 to use\n\t\t\t\t\t\t\t\t\t * default */\n"
         },
         {
           "name": "index_cleanup",
@@ -8800,6 +9006,32 @@
         }
       ],
       "comment": "/*\n * Parameters customizing behavior of VACUUM and ANALYZE.\n *\n * Note that at least one of VACOPT_VACUUM and VACOPT_ANALYZE must be set\n * in options.\n */\n"
+    },
+    "VacDeadItems": {
+      "fields": [
+        {
+          "name": "max_items",
+          "c_type": "int",
+          "comment": "/* # slots allocated in array */"
+        },
+        {
+          "name": "num_items",
+          "c_type": "int",
+          "comment": "/* current # of entries */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Sorted array of TIDs to delete from indexes */\n"
+        },
+        {
+          "name": "items[FLEXIBLE_ARRAY_MEMBER]",
+          "c_type": "ItemPointerData",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * VacDeadItems stores TIDs whose index tuples are deleted by index vacuuming.\n */\n"
     }
   },
   "storage/block": {
@@ -8862,7 +9094,7 @@
     "Float": {
       "fields": [
         {
-          "name": "str",
+          "name": "fval",
           "c_type": "char*"
         }
       ]
@@ -8870,7 +9102,7 @@
     "String": {
       "fields": [
         {
-          "name": "str",
+          "name": "sval",
           "c_type": "char*"
         }
       ]
@@ -8878,14 +9110,21 @@
     "BitString": {
       "fields": [
         {
-          "name": "str",
+          "name": "bsval",
           "c_type": "char*"
         }
       ]
     },
-    "Null": {
+    "A_Const": {
       "fields": [
-
+        {
+          "name": "isnull",
+          "c_type": "bool"
+        },
+        {
+          "name": "val",
+          "c_type": "Node"
+        }
       ]
     }
   },

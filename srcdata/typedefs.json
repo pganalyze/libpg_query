@@ -25,6 +25,11 @@
     "comment": null
   },
   {
+    "new_type_name": "Cardinality",
+    "source_type": "double",
+    "comment": null
+  },
+  {
     "new_type_name": "ParamListInfo",
     "source_type": "ParamListInfoData",
     "comment": null
@@ -108,6 +113,11 @@
     "new_type_name": "Oid",
     "source_type": "unsigned int",
     "comment": "/*\n * Object ID is a fundamental type in Postgres.\n */\n"
+  },
+  {
+    "new_type_name": "ParallelVacuumState",
+    "source_type": "ParallelVacuumState",
+    "comment": "/* Abstract type for parallel vacuum state */\n"
   },
   {
     "new_type_name": "VacAttrStatsP",

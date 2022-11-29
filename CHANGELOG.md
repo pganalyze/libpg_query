@@ -2,6 +2,16 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.0.0   2022-11-29
+
+* Update to Postgres 15.1
+* Add support for `MERGE` statements
+* Add support for `ALTER TABLE ALL IN TABLESPACE ...` statements
+* Add support for publication objects
+  - E.g. `CREATE PUBLICATION foo FOR TABLES IN SCHEMA CURRENT_SCHEMA`
+* Deparser now attempts to deparse `COPY` statements first using the old
+  Postgres 8.4-style syntax (e.g. `COPY foo FROM STDIN FREEZE CSV`).
+
 ## 14-3.0.0   2022-11-17
 
 Special thanks to @wolfgangwalther and @tlisanti for most of the work done on this release.

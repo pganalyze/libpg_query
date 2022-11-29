@@ -9,10 +9,6 @@ case T_TableFunc:
   _fingerprintString(ctx, "TableFunc");
   _fingerprintTableFunc(ctx, obj, parent, field_name, depth);
   break;
-case T_Expr:
-  _fingerprintString(ctx, "Expr");
-  _fingerprintExpr(ctx, obj, parent, field_name, depth);
-  break;
 case T_Var:
   _fingerprintString(ctx, "Var");
   _fingerprintVar(ctx, obj, parent, field_name, depth);
@@ -196,6 +192,10 @@ case T_IntoClause:
   _fingerprintString(ctx, "IntoClause");
   _fingerprintIntoClause(ctx, obj, parent, field_name, depth);
   break;
+case T_MergeAction:
+  _fingerprintString(ctx, "MergeAction");
+  _fingerprintMergeAction(ctx, obj, parent, field_name, depth);
+  break;
 case T_RawStmt:
   _fingerprintString(ctx, "RawStmt");
   _fingerprintRawStmt(ctx, obj, parent, field_name, depth);
@@ -215,6 +215,10 @@ case T_DeleteStmt:
 case T_UpdateStmt:
   _fingerprintString(ctx, "UpdateStmt");
   _fingerprintUpdateStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_MergeStmt:
+  _fingerprintString(ctx, "MergeStmt");
+  _fingerprintMergeStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_SelectStmt:
   _fingerprintString(ctx, "SelectStmt");
@@ -427,6 +431,10 @@ case T_CreateSchemaStmt:
 case T_AlterDatabaseStmt:
   _fingerprintString(ctx, "AlterDatabaseStmt");
   _fingerprintAlterDatabaseStmt(ctx, obj, parent, field_name, depth);
+  break;
+case T_AlterDatabaseRefreshCollStmt:
+  _fingerprintString(ctx, "AlterDatabaseRefreshCollStmt");
+  _fingerprintAlterDatabaseRefreshCollStmt(ctx, obj, parent, field_name, depth);
   break;
 case T_AlterDatabaseSetStmt:
   _fingerprintString(ctx, "AlterDatabaseSetStmt");
@@ -675,9 +683,6 @@ case T_ColumnRef:
 case T_ParamRef:
   // Intentionally ignoring for fingerprinting
   break;
-case T_A_Const:
-  // Intentionally ignoring for fingerprinting
-  break;
 case T_FuncCall:
   _fingerprintString(ctx, "FuncCall");
   _fingerprintFuncCall(ctx, obj, parent, field_name, depth);
@@ -853,6 +858,10 @@ case T_CommonTableExpr:
   _fingerprintString(ctx, "CommonTableExpr");
   _fingerprintCommonTableExpr(ctx, obj, parent, field_name, depth);
   break;
+case T_MergeWhenClause:
+  _fingerprintString(ctx, "MergeWhenClause");
+  _fingerprintMergeWhenClause(ctx, obj, parent, field_name, depth);
+  break;
 case T_RoleSpec:
   _fingerprintString(ctx, "RoleSpec");
   _fingerprintRoleSpec(ctx, obj, parent, field_name, depth);
@@ -884,6 +893,14 @@ case T_PartitionCmd:
 case T_VacuumRelation:
   _fingerprintString(ctx, "VacuumRelation");
   _fingerprintVacuumRelation(ctx, obj, parent, field_name, depth);
+  break;
+case T_PublicationObjSpec:
+  _fingerprintString(ctx, "PublicationObjSpec");
+  _fingerprintPublicationObjSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_PublicationTable:
+  _fingerprintString(ctx, "PublicationTable");
+  _fingerprintPublicationTable(ctx, obj, parent, field_name, depth);
   break;
 case T_InlineCodeBlock:
   _fingerprintString(ctx, "InlineCodeBlock");

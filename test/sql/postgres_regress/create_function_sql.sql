@@ -1,5 +1,5 @@
 --
--- CREATE FUNCTION
+-- CREATE_FUNCTION_SQL
 --
 -- Assorted tests using SQL-language functions
 --
@@ -180,7 +180,7 @@ CREATE FUNCTION functest_S_13() RETURNS boolean
         SELECT false;
     END;
 
--- check display of function argments in sub-SELECT
+-- check display of function arguments in sub-SELECT
 CREATE TABLE functest1 (i int);
 CREATE FUNCTION functest_S_16(a int, b int) RETURNS void
     LANGUAGE SQL
@@ -397,6 +397,23 @@ $$ SELECT array_append($1, $2) || array_append($1, $2) $$;
 
 SELECT double_append(array_append(ARRAY[q1], q2), q3)
   FROM (VALUES(1,2,3), (4,5,6)) v(q1,q2,q3);
+
+-- Things that shouldn't work:
+
+CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
+    AS 'SELECT ''not an integer'';';
+
+CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
+    AS 'not even SQL';
+
+CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
+    AS 'SELECT 1, 2, 3;';
+
+CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
+    AS 'SELECT $2;';
+
+CREATE FUNCTION test1 (int) RETURNS int LANGUAGE SQL
+    AS 'a', 'b';
 
 -- Cleanup
 DROP SCHEMA temp_func_test CASCADE;

@@ -49,7 +49,7 @@ class Extractor
 
   IGNORE_LIST = [
     'Node', 'varlena', 'IntArray', 'nameData', 'bool',
-    'sig_atomic_t', 'size_t', 'varatt_indirect',
+    'sig_atomic_t', 'size_t', 'varatt_indirect', 'A_Const',
   ]
 
   def generate_defs!
@@ -237,11 +237,11 @@ class Extractor
 
     @struct_defs['nodes/value'] = {}
     @struct_defs['nodes/value']['Integer'] = { fields: [{ name: 'ival', c_type: 'long' }] }
-    @struct_defs['nodes/value']['Float'] = { fields: [{ name: 'str', c_type: 'char*' }] }
-    @struct_defs['nodes/value']['String'] = { fields: [{ name: 'str', c_type: 'char*' }] }
-    @struct_defs['nodes/value']['BitString'] = { fields: [{ name: 'str', c_type: 'char*' }] }
+    @struct_defs['nodes/value']['Float'] = { fields: [{ name: 'fval', c_type: 'char*' }] }
+    @struct_defs['nodes/value']['String'] = { fields: [{ name: 'sval', c_type: 'char*' }] }
+    @struct_defs['nodes/value']['BitString'] = { fields: [{ name: 'bsval', c_type: 'char*' }] }
+    @struct_defs['nodes/value']['A_Const'] = { fields: [{ name: 'isnull', c_type: 'bool' }, { name:'val', c_type: 'Node' }] }
     @struct_defs['nodes/pg_list'] = { 'List' => { fields: [{ name: 'items', c_type: '[]Node' }] } }
-    @struct_defs['nodes/value']['Null'] = { fields: [] }
     @struct_defs['nodes/params']['ParamListInfoData'][:fields].reject! { |f| f[:c_type] == 'ParamExternData' }
 
     File.write('./srcdata/nodetypes.json', JSON.pretty_generate(@nodetypes))
