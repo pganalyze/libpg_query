@@ -12,7 +12,7 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```sh
-git clone -b 13-latest git://github.com/pganalyze/libpg_query
+git clone -b 14-latest git://github.com/pganalyze/libpg_query
 cd libpg_query
 make
 ```
@@ -51,7 +51,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 130008,
+    "version": 140006,
     "stmts": [
         {
             "stmt": {
@@ -124,7 +124,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 130008, tokens: 7, size: 77
+  version: 140006, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -231,10 +231,11 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 
 | PostgreSQL Major Version | Branch     | Status              |
 |--------------------------|------------|---------------------|
-| 13                       | 13-latest  | Active development  |
+| 14                       | 14-latest  | Active development  |
+| 13                       | 13-latest  | Critical fixes only |
 | 12                       | (n/a)      | Not supported       |
 | 11                       | (n/a)      | Not supported       |
-| 10                       | 10-latest  | Critical fixes only |
+| 10                       | 10-latest  | No longer supported |
 | 9.6                      | (n/a)      | Not supported       |
 | 9.5                      | 9.5-latest | No longer supported |
 | 9.4                      | 9.4-latest | No longer supported |
