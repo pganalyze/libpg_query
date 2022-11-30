@@ -197,7 +197,8 @@ _outOidList(StringInfo out, const List *node)
 static void
 _outInteger(StringInfo out, const Integer *node)
 {
-	appendStringInfo(out, "\"ival\":%d", node->ival);
+	if (node->ival > 0)
+		appendStringInfo(out, "\"ival\":%d", node->ival);
 }
 
 static void
@@ -245,7 +246,7 @@ _outAConst(StringInfo out, const A_Const *node)
 				appendStringInfoChar(out, '}');
 				break;
 			case T_Boolean:
-				appendStringInfo(out, "\"boolval\":{\"boolval\":%s}", booltostr(node->val.boolval.boolval));
+				appendStringInfo(out, "\"boolval\":{%s}", node->val.boolval.boolval ? "\"boolval\":true" : "");
 				break;
 			case T_String:
 				appendStringInfoString(out, "\"sval\":{");
