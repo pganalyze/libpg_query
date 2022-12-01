@@ -238,6 +238,7 @@ class Extractor
     @struct_defs['nodes/value'] = {}
     @struct_defs['nodes/value']['Integer'] = { fields: [{ name: 'ival', c_type: 'long' }] }
     @struct_defs['nodes/value']['Float'] = { fields: [{ name: 'fval', c_type: 'char*' }] }
+    @struct_defs['nodes/value']['Boolean'] = { fields: [{ name: 'boolval', c_type: 'bool' }] }
     @struct_defs['nodes/value']['String'] = { fields: [{ name: 'sval', c_type: 'char*' }] }
     @struct_defs['nodes/value']['BitString'] = { fields: [{ name: 'bsval', c_type: 'char*' }] }
     @struct_defs['nodes/value']['A_Const'] = { fields: [{ name: 'isnull', c_type: 'bool' }, { name:'val', c_type: 'Node' }] }

@@ -9099,6 +9099,14 @@
         }
       ]
     },
+    "Boolean": {
+      "fields": [
+        {
+          "name": "boolval",
+          "c_type": "bool"
+        }
+      ]
+    },
     "String": {
       "fields": [
         {
