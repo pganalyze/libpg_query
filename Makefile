@@ -125,6 +125,31 @@ $(PGDIR):
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
+	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
+	echo "#undef HAVE_LOCALE_T" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef LOCALE_T_IN_XLOCALE" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> $(PGDIR)/src/include/pg_config.h
+	# Support 32-bit systems without reconfiguring
+	echo "#undef PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
+	# Support gcc earlier than 4.6.0 without reconfiguring
+	echo "#undef HAVE__STATIC_ASSERT" >> $(PGDIR)/src/include/pg_config.h
+	# Avoid problems with static asserts
+	echo "#undef StaticAssertDecl" >> $(PGDIR)/src/include/c.h
+	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
+	# Avoid dependency on execinfo (requires extra library on musl-libc based systems)
+	echo "#undef HAVE_EXECINFO_H" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef HAVE_BACKTRACE_SYMBOLS" >> $(PGDIR)/src/include/pg_config.h
+	# Avoid dependency on hardware popcount instructions (POPQNTQ) on x86
+	echo "#undef HAVE_X86_64_POPCNTQ" >> $(PGDIR)/src/include/pg_config.h
+	# Avoid dependency on cpuid.h (only supported on x86 systems)
+	echo "#undef HAVE__GET_CPUID" >> $(PGDIR)/src/include/pg_config.h
+	# Avoid CRC extension usage to ensure we are not architecture-dependent
+	echo "#undef USE_ARMV8_CRC32C" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK" >> $(PGDIR)/src/include/pg_config.h
+	# Ensure we don't fail on systems that have strchrnul support (FreeBSD)
+	echo "#ifdef __FreeBSD__" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define HAVE_STRCHRNUL" >> $(PGDIR)/src/include/pg_config.h
+	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
@@ -136,26 +161,6 @@ extract_source: $(PGDIR)
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
 	touch ./src/postgres/guc-file.c
-	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
-	echo "#undef HAVE_LOCALE_T" >> ./src/postgres/include/pg_config.h
-	echo "#undef LOCALE_T_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
-	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> ./src/postgres/include/pg_config.h
-	# Support 32-bit systems without reconfiguring
-	echo "#undef PG_INT128_TYPE" >> ./src/postgres/include/pg_config.h
-	# Support gcc earlier than 4.6.0 without reconfiguring
-	echo "#undef HAVE__STATIC_ASSERT" >> ./src/postgres/include/pg_config.h
-	# Avoid problems with static asserts
-	echo "#undef StaticAssertDecl" >> ./src/postgres/include/c.h
-	echo "#define StaticAssertDecl(condition, errmessage)" >> ./src/postgres/include/c.h
-	# Avoid dependency on execinfo (requires extra library on musl-libc based systems)
-	echo "#undef HAVE_EXECINFO_H" >> ./src/postgres/include/pg_config.h
-	echo "#undef HAVE_BACKTRACE_SYMBOLS" >> ./src/postgres/include/pg_config.h
-	# Avoid dependency on cpuid.h (only supported on x86 systems)
-	echo "#undef HAVE__GET_CPUID" >> ./src/postgres/include/pg_config.h
-	# Ensure we don't fail on systems that have strchrnul support (FreeBSD)
-	echo "#ifdef __FreeBSD__" >> ./src/postgres/include/pg_config.h
-	echo "#define HAVE_STRCHRNUL" >> ./src/postgres/include/pg_config.h
-	echo "#endif" >> ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h

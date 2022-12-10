@@ -217,7 +217,6 @@ class Runner
       '-I', '/usr/local/opt/openssl/include',
       '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include',
       '-DDLSUFFIX=".bundle"',
-      '-msse4.2',
       '-g',
       '-DUSE_ASSERT_CHECKING'
     ])
