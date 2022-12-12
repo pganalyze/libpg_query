@@ -500,5 +500,10 @@
     "input": "COPY vistest FROM stdin FREEZE CSV",
     "expectedParts": ["RawStmt", "stmt", "CopyStmt", "is_from", "true", "options", "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "freeze", "DefElem", "arg", "String", "str", "csv", "defaction", "DEFELEM_UNSPEC", "defname", "format", "relation", "inh", "true", "relname", "vistest", "relpersistence", "p" ],
     "expectedHash": "adb3688e5278cf1c"
+  },
+  {
+    "input": "MERGE INTO customer_account ca USING (VALUES (1, 42), (2, 99)) t(customer_id, transaction_value) ON t.customer_id = ca.customer_id WHEN MATCHED THEN UPDATE SET balance = balance + transaction_value + 1 WHEN NOT MATCHED THEN INSERT (customer_id, balance) VALUES (t.customer_id, t.transaction_value)",
+    "expectedParts": ["RawStmt", "stmt", "MergeStmt", "joinCondition", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "ca", "String", "str", "customer_id", "mergeWhenClauses", "MergeWhenClause", "commandType", "CMD_UPDATE", "matched", "true", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "balance", "val", "A_Expr", "kind", "AEXPR_OP", "lexpr", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "balance", "name", "String", "str", "+", "rexpr", "ColumnRef", "fields", "String", "str", "transaction_value", "name", "String", "str", "+", "MergeWhenClause", "commandType", "CMD_INSERT", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "customer_id", "ResTarget", "name", "balance", "values", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "ColumnRef", "fields", "String", "str", "t", "String", "str", "transaction_value", "relation", "inh", "true", "relname", "customer_account", "relpersistence", "p", "sourceRelation", "RangeSubselect", "subquery", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE" ],
+    "expectedHash": "1cca3f304295181c"
   }
 ]
