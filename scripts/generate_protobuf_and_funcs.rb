@@ -94,7 +94,7 @@ class Generator
             @readmethods[node_type] += format("  READ_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['float', 'double', 'Cost', 'Selectivity'].include?(type)
+          elsif ['float', 'double', 'Cost', 'Cardinality', 'Selectivity'].include?(type)
             @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  double %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
@@ -122,6 +122,11 @@ class Generator
           elsif ['Node*'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            protobuf_field_count += 1
+          elsif ['Node'].include?(type)
+            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Expr*'].include?(type)
@@ -214,19 +219,19 @@ class Generator
     out_defs = ''
     out_impls = ''
     out_conds = "case T_Integer:
-  OUT_NODE(Integer, Integer, integer, INTEGER, Value, integer);
+  OUT_NODE(Integer, Integer, integer, INTEGER, Integer, integer);
+  break;
+case T_Boolean:
+  OUT_NODE(Boolean, Boolean, boolean, BOOLEAN, Boolean, boolean);
   break;
 case T_Float:
-  OUT_NODE(Float, Float, float, FLOAT, Value, float_);
+  OUT_NODE(Float, Float, float, FLOAT, Float, float_);
   break;
 case T_String:
-  OUT_NODE(String, String, string, STRING, Value, string);
+  OUT_NODE(String, String, string, STRING, String, string);
   break;
 case T_BitString:
-  OUT_NODE(BitString, BitString, bit_string, BIT_STRING, Value, bit_string);
-  break;
-case T_Null:
-  OUT_NODE(Null, Null, null, NULL, Value, null);
+  OUT_NODE(BitString, BitString, bit_string, BIT_STRING, BitString, bit_string);
   break;
 case T_List:
   OUT_NODE(List, List, list, LIST, List, list);
@@ -236,6 +241,9 @@ case T_IntList:
   break;
 case T_OidList:
   OUT_NODE(OidList, OidList, oid_list, OID_LIST, List, oid_list);
+  break;
+case T_A_Const:
+  OUT_NODE(A_Const, AConst, a__const, A_CONST, A_Const, a_const);
   break;
 "
     read_defs = ''
@@ -286,7 +294,7 @@ case T_OidList:
       protobuf_nodes << format("%s %s = %d [json_name=\"%s\"];", type, underscore(type), protobuf_nodes.size + 1, type)
     end
 
-    ['Integer', 'Float', 'String', 'BitString', 'Null', 'List', 'IntList', 'OidList'].each do |type|
+    ['Integer', 'Float', 'Boolean', 'String', 'BitString', 'List', 'IntList', 'OidList', 'A_Const'].each do |type|
       protobuf_nodes << format("%s %s = %d [json_name=\"%s\"];", type, underscore(type), protobuf_nodes.size + 1, type)
     end
 
@@ -334,22 +342,22 @@ message Integer
 
 message Float
 {
-  string str = 1; /* string */
+  string fval = 1; /* string */
+}
+
+message Boolean
+{
+  bool boolval = 1;
 }
 
 message String
 {
-  string str = 1; /* string */
+  string sval = 1; /* string */
 }
 
 message BitString
 {
-  string str = 1; /* string */
-}
-
-message Null
-{
-  // intentionally empty
+  string bsval = 1; /* string */
 }
 
 message List
@@ -365,6 +373,19 @@ message OidList
 message IntList
 {
   repeated Node items = 1;
+}
+
+message A_Const
+{
+  oneof val {
+    Integer ival = 1;
+    Float fval = 2;
+    Boolean boolval = 3;
+    String sval = 4;
+    BitString bsval = 5;
+  }
+  bool isnull = 10;
+  int32 location = 11;
 }
 
 #{protobuf_messages}

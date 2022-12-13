@@ -350,6 +350,10 @@
 },
 
 {
+	"sql_json_item_cannot_be_cast_to_target_type", ERRCODE_SQL_JSON_ITEM_CANNOT_BE_CAST_TO_TARGET_TYPE
+},
+
+{
 	"integrity_constraint_violation", ERRCODE_INTEGRITY_CONSTRAINT_VIOLATION
 },
 

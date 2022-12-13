@@ -1,6 +1,7 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - makeString
+ * - makeBoolean
  * - makeInteger
  * - makeFloat
  * - makeBitString
@@ -10,10 +11,10 @@
 /*-------------------------------------------------------------------------
  *
  * value.c
- *	  implementation of Value nodes
+ *	  implementation of value nodes
  *
  *
- * Copyright (c) 2003-2021, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2022, PostgreSQL Global Development Group
  *
  *
  * IDENTIFICATION
@@ -23,18 +24,17 @@
  */
 #include "postgres.h"
 
-#include "nodes/parsenodes.h"
+#include "nodes/value.h"
 
 /*
  *	makeInteger
  */
-Value *
+Integer *
 makeInteger(int i)
 {
-	Value	   *v = makeNode(Value);
+	Integer    *v = makeNode(Integer);
 
-	v->type = T_Integer;
-	v->val.ival = i;
+	v->ival = i;
 	return v;
 }
 
@@ -43,13 +43,24 @@ makeInteger(int i)
  *
  * Caller is responsible for passing a palloc'd string.
  */
-Value *
+Float *
 makeFloat(char *numericStr)
 {
-	Value	   *v = makeNode(Value);
+	Float	   *v = makeNode(Float);
 
-	v->type = T_Float;
-	v->val.str = numericStr;
+	v->fval = numericStr;
+	return v;
+}
+
+/*
+ *	makeBoolean
+ */
+Boolean *
+makeBoolean(bool val)
+{
+	Boolean    *v = makeNode(Boolean);
+
+	v->boolval = val;
 	return v;
 }
 
@@ -58,13 +69,12 @@ makeFloat(char *numericStr)
  *
  * Caller is responsible for passing a palloc'd string.
  */
-Value *
+String *
 makeString(char *str)
 {
-	Value	   *v = makeNode(Value);
+	String	   *v = makeNode(String);
 
-	v->type = T_String;
-	v->val.str = str;
+	v->sval = str;
 	return v;
 }
 
@@ -73,12 +83,11 @@ makeString(char *str)
  *
  * Caller is responsible for passing a palloc'd string.
  */
-Value *
+BitString *
 makeBitString(char *str)
 {
-	Value	   *v = makeNode(Value);
+	BitString  *v = makeNode(BitString);
 
-	v->type = T_BitString;
-	v->val.str = str;
+	v->bsval = str;
 	return v;
 }

@@ -29,6 +29,8 @@
   "DiscardMode",
   "ReindexObjectType",
   "AlterTSConfigType",
+  "PublicationObjSpecType",
+  "AlterPublicationAction",
   "AlterSubscriptionType",
   "OnCommitAction",
   "ParamKind",

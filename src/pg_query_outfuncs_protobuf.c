@@ -150,33 +150,93 @@ _outOidList(PgQuery__OidList* out, const List *node)
 // TODO: Add Bitmapset
 
 static void
-_outInteger(PgQuery__Integer* out, const Value *node)
+_outInteger(PgQuery__Integer* out, const Integer *node)
 {
-  out->ival = node->val.ival;
+  out->ival = node->ival;
 }
 
 static void
-_outFloat(PgQuery__Float* out, const Value *node)
+_outFloat(PgQuery__Float* out, const Float *node)
 {
-  out->str = node->val.str;
+  out->fval = node->fval;
 }
 
 static void
-_outString(PgQuery__String* out, const Value *node)
+_outBoolean(PgQuery__Boolean* out, const Boolean *node)
 {
-  out->str = node->val.str;
+  out->boolval = node->boolval;
 }
 
 static void
-_outBitString(PgQuery__BitString* out, const Value *node)
+_outString(PgQuery__String* out, const String *node)
 {
-  out->str = node->val.str;
+  out->sval = node->sval;
 }
 
 static void
-_outNull(PgQuery__Null* out, const Value *node)
+_outBitString(PgQuery__BitString* out, const BitString *node)
 {
-  // Null has no fields
+  out->bsval = node->bsval;
+}
+
+static void
+_outAConst(PgQuery__AConst* out, const A_Const *node)
+{
+  out->isnull = node->isnull;
+  out->location = node->location;
+
+  if (!node->isnull) {
+    switch (nodeTag(&node->val.node)) {
+      case T_Integer: {
+        PgQuery__Integer *value = palloc(sizeof(PgQuery__Integer));
+        pg_query__integer__init(value);
+        value->ival = node->val.ival.ival;
+
+        out->val_case = PG_QUERY__A__CONST__VAL_IVAL;
+        out->ival = value;
+        break;
+      }
+      case T_Float: {
+        PgQuery__Float *value = palloc(sizeof(PgQuery__Float));
+        pg_query__float__init(value);
+        value->fval = pstrdup(node->val.fval.fval);
+
+        out->val_case = PG_QUERY__A__CONST__VAL_FVAL;
+        out->fval = value;
+        break;
+      }
+      case T_Boolean: {
+        PgQuery__Boolean *value = palloc(sizeof(PgQuery__Boolean));
+        pg_query__boolean__init(value);
+        value->boolval = node->val.boolval.boolval;
+
+        out->val_case = PG_QUERY__A__CONST__VAL_BOOLVAL;
+        out->boolval = value;
+        break;
+      }
+      case T_String: {
+        PgQuery__String *value = palloc(sizeof(PgQuery__String));
+	pg_query__string__init(value);
+	value->sval = pstrdup(node->val.sval.sval);
+
+	out->val_case = PG_QUERY__A__CONST__VAL_SVAL;
+	out->sval = value;
+	break;
+      }
+      case T_BitString: {
+        PgQuery__BitString *value = palloc(sizeof(PgQuery__BitString));
+	pg_query__bit_string__init(value);
+	value->bsval = pstrdup(node->val.bsval.bsval);
+
+	out->val_case = PG_QUERY__A__CONST__VAL_BSVAL;
+	out->bsval = value;
+	break;
+      }
+      default:
+        // Unreachable
+        Assert(false);
+    }
+  }
 }
 
 #include "pg_query_enum_defs.c"

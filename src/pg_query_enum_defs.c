@@ -158,6 +158,8 @@ _enumToStringWCOKind(WCOKind value) {
     case WCO_RLS_INSERT_CHECK: return "WCO_RLS_INSERT_CHECK";
     case WCO_RLS_UPDATE_CHECK: return "WCO_RLS_UPDATE_CHECK";
     case WCO_RLS_CONFLICT_CHECK: return "WCO_RLS_CONFLICT_CHECK";
+    case WCO_RLS_MERGE_UPDATE_CHECK: return "WCO_RLS_MERGE_UPDATE_CHECK";
+    case WCO_RLS_MERGE_DELETE_CHECK: return "WCO_RLS_MERGE_DELETE_CHECK";
   }
   Assert(false);
   return NULL;
@@ -229,9 +231,11 @@ _enumToStringObjectType(ObjectType value) {
     case OBJECT_OPCLASS: return "OBJECT_OPCLASS";
     case OBJECT_OPERATOR: return "OBJECT_OPERATOR";
     case OBJECT_OPFAMILY: return "OBJECT_OPFAMILY";
+    case OBJECT_PARAMETER_ACL: return "OBJECT_PARAMETER_ACL";
     case OBJECT_POLICY: return "OBJECT_POLICY";
     case OBJECT_PROCEDURE: return "OBJECT_PROCEDURE";
     case OBJECT_PUBLICATION: return "OBJECT_PUBLICATION";
+    case OBJECT_PUBLICATION_NAMESPACE: return "OBJECT_PUBLICATION_NAMESPACE";
     case OBJECT_PUBLICATION_REL: return "OBJECT_PUBLICATION_REL";
     case OBJECT_ROLE: return "OBJECT_ROLE";
     case OBJECT_ROUTINE: return "OBJECT_ROUTINE";
@@ -307,6 +311,7 @@ _enumToStringAlterTableType(AlterTableType value) {
     case AT_SetLogged: return "AT_SetLogged";
     case AT_SetUnLogged: return "AT_SetUnLogged";
     case AT_DropOids: return "AT_DropOids";
+    case AT_SetAccessMethod: return "AT_SetAccessMethod";
     case AT_SetTableSpace: return "AT_SetTableSpace";
     case AT_SetRelOptions: return "AT_SetRelOptions";
     case AT_ResetRelOptions: return "AT_ResetRelOptions";
@@ -508,6 +513,29 @@ _enumToStringAlterTSConfigType(AlterTSConfigType value) {
 }
 
 static const char*
+_enumToStringPublicationObjSpecType(PublicationObjSpecType value) {
+  switch(value) {
+    case PUBLICATIONOBJ_TABLE: return "PUBLICATIONOBJ_TABLE";
+    case PUBLICATIONOBJ_TABLES_IN_SCHEMA: return "PUBLICATIONOBJ_TABLES_IN_SCHEMA";
+    case PUBLICATIONOBJ_TABLES_IN_CUR_SCHEMA: return "PUBLICATIONOBJ_TABLES_IN_CUR_SCHEMA";
+    case PUBLICATIONOBJ_CONTINUATION: return "PUBLICATIONOBJ_CONTINUATION";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
+_enumToStringAlterPublicationAction(AlterPublicationAction value) {
+  switch(value) {
+    case AP_AddObjects: return "AP_AddObjects";
+    case AP_DropObjects: return "AP_DropObjects";
+    case AP_SetObjects: return "AP_SetObjects";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
 _enumToStringAlterSubscriptionType(AlterSubscriptionType value) {
   switch(value) {
     case ALTER_SUBSCRIPTION_OPTIONS: return "ALTER_SUBSCRIPTION_OPTIONS";
@@ -517,6 +545,7 @@ _enumToStringAlterSubscriptionType(AlterSubscriptionType value) {
     case ALTER_SUBSCRIPTION_DROP_PUBLICATION: return "ALTER_SUBSCRIPTION_DROP_PUBLICATION";
     case ALTER_SUBSCRIPTION_REFRESH: return "ALTER_SUBSCRIPTION_REFRESH";
     case ALTER_SUBSCRIPTION_ENABLED: return "ALTER_SUBSCRIPTION_ENABLED";
+    case ALTER_SUBSCRIPTION_SKIP: return "ALTER_SUBSCRIPTION_SKIP";
   }
   Assert(false);
   return NULL;
@@ -702,6 +731,7 @@ _enumToStringCmdType(CmdType value) {
     case CMD_UPDATE: return "CMD_UPDATE";
     case CMD_INSERT: return "CMD_INSERT";
     case CMD_DELETE: return "CMD_DELETE";
+    case CMD_MERGE: return "CMD_MERGE";
     case CMD_UTILITY: return "CMD_UTILITY";
     case CMD_NOTHING: return "CMD_NOTHING";
   }
@@ -984,6 +1014,8 @@ _enumToIntWCOKind(WCOKind value) {
     case WCO_RLS_INSERT_CHECK: return 2;
     case WCO_RLS_UPDATE_CHECK: return 3;
     case WCO_RLS_CONFLICT_CHECK: return 4;
+    case WCO_RLS_MERGE_UPDATE_CHECK: return 5;
+    case WCO_RLS_MERGE_DELETE_CHECK: return 6;
   }
   Assert(false);
   return -1;
@@ -1055,29 +1087,31 @@ _enumToIntObjectType(ObjectType value) {
     case OBJECT_OPCLASS: return 25;
     case OBJECT_OPERATOR: return 26;
     case OBJECT_OPFAMILY: return 27;
-    case OBJECT_POLICY: return 28;
-    case OBJECT_PROCEDURE: return 29;
-    case OBJECT_PUBLICATION: return 30;
-    case OBJECT_PUBLICATION_REL: return 31;
-    case OBJECT_ROLE: return 32;
-    case OBJECT_ROUTINE: return 33;
-    case OBJECT_RULE: return 34;
-    case OBJECT_SCHEMA: return 35;
-    case OBJECT_SEQUENCE: return 36;
-    case OBJECT_SUBSCRIPTION: return 37;
-    case OBJECT_STATISTIC_EXT: return 38;
-    case OBJECT_TABCONSTRAINT: return 39;
-    case OBJECT_TABLE: return 40;
-    case OBJECT_TABLESPACE: return 41;
-    case OBJECT_TRANSFORM: return 42;
-    case OBJECT_TRIGGER: return 43;
-    case OBJECT_TSCONFIGURATION: return 44;
-    case OBJECT_TSDICTIONARY: return 45;
-    case OBJECT_TSPARSER: return 46;
-    case OBJECT_TSTEMPLATE: return 47;
-    case OBJECT_TYPE: return 48;
-    case OBJECT_USER_MAPPING: return 49;
-    case OBJECT_VIEW: return 50;
+    case OBJECT_PARAMETER_ACL: return 28;
+    case OBJECT_POLICY: return 29;
+    case OBJECT_PROCEDURE: return 30;
+    case OBJECT_PUBLICATION: return 31;
+    case OBJECT_PUBLICATION_NAMESPACE: return 32;
+    case OBJECT_PUBLICATION_REL: return 33;
+    case OBJECT_ROLE: return 34;
+    case OBJECT_ROUTINE: return 35;
+    case OBJECT_RULE: return 36;
+    case OBJECT_SCHEMA: return 37;
+    case OBJECT_SEQUENCE: return 38;
+    case OBJECT_SUBSCRIPTION: return 39;
+    case OBJECT_STATISTIC_EXT: return 40;
+    case OBJECT_TABCONSTRAINT: return 41;
+    case OBJECT_TABLE: return 42;
+    case OBJECT_TABLESPACE: return 43;
+    case OBJECT_TRANSFORM: return 44;
+    case OBJECT_TRIGGER: return 45;
+    case OBJECT_TSCONFIGURATION: return 46;
+    case OBJECT_TSDICTIONARY: return 47;
+    case OBJECT_TSPARSER: return 48;
+    case OBJECT_TSTEMPLATE: return 49;
+    case OBJECT_TYPE: return 50;
+    case OBJECT_USER_MAPPING: return 51;
+    case OBJECT_VIEW: return 52;
   }
   Assert(false);
   return -1;
@@ -1133,39 +1167,40 @@ _enumToIntAlterTableType(AlterTableType value) {
     case AT_SetLogged: return 35;
     case AT_SetUnLogged: return 36;
     case AT_DropOids: return 37;
-    case AT_SetTableSpace: return 38;
-    case AT_SetRelOptions: return 39;
-    case AT_ResetRelOptions: return 40;
-    case AT_ReplaceRelOptions: return 41;
-    case AT_EnableTrig: return 42;
-    case AT_EnableAlwaysTrig: return 43;
-    case AT_EnableReplicaTrig: return 44;
-    case AT_DisableTrig: return 45;
-    case AT_EnableTrigAll: return 46;
-    case AT_DisableTrigAll: return 47;
-    case AT_EnableTrigUser: return 48;
-    case AT_DisableTrigUser: return 49;
-    case AT_EnableRule: return 50;
-    case AT_EnableAlwaysRule: return 51;
-    case AT_EnableReplicaRule: return 52;
-    case AT_DisableRule: return 53;
-    case AT_AddInherit: return 54;
-    case AT_DropInherit: return 55;
-    case AT_AddOf: return 56;
-    case AT_DropOf: return 57;
-    case AT_ReplicaIdentity: return 58;
-    case AT_EnableRowSecurity: return 59;
-    case AT_DisableRowSecurity: return 60;
-    case AT_ForceRowSecurity: return 61;
-    case AT_NoForceRowSecurity: return 62;
-    case AT_GenericOptions: return 63;
-    case AT_AttachPartition: return 64;
-    case AT_DetachPartition: return 65;
-    case AT_DetachPartitionFinalize: return 66;
-    case AT_AddIdentity: return 67;
-    case AT_SetIdentity: return 68;
-    case AT_DropIdentity: return 69;
-    case AT_ReAddStatistics: return 70;
+    case AT_SetAccessMethod: return 38;
+    case AT_SetTableSpace: return 39;
+    case AT_SetRelOptions: return 40;
+    case AT_ResetRelOptions: return 41;
+    case AT_ReplaceRelOptions: return 42;
+    case AT_EnableTrig: return 43;
+    case AT_EnableAlwaysTrig: return 44;
+    case AT_EnableReplicaTrig: return 45;
+    case AT_DisableTrig: return 46;
+    case AT_EnableTrigAll: return 47;
+    case AT_DisableTrigAll: return 48;
+    case AT_EnableTrigUser: return 49;
+    case AT_DisableTrigUser: return 50;
+    case AT_EnableRule: return 51;
+    case AT_EnableAlwaysRule: return 52;
+    case AT_EnableReplicaRule: return 53;
+    case AT_DisableRule: return 54;
+    case AT_AddInherit: return 55;
+    case AT_DropInherit: return 56;
+    case AT_AddOf: return 57;
+    case AT_DropOf: return 58;
+    case AT_ReplicaIdentity: return 59;
+    case AT_EnableRowSecurity: return 60;
+    case AT_DisableRowSecurity: return 61;
+    case AT_ForceRowSecurity: return 62;
+    case AT_NoForceRowSecurity: return 63;
+    case AT_GenericOptions: return 64;
+    case AT_AttachPartition: return 65;
+    case AT_DetachPartition: return 66;
+    case AT_DetachPartitionFinalize: return 67;
+    case AT_AddIdentity: return 68;
+    case AT_SetIdentity: return 69;
+    case AT_DropIdentity: return 70;
+    case AT_ReAddStatistics: return 71;
   }
   Assert(false);
   return -1;
@@ -1334,6 +1369,29 @@ _enumToIntAlterTSConfigType(AlterTSConfigType value) {
 }
 
 static int
+_enumToIntPublicationObjSpecType(PublicationObjSpecType value) {
+  switch(value) {
+    case PUBLICATIONOBJ_TABLE: return 1;
+    case PUBLICATIONOBJ_TABLES_IN_SCHEMA: return 2;
+    case PUBLICATIONOBJ_TABLES_IN_CUR_SCHEMA: return 3;
+    case PUBLICATIONOBJ_CONTINUATION: return 4;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntAlterPublicationAction(AlterPublicationAction value) {
+  switch(value) {
+    case AP_AddObjects: return 1;
+    case AP_DropObjects: return 2;
+    case AP_SetObjects: return 3;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
 _enumToIntAlterSubscriptionType(AlterSubscriptionType value) {
   switch(value) {
     case ALTER_SUBSCRIPTION_OPTIONS: return 1;
@@ -1343,6 +1401,7 @@ _enumToIntAlterSubscriptionType(AlterSubscriptionType value) {
     case ALTER_SUBSCRIPTION_DROP_PUBLICATION: return 5;
     case ALTER_SUBSCRIPTION_REFRESH: return 6;
     case ALTER_SUBSCRIPTION_ENABLED: return 7;
+    case ALTER_SUBSCRIPTION_SKIP: return 8;
   }
   Assert(false);
   return -1;
@@ -1528,8 +1587,9 @@ _enumToIntCmdType(CmdType value) {
     case CMD_UPDATE: return 3;
     case CMD_INSERT: return 4;
     case CMD_DELETE: return 5;
-    case CMD_UTILITY: return 6;
-    case CMD_NOTHING: return 7;
+    case CMD_MERGE: return 6;
+    case CMD_UTILITY: return 7;
+    case CMD_NOTHING: return 8;
   }
   Assert(false);
   return -1;
@@ -1810,6 +1870,8 @@ _intToEnumWCOKind(int value) {
     case 2: return WCO_RLS_INSERT_CHECK;
     case 3: return WCO_RLS_UPDATE_CHECK;
     case 4: return WCO_RLS_CONFLICT_CHECK;
+    case 5: return WCO_RLS_MERGE_UPDATE_CHECK;
+    case 6: return WCO_RLS_MERGE_DELETE_CHECK;
   }
   Assert(false);
   return WCO_VIEW_CHECK;
@@ -1881,29 +1943,31 @@ _intToEnumObjectType(int value) {
     case 25: return OBJECT_OPCLASS;
     case 26: return OBJECT_OPERATOR;
     case 27: return OBJECT_OPFAMILY;
-    case 28: return OBJECT_POLICY;
-    case 29: return OBJECT_PROCEDURE;
-    case 30: return OBJECT_PUBLICATION;
-    case 31: return OBJECT_PUBLICATION_REL;
-    case 32: return OBJECT_ROLE;
-    case 33: return OBJECT_ROUTINE;
-    case 34: return OBJECT_RULE;
-    case 35: return OBJECT_SCHEMA;
-    case 36: return OBJECT_SEQUENCE;
-    case 37: return OBJECT_SUBSCRIPTION;
-    case 38: return OBJECT_STATISTIC_EXT;
-    case 39: return OBJECT_TABCONSTRAINT;
-    case 40: return OBJECT_TABLE;
-    case 41: return OBJECT_TABLESPACE;
-    case 42: return OBJECT_TRANSFORM;
-    case 43: return OBJECT_TRIGGER;
-    case 44: return OBJECT_TSCONFIGURATION;
-    case 45: return OBJECT_TSDICTIONARY;
-    case 46: return OBJECT_TSPARSER;
-    case 47: return OBJECT_TSTEMPLATE;
-    case 48: return OBJECT_TYPE;
-    case 49: return OBJECT_USER_MAPPING;
-    case 50: return OBJECT_VIEW;
+    case 28: return OBJECT_PARAMETER_ACL;
+    case 29: return OBJECT_POLICY;
+    case 30: return OBJECT_PROCEDURE;
+    case 31: return OBJECT_PUBLICATION;
+    case 32: return OBJECT_PUBLICATION_NAMESPACE;
+    case 33: return OBJECT_PUBLICATION_REL;
+    case 34: return OBJECT_ROLE;
+    case 35: return OBJECT_ROUTINE;
+    case 36: return OBJECT_RULE;
+    case 37: return OBJECT_SCHEMA;
+    case 38: return OBJECT_SEQUENCE;
+    case 39: return OBJECT_SUBSCRIPTION;
+    case 40: return OBJECT_STATISTIC_EXT;
+    case 41: return OBJECT_TABCONSTRAINT;
+    case 42: return OBJECT_TABLE;
+    case 43: return OBJECT_TABLESPACE;
+    case 44: return OBJECT_TRANSFORM;
+    case 45: return OBJECT_TRIGGER;
+    case 46: return OBJECT_TSCONFIGURATION;
+    case 47: return OBJECT_TSDICTIONARY;
+    case 48: return OBJECT_TSPARSER;
+    case 49: return OBJECT_TSTEMPLATE;
+    case 50: return OBJECT_TYPE;
+    case 51: return OBJECT_USER_MAPPING;
+    case 52: return OBJECT_VIEW;
   }
   Assert(false);
   return OBJECT_ACCESS_METHOD;
@@ -1959,39 +2023,40 @@ _intToEnumAlterTableType(int value) {
     case 35: return AT_SetLogged;
     case 36: return AT_SetUnLogged;
     case 37: return AT_DropOids;
-    case 38: return AT_SetTableSpace;
-    case 39: return AT_SetRelOptions;
-    case 40: return AT_ResetRelOptions;
-    case 41: return AT_ReplaceRelOptions;
-    case 42: return AT_EnableTrig;
-    case 43: return AT_EnableAlwaysTrig;
-    case 44: return AT_EnableReplicaTrig;
-    case 45: return AT_DisableTrig;
-    case 46: return AT_EnableTrigAll;
-    case 47: return AT_DisableTrigAll;
-    case 48: return AT_EnableTrigUser;
-    case 49: return AT_DisableTrigUser;
-    case 50: return AT_EnableRule;
-    case 51: return AT_EnableAlwaysRule;
-    case 52: return AT_EnableReplicaRule;
-    case 53: return AT_DisableRule;
-    case 54: return AT_AddInherit;
-    case 55: return AT_DropInherit;
-    case 56: return AT_AddOf;
-    case 57: return AT_DropOf;
-    case 58: return AT_ReplicaIdentity;
-    case 59: return AT_EnableRowSecurity;
-    case 60: return AT_DisableRowSecurity;
-    case 61: return AT_ForceRowSecurity;
-    case 62: return AT_NoForceRowSecurity;
-    case 63: return AT_GenericOptions;
-    case 64: return AT_AttachPartition;
-    case 65: return AT_DetachPartition;
-    case 66: return AT_DetachPartitionFinalize;
-    case 67: return AT_AddIdentity;
-    case 68: return AT_SetIdentity;
-    case 69: return AT_DropIdentity;
-    case 70: return AT_ReAddStatistics;
+    case 38: return AT_SetAccessMethod;
+    case 39: return AT_SetTableSpace;
+    case 40: return AT_SetRelOptions;
+    case 41: return AT_ResetRelOptions;
+    case 42: return AT_ReplaceRelOptions;
+    case 43: return AT_EnableTrig;
+    case 44: return AT_EnableAlwaysTrig;
+    case 45: return AT_EnableReplicaTrig;
+    case 46: return AT_DisableTrig;
+    case 47: return AT_EnableTrigAll;
+    case 48: return AT_DisableTrigAll;
+    case 49: return AT_EnableTrigUser;
+    case 50: return AT_DisableTrigUser;
+    case 51: return AT_EnableRule;
+    case 52: return AT_EnableAlwaysRule;
+    case 53: return AT_EnableReplicaRule;
+    case 54: return AT_DisableRule;
+    case 55: return AT_AddInherit;
+    case 56: return AT_DropInherit;
+    case 57: return AT_AddOf;
+    case 58: return AT_DropOf;
+    case 59: return AT_ReplicaIdentity;
+    case 60: return AT_EnableRowSecurity;
+    case 61: return AT_DisableRowSecurity;
+    case 62: return AT_ForceRowSecurity;
+    case 63: return AT_NoForceRowSecurity;
+    case 64: return AT_GenericOptions;
+    case 65: return AT_AttachPartition;
+    case 66: return AT_DetachPartition;
+    case 67: return AT_DetachPartitionFinalize;
+    case 68: return AT_AddIdentity;
+    case 69: return AT_SetIdentity;
+    case 70: return AT_DropIdentity;
+    case 71: return AT_ReAddStatistics;
   }
   Assert(false);
   return AT_AddColumn;
@@ -2159,6 +2224,29 @@ _intToEnumAlterTSConfigType(int value) {
   return ALTER_TSCONFIG_ADD_MAPPING;
 }
 
+static PublicationObjSpecType
+_intToEnumPublicationObjSpecType(int value) {
+  switch(value) {
+    case 1: return PUBLICATIONOBJ_TABLE;
+    case 2: return PUBLICATIONOBJ_TABLES_IN_SCHEMA;
+    case 3: return PUBLICATIONOBJ_TABLES_IN_CUR_SCHEMA;
+    case 4: return PUBLICATIONOBJ_CONTINUATION;
+  }
+  Assert(false);
+  return PUBLICATIONOBJ_TABLE;
+}
+
+static AlterPublicationAction
+_intToEnumAlterPublicationAction(int value) {
+  switch(value) {
+    case 1: return AP_AddObjects;
+    case 2: return AP_DropObjects;
+    case 3: return AP_SetObjects;
+  }
+  Assert(false);
+  return AP_AddObjects;
+}
+
 static AlterSubscriptionType
 _intToEnumAlterSubscriptionType(int value) {
   switch(value) {
@@ -2169,6 +2257,7 @@ _intToEnumAlterSubscriptionType(int value) {
     case 5: return ALTER_SUBSCRIPTION_DROP_PUBLICATION;
     case 6: return ALTER_SUBSCRIPTION_REFRESH;
     case 7: return ALTER_SUBSCRIPTION_ENABLED;
+    case 8: return ALTER_SUBSCRIPTION_SKIP;
   }
   Assert(false);
   return ALTER_SUBSCRIPTION_OPTIONS;
@@ -2354,8 +2443,9 @@ _intToEnumCmdType(int value) {
     case 3: return CMD_UPDATE;
     case 4: return CMD_INSERT;
     case 5: return CMD_DELETE;
-    case 6: return CMD_UTILITY;
-    case 7: return CMD_NOTHING;
+    case 6: return CMD_MERGE;
+    case 7: return CMD_UTILITY;
+    case 8: return CMD_NOTHING;
   }
   Assert(false);
   return CMD_UNKNOWN;

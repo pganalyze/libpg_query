@@ -122,33 +122,78 @@ _outOidList(pg_query::OidList* out_node, const List *node)
 // TODO: Add Bitmapset
 
 static void
-_outInteger(pg_query::Integer* out_node, const Value *node)
+_outInteger(pg_query::Integer* out_node, const Integer *node)
 {
-  out_node->set_ival(node->val.ival);
+	out_node->set_ival(node->ival);
 }
 
 static void
-_outFloat(pg_query::Float* out_node, const Value *node)
+_outFloat(pg_query::Float* out_node, const Float *node)
 {
-  out_node->set_str(node->val.str);
+	out_node->set_fval(node->fval);
 }
 
 static void
-_outString(pg_query::String* out_node, const Value *node)
+_outBoolean(pg_query::Boolean* out_node, const Boolean *node)
 {
-  out_node->set_str(node->val.str);
+	out_node->set_boolval(node->boolval);
 }
 
 static void
-_outBitString(pg_query::BitString* out_node, const Value *node)
+_outString(pg_query::String* out_node, const String *node)
 {
-  out_node->set_str(node->val.str);
+	out_node->set_sval(node->sval);
 }
 
 static void
-_outNull(pg_query::Null* out_node, const Value *node)
+_outBitString(pg_query::BitString* out_node, const BitString *node)
 {
-  // Null has no fields
+	out_node->set_bsval(node->bsval);
+}
+
+static void
+_outAConst(pg_query::A_Const* out_node, const A_Const *node)
+{
+	out_node->set_isnull(node->isnull);
+	out_node->set_location(node->location);
+
+	if (!node->isnull) {
+		switch (nodeTag(&node->val.node)) {
+			case T_Integer: {
+				pg_query::Integer *value = new pg_query::Integer();
+				value->set_ival(node->val.ival.ival);
+				out_node->set_allocated_ival(value);
+				break;
+			}
+			case T_Float: {
+				pg_query::Float *value = new pg_query::Float();
+				value->set_fval(pstrdup(node->val.fval.fval));
+				out_node->set_allocated_fval(value);
+				break;
+			}
+			case T_Boolean: {
+				pg_query::Boolean *value = new pg_query::Boolean();
+				value->set_boolval(node->val.boolval.boolval);
+				out_node->set_allocated_boolval(value);
+				break;
+			}
+			case T_String: {
+				pg_query::String *value = new pg_query::String();
+				value->set_sval(pstrdup(node->val.sval.sval));
+				out_node->set_allocated_sval(value);
+				break;
+			}
+			case T_BitString: {
+				pg_query::BitString *value = new pg_query::BitString();
+				value->set_bsval(pstrdup(node->val.bsval.bsval));
+				out_node->set_allocated_bsval(value);
+				break;
+			}
+			default:
+				// Unreachable
+				Assert(false);
+		}
+	}
 }
 
 #include "pg_query_enum_defs.c"
@@ -208,7 +253,7 @@ pg_query_nodes_to_json(const void *obj)
 	pg_query::ParseResult parse_result;
 
 	if (obj == NULL)
-    	return pstrdup("{}");
+		return pstrdup("{}");
 
 	parse_result.set_version(PG_VERSION_NUM);
 	foreach(lc, (List*) obj)

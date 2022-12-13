@@ -120,53 +120,54 @@
      K_LAST = 336,
      K_LOG = 337,
      K_LOOP = 338,
-     K_MESSAGE = 339,
-     K_MESSAGE_TEXT = 340,
-     K_MOVE = 341,
-     K_NEXT = 342,
-     K_NO = 343,
-     K_NOT = 344,
-     K_NOTICE = 345,
-     K_NULL = 346,
-     K_OPEN = 347,
-     K_OPTION = 348,
-     K_OR = 349,
-     K_PERFORM = 350,
-     K_PG_CONTEXT = 351,
-     K_PG_DATATYPE_NAME = 352,
-     K_PG_EXCEPTION_CONTEXT = 353,
-     K_PG_EXCEPTION_DETAIL = 354,
-     K_PG_EXCEPTION_HINT = 355,
-     K_PRINT_STRICT_PARAMS = 356,
-     K_PRIOR = 357,
-     K_QUERY = 358,
-     K_RAISE = 359,
-     K_RELATIVE = 360,
-     K_RETURN = 361,
-     K_RETURNED_SQLSTATE = 362,
-     K_REVERSE = 363,
-     K_ROLLBACK = 364,
-     K_ROW_COUNT = 365,
-     K_ROWTYPE = 366,
-     K_SCHEMA = 367,
-     K_SCHEMA_NAME = 368,
-     K_SCROLL = 369,
-     K_SLICE = 370,
-     K_SQLSTATE = 371,
-     K_STACKED = 372,
-     K_STRICT = 373,
-     K_TABLE = 374,
-     K_TABLE_NAME = 375,
-     K_THEN = 376,
-     K_TO = 377,
-     K_TYPE = 378,
-     K_USE_COLUMN = 379,
-     K_USE_VARIABLE = 380,
-     K_USING = 381,
-     K_VARIABLE_CONFLICT = 382,
-     K_WARNING = 383,
-     K_WHEN = 384,
-     K_WHILE = 385
+     K_MERGE = 339,
+     K_MESSAGE = 340,
+     K_MESSAGE_TEXT = 341,
+     K_MOVE = 342,
+     K_NEXT = 343,
+     K_NO = 344,
+     K_NOT = 345,
+     K_NOTICE = 346,
+     K_NULL = 347,
+     K_OPEN = 348,
+     K_OPTION = 349,
+     K_OR = 350,
+     K_PERFORM = 351,
+     K_PG_CONTEXT = 352,
+     K_PG_DATATYPE_NAME = 353,
+     K_PG_EXCEPTION_CONTEXT = 354,
+     K_PG_EXCEPTION_DETAIL = 355,
+     K_PG_EXCEPTION_HINT = 356,
+     K_PRINT_STRICT_PARAMS = 357,
+     K_PRIOR = 358,
+     K_QUERY = 359,
+     K_RAISE = 360,
+     K_RELATIVE = 361,
+     K_RETURN = 362,
+     K_RETURNED_SQLSTATE = 363,
+     K_REVERSE = 364,
+     K_ROLLBACK = 365,
+     K_ROW_COUNT = 366,
+     K_ROWTYPE = 367,
+     K_SCHEMA = 368,
+     K_SCHEMA_NAME = 369,
+     K_SCROLL = 370,
+     K_SLICE = 371,
+     K_SQLSTATE = 372,
+     K_STACKED = 373,
+     K_STRICT = 374,
+     K_TABLE = 375,
+     K_TABLE_NAME = 376,
+     K_THEN = 377,
+     K_TO = 378,
+     K_TYPE = 379,
+     K_USE_COLUMN = 380,
+     K_USE_VARIABLE = 381,
+     K_USING = 382,
+     K_VARIABLE_CONFLICT = 383,
+     K_WARNING = 384,
+     K_WHEN = 385,
+     K_WHILE = 386
    };
 #endif
 /* Tokens.  */
@@ -251,112 +252,113 @@
 #define K_LAST 336
 #define K_LOG 337
 #define K_LOOP 338
-#define K_MESSAGE 339
-#define K_MESSAGE_TEXT 340
-#define K_MOVE 341
-#define K_NEXT 342
-#define K_NO 343
-#define K_NOT 344
-#define K_NOTICE 345
-#define K_NULL 346
-#define K_OPEN 347
-#define K_OPTION 348
-#define K_OR 349
-#define K_PERFORM 350
-#define K_PG_CONTEXT 351
-#define K_PG_DATATYPE_NAME 352
-#define K_PG_EXCEPTION_CONTEXT 353
-#define K_PG_EXCEPTION_DETAIL 354
-#define K_PG_EXCEPTION_HINT 355
-#define K_PRINT_STRICT_PARAMS 356
-#define K_PRIOR 357
-#define K_QUERY 358
-#define K_RAISE 359
-#define K_RELATIVE 360
-#define K_RETURN 361
-#define K_RETURNED_SQLSTATE 362
-#define K_REVERSE 363
-#define K_ROLLBACK 364
-#define K_ROW_COUNT 365
-#define K_ROWTYPE 366
-#define K_SCHEMA 367
-#define K_SCHEMA_NAME 368
-#define K_SCROLL 369
-#define K_SLICE 370
-#define K_SQLSTATE 371
-#define K_STACKED 372
-#define K_STRICT 373
-#define K_TABLE 374
-#define K_TABLE_NAME 375
-#define K_THEN 376
-#define K_TO 377
-#define K_TYPE 378
-#define K_USE_COLUMN 379
-#define K_USE_VARIABLE 380
-#define K_USING 381
-#define K_VARIABLE_CONFLICT 382
-#define K_WARNING 383
-#define K_WHEN 384
-#define K_WHILE 385
+#define K_MERGE 339
+#define K_MESSAGE 340
+#define K_MESSAGE_TEXT 341
+#define K_MOVE 342
+#define K_NEXT 343
+#define K_NO 344
+#define K_NOT 345
+#define K_NOTICE 346
+#define K_NULL 347
+#define K_OPEN 348
+#define K_OPTION 349
+#define K_OR 350
+#define K_PERFORM 351
+#define K_PG_CONTEXT 352
+#define K_PG_DATATYPE_NAME 353
+#define K_PG_EXCEPTION_CONTEXT 354
+#define K_PG_EXCEPTION_DETAIL 355
+#define K_PG_EXCEPTION_HINT 356
+#define K_PRINT_STRICT_PARAMS 357
+#define K_PRIOR 358
+#define K_QUERY 359
+#define K_RAISE 360
+#define K_RELATIVE 361
+#define K_RETURN 362
+#define K_RETURNED_SQLSTATE 363
+#define K_REVERSE 364
+#define K_ROLLBACK 365
+#define K_ROW_COUNT 366
+#define K_ROWTYPE 367
+#define K_SCHEMA 368
+#define K_SCHEMA_NAME 369
+#define K_SCROLL 370
+#define K_SLICE 371
+#define K_SQLSTATE 372
+#define K_STACKED 373
+#define K_STRICT 374
+#define K_TABLE 375
+#define K_TABLE_NAME 376
+#define K_THEN 377
+#define K_TO 378
+#define K_TYPE 379
+#define K_USE_COLUMN 380
+#define K_USE_VARIABLE 381
+#define K_USING 382
+#define K_VARIABLE_CONFLICT 383
+#define K_WARNING 384
+#define K_WHEN 385
+#define K_WHILE 386
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 119 "pl_gram.y"
+#line 120 "pl_gram.y"
 {
-		core_YYSTYPE			core_yystype;
-		/* these fields must match core_YYSTYPE: */
-		int						ival;
-		char					*str;
-		const char				*keyword;
+	core_YYSTYPE core_yystype;
+	/* these fields must match core_YYSTYPE: */
+	int			ival;
+	char	   *str;
+	const char *keyword;
 
-		PLword					word;
-		PLcword					cword;
-		PLwdatum				wdatum;
-		bool					boolean;
-		Oid						oid;
-		struct
-		{
-			char *name;
-			int  lineno;
-		}						varname;
-		struct
-		{
-			char *name;
-			int  lineno;
-			PLpgSQL_datum   *scalar;
-			PLpgSQL_datum   *row;
-		}						forvariable;
-		struct
-		{
-			char *label;
-			int  n_initvars;
-			int  *initvarnos;
-		}						declhdr;
-		struct
-		{
-			List *stmts;
-			char *end_label;
-			int   end_label_location;
-		}						loop_body;
-		List					*list;
-		PLpgSQL_type			*dtype;
-		PLpgSQL_datum			*datum;
-		PLpgSQL_var				*var;
-		PLpgSQL_expr			*expr;
-		PLpgSQL_stmt			*stmt;
-		PLpgSQL_condition		*condition;
-		PLpgSQL_exception		*exception;
-		PLpgSQL_exception_block	*exception_block;
-		PLpgSQL_nsitem			*nsitem;
-		PLpgSQL_diag_item		*diagitem;
-		PLpgSQL_stmt_fetch		*fetch;
-		PLpgSQL_case_when		*casewhen;
+	PLword		word;
+	PLcword		cword;
+	PLwdatum	wdatum;
+	bool		boolean;
+	Oid			oid;
+	struct
+	{
+		char	   *name;
+		int			lineno;
+	}			varname;
+	struct
+	{
+		char	   *name;
+		int			lineno;
+		PLpgSQL_datum *scalar;
+		PLpgSQL_datum *row;
+	}			forvariable;
+	struct
+	{
+		char	   *label;
+		int			n_initvars;
+		int		   *initvarnos;
+	}			declhdr;
+	struct
+	{
+		List	   *stmts;
+		char	   *end_label;
+		int			end_label_location;
+	}			loop_body;
+	List	   *list;
+	PLpgSQL_type *dtype;
+	PLpgSQL_datum *datum;
+	PLpgSQL_var	*var;
+	PLpgSQL_expr *expr;
+	PLpgSQL_stmt *stmt;
+	PLpgSQL_condition *condition;
+	PLpgSQL_exception *exception;
+	PLpgSQL_exception_block	*exception_block;
+	PLpgSQL_nsitem *nsitem;
+	PLpgSQL_diag_item *diagitem;
+	PLpgSQL_stmt_fetch *fetch;
+	PLpgSQL_case_when *casewhen;
 }
 /* Line 1529 of yacc.c.  */
-#line 360 "pl_gram.h"
+#line 362 "pl_gram.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

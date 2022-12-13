@@ -136,7 +136,7 @@ const char* tests[] = {
   "CREATE SCHEMA IF NOT EXISTS test AUTHORIZATION joe",
   "CREATE SCHEMA hollywood CREATE TABLE films (title text, release date, awards text[]) CREATE VIEW winners AS SELECT title, release FROM films WHERE awards IS NOT NULL",
   "CREATE UNLOGGED TABLE cities (name text, population real, altitude double, identifier smallint, postal_code int, foreign_id bigint)",
-  "CREATE TABLE IF NOT EXISTS distributors (name varchar(40) DEFAULT 'Luso Films', len interval hour to second(3), name varchar(40) DEFAULT 'Luso Films', did int DEFAULT nextval('distributors_serial'), stamp timestamp DEFAULT now() NOT NULL, stamptz timestamp with time zone, time time NOT NULL, timetz time with time zone, CONSTRAINT name_len PRIMARY KEY (name, len))",
+  "CREATE TABLE IF NOT EXISTS distributors (name varchar(40) DEFAULT 'Luso Films', len interval hour to second(3), name varchar(40) DEFAULT 'Luso Films', did int DEFAULT nextval('distributors_serial'), stamp timestamp DEFAULT now() NOT NULL, stamptz timestamp with time zone, \"time\" time NOT NULL, timetz time with time zone, CONSTRAINT name_len PRIMARY KEY (name, len))",
   "CREATE TABLE types (a real, b double precision, c numeric(2, 3), d char(4), e char(5), f varchar(6), g varchar(7))",
   "CREATE TABLE types (a geometry(point) NOT NULL)",
   "CREATE TABLE tablename (colname int NOT NULL DEFAULT nextval('tablename_colname_seq'))",
@@ -381,8 +381,12 @@ const char* tests[] = {
   "CREATE EXTENSION x",
   "CREATE EXTENSION IF NOT EXISTS x CASCADE VERSION \"1.2\" SCHEMA a",
   "CREATE TABLE like_constraint_rename_cache (LIKE constraint_rename_cache INCLUDING ALL)",
-  "COPY manual_export TO STDOUT WITH (FORMAT CSV, HEADER)",
-  "SELECT 1 FROM a.b.c"
+  "COPY manual_export TO STDOUT CSV HEADER",
+  "SELECT 1 FROM a.b.c",
+  "CREATE PUBLICATION foo FOR TABLES IN SCHEMA bar",
+  "ALTER TABLE ALL IN TABLESPACE foo OWNED BY bar, quux SET TABLESPACE fred NOWAIT",
+  "MERGE INTO measurement m USING new_measurement nm ON m.city_id = nm.city_id AND m.logdate = nm.logdate WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = GREATEST(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + COALESCE(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
+  "COPY vistest FROM STDIN FREEZE CSV",
 };
 
 size_t testsLength = __LINE__ - 4;

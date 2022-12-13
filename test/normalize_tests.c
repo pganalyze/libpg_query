@@ -35,6 +35,8 @@ const char* tests[] = {
   "CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user $1, password $2)",
   "ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password 'public')",
   "ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password $1)",
+  "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
+  "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, $1) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",

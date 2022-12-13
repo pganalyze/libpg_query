@@ -10,7 +10,7 @@
  *	  Support routines for various kinds of object creation.
  *
  *
- * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -93,6 +93,11 @@ defGetInt32(DefElem *def)
 
 
 /*
+ * Extract an OID value from a DefElem.
+ */
+
+
+/*
  * Extract a possibly-qualified name (as a List of Strings) from a DefElem.
  */
 
@@ -113,5 +118,10 @@ defGetInt32(DefElem *def)
 
 /*
  * Extract a list of string values (otherwise uninterpreted) from a DefElem.
+ */
+
+
+/*
+ * Raise an error about a conflicting DefElem.
  */
 

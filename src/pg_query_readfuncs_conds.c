@@ -3,7 +3,6 @@
   READ_COND(Alias, Alias, alias, ALIAS, Alias, alias);
   READ_COND(RangeVar, RangeVar, range_var, RANGE_VAR, RangeVar, range_var);
   READ_COND(TableFunc, TableFunc, table_func, TABLE_FUNC, TableFunc, table_func);
-  READ_COND(Expr, Expr, expr, EXPR, Expr, expr);
   READ_COND(Var, Var, var, VAR, Var, var);
   READ_COND(Param, Param, param, PARAM, Param, param);
   READ_COND(Aggref, Aggref, aggref, AGGREF, Aggref, aggref);
@@ -51,11 +50,13 @@
   READ_COND(FromExpr, FromExpr, from_expr, FROM_EXPR, FromExpr, from_expr);
   READ_COND(OnConflictExpr, OnConflictExpr, on_conflict_expr, ON_CONFLICT_EXPR, OnConflictExpr, on_conflict_expr);
   READ_COND(IntoClause, IntoClause, into_clause, INTO_CLAUSE, IntoClause, into_clause);
+  READ_COND(MergeAction, MergeAction, merge_action, MERGE_ACTION, MergeAction, merge_action);
   READ_COND(RawStmt, RawStmt, raw_stmt, RAW_STMT, RawStmt, raw_stmt);
   READ_COND(Query, Query, query, QUERY, Query, query);
   READ_COND(InsertStmt, InsertStmt, insert_stmt, INSERT_STMT, InsertStmt, insert_stmt);
   READ_COND(DeleteStmt, DeleteStmt, delete_stmt, DELETE_STMT, DeleteStmt, delete_stmt);
   READ_COND(UpdateStmt, UpdateStmt, update_stmt, UPDATE_STMT, UpdateStmt, update_stmt);
+  READ_COND(MergeStmt, MergeStmt, merge_stmt, MERGE_STMT, MergeStmt, merge_stmt);
   READ_COND(SelectStmt, SelectStmt, select_stmt, SELECT_STMT, SelectStmt, select_stmt);
   READ_COND(ReturnStmt, ReturnStmt, return_stmt, RETURN_STMT, ReturnStmt, return_stmt);
   READ_COND(PLAssignStmt, PLAssignStmt, plassign_stmt, PLASSIGN_STMT, PLAssignStmt, plassign_stmt);
@@ -109,6 +110,7 @@
   READ_COND(CheckPointStmt, CheckPointStmt, check_point_stmt, CHECK_POINT_STMT, CheckPointStmt, check_point_stmt);
   READ_COND(CreateSchemaStmt, CreateSchemaStmt, create_schema_stmt, CREATE_SCHEMA_STMT, CreateSchemaStmt, create_schema_stmt);
   READ_COND(AlterDatabaseStmt, AlterDatabaseStmt, alter_database_stmt, ALTER_DATABASE_STMT, AlterDatabaseStmt, alter_database_stmt);
+  READ_COND(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt, alter_database_refresh_coll_stmt, ALTER_DATABASE_REFRESH_COLL_STMT, AlterDatabaseRefreshCollStmt, alter_database_refresh_coll_stmt);
   READ_COND(AlterDatabaseSetStmt, AlterDatabaseSetStmt, alter_database_set_stmt, ALTER_DATABASE_SET_STMT, AlterDatabaseSetStmt, alter_database_set_stmt);
   READ_COND(AlterRoleSetStmt, AlterRoleSetStmt, alter_role_set_stmt, ALTER_ROLE_SET_STMT, AlterRoleSetStmt, alter_role_set_stmt);
   READ_COND(CreateConversionStmt, CreateConversionStmt, create_conversion_stmt, CREATE_CONVERSION_STMT, CreateConversionStmt, create_conversion_stmt);
@@ -171,7 +173,6 @@
   READ_COND(A_Expr, AExpr, a__expr, A_EXPR, A_Expr, a_expr);
   READ_COND(ColumnRef, ColumnRef, column_ref, COLUMN_REF, ColumnRef, column_ref);
   READ_COND(ParamRef, ParamRef, param_ref, PARAM_REF, ParamRef, param_ref);
-  READ_COND(A_Const, AConst, a__const, A_CONST, A_Const, a_const);
   READ_COND(FuncCall, FuncCall, func_call, FUNC_CALL, FuncCall, func_call);
   READ_COND(A_Star, AStar, a__star, A_STAR, A_Star, a_star);
   READ_COND(A_Indices, AIndices, a__indices, A_INDICES, A_Indices, a_indices);
@@ -215,6 +216,7 @@
   READ_COND(CTESearchClause, CTESearchClause, ctesearch_clause, CTESEARCH_CLAUSE, CTESearchClause, ctesearch_clause);
   READ_COND(CTECycleClause, CTECycleClause, ctecycle_clause, CTECYCLE_CLAUSE, CTECycleClause, ctecycle_clause);
   READ_COND(CommonTableExpr, CommonTableExpr, common_table_expr, COMMON_TABLE_EXPR, CommonTableExpr, common_table_expr);
+  READ_COND(MergeWhenClause, MergeWhenClause, merge_when_clause, MERGE_WHEN_CLAUSE, MergeWhenClause, merge_when_clause);
   READ_COND(RoleSpec, RoleSpec, role_spec, ROLE_SPEC, RoleSpec, role_spec);
   READ_COND(TriggerTransition, TriggerTransition, trigger_transition, TRIGGER_TRANSITION, TriggerTransition, trigger_transition);
   READ_COND(PartitionElem, PartitionElem, partition_elem, PARTITION_ELEM, PartitionElem, partition_elem);
@@ -223,5 +225,7 @@
   READ_COND(PartitionRangeDatum, PartitionRangeDatum, partition_range_datum, PARTITION_RANGE_DATUM, PartitionRangeDatum, partition_range_datum);
   READ_COND(PartitionCmd, PartitionCmd, partition_cmd, PARTITION_CMD, PartitionCmd, partition_cmd);
   READ_COND(VacuumRelation, VacuumRelation, vacuum_relation, VACUUM_RELATION, VacuumRelation, vacuum_relation);
+  READ_COND(PublicationObjSpec, PublicationObjSpec, publication_obj_spec, PUBLICATION_OBJ_SPEC, PublicationObjSpec, publication_obj_spec);
+  READ_COND(PublicationTable, PublicationTable, publication_table, PUBLICATION_TABLE, PublicationTable, publication_table);
   READ_COND(InlineCodeBlock, InlineCodeBlock, inline_code_block, INLINE_CODE_BLOCK, InlineCodeBlock, inline_code_block);
   READ_COND(CallContext, CallContext, call_context, CALL_CONTEXT, CallContext, call_context);

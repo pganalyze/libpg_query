@@ -43,7 +43,7 @@
  * context's MemoryContextMethods struct.
  *
  *
- * Portions Copyright (c) 1996-2021, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -494,7 +494,7 @@ MemoryContextStatsDetail(MemoryContext context, int max_children,
 
 	if (print_to_stderr)
 		fprintf(stderr,
-				"Grand total: %zu bytes in %zd blocks; %zu free (%zd chunks); %zu used\n",
+				"Grand total: %zu bytes in %zu blocks; %zu free (%zu chunks); %zu used\n",
 				grand_totals.totalspace, grand_totals.nblocks,
 				grand_totals.freespace, grand_totals.freechunks,
 				grand_totals.totalspace - grand_totals.freespace);
@@ -513,7 +513,7 @@ MemoryContextStatsDetail(MemoryContext context, int max_children,
 		ereport(LOG_SERVER_ONLY,
 				(errhidestmt(true),
 				 errhidecontext(true),
-				 errmsg_internal("Grand total: %zu bytes in %zd blocks; %zu free (%zd chunks); %zu used",
+				 errmsg_internal("Grand total: %zu bytes in %zu blocks; %zu free (%zu chunks); %zu used",
 								 grand_totals.totalspace, grand_totals.nblocks,
 								 grand_totals.freespace, grand_totals.freechunks,
 								 grand_totals.totalspace - grand_totals.freespace)));
@@ -578,7 +578,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
 				for (i = 0; i <= level; i++)
 					fprintf(stderr, "  ");
 				fprintf(stderr,
-						"%d more child contexts containing %zu total in %zd blocks; %zu free (%zd chunks); %zu used\n",
+						"%d more child contexts containing %zu total in %zu blocks; %zu free (%zu chunks); %zu used\n",
 						ichild - max_children,
 						local_totals.totalspace,
 						local_totals.nblocks,
@@ -590,7 +590,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
 				ereport(LOG_SERVER_ONLY,
 						(errhidestmt(true),
 						 errhidecontext(true),
-						 errmsg_internal("level: %d; %d more child contexts containing %zu total in %zd blocks; %zu free (%zd chunks); %zu used",
+						 errmsg_internal("level: %d; %d more child contexts containing %zu total in %zu blocks; %zu free (%zu chunks); %zu used",
 										 level,
 										 ichild - max_children,
 										 local_totals.totalspace,

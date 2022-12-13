@@ -93,34 +93,34 @@ _fingerprintString(FingerprintContext *ctx, const char *str)
 }
 
 static void
-_fingerprintInteger(FingerprintContext *ctx, const Value *node)
+_fingerprintInteger(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (node->val.ival != 0) {
+	if (value->ival.ival != 0) {
 		_fingerprintString(ctx, "Integer");
 		_fingerprintString(ctx, "ival");
 		char buffer[50];
-		sprintf(buffer, "%d", node->val.ival);
+		sprintf(buffer, "%d", value->ival.ival);
 		_fingerprintString(ctx, buffer);
 	}
 }
 
 static void
-_fingerprintFloat(FingerprintContext *ctx, const Value *node)
+_fingerprintFloat(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (node->val.str != NULL) {
+	if (value->sval.sval != NULL) {
 		_fingerprintString(ctx, "Float");
 		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, node->val.str);
+		_fingerprintString(ctx, value->sval.sval);
 	}
 }
 
 static void
-_fingerprintBitString(FingerprintContext *ctx, const Value *node)
+_fingerprintBitString(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (node->val.str != NULL) {
+	if (value->sval.sval != NULL) {
 		_fingerprintString(ctx, "BitString");
 		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, node->val.str);
+		_fingerprintString(ctx, value->sval.sval);
 	}
 }
 
@@ -275,7 +275,7 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, c
 		case T_String:
 			_fingerprintString(ctx, "String");
 			_fingerprintString(ctx, "str");
-			_fingerprintString(ctx, ((Value*) obj)->val.str);
+			_fingerprintString(ctx, ((union ValUnion*) obj)->sval.sval);
 			break;
 		case T_BitString:
 			_fingerprintBitString(ctx, obj);
