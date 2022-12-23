@@ -16,109 +16,67 @@
   },
   {
     "input": "SELECT 1; SELECT a FROM b",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget",
-      "RawStmt", "stmt", "SelectStmt",
-      "fromClause", "RangeVar", "inh", "true", "relname", "b", "relpersistence",
-      "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList",
-      "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "b", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
     "expectedHash": "3efa3b10d558d06d"
   },
   {
     "input": "SELECT COUNT(DISTINCT id), * FROM targets WHERE something IS NOT NULL AND elsewhere::interval < now()",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname",
-      "targets", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val",
-      "FuncCall", "agg_distinct", "true", "args", "ColumnRef", "fields", "String", "str", "id", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String", "str", "count",
-      "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "BoolExpr", "args", "A_Expr", "kind", "AEXPR_OP", "lexpr", "TypeCast", "arg",
-      "ColumnRef", "fields", "String", "str", "elsewhere", "typeName",
-      "names", "String", "str", "pg_catalog", "String", "str", "interval", "typemod",
-      "-1", "name", "String", "str", "<", "rexpr", "FuncCall", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String",
-      "str", "now", "NullTest", "arg", "ColumnRef", "fields", "String",
-      "str", "something", "nulltesttype", "IS_NOT_NULL", "boolop", "AND_EXPR"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "targets", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "FuncCall", "agg_distinct", "true", "args", "ColumnRef", "fields", "String", "str", "id", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String", "str", "count", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "BoolExpr", "args", "A_Expr", "kind", "AEXPR_OP", "lexpr", "TypeCast", "arg", "ColumnRef", "fields", "String", "str", "elsewhere", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "interval", "typemod", "-1", "name", "String", "str", "<", "rexpr", "FuncCall", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String", "str", "now", "NullTest", "arg", "ColumnRef", "fields", "String", "str", "something", "nulltesttype", "IS_NOT_NULL", "boolop", "AND_EXPR"],
     "expectedHash": "26b6553101185d22"
   },
   {
     "input": "INSERT INTO test (a, b) VALUES ($1, $2)",
-		"expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget",
-      "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation",
-      "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-		"expectedHash": "51e63b8083b48bdd"
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
+    "expectedHash": "51e63b8083b48bdd"
   },
   {
     "input": "INSERT INTO test (b, a) VALUES ($1, $2)",
-		"expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget",
-      "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation",
-      "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
-		"expectedHash": "51e63b8083b48bdd"
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
+    "expectedHash": "51e63b8083b48bdd"
   },
   {
     "input": "INSERT INTO test (a, b) VALUES (ARRAY[$1, $2, $3, $4], $5::timestamptz), (ARRAY[$6, $7, $8, $9], $10::timestamptz), ($11, $12::timestamptz)",
-    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name",
-      "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true",
-      "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
-      "valuesLists", "A_ArrayExpr"],
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "b", "ResTarget", "name", "a", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "test", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "valuesLists", "A_ArrayExpr"],
     "expectedHash": "4dfdd5260cac5acf"
   },
   {
     "input": "SELECT b AS x, a AS y FROM z",
-		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields",
-      "String", "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
-		"expectedHash": "1a8bf5d7614de3a5"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
+    "expectedHash": "1a8bf5d7614de3a5"
   },
   {
     "input": "SELECT * FROM x WHERE y = $1",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "SELECT * FROM x WHERE y = ANY ($1)",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ($1)",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ($1, $2, $3)",
-		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ( $1::uuid )",
-		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "SELECT * FROM x WHERE y IN ( $1::uuid, $2::uuid, $3::uuid )",
-		"expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y",
-      "name", "String", "str", "="],
-		"expectedHash": "4ff39426bd074231"
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "y", "name", "String", "str", "="],
+    "expectedHash": "4ff39426bd074231"
   },
   {
     "input": "PREPARE a123 AS SELECT a",
-    "expectedParts": ["RawStmt", "stmt", "PrepareStmt", "query", "SelectStmt",
-      "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
-      "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
+    "expectedParts": ["RawStmt", "stmt", "PrepareStmt", "query", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
     "expectedHash": "9b5e6ead8be993e8"
   },
   {
@@ -138,162 +96,92 @@
   },
   {
     "input": "EXPLAIN ANALYZE SELECT a",
-    "expectedParts": ["RawStmt", "stmt", "ExplainStmt", "options", "DefElem",
-      "defaction", "DEFELEM_UNSPEC", "defname", "analyze", "query", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
-      "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
+    "expectedParts": ["RawStmt", "stmt", "ExplainStmt", "options", "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "analyze", "query", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a"],
     "expectedHash": "82845c1b5c6102e5"
   },
   {
     "input": "WITH a AS (SELECT * FROM x WHERE x.y = $1 AND x.z = 1) SELECT * FROM a",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar",
-      "inh", "true", "relname", "a", "relpersistence", "p", "limitOption",
-      "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget",
-      "val", "ColumnRef", "fields", "A_Star", "withClause",
-      "ctes", "CommonTableExpr", "ctematerialized", "CTEMaterializeDefault",
-      "ctename", "a", "ctequery", "SelectStmt", "fromClause", "RangeVar",
-      "inh", "true", "relname", "x", "relpersistence", "p", "limitOption",
-      "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget",
-      "val", "ColumnRef", "fields", "A_Star", "whereClause", "BoolExpr",
-      "args", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields",
-      "String", "str", "x", "String", "str", "y", "name", "String", "str",
-      "=", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields",
-      "String", "str", "x", "String", "str", "z", "name", "String", "str",
-      "=", "boolop", "AND_EXPR"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "withClause", "ctes", "CommonTableExpr", "ctematerialized", "CTEMaterializeDefault", "ctename", "a", "ctequery", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "BoolExpr", "args", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "x", "String", "str", "y", "name", "String", "str", "=", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "x", "String", "str", "z", "name", "String", "str", "=", "boolop", "AND_EXPR"],
     "expectedHash": "6831e38bbb3dd18c"
   },
   {
     "input": "CREATE TABLE types (a float(2), b float(49), c NUMERIC(2, 3), d character(4), e char(5), f varchar(6), g character varying(7))",
-    "expectedParts": ["RawStmt", "stmt", "CreateStmt", "oncommit", "ONCOMMIT_NOOP", "relation", "inh", "true", "relname", "types",
-      "relpersistence", "p", "tableElts", "ColumnDef", "colname", "a", "is_local", "true",
-      "typeName", "names", "String", "str", "pg_catalog", "String", "str", "float4",
-      "typemod", "-1", "ColumnDef", "colname", "b", "is_local", "true", "typeName",
-      "names", "String", "str", "pg_catalog", "String", "str", "float8", "typemod", "-1",
-      "ColumnDef", "colname", "c", "is_local", "true", "typeName", "names",
-      "String", "str", "pg_catalog", "String", "str", "numeric", "typemod", "-1",
-      "ColumnDef", "colname", "d", "is_local", "true", "typeName", "names", "String",
-      "str", "pg_catalog", "String", "str", "bpchar", "typemod", "-1", "ColumnDef",
-      "colname", "e", "is_local", "true", "typeName", "names", "String", "str",
-      "pg_catalog", "String", "str", "bpchar", "typemod", "-1", "ColumnDef", "colname",
-      "f", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog",
-      "String", "str", "varchar", "typemod", "-1", "ColumnDef", "colname", "g",
-      "is_local", "true", "typeName", "names", "String", "str", "pg_catalog",
-      "String", "str", "varchar", "typemod", "-1"],
+    "expectedParts": ["RawStmt", "stmt", "CreateStmt", "oncommit", "ONCOMMIT_NOOP", "relation", "inh", "true", "relname", "types", "relpersistence", "p", "tableElts", "ColumnDef", "colname", "a", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "float4", "typemod", "-1", "ColumnDef", "colname", "b", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "float8", "typemod", "-1", "ColumnDef", "colname", "c", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "numeric", "typemod", "-1", "ColumnDef", "colname", "d", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "bpchar", "typemod", "-1", "ColumnDef", "colname", "e", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "bpchar", "typemod", "-1", "ColumnDef", "colname", "f", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "varchar", "typemod", "-1", "ColumnDef", "colname", "g", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "varchar", "typemod", "-1"],
     "expectedHash": "008d6ba4aa0f4c6e"
   },
   {
     "input": "CREATE VIEW view_a (a, b) AS WITH RECURSIVE view_a (a, b) AS (SELECT * FROM a(1)) SELECT \"a\", \"b\" FROM \"view_a\"",
-    "expectedParts": ["RawStmt", "stmt", "ViewStmt", "aliases", "String", "str", "a",
-      "String", "str", "b", "query", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
-      "relname", "view_a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op",
-      "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String",
-      "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a",
-      "withClause", "ctes", "CommonTableExpr", "aliascolnames",
-      "String", "str", "a", "String", "str", "b", "ctematerialized", "CTEMaterializeDefault",
-      "ctename", "view_a", "ctequery", "SelectStmt", "fromClause", "RangeFunction",
-      "functions", "FuncCall", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String", "str", "a", "limitOption", "LIMIT_OPTION_DEFAULT",
-      "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "recursive", "true", "view", "inh", "true", "relname", "view_a",
-      "relpersistence", "p", "withCheckOption", "NO_CHECK_OPTION"],
+    "expectedParts": ["RawStmt", "stmt", "ViewStmt", "aliases", "String", "str", "a", "String", "str", "b", "query", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "view_a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "b", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a", "withClause", "ctes", "CommonTableExpr", "aliascolnames", "String", "str", "a", "String", "str", "b", "ctematerialized", "CTEMaterializeDefault", "ctename", "view_a", "ctequery", "SelectStmt", "fromClause", "RangeFunction", "functions", "FuncCall", "funcformat", "COERCE_EXPLICIT_CALL", "funcname", "String", "str", "a", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "recursive", "true", "view", "inh", "true", "relname", "view_a", "relpersistence", "p", "withCheckOption", "NO_CHECK_OPTION"],
     "expectedHash": "c6ef6b9f498feda4"
   },
   {
     "input": "VACUUM FULL my_table",
-    "expectedParts": ["RawStmt", "stmt", "VacuumStmt", "is_vacuumcmd", "true", "options",
-      "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "full", "rels", "VacuumRelation", "relation",
-      "inh", "true", "relname", "my_table", "relpersistence", "p"],
+    "expectedParts": ["RawStmt", "stmt", "VacuumStmt", "is_vacuumcmd", "true", "options", "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "full", "rels", "VacuumRelation", "relation", "inh", "true", "relname", "my_table", "relpersistence", "p"],
     "expectedHash": "fdf2f4127644f4d8"
   },
   {
     "input": "SELECT * FROM x AS a, y AS b",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
-      "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "4e9acae841dae228"
   },
   {
     "input": "SELECT * FROM y AS a, x AS b",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true",
-      "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "RangeVar", "inh", "true", "relname", "y", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "4e9acae841dae228"
   },
   {
     "input": "SELECT x AS a, y AS b FROM x",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String",
-      "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
     "expectedHash": "65dff5f5e9a643ad"
   },
   {
     "input": "SELECT y AS a, x AS b FROM x",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String",
-      "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
     "expectedHash": "65dff5f5e9a643ad"
   },
   {
     "input": "SELECT x, y FROM z",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields",
-      "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
     "expectedHash": "330267237da5535f"
   },
   {
     "input": "SELECT y, x FROM z",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields",
-      "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "z", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "x", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "y"],
     "expectedHash": "330267237da5535f"
   },
   {
     "input": "INSERT INTO films (code, title, did) VALUES ('UA502', 'Bananas', 105), ('T_601', 'Yojimbo', DEFAULT)",
-    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did",
-      "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "films",
-      "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did", "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "films", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
     "expectedHash": "459fdc70778b841e"
   },
   {
     "input": "INSERT INTO films (code, title, did) VALUES ($1, $2, $3)",
-    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did",
-      "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "films",
-      "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
+    "expectedParts": ["RawStmt", "stmt", "InsertStmt", "cols", "ResTarget", "name", "title", "ResTarget", "name", "did", "ResTarget", "name", "code", "override", "OVERRIDING_NOT_SET", "relation", "inh", "true", "relname", "films", "relpersistence", "p", "selectStmt", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
     "expectedHash": "459fdc70778b841e"
   },
   {
     "input": "SELECT * FROM a",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "a",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "fcf44da7b597ef43"
   },
   {
     "input": "SELECT * FROM a AS b",
-    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "a",
-      "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
+    "expectedParts": ["RawStmt", "stmt", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "a", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star"],
     "expectedHash": "fcf44da7b597ef43"
   },
   {
     "input": "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = $1",
-    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "name", "one_thing", "ResTarget", "name", "second_thing",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String",
-      "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p", "targetList", "ResTarget", "name", "one_thing", "ResTarget", "name", "second_thing", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
     "expectedHash": "a0ea386c1cfd1e69"
   },
   {
     "input": "UPDATE users SET something_else = $1 WHERE users.id = $1",
-    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "name", "something_else", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String",
-      "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p", "targetList", "ResTarget", "name", "something_else", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
     "expectedHash": "3172bc3e0d631d55"
   },
   {
     "input": "UPDATE users SET something_else = (SELECT a FROM x WHERE uid = users.id LIMIT 1) WHERE users.id = $1",
-    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p",
-      "targetList", "ResTarget", "name", "something_else", "val", "SubLink", "subLinkType", "EXPR_SUBLINK", "subselect", "SelectStmt", "fromClause",
-      "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_COUNT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef",
-      "fields", "String", "str", "a", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "uid",
-      "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
+    "expectedParts": ["RawStmt", "stmt", "UpdateStmt", "relation", "inh", "true", "relname", "users", "relpersistence", "p", "targetList", "ResTarget", "name", "something_else", "val", "SubLink", "subLinkType", "EXPR_SUBLINK", "subselect", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "x", "relpersistence", "p", "limitOption", "LIMIT_OPTION_COUNT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "String", "str", "a", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "uid", "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "users", "String", "str", "id", "name", "String", "str", "="],
     "expectedHash": "f1127a8b91fbecbf"
   },
   {
@@ -318,12 +206,7 @@
   },
   {
     "input": "DECLARE cursor_123 CURSOR FOR SELECT * FROM test WHERE id = 123",
-    "expectedParts": ["RawStmt", "stmt", "DeclareCursorStmt", "options", "256", "query", "SelectStmt",
-      "fromClause", "RangeVar", "inh", "true", "relname", "test", "relpersistence",
-      "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE",
-      "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star",
-      "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str",
-      "id", "name", "String", "str", "="],
+    "expectedParts": ["RawStmt", "stmt", "DeclareCursorStmt", "options", "256", "query", "SelectStmt", "fromClause", "RangeVar", "inh", "true", "relname", "test", "relpersistence", "p", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE", "targetList", "ResTarget", "val", "ColumnRef", "fields", "A_Star", "whereClause", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "id", "name", "String", "str", "="],
     "expectedHash": "d2bec62d2a7ec7cb"
   },
   {
@@ -358,7 +241,7 @@
   },
   {
     "input": "CREATE TEMPORARY TABLE my_temp_table (test_id integer NOT NULL) ON COMMIT DROP",
-    "expectedParts": ["RawStmt", "stmt", "CreateStmt", "oncommit", "ONCOMMIT_DROP", "relation","inh", "true", "relpersistence", "t", "tableElts", "ColumnDef", "colname", "test_id", "constraints", "Constraint", "contype", "CONSTR_NOTNULL", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "int4", "typemod", "-1"],
+    "expectedParts": ["RawStmt", "stmt", "CreateStmt", "oncommit", "ONCOMMIT_DROP", "relation", "inh", "true", "relpersistence", "t", "tableElts", "ColumnDef", "colname", "test_id", "constraints", "Constraint", "contype", "CONSTR_NOTNULL", "is_local", "true", "typeName", "names", "String", "str", "pg_catalog", "String", "str", "int4", "typemod", "-1"],
     "expectedHash": "1407ed5c5bb00967"
   },
   {
@@ -488,22 +371,22 @@
   },
   {
     "input": "ALTER TABLE ALL IN TABLESPACE foo OWNED BY bar, quux SET TABLESPACE fred NOWAIT",
-    "expectedParts": ["RawStmt", "stmt", "AlterTableMoveAllStmt", "new_tablespacename", "fred", "nowait", "true", "objtype", "OBJECT_TABLE", "orig_tablespacename", "foo", "roles", "RoleSpec", "rolename", "bar", "roletype", "ROLESPEC_CSTRING", "RoleSpec", "rolename", "quux", "roletype", "ROLESPEC_CSTRING" ],
+    "expectedParts": ["RawStmt", "stmt", "AlterTableMoveAllStmt", "new_tablespacename", "fred", "nowait", "true", "objtype", "OBJECT_TABLE", "orig_tablespacename", "foo", "roles", "RoleSpec", "rolename", "bar", "roletype", "ROLESPEC_CSTRING", "RoleSpec", "rolename", "quux", "roletype", "ROLESPEC_CSTRING"],
     "expectedHash": "1bcfca993d29bc0f"
   },
   {
     "input": "CREATE PUBLICATION foo FOR TABLES IN SCHEMA bar",
-    "expectedParts": ["RawStmt", "stmt", "CreatePublicationStmt", "pubname", "foo", "pubobjects", "PublicationObjSpec", "name", "bar", "pubobjtype", "PUBLICATIONOBJ_TABLES_IN_SCHEMA" ],
+    "expectedParts": ["RawStmt", "stmt", "CreatePublicationStmt", "pubname", "foo", "pubobjects", "PublicationObjSpec", "name", "bar", "pubobjtype", "PUBLICATIONOBJ_TABLES_IN_SCHEMA"],
     "expectedHash": "7dfa0872d08125e6"
   },
   {
     "input": "COPY vistest FROM stdin FREEZE CSV",
-    "expectedParts": ["RawStmt", "stmt", "CopyStmt", "is_from", "true", "options", "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "freeze", "DefElem", "arg", "String", "str", "csv", "defaction", "DEFELEM_UNSPEC", "defname", "format", "relation", "inh", "true", "relname", "vistest", "relpersistence", "p" ],
+    "expectedParts": ["RawStmt", "stmt", "CopyStmt", "is_from", "true", "options", "DefElem", "defaction", "DEFELEM_UNSPEC", "defname", "freeze", "DefElem", "arg", "String", "str", "csv", "defaction", "DEFELEM_UNSPEC", "defname", "format", "relation", "inh", "true", "relname", "vistest", "relpersistence", "p"],
     "expectedHash": "adb3688e5278cf1c"
   },
   {
     "input": "MERGE INTO customer_account ca USING (VALUES (1, 42), (2, 99)) t(customer_id, transaction_value) ON t.customer_id = ca.customer_id WHEN MATCHED THEN UPDATE SET balance = balance + transaction_value + 1 WHEN NOT MATCHED THEN INSERT (customer_id, balance) VALUES (t.customer_id, t.transaction_value)",
-    "expectedParts": ["RawStmt", "stmt", "MergeStmt", "joinCondition", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "ca", "String", "str", "customer_id", "mergeWhenClauses", "MergeWhenClause", "commandType", "CMD_UPDATE", "matched", "true", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "balance", "val", "A_Expr", "kind", "AEXPR_OP", "lexpr", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "balance", "name", "String", "str", "+", "rexpr", "ColumnRef", "fields", "String", "str", "transaction_value", "name", "String", "str", "+", "MergeWhenClause", "commandType", "CMD_INSERT", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "customer_id", "ResTarget", "name", "balance", "values", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "ColumnRef", "fields", "String", "str", "t", "String", "str", "transaction_value", "relation", "inh", "true", "relname", "customer_account", "relpersistence", "p", "sourceRelation", "RangeSubselect", "subquery", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE" ],
+    "expectedParts": ["RawStmt", "stmt", "MergeStmt", "joinCondition", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "name", "String", "str", "=", "rexpr", "ColumnRef", "fields", "String", "str", "ca", "String", "str", "customer_id", "mergeWhenClauses", "MergeWhenClause", "commandType", "CMD_UPDATE", "matched", "true", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "balance", "val", "A_Expr", "kind", "AEXPR_OP", "lexpr", "A_Expr", "kind", "AEXPR_OP", "lexpr", "ColumnRef", "fields", "String", "str", "balance", "name", "String", "str", "+", "rexpr", "ColumnRef", "fields", "String", "str", "transaction_value", "name", "String", "str", "+", "MergeWhenClause", "commandType", "CMD_INSERT", "override", "OVERRIDING_NOT_SET", "targetList", "ResTarget", "name", "customer_id", "ResTarget", "name", "balance", "values", "ColumnRef", "fields", "String", "str", "t", "String", "str", "customer_id", "ColumnRef", "fields", "String", "str", "t", "String", "str", "transaction_value", "relation", "inh", "true", "relname", "customer_account", "relpersistence", "p", "sourceRelation", "RangeSubselect", "subquery", "SelectStmt", "limitOption", "LIMIT_OPTION_DEFAULT", "op", "SETOP_NONE"],
     "expectedHash": "1cca3f304295181c"
   }
 ]
