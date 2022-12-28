@@ -2,6 +2,15 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.1.0   2022-12-28
+
+* Update fingerprint strings to use field names new to Postgres 15, and add `Boolean` fingerprinting
+  - Previously, we would output `["String", "str", "..."]`, whereas now we output
+    `["String", "sval", "..."]`
+  - `String`, `Float`, and `Bitstring` node types had their single field adjusted to `sval`, `fval`,
+    and `bsval` respectively
+  - `Boolean` nodes are now output during fingerprinting
+
 ## 15-4.0.0   2022-11-29
 
 * Update to Postgres 15.1
