@@ -107,20 +107,28 @@ _fingerprintInteger(FingerprintContext *ctx, const union ValUnion *value)
 static void
 _fingerprintFloat(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (value->sval.sval != NULL) {
+	if (value->fval.fval != NULL) {
 		_fingerprintString(ctx, "Float");
-		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, value->sval.sval);
+		_fingerprintString(ctx, "fval");
+		_fingerprintString(ctx, value->fval.fval);
 	}
+}
+
+static void
+_fingerprintBoolean(FingerprintContext *ctx, const union ValUnion *value)
+{
+	_fingerprintString(ctx, "Boolean");
+	_fingerprintString(ctx, "boolval");
+	_fingerprintString(ctx, value->boolval.boolval ? "true" : "false");
 }
 
 static void
 _fingerprintBitString(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (value->sval.sval != NULL) {
+	if (value->bsval.bsval != NULL) {
 		_fingerprintString(ctx, "BitString");
-		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, value->sval.sval);
+		_fingerprintString(ctx, "bsval");
+		_fingerprintString(ctx, value->bsval.bsval);
 	}
 }
 
@@ -272,9 +280,12 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, c
 		case T_Float:
 			_fingerprintFloat(ctx, obj);
 			break;
+		case T_Boolean:
+			_fingerprintBoolean(ctx, obj);
+			break;
 		case T_String:
 			_fingerprintString(ctx, "String");
-			_fingerprintString(ctx, "str");
+			_fingerprintString(ctx, "sval");
 			_fingerprintString(ctx, ((union ValUnion*) obj)->sval.sval);
 			break;
 		case T_BitString:
