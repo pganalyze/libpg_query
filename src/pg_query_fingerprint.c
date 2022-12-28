@@ -74,7 +74,7 @@ static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const voi
 static void _fingerprintInitContext(FingerprintContext *ctx, FingerprintContext *parent, bool write_tokens);
 static void _fingerprintFreeContext(FingerprintContext *ctx);
 
-#define PG_QUERY_FINGERPRINT_VERSION 3
+#define PG_QUERY_FINGERPRINT_VERSION 4
 
 // Implementations
 
