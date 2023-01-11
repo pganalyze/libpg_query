@@ -6,6 +6,8 @@ All versions are tagged by the major Postgres version, plus an individual semver
 
 * Add `Boolean` fingerprinting
   - `Boolean` nodes are now output during fingerprinting
+* Fix parsing issue on 32-bit big endian machines
+  - Now we use `size_t` to indicate the protobuf message size
 
 ## 15-4.0.0   2022-11-29
 
