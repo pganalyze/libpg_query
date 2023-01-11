@@ -2,6 +2,7 @@
 #define PG_QUERY_H
 
 #include <stdint.h>
+#include <sys/types.h>
 
 typedef struct {
 	char* message; // exception message
@@ -13,7 +14,7 @@ typedef struct {
 } PgQueryError;
 
 typedef struct {
-  unsigned int len;
+  size_t len;
   char* data;
 } PgQueryProtobuf;
 
