@@ -152,7 +152,7 @@ const char* tests[] = {
   "CREATE PUBLICATION foo FOR TABLES IN SCHEMA bar",
   "7dfa0872d08125e6",
   "COPY vistest FROM stdin FREEZE CSV",
-  "adb3688e5278cf1c",
+  "25de297c6377cb74",
   "MERGE INTO customer_account ca USING (VALUES (1, 42), (2, 99)) t(customer_id, transaction_value) ON t.customer_id = ca.customer_id WHEN MATCHED THEN UPDATE SET balance = balance + transaction_value + 1 WHEN NOT MATCHED THEN INSERT (customer_id, balance) VALUES (t.customer_id, t.transaction_value)",
   "1cca3f304295181c",
 };

@@ -107,20 +107,34 @@ _fingerprintInteger(FingerprintContext *ctx, const union ValUnion *value)
 static void
 _fingerprintFloat(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (value->sval.sval != NULL) {
+	if (value->fval.fval != NULL) {
+		// NB: We output `str` here intentionally, to match the output format from libpg_query 14
+		// and below. This results in stable fingerprints, despite the field name being changed in
+		// PG15 to `fval`.
 		_fingerprintString(ctx, "Float");
 		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, value->sval.sval);
+		_fingerprintString(ctx, value->fval.fval);
 	}
+}
+
+static void
+_fingerprintBoolean(FingerprintContext *ctx, const union ValUnion *value)
+{
+	_fingerprintString(ctx, "Boolean");
+	_fingerprintString(ctx, "boolval");
+	_fingerprintString(ctx, value->boolval.boolval ? "true" : "false");
 }
 
 static void
 _fingerprintBitString(FingerprintContext *ctx, const union ValUnion *value)
 {
-	if (value->sval.sval != NULL) {
+	if (value->bsval.bsval != NULL) {
+		// NB: We output `str` here intentionally, to match the output format from libpg_query 14
+		// and below. This results in stable fingerprints, despite the field name being changed in
+		// PG15 to `bsval`.
 		_fingerprintString(ctx, "BitString");
 		_fingerprintString(ctx, "str");
-		_fingerprintString(ctx, value->sval.sval);
+		_fingerprintString(ctx, value->bsval.bsval);
 	}
 }
 
@@ -272,7 +286,13 @@ _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, c
 		case T_Float:
 			_fingerprintFloat(ctx, obj);
 			break;
+		case T_Boolean:
+			_fingerprintBoolean(ctx, obj);
+			break;
 		case T_String:
+			// NB: We output `str` here intentionally, to match the output format from libpg_query
+			// 14 and below. This results in stable fingerprints, despite the field name being
+			// changed in PG15 to `sval`.
 			_fingerprintString(ctx, "String");
 			_fingerprintString(ctx, "str");
 			_fingerprintString(ctx, ((union ValUnion*) obj)->sval.sval);
