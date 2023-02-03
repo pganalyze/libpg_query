@@ -281,4 +281,5 @@ Portions Copyright (c) 1996-2023, The PostgreSQL Global Development Group<br>
 Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
-Copyright (c) 2017, Lukas Fittl <lukas@fittl.com>
+Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>
+Copyright (c) 2016-2023, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
