@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.2.0   2023-02-06
+
+* Update copyright notice years and authors [#175](https://github.com/pganalyze/libpg_query/pull/175)
+* Allow trailing junk in numeric literals [#177](https://github.com/pganalyze/libpg_query/pull/177)
+  - Allows parsing queries like `SELECT * FROM a WHERE b=$1ORc=$2`
+* NetBSD support [#172](https://github.com/pganalyze/libpg_query/pull/172/)
+
 ## 15-4.1.0   2022-12-28
 
 * Add `Boolean` fingerprinting
