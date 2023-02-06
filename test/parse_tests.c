@@ -65,6 +65,8 @@ const char* tests[] = {
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"AlterTableMoveAllStmt\":{\"orig_tablespacename\":\"foo\",\"objtype\":\"OBJECT_TABLE\",\"roles\":[{\"RoleSpec\":{\"roletype\":\"ROLESPEC_CSTRING\",\"rolename\":\"bar\",\"location\":43}},{\"RoleSpec\":{\"roletype\":\"ROLESPEC_CSTRING\",\"rolename\":\"quux\",\"location\":48}}],\"new_tablespacename\":\"fred\",\"nowait\":true}}}]}",
   "CREATE PUBLICATION foo FOR TABLES IN SCHEMA bar",
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"CreatePublicationStmt\":{\"pubname\":\"foo\",\"pubobjects\":[{\"PublicationObjSpec\":{\"pubobjtype\":\"PUBLICATIONOBJ_TABLES_IN_SCHEMA\",\"name\":\"bar\",\"location\":44}}]}}}]}",
+  "SELECT 123abc",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"name\":\"abc\",\"val\":{\"A_Const\":{\"ival\":{\"ival\":123},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
 };
 
 size_t testsLength = __LINE__ - 4;

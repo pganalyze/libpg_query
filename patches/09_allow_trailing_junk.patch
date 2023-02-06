@@ -1,0 +1,342 @@
+commit 524f752ee335afd3a33427753ad1646ab1e25650
+Author: msepga <msepga2@gmail.com>
+Date:   Mon Feb 6 11:03:02 2023 -0500
+
+    Revert 2549f066: [PATCH] Reject trailing junk after numeric literals
+    
+    This reverts the grammar to reject trailing text on numeric literals.
+    The original patch was intended to support future numeric literal
+    syntax, however the changes here do not need to be so aggressive. For
+    now this is reverted, until a more relaxed grammar is implemented, with
+    the upcoming release of PG16 in mind.
+
+diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
+index 882e081aae..f555ac6e6d 100644
+--- a/src/backend/parser/scan.l
++++ b/src/backend/parser/scan.l
+@@ -387,7 +387,7 @@ operator		{op_chars}+
+  *
+  * {decimalfail} is used because we would like "1..10" to lex as 1, dot_dot, 10.
+  *
+- * {realfail} is added to prevent the need for scanner
++ * {realfail1} and {realfail2} are added to prevent the need for scanner
+  * backup when the {real} rule fails to match completely.
+  */
+ digit			[0-9]
+@@ -396,14 +396,10 @@ integer			{digit}+
+ decimal			(({digit}*\.{digit}+)|({digit}+\.{digit}*))
+ decimalfail		{digit}+\.\.
+ real			({integer}|{decimal})[Ee][-+]?{digit}+
+-realfail		({integer}|{decimal})[Ee][-+]
+-
+-integer_junk	{integer}{ident_start}
+-decimal_junk	{decimal}{ident_start}
+-real_junk		{real}{ident_start}
++realfail1		({integer}|{decimal})[Ee]
++realfail2		({integer}|{decimal})[Ee][-+]
+ 
+ param			\${integer}
+-param_junk		\${integer}{ident_start}
+ 
+ other			.
+ 
+@@ -978,10 +974,6 @@ other			.
+ 					yylval->ival = atol(yytext + 1);
+ 					return PARAM;
+ 				}
+-{param_junk}	{
+-					SET_YYLLOC();
+-					yyerror("trailing junk after parameter");
+-				}
+ 
+ {integer}		{
+ 					SET_YYLLOC();
+@@ -1003,21 +995,20 @@ other			.
+ 					yylval->str = pstrdup(yytext);
+ 					return FCONST;
+ 				}
+-{realfail}		{
+-					SET_YYLLOC();
+-					yyerror("trailing junk after numeric literal");
+-				}
+-{integer_junk}	{
+-					SET_YYLLOC();
+-					yyerror("trailing junk after numeric literal");
+-				}
+-{decimal_junk}	{
++{realfail1}		{
++					/*
++					 * throw back the [Ee], and figure out whether what
++					 * remains is an {integer} or {decimal}.
++					 */
++					yyless(yyleng - 1);
+ 					SET_YYLLOC();
+-					yyerror("trailing junk after numeric literal");
++					return process_integer_literal(yytext, yylval);
+ 				}
+-{real_junk}		{
++{realfail2}		{
++					/* throw back the [Ee][+-], and proceed as above */
++					yyless(yyleng - 2);
+ 					SET_YYLLOC();
+-					yyerror("trailing junk after numeric literal");
++					return process_integer_literal(yytext, yylval);
+ 				}
+ 
+ 
+diff --git a/src/fe_utils/psqlscan.l b/src/fe_utils/psqlscan.l
+index ae531ec240..941ed06553 100644
+--- a/src/fe_utils/psqlscan.l
++++ b/src/fe_utils/psqlscan.l
+@@ -325,7 +325,7 @@ operator		{op_chars}+
+  *
+  * {decimalfail} is used because we would like "1..10" to lex as 1, dot_dot, 10.
+  *
+- * {realfail} is added to prevent the need for scanner
++ * {realfail1} and {realfail2} are added to prevent the need for scanner
+  * backup when the {real} rule fails to match completely.
+  */
+ digit			[0-9]
+@@ -334,14 +334,10 @@ integer			{digit}+
+ decimal			(({digit}*\.{digit}+)|({digit}+\.{digit}*))
+ decimalfail		{digit}+\.\.
+ real			({integer}|{decimal})[Ee][-+]?{digit}+
+-realfail		({integer}|{decimal})[Ee][-+]
+-
+-integer_junk	{integer}{ident_start}
+-decimal_junk	{decimal}{ident_start}
+-real_junk		{real}{ident_start}
++realfail1		({integer}|{decimal})[Ee]
++realfail2		({integer}|{decimal})[Ee][-+]
+ 
+ param			\${integer}
+-param_junk		\${integer}{ident_start}
+ 
+ /* psql-specific: characters allowed in variable names */
+ variable_char	[A-Za-z\200-\377_0-9]
+@@ -843,9 +839,6 @@ other			.
+ {param}			{
+ 					ECHO;
+ 				}
+-{param_junk}	{
+-					ECHO;
+-				}
+ 
+ {integer}		{
+ 					ECHO;
+@@ -861,16 +854,18 @@ other			.
+ {real}			{
+ 					ECHO;
+ 				}
+-{realfail}		{
+-					ECHO;
+-				}
+-{integer_junk}	{
+-					ECHO;
+-				}
+-{decimal_junk}	{
++{realfail1}		{
++					/*
++					 * throw back the [Ee], and figure out whether what
++					 * remains is an {integer} or {decimal}.
++					 * (in psql, we don't actually care...)
++					 */
++					yyless(yyleng - 1);
+ 					ECHO;
+ 				}
+-{real_junk}		{
++{realfail2}		{
++					/* throw back the [Ee][+-], and proceed as above */
++					yyless(yyleng - 2);
+ 					ECHO;
+ 				}
+ 
+diff --git a/src/interfaces/ecpg/preproc/pgc.l b/src/interfaces/ecpg/preproc/pgc.l
+index 996718cb8a..0b728b943f 100644
+--- a/src/interfaces/ecpg/preproc/pgc.l
++++ b/src/interfaces/ecpg/preproc/pgc.l
+@@ -353,7 +353,7 @@ operator		{op_chars}+
+  *
+  * {decimalfail} is used because we would like "1..10" to lex as 1, dot_dot, 10.
+  *
+- * {realfail} is added to prevent the need for scanner
++ * {realfail1} and {realfail2} are added to prevent the need for scanner
+  * backup when the {real} rule fails to match completely.
+  */
+ digit			[0-9]
+@@ -362,14 +362,10 @@ integer			{digit}+
+ decimal			(({digit}*\.{digit}+)|({digit}+\.{digit}*))
+ decimalfail		{digit}+\.\.
+ real			({integer}|{decimal})[Ee][-+]?{digit}+
+-realfail		({integer}|{decimal})[Ee][-+]
+-
+-integer_junk	{integer}{ident_start}
+-decimal_junk	{decimal}{ident_start}
+-real_junk		{real}{ident_start}
++realfail1		({integer}|{decimal})[Ee]
++realfail2		({integer}|{decimal})[Ee][-+]
+ 
+ param			\${integer}
+-param_junk		\${integer}{ident_start}
+ 
+ /* special characters for other dbms */
+ /* we have to react differently in compat mode */
+@@ -921,9 +917,6 @@ cppline			{space}*#([^i][A-Za-z]*|{if}|{ifdef}|{ifndef}|{import})((\/\*[^*/]*\*+
+ 					base_yylval.ival = atol(yytext+1);
+ 					return PARAM;
+ 				}
+-{param_junk}	{
+-					mmfatal(PARSE_ERROR, "trailing junk after parameter");
+-				}
+ 
+ {ip}			{
+ 					base_yylval.str = mm_strdup(yytext);
+@@ -948,31 +941,22 @@ cppline			{space}*#([^i][A-Za-z]*|{if}|{ifdef}|{ifndef}|{import})((\/\*[^*/]*\*+
+ 					base_yylval.str = mm_strdup(yytext);
+ 					return FCONST;
+ 				}
+-{realfail}		{
++{realfail1}		{
+ 					/*
+-					 * throw back the [Ee][+-], and figure out whether what
++					 * throw back the [Ee], and figure out whether what
+ 					 * remains is an {integer} or {decimal}.
+ 					 */
++					yyless(yyleng - 1);
++					return process_integer_literal(yytext, &base_yylval);
++				}
++{realfail2}		{
++					/* throw back the [Ee][+-], and proceed as above */
+ 					yyless(yyleng - 2);
+ 					return process_integer_literal(yytext, &base_yylval);
+ 				}
+ } /* <C,SQL> */
+ 
+ <SQL>{
+-	/*
+-	 * Note that some trailing junk is valid in C (such as 100LL), so we
+-	 * contain this to SQL mode.
+-	 */
+-{integer_junk}	{
+-					mmfatal(PARSE_ERROR, "trailing junk after numeric literal");
+-				}
+-{decimal_junk}	{
+-					mmfatal(PARSE_ERROR, "trailing junk after numeric literal");
+-				}
+-{real_junk}		{
+-					mmfatal(PARSE_ERROR, "trailing junk after numeric literal");
+-				}
+-
+ :{identifier}((("->"|\.){identifier})|(\[{array}\]))*	{
+ 					base_yylval.str = mm_strdup(yytext+1);
+ 					return CVARIABLE;
+diff --git a/src/test/regress/expected/numerology.out b/src/test/regress/expected/numerology.out
+index 77d4843417..2ffc73e854 100644
+--- a/src/test/regress/expected/numerology.out
++++ b/src/test/regress/expected/numerology.out
+@@ -6,45 +6,64 @@
+ -- Trailing junk in numeric literals
+ --
+ SELECT 123abc;
+-ERROR:  trailing junk after numeric literal at or near "123a"
+-LINE 1: SELECT 123abc;
+-               ^
++ abc 
++-----
++ 123
++(1 row)
++
+ SELECT 0x0o;
+-ERROR:  trailing junk after numeric literal at or near "0x"
+-LINE 1: SELECT 0x0o;
+-               ^
++ x0o 
++-----
++   0
++(1 row)
++
+ SELECT 1_2_3;
+-ERROR:  trailing junk after numeric literal at or near "1_"
+-LINE 1: SELECT 1_2_3;
+-               ^
++ _2_3 
++------
++    1
++(1 row)
++
+ SELECT 0.a;
+-ERROR:  trailing junk after numeric literal at or near "0.a"
+-LINE 1: SELECT 0.a;
+-               ^
++ a 
++---
++ 0
++(1 row)
++
+ SELECT 0.0a;
+-ERROR:  trailing junk after numeric literal at or near "0.0a"
+-LINE 1: SELECT 0.0a;
+-               ^
++  a  
++-----
++ 0.0
++(1 row)
++
+ SELECT .0a;
+-ERROR:  trailing junk after numeric literal at or near ".0a"
+-LINE 1: SELECT .0a;
+-               ^
++  a  
++-----
++ 0.0
++(1 row)
++
+ SELECT 0.0e1a;
+-ERROR:  trailing junk after numeric literal at or near "0.0e1a"
+-LINE 1: SELECT 0.0e1a;
+-               ^
++ a 
++---
++ 0
++(1 row)
++
+ SELECT 0.0e;
+-ERROR:  trailing junk after numeric literal at or near "0.0e"
+-LINE 1: SELECT 0.0e;
+-               ^
++  e  
++-----
++ 0.0
++(1 row)
++
+ SELECT 0.0e+a;
+-ERROR:  trailing junk after numeric literal at or near "0.0e+"
++ERROR:  syntax error at or near "+"
+ LINE 1: SELECT 0.0e+a;
+-               ^
++                   ^
+ PREPARE p1 AS SELECT $1a;
+-ERROR:  trailing junk after parameter at or near "$1a"
+-LINE 1: PREPARE p1 AS SELECT $1a;
+-                             ^
++EXECUTE p1(1);
++ a 
++---
++ 1
++(1 row)
++
+ --
+ -- Test implicit type conversions
+ -- This fails for Postgres v6.1 (and earlier?)
+diff --git a/src/test/regress/sql/numerology.sql b/src/test/regress/sql/numerology.sql
+index be7d6dfe0c..fb75f97832 100644
+--- a/src/test/regress/sql/numerology.sql
++++ b/src/test/regress/sql/numerology.sql
+@@ -17,6 +17,7 @@ SELECT 0.0e1a;
+ SELECT 0.0e;
+ SELECT 0.0e+a;
+ PREPARE p1 AS SELECT $1a;
++EXECUTE p1(1);
+ 
+ --
+ -- Test implicit type conversions
