@@ -147,8 +147,8 @@ $(PGDIR):
 	# Avoid CRC extension usage to ensure we are not architecture-dependent
 	echo "#undef USE_ARMV8_CRC32C" >> $(PGDIR)/src/include/pg_config.h
 	echo "#undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK" >> $(PGDIR)/src/include/pg_config.h
-	# Ensure we don't fail on systems that have strchrnul support (FreeBSD)
-	echo "#ifdef __FreeBSD__" >> $(PGDIR)/src/include/pg_config.h
+	# Ensure we don't fail on systems that have strchrnul support (FreeBSD and NetBSD)
+	echo "#if defined(__FreeBSD__) || defined(__NetBSD__)" >> $(PGDIR)/src/include/pg_config.h
 	echo "#define HAVE_STRCHRNUL" >> $(PGDIR)/src/include/pg_config.h
 	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
 

@@ -1032,6 +1032,6 @@
 #undef HAVE__GET_CPUID
 #undef USE_ARMV8_CRC32C
 #undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK
-#ifdef __FreeBSD__
+#if defined(__FreeBSD__) || defined(__NetBSD__)
 #define HAVE_STRCHRNUL
 #endif
