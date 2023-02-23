@@ -11,7 +11,6 @@
 #include "common/keywords.h"
 #include "common/kwlookup.h"
 #include "lib/stringinfo.h"
-#include "limits.h"
 #include "nodes/nodes.h"
 #include "nodes/parsenodes.h"
 #include "nodes/pg_list.h"
