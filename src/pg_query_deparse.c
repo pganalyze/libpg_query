@@ -7938,7 +7938,7 @@ static void deparseIndexStmt(StringInfo str, IndexStmt *index_stmt)
 
 	if (index_stmt->idxname != NULL)
 	{
-		appendStringInfoString(str, index_stmt->idxname);
+		appendStringInfoString(str, quote_identifier(index_stmt->idxname));
 		appendStringInfoChar(str, ' ');
 	}
 
