@@ -222,6 +222,7 @@ const char* tests[] = {
   "SET search_path TO my_schema, public",
   "SET LOCAL search_path TO my_schema, public",
   "SET \"user\" TO 4",
+  "SET time zone interval '+00:00' hour TO minute",
   "VACUUM",
   "VACUUM t",
   "VACUUM (FULL) t",
