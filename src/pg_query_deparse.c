@@ -34,7 +34,7 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
 	// Identifier vs constant context
 	DEPARSE_NODE_CONTEXT_IDENTIFIER,
-	DEPARSE_NODE_CONTEXT_CONSTANT,
+  DEPARSE_NODE_CONTEXT_CONSTANT,
   DEPARSE_NODE_CONTEXT_SET_STATEMENT
 } DeparseNodeContext;
 
@@ -3588,7 +3588,8 @@ static void deparseTypeCast(StringInfo str, TypeCast *type_cast, DeparseNodeCont
 					return;
 				}
 			}
-			else if (strcmp(typename, "interval") == 0 && context == DEPARSE_NODE_CONTEXT_SET_STATEMENT && IsA(&a_const->val, String))
+			else if (strcmp(typename, "interval") == 0
+          && context == DEPARSE_NODE_CONTEXT_SET_STATEMENT && IsA(&a_const->val, String))
       {
         appendStringInfoString(str, "interval ");
         deparseAConst(str, a_const);
@@ -3774,70 +3775,70 @@ static void deparseTypeName(StringInfo str, TypeName *type_name)
 // In all other contexts, intervals use the `'x'::interval` style.
 static void deparseIntervalTypmods(StringInfo str, TypeName *type_name)
 {
-		const char *name = strVal(lsecond(type_name->names));
-		Assert(strcmp(name, "interval") == 0);
-    Assert(list_length(type_name->typmods) >= 1);
-    Assert(IsA(linitial(type_name->typmods), A_Const));
-    Assert(IsA(&castNode(A_Const, linitial(type_name->typmods))->val, Integer));
+	const char *name = strVal(lsecond(type_name->names));
+	Assert(strcmp(name, "interval") == 0);
+	Assert(list_length(type_name->typmods) >= 1);
+	Assert(IsA(linitial(type_name->typmods), A_Const));
+	Assert(IsA(&castNode(A_Const, linitial(type_name->typmods))->val, Integer));
 
-    int fields = intVal(&castNode(A_Const, linitial(type_name->typmods))->val);
+	int fields = intVal(&castNode(A_Const, linitial(type_name->typmods))->val);
 
-    // This logic is based on intervaltypmodout in timestamp.c
-    switch (fields)
-    {
-      case INTERVAL_MASK(YEAR):
-        appendStringInfoString(str, " year");
-        break;
-      case INTERVAL_MASK(MONTH):
-        appendStringInfoString(str, " month");
-        break;
-      case INTERVAL_MASK(DAY):
-        appendStringInfoString(str, " day");
-        break;
-      case INTERVAL_MASK(HOUR):
-        appendStringInfoString(str, " hour");
-        break;
-      case INTERVAL_MASK(MINUTE):
-        appendStringInfoString(str, " minute");
-        break;
-      case INTERVAL_MASK(SECOND):
-        appendStringInfoString(str, " second");
-        break;
-      case INTERVAL_MASK(YEAR) | INTERVAL_MASK(MONTH):
-        appendStringInfoString(str, " year to month");
-        break;
-      case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR):
-        appendStringInfoString(str, " day to hour");
-        break;
-      case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE):
-        appendStringInfoString(str, " day to minute");
-        break;
-      case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
-        appendStringInfoString(str, " day to second");
-        break;
-      case INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE):
-        appendStringInfoString(str, " hour to minute");
-        break;
-      case INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
-        appendStringInfoString(str, " hour to second");
-        break;
-      case INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
-        appendStringInfoString(str, " minute to second");
-        break;
-      case INTERVAL_FULL_RANGE:
-        // Nothing
-        break;
-      default:
-        Assert(false);
-        break;
-    }
+	// This logic is based on intervaltypmodout in timestamp.c
+	switch (fields)
+	{
+		case INTERVAL_MASK(YEAR):
+			appendStringInfoString(str, " year");
+			break;
+		case INTERVAL_MASK(MONTH):
+			appendStringInfoString(str, " month");
+			break;
+		case INTERVAL_MASK(DAY):
+			appendStringInfoString(str, " day");
+			break;
+		case INTERVAL_MASK(HOUR):
+			appendStringInfoString(str, " hour");
+			break;
+		case INTERVAL_MASK(MINUTE):
+			appendStringInfoString(str, " minute");
+			break;
+		case INTERVAL_MASK(SECOND):
+			appendStringInfoString(str, " second");
+			break;
+		case INTERVAL_MASK(YEAR) | INTERVAL_MASK(MONTH):
+			appendStringInfoString(str, " year to month");
+			break;
+		case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR):
+			appendStringInfoString(str, " day to hour");
+			break;
+		case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE):
+			appendStringInfoString(str, " day to minute");
+			break;
+		case INTERVAL_MASK(DAY) | INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
+			appendStringInfoString(str, " day to second");
+			break;
+		case INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE):
+			appendStringInfoString(str, " hour to minute");
+			break;
+		case INTERVAL_MASK(HOUR) | INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
+			appendStringInfoString(str, " hour to second");
+			break;
+		case INTERVAL_MASK(MINUTE) | INTERVAL_MASK(SECOND):
+			appendStringInfoString(str, " minute to second");
+			break;
+		case INTERVAL_FULL_RANGE:
+			// Nothing
+			break;
+		default:
+			Assert(false);
+			break;
+	}
 
-    if (list_length(type_name->typmods) == 2)
-		{
-		  int precision = intVal(&castNode(A_Const, lsecond(type_name->typmods))->val);
-			if (precision != INTERVAL_FULL_PRECISION)
+	if (list_length(type_name->typmods) == 2)
+	{
+		int precision = intVal(&castNode(A_Const, lsecond(type_name->typmods))->val);
+		if (precision != INTERVAL_FULL_PRECISION)
 			appendStringInfo(str, "(%d)", precision);
-		}
+	}
 }
 
 static void deparseNullTest(StringInfo str, NullTest *null_test)
