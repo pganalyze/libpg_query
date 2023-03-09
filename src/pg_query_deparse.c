@@ -32,10 +32,10 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_XMLNAMESPACES,
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
+	DEPARSE_NODE_CONTEXT_SET_STATEMENT,
 	// Identifier vs constant context
 	DEPARSE_NODE_CONTEXT_IDENTIFIER,
-  DEPARSE_NODE_CONTEXT_CONSTANT,
-  DEPARSE_NODE_CONTEXT_SET_STATEMENT
+	DEPARSE_NODE_CONTEXT_CONSTANT
 } DeparseNodeContext;
 
 static void
@@ -3588,14 +3588,13 @@ static void deparseTypeCast(StringInfo str, TypeCast *type_cast, DeparseNodeCont
 					return;
 				}
 			}
-			else if (strcmp(typename, "interval") == 0
-          && context == DEPARSE_NODE_CONTEXT_SET_STATEMENT && IsA(&a_const->val, String))
-      {
-        appendStringInfoString(str, "interval ");
-        deparseAConst(str, a_const);
-        deparseIntervalTypmods(str, type_cast->typeName);
-        return;
-      }
+			else if (strcmp(typename, "interval") == 0 && context == DEPARSE_NODE_CONTEXT_SET_STATEMENT && IsA(&a_const->val, String))
+			{
+				appendStringInfoString(str, "interval ");
+				deparseAConst(str, a_const);
+				deparseIntervalTypmods(str, type_cast->typeName);
+				return;
+			}
 		}
 
 		// Ensure negative values have wrapping parentheses
@@ -3721,8 +3720,8 @@ static void deparseTypeName(StringInfo str, TypeName *type_name)
 		else if (strcmp(name, "interval") == 0 && list_length(type_name->typmods) >= 1)
 		{
 			appendStringInfoString(str, "interval");
-      deparseIntervalTypmods(str, type_name);
-			
+			deparseIntervalTypmods(str, type_name);
+
 			skip_typmods = true;
 		}
 		else
@@ -6925,6 +6924,22 @@ static void deparseTransactionStmt(StringInfo str, TransactionStmt *transaction_
 	removeTrailingSpace(str);
 }
 
+// Determine if we hit SET TIME ZONE INTERVAL, that has special syntax not
+// supported for other SET statements
+static bool isSetTimeZoneInterval(VariableSetStmt* stmt)
+{
+	if (!(strcmp(stmt->name, "timezone") == 0 &&
+		  list_length(stmt->args) == 1 &&
+		  IsA(linitial(stmt->args), TypeCast)))
+		return false;
+
+	TypeName* typeName = castNode(TypeCast, linitial(stmt->args))->typeName;
+
+	return (list_length(typeName->names) == 2 &&
+		strcmp(strVal(linitial(typeName->names)), "pg_catalog") == 0 &&
+		strcmp(strVal(llast(typeName->names)), "interval") == 0);
+}
+
 static void deparseVariableSetStmt(StringInfo str, VariableSetStmt* variable_set_stmt)
 {
 	ListCell *lc;
@@ -6935,9 +6950,17 @@ static void deparseVariableSetStmt(StringInfo str, VariableSetStmt* variable_set
 			appendStringInfoString(str, "SET ");
 			if (variable_set_stmt->is_local)
 				appendStringInfoString(str, "LOCAL ");
-			deparseVarName(str, variable_set_stmt->name);
-			appendStringInfoString(str, " TO ");
-			deparseVarList(str, variable_set_stmt->args);
+			if (isSetTimeZoneInterval(variable_set_stmt))
+			{
+				appendStringInfoString(str, "TIME ZONE ");
+				deparseVarList(str, variable_set_stmt->args);
+			}
+			else
+			{
+				deparseVarName(str, variable_set_stmt->name);
+				appendStringInfoString(str, " TO ");
+				deparseVarList(str, variable_set_stmt->args);
+			}
 			break;
 		case VAR_SET_DEFAULT: /* SET var TO DEFAULT */
 			appendStringInfoString(str, "SET ");
