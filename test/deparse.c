@@ -40,10 +40,12 @@ void remove_node_locations(char *parse_tree_json)
 int run_test(const char *query, bool compare_query_text) {
 	PgQueryProtobufParseResult parse_result = pg_query_parse_protobuf(query);
 	if (parse_result.error) {
-		pg_query_free_protobuf_parse_result(parse_result);
-		if (!compare_query_text) // Silently fail for regression tests which can contain intentional syntax errors
+		if (!compare_query_text) { // Silently fail for regression tests which can contain intentional syntax errors
+			pg_query_free_protobuf_parse_result(parse_result);
 			return EXIT_SUCCESS;
+		}
 		printf("\nERROR for \"%s\"\n  %s\n", query, parse_result.error->message);
+		pg_query_free_protobuf_parse_result(parse_result);
 		return EXIT_FAILURE;
 	}
 
