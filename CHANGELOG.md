@@ -2,6 +2,12 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.2.1   2023-05-17
+
+* Deparser: Handle INTERVAL correctly when used in SET statements [#184](https://github.com/pganalyze/libpg_query/pull/184)
+* Deparser: Ensure index names are quoted as identifiers [#182](https://github.com/pganalyze/libpg_query/pull/182)
+* Remove limits.h from pg_query_deparse.c [#181](https://github.com/pganalyze/libpg_query/pull/181)
+
 ## 15-4.2.0   2023-02-06
 
 * Update copyright notice years and authors [#175](https://github.com/pganalyze/libpg_query/pull/175)
