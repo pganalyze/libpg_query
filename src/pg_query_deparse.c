@@ -4696,6 +4696,8 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 		appendStringInfoString(str, ") ");
 	}
 
+	deparseOptWith(str, constraint->options);
+
 	if (list_length(constraint->fk_attrs) > 0)
 	{
 		appendStringInfoChar(str, '(');

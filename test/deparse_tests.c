@@ -390,6 +390,7 @@ const char* tests[] = {
   "MERGE INTO measurement m USING new_measurement nm ON m.city_id = nm.city_id AND m.logdate = nm.logdate WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = GREATEST(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + COALESCE(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
   "COPY vistest FROM STDIN FREEZE CSV",
   "CREATE INDEX \"foo.index\" ON foo USING btree (bar)",
+  "CREATE TABLE distributors (did int, name varchar(40), UNIQUE (name) WITH (fillfactor=70)) WITH (fillfactor=70)",
 };
 
 size_t testsLength = __LINE__ - 4;
