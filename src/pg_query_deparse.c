@@ -4695,9 +4695,7 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 		deparseColumnList(str, constraint->keys);
 		appendStringInfoString(str, ") ");
 	}
-
-	deparseOptWith(str, constraint->options);
-
+		
 	if (list_length(constraint->fk_attrs) > 0)
 	{
 		appendStringInfoChar(str, '(');
@@ -4798,6 +4796,17 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 		appendStringInfoString(str, "INCLUDE (");
 		deparseColumnList(str, constraint->including);
 		appendStringInfoString(str, ") ");
+	}
+
+	switch (constraint->contype)
+	{
+		case CONSTR_PRIMARY:
+		case CONSTR_UNIQUE:
+		case CONSTR_EXCLUSION:
+			deparseOptWith(str, constraint->options);
+			break;
+		default:
+			break;
 	}
 
 	if (constraint->indexname != NULL)
