@@ -4695,7 +4695,7 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 		deparseColumnList(str, constraint->keys);
 		appendStringInfoString(str, ") ");
 	}
-		
+
 	if (list_length(constraint->fk_attrs) > 0)
 	{
 		appendStringInfoChar(str, '(');
