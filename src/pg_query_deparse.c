@@ -9440,7 +9440,7 @@ static void deparseVariableShowStmt(StringInfo str, VariableShowStmt *variable_s
 	else if (strcmp(variable_show_stmt->name, "session_authorization") == 0)
 		appendStringInfoString(str, "SESSION AUTHORIZATION");
 	else if (strcmp(variable_show_stmt->name, "all") == 0)
-		appendStringInfoString(str, "SESSION ALL");
+		appendStringInfoString(str, "ALL");
 	else
 		appendStringInfoString(str, quote_identifier(variable_show_stmt->name));
 }

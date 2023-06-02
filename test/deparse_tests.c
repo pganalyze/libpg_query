@@ -391,6 +391,7 @@ const char* tests[] = {
   "COPY vistest FROM STDIN FREEZE CSV",
   "CREATE INDEX \"foo.index\" ON foo USING btree (bar)",
   "CREATE TABLE distributors (did int, name varchar(40), UNIQUE (name) WITH (fillfactor=70)) WITH (fillfactor=70)",
+  "SHOW ALL",
 };
 
 size_t testsLength = __LINE__ - 4;
