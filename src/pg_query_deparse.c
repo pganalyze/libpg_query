@@ -206,6 +206,7 @@ static void deparseRuleActionStmt(StringInfo str, Node *node);
 static void deparseExplainableStmt(StringInfo str, Node *node);
 static void deparseStmt(StringInfo str, Node *node);
 static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context);
+static void deparseTList(StringInfo str, List *tlist);
 
 // "any_name" in gram.y
 static void deparseAnyName(StringInfo str, List *parts)
@@ -323,6 +324,9 @@ static void deparseExpr(StringInfo str, Node *node)
 		case T_GroupingFunc:
 			deparseGroupingFunc(str, castNode(GroupingFunc, node));
 			break;
+		case T_List:
+			deparseTList(str, castNode(List, node));
+			break;
 		default:
 			elog(ERROR, "deparse: unpermitted node type in a_expr/b_expr: %d",
 				 (int) nodeTag(node));
@@ -377,6 +381,16 @@ static void deparseCExpr(StringInfo str, Node *node)
 			elog(ERROR, "deparse: unpermitted node type in c_expr: %d",
 				 (int) nodeTag(node));
 			break;
+	}
+}
+
+static void deparseTList(StringInfo str, List *tlist){
+
+	ListCell *lc;
+	foreach(lc, tlist)
+	{
+		deparseStmt(str, lfirst(lc));
+		appendStringInfoString(str, "; ");
 	}
 }
 
