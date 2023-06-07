@@ -989,7 +989,7 @@ static void deparseAlterGenericOptions(StringInfo str, List *options)
 		if (lnext(options, lc))
 			appendStringInfoString(str, ", ");
 	}
-	appendStringInfoString(str, ") ");
+	appendStringInfoString(str, ")");
 }
 
 // "func_name" in gram.y
