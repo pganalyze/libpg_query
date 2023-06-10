@@ -392,6 +392,7 @@ const char* tests[] = {
   "CREATE INDEX \"foo.index\" ON foo USING btree (bar)",
   "CREATE TABLE distributors (did int, name varchar(40), UNIQUE (name) WITH (fillfactor=70)) WITH (fillfactor=70)",
   "SHOW ALL",
+  "ALTER TABLE ONLY public.\"Test 123\" ADD CONSTRAINT \"Test 123_pkey\" PRIMARY KEY (c1)",
 };
 
 size_t testsLength = __LINE__ - 4;
