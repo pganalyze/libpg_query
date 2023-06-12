@@ -203,6 +203,8 @@ static void deparseRuleActionStmt(StringInfo str, Node *node);
 static void deparseExplainableStmt(StringInfo str, Node *node);
 static void deparseStmt(StringInfo str, Node *node);
 static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context);
+static void deparseTList(StringInfo str, List *tlist);
+
 
 // "any_name" in gram.y
 static void deparseAnyName(StringInfo str, List *parts)
@@ -785,7 +787,7 @@ static void deparseCreateGenericOptions(StringInfo str, List *options)
 		if (lnext(options, lc))
 			appendStringInfoString(str, ", ");
 	}
-	appendStringInfoString(str, ") ");
+	appendStringInfoString(str, ")");
 }
 
 // "common_func_opt_item" in gram.y
@@ -4902,12 +4904,30 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 		else
 		{
 			appendStringInfoString(str, "BEGIN ATOMIC ");
-			deparseExprList(str, castNode(List, create_function_stmt->sql_body));
+			if IsA(create_function_stmt->sql_body, List) {
+				foreach(lc, castNode(List, create_function_stmt->sql_body))
+				{
+					deparseTList(str, castNode(List, lfirst(lc)));
+				}
+			} else {
+				deparseExprList(str, castNode(List, create_function_stmt->sql_body));
+			}
+			
 			appendStringInfoString(str, "END ");
 		}
 	}
 
 	removeTrailingSpace(str);
+}
+
+static void deparseTList(StringInfo str, List *tlist){
+
+	ListCell *lc;
+	foreach(lc, tlist)
+	{
+		deparseStmt(str, lfirst(lc));
+		appendStringInfoString(str, "; ");
+	}
 }
 
 static void deparseFunctionParameter(StringInfo str, FunctionParameter *function_parameter)

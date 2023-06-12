@@ -392,6 +392,7 @@ const char* tests[] = {
   "CREATE INDEX \"foo.index\" ON foo USING btree (bar)",
   "CREATE TABLE distributors (did int, name varchar(40), UNIQUE (name) WITH (fillfactor=70)) WITH (fillfactor=70)",
   "SHOW ALL",
+  "CREATE PROCEDURE insert_data(a int, b int) LANGUAGE sql BEGIN ATOMIC INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); END",
 };
 
 size_t testsLength = __LINE__ - 4;
