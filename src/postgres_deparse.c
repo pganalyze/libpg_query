@@ -4595,7 +4595,7 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 	if (constraint->conname != NULL)
 	{
 		appendStringInfoString(str, "CONSTRAINT ");
-		appendStringInfoString(str, constraint->conname);
+		appendStringInfoString(str, quote_identifier(constraint->conname));
 		appendStringInfoChar(str, ' ');
 	}
 
