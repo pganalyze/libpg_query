@@ -393,6 +393,10 @@ const char* tests[] = {
   "CREATE TABLE distributors (did int, name varchar(40), UNIQUE (name) WITH (fillfactor=70)) WITH (fillfactor=70)",
   "SHOW ALL",
   "ALTER TABLE ONLY public.\"Test 123\" ADD CONSTRAINT \"Test 123_pkey\" PRIMARY KEY (c1)",
+  "CREATE PROCEDURE insert_data(a int, b int) LANGUAGE sql BEGIN ATOMIC INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); END",
+  "CREATE PROCEDURE do_nothing() LANGUAGE sql BEGIN ATOMIC END",
+  "CREATE PROCEDURE returns_one() LANGUAGE sql BEGIN ATOMIC RETURN 1; END",
+  "CREATE PROCEDURE updates_and_returns_one() LANGUAGE sql BEGIN ATOMIC UPDATE tbl SET a = 1; RETURN 1; END",
 };
 
 size_t testsLength = __LINE__ - 4;

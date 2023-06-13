@@ -203,7 +203,6 @@ static void deparseRuleActionStmt(StringInfo str, Node *node);
 static void deparseExplainableStmt(StringInfo str, Node *node);
 static void deparseStmt(StringInfo str, Node *node);
 static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context);
-static void deparseTList(StringInfo str, List *tlist);
 
 
 // "any_name" in gram.y
@@ -4904,13 +4903,22 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 		else
 		{
 			appendStringInfoString(str, "BEGIN ATOMIC ");
-			if IsA(create_function_stmt->sql_body, List) {
-				foreach(lc, castNode(List, create_function_stmt->sql_body))
+			if (linitial(create_function_stmt->sql_body) != NULL)
+			{
+				List *body_stmt_list = castNode(List, linitial(create_function_stmt->sql_body));
+				foreach(lc, body_stmt_list)
 				{
-					deparseTList(str, castNode(List, lfirst(lc)));
+					if (IsA(lfirst(lc), ReturnStmt))
+					{
+						deparseReturnStmt(str, lfirst_node(ReturnStmt, lc));
+						appendStringInfoString(str, "; ");
+					}
+					else
+					{
+						deparseStmt(str, lfirst(lc));
+						appendStringInfoString(str, "; ");
+					}
 				}
-			} else {
-				deparseExprList(str, castNode(List, create_function_stmt->sql_body));
 			}
 			
 			appendStringInfoString(str, "END ");
@@ -4918,16 +4926,6 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 	}
 
 	removeTrailingSpace(str);
-}
-
-static void deparseTList(StringInfo str, List *tlist){
-
-	ListCell *lc;
-	foreach(lc, tlist)
-	{
-		deparseStmt(str, lfirst(lc));
-		appendStringInfoString(str, "; ");
-	}
 }
 
 static void deparseFunctionParameter(StringInfo str, FunctionParameter *function_parameter)
