@@ -204,6 +204,7 @@ static void deparseExplainableStmt(StringInfo str, Node *node);
 static void deparseStmt(StringInfo str, Node *node);
 static void deparseValue(StringInfo str, union ValUnion *value, DeparseNodeContext context);
 
+
 // "any_name" in gram.y
 static void deparseAnyName(StringInfo str, List *parts)
 {
@@ -785,7 +786,7 @@ static void deparseCreateGenericOptions(StringInfo str, List *options)
 		if (lnext(options, lc))
 			appendStringInfoString(str, ", ");
 	}
-	appendStringInfoString(str, ") ");
+	appendStringInfoString(str, ")");
 }
 
 // "common_func_opt_item" in gram.y
@@ -4902,7 +4903,24 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 		else
 		{
 			appendStringInfoString(str, "BEGIN ATOMIC ");
-			deparseExprList(str, castNode(List, create_function_stmt->sql_body));
+			if (linitial(create_function_stmt->sql_body) != NULL)
+			{
+				List *body_stmt_list = castNode(List, linitial(create_function_stmt->sql_body));
+				foreach(lc, body_stmt_list)
+				{
+					if (IsA(lfirst(lc), ReturnStmt))
+					{
+						deparseReturnStmt(str, lfirst_node(ReturnStmt, lc));
+						appendStringInfoString(str, "; ");
+					}
+					else
+					{
+						deparseStmt(str, lfirst(lc));
+						appendStringInfoString(str, "; ");
+					}
+				}
+			}
+			
 			appendStringInfoString(str, "END ");
 		}
 	}
