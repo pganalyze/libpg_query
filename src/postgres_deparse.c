@@ -2267,9 +2267,11 @@ static void deparseSelectStmt(StringInfo str, SelectStmt *stmt)
 
 		if (IsA(stmt->limitCount, A_Const) && castNode(A_Const, stmt->limitCount)->isnull)
 			appendStringInfoString(str, "ALL");
-		else
+		else if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
 			deparseCExpr(str, stmt->limitCount);
-		
+		else
+			deparseExpr(str, stmt->limitCount);
+
 		appendStringInfoChar(str, ' ');
 
 		if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
@@ -4899,13 +4901,15 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 		/* RETURN or BEGIN ... END
 		 */
 		if (IsA(create_function_stmt->sql_body, ReturnStmt))
+		{
 			deparseReturnStmt(str, castNode(ReturnStmt, create_function_stmt->sql_body));
+		}
 		else
 		{
 			appendStringInfoString(str, "BEGIN ATOMIC ");
-			if (linitial(create_function_stmt->sql_body) != NULL)
+			if (IsA(create_function_stmt->sql_body, List), linitial((List *) create_function_stmt->sql_body) != NULL)
 			{
-				List *body_stmt_list = castNode(List, linitial(create_function_stmt->sql_body));
+				List *body_stmt_list = castNode(List, linitial((List *) create_function_stmt->sql_body));
 				foreach(lc, body_stmt_list)
 				{
 					if (IsA(lfirst(lc), ReturnStmt))
