@@ -2,6 +2,14 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.2.2   2023-07-07
+
+* Deparser:
+  - Add support for multi-statement CREATE PROCEDURE definitions [#197](https://github.com/pganalyze/libpg_query/pull/197)
+  - Correctly quote identifier in ALTER TABLE ... ADD CONSTRAINT [x] [#196](https://github.com/pganalyze/libpg_query/pull/196)
+  - Add support for index fillfactor within CREATE TABLE, fix SHOW ALL [#193](https://github.com/pganalyze/libpg_query/pull/193)
+  - Move to dedicated file for easier inclusion in third-party projects [#192](https://github.com/pganalyze/libpg_query/pull/192)
+
 ## 15-4.2.1   2023-05-17
 
 * Deparser: Handle INTERVAL correctly when used in SET statements [#184](https://github.com/pganalyze/libpg_query/pull/184)
