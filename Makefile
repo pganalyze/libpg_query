@@ -10,7 +10,7 @@ PG_VERSION = 15.1
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PROTOC_VERSION = 3.14.0
 
-VERSION = 4.2.2
+VERSION = 4.2.3
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
@@ -148,7 +148,8 @@ $(PGDIR):
 	echo "#undef USE_ARMV8_CRC32C" >> $(PGDIR)/src/include/pg_config.h
 	echo "#undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK" >> $(PGDIR)/src/include/pg_config.h
 	# Ensure we don't fail on systems that have strchrnul support (FreeBSD and NetBSD)
-	echo "#if defined(__FreeBSD__) || defined(__NetBSD__)" >> $(PGDIR)/src/include/pg_config.h
+	echo "#include <stdlib.h>" >>  $(PGDIR)/src/include/pg_config.h
+	echo "#if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))" >> $(PGDIR)/src/include/pg_config.h
 	echo "#define HAVE_STRCHRNUL" >> $(PGDIR)/src/include/pg_config.h
 	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
 

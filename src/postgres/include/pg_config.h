@@ -1032,6 +1032,7 @@
 #undef HAVE__GET_CPUID
 #undef USE_ARMV8_CRC32C
 #undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK
-#if defined(__FreeBSD__) || defined(__NetBSD__)
+#include <stdlib.h>
+#if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))
 #define HAVE_STRCHRNUL
 #endif
