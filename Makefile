@@ -37,7 +37,7 @@ override CFLAGS += -g -I. -I./vendor -I./src/postgres/include -Wall -Wno-unused-
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib
 
-override TEST_CFLAGS += -I. -I./vendor -g
+override TEST_CFLAGS += -g -I. -I./vendor -Wall
 override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
