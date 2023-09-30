@@ -1,4 +1,4 @@
-const char* tests[] = {
+const char* const tests[] = {
   "SELECT 1",
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "1 = ICONST, NO_KEYWORD\n",
@@ -87,7 +87,11 @@ const char* tests[] = {
     "; = ASCII_59, NO_KEYWORD\n"
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "2 = ICONST, NO_KEYWORD\n"
-    ") = ASCII_41, NO_KEYWORD\n"
+    ") = ASCII_41, NO_KEYWORD\n",
+  "SELECT $identifier",
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "$ = ASCII_36, NO_KEYWORD\n"
+    "identifier = IDENT, NO_KEYWORD\n",
 };
 
-size_t testsCount = 11;
+const size_t testsCount = sizeof(tests)/sizeof(*tests)/2;

@@ -3161,6 +3161,7 @@ enum Token {
   // Single-character tokens that are returned 1:1 (identical with "self" list in scan.l)
   // Either supporting syntax, or single-character operators (some can be both)
   // Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
+  ASCII_36 = 36; // "$"
   ASCII_37 = 37; // "%"
   ASCII_40 = 40; // "("
   ASCII_41 = 41; // ")"

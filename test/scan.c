@@ -19,6 +19,9 @@ int main() {
   const ProtobufCEnumValue *keyword_kind;
   PgQueryScanResult result;
 
+  // tests contains pairs of strings
+  assert(testsCount % 2 == 0);
+
   for (i = 0; i < testsCount * 2; i += 2) {
     char buffer[1024];
     buffer[0] = '\0';
@@ -36,6 +39,11 @@ int main() {
         scan_token = scan_result->tokens[j];
         token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
         keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
+        if (token_kind == NULL) {
+          ret_code = -1;
+          printf("INVALID result for \"%s\": scan_result token %zu token_kind == NULL\n", tests[i], j);
+          break;
+        }
         sprintf(buffer2, "%.*s = %s, %s\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), token_kind->name, keyword_kind->name);
         strcat(buffer, buffer2);
       }
