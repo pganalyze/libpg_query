@@ -2879,8 +2879,8 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 	ListCell *lc;
 	char *name;
 
-	bool need_lexpr_parens = a_expr->lexpr != NULL && (IsA(a_expr->lexpr, BoolExpr) || IsA(a_expr->lexpr, NullTest) || IsA(a_expr->lexpr, A_Expr));
-	bool need_rexpr_parens = a_expr->rexpr != NULL && (IsA(a_expr->rexpr, BoolExpr) || IsA(a_expr->rexpr, NullTest) || IsA(a_expr->rexpr, A_Expr));
+	bool need_lexpr_parens = a_expr->lexpr != NULL && (IsA(a_expr->lexpr, BoolExpr) || IsA(a_expr->lexpr, BooleanTest) || IsA(a_expr->lexpr, NullTest) || IsA(a_expr->lexpr, A_Expr));
+	bool need_rexpr_parens = a_expr->rexpr != NULL && (IsA(a_expr->rexpr, BoolExpr) || IsA(a_expr->rexpr, BooleanTest) || IsA(a_expr->rexpr, NullTest) || IsA(a_expr->rexpr, A_Expr));
 
 	switch (a_expr->kind) {
 		case AEXPR_OP: /* normal operator */
@@ -3950,7 +3950,16 @@ static void deparseMinMaxExpr(StringInfo str, MinMaxExpr *min_max_expr)
 
 static void deparseBooleanTest(StringInfo str, BooleanTest *boolean_test)
 {
+	bool need_parens = IsA(boolean_test->arg, BoolExpr);
+
+	if (need_parens)
+		appendStringInfoChar(str, '(');
+
 	deparseExpr(str, (Node *) boolean_test->arg);
+
+	if (need_parens)
+		appendStringInfoChar(str, ')');
+
 	switch (boolean_test->booltesttype)
 	{
 		case IS_TRUE:

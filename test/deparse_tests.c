@@ -398,6 +398,8 @@ const char* tests[] = {
   "CREATE PROCEDURE returns_one() LANGUAGE sql BEGIN ATOMIC RETURN 1; END",
   "CREATE PROCEDURE updates_and_returns_one() LANGUAGE sql BEGIN ATOMIC UPDATE tbl SET a = 1; RETURN 1; END",
   "SELECT 1 FROM tbl LIMIT COALESCE($1, $2)",
+  "SELECT (false AND true) IS FALSE",
+  "SELECT a = (true IS FALSE)",
 };
 
 size_t testsLength = __LINE__ - 4;
