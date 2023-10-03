@@ -907,6 +907,10 @@ typedef enum _PgQuery__Token {
    * Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
    */
   /*
+   * "$"
+   */
+  PG_QUERY__TOKEN__ASCII_36 = 36,
+  /*
    * "%"
    */
   PG_QUERY__TOKEN__ASCII_37 = 37,
