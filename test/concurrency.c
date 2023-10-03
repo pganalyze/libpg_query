@@ -1,10 +1,11 @@
 #include <pg_query.h>
 
+#include <assert.h>
+#include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <pthread.h>
 
 #include "parse_tests.c"
 
@@ -38,7 +39,8 @@ int main() {
   return 0;
 }
 
-void* test_runner(void* ptr) {
+void* test_runner(void* unused_pthread_arg) {
+  assert(unused_pthread_arg == NULL);
   size_t i;
 
   for (i = 0; i < testsLength; i += 2) {
