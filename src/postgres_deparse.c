@@ -1826,14 +1826,15 @@ static void deparseIndexElem(StringInfo str, IndexElem* index_elem)
 	{
 		switch (nodeTag(index_elem->expr))
 		{
-			case T_FuncCall:
-			case T_SQLValueFunction:
-			case T_TypeCast:
-			case T_CoalesceExpr:
-			case T_MinMaxExpr:
-			case T_XmlExpr:
-			case T_XmlSerialize:
+			// Simple function calls can be written without wrapping parens
+			case T_FuncCall: // func_application
+			case T_SQLValueFunction: // func_expr_common_subexpr
+			case T_CoalesceExpr: // func_expr_common_subexpr
+			case T_MinMaxExpr: // func_expr_common_subexpr
+			case T_XmlExpr: // func_expr_common_subexpr
+			case T_XmlSerialize: // func_expr_common_subexpr
 				deparseFuncExprWindowless(str, index_elem->expr);
+				appendStringInfoString(str, " ");
 				break;
 			default:
 				appendStringInfoChar(str, '(');
