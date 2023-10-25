@@ -29,6 +29,7 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
 	DEPARSE_NODE_CONTEXT_SET_STATEMENT,
+	DEPARSE_NODE_CONTEXT_FUNC_EXPR,
 	// Identifier vs constant context
 	DEPARSE_NODE_CONTEXT_IDENTIFIER,
 	DEPARSE_NODE_CONTEXT_CONSTANT
@@ -1782,7 +1783,7 @@ static void deparseFuncExprWindowless(StringInfo str, Node* node)
 			deparseSQLValueFunction(str, castNode(SQLValueFunction, node));
 			break;
 		case T_TypeCast:
-			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
+			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_FUNC_EXPR);
 			break;
 		case T_CoalesceExpr:
 			deparseCoalesceExpr(str, castNode(CoalesceExpr, node));
@@ -3546,7 +3547,7 @@ static void deparseTypeCast(StringInfo str, TypeCast *type_cast, DeparseNodeCont
 
 	Assert(type_cast->typeName != NULL);
 
-	if (IsA(type_cast->arg, A_Expr))
+	if (IsA(type_cast->arg, A_Expr) || context == DEPARSE_NODE_CONTEXT_FUNC_EXPR)
 	{
 		appendStringInfoString(str, "CAST(");
 		deparseExpr(str, type_cast->arg);
