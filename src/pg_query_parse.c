@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
+PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryParseMode mode)
 {
 	PgQueryInternalParsetreeAndError result = {0};
 	MemoryContext parse_context = CurrentMemoryContext;
@@ -42,7 +42,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
 
 	PG_TRY();
 	{
-		result.tree = raw_parser(input, RAW_PARSE_DEFAULT);
+		result.tree = raw_parser(input, mode);
 
 #ifndef DEBUG
 		// Save stderr for result
@@ -85,6 +85,11 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input)
 
 PgQueryParseResult pg_query_parse(const char* input)
 {
+	return pg_query_parse_opts(input, PG_QUERY_PARSE_DEFAULT);
+}
+
+PgQueryParseResult pg_query_parse_opts(const char* input, PgQueryParseMode mode)
+{
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
 	PgQueryParseResult result = {0};
@@ -92,7 +97,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input);
+	parsetree_and_error = pg_query_raw_parse(input, mode);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
@@ -109,13 +114,18 @@ PgQueryParseResult pg_query_parse(const char* input)
 
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input)
 {
+	return pg_query_parse_protobuf_opts(input, PG_QUERY_PARSE_DEFAULT);
+}
+
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, PgQueryParseMode mode)
+{
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
 	PgQueryProtobufParseResult result = {};
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input);
+	parsetree_and_error = pg_query_raw_parse(input, mode);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;

@@ -229,16 +229,19 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/normalize test/parse test/parse_protobuf test/parse_plpgsql test/scan test/split
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse_protobuf_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/split || (cat test/valgrind.log && false)
 	# Output-based tests
@@ -249,9 +252,12 @@ else
 	test/concurrency
 	test/deparse
 	test/fingerprint
+	test/fingerprint_opts
 	test/normalize
 	test/parse
+	test/parse_opts
 	test/parse_protobuf
+	test/parse_protobuf_opts
 	test/scan
 	test/split
 	# Output-based tests
@@ -273,17 +279,27 @@ test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
 	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
 
+test/fingerprint_opts: test/fingerprint_opts.c test/fingerprint_opts_tests.c $(ARLIB)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/fingerprint_opts.c $(ARLIB) $(TEST_LDFLAGS)
+
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
 
+test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_opts.c $(ARLIB) $(TEST_LDFLAGS)
+
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/parse_protobuf_opts: test/parse_protobuf_opts.c test/parse_opts_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf_opts.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/scan.c $(ARLIB) $(TEST_LDFLAGS)

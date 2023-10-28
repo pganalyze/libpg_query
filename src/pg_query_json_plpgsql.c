@@ -626,6 +626,7 @@ dump_expr(StringInfo out, PLpgSQL_expr *node)
 	WRITE_NODE_TYPE("PLpgSQL_expr");
 
 	WRITE_STRING_FIELD(query, query, query);
+	WRITE_ENUM_FIELD(parseMode, parseMode, parseMode);
 }
 
 static void

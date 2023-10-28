@@ -170,7 +170,7 @@ PgQuerySplitResult pg_query_split_with_parser(const char* input)
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input);
+	parsetree_and_error = pg_query_raw_parse(input, PG_QUERY_PARSE_DEFAULT);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;

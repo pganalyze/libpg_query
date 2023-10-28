@@ -10344,7 +10344,7 @@ int main() {
         } else {
             ret_code = -1;
             printf("INVALID result, expected: %s\nactual: %s\nactual tokens: \n", fingerprint, result.fingerprint_str);
-            pg_query_fingerprint_with_opts(query, true);
+            pg_query_fingerprint_with_opts(query, PG_QUERY_PARSE_DEFAULT, true);
         }
 
         pg_query_free_fingerprint_result(result);
