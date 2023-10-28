@@ -4,6 +4,16 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+typedef enum
+{
+	PG_QUERY_PARSE_DEFAULT = 0,
+	PG_QUERY_PARSE_TYPE_NAME,
+	PG_QUERY_PARSE_PLPGSQL_EXPR,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN1,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN2,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN3
+} PgQueryParseMode;
+
 typedef struct {
 	char* message; // exception message
 	char* funcname; // source function of exception (e.g. SearchSysCache)
@@ -77,10 +87,13 @@ extern "C" {
 PgQueryNormalizeResult pg_query_normalize(const char* input);
 PgQueryScanResult pg_query_scan(const char* input);
 PgQueryParseResult pg_query_parse(const char* input);
+PgQueryParseResult pg_query_parse_opts(const char* input, PgQueryParseMode mode);
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input);
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, PgQueryParseMode mode);
 PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
+PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, PgQueryParseMode mode);
 
 // Use pg_query_split_with_scanner when you need to split statements that may
 // contain parse errors, otherwise pg_query_split_with_parser is recommended

@@ -449,7 +449,7 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 
 	ctx = pg_query_enter_memory_context();
 
-	parse_result = pg_query_raw_parse(input);
+	parse_result = pg_query_raw_parse(input, PG_QUERY_PARSE_DEFAULT);
 	result.error = parse_result.error;
 	if (result.error != NULL) {
 		pg_query_exit_memory_context(ctx);

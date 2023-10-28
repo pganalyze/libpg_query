@@ -5,16 +5,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fingerprint_tests.c"
+#include "fingerprint_opts_tests.c"
 
 int main()
 {
 	size_t i;
 	bool ret_code = 0;
 
-	for (i = 0; i < testsLength; i += 2)
+	for (i = 0; i < testsLength; i += 3)
 	{
-		PgQueryFingerprintResult result = pg_query_fingerprint(tests[i]);
+		PgQueryParseMode mode = atoi(tests[i+1]);
+		PgQueryFingerprintResult result = pg_query_fingerprint_opts(tests[i], mode);
 
 		if (result.error)
 		{
@@ -23,15 +24,15 @@ int main()
 			pg_query_free_fingerprint_result(result);
 			continue;
 		}
-		else if (strcmp(result.fingerprint_str, tests[i + 1]) == 0)
+		else if (strcmp(result.fingerprint_str, tests[i + 2]) == 0)
 		{
 			printf(".");
 		}
 		else
 		{
 			ret_code = -1;
-			printf("INVALID result for \"%s\"\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], tests[i + 1], result.fingerprint_str);
-			pg_query_fingerprint_with_opts(tests[i], PG_QUERY_PARSE_DEFAULT, true);
+			printf("INVALID result for \"%s\" with %d mode\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], mode, tests[i + 2], result.fingerprint_str);
+			pg_query_fingerprint_with_opts(tests[i], mode, true);
 		}
 
 		pg_query_free_fingerprint_result(result);
