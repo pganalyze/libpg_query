@@ -40,6 +40,9 @@ override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib
 override TEST_CFLAGS += -g -I. -I./vendor -Wall
 override TEST_LDFLAGS += -pthread
 
+override CFLAGS += -std=gnu99
+override TEST_CFLAGS += -std=gnu99
+
 CFLAGS_OPT_LEVEL = -O3
 ifeq ($(DEBUG),1)
 	CFLAGS_OPT_LEVEL = -O0
