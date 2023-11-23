@@ -42,7 +42,27 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryPa
 
 	PG_TRY();
 	{
-		result.tree = raw_parser(input, mode);
+		RawParseMode rawParseMode = RAW_PARSE_DEFAULT;
+		switch (mode)
+		{
+			case PG_QUERY_PARSE_TYPE_NAME:
+				rawParseMode = RAW_PARSE_TYPE_NAME;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_EXPR:
+				rawParseMode = RAW_PARSE_PLPGSQL_EXPR;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN1:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN1;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN2:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN2;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN3:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN3;
+				break;
+		}
+
+		result.tree = raw_parser(input, rawParseMode);
 
 #ifndef DEBUG
 		// Save stderr for result
