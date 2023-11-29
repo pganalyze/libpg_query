@@ -6330,7 +6330,7 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			appendStringInfoString(str, "DISABLE TRIGGER ");
 			break;
 		case AT_EnableTrigAll: /* ENABLE TRIGGER ALL */
-			appendStringInfoString(str, "ENABLE TRIGGER ");
+			appendStringInfoString(str, "ENABLE TRIGGER ALL ");
 			break;
 		case AT_DisableTrigAll: /* DISABLE TRIGGER ALL */
 			appendStringInfoString(str, "DISABLE TRIGGER ALL ");
