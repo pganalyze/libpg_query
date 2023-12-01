@@ -417,7 +417,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			record_matching_string(jstate, ((CreateSubscriptionStmt *) node)->conninfo);
 			break;
 		case T_AlterSubscriptionStmt:
-			record_matching_string(jstate, ((CreateSubscriptionStmt *) node)->conninfo);
+			record_matching_string(jstate, ((AlterSubscriptionStmt *) node)->conninfo);
 			break;
 		case T_CreateUserMappingStmt:
 			return const_record_walker((Node *) ((CreateUserMappingStmt *) node)->options, jstate);
