@@ -29,7 +29,7 @@ void pg_query_init(void)
 
 void pg_query_free_top_memory_context(MemoryContext context)
 {
-	AssertArg(MemoryContextIsValid(context));
+	Assert(MemoryContextIsValid(context));
 
 	/*
 	 * After this, no memory contexts are valid anymore, so ensure that
