@@ -5117,7 +5117,19 @@ static void deparsePartitionSpec(StringInfo str, PartitionSpec *partition_spec)
 	ListCell *lc;
 
 	appendStringInfoString(str, "PARTITION BY ");
-	appendStringInfoString(str, partition_spec->strategy);
+
+	switch (partition_spec->strategy)
+	{
+		case PARTITION_STRATEGY_LIST:
+			appendStringInfoString(str, "LIST");
+			break;
+		case PARTITION_STRATEGY_HASH:
+			appendStringInfoString(str, "HASH");
+			break;
+		case PARTITION_STRATEGY_RANGE:
+			appendStringInfoString(str, "RANGE");
+			break;
+	}
 
 	appendStringInfoChar(str, '(');
 	foreach(lc, partition_spec->partParams)

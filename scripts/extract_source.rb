@@ -564,6 +564,8 @@ runner.deep_resolve('MemoryContextAllocExtended')
 # Other required functions
 runner.deep_resolve('pg_printf')
 
+runner.deep_resolve('my_wait_event_info')
+
 runner.write_out
 
 #puts runner.unresolved.inspect
