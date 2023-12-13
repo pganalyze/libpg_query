@@ -2012,7 +2012,7 @@ _outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out, const IndexStmt *node)
   WRITE_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
   WRITE_STRING_FIELD(idxcomment, idxcomment, idxcomment);
   WRITE_UINT_FIELD(index_oid, indexOid, indexOid);
-  WRITE_ENUM_FIELD(RelFileNumber, old_number, oldNumber, oldNumber);
+  WRITE_UINT_FIELD(old_number, oldNumber, oldNumber);
   WRITE_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
   WRITE_UINT_FIELD(old_first_relfilelocator_subid, oldFirstRelfilelocatorSubid, oldFirstRelfilelocatorSubid);
   WRITE_BOOL_FIELD(unique, unique, unique);

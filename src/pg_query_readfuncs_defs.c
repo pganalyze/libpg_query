@@ -2376,7 +2376,7 @@ _readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg)
   READ_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
   READ_STRING_FIELD(idxcomment, idxcomment, idxcomment);
   READ_UINT_FIELD(index_oid, indexOid, indexOid);
-  READ_ENUM_FIELD(RelFileNumber, old_number, oldNumber, oldNumber);
+  READ_UINT_FIELD(old_number, oldNumber, oldNumber);
   READ_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
   READ_UINT_FIELD(old_first_relfilelocator_subid, oldFirstRelfilelocatorSubid, oldFirstRelfilelocatorSubid);
   READ_BOOL_FIELD(unique, unique, unique);

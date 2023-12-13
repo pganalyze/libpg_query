@@ -1952,7 +1952,7 @@ message IndexStmt
   repeated Node exclude_op_names = 9 [json_name="excludeOpNames"];
   string idxcomment = 10 [json_name="idxcomment"];
   uint32 index_oid = 11 [json_name="indexOid"];
-  RelFileNumber old_number = 12 [json_name="oldNumber"];
+  uint32 old_number = 12 [json_name="oldNumber"];
   uint32 old_create_subid = 13 [json_name="oldCreateSubid"];
   uint32 old_first_relfilelocator_subid = 14 [json_name="oldFirstRelfilelocatorSubid"];
   bool unique = 15 [json_name="unique"];
