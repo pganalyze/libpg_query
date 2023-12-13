@@ -12,10 +12,10 @@ Date:   Sun Jan 3 16:01:44 2021 -0800
     this change, the lexer returns them as SQL_COMMENT/C_COMMENT tokens.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 8beb6fef5e..f2c963e801 100644
+index 164b9586c1..7dd5505cd1 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -629,6 +629,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+@@ -678,6 +678,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -24,12 +24,12 @@ index 8beb6fef5e..f2c963e801 100644
  /*
   * If you want to make any keyword changes, update the keyword table in
 diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
-index be86eb37fe..07b8fd486f 100644
+index e17c310cc1..9b2926878a 100644
 --- a/src/backend/parser/parser.c
 +++ b/src/backend/parser/parser.c
-@@ -150,6 +150,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
- 		case USCONST:
- 			cur_token_length = strlen(yyextra->core_yy_extra.scanbuf + *llocp);
+@@ -156,6 +156,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
+ 		case WITHOUT:
+ 			cur_token_length = 7;
  			break;
 +		case SQL_COMMENT:
 +		case C_COMMENT:
@@ -38,10 +38,10 @@ index be86eb37fe..07b8fd486f 100644
  			return cur_token;
  	}
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index 768170bb30..24fd149497 100644
+index a62798cf98..154defc6b8 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -223,7 +223,7 @@ non_newline		[^\n\r]
+@@ -226,7 +226,7 @@ non_newline		[^\n\r]
  
  comment			("--"{non_newline}*)
  
@@ -50,7 +50,7 @@ index 768170bb30..24fd149497 100644
  
  /*
   * SQL requires at least one newline in the whitespace separating
-@@ -232,8 +232,8 @@ whitespace		({space}+|{comment})
+@@ -235,8 +235,8 @@ whitespace		({space}+|{comment})
   * it, whereas {whitespace} should generally have a * after it...
   */
  
@@ -61,7 +61,7 @@ index 768170bb30..24fd149497 100644
  whitespace_with_newline	({horiz_whitespace}*{newline}{special_whitespace}*)
  
  quote			'
-@@ -419,6 +419,11 @@ other			.
+@@ -443,6 +443,11 @@ other			.
  					/* ignore */
  				}
  
@@ -73,7 +73,7 @@ index 768170bb30..24fd149497 100644
  {xcstart}		{
  					/* Set location in case of syntax error in comment */
  					SET_YYLLOC();
-@@ -437,7 +442,11 @@ other			.
+@@ -461,7 +466,11 @@ other			.
  
  {xcstop}		{
  					if (yyextra->xcdepth <= 0)
@@ -86,10 +86,10 @@ index 768170bb30..24fd149497 100644
  						(yyextra->xcdepth)--;
  				}
 diff --git a/src/interfaces/ecpg/preproc/parser.c b/src/interfaces/ecpg/preproc/parser.c
-index a2eeeba217..cbfb92384a 100644
+index 38e7acb680..4814158aaf 100644
 --- a/src/interfaces/ecpg/preproc/parser.c
 +++ b/src/interfaces/ecpg/preproc/parser.c
-@@ -84,6 +84,9 @@ filtered_base_yylex(void)
+@@ -86,6 +86,9 @@ filtered_base_yylex(void)
  		case UIDENT:
  		case USCONST:
  			break;
@@ -100,10 +100,10 @@ index a2eeeba217..cbfb92384a 100644
  			return cur_token;
  	}
 diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
-index fc6cedb7a4..1cf9405d81 100644
+index 6a09bfdd67..fb1b519b27 100644
 --- a/src/pl/plpgsql/src/pl_gram.y
 +++ b/src/pl/plpgsql/src/pl_gram.y
-@@ -234,6 +234,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
+@@ -232,6 +232,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -112,7 +112,7 @@ index fc6cedb7a4..1cf9405d81 100644
  /*
   * Other tokens recognized by plpgsql's lexer interface layer (pl_scanner.c).
 diff --git a/src/pl/plpgsql/src/pl_scanner.c b/src/pl/plpgsql/src/pl_scanner.c
-index 9cea2e42ac..a0b86ac587 100644
+index 4e98af2395..40a17caaf9 100644
 --- a/src/pl/plpgsql/src/pl_scanner.c
 +++ b/src/pl/plpgsql/src/pl_scanner.c
 @@ -342,6 +342,11 @@ internal_yylex(TokenAuxData *auxdata)
