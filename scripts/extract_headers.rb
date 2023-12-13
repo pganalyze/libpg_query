@@ -33,16 +33,12 @@ class Extractor
     inside = false
     @nodetypes = []
 
-    lines = File.read(File.join(@pgdir, '/src/include/nodes/nodes.h'))
+    lines = File.read(File.join(@pgdir, '/src/include/nodes/nodetags.h'))
     lines.each_line do |line|
-      if inside
+      if !line.start_with? /\/?\ *\*/
         if line[/T_([A-z_]+)(\s+=\s+\d+)?,/]
           @nodetypes << $1
-        elsif line == "} NodeTag;\n"
-          inside = false
         end
-      elsif line == "typedef enum NodeTag\n"
-        inside = true
       end
     end
   end
