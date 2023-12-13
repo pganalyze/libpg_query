@@ -124,6 +124,17 @@ _enumToStringDefElemAction(DefElemAction value) {
 }
 
 static const char*
+_enumToStringPartitionStrategy(PartitionStrategy value) {
+  switch(value) {
+    case PARTITION_STRATEGY_LIST: return "PARTITION_STRATEGY_LIST";
+    case PARTITION_STRATEGY_RANGE: return "PARTITION_STRATEGY_RANGE";
+    case PARTITION_STRATEGY_HASH: return "PARTITION_STRATEGY_HASH";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
 _enumToStringPartitionRangeDatumKind(PartitionRangeDatumKind value) {
   switch(value) {
     case PARTITION_RANGE_DATUM_MINVALUE: return "PARTITION_RANGE_DATUM_MINVALUE";
@@ -275,7 +286,6 @@ static const char*
 _enumToStringAlterTableType(AlterTableType value) {
   switch(value) {
     case AT_AddColumn: return "AT_AddColumn";
-    case AT_AddColumnRecurse: return "AT_AddColumnRecurse";
     case AT_AddColumnToView: return "AT_AddColumnToView";
     case AT_ColumnDefault: return "AT_ColumnDefault";
     case AT_CookedColumnDefault: return "AT_CookedColumnDefault";
@@ -289,19 +299,15 @@ _enumToStringAlterTableType(AlterTableType value) {
     case AT_SetStorage: return "AT_SetStorage";
     case AT_SetCompression: return "AT_SetCompression";
     case AT_DropColumn: return "AT_DropColumn";
-    case AT_DropColumnRecurse: return "AT_DropColumnRecurse";
     case AT_AddIndex: return "AT_AddIndex";
     case AT_ReAddIndex: return "AT_ReAddIndex";
     case AT_AddConstraint: return "AT_AddConstraint";
-    case AT_AddConstraintRecurse: return "AT_AddConstraintRecurse";
     case AT_ReAddConstraint: return "AT_ReAddConstraint";
     case AT_ReAddDomainConstraint: return "AT_ReAddDomainConstraint";
     case AT_AlterConstraint: return "AT_AlterConstraint";
     case AT_ValidateConstraint: return "AT_ValidateConstraint";
-    case AT_ValidateConstraintRecurse: return "AT_ValidateConstraintRecurse";
     case AT_AddIndexConstraint: return "AT_AddIndexConstraint";
     case AT_DropConstraint: return "AT_DropConstraint";
-    case AT_DropConstraintRecurse: return "AT_DropConstraintRecurse";
     case AT_ReAddComment: return "AT_ReAddComment";
     case AT_AlterColumnType: return "AT_AlterColumnType";
     case AT_AlterColumnGenericOptions: return "AT_AlterColumnGenericOptions";
@@ -700,6 +706,53 @@ _enumToStringXmlOptionType(XmlOptionType value) {
 }
 
 static const char*
+_enumToStringJsonEncoding(JsonEncoding value) {
+  switch(value) {
+    case JS_ENC_DEFAULT: return "JS_ENC_DEFAULT";
+    case JS_ENC_UTF8: return "JS_ENC_UTF8";
+    case JS_ENC_UTF16: return "JS_ENC_UTF16";
+    case JS_ENC_UTF32: return "JS_ENC_UTF32";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
+_enumToStringJsonFormatType(JsonFormatType value) {
+  switch(value) {
+    case JS_FORMAT_DEFAULT: return "JS_FORMAT_DEFAULT";
+    case JS_FORMAT_JSON: return "JS_FORMAT_JSON";
+    case JS_FORMAT_JSONB: return "JS_FORMAT_JSONB";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
+_enumToStringJsonConstructorType(JsonConstructorType value) {
+  switch(value) {
+    case JSCTOR_JSON_OBJECT: return "JSCTOR_JSON_OBJECT";
+    case JSCTOR_JSON_ARRAY: return "JSCTOR_JSON_ARRAY";
+    case JSCTOR_JSON_OBJECTAGG: return "JSCTOR_JSON_OBJECTAGG";
+    case JSCTOR_JSON_ARRAYAGG: return "JSCTOR_JSON_ARRAYAGG";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
+_enumToStringJsonValueType(JsonValueType value) {
+  switch(value) {
+    case JS_TYPE_ANY: return "JS_TYPE_ANY";
+    case JS_TYPE_OBJECT: return "JS_TYPE_OBJECT";
+    case JS_TYPE_ARRAY: return "JS_TYPE_ARRAY";
+    case JS_TYPE_SCALAR: return "JS_TYPE_SCALAR";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
 _enumToStringNullTestType(NullTestType value) {
   switch(value) {
     case IS_NULL: return "IS_NULL";
@@ -748,6 +801,7 @@ _enumToStringJoinType(JoinType value) {
     case JOIN_RIGHT: return "JOIN_RIGHT";
     case JOIN_SEMI: return "JOIN_SEMI";
     case JOIN_ANTI: return "JOIN_ANTI";
+    case JOIN_RIGHT_ANTI: return "JOIN_RIGHT_ANTI";
     case JOIN_UNIQUE_OUTER: return "JOIN_UNIQUE_OUTER";
     case JOIN_UNIQUE_INNER: return "JOIN_UNIQUE_INNER";
   }
@@ -980,6 +1034,17 @@ _enumToIntDefElemAction(DefElemAction value) {
 }
 
 static int
+_enumToIntPartitionStrategy(PartitionStrategy value) {
+  switch(value) {
+    case PARTITION_STRATEGY_LIST: return 1;
+    case PARTITION_STRATEGY_RANGE: return 2;
+    case PARTITION_STRATEGY_HASH: return 3;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
 _enumToIntPartitionRangeDatumKind(PartitionRangeDatumKind value) {
   switch(value) {
     case PARTITION_RANGE_DATUM_MINVALUE: return 1;
@@ -1131,76 +1196,71 @@ static int
 _enumToIntAlterTableType(AlterTableType value) {
   switch(value) {
     case AT_AddColumn: return 1;
-    case AT_AddColumnRecurse: return 2;
-    case AT_AddColumnToView: return 3;
-    case AT_ColumnDefault: return 4;
-    case AT_CookedColumnDefault: return 5;
-    case AT_DropNotNull: return 6;
-    case AT_SetNotNull: return 7;
-    case AT_DropExpression: return 8;
-    case AT_CheckNotNull: return 9;
-    case AT_SetStatistics: return 10;
-    case AT_SetOptions: return 11;
-    case AT_ResetOptions: return 12;
-    case AT_SetStorage: return 13;
-    case AT_SetCompression: return 14;
-    case AT_DropColumn: return 15;
-    case AT_DropColumnRecurse: return 16;
-    case AT_AddIndex: return 17;
-    case AT_ReAddIndex: return 18;
-    case AT_AddConstraint: return 19;
-    case AT_AddConstraintRecurse: return 20;
-    case AT_ReAddConstraint: return 21;
-    case AT_ReAddDomainConstraint: return 22;
-    case AT_AlterConstraint: return 23;
-    case AT_ValidateConstraint: return 24;
-    case AT_ValidateConstraintRecurse: return 25;
-    case AT_AddIndexConstraint: return 26;
-    case AT_DropConstraint: return 27;
-    case AT_DropConstraintRecurse: return 28;
-    case AT_ReAddComment: return 29;
-    case AT_AlterColumnType: return 30;
-    case AT_AlterColumnGenericOptions: return 31;
-    case AT_ChangeOwner: return 32;
-    case AT_ClusterOn: return 33;
-    case AT_DropCluster: return 34;
-    case AT_SetLogged: return 35;
-    case AT_SetUnLogged: return 36;
-    case AT_DropOids: return 37;
-    case AT_SetAccessMethod: return 38;
-    case AT_SetTableSpace: return 39;
-    case AT_SetRelOptions: return 40;
-    case AT_ResetRelOptions: return 41;
-    case AT_ReplaceRelOptions: return 42;
-    case AT_EnableTrig: return 43;
-    case AT_EnableAlwaysTrig: return 44;
-    case AT_EnableReplicaTrig: return 45;
-    case AT_DisableTrig: return 46;
-    case AT_EnableTrigAll: return 47;
-    case AT_DisableTrigAll: return 48;
-    case AT_EnableTrigUser: return 49;
-    case AT_DisableTrigUser: return 50;
-    case AT_EnableRule: return 51;
-    case AT_EnableAlwaysRule: return 52;
-    case AT_EnableReplicaRule: return 53;
-    case AT_DisableRule: return 54;
-    case AT_AddInherit: return 55;
-    case AT_DropInherit: return 56;
-    case AT_AddOf: return 57;
-    case AT_DropOf: return 58;
-    case AT_ReplicaIdentity: return 59;
-    case AT_EnableRowSecurity: return 60;
-    case AT_DisableRowSecurity: return 61;
-    case AT_ForceRowSecurity: return 62;
-    case AT_NoForceRowSecurity: return 63;
-    case AT_GenericOptions: return 64;
-    case AT_AttachPartition: return 65;
-    case AT_DetachPartition: return 66;
-    case AT_DetachPartitionFinalize: return 67;
-    case AT_AddIdentity: return 68;
-    case AT_SetIdentity: return 69;
-    case AT_DropIdentity: return 70;
-    case AT_ReAddStatistics: return 71;
+    case AT_AddColumnToView: return 2;
+    case AT_ColumnDefault: return 3;
+    case AT_CookedColumnDefault: return 4;
+    case AT_DropNotNull: return 5;
+    case AT_SetNotNull: return 6;
+    case AT_DropExpression: return 7;
+    case AT_CheckNotNull: return 8;
+    case AT_SetStatistics: return 9;
+    case AT_SetOptions: return 10;
+    case AT_ResetOptions: return 11;
+    case AT_SetStorage: return 12;
+    case AT_SetCompression: return 13;
+    case AT_DropColumn: return 14;
+    case AT_AddIndex: return 15;
+    case AT_ReAddIndex: return 16;
+    case AT_AddConstraint: return 17;
+    case AT_ReAddConstraint: return 18;
+    case AT_ReAddDomainConstraint: return 19;
+    case AT_AlterConstraint: return 20;
+    case AT_ValidateConstraint: return 21;
+    case AT_AddIndexConstraint: return 22;
+    case AT_DropConstraint: return 23;
+    case AT_ReAddComment: return 24;
+    case AT_AlterColumnType: return 25;
+    case AT_AlterColumnGenericOptions: return 26;
+    case AT_ChangeOwner: return 27;
+    case AT_ClusterOn: return 28;
+    case AT_DropCluster: return 29;
+    case AT_SetLogged: return 30;
+    case AT_SetUnLogged: return 31;
+    case AT_DropOids: return 32;
+    case AT_SetAccessMethod: return 33;
+    case AT_SetTableSpace: return 34;
+    case AT_SetRelOptions: return 35;
+    case AT_ResetRelOptions: return 36;
+    case AT_ReplaceRelOptions: return 37;
+    case AT_EnableTrig: return 38;
+    case AT_EnableAlwaysTrig: return 39;
+    case AT_EnableReplicaTrig: return 40;
+    case AT_DisableTrig: return 41;
+    case AT_EnableTrigAll: return 42;
+    case AT_DisableTrigAll: return 43;
+    case AT_EnableTrigUser: return 44;
+    case AT_DisableTrigUser: return 45;
+    case AT_EnableRule: return 46;
+    case AT_EnableAlwaysRule: return 47;
+    case AT_EnableReplicaRule: return 48;
+    case AT_DisableRule: return 49;
+    case AT_AddInherit: return 50;
+    case AT_DropInherit: return 51;
+    case AT_AddOf: return 52;
+    case AT_DropOf: return 53;
+    case AT_ReplicaIdentity: return 54;
+    case AT_EnableRowSecurity: return 55;
+    case AT_DisableRowSecurity: return 56;
+    case AT_ForceRowSecurity: return 57;
+    case AT_NoForceRowSecurity: return 58;
+    case AT_GenericOptions: return 59;
+    case AT_AttachPartition: return 60;
+    case AT_DetachPartition: return 61;
+    case AT_DetachPartitionFinalize: return 62;
+    case AT_AddIdentity: return 63;
+    case AT_SetIdentity: return 64;
+    case AT_DropIdentity: return 65;
+    case AT_ReAddStatistics: return 66;
   }
   Assert(false);
   return -1;
@@ -1556,6 +1616,53 @@ _enumToIntXmlOptionType(XmlOptionType value) {
 }
 
 static int
+_enumToIntJsonEncoding(JsonEncoding value) {
+  switch(value) {
+    case JS_ENC_DEFAULT: return 1;
+    case JS_ENC_UTF8: return 2;
+    case JS_ENC_UTF16: return 3;
+    case JS_ENC_UTF32: return 4;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntJsonFormatType(JsonFormatType value) {
+  switch(value) {
+    case JS_FORMAT_DEFAULT: return 1;
+    case JS_FORMAT_JSON: return 2;
+    case JS_FORMAT_JSONB: return 3;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntJsonConstructorType(JsonConstructorType value) {
+  switch(value) {
+    case JSCTOR_JSON_OBJECT: return 1;
+    case JSCTOR_JSON_ARRAY: return 2;
+    case JSCTOR_JSON_OBJECTAGG: return 3;
+    case JSCTOR_JSON_ARRAYAGG: return 4;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntJsonValueType(JsonValueType value) {
+  switch(value) {
+    case JS_TYPE_ANY: return 1;
+    case JS_TYPE_OBJECT: return 2;
+    case JS_TYPE_ARRAY: return 3;
+    case JS_TYPE_SCALAR: return 4;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
 _enumToIntNullTestType(NullTestType value) {
   switch(value) {
     case IS_NULL: return 1;
@@ -1604,8 +1711,9 @@ _enumToIntJoinType(JoinType value) {
     case JOIN_RIGHT: return 4;
     case JOIN_SEMI: return 5;
     case JOIN_ANTI: return 6;
-    case JOIN_UNIQUE_OUTER: return 7;
-    case JOIN_UNIQUE_INNER: return 8;
+    case JOIN_RIGHT_ANTI: return 7;
+    case JOIN_UNIQUE_OUTER: return 8;
+    case JOIN_UNIQUE_INNER: return 9;
   }
   Assert(false);
   return -1;
@@ -1835,6 +1943,17 @@ _intToEnumDefElemAction(int value) {
   return DEFELEM_UNSPEC;
 }
 
+static PartitionStrategy
+_intToEnumPartitionStrategy(int value) {
+  switch(value) {
+    case 1: return PARTITION_STRATEGY_LIST;
+    case 2: return PARTITION_STRATEGY_RANGE;
+    case 3: return PARTITION_STRATEGY_HASH;
+  }
+  Assert(false);
+  return PARTITION_STRATEGY_LIST;
+}
+
 static PartitionRangeDatumKind
 _intToEnumPartitionRangeDatumKind(int value) {
   switch(value) {
@@ -1987,76 +2106,71 @@ static AlterTableType
 _intToEnumAlterTableType(int value) {
   switch(value) {
     case 1: return AT_AddColumn;
-    case 2: return AT_AddColumnRecurse;
-    case 3: return AT_AddColumnToView;
-    case 4: return AT_ColumnDefault;
-    case 5: return AT_CookedColumnDefault;
-    case 6: return AT_DropNotNull;
-    case 7: return AT_SetNotNull;
-    case 8: return AT_DropExpression;
-    case 9: return AT_CheckNotNull;
-    case 10: return AT_SetStatistics;
-    case 11: return AT_SetOptions;
-    case 12: return AT_ResetOptions;
-    case 13: return AT_SetStorage;
-    case 14: return AT_SetCompression;
-    case 15: return AT_DropColumn;
-    case 16: return AT_DropColumnRecurse;
-    case 17: return AT_AddIndex;
-    case 18: return AT_ReAddIndex;
-    case 19: return AT_AddConstraint;
-    case 20: return AT_AddConstraintRecurse;
-    case 21: return AT_ReAddConstraint;
-    case 22: return AT_ReAddDomainConstraint;
-    case 23: return AT_AlterConstraint;
-    case 24: return AT_ValidateConstraint;
-    case 25: return AT_ValidateConstraintRecurse;
-    case 26: return AT_AddIndexConstraint;
-    case 27: return AT_DropConstraint;
-    case 28: return AT_DropConstraintRecurse;
-    case 29: return AT_ReAddComment;
-    case 30: return AT_AlterColumnType;
-    case 31: return AT_AlterColumnGenericOptions;
-    case 32: return AT_ChangeOwner;
-    case 33: return AT_ClusterOn;
-    case 34: return AT_DropCluster;
-    case 35: return AT_SetLogged;
-    case 36: return AT_SetUnLogged;
-    case 37: return AT_DropOids;
-    case 38: return AT_SetAccessMethod;
-    case 39: return AT_SetTableSpace;
-    case 40: return AT_SetRelOptions;
-    case 41: return AT_ResetRelOptions;
-    case 42: return AT_ReplaceRelOptions;
-    case 43: return AT_EnableTrig;
-    case 44: return AT_EnableAlwaysTrig;
-    case 45: return AT_EnableReplicaTrig;
-    case 46: return AT_DisableTrig;
-    case 47: return AT_EnableTrigAll;
-    case 48: return AT_DisableTrigAll;
-    case 49: return AT_EnableTrigUser;
-    case 50: return AT_DisableTrigUser;
-    case 51: return AT_EnableRule;
-    case 52: return AT_EnableAlwaysRule;
-    case 53: return AT_EnableReplicaRule;
-    case 54: return AT_DisableRule;
-    case 55: return AT_AddInherit;
-    case 56: return AT_DropInherit;
-    case 57: return AT_AddOf;
-    case 58: return AT_DropOf;
-    case 59: return AT_ReplicaIdentity;
-    case 60: return AT_EnableRowSecurity;
-    case 61: return AT_DisableRowSecurity;
-    case 62: return AT_ForceRowSecurity;
-    case 63: return AT_NoForceRowSecurity;
-    case 64: return AT_GenericOptions;
-    case 65: return AT_AttachPartition;
-    case 66: return AT_DetachPartition;
-    case 67: return AT_DetachPartitionFinalize;
-    case 68: return AT_AddIdentity;
-    case 69: return AT_SetIdentity;
-    case 70: return AT_DropIdentity;
-    case 71: return AT_ReAddStatistics;
+    case 2: return AT_AddColumnToView;
+    case 3: return AT_ColumnDefault;
+    case 4: return AT_CookedColumnDefault;
+    case 5: return AT_DropNotNull;
+    case 6: return AT_SetNotNull;
+    case 7: return AT_DropExpression;
+    case 8: return AT_CheckNotNull;
+    case 9: return AT_SetStatistics;
+    case 10: return AT_SetOptions;
+    case 11: return AT_ResetOptions;
+    case 12: return AT_SetStorage;
+    case 13: return AT_SetCompression;
+    case 14: return AT_DropColumn;
+    case 15: return AT_AddIndex;
+    case 16: return AT_ReAddIndex;
+    case 17: return AT_AddConstraint;
+    case 18: return AT_ReAddConstraint;
+    case 19: return AT_ReAddDomainConstraint;
+    case 20: return AT_AlterConstraint;
+    case 21: return AT_ValidateConstraint;
+    case 22: return AT_AddIndexConstraint;
+    case 23: return AT_DropConstraint;
+    case 24: return AT_ReAddComment;
+    case 25: return AT_AlterColumnType;
+    case 26: return AT_AlterColumnGenericOptions;
+    case 27: return AT_ChangeOwner;
+    case 28: return AT_ClusterOn;
+    case 29: return AT_DropCluster;
+    case 30: return AT_SetLogged;
+    case 31: return AT_SetUnLogged;
+    case 32: return AT_DropOids;
+    case 33: return AT_SetAccessMethod;
+    case 34: return AT_SetTableSpace;
+    case 35: return AT_SetRelOptions;
+    case 36: return AT_ResetRelOptions;
+    case 37: return AT_ReplaceRelOptions;
+    case 38: return AT_EnableTrig;
+    case 39: return AT_EnableAlwaysTrig;
+    case 40: return AT_EnableReplicaTrig;
+    case 41: return AT_DisableTrig;
+    case 42: return AT_EnableTrigAll;
+    case 43: return AT_DisableTrigAll;
+    case 44: return AT_EnableTrigUser;
+    case 45: return AT_DisableTrigUser;
+    case 46: return AT_EnableRule;
+    case 47: return AT_EnableAlwaysRule;
+    case 48: return AT_EnableReplicaRule;
+    case 49: return AT_DisableRule;
+    case 50: return AT_AddInherit;
+    case 51: return AT_DropInherit;
+    case 52: return AT_AddOf;
+    case 53: return AT_DropOf;
+    case 54: return AT_ReplicaIdentity;
+    case 55: return AT_EnableRowSecurity;
+    case 56: return AT_DisableRowSecurity;
+    case 57: return AT_ForceRowSecurity;
+    case 58: return AT_NoForceRowSecurity;
+    case 59: return AT_GenericOptions;
+    case 60: return AT_AttachPartition;
+    case 61: return AT_DetachPartition;
+    case 62: return AT_DetachPartitionFinalize;
+    case 63: return AT_AddIdentity;
+    case 64: return AT_SetIdentity;
+    case 65: return AT_DropIdentity;
+    case 66: return AT_ReAddStatistics;
   }
   Assert(false);
   return AT_AddColumn;
@@ -2411,6 +2525,53 @@ _intToEnumXmlOptionType(int value) {
   return XMLOPTION_DOCUMENT;
 }
 
+static JsonEncoding
+_intToEnumJsonEncoding(int value) {
+  switch(value) {
+    case 1: return JS_ENC_DEFAULT;
+    case 2: return JS_ENC_UTF8;
+    case 3: return JS_ENC_UTF16;
+    case 4: return JS_ENC_UTF32;
+  }
+  Assert(false);
+  return JS_ENC_DEFAULT;
+}
+
+static JsonFormatType
+_intToEnumJsonFormatType(int value) {
+  switch(value) {
+    case 1: return JS_FORMAT_DEFAULT;
+    case 2: return JS_FORMAT_JSON;
+    case 3: return JS_FORMAT_JSONB;
+  }
+  Assert(false);
+  return JS_FORMAT_DEFAULT;
+}
+
+static JsonConstructorType
+_intToEnumJsonConstructorType(int value) {
+  switch(value) {
+    case 1: return JSCTOR_JSON_OBJECT;
+    case 2: return JSCTOR_JSON_ARRAY;
+    case 3: return JSCTOR_JSON_OBJECTAGG;
+    case 4: return JSCTOR_JSON_ARRAYAGG;
+  }
+  Assert(false);
+  return JSCTOR_JSON_OBJECT;
+}
+
+static JsonValueType
+_intToEnumJsonValueType(int value) {
+  switch(value) {
+    case 1: return JS_TYPE_ANY;
+    case 2: return JS_TYPE_OBJECT;
+    case 3: return JS_TYPE_ARRAY;
+    case 4: return JS_TYPE_SCALAR;
+  }
+  Assert(false);
+  return JS_TYPE_ANY;
+}
+
 static NullTestType
 _intToEnumNullTestType(int value) {
   switch(value) {
@@ -2460,8 +2621,9 @@ _intToEnumJoinType(int value) {
     case 4: return JOIN_RIGHT;
     case 5: return JOIN_SEMI;
     case 6: return JOIN_ANTI;
-    case 7: return JOIN_UNIQUE_OUTER;
-    case 8: return JOIN_UNIQUE_INNER;
+    case 7: return JOIN_RIGHT_ANTI;
+    case 8: return JOIN_UNIQUE_OUTER;
+    case 9: return JOIN_UNIQUE_INNER;
   }
   Assert(false);
   return JOIN_INNER;
