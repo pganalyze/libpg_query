@@ -555,7 +555,7 @@ runner.deep_resolve('pg_toupper')
 # Needed for normalize
 runner.deep_resolve('pg_qsort')
 runner.deep_resolve('pg_qsort_strcmp')
-runner.deep_resolve('raw_expression_tree_walker')
+runner.deep_resolve('raw_expression_tree_walker_impl')
 
 # Needed to work with simplehash (in fingerprinting logic)
 runner.deep_resolve('hash_bytes')
