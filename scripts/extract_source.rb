@@ -120,7 +120,9 @@ class Runner
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32_*.c') -
-    Dir.glob(@basepath + 'src/backend/snowball/**/*.c')
+    Dir.glob(@basepath + 'src/backend/snowball/**/*.c') -
+    Dir.glob(@basepath + 'src/backend/nodes/*.switch.c') -
+    Dir.glob(@basepath + 'src/backend/nodes/*.funcs.c')
 
     #files = [@basepath + 'src/backend/parser/keywords.c']
 
