@@ -231,6 +231,11 @@ class Extractor
     generate_defs!
     transform_toplevel_comments!
 
+    # Fixup node tags, as they are included from a different auto-generated file: `nodes/nodetags.h`.
+    @nodetypes.each_with_index do |name, i|
+      @enum_defs['nodes/nodes']['NodeTag'][:values] << { name: name, value: i + 1 }
+    end
+
     @struct_defs['nodes/value'] = {}
     @struct_defs['nodes/value']['Integer'] = { fields: [{ name: 'ival', c_type: 'long' }] }
     @struct_defs['nodes/value']['Float'] = { fields: [{ name: 'fval', c_type: 'char*' }] }
