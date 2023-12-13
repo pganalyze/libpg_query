@@ -8,7 +8,7 @@ Date:   Sun Jan 10 00:28:33 2021 -0800
     the already exported plpgsql_adddatum.
 
 diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
-index cb0ce3900b..fbd0ad8bd0 100644
+index a341cde2c1..5265f405b2 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
 @@ -106,8 +106,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
@@ -20,7 +20,7 @@ index cb0ce3900b..fbd0ad8bd0 100644
  static void compute_function_hashkey(FunctionCallInfo fcinfo,
  									 Form_pg_proc procStruct,
  									 PLpgSQL_func_hashkey *hashkey,
-@@ -2272,7 +2270,7 @@ plpgsql_parse_err_condition(char *condname)
+@@ -2302,7 +2300,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +29,7 @@ index cb0ce3900b..fbd0ad8bd0 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2306,7 +2304,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2336,7 +2334,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -39,12 +39,12 @@ index cb0ce3900b..fbd0ad8bd0 100644
  {
  	Size		copiable_size = 0;
 diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
-index bc6eefb60b..53864ca881 100644
+index 2b4bcd1dbe..cf048925b7 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
-@@ -1241,6 +1241,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
- extern int	plpgsql_recognize_err_condition(const char *condname,
- 											bool allow_sqlstate);
+@@ -1260,6 +1260,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
+ extern PGDLLEXPORT int plpgsql_recognize_err_condition(const char *condname,
+ 													   bool allow_sqlstate);
  extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
 +extern void plpgsql_start_datums(void);
 +extern void plpgsql_finish_datums(PLpgSQL_function *function);

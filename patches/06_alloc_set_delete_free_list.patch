@@ -10,10 +10,10 @@ Date:   Sat Jan 9 23:42:42 2021 -0800
     allows the freelist approach to be used during Postgres operations.
 
 diff --git a/src/backend/utils/mmgr/aset.c b/src/backend/utils/mmgr/aset.c
-index 60a761caba..43c3974bed 100644
+index 0bbbf93672..b9f0679b35 100644
 --- a/src/backend/utils/mmgr/aset.c
 +++ b/src/backend/utils/mmgr/aset.c
-@@ -1518,3 +1518,25 @@ AllocSetCheck(MemoryContext context)
+@@ -1655,3 +1655,25 @@ AllocSetCheck(MemoryContext context)
  }
  
  #endif							/* MEMORY_CONTEXT_CHECKING */
@@ -40,10 +40,10 @@ index 60a761caba..43c3974bed 100644
 +	}
 +}
 diff --git a/src/include/utils/memutils.h b/src/include/utils/memutils.h
-index 909bc2e988..1a27b6f944 100644
+index 21640d62a6..ca9d9304ae 100644
 --- a/src/include/utils/memutils.h
 +++ b/src/include/utils/memutils.h
-@@ -158,6 +158,7 @@ extern MemoryContext AllocSetContextCreateInternal(MemoryContext parent,
+@@ -114,6 +114,7 @@ extern MemoryContext AllocSetContextCreateInternal(MemoryContext parent,
  												   Size minContextSize,
  												   Size initBlockSize,
  												   Size maxBlockSize);
