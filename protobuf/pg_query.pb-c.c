@@ -15518,11 +15518,35 @@ const ProtobufCMessageDescriptor pg_query__range_var__descriptor =
   (ProtobufCMessageInit) pg_query__range_var__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[13] =
 {
   {
-    "docexpr",
+    "ns_uris",
     1,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_ns_uris),
+    offsetof(PgQuery__TableFunc, ns_uris),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ns_names",
+    2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_ns_names),
+    offsetof(PgQuery__TableFunc, ns_names),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "docexpr",
+    3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -15534,7 +15558,7 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[4]
   },
   {
     "rowexpr",
-    2,
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -15545,8 +15569,56 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[4]
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "colnames",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_colnames),
+    offsetof(PgQuery__TableFunc, colnames),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coltypes",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_coltypes),
+    offsetof(PgQuery__TableFunc, coltypes),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coltypmods",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_coltypmods),
+    offsetof(PgQuery__TableFunc, coltypmods),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "colcollations",
+    8,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_colcollations),
+    offsetof(PgQuery__TableFunc, colcollations),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "colexprs",
-    3,
+    9,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__TableFunc, n_colexprs),
@@ -15557,8 +15629,44 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[4]
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "coldefexprs",
+    10,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__TableFunc, n_coldefexprs),
+    offsetof(PgQuery__TableFunc, coldefexprs),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "notnulls",
+    11,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__TableFunc, n_notnulls),
+    offsetof(PgQuery__TableFunc, notnulls),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ordinalitycol",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__TableFunc, ordinalitycol),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    4,
+    13,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -15570,15 +15678,24 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[4]
   },
 };
 static const unsigned pg_query__table_func__field_indices_by_name[] = {
-  2,   /* field[2] = colexprs */
-  0,   /* field[0] = docexpr */
-  3,   /* field[3] = location */
-  1,   /* field[1] = rowexpr */
+  7,   /* field[7] = colcollations */
+  9,   /* field[9] = coldefexprs */
+  8,   /* field[8] = colexprs */
+  4,   /* field[4] = colnames */
+  5,   /* field[5] = coltypes */
+  6,   /* field[6] = coltypmods */
+  2,   /* field[2] = docexpr */
+  12,   /* field[12] = location */
+  10,   /* field[10] = notnulls */
+  1,   /* field[1] = ns_names */
+  0,   /* field[0] = ns_uris */
+  11,   /* field[11] = ordinalitycol */
+  3,   /* field[3] = rowexpr */
 };
 static const ProtobufCIntRange pg_query__table_func__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 13 }
 };
 const ProtobufCMessageDescriptor pg_query__table_func__descriptor =
 {
@@ -15588,14 +15705,14 @@ const ProtobufCMessageDescriptor pg_query__table_func__descriptor =
   "PgQuery__TableFunc",
   "pg_query",
   sizeof(PgQuery__TableFunc),
-  4,
+  13,
   pg_query__table_func__field_descriptors,
   pg_query__table_func__field_indices_by_name,
   1,  pg_query__table_func__number_ranges,
   (ProtobufCMessageInit) pg_query__table_func__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__into_clause__field_descriptors[7] =
+static const ProtobufCFieldDescriptor pg_query__into_clause__field_descriptors[8] =
 {
   {
     "rel",
@@ -15670,8 +15787,20 @@ static const ProtobufCFieldDescriptor pg_query__into_clause__field_descriptors[7
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "skip_data",
+    "view_query",
     7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__IntoClause, view_query),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "skip_data",
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BOOL,
     0,   /* quantifier_offset */
@@ -15688,13 +15817,14 @@ static const unsigned pg_query__into_clause__field_indices_by_name[] = {
   4,   /* field[4] = on_commit */
   3,   /* field[3] = options */
   0,   /* field[0] = rel */
-  6,   /* field[6] = skip_data */
+  7,   /* field[7] = skip_data */
   5,   /* field[5] = table_space_name */
+  6,   /* field[6] = view_query */
 };
 static const ProtobufCIntRange pg_query__into_clause__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 7 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__into_clause__descriptor =
 {
@@ -15704,14 +15834,14 @@ const ProtobufCMessageDescriptor pg_query__into_clause__descriptor =
   "PgQuery__IntoClause",
   "pg_query",
   sizeof(PgQuery__IntoClause),
-  7,
+  8,
   pg_query__into_clause__field_descriptors,
   pg_query__into_clause__field_indices_by_name,
   1,  pg_query__into_clause__number_ranges,
   (ProtobufCMessageInit) pg_query__into_clause__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[9] =
 {
   {
     "xpr",
@@ -15750,8 +15880,56 @@ static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[5] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "varlevelsup",
+    "vartype",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Var, vartype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "vartypmod",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Var, vartypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "varcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Var, varcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "varnullingrels",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__Var, n_varnullingrels),
+    offsetof(PgQuery__Var, varnullingrels),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "varlevelsup",
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -15763,7 +15941,7 @@ static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[5] =
   },
   {
     "location",
-    5,
+    9,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -15775,16 +15953,20 @@ static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[5] =
   },
 };
 static const unsigned pg_query__var__field_indices_by_name[] = {
-  4,   /* field[4] = location */
+  8,   /* field[8] = location */
   2,   /* field[2] = varattno */
-  3,   /* field[3] = varlevelsup */
+  5,   /* field[5] = varcollid */
+  7,   /* field[7] = varlevelsup */
   1,   /* field[1] = varno */
+  6,   /* field[6] = varnullingrels */
+  3,   /* field[3] = vartype */
+  4,   /* field[4] = vartypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__var__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 9 }
 };
 const ProtobufCMessageDescriptor pg_query__var__descriptor =
 {
@@ -15794,14 +15976,14 @@ const ProtobufCMessageDescriptor pg_query__var__descriptor =
   "PgQuery__Var",
   "pg_query",
   sizeof(PgQuery__Var),
-  5,
+  9,
   pg_query__var__field_descriptors,
   pg_query__var__field_indices_by_name,
   1,  pg_query__var__number_ranges,
   (ProtobufCMessageInit) pg_query__var__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__param__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__param__field_descriptors[7] =
 {
   {
     "xpr",
@@ -15852,8 +16034,32 @@ static const ProtobufCFieldDescriptor pg_query__param__field_descriptors[5] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "paramtypmod",
     5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Param, paramtypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "paramcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Param, paramcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -15865,16 +16071,18 @@ static const ProtobufCFieldDescriptor pg_query__param__field_descriptors[5] =
   },
 };
 static const unsigned pg_query__param__field_indices_by_name[] = {
-  4,   /* field[4] = location */
+  6,   /* field[6] = location */
+  5,   /* field[5] = paramcollid */
   2,   /* field[2] = paramid */
   1,   /* field[1] = paramkind */
   3,   /* field[3] = paramtype */
+  4,   /* field[4] = paramtypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__param__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__param__descriptor =
 {
@@ -15884,14 +16092,14 @@ const ProtobufCMessageDescriptor pg_query__param__descriptor =
   "PgQuery__Param",
   "pg_query",
   sizeof(PgQuery__Param),
-  5,
+  7,
   pg_query__param__field_descriptors,
   pg_query__param__field_indices_by_name,
   1,  pg_query__param__number_ranges,
   (ProtobufCMessageInit) pg_query__param__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
+static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[19] =
 {
   {
     "xpr",
@@ -15918,8 +16126,56 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "aggdirectargs",
+    "aggtype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggtype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggcollid",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggargtypes",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__Aggref, n_aggargtypes),
+    offsetof(PgQuery__Aggref, aggargtypes),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggdirectargs",
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Aggref, n_aggdirectargs),
@@ -15931,7 +16187,7 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
   },
   {
     "args",
-    4,
+    8,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Aggref, n_args),
@@ -15943,7 +16199,7 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
   },
   {
     "aggorder",
-    5,
+    9,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Aggref, n_aggorder),
@@ -15955,7 +16211,7 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
   },
   {
     "aggdistinct",
-    6,
+    10,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Aggref, n_aggdistinct),
@@ -15967,7 +16223,7 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
   },
   {
     "aggfilter",
-    7,
+    11,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -15978,8 +16234,92 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "aggstar",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggstar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggvariadic",
+    13,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggvariadic),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggkind",
+    14,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggkind),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "agglevelsup",
+    15,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, agglevelsup),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggsplit",
+    16,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggsplit),
+    &pg_query__agg_split__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggno",
+    17,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "aggtransno",
+    18,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Aggref, aggtransno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    8,
+    19,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -15991,19 +16331,30 @@ static const ProtobufCFieldDescriptor pg_query__aggref__field_descriptors[8] =
   },
 };
 static const unsigned pg_query__aggref__field_indices_by_name[] = {
-  2,   /* field[2] = aggdirectargs */
-  5,   /* field[5] = aggdistinct */
-  6,   /* field[6] = aggfilter */
+  5,   /* field[5] = aggargtypes */
+  3,   /* field[3] = aggcollid */
+  6,   /* field[6] = aggdirectargs */
+  9,   /* field[9] = aggdistinct */
+  10,   /* field[10] = aggfilter */
   1,   /* field[1] = aggfnoid */
-  4,   /* field[4] = aggorder */
-  3,   /* field[3] = args */
-  7,   /* field[7] = location */
+  13,   /* field[13] = aggkind */
+  14,   /* field[14] = agglevelsup */
+  16,   /* field[16] = aggno */
+  8,   /* field[8] = aggorder */
+  15,   /* field[15] = aggsplit */
+  11,   /* field[11] = aggstar */
+  17,   /* field[17] = aggtransno */
+  2,   /* field[2] = aggtype */
+  12,   /* field[12] = aggvariadic */
+  7,   /* field[7] = args */
+  4,   /* field[4] = inputcollid */
+  18,   /* field[18] = location */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__aggref__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 8 }
+  { 0, 19 }
 };
 const ProtobufCMessageDescriptor pg_query__aggref__descriptor =
 {
@@ -16013,14 +16364,14 @@ const ProtobufCMessageDescriptor pg_query__aggref__descriptor =
   "PgQuery__Aggref",
   "pg_query",
   sizeof(PgQuery__Aggref),
-  8,
+  19,
   pg_query__aggref__field_descriptors,
   pg_query__aggref__field_indices_by_name,
   1,  pg_query__aggref__number_ranges,
   (ProtobufCMessageInit) pg_query__aggref__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__grouping_func__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__grouping_func__field_descriptors[5] =
 {
   {
     "xpr",
@@ -16035,8 +16386,32 @@ static const ProtobufCFieldDescriptor pg_query__grouping_func__field_descriptors
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "agglevelsup",
+    "args",
     2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__GroupingFunc, n_args),
+    offsetof(PgQuery__GroupingFunc, args),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refs",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__GroupingFunc, n_refs),
+    offsetof(PgQuery__GroupingFunc, refs),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "agglevelsup",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -16048,7 +16423,7 @@ static const ProtobufCFieldDescriptor pg_query__grouping_func__field_descriptors
   },
   {
     "location",
-    3,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16060,14 +16435,16 @@ static const ProtobufCFieldDescriptor pg_query__grouping_func__field_descriptors
   },
 };
 static const unsigned pg_query__grouping_func__field_indices_by_name[] = {
-  1,   /* field[1] = agglevelsup */
-  2,   /* field[2] = location */
+  3,   /* field[3] = agglevelsup */
+  1,   /* field[1] = args */
+  4,   /* field[4] = location */
+  2,   /* field[2] = refs */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__grouping_func__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__grouping_func__descriptor =
 {
@@ -16077,14 +16454,14 @@ const ProtobufCMessageDescriptor pg_query__grouping_func__descriptor =
   "PgQuery__GroupingFunc",
   "pg_query",
   sizeof(PgQuery__GroupingFunc),
-  3,
+  5,
   pg_query__grouping_func__field_descriptors,
   pg_query__grouping_func__field_indices_by_name,
   1,  pg_query__grouping_func__number_ranges,
   (ProtobufCMessageInit) pg_query__grouping_func__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[11] =
 {
   {
     "xpr",
@@ -16111,8 +16488,44 @@ static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "wintype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowFunc, wintype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "wincollid",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowFunc, wincollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowFunc, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    6,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__WindowFunc, n_args),
@@ -16124,7 +16537,7 @@ static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6
   },
   {
     "aggfilter",
-    4,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -16136,7 +16549,7 @@ static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6
   },
   {
     "winref",
-    5,
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -16147,8 +16560,32 @@ static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "winstar",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowFunc, winstar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "winagg",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowFunc, winagg),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    6,
+    11,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16160,17 +16597,22 @@ static const ProtobufCFieldDescriptor pg_query__window_func__field_descriptors[6
   },
 };
 static const unsigned pg_query__window_func__field_indices_by_name[] = {
-  3,   /* field[3] = aggfilter */
-  2,   /* field[2] = args */
-  5,   /* field[5] = location */
+  6,   /* field[6] = aggfilter */
+  5,   /* field[5] = args */
+  4,   /* field[4] = inputcollid */
+  10,   /* field[10] = location */
+  9,   /* field[9] = winagg */
+  3,   /* field[3] = wincollid */
   1,   /* field[1] = winfnoid */
-  4,   /* field[4] = winref */
+  7,   /* field[7] = winref */
+  8,   /* field[8] = winstar */
+  2,   /* field[2] = wintype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__window_func__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 11 }
 };
 const ProtobufCMessageDescriptor pg_query__window_func__descriptor =
 {
@@ -16180,14 +16622,14 @@ const ProtobufCMessageDescriptor pg_query__window_func__descriptor =
   "PgQuery__WindowFunc",
   "pg_query",
   sizeof(PgQuery__WindowFunc),
-  6,
+  11,
   pg_query__window_func__field_descriptors,
   pg_query__window_func__field_indices_by_name,
   1,  pg_query__window_func__number_ranges,
   (ProtobufCMessageInit) pg_query__window_func__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descriptors[10] =
 {
   {
     "xpr",
@@ -16202,8 +16644,68 @@ static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descript
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "refupperindexpr",
+    "refcontainertype",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SubscriptingRef, refcontainertype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refelemtype",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SubscriptingRef, refelemtype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refrestype",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SubscriptingRef, refrestype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "reftypmod",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SubscriptingRef, reftypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SubscriptingRef, refcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refupperindexpr",
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__SubscriptingRef, n_refupperindexpr),
@@ -16215,7 +16717,7 @@ static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descript
   },
   {
     "reflowerindexpr",
-    3,
+    8,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__SubscriptingRef, n_reflowerindexpr),
@@ -16227,7 +16729,7 @@ static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descript
   },
   {
     "refexpr",
-    4,
+    9,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -16239,7 +16741,7 @@ static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descript
   },
   {
     "refassgnexpr",
-    5,
+    10,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -16251,16 +16753,21 @@ static const ProtobufCFieldDescriptor pg_query__subscripting_ref__field_descript
   },
 };
 static const unsigned pg_query__subscripting_ref__field_indices_by_name[] = {
-  4,   /* field[4] = refassgnexpr */
-  3,   /* field[3] = refexpr */
-  2,   /* field[2] = reflowerindexpr */
-  1,   /* field[1] = refupperindexpr */
+  9,   /* field[9] = refassgnexpr */
+  5,   /* field[5] = refcollid */
+  1,   /* field[1] = refcontainertype */
+  2,   /* field[2] = refelemtype */
+  8,   /* field[8] = refexpr */
+  7,   /* field[7] = reflowerindexpr */
+  3,   /* field[3] = refrestype */
+  4,   /* field[4] = reftypmod */
+  6,   /* field[6] = refupperindexpr */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__subscripting_ref__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 10 }
 };
 const ProtobufCMessageDescriptor pg_query__subscripting_ref__descriptor =
 {
@@ -16270,14 +16777,14 @@ const ProtobufCMessageDescriptor pg_query__subscripting_ref__descriptor =
   "PgQuery__SubscriptingRef",
   "pg_query",
   sizeof(PgQuery__SubscriptingRef),
-  5,
+  10,
   pg_query__subscripting_ref__field_descriptors,
   pg_query__subscripting_ref__field_indices_by_name,
   1,  pg_query__subscripting_ref__number_ranges,
   (ProtobufCMessageInit) pg_query__subscripting_ref__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__func_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__func_expr__field_descriptors[10] =
 {
   {
     "xpr",
@@ -16304,8 +16811,80 @@ static const ProtobufCFieldDescriptor pg_query__func_expr__field_descriptors[4] 
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "funcresulttype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, funcresulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funcretset",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, funcretset),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funcvariadic",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, funcvariadic),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funcformat",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, funcformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funccollid",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, funccollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FuncExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    9,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__FuncExpr, n_args),
@@ -16317,7 +16896,7 @@ static const ProtobufCFieldDescriptor pg_query__func_expr__field_descriptors[4] 
   },
   {
     "location",
-    4,
+    10,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16329,15 +16908,21 @@ static const ProtobufCFieldDescriptor pg_query__func_expr__field_descriptors[4] 
   },
 };
 static const unsigned pg_query__func_expr__field_indices_by_name[] = {
-  2,   /* field[2] = args */
+  8,   /* field[8] = args */
+  6,   /* field[6] = funccollid */
+  5,   /* field[5] = funcformat */
   1,   /* field[1] = funcid */
-  3,   /* field[3] = location */
+  2,   /* field[2] = funcresulttype */
+  3,   /* field[3] = funcretset */
+  4,   /* field[4] = funcvariadic */
+  7,   /* field[7] = inputcollid */
+  9,   /* field[9] = location */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__func_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 10 }
 };
 const ProtobufCMessageDescriptor pg_query__func_expr__descriptor =
 {
@@ -16347,14 +16932,14 @@ const ProtobufCMessageDescriptor pg_query__func_expr__descriptor =
   "PgQuery__FuncExpr",
   "pg_query",
   sizeof(PgQuery__FuncExpr),
-  4,
+  10,
   pg_query__func_expr__field_descriptors,
   pg_query__func_expr__field_indices_by_name,
   1,  pg_query__func_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__func_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__named_arg_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__named_arg_expr__field_descriptors[5] =
 {
   {
     "xpr",
@@ -16381,8 +16966,20 @@ static const ProtobufCFieldDescriptor pg_query__named_arg_expr__field_descriptor
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "argnumber",
+    "name",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NamedArgExpr, name),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "argnumber",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16394,7 +16991,7 @@ static const ProtobufCFieldDescriptor pg_query__named_arg_expr__field_descriptor
   },
   {
     "location",
-    4,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16407,14 +17004,15 @@ static const ProtobufCFieldDescriptor pg_query__named_arg_expr__field_descriptor
 };
 static const unsigned pg_query__named_arg_expr__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  2,   /* field[2] = argnumber */
-  3,   /* field[3] = location */
+  3,   /* field[3] = argnumber */
+  4,   /* field[4] = location */
+  2,   /* field[2] = name */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__named_arg_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__named_arg_expr__descriptor =
 {
@@ -16424,14 +17022,14 @@ const ProtobufCMessageDescriptor pg_query__named_arg_expr__descriptor =
   "PgQuery__NamedArgExpr",
   "pg_query",
   sizeof(PgQuery__NamedArgExpr),
-  4,
+  5,
   pg_query__named_arg_expr__field_descriptors,
   pg_query__named_arg_expr__field_indices_by_name,
   1,  pg_query__named_arg_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__named_arg_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__op_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__op_expr__field_descriptors[8] =
 {
   {
     "xpr",
@@ -16458,8 +17056,56 @@ static const ProtobufCFieldDescriptor pg_query__op_expr__field_descriptors[4] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "opresulttype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__OpExpr, opresulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opretset",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__OpExpr, opretset),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__OpExpr, opcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__OpExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__OpExpr, n_args),
@@ -16471,7 +17117,7 @@ static const ProtobufCFieldDescriptor pg_query__op_expr__field_descriptors[4] =
   },
   {
     "location",
-    4,
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16483,15 +17129,19 @@ static const ProtobufCFieldDescriptor pg_query__op_expr__field_descriptors[4] =
   },
 };
 static const unsigned pg_query__op_expr__field_indices_by_name[] = {
-  2,   /* field[2] = args */
-  3,   /* field[3] = location */
+  6,   /* field[6] = args */
+  5,   /* field[5] = inputcollid */
+  7,   /* field[7] = location */
+  4,   /* field[4] = opcollid */
   1,   /* field[1] = opno */
+  2,   /* field[2] = opresulttype */
+  3,   /* field[3] = opretset */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__op_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__op_expr__descriptor =
 {
@@ -16501,14 +17151,14 @@ const ProtobufCMessageDescriptor pg_query__op_expr__descriptor =
   "PgQuery__OpExpr",
   "pg_query",
   sizeof(PgQuery__OpExpr),
-  4,
+  8,
   pg_query__op_expr__field_descriptors,
   pg_query__op_expr__field_indices_by_name,
   1,  pg_query__op_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__op_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__distinct_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__distinct_expr__field_descriptors[8] =
 {
   {
     "xpr",
@@ -16535,8 +17185,56 @@ static const ProtobufCFieldDescriptor pg_query__distinct_expr__field_descriptors
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "opresulttype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__DistinctExpr, opresulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opretset",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__DistinctExpr, opretset),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__DistinctExpr, opcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__DistinctExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__DistinctExpr, n_args),
@@ -16548,7 +17246,7 @@ static const ProtobufCFieldDescriptor pg_query__distinct_expr__field_descriptors
   },
   {
     "location",
-    4,
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16560,15 +17258,19 @@ static const ProtobufCFieldDescriptor pg_query__distinct_expr__field_descriptors
   },
 };
 static const unsigned pg_query__distinct_expr__field_indices_by_name[] = {
-  2,   /* field[2] = args */
-  3,   /* field[3] = location */
+  6,   /* field[6] = args */
+  5,   /* field[5] = inputcollid */
+  7,   /* field[7] = location */
+  4,   /* field[4] = opcollid */
   1,   /* field[1] = opno */
+  2,   /* field[2] = opresulttype */
+  3,   /* field[3] = opretset */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__distinct_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__distinct_expr__descriptor =
 {
@@ -16578,14 +17280,14 @@ const ProtobufCMessageDescriptor pg_query__distinct_expr__descriptor =
   "PgQuery__DistinctExpr",
   "pg_query",
   sizeof(PgQuery__DistinctExpr),
-  4,
+  8,
   pg_query__distinct_expr__field_descriptors,
   pg_query__distinct_expr__field_indices_by_name,
   1,  pg_query__distinct_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__distinct_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__null_if_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__null_if_expr__field_descriptors[8] =
 {
   {
     "xpr",
@@ -16612,8 +17314,56 @@ static const ProtobufCFieldDescriptor pg_query__null_if_expr__field_descriptors[
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "opresulttype",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NullIfExpr, opresulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opretset",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NullIfExpr, opretset),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NullIfExpr, opcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NullIfExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__NullIfExpr, n_args),
@@ -16625,7 +17375,7 @@ static const ProtobufCFieldDescriptor pg_query__null_if_expr__field_descriptors[
   },
   {
     "location",
-    4,
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16637,15 +17387,19 @@ static const ProtobufCFieldDescriptor pg_query__null_if_expr__field_descriptors[
   },
 };
 static const unsigned pg_query__null_if_expr__field_indices_by_name[] = {
-  2,   /* field[2] = args */
-  3,   /* field[3] = location */
+  6,   /* field[6] = args */
+  5,   /* field[5] = inputcollid */
+  7,   /* field[7] = location */
+  4,   /* field[4] = opcollid */
   1,   /* field[1] = opno */
+  2,   /* field[2] = opresulttype */
+  3,   /* field[3] = opretset */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__null_if_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__null_if_expr__descriptor =
 {
@@ -16655,14 +17409,14 @@ const ProtobufCMessageDescriptor pg_query__null_if_expr__descriptor =
   "PgQuery__NullIfExpr",
   "pg_query",
   sizeof(PgQuery__NullIfExpr),
-  4,
+  8,
   pg_query__null_if_expr__field_descriptors,
   pg_query__null_if_expr__field_indices_by_name,
   1,  pg_query__null_if_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__null_if_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__scalar_array_op_expr__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__scalar_array_op_expr__field_descriptors[6] =
 {
   {
     "xpr",
@@ -16701,8 +17455,20 @@ static const ProtobufCFieldDescriptor pg_query__scalar_array_op_expr__field_desc
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "inputcollid",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ScalarArrayOpExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__ScalarArrayOpExpr, n_args),
@@ -16714,7 +17480,7 @@ static const ProtobufCFieldDescriptor pg_query__scalar_array_op_expr__field_desc
   },
   {
     "location",
-    5,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16726,8 +17492,9 @@ static const ProtobufCFieldDescriptor pg_query__scalar_array_op_expr__field_desc
   },
 };
 static const unsigned pg_query__scalar_array_op_expr__field_indices_by_name[] = {
-  3,   /* field[3] = args */
-  4,   /* field[4] = location */
+  4,   /* field[4] = args */
+  3,   /* field[3] = inputcollid */
+  5,   /* field[5] = location */
   1,   /* field[1] = opno */
   2,   /* field[2] = use_or */
   0,   /* field[0] = xpr */
@@ -16735,7 +17502,7 @@ static const unsigned pg_query__scalar_array_op_expr__field_indices_by_name[] = 
 static const ProtobufCIntRange pg_query__scalar_array_op_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__scalar_array_op_expr__descriptor =
 {
@@ -16745,7 +17512,7 @@ const ProtobufCMessageDescriptor pg_query__scalar_array_op_expr__descriptor =
   "PgQuery__ScalarArrayOpExpr",
   "pg_query",
   sizeof(PgQuery__ScalarArrayOpExpr),
-  5,
+  6,
   pg_query__scalar_array_op_expr__field_descriptors,
   pg_query__scalar_array_op_expr__field_indices_by_name,
   1,  pg_query__scalar_array_op_expr__number_ranges,
@@ -16829,7 +17596,7 @@ const ProtobufCMessageDescriptor pg_query__bool_expr__descriptor =
   (ProtobufCMessageInit) pg_query__bool_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__sub_link__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__sub_link__field_descriptors[7] =
 {
   {
     "xpr",
@@ -16880,8 +17647,20 @@ static const ProtobufCFieldDescriptor pg_query__sub_link__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "subselect",
+    "oper_name",
     5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__SubLink, n_oper_name),
+    offsetof(PgQuery__SubLink, oper_name),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "subselect",
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -16893,7 +17672,7 @@ static const ProtobufCFieldDescriptor pg_query__sub_link__field_descriptors[6] =
   },
   {
     "location",
-    6,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -16905,17 +17684,18 @@ static const ProtobufCFieldDescriptor pg_query__sub_link__field_descriptors[6] =
   },
 };
 static const unsigned pg_query__sub_link__field_indices_by_name[] = {
-  5,   /* field[5] = location */
+  6,   /* field[6] = location */
+  4,   /* field[4] = oper_name */
   2,   /* field[2] = sub_link_id */
   1,   /* field[1] = sub_link_type */
-  4,   /* field[4] = subselect */
+  5,   /* field[5] = subselect */
   3,   /* field[3] = testexpr */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__sub_link__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__sub_link__descriptor =
 {
@@ -16925,7 +17705,7 @@ const ProtobufCMessageDescriptor pg_query__sub_link__descriptor =
   "PgQuery__SubLink",
   "pg_query",
   sizeof(PgQuery__SubLink),
-  6,
+  7,
   pg_query__sub_link__field_descriptors,
   pg_query__sub_link__field_indices_by_name,
   1,  pg_query__sub_link__number_ranges,
@@ -17229,7 +18009,7 @@ const ProtobufCMessageDescriptor pg_query__alternative_sub_plan__descriptor =
   (ProtobufCMessageInit) pg_query__alternative_sub_plan__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__field_select__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__field_select__field_descriptors[6] =
 {
   {
     "xpr",
@@ -17267,16 +18047,55 @@ static const ProtobufCFieldDescriptor pg_query__field_select__field_descriptors[
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "resulttype",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FieldSelect, resulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resulttypmod",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FieldSelect, resulttypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resultcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FieldSelect, resultcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__field_select__field_indices_by_name[] = {
   1,   /* field[1] = arg */
   2,   /* field[2] = fieldnum */
+  5,   /* field[5] = resultcollid */
+  3,   /* field[3] = resulttype */
+  4,   /* field[4] = resulttypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__field_select__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__field_select__descriptor =
 {
@@ -17286,14 +18105,14 @@ const ProtobufCMessageDescriptor pg_query__field_select__descriptor =
   "PgQuery__FieldSelect",
   "pg_query",
   sizeof(PgQuery__FieldSelect),
-  3,
+  6,
   pg_query__field_select__field_descriptors,
   pg_query__field_select__field_indices_by_name,
   1,  pg_query__field_select__number_ranges,
   (ProtobufCMessageInit) pg_query__field_select__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__field_store__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__field_store__field_descriptors[5] =
 {
   {
     "xpr",
@@ -17331,16 +18150,42 @@ static const ProtobufCFieldDescriptor pg_query__field_store__field_descriptors[3
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "fieldnums",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__FieldStore, n_fieldnums),
+    offsetof(PgQuery__FieldStore, fieldnums),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resulttype",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__FieldStore, resulttype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__field_store__field_indices_by_name[] = {
   1,   /* field[1] = arg */
+  3,   /* field[3] = fieldnums */
   2,   /* field[2] = newvals */
+  4,   /* field[4] = resulttype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__field_store__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__field_store__descriptor =
 {
@@ -17350,14 +18195,14 @@ const ProtobufCMessageDescriptor pg_query__field_store__descriptor =
   "PgQuery__FieldStore",
   "pg_query",
   sizeof(PgQuery__FieldStore),
-  3,
+  5,
   pg_query__field_store__field_descriptors,
   pg_query__field_store__field_indices_by_name,
   1,  pg_query__field_store__number_ranges,
   (ProtobufCMessageInit) pg_query__field_store__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__relabel_type__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__relabel_type__field_descriptors[7] =
 {
   {
     "xpr",
@@ -17396,8 +18241,44 @@ static const ProtobufCFieldDescriptor pg_query__relabel_type__field_descriptors[
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "resulttypmod",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RelabelType, resulttypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resultcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RelabelType, resultcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "relabelformat",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RelabelType, relabelformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -17410,14 +18291,17 @@ static const ProtobufCFieldDescriptor pg_query__relabel_type__field_descriptors[
 };
 static const unsigned pg_query__relabel_type__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  3,   /* field[3] = location */
+  6,   /* field[6] = location */
+  5,   /* field[5] = relabelformat */
+  4,   /* field[4] = resultcollid */
   2,   /* field[2] = resulttype */
+  3,   /* field[3] = resulttypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__relabel_type__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__relabel_type__descriptor =
 {
@@ -17427,14 +18311,14 @@ const ProtobufCMessageDescriptor pg_query__relabel_type__descriptor =
   "PgQuery__RelabelType",
   "pg_query",
   sizeof(PgQuery__RelabelType),
-  4,
+  7,
   pg_query__relabel_type__field_descriptors,
   pg_query__relabel_type__field_indices_by_name,
   1,  pg_query__relabel_type__number_ranges,
   (ProtobufCMessageInit) pg_query__relabel_type__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__coerce_via_io__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__coerce_via_io__field_descriptors[6] =
 {
   {
     "xpr",
@@ -17473,8 +18357,32 @@ static const ProtobufCFieldDescriptor pg_query__coerce_via_io__field_descriptors
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "resultcollid",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceViaIO, resultcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coerceformat",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceViaIO, coerceformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -17487,14 +18395,16 @@ static const ProtobufCFieldDescriptor pg_query__coerce_via_io__field_descriptors
 };
 static const unsigned pg_query__coerce_via_io__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  3,   /* field[3] = location */
+  4,   /* field[4] = coerceformat */
+  5,   /* field[5] = location */
+  3,   /* field[3] = resultcollid */
   2,   /* field[2] = resulttype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__coerce_via_io__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__coerce_via_io__descriptor =
 {
@@ -17504,14 +18414,14 @@ const ProtobufCMessageDescriptor pg_query__coerce_via_io__descriptor =
   "PgQuery__CoerceViaIO",
   "pg_query",
   sizeof(PgQuery__CoerceViaIO),
-  4,
+  6,
   pg_query__coerce_via_io__field_descriptors,
   pg_query__coerce_via_io__field_indices_by_name,
   1,  pg_query__coerce_via_io__number_ranges,
   (ProtobufCMessageInit) pg_query__coerce_via_io__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__array_coerce_expr__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__array_coerce_expr__field_descriptors[8] =
 {
   {
     "xpr",
@@ -17562,8 +18472,44 @@ static const ProtobufCFieldDescriptor pg_query__array_coerce_expr__field_descrip
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "resulttypmod",
     5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayCoerceExpr, resulttypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resultcollid",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayCoerceExpr, resultcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coerceformat",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayCoerceExpr, coerceformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -17576,15 +18522,18 @@ static const ProtobufCFieldDescriptor pg_query__array_coerce_expr__field_descrip
 };
 static const unsigned pg_query__array_coerce_expr__field_indices_by_name[] = {
   1,   /* field[1] = arg */
+  6,   /* field[6] = coerceformat */
   2,   /* field[2] = elemexpr */
-  4,   /* field[4] = location */
+  7,   /* field[7] = location */
+  5,   /* field[5] = resultcollid */
   3,   /* field[3] = resulttype */
+  4,   /* field[4] = resulttypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__array_coerce_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__array_coerce_expr__descriptor =
 {
@@ -17594,14 +18543,14 @@ const ProtobufCMessageDescriptor pg_query__array_coerce_expr__descriptor =
   "PgQuery__ArrayCoerceExpr",
   "pg_query",
   sizeof(PgQuery__ArrayCoerceExpr),
-  5,
+  8,
   pg_query__array_coerce_expr__field_descriptors,
   pg_query__array_coerce_expr__field_indices_by_name,
   1,  pg_query__array_coerce_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__array_coerce_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__convert_rowtype_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__convert_rowtype_expr__field_descriptors[5] =
 {
   {
     "xpr",
@@ -17640,8 +18589,20 @@ static const ProtobufCFieldDescriptor pg_query__convert_rowtype_expr__field_desc
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "convertformat",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ConvertRowtypeExpr, convertformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -17654,14 +18615,15 @@ static const ProtobufCFieldDescriptor pg_query__convert_rowtype_expr__field_desc
 };
 static const unsigned pg_query__convert_rowtype_expr__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  3,   /* field[3] = location */
+  3,   /* field[3] = convertformat */
+  4,   /* field[4] = location */
   2,   /* field[2] = resulttype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__convert_rowtype_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__convert_rowtype_expr__descriptor =
 {
@@ -17671,7 +18633,7 @@ const ProtobufCMessageDescriptor pg_query__convert_rowtype_expr__descriptor =
   "PgQuery__ConvertRowtypeExpr",
   "pg_query",
   sizeof(PgQuery__ConvertRowtypeExpr),
-  4,
+  5,
   pg_query__convert_rowtype_expr__field_descriptors,
   pg_query__convert_rowtype_expr__field_indices_by_name,
   1,  pg_query__convert_rowtype_expr__number_ranges,
@@ -17755,7 +18717,7 @@ const ProtobufCMessageDescriptor pg_query__collate_expr__descriptor =
   (ProtobufCMessageInit) pg_query__collate_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[7] =
 {
   {
     "xpr",
@@ -17770,8 +18732,32 @@ static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] 
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "arg",
+    "casetype",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CaseExpr, casetype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "casecollid",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CaseExpr, casecollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "arg",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -17783,7 +18769,7 @@ static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] 
   },
   {
     "args",
-    3,
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__CaseExpr, n_args),
@@ -17795,7 +18781,7 @@ static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] 
   },
   {
     "defresult",
-    4,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -17807,7 +18793,7 @@ static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] 
   },
   {
     "location",
-    5,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -17819,16 +18805,18 @@ static const ProtobufCFieldDescriptor pg_query__case_expr__field_descriptors[5] 
   },
 };
 static const unsigned pg_query__case_expr__field_indices_by_name[] = {
-  1,   /* field[1] = arg */
-  2,   /* field[2] = args */
-  3,   /* field[3] = defresult */
-  4,   /* field[4] = location */
+  3,   /* field[3] = arg */
+  4,   /* field[4] = args */
+  2,   /* field[2] = casecollid */
+  1,   /* field[1] = casetype */
+  5,   /* field[5] = defresult */
+  6,   /* field[6] = location */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__case_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__case_expr__descriptor =
 {
@@ -17838,7 +18826,7 @@ const ProtobufCMessageDescriptor pg_query__case_expr__descriptor =
   "PgQuery__CaseExpr",
   "pg_query",
   sizeof(PgQuery__CaseExpr),
-  5,
+  7,
   pg_query__case_expr__field_descriptors,
   pg_query__case_expr__field_indices_by_name,
   1,  pg_query__case_expr__number_ranges,
@@ -17922,7 +18910,7 @@ const ProtobufCMessageDescriptor pg_query__case_when__descriptor =
   (ProtobufCMessageInit) pg_query__case_when__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__case_test_expr__field_descriptors[2] =
+static const ProtobufCFieldDescriptor pg_query__case_test_expr__field_descriptors[4] =
 {
   {
     "xpr",
@@ -17948,15 +18936,41 @@ static const ProtobufCFieldDescriptor pg_query__case_test_expr__field_descriptor
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "type_mod",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CaseTestExpr, type_mod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "collation",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CaseTestExpr, collation),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__case_test_expr__field_indices_by_name[] = {
+  3,   /* field[3] = collation */
   1,   /* field[1] = type_id */
+  2,   /* field[2] = type_mod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__case_test_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 2 }
+  { 0, 4 }
 };
 const ProtobufCMessageDescriptor pg_query__case_test_expr__descriptor =
 {
@@ -17966,14 +18980,14 @@ const ProtobufCMessageDescriptor pg_query__case_test_expr__descriptor =
   "PgQuery__CaseTestExpr",
   "pg_query",
   sizeof(PgQuery__CaseTestExpr),
-  2,
+  4,
   pg_query__case_test_expr__field_descriptors,
   pg_query__case_test_expr__field_indices_by_name,
   1,  pg_query__case_test_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__case_test_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__array_expr__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__array_expr__field_descriptors[7] =
 {
   {
     "xpr",
@@ -17988,8 +19002,44 @@ static const ProtobufCFieldDescriptor pg_query__array_expr__field_descriptors[3]
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "elements",
+    "array_typeid",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayExpr, array_typeid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "array_collid",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayExpr, array_collid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "element_typeid",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayExpr, element_typeid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "elements",
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__ArrayExpr, n_elements),
@@ -18000,8 +19050,20 @@ static const ProtobufCFieldDescriptor pg_query__array_expr__field_descriptors[3]
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "multidims",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__ArrayExpr, multidims),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    3,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18013,14 +19075,18 @@ static const ProtobufCFieldDescriptor pg_query__array_expr__field_descriptors[3]
   },
 };
 static const unsigned pg_query__array_expr__field_indices_by_name[] = {
-  1,   /* field[1] = elements */
-  2,   /* field[2] = location */
+  2,   /* field[2] = array_collid */
+  1,   /* field[1] = array_typeid */
+  3,   /* field[3] = element_typeid */
+  4,   /* field[4] = elements */
+  6,   /* field[6] = location */
+  5,   /* field[5] = multidims */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__array_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__array_expr__descriptor =
 {
@@ -18030,14 +19096,14 @@ const ProtobufCMessageDescriptor pg_query__array_expr__descriptor =
   "PgQuery__ArrayExpr",
   "pg_query",
   sizeof(PgQuery__ArrayExpr),
-  3,
+  7,
   pg_query__array_expr__field_descriptors,
   pg_query__array_expr__field_indices_by_name,
   1,  pg_query__array_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__array_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__row_expr__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__row_expr__field_descriptors[6] =
 {
   {
     "xpr",
@@ -18064,8 +19130,44 @@ static const ProtobufCFieldDescriptor pg_query__row_expr__field_descriptors[3] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "row_typeid",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RowExpr, row_typeid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "row_format",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RowExpr, row_format),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "colnames",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RowExpr, n_colnames),
+    offsetof(PgQuery__RowExpr, colnames),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18078,13 +19180,16 @@ static const ProtobufCFieldDescriptor pg_query__row_expr__field_descriptors[3] =
 };
 static const unsigned pg_query__row_expr__field_indices_by_name[] = {
   1,   /* field[1] = args */
-  2,   /* field[2] = location */
+  4,   /* field[4] = colnames */
+  5,   /* field[5] = location */
+  3,   /* field[3] = row_format */
+  2,   /* field[2] = row_typeid */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__row_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__row_expr__descriptor =
 {
@@ -18094,14 +19199,14 @@ const ProtobufCMessageDescriptor pg_query__row_expr__descriptor =
   "PgQuery__RowExpr",
   "pg_query",
   sizeof(PgQuery__RowExpr),
-  3,
+  6,
   pg_query__row_expr__field_descriptors,
   pg_query__row_expr__field_indices_by_name,
   1,  pg_query__row_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__row_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__row_compare_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__row_compare_expr__field_descriptors[7] =
 {
   {
     "xpr",
@@ -18128,8 +19233,44 @@ static const ProtobufCFieldDescriptor pg_query__row_compare_expr__field_descript
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "largs",
+    "opnos",
     3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RowCompareExpr, n_opnos),
+    offsetof(PgQuery__RowCompareExpr, opnos),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "opfamilies",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RowCompareExpr, n_opfamilies),
+    offsetof(PgQuery__RowCompareExpr, opfamilies),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollids",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RowCompareExpr, n_inputcollids),
+    offsetof(PgQuery__RowCompareExpr, inputcollids),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "largs",
+    6,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__RowCompareExpr, n_largs),
@@ -18141,7 +19282,7 @@ static const ProtobufCFieldDescriptor pg_query__row_compare_expr__field_descript
   },
   {
     "rargs",
-    4,
+    7,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__RowCompareExpr, n_rargs),
@@ -18153,15 +19294,18 @@ static const ProtobufCFieldDescriptor pg_query__row_compare_expr__field_descript
   },
 };
 static const unsigned pg_query__row_compare_expr__field_indices_by_name[] = {
-  2,   /* field[2] = largs */
-  3,   /* field[3] = rargs */
+  4,   /* field[4] = inputcollids */
+  5,   /* field[5] = largs */
+  3,   /* field[3] = opfamilies */
+  2,   /* field[2] = opnos */
+  6,   /* field[6] = rargs */
   1,   /* field[1] = rctype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__row_compare_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__row_compare_expr__descriptor =
 {
@@ -18171,14 +19315,14 @@ const ProtobufCMessageDescriptor pg_query__row_compare_expr__descriptor =
   "PgQuery__RowCompareExpr",
   "pg_query",
   sizeof(PgQuery__RowCompareExpr),
-  4,
+  7,
   pg_query__row_compare_expr__field_descriptors,
   pg_query__row_compare_expr__field_indices_by_name,
   1,  pg_query__row_compare_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__row_compare_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__coalesce_expr__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__coalesce_expr__field_descriptors[5] =
 {
   {
     "xpr",
@@ -18193,8 +19337,32 @@ static const ProtobufCFieldDescriptor pg_query__coalesce_expr__field_descriptors
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "args",
+    "coalescetype",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoalesceExpr, coalescetype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coalescecollid",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoalesceExpr, coalescecollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "args",
+    4,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__CoalesceExpr, n_args),
@@ -18206,7 +19374,7 @@ static const ProtobufCFieldDescriptor pg_query__coalesce_expr__field_descriptors
   },
   {
     "location",
-    3,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18218,14 +19386,16 @@ static const ProtobufCFieldDescriptor pg_query__coalesce_expr__field_descriptors
   },
 };
 static const unsigned pg_query__coalesce_expr__field_indices_by_name[] = {
-  1,   /* field[1] = args */
-  2,   /* field[2] = location */
+  3,   /* field[3] = args */
+  2,   /* field[2] = coalescecollid */
+  1,   /* field[1] = coalescetype */
+  4,   /* field[4] = location */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__coalesce_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__coalesce_expr__descriptor =
 {
@@ -18235,14 +19405,14 @@ const ProtobufCMessageDescriptor pg_query__coalesce_expr__descriptor =
   "PgQuery__CoalesceExpr",
   "pg_query",
   sizeof(PgQuery__CoalesceExpr),
-  3,
+  5,
   pg_query__coalesce_expr__field_descriptors,
   pg_query__coalesce_expr__field_indices_by_name,
   1,  pg_query__coalesce_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__coalesce_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[7] =
 {
   {
     "xpr",
@@ -18257,8 +19427,44 @@ static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "op",
+    "minmaxtype",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__MinMaxExpr, minmaxtype),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "minmaxcollid",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__MinMaxExpr, minmaxcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "inputcollid",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__MinMaxExpr, inputcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "op",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
@@ -18270,7 +19476,7 @@ static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[
   },
   {
     "args",
-    3,
+    6,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__MinMaxExpr, n_args),
@@ -18282,7 +19488,7 @@ static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[
   },
   {
     "location",
-    4,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18294,15 +19500,18 @@ static const ProtobufCFieldDescriptor pg_query__min_max_expr__field_descriptors[
   },
 };
 static const unsigned pg_query__min_max_expr__field_indices_by_name[] = {
-  2,   /* field[2] = args */
-  3,   /* field[3] = location */
-  1,   /* field[1] = op */
+  5,   /* field[5] = args */
+  3,   /* field[3] = inputcollid */
+  6,   /* field[6] = location */
+  2,   /* field[2] = minmaxcollid */
+  1,   /* field[1] = minmaxtype */
+  4,   /* field[4] = op */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__min_max_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__min_max_expr__descriptor =
 {
@@ -18312,14 +19521,14 @@ const ProtobufCMessageDescriptor pg_query__min_max_expr__descriptor =
   "PgQuery__MinMaxExpr",
   "pg_query",
   sizeof(PgQuery__MinMaxExpr),
-  4,
+  7,
   pg_query__min_max_expr__field_descriptors,
   pg_query__min_max_expr__field_indices_by_name,
   1,  pg_query__min_max_expr__number_ranges,
   (ProtobufCMessageInit) pg_query__min_max_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__sqlvalue_function__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__sqlvalue_function__field_descriptors[5] =
 {
   {
     "xpr",
@@ -18346,8 +19555,20 @@ static const ProtobufCFieldDescriptor pg_query__sqlvalue_function__field_descrip
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "typmod",
+    "type",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SQLValueFunction, type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "typmod",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18359,7 +19580,7 @@ static const ProtobufCFieldDescriptor pg_query__sqlvalue_function__field_descrip
   },
   {
     "location",
-    4,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18371,15 +19592,16 @@ static const ProtobufCFieldDescriptor pg_query__sqlvalue_function__field_descrip
   },
 };
 static const unsigned pg_query__sqlvalue_function__field_indices_by_name[] = {
-  3,   /* field[3] = location */
+  4,   /* field[4] = location */
   1,   /* field[1] = op */
-  2,   /* field[2] = typmod */
+  2,   /* field[2] = type */
+  3,   /* field[3] = typmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__sqlvalue_function__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__sqlvalue_function__descriptor =
 {
@@ -18389,14 +19611,14 @@ const ProtobufCMessageDescriptor pg_query__sqlvalue_function__descriptor =
   "PgQuery__SQLValueFunction",
   "pg_query",
   sizeof(PgQuery__SQLValueFunction),
-  4,
+  5,
   pg_query__sqlvalue_function__field_descriptors,
   pg_query__sqlvalue_function__field_indices_by_name,
   1,  pg_query__sqlvalue_function__number_ranges,
   (ProtobufCMessageInit) pg_query__sqlvalue_function__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[11] =
 {
   {
     "xpr",
@@ -18423,8 +19645,20 @@ static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "named_args",
+    "name",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__XmlExpr, name),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "named_args",
+    4,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__XmlExpr, n_named_args),
@@ -18435,8 +19669,20 @@ static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "arg_names",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__XmlExpr, n_arg_names),
+    offsetof(PgQuery__XmlExpr, arg_names),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "args",
-    4,
+    6,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__XmlExpr, n_args),
@@ -18447,8 +19693,20 @@ static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "xmloption",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__XmlExpr, xmloption),
+    &pg_query__xml_option_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "indent",
-    5,
+    8,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BOOL,
     0,   /* quantifier_offset */
@@ -18459,8 +19717,32 @@ static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "type",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__XmlExpr, type),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "typmod",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__XmlExpr, typmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    6,
+    11,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18472,17 +19754,22 @@ static const ProtobufCFieldDescriptor pg_query__xml_expr__field_descriptors[6] =
   },
 };
 static const unsigned pg_query__xml_expr__field_indices_by_name[] = {
-  3,   /* field[3] = args */
-  4,   /* field[4] = indent */
-  5,   /* field[5] = location */
-  2,   /* field[2] = named_args */
+  4,   /* field[4] = arg_names */
+  5,   /* field[5] = args */
+  7,   /* field[7] = indent */
+  10,   /* field[10] = location */
+  2,   /* field[2] = name */
+  3,   /* field[3] = named_args */
   1,   /* field[1] = op */
+  8,   /* field[8] = type */
+  9,   /* field[9] = typmod */
+  6,   /* field[6] = xmloption */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__xml_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 11 }
 };
 const ProtobufCMessageDescriptor pg_query__xml_expr__descriptor =
 {
@@ -18492,7 +19779,7 @@ const ProtobufCMessageDescriptor pg_query__xml_expr__descriptor =
   "PgQuery__XmlExpr",
   "pg_query",
   sizeof(PgQuery__XmlExpr),
-  6,
+  11,
   pg_query__xml_expr__field_descriptors,
   pg_query__xml_expr__field_indices_by_name,
   1,  pg_query__xml_expr__number_ranges,
@@ -18923,7 +20210,7 @@ const ProtobufCMessageDescriptor pg_query__json_is_predicate__descriptor =
   (ProtobufCMessageInit) pg_query__json_is_predicate__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__null_test__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__null_test__field_descriptors[5] =
 {
   {
     "xpr",
@@ -18962,8 +20249,20 @@ static const ProtobufCFieldDescriptor pg_query__null_test__field_descriptors[4] 
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "argisrow",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NullTest, argisrow),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -18976,14 +20275,15 @@ static const ProtobufCFieldDescriptor pg_query__null_test__field_descriptors[4] 
 };
 static const unsigned pg_query__null_test__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  3,   /* field[3] = location */
+  3,   /* field[3] = argisrow */
+  4,   /* field[4] = location */
   2,   /* field[2] = nulltesttype */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__null_test__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__null_test__descriptor =
 {
@@ -18993,7 +20293,7 @@ const ProtobufCMessageDescriptor pg_query__null_test__descriptor =
   "PgQuery__NullTest",
   "pg_query",
   sizeof(PgQuery__NullTest),
-  4,
+  5,
   pg_query__null_test__field_descriptors,
   pg_query__null_test__field_indices_by_name,
   1,  pg_query__null_test__number_ranges,
@@ -19077,7 +20377,7 @@ const ProtobufCMessageDescriptor pg_query__boolean_test__descriptor =
   (ProtobufCMessageInit) pg_query__boolean_test__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__coerce_to_domain__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__coerce_to_domain__field_descriptors[7] =
 {
   {
     "xpr",
@@ -19116,8 +20416,44 @@ static const ProtobufCFieldDescriptor pg_query__coerce_to_domain__field_descript
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "resulttypmod",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceToDomain, resulttypmod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resultcollid",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceToDomain, resultcollid),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "coercionformat",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceToDomain, coercionformat),
+    &pg_query__coercion_form__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -19130,14 +20466,17 @@ static const ProtobufCFieldDescriptor pg_query__coerce_to_domain__field_descript
 };
 static const unsigned pg_query__coerce_to_domain__field_indices_by_name[] = {
   1,   /* field[1] = arg */
-  3,   /* field[3] = location */
+  5,   /* field[5] = coercionformat */
+  6,   /* field[6] = location */
+  4,   /* field[4] = resultcollid */
   2,   /* field[2] = resulttype */
+  3,   /* field[3] = resulttypmod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__coerce_to_domain__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__coerce_to_domain__descriptor =
 {
@@ -19147,14 +20486,14 @@ const ProtobufCMessageDescriptor pg_query__coerce_to_domain__descriptor =
   "PgQuery__CoerceToDomain",
   "pg_query",
   sizeof(PgQuery__CoerceToDomain),
-  4,
+  7,
   pg_query__coerce_to_domain__field_descriptors,
   pg_query__coerce_to_domain__field_indices_by_name,
   1,  pg_query__coerce_to_domain__number_ranges,
   (ProtobufCMessageInit) pg_query__coerce_to_domain__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__coerce_to_domain_value__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__coerce_to_domain_value__field_descriptors[5] =
 {
   {
     "xpr",
@@ -19181,8 +20520,32 @@ static const ProtobufCFieldDescriptor pg_query__coerce_to_domain_value__field_de
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "type_mod",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceToDomainValue, type_mod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "collation",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CoerceToDomainValue, collation),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -19194,14 +20557,16 @@ static const ProtobufCFieldDescriptor pg_query__coerce_to_domain_value__field_de
   },
 };
 static const unsigned pg_query__coerce_to_domain_value__field_indices_by_name[] = {
-  2,   /* field[2] = location */
+  3,   /* field[3] = collation */
+  4,   /* field[4] = location */
   1,   /* field[1] = type_id */
+  2,   /* field[2] = type_mod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__coerce_to_domain_value__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__coerce_to_domain_value__descriptor =
 {
@@ -19211,14 +20576,14 @@ const ProtobufCMessageDescriptor pg_query__coerce_to_domain_value__descriptor =
   "PgQuery__CoerceToDomainValue",
   "pg_query",
   sizeof(PgQuery__CoerceToDomainValue),
-  3,
+  5,
   pg_query__coerce_to_domain_value__field_descriptors,
   pg_query__coerce_to_domain_value__field_indices_by_name,
   1,  pg_query__coerce_to_domain_value__number_ranges,
   (ProtobufCMessageInit) pg_query__coerce_to_domain_value__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__set_to_default__field_descriptors[3] =
+static const ProtobufCFieldDescriptor pg_query__set_to_default__field_descriptors[5] =
 {
   {
     "xpr",
@@ -19245,8 +20610,32 @@ static const ProtobufCFieldDescriptor pg_query__set_to_default__field_descriptor
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "location",
+    "type_mod",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SetToDefault, type_mod),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "collation",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SetToDefault, collation),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "location",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -19258,14 +20647,16 @@ static const ProtobufCFieldDescriptor pg_query__set_to_default__field_descriptor
   },
 };
 static const unsigned pg_query__set_to_default__field_indices_by_name[] = {
-  2,   /* field[2] = location */
+  3,   /* field[3] = collation */
+  4,   /* field[4] = location */
   1,   /* field[1] = type_id */
+  2,   /* field[2] = type_mod */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__set_to_default__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__set_to_default__descriptor =
 {
@@ -19275,7 +20666,7 @@ const ProtobufCMessageDescriptor pg_query__set_to_default__descriptor =
   "PgQuery__SetToDefault",
   "pg_query",
   sizeof(PgQuery__SetToDefault),
-  3,
+  5,
   pg_query__set_to_default__field_descriptors,
   pg_query__set_to_default__field_indices_by_name,
   1,  pg_query__set_to_default__number_ranges,
@@ -19500,7 +20891,7 @@ const ProtobufCMessageDescriptor pg_query__inference_elem__descriptor =
   (ProtobufCMessageInit) pg_query__inference_elem__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__target_entry__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__target_entry__field_descriptors[8] =
 {
   {
     "xpr",
@@ -19539,8 +20930,20 @@ static const ProtobufCFieldDescriptor pg_query__target_entry__field_descriptors[
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "ressortgroupref",
+    "resname",
     4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__TargetEntry, resname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ressortgroupref",
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -19550,17 +20953,57 @@ static const ProtobufCFieldDescriptor pg_query__target_entry__field_descriptors[
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "resorigtbl",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__TargetEntry, resorigtbl),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resorigcol",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__TargetEntry, resorigcol),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resjunk",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__TargetEntry, resjunk),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__target_entry__field_indices_by_name[] = {
   1,   /* field[1] = expr */
+  7,   /* field[7] = resjunk */
+  3,   /* field[3] = resname */
   2,   /* field[2] = resno */
-  3,   /* field[3] = ressortgroupref */
+  6,   /* field[6] = resorigcol */
+  5,   /* field[5] = resorigtbl */
+  4,   /* field[4] = ressortgroupref */
   0,   /* field[0] = xpr */
 };
 static const ProtobufCIntRange pg_query__target_entry__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__target_entry__descriptor =
 {
@@ -19570,7 +21013,7 @@ const ProtobufCMessageDescriptor pg_query__target_entry__descriptor =
   "PgQuery__TargetEntry",
   "pg_query",
   sizeof(PgQuery__TargetEntry),
-  4,
+  8,
   pg_query__target_entry__field_descriptors,
   pg_query__target_entry__field_indices_by_name,
   1,  pg_query__target_entry__number_ranges,
@@ -19615,7 +21058,7 @@ const ProtobufCMessageDescriptor pg_query__range_tbl_ref__descriptor =
   (ProtobufCMessageInit) pg_query__range_tbl_ref__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__join_expr__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__join_expr__field_descriptors[9] =
 {
   {
     "jointype",
@@ -19666,8 +21109,32 @@ static const ProtobufCFieldDescriptor pg_query__join_expr__field_descriptors[6] 
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "quals",
+    "using_clause",
     5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__JoinExpr, n_using_clause),
+    offsetof(PgQuery__JoinExpr, using_clause),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "join_using_alias",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__JoinExpr, join_using_alias),
+    &pg_query__alias__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "quals",
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -19678,8 +21145,20 @@ static const ProtobufCFieldDescriptor pg_query__join_expr__field_descriptors[6] 
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "alias",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__JoinExpr, alias),
+    &pg_query__alias__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "rtindex",
-    6,
+    9,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -19691,17 +21170,20 @@ static const ProtobufCFieldDescriptor pg_query__join_expr__field_descriptors[6] 
   },
 };
 static const unsigned pg_query__join_expr__field_indices_by_name[] = {
+  7,   /* field[7] = alias */
   1,   /* field[1] = is_natural */
+  5,   /* field[5] = join_using_alias */
   0,   /* field[0] = jointype */
   2,   /* field[2] = larg */
-  4,   /* field[4] = quals */
+  6,   /* field[6] = quals */
   3,   /* field[3] = rarg */
-  5,   /* field[5] = rtindex */
+  8,   /* field[8] = rtindex */
+  4,   /* field[4] = using_clause */
 };
 static const ProtobufCIntRange pg_query__join_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 9 }
 };
 const ProtobufCMessageDescriptor pg_query__join_expr__descriptor =
 {
@@ -19711,7 +21193,7 @@ const ProtobufCMessageDescriptor pg_query__join_expr__descriptor =
   "PgQuery__JoinExpr",
   "pg_query",
   sizeof(PgQuery__JoinExpr),
-  6,
+  9,
   pg_query__join_expr__field_descriptors,
   pg_query__join_expr__field_indices_by_name,
   1,  pg_query__join_expr__number_ranges,
@@ -19898,7 +21380,7 @@ const ProtobufCMessageDescriptor pg_query__on_conflict_expr__descriptor =
   (ProtobufCMessageInit) pg_query__on_conflict_expr__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
+static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[41] =
 {
   {
     "command_type",
@@ -19913,8 +21395,32 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "utility_stmt",
+    "query_source",
     2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, query_source),
+    &pg_query__query_source__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "can_set_tag",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, can_set_tag),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "utility_stmt",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -19925,8 +21431,140 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "result_relation",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, result_relation),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_aggs",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_aggs),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_window_funcs",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_window_funcs),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_target_srfs",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_target_srfs),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_sub_links",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_sub_links),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_distinct_on",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_distinct_on),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_recursive",
+    11,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_recursive),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_modifying_cte",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_modifying_cte),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_for_update",
+    13,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_for_update),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "has_row_security",
+    14,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, has_row_security),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "is_return",
+    15,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, is_return),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "cte_list",
-    3,
+    16,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_cte_list),
@@ -19938,7 +21576,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "rtable",
-    4,
+    17,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_rtable),
@@ -19949,8 +21587,20 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "rteperminfos",
+    18,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__Query, n_rteperminfos),
+    offsetof(PgQuery__Query, rteperminfos),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "jointree",
-    5,
+    19,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -19962,7 +21612,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "merge_action_list",
-    6,
+    20,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_merge_action_list),
@@ -19973,8 +21623,20 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "merge_use_outer_join",
+    21,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, merge_use_outer_join),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "target_list",
-    7,
+    22,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_target_list),
@@ -19985,8 +21647,20 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "override",
+    23,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, override),
+    &pg_query__overriding_kind__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "on_conflict",
-    8,
+    24,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -19998,7 +21672,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "returning_list",
-    9,
+    25,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_returning_list),
@@ -20010,7 +21684,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "group_clause",
-    10,
+    26,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_group_clause),
@@ -20022,7 +21696,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "group_distinct",
-    11,
+    27,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_BOOL,
     0,   /* quantifier_offset */
@@ -20034,7 +21708,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "grouping_sets",
-    12,
+    28,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_grouping_sets),
@@ -20046,7 +21720,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "having_qual",
-    13,
+    29,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -20058,7 +21732,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "window_clause",
-    14,
+    30,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_window_clause),
@@ -20070,7 +21744,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "distinct_clause",
-    15,
+    31,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_distinct_clause),
@@ -20082,7 +21756,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "sort_clause",
-    16,
+    32,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_sort_clause),
@@ -20094,7 +21768,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "limit_offset",
-    17,
+    33,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -20106,7 +21780,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "limit_count",
-    18,
+    34,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -20118,7 +21792,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "limit_option",
-    19,
+    35,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
@@ -20130,7 +21804,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "row_marks",
-    20,
+    36,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__Query, n_row_marks),
@@ -20142,7 +21816,7 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
   },
   {
     "set_operations",
-    21,
+    37,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -20153,8 +21827,32 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "constraint_deps",
+    38,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__Query, n_constraint_deps),
+    offsetof(PgQuery__Query, constraint_deps),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "with_check_options",
+    39,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__Query, n_with_check_options),
+    offsetof(PgQuery__Query, with_check_options),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "stmt_location",
-    22,
+    40,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -20164,35 +21862,66 @@ static const ProtobufCFieldDescriptor pg_query__query__field_descriptors[22] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "stmt_len",
+    41,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__Query, stmt_len),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__query__field_indices_by_name[] = {
+  2,   /* field[2] = can_set_tag */
   0,   /* field[0] = command_type */
-  2,   /* field[2] = cte_list */
-  14,   /* field[14] = distinct_clause */
-  9,   /* field[9] = group_clause */
-  10,   /* field[10] = group_distinct */
-  11,   /* field[11] = grouping_sets */
-  12,   /* field[12] = having_qual */
-  4,   /* field[4] = jointree */
-  17,   /* field[17] = limit_count */
-  16,   /* field[16] = limit_offset */
-  18,   /* field[18] = limit_option */
-  5,   /* field[5] = merge_action_list */
-  7,   /* field[7] = on_conflict */
-  8,   /* field[8] = returning_list */
-  19,   /* field[19] = row_marks */
-  3,   /* field[3] = rtable */
-  20,   /* field[20] = set_operations */
-  15,   /* field[15] = sort_clause */
-  21,   /* field[21] = stmt_location */
-  6,   /* field[6] = target_list */
-  1,   /* field[1] = utility_stmt */
-  13,   /* field[13] = window_clause */
+  37,   /* field[37] = constraint_deps */
+  15,   /* field[15] = cte_list */
+  30,   /* field[30] = distinct_clause */
+  25,   /* field[25] = group_clause */
+  26,   /* field[26] = group_distinct */
+  27,   /* field[27] = grouping_sets */
+  5,   /* field[5] = has_aggs */
+  9,   /* field[9] = has_distinct_on */
+  12,   /* field[12] = has_for_update */
+  11,   /* field[11] = has_modifying_cte */
+  10,   /* field[10] = has_recursive */
+  13,   /* field[13] = has_row_security */
+  8,   /* field[8] = has_sub_links */
+  7,   /* field[7] = has_target_srfs */
+  6,   /* field[6] = has_window_funcs */
+  28,   /* field[28] = having_qual */
+  14,   /* field[14] = is_return */
+  18,   /* field[18] = jointree */
+  33,   /* field[33] = limit_count */
+  32,   /* field[32] = limit_offset */
+  34,   /* field[34] = limit_option */
+  19,   /* field[19] = merge_action_list */
+  20,   /* field[20] = merge_use_outer_join */
+  23,   /* field[23] = on_conflict */
+  22,   /* field[22] = override */
+  1,   /* field[1] = query_source */
+  4,   /* field[4] = result_relation */
+  24,   /* field[24] = returning_list */
+  35,   /* field[35] = row_marks */
+  16,   /* field[16] = rtable */
+  17,   /* field[17] = rteperminfos */
+  36,   /* field[36] = set_operations */
+  31,   /* field[31] = sort_clause */
+  40,   /* field[40] = stmt_len */
+  39,   /* field[39] = stmt_location */
+  21,   /* field[21] = target_list */
+  3,   /* field[3] = utility_stmt */
+  29,   /* field[29] = window_clause */
+  38,   /* field[38] = with_check_options */
 };
 static const ProtobufCIntRange pg_query__query__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 22 }
+  { 0, 41 }
 };
 const ProtobufCMessageDescriptor pg_query__query__descriptor =
 {
@@ -20202,7 +21931,7 @@ const ProtobufCMessageDescriptor pg_query__query__descriptor =
   "PgQuery__Query",
   "pg_query",
   sizeof(PgQuery__Query),
-  22,
+  41,
   pg_query__query__field_descriptors,
   pg_query__query__field_indices_by_name,
   1,  pg_query__query__number_ranges,
@@ -23600,7 +25329,7 @@ const ProtobufCMessageDescriptor pg_query__rtepermission_info__descriptor =
   (ProtobufCMessageInit) pg_query__rtepermission_info__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descriptors[1] =
+static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descriptors[7] =
 {
   {
     "funcexpr",
@@ -23614,14 +25343,92 @@ static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descri
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "funccolcount",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__RangeTblFunction, funccolcount),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funccolnames",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RangeTblFunction, n_funccolnames),
+    offsetof(PgQuery__RangeTblFunction, funccolnames),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funccoltypes",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RangeTblFunction, n_funccoltypes),
+    offsetof(PgQuery__RangeTblFunction, funccoltypes),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funccoltypmods",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RangeTblFunction, n_funccoltypmods),
+    offsetof(PgQuery__RangeTblFunction, funccoltypmods),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funccolcollations",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__RangeTblFunction, n_funccolcollations),
+    offsetof(PgQuery__RangeTblFunction, funccolcollations),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "funcparams",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_UINT64,
+    offsetof(PgQuery__RangeTblFunction, n_funcparams),
+    offsetof(PgQuery__RangeTblFunction, funcparams),
+    NULL,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__range_tbl_function__field_indices_by_name[] = {
+  5,   /* field[5] = funccolcollations */
+  1,   /* field[1] = funccolcount */
+  2,   /* field[2] = funccolnames */
+  3,   /* field[3] = funccoltypes */
+  4,   /* field[4] = funccoltypmods */
   0,   /* field[0] = funcexpr */
+  6,   /* field[6] = funcparams */
 };
 static const ProtobufCIntRange pg_query__range_tbl_function__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 1 }
+  { 0, 7 }
 };
 const ProtobufCMessageDescriptor pg_query__range_tbl_function__descriptor =
 {
@@ -23631,7 +25438,7 @@ const ProtobufCMessageDescriptor pg_query__range_tbl_function__descriptor =
   "PgQuery__RangeTblFunction",
   "pg_query",
   sizeof(PgQuery__RangeTblFunction),
-  1,
+  7,
   pg_query__range_tbl_function__field_descriptors,
   pg_query__range_tbl_function__field_indices_by_name,
   1,  pg_query__range_tbl_function__number_ranges,
@@ -23792,7 +25599,7 @@ const ProtobufCMessageDescriptor pg_query__with_check_option__descriptor =
   (ProtobufCMessageInit) pg_query__with_check_option__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__sort_group_clause__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__sort_group_clause__field_descriptors[5] =
 {
   {
     "tle_sort_group_ref",
@@ -23842,9 +25649,22 @@ static const ProtobufCFieldDescriptor pg_query__sort_group_clause__field_descrip
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "hashable",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__SortGroupClause, hashable),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__sort_group_clause__field_indices_by_name[] = {
   1,   /* field[1] = eqop */
+  4,   /* field[4] = hashable */
   3,   /* field[3] = nulls_first */
   2,   /* field[2] = sortop */
   0,   /* field[0] = tle_sort_group_ref */
@@ -23852,7 +25672,7 @@ static const unsigned pg_query__sort_group_clause__field_indices_by_name[] = {
 static const ProtobufCIntRange pg_query__sort_group_clause__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__sort_group_clause__descriptor =
 {
@@ -23862,18 +25682,30 @@ const ProtobufCMessageDescriptor pg_query__sort_group_clause__descriptor =
   "PgQuery__SortGroupClause",
   "pg_query",
   sizeof(PgQuery__SortGroupClause),
-  4,
+  5,
   pg_query__sort_group_clause__field_descriptors,
   pg_query__sort_group_clause__field_indices_by_name,
   1,  pg_query__sort_group_clause__number_ranges,
   (ProtobufCMessageInit) pg_query__sort_group_clause__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__grouping_set__field_descriptors[2] =
+static const ProtobufCFieldDescriptor pg_query__grouping_set__field_descriptors[3] =
 {
   {
-    "content",
+    "kind",
     1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__GroupingSet, kind),
+    &pg_query__grouping_set_kind__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "content",
+    2,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__GroupingSet, n_content),
@@ -23885,7 +25717,7 @@ static const ProtobufCFieldDescriptor pg_query__grouping_set__field_descriptors[
   },
   {
     "location",
-    2,
+    3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -23897,13 +25729,14 @@ static const ProtobufCFieldDescriptor pg_query__grouping_set__field_descriptors[
   },
 };
 static const unsigned pg_query__grouping_set__field_indices_by_name[] = {
-  0,   /* field[0] = content */
-  1,   /* field[1] = location */
+  1,   /* field[1] = content */
+  0,   /* field[0] = kind */
+  2,   /* field[2] = location */
 };
 static const ProtobufCIntRange pg_query__grouping_set__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 2 }
+  { 0, 3 }
 };
 const ProtobufCMessageDescriptor pg_query__grouping_set__descriptor =
 {
@@ -23913,18 +25746,42 @@ const ProtobufCMessageDescriptor pg_query__grouping_set__descriptor =
   "PgQuery__GroupingSet",
   "pg_query",
   sizeof(PgQuery__GroupingSet),
-  2,
+  3,
   pg_query__grouping_set__field_descriptors,
   pg_query__grouping_set__field_indices_by_name,
   1,  pg_query__grouping_set__number_ranges,
   (ProtobufCMessageInit) pg_query__grouping_set__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors[6] =
+static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors[15] =
 {
   {
-    "partition_clause",
+    "name",
     1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, name),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refname",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, refname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "partition_clause",
+    3,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__WindowClause, n_partition_clause),
@@ -23936,7 +25793,7 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
   },
   {
     "order_clause",
-    2,
+    4,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__WindowClause, n_order_clause),
@@ -23948,7 +25805,7 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
   },
   {
     "frame_options",
-    3,
+    5,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -23960,7 +25817,7 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
   },
   {
     "start_offset",
-    4,
+    6,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -23972,7 +25829,7 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
   },
   {
     "end_offset",
-    5,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -23983,8 +25840,80 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "run_condition",
+    8,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__WindowClause, n_run_condition),
+    offsetof(PgQuery__WindowClause, run_condition),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "start_in_range_func",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, start_in_range_func),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "end_in_range_func",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, end_in_range_func),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "in_range_coll",
+    11,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, in_range_coll),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "in_range_asc",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, in_range_asc),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "in_range_nulls_first",
+    13,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, in_range_nulls_first),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "winref",
-    6,
+    14,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
@@ -23994,19 +25923,40 @@ static const ProtobufCFieldDescriptor pg_query__window_clause__field_descriptors
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "copied_order",
+    15,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__WindowClause, copied_order),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__window_clause__field_indices_by_name[] = {
-  4,   /* field[4] = end_offset */
-  2,   /* field[2] = frame_options */
-  1,   /* field[1] = order_clause */
-  0,   /* field[0] = partition_clause */
-  3,   /* field[3] = start_offset */
-  5,   /* field[5] = winref */
+  14,   /* field[14] = copied_order */
+  9,   /* field[9] = end_in_range_func */
+  6,   /* field[6] = end_offset */
+  4,   /* field[4] = frame_options */
+  11,   /* field[11] = in_range_asc */
+  10,   /* field[10] = in_range_coll */
+  12,   /* field[12] = in_range_nulls_first */
+  0,   /* field[0] = name */
+  3,   /* field[3] = order_clause */
+  2,   /* field[2] = partition_clause */
+  1,   /* field[1] = refname */
+  7,   /* field[7] = run_condition */
+  8,   /* field[8] = start_in_range_func */
+  5,   /* field[5] = start_offset */
+  13,   /* field[13] = winref */
 };
 static const ProtobufCIntRange pg_query__window_clause__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 6 }
+  { 0, 15 }
 };
 const ProtobufCMessageDescriptor pg_query__window_clause__descriptor =
 {
@@ -24016,7 +25966,7 @@ const ProtobufCMessageDescriptor pg_query__window_clause__descriptor =
   "PgQuery__WindowClause",
   "pg_query",
   sizeof(PgQuery__WindowClause),
-  6,
+  15,
   pg_query__window_clause__field_descriptors,
   pg_query__window_clause__field_indices_by_name,
   1,  pg_query__window_clause__number_ranges,
@@ -24563,7 +26513,7 @@ const ProtobufCMessageDescriptor pg_query__ctecycle_clause__descriptor =
   (ProtobufCMessageInit) pg_query__ctecycle_clause__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descriptors[13] =
 {
   {
     "ctename",
@@ -24578,8 +26528,20 @@ static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descrip
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "ctematerialized",
+    "aliascolnames",
     2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CommonTableExpr, n_aliascolnames),
+    offsetof(PgQuery__CommonTableExpr, aliascolnames),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ctematerialized",
+    3,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_ENUM,
     0,   /* quantifier_offset */
@@ -24591,7 +26553,7 @@ static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descrip
   },
   {
     "ctequery",
-    3,
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -24602,8 +26564,32 @@ static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descrip
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
+    "search_clause",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CommonTableExpr, search_clause),
+    &pg_query__ctesearch_clause__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cycle_clause",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CommonTableExpr, cycle_clause),
+    &pg_query__ctecycle_clause__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
     "location",
-    4,
+    7,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_INT32,
     0,   /* quantifier_offset */
@@ -24613,17 +26599,98 @@ static const ProtobufCFieldDescriptor pg_query__common_table_expr__field_descrip
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "cterecursive",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CommonTableExpr, cterecursive),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cterefcount",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CommonTableExpr, cterefcount),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ctecolnames",
+    10,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CommonTableExpr, n_ctecolnames),
+    offsetof(PgQuery__CommonTableExpr, ctecolnames),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ctecoltypes",
+    11,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CommonTableExpr, n_ctecoltypes),
+    offsetof(PgQuery__CommonTableExpr, ctecoltypes),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ctecoltypmods",
+    12,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CommonTableExpr, n_ctecoltypmods),
+    offsetof(PgQuery__CommonTableExpr, ctecoltypmods),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ctecolcollations",
+    13,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CommonTableExpr, n_ctecolcollations),
+    offsetof(PgQuery__CommonTableExpr, ctecolcollations),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__common_table_expr__field_indices_by_name[] = {
-  1,   /* field[1] = ctematerialized */
+  1,   /* field[1] = aliascolnames */
+  12,   /* field[12] = ctecolcollations */
+  9,   /* field[9] = ctecolnames */
+  10,   /* field[10] = ctecoltypes */
+  11,   /* field[11] = ctecoltypmods */
+  2,   /* field[2] = ctematerialized */
   0,   /* field[0] = ctename */
-  2,   /* field[2] = ctequery */
-  3,   /* field[3] = location */
+  3,   /* field[3] = ctequery */
+  7,   /* field[7] = cterecursive */
+  8,   /* field[8] = cterefcount */
+  5,   /* field[5] = cycle_clause */
+  6,   /* field[6] = location */
+  4,   /* field[4] = search_clause */
 };
 static const ProtobufCIntRange pg_query__common_table_expr__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 13 }
 };
 const ProtobufCMessageDescriptor pg_query__common_table_expr__descriptor =
 {
@@ -24633,7 +26700,7 @@ const ProtobufCMessageDescriptor pg_query__common_table_expr__descriptor =
   "PgQuery__CommonTableExpr",
   "pg_query",
   sizeof(PgQuery__CommonTableExpr),
-  4,
+  13,
   pg_query__common_table_expr__field_descriptors,
   pg_query__common_table_expr__field_indices_by_name,
   1,  pg_query__common_table_expr__number_ranges,
@@ -24743,7 +26810,7 @@ const ProtobufCMessageDescriptor pg_query__merge_when_clause__descriptor =
   (ProtobufCMessageInit) pg_query__merge_when_clause__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__merge_action__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__merge_action__field_descriptors[6] =
 {
   {
     "matched",
@@ -24770,8 +26837,20 @@ static const ProtobufCFieldDescriptor pg_query__merge_action__field_descriptors[
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
-    "qual",
+    "override",
     3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__MergeAction, override),
+    &pg_query__overriding_kind__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "qual",
+    4,
     PROTOBUF_C_LABEL_NONE,
     PROTOBUF_C_TYPE_MESSAGE,
     0,   /* quantifier_offset */
@@ -24783,7 +26862,7 @@ static const ProtobufCFieldDescriptor pg_query__merge_action__field_descriptors[
   },
   {
     "target_list",
-    4,
+    5,
     PROTOBUF_C_LABEL_REPEATED,
     PROTOBUF_C_TYPE_MESSAGE,
     offsetof(PgQuery__MergeAction, n_target_list),
@@ -24793,17 +26872,31 @@ static const ProtobufCFieldDescriptor pg_query__merge_action__field_descriptors[
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "update_colnos",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__MergeAction, n_update_colnos),
+    offsetof(PgQuery__MergeAction, update_colnos),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__merge_action__field_indices_by_name[] = {
   1,   /* field[1] = command_type */
   0,   /* field[0] = matched */
-  2,   /* field[2] = qual */
-  3,   /* field[3] = target_list */
+  2,   /* field[2] = override */
+  3,   /* field[3] = qual */
+  4,   /* field[4] = target_list */
+  5,   /* field[5] = update_colnos */
 };
 static const ProtobufCIntRange pg_query__merge_action__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__merge_action__descriptor =
 {
@@ -24813,7 +26906,7 @@ const ProtobufCMessageDescriptor pg_query__merge_action__descriptor =
   "PgQuery__MergeAction",
   "pg_query",
   sizeof(PgQuery__MergeAction),
-  4,
+  6,
   pg_query__merge_action__field_descriptors,
   pg_query__merge_action__field_indices_by_name,
   1,  pg_query__merge_action__number_ranges,
@@ -26222,7 +28315,7 @@ const ProtobufCMessageDescriptor pg_query__select_stmt__descriptor =
   (ProtobufCMessageInit) pg_query__select_stmt__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__set_operation_stmt__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__set_operation_stmt__field_descriptors[8] =
 {
   {
     "op",
@@ -26272,9 +28365,61 @@ static const ProtobufCFieldDescriptor pg_query__set_operation_stmt__field_descri
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "col_types",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__SetOperationStmt, n_col_types),
+    offsetof(PgQuery__SetOperationStmt, col_types),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "col_typmods",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__SetOperationStmt, n_col_typmods),
+    offsetof(PgQuery__SetOperationStmt, col_typmods),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "col_collations",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__SetOperationStmt, n_col_collations),
+    offsetof(PgQuery__SetOperationStmt, col_collations),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "group_clauses",
+    8,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__SetOperationStmt, n_group_clauses),
+    offsetof(PgQuery__SetOperationStmt, group_clauses),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__set_operation_stmt__field_indices_by_name[] = {
   1,   /* field[1] = all */
+  6,   /* field[6] = col_collations */
+  4,   /* field[4] = col_types */
+  5,   /* field[5] = col_typmods */
+  7,   /* field[7] = group_clauses */
   2,   /* field[2] = larg */
   0,   /* field[0] = op */
   3,   /* field[3] = rarg */
@@ -26282,7 +28427,7 @@ static const unsigned pg_query__set_operation_stmt__field_indices_by_name[] = {
 static const ProtobufCIntRange pg_query__set_operation_stmt__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 8 }
 };
 const ProtobufCMessageDescriptor pg_query__set_operation_stmt__descriptor =
 {
@@ -26292,7 +28437,7 @@ const ProtobufCMessageDescriptor pg_query__set_operation_stmt__descriptor =
   "PgQuery__SetOperationStmt",
   "pg_query",
   sizeof(PgQuery__SetOperationStmt),
-  4,
+  8,
   pg_query__set_operation_stmt__field_descriptors,
   pg_query__set_operation_stmt__field_indices_by_name,
   1,  pg_query__set_operation_stmt__number_ranges,
@@ -32392,7 +34537,7 @@ const ProtobufCMessageDescriptor pg_query__inline_code_block__descriptor =
   (ProtobufCMessageInit) pg_query__inline_code_block__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__call_stmt__field_descriptors[1] =
+static const ProtobufCFieldDescriptor pg_query__call_stmt__field_descriptors[3] =
 {
   {
     "funccall",
@@ -32406,14 +34551,40 @@ static const ProtobufCFieldDescriptor pg_query__call_stmt__field_descriptors[1] 
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "funcexpr",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CallStmt, funcexpr),
+    &pg_query__func_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "outargs",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__CallStmt, n_outargs),
+    offsetof(PgQuery__CallStmt, outargs),
+    &pg_query__node__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__call_stmt__field_indices_by_name[] = {
   0,   /* field[0] = funccall */
+  1,   /* field[1] = funcexpr */
+  2,   /* field[2] = outargs */
 };
 static const ProtobufCIntRange pg_query__call_stmt__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 1 }
+  { 0, 3 }
 };
 const ProtobufCMessageDescriptor pg_query__call_stmt__descriptor =
 {
@@ -32423,7 +34594,7 @@ const ProtobufCMessageDescriptor pg_query__call_stmt__descriptor =
   "PgQuery__CallStmt",
   "pg_query",
   sizeof(PgQuery__CallStmt),
-  1,
+  3,
   pg_query__call_stmt__field_descriptors,
   pg_query__call_stmt__field_indices_by_name,
   1,  pg_query__call_stmt__number_ranges,

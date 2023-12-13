@@ -272,9 +272,18 @@ static TableFunc *
 _readTableFunc(OUT_TYPE(TableFunc, TableFunc) msg)
 {
   TableFunc *node = makeNode(TableFunc);
+  READ_LIST_FIELD(ns_uris, ns_uris, ns_uris);
+  READ_LIST_FIELD(ns_names, ns_names, ns_names);
   READ_NODE_PTR_FIELD(docexpr, docexpr, docexpr);
   READ_NODE_PTR_FIELD(rowexpr, rowexpr, rowexpr);
+  READ_LIST_FIELD(colnames, colnames, colnames);
+  READ_LIST_FIELD(coltypes, coltypes, coltypes);
+  READ_LIST_FIELD(coltypmods, coltypmods, coltypmods);
+  READ_LIST_FIELD(colcollations, colcollations, colcollations);
   READ_LIST_FIELD(colexprs, colexprs, colexprs);
+  READ_LIST_FIELD(coldefexprs, coldefexprs, coldefexprs);
+  READ_BITMAPSET_FIELD(notnulls, notnulls, notnulls);
+  READ_INT_FIELD(ordinalitycol, ordinalitycol, ordinalitycol);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -289,6 +298,7 @@ _readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg)
   READ_LIST_FIELD(options, options, options);
   READ_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
   READ_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
+  READ_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
   READ_BOOL_FIELD(skip_data, skipData, skipData);
   return node;
 }
@@ -299,6 +309,10 @@ _readVar(OUT_TYPE(Var, Var) msg)
   Var *node = makeNode(Var);
   READ_INT_FIELD(varno, varno, varno);
   READ_INT_FIELD(varattno, varattno, varattno);
+  READ_UINT_FIELD(vartype, vartype, vartype);
+  READ_INT_FIELD(vartypmod, vartypmod, vartypmod);
+  READ_UINT_FIELD(varcollid, varcollid, varcollid);
+  READ_BITMAPSET_FIELD(varnullingrels, varnullingrels, varnullingrels);
   READ_UINT_FIELD(varlevelsup, varlevelsup, varlevelsup);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -311,6 +325,8 @@ _readParam(OUT_TYPE(Param, Param) msg)
   READ_ENUM_FIELD(ParamKind, paramkind, paramkind, paramkind);
   READ_INT_FIELD(paramid, paramid, paramid);
   READ_UINT_FIELD(paramtype, paramtype, paramtype);
+  READ_INT_FIELD(paramtypmod, paramtypmod, paramtypmod);
+  READ_UINT_FIELD(paramcollid, paramcollid, paramcollid);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -320,11 +336,22 @@ _readAggref(OUT_TYPE(Aggref, Aggref) msg)
 {
   Aggref *node = makeNode(Aggref);
   READ_UINT_FIELD(aggfnoid, aggfnoid, aggfnoid);
+  READ_UINT_FIELD(aggtype, aggtype, aggtype);
+  READ_UINT_FIELD(aggcollid, aggcollid, aggcollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
+  READ_LIST_FIELD(aggargtypes, aggargtypes, aggargtypes);
   READ_LIST_FIELD(aggdirectargs, aggdirectargs, aggdirectargs);
   READ_LIST_FIELD(args, args, args);
   READ_LIST_FIELD(aggorder, aggorder, aggorder);
   READ_LIST_FIELD(aggdistinct, aggdistinct, aggdistinct);
   READ_EXPR_PTR_FIELD(aggfilter, aggfilter, aggfilter);
+  READ_BOOL_FIELD(aggstar, aggstar, aggstar);
+  READ_BOOL_FIELD(aggvariadic, aggvariadic, aggvariadic);
+  READ_CHAR_FIELD(aggkind, aggkind, aggkind);
+  READ_UINT_FIELD(agglevelsup, agglevelsup, agglevelsup);
+  READ_ENUM_FIELD(AggSplit, aggsplit, aggsplit, aggsplit);
+  READ_INT_FIELD(aggno, aggno, aggno);
+  READ_INT_FIELD(aggtransno, aggtransno, aggtransno);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -333,6 +360,8 @@ static GroupingFunc *
 _readGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) msg)
 {
   GroupingFunc *node = makeNode(GroupingFunc);
+  READ_LIST_FIELD(args, args, args);
+  READ_LIST_FIELD(refs, refs, refs);
   READ_UINT_FIELD(agglevelsup, agglevelsup, agglevelsup);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -343,9 +372,14 @@ _readWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) msg)
 {
   WindowFunc *node = makeNode(WindowFunc);
   READ_UINT_FIELD(winfnoid, winfnoid, winfnoid);
+  READ_UINT_FIELD(wintype, wintype, wintype);
+  READ_UINT_FIELD(wincollid, wincollid, wincollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_EXPR_PTR_FIELD(aggfilter, aggfilter, aggfilter);
   READ_UINT_FIELD(winref, winref, winref);
+  READ_BOOL_FIELD(winstar, winstar, winstar);
+  READ_BOOL_FIELD(winagg, winagg, winagg);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -354,6 +388,11 @@ static SubscriptingRef *
 _readSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) msg)
 {
   SubscriptingRef *node = makeNode(SubscriptingRef);
+  READ_UINT_FIELD(refcontainertype, refcontainertype, refcontainertype);
+  READ_UINT_FIELD(refelemtype, refelemtype, refelemtype);
+  READ_UINT_FIELD(refrestype, refrestype, refrestype);
+  READ_INT_FIELD(reftypmod, reftypmod, reftypmod);
+  READ_UINT_FIELD(refcollid, refcollid, refcollid);
   READ_LIST_FIELD(refupperindexpr, refupperindexpr, refupperindexpr);
   READ_LIST_FIELD(reflowerindexpr, reflowerindexpr, reflowerindexpr);
   READ_EXPR_PTR_FIELD(refexpr, refexpr, refexpr);
@@ -366,6 +405,12 @@ _readFuncExpr(OUT_TYPE(FuncExpr, FuncExpr) msg)
 {
   FuncExpr *node = makeNode(FuncExpr);
   READ_UINT_FIELD(funcid, funcid, funcid);
+  READ_UINT_FIELD(funcresulttype, funcresulttype, funcresulttype);
+  READ_BOOL_FIELD(funcretset, funcretset, funcretset);
+  READ_BOOL_FIELD(funcvariadic, funcvariadic, funcvariadic);
+  READ_ENUM_FIELD(CoercionForm, funcformat, funcformat, funcformat);
+  READ_UINT_FIELD(funccollid, funccollid, funccollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -376,6 +421,7 @@ _readNamedArgExpr(OUT_TYPE(NamedArgExpr, NamedArgExpr) msg)
 {
   NamedArgExpr *node = makeNode(NamedArgExpr);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
+  READ_STRING_FIELD(name, name, name);
   READ_INT_FIELD(argnumber, argnumber, argnumber);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -386,6 +432,10 @@ _readOpExpr(OUT_TYPE(OpExpr, OpExpr) msg)
 {
   OpExpr *node = makeNode(OpExpr);
   READ_UINT_FIELD(opno, opno, opno);
+  READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
+  READ_BOOL_FIELD(opretset, opretset, opretset);
+  READ_UINT_FIELD(opcollid, opcollid, opcollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -396,6 +446,10 @@ _readDistinctExpr(OUT_TYPE(DistinctExpr, DistinctExpr) msg)
 {
   DistinctExpr *node = makeNode(DistinctExpr);
   READ_UINT_FIELD(opno, opno, opno);
+  READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
+  READ_BOOL_FIELD(opretset, opretset, opretset);
+  READ_UINT_FIELD(opcollid, opcollid, opcollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -406,6 +460,10 @@ _readNullIfExpr(OUT_TYPE(NullIfExpr, NullIfExpr) msg)
 {
   NullIfExpr *node = makeNode(NullIfExpr);
   READ_UINT_FIELD(opno, opno, opno);
+  READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
+  READ_BOOL_FIELD(opretset, opretset, opretset);
+  READ_UINT_FIELD(opcollid, opcollid, opcollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -417,6 +475,7 @@ _readScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) msg)
   ScalarArrayOpExpr *node = makeNode(ScalarArrayOpExpr);
   READ_UINT_FIELD(opno, opno, opno);
   READ_BOOL_FIELD(use_or, useOr, useOr);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -439,6 +498,7 @@ _readSubLink(OUT_TYPE(SubLink, SubLink) msg)
   READ_ENUM_FIELD(SubLinkType, sub_link_type, subLinkType, subLinkType);
   READ_INT_FIELD(sub_link_id, subLinkId, subLinkId);
   READ_NODE_PTR_FIELD(testexpr, testexpr, testexpr);
+  READ_LIST_FIELD(oper_name, operName, operName);
   READ_NODE_PTR_FIELD(subselect, subselect, subselect);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -481,6 +541,9 @@ _readFieldSelect(OUT_TYPE(FieldSelect, FieldSelect) msg)
   FieldSelect *node = makeNode(FieldSelect);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_INT_FIELD(fieldnum, fieldnum, fieldnum);
+  READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_INT_FIELD(resulttypmod, resulttypmod, resulttypmod);
+  READ_UINT_FIELD(resultcollid, resultcollid, resultcollid);
   return node;
 }
 
@@ -490,6 +553,8 @@ _readFieldStore(OUT_TYPE(FieldStore, FieldStore) msg)
   FieldStore *node = makeNode(FieldStore);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_LIST_FIELD(newvals, newvals, newvals);
+  READ_LIST_FIELD(fieldnums, fieldnums, fieldnums);
+  READ_UINT_FIELD(resulttype, resulttype, resulttype);
   return node;
 }
 
@@ -499,6 +564,9 @@ _readRelabelType(OUT_TYPE(RelabelType, RelabelType) msg)
   RelabelType *node = makeNode(RelabelType);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_INT_FIELD(resulttypmod, resulttypmod, resulttypmod);
+  READ_UINT_FIELD(resultcollid, resultcollid, resultcollid);
+  READ_ENUM_FIELD(CoercionForm, relabelformat, relabelformat, relabelformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -509,6 +577,8 @@ _readCoerceViaIO(OUT_TYPE(CoerceViaIO, CoerceViaIO) msg)
   CoerceViaIO *node = makeNode(CoerceViaIO);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_UINT_FIELD(resultcollid, resultcollid, resultcollid);
+  READ_ENUM_FIELD(CoercionForm, coerceformat, coerceformat, coerceformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -520,6 +590,9 @@ _readArrayCoerceExpr(OUT_TYPE(ArrayCoerceExpr, ArrayCoerceExpr) msg)
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_EXPR_PTR_FIELD(elemexpr, elemexpr, elemexpr);
   READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_INT_FIELD(resulttypmod, resulttypmod, resulttypmod);
+  READ_UINT_FIELD(resultcollid, resultcollid, resultcollid);
+  READ_ENUM_FIELD(CoercionForm, coerceformat, coerceformat, coerceformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -530,6 +603,7 @@ _readConvertRowtypeExpr(OUT_TYPE(ConvertRowtypeExpr, ConvertRowtypeExpr) msg)
   ConvertRowtypeExpr *node = makeNode(ConvertRowtypeExpr);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_ENUM_FIELD(CoercionForm, convertformat, convertformat, convertformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -548,6 +622,8 @@ static CaseExpr *
 _readCaseExpr(OUT_TYPE(CaseExpr, CaseExpr) msg)
 {
   CaseExpr *node = makeNode(CaseExpr);
+  READ_UINT_FIELD(casetype, casetype, casetype);
+  READ_UINT_FIELD(casecollid, casecollid, casecollid);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_LIST_FIELD(args, args, args);
   READ_EXPR_PTR_FIELD(defresult, defresult, defresult);
@@ -570,6 +646,8 @@ _readCaseTestExpr(OUT_TYPE(CaseTestExpr, CaseTestExpr) msg)
 {
   CaseTestExpr *node = makeNode(CaseTestExpr);
   READ_UINT_FIELD(type_id, typeId, typeId);
+  READ_INT_FIELD(type_mod, typeMod, typeMod);
+  READ_UINT_FIELD(collation, collation, collation);
   return node;
 }
 
@@ -577,7 +655,11 @@ static ArrayExpr *
 _readArrayExpr(OUT_TYPE(ArrayExpr, ArrayExpr) msg)
 {
   ArrayExpr *node = makeNode(ArrayExpr);
+  READ_UINT_FIELD(array_typeid, array_typeid, array_typeid);
+  READ_UINT_FIELD(array_collid, array_collid, array_collid);
+  READ_UINT_FIELD(element_typeid, element_typeid, element_typeid);
   READ_LIST_FIELD(elements, elements, elements);
+  READ_BOOL_FIELD(multidims, multidims, multidims);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -587,6 +669,9 @@ _readRowExpr(OUT_TYPE(RowExpr, RowExpr) msg)
 {
   RowExpr *node = makeNode(RowExpr);
   READ_LIST_FIELD(args, args, args);
+  READ_UINT_FIELD(row_typeid, row_typeid, row_typeid);
+  READ_ENUM_FIELD(CoercionForm, row_format, row_format, row_format);
+  READ_LIST_FIELD(colnames, colnames, colnames);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -596,6 +681,9 @@ _readRowCompareExpr(OUT_TYPE(RowCompareExpr, RowCompareExpr) msg)
 {
   RowCompareExpr *node = makeNode(RowCompareExpr);
   READ_ENUM_FIELD(RowCompareType, rctype, rctype, rctype);
+  READ_LIST_FIELD(opnos, opnos, opnos);
+  READ_LIST_FIELD(opfamilies, opfamilies, opfamilies);
+  READ_LIST_FIELD(inputcollids, inputcollids, inputcollids);
   READ_LIST_FIELD(largs, largs, largs);
   READ_LIST_FIELD(rargs, rargs, rargs);
   return node;
@@ -605,6 +693,8 @@ static CoalesceExpr *
 _readCoalesceExpr(OUT_TYPE(CoalesceExpr, CoalesceExpr) msg)
 {
   CoalesceExpr *node = makeNode(CoalesceExpr);
+  READ_UINT_FIELD(coalescetype, coalescetype, coalescetype);
+  READ_UINT_FIELD(coalescecollid, coalescecollid, coalescecollid);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -614,6 +704,9 @@ static MinMaxExpr *
 _readMinMaxExpr(OUT_TYPE(MinMaxExpr, MinMaxExpr) msg)
 {
   MinMaxExpr *node = makeNode(MinMaxExpr);
+  READ_UINT_FIELD(minmaxtype, minmaxtype, minmaxtype);
+  READ_UINT_FIELD(minmaxcollid, minmaxcollid, minmaxcollid);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_ENUM_FIELD(MinMaxOp, op, op, op);
   READ_LIST_FIELD(args, args, args);
   READ_INT_FIELD(location, location, location);
@@ -625,6 +718,7 @@ _readSQLValueFunction(OUT_TYPE(SQLValueFunction, SQLValueFunction) msg)
 {
   SQLValueFunction *node = makeNode(SQLValueFunction);
   READ_ENUM_FIELD(SQLValueFunctionOp, op, op, op);
+  READ_UINT_FIELD(type, type, type);
   READ_INT_FIELD(typmod, typmod, typmod);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -635,9 +729,14 @@ _readXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) msg)
 {
   XmlExpr *node = makeNode(XmlExpr);
   READ_ENUM_FIELD(XmlExprOp, op, op, op);
+  READ_STRING_FIELD(name, name, name);
   READ_LIST_FIELD(named_args, named_args, named_args);
+  READ_LIST_FIELD(arg_names, arg_names, arg_names);
   READ_LIST_FIELD(args, args, args);
+  READ_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
   READ_BOOL_FIELD(indent, indent, indent);
+  READ_UINT_FIELD(type, type, type);
+  READ_INT_FIELD(typmod, typmod, typmod);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -705,6 +804,7 @@ _readNullTest(OUT_TYPE(NullTest, NullTest) msg)
   NullTest *node = makeNode(NullTest);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_ENUM_FIELD(NullTestType, nulltesttype, nulltesttype, nulltesttype);
+  READ_BOOL_FIELD(argisrow, argisrow, argisrow);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -725,6 +825,9 @@ _readCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) msg)
   CoerceToDomain *node = makeNode(CoerceToDomain);
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_UINT_FIELD(resulttype, resulttype, resulttype);
+  READ_INT_FIELD(resulttypmod, resulttypmod, resulttypmod);
+  READ_UINT_FIELD(resultcollid, resultcollid, resultcollid);
+  READ_ENUM_FIELD(CoercionForm, coercionformat, coercionformat, coercionformat);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -734,6 +837,8 @@ _readCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue, CoerceToDomainValue) msg)
 {
   CoerceToDomainValue *node = makeNode(CoerceToDomainValue);
   READ_UINT_FIELD(type_id, typeId, typeId);
+  READ_INT_FIELD(type_mod, typeMod, typeMod);
+  READ_UINT_FIELD(collation, collation, collation);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -743,6 +848,8 @@ _readSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) msg)
 {
   SetToDefault *node = makeNode(SetToDefault);
   READ_UINT_FIELD(type_id, typeId, typeId);
+  READ_INT_FIELD(type_mod, typeMod, typeMod);
+  READ_UINT_FIELD(collation, collation, collation);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -782,7 +889,11 @@ _readTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) msg)
   TargetEntry *node = makeNode(TargetEntry);
   READ_EXPR_PTR_FIELD(expr, expr, expr);
   READ_INT_FIELD(resno, resno, resno);
+  READ_STRING_FIELD(resname, resname, resname);
   READ_UINT_FIELD(ressortgroupref, ressortgroupref, ressortgroupref);
+  READ_UINT_FIELD(resorigtbl, resorigtbl, resorigtbl);
+  READ_INT_FIELD(resorigcol, resorigcol, resorigcol);
+  READ_BOOL_FIELD(resjunk, resjunk, resjunk);
   return node;
 }
 
@@ -802,7 +913,10 @@ _readJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) msg)
   READ_BOOL_FIELD(is_natural, isNatural, isNatural);
   READ_NODE_PTR_FIELD(larg, larg, larg);
   READ_NODE_PTR_FIELD(rarg, rarg, rarg);
+  READ_LIST_FIELD(using_clause, usingClause, usingClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, join_using_alias, join_using_alias, join_using_alias);
   READ_NODE_PTR_FIELD(quals, quals, quals);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
   READ_INT_FIELD(rtindex, rtindex, rtindex);
   return node;
 }
@@ -836,12 +950,28 @@ _readQuery(OUT_TYPE(Query, Query) msg)
 {
   Query *node = makeNode(Query);
   READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  READ_ENUM_FIELD(QuerySource, query_source, querySource, querySource);
+  READ_BOOL_FIELD(can_set_tag, canSetTag, canSetTag);
   READ_NODE_PTR_FIELD(utility_stmt, utilityStmt, utilityStmt);
+  READ_INT_FIELD(result_relation, resultRelation, resultRelation);
+  READ_BOOL_FIELD(has_aggs, hasAggs, hasAggs);
+  READ_BOOL_FIELD(has_window_funcs, hasWindowFuncs, hasWindowFuncs);
+  READ_BOOL_FIELD(has_target_srfs, hasTargetSRFs, hasTargetSRFs);
+  READ_BOOL_FIELD(has_sub_links, hasSubLinks, hasSubLinks);
+  READ_BOOL_FIELD(has_distinct_on, hasDistinctOn, hasDistinctOn);
+  READ_BOOL_FIELD(has_recursive, hasRecursive, hasRecursive);
+  READ_BOOL_FIELD(has_modifying_cte, hasModifyingCTE, hasModifyingCTE);
+  READ_BOOL_FIELD(has_for_update, hasForUpdate, hasForUpdate);
+  READ_BOOL_FIELD(has_row_security, hasRowSecurity, hasRowSecurity);
+  READ_BOOL_FIELD(is_return, isReturn, isReturn);
   READ_LIST_FIELD(cte_list, cteList, cteList);
   READ_LIST_FIELD(rtable, rtable, rtable);
+  READ_LIST_FIELD(rteperminfos, rteperminfos, rteperminfos);
   READ_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
   READ_LIST_FIELD(merge_action_list, mergeActionList, mergeActionList);
+  READ_BOOL_FIELD(merge_use_outer_join, mergeUseOuterJoin, mergeUseOuterJoin);
   READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_ENUM_FIELD(OverridingKind, override, override, override);
   READ_SPECIFIC_NODE_PTR_FIELD(OnConflictExpr, on_conflict_expr, on_conflict, onConflict, onConflict);
   READ_LIST_FIELD(returning_list, returningList, returningList);
   READ_LIST_FIELD(group_clause, groupClause, groupClause);
@@ -856,7 +986,10 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_ENUM_FIELD(LimitOption, limit_option, limitOption, limitOption);
   READ_LIST_FIELD(row_marks, rowMarks, rowMarks);
   READ_NODE_PTR_FIELD(set_operations, setOperations, setOperations);
+  READ_LIST_FIELD(constraint_deps, constraintDeps, constraintDeps);
+  READ_LIST_FIELD(with_check_options, withCheckOptions, withCheckOptions);
   READ_INT_FIELD(stmt_location, stmt_location, stmt_location);
+  READ_INT_FIELD(stmt_len, stmt_len, stmt_len);
   return node;
 }
 
@@ -1299,6 +1432,12 @@ _readRangeTblFunction(OUT_TYPE(RangeTblFunction, RangeTblFunction) msg)
 {
   RangeTblFunction *node = makeNode(RangeTblFunction);
   READ_NODE_PTR_FIELD(funcexpr, funcexpr, funcexpr);
+  READ_INT_FIELD(funccolcount, funccolcount, funccolcount);
+  READ_LIST_FIELD(funccolnames, funccolnames, funccolnames);
+  READ_LIST_FIELD(funccoltypes, funccoltypes, funccoltypes);
+  READ_LIST_FIELD(funccoltypmods, funccoltypmods, funccoltypmods);
+  READ_LIST_FIELD(funccolcollations, funccolcollations, funccolcollations);
+  READ_BITMAPSET_FIELD(funcparams, funcparams, funcparams);
   return node;
 }
 
@@ -1332,6 +1471,7 @@ _readSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) msg)
   READ_UINT_FIELD(eqop, eqop, eqop);
   READ_UINT_FIELD(sortop, sortop, sortop);
   READ_BOOL_FIELD(nulls_first, nulls_first, nulls_first);
+  READ_BOOL_FIELD(hashable, hashable, hashable);
   return node;
 }
 
@@ -1339,6 +1479,7 @@ static GroupingSet *
 _readGroupingSet(OUT_TYPE(GroupingSet, GroupingSet) msg)
 {
   GroupingSet *node = makeNode(GroupingSet);
+  READ_ENUM_FIELD(GroupingSetKind, kind, kind, kind);
   READ_LIST_FIELD(content, content, content);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -1348,12 +1489,21 @@ static WindowClause *
 _readWindowClause(OUT_TYPE(WindowClause, WindowClause) msg)
 {
   WindowClause *node = makeNode(WindowClause);
+  READ_STRING_FIELD(name, name, name);
+  READ_STRING_FIELD(refname, refname, refname);
   READ_LIST_FIELD(partition_clause, partitionClause, partitionClause);
   READ_LIST_FIELD(order_clause, orderClause, orderClause);
   READ_INT_FIELD(frame_options, frameOptions, frameOptions);
   READ_NODE_PTR_FIELD(start_offset, startOffset, startOffset);
   READ_NODE_PTR_FIELD(end_offset, endOffset, endOffset);
+  READ_LIST_FIELD(run_condition, runCondition, runCondition);
+  READ_UINT_FIELD(start_in_range_func, startInRangeFunc, startInRangeFunc);
+  READ_UINT_FIELD(end_in_range_func, endInRangeFunc, endInRangeFunc);
+  READ_UINT_FIELD(in_range_coll, inRangeColl, inRangeColl);
+  READ_BOOL_FIELD(in_range_asc, inRangeAsc, inRangeAsc);
+  READ_BOOL_FIELD(in_range_nulls_first, inRangeNullsFirst, inRangeNullsFirst);
   READ_UINT_FIELD(winref, winref, winref);
+  READ_BOOL_FIELD(copied_order, copiedOrder, copiedOrder);
   return node;
 }
 
@@ -1434,9 +1584,18 @@ _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg)
 {
   CommonTableExpr *node = makeNode(CommonTableExpr);
   READ_STRING_FIELD(ctename, ctename, ctename);
+  READ_LIST_FIELD(aliascolnames, aliascolnames, aliascolnames);
   READ_ENUM_FIELD(CTEMaterialize, ctematerialized, ctematerialized, ctematerialized);
   READ_NODE_PTR_FIELD(ctequery, ctequery, ctequery);
+  READ_SPECIFIC_NODE_PTR_FIELD(CTESearchClause, ctesearch_clause, search_clause, search_clause, search_clause);
+  READ_SPECIFIC_NODE_PTR_FIELD(CTECycleClause, ctecycle_clause, cycle_clause, cycle_clause, cycle_clause);
   READ_INT_FIELD(location, location, location);
+  READ_BOOL_FIELD(cterecursive, cterecursive, cterecursive);
+  READ_INT_FIELD(cterefcount, cterefcount, cterefcount);
+  READ_LIST_FIELD(ctecolnames, ctecolnames, ctecolnames);
+  READ_LIST_FIELD(ctecoltypes, ctecoltypes, ctecoltypes);
+  READ_LIST_FIELD(ctecoltypmods, ctecoltypmods, ctecoltypmods);
+  READ_LIST_FIELD(ctecolcollations, ctecolcollations, ctecolcollations);
   return node;
 }
 
@@ -1459,8 +1618,10 @@ _readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg)
   MergeAction *node = makeNode(MergeAction);
   READ_BOOL_FIELD(matched, matched, matched);
   READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  READ_ENUM_FIELD(OverridingKind, override, override, override);
   READ_NODE_PTR_FIELD(qual, qual, qual);
   READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_LIST_FIELD(update_colnos, updateColnos, updateColnos);
   return node;
 }
 
@@ -1656,6 +1817,10 @@ _readSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) msg)
   READ_BOOL_FIELD(all, all, all);
   READ_NODE_PTR_FIELD(larg, larg, larg);
   READ_NODE_PTR_FIELD(rarg, rarg, rarg);
+  READ_LIST_FIELD(col_types, colTypes, colTypes);
+  READ_LIST_FIELD(col_typmods, colTypmods, colTypmods);
+  READ_LIST_FIELD(col_collations, colCollations, colCollations);
+  READ_LIST_FIELD(group_clauses, groupClauses, groupClauses);
   return node;
 }
 
@@ -2484,6 +2649,8 @@ _readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg)
 {
   CallStmt *node = makeNode(CallStmt);
   READ_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
+  READ_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
+  READ_LIST_FIELD(outargs, outargs, outargs);
   return node;
 }
 

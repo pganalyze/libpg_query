@@ -343,10 +343,19 @@ message RangeVar
 
 message TableFunc
 {
-  Node docexpr = 1 [json_name="docexpr"];
-  Node rowexpr = 2 [json_name="rowexpr"];
-  repeated Node colexprs = 3 [json_name="colexprs"];
-  int32 location = 4 [json_name="location"];
+  repeated Node ns_uris = 1 [json_name="ns_uris"];
+  repeated Node ns_names = 2 [json_name="ns_names"];
+  Node docexpr = 3 [json_name="docexpr"];
+  Node rowexpr = 4 [json_name="rowexpr"];
+  repeated Node colnames = 5 [json_name="colnames"];
+  repeated Node coltypes = 6 [json_name="coltypes"];
+  repeated Node coltypmods = 7 [json_name="coltypmods"];
+  repeated Node colcollations = 8 [json_name="colcollations"];
+  repeated Node colexprs = 9 [json_name="colexprs"];
+  repeated Node coldefexprs = 10 [json_name="coldefexprs"];
+  repeated uint64 notnulls = 11 [json_name="notnulls"];
+  int32 ordinalitycol = 12 [json_name="ordinalitycol"];
+  int32 location = 13 [json_name="location"];
 }
 
 message IntoClause
@@ -357,7 +366,8 @@ message IntoClause
   repeated Node options = 4 [json_name="options"];
   OnCommitAction on_commit = 5 [json_name="onCommit"];
   string table_space_name = 6 [json_name="tableSpaceName"];
-  bool skip_data = 7 [json_name="skipData"];
+  Node view_query = 7 [json_name="viewQuery"];
+  bool skip_data = 8 [json_name="skipData"];
 }
 
 message Var
@@ -365,8 +375,12 @@ message Var
   Node xpr = 1 [json_name="xpr"];
   int32 varno = 2 [json_name="varno"];
   int32 varattno = 3 [json_name="varattno"];
-  uint32 varlevelsup = 4 [json_name="varlevelsup"];
-  int32 location = 5 [json_name="location"];
+  uint32 vartype = 4 [json_name="vartype"];
+  int32 vartypmod = 5 [json_name="vartypmod"];
+  uint32 varcollid = 6 [json_name="varcollid"];
+  repeated uint64 varnullingrels = 7 [json_name="varnullingrels"];
+  uint32 varlevelsup = 8 [json_name="varlevelsup"];
+  int32 location = 9 [json_name="location"];
 }
 
 message Param
@@ -375,85 +389,129 @@ message Param
   ParamKind paramkind = 2 [json_name="paramkind"];
   int32 paramid = 3 [json_name="paramid"];
   uint32 paramtype = 4 [json_name="paramtype"];
-  int32 location = 5 [json_name="location"];
+  int32 paramtypmod = 5 [json_name="paramtypmod"];
+  uint32 paramcollid = 6 [json_name="paramcollid"];
+  int32 location = 7 [json_name="location"];
 }
 
 message Aggref
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 aggfnoid = 2 [json_name="aggfnoid"];
-  repeated Node aggdirectargs = 3 [json_name="aggdirectargs"];
-  repeated Node args = 4 [json_name="args"];
-  repeated Node aggorder = 5 [json_name="aggorder"];
-  repeated Node aggdistinct = 6 [json_name="aggdistinct"];
-  Node aggfilter = 7 [json_name="aggfilter"];
-  int32 location = 8 [json_name="location"];
+  uint32 aggtype = 3 [json_name="aggtype"];
+  uint32 aggcollid = 4 [json_name="aggcollid"];
+  uint32 inputcollid = 5 [json_name="inputcollid"];
+  repeated Node aggargtypes = 6 [json_name="aggargtypes"];
+  repeated Node aggdirectargs = 7 [json_name="aggdirectargs"];
+  repeated Node args = 8 [json_name="args"];
+  repeated Node aggorder = 9 [json_name="aggorder"];
+  repeated Node aggdistinct = 10 [json_name="aggdistinct"];
+  Node aggfilter = 11 [json_name="aggfilter"];
+  bool aggstar = 12 [json_name="aggstar"];
+  bool aggvariadic = 13 [json_name="aggvariadic"];
+  string aggkind = 14 [json_name="aggkind"];
+  uint32 agglevelsup = 15 [json_name="agglevelsup"];
+  AggSplit aggsplit = 16 [json_name="aggsplit"];
+  int32 aggno = 17 [json_name="aggno"];
+  int32 aggtransno = 18 [json_name="aggtransno"];
+  int32 location = 19 [json_name="location"];
 }
 
 message GroupingFunc
 {
   Node xpr = 1 [json_name="xpr"];
-  uint32 agglevelsup = 2 [json_name="agglevelsup"];
-  int32 location = 3 [json_name="location"];
+  repeated Node args = 2 [json_name="args"];
+  repeated Node refs = 3 [json_name="refs"];
+  uint32 agglevelsup = 4 [json_name="agglevelsup"];
+  int32 location = 5 [json_name="location"];
 }
 
 message WindowFunc
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 winfnoid = 2 [json_name="winfnoid"];
-  repeated Node args = 3 [json_name="args"];
-  Node aggfilter = 4 [json_name="aggfilter"];
-  uint32 winref = 5 [json_name="winref"];
-  int32 location = 6 [json_name="location"];
+  uint32 wintype = 3 [json_name="wintype"];
+  uint32 wincollid = 4 [json_name="wincollid"];
+  uint32 inputcollid = 5 [json_name="inputcollid"];
+  repeated Node args = 6 [json_name="args"];
+  Node aggfilter = 7 [json_name="aggfilter"];
+  uint32 winref = 8 [json_name="winref"];
+  bool winstar = 9 [json_name="winstar"];
+  bool winagg = 10 [json_name="winagg"];
+  int32 location = 11 [json_name="location"];
 }
 
 message SubscriptingRef
 {
   Node xpr = 1 [json_name="xpr"];
-  repeated Node refupperindexpr = 2 [json_name="refupperindexpr"];
-  repeated Node reflowerindexpr = 3 [json_name="reflowerindexpr"];
-  Node refexpr = 4 [json_name="refexpr"];
-  Node refassgnexpr = 5 [json_name="refassgnexpr"];
+  uint32 refcontainertype = 2 [json_name="refcontainertype"];
+  uint32 refelemtype = 3 [json_name="refelemtype"];
+  uint32 refrestype = 4 [json_name="refrestype"];
+  int32 reftypmod = 5 [json_name="reftypmod"];
+  uint32 refcollid = 6 [json_name="refcollid"];
+  repeated Node refupperindexpr = 7 [json_name="refupperindexpr"];
+  repeated Node reflowerindexpr = 8 [json_name="reflowerindexpr"];
+  Node refexpr = 9 [json_name="refexpr"];
+  Node refassgnexpr = 10 [json_name="refassgnexpr"];
 }
 
 message FuncExpr
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 funcid = 2 [json_name="funcid"];
-  repeated Node args = 3 [json_name="args"];
-  int32 location = 4 [json_name="location"];
+  uint32 funcresulttype = 3 [json_name="funcresulttype"];
+  bool funcretset = 4 [json_name="funcretset"];
+  bool funcvariadic = 5 [json_name="funcvariadic"];
+  CoercionForm funcformat = 6 [json_name="funcformat"];
+  uint32 funccollid = 7 [json_name="funccollid"];
+  uint32 inputcollid = 8 [json_name="inputcollid"];
+  repeated Node args = 9 [json_name="args"];
+  int32 location = 10 [json_name="location"];
 }
 
 message NamedArgExpr
 {
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
-  int32 argnumber = 3 [json_name="argnumber"];
-  int32 location = 4 [json_name="location"];
+  string name = 3 [json_name="name"];
+  int32 argnumber = 4 [json_name="argnumber"];
+  int32 location = 5 [json_name="location"];
 }
 
 message OpExpr
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 opno = 2 [json_name="opno"];
-  repeated Node args = 3 [json_name="args"];
-  int32 location = 4 [json_name="location"];
+  uint32 opresulttype = 3 [json_name="opresulttype"];
+  bool opretset = 4 [json_name="opretset"];
+  uint32 opcollid = 5 [json_name="opcollid"];
+  uint32 inputcollid = 6 [json_name="inputcollid"];
+  repeated Node args = 7 [json_name="args"];
+  int32 location = 8 [json_name="location"];
 }
 
 message DistinctExpr
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 opno = 2 [json_name="opno"];
-  repeated Node args = 3 [json_name="args"];
-  int32 location = 4 [json_name="location"];
+  uint32 opresulttype = 3 [json_name="opresulttype"];
+  bool opretset = 4 [json_name="opretset"];
+  uint32 opcollid = 5 [json_name="opcollid"];
+  uint32 inputcollid = 6 [json_name="inputcollid"];
+  repeated Node args = 7 [json_name="args"];
+  int32 location = 8 [json_name="location"];
 }
 
 message NullIfExpr
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 opno = 2 [json_name="opno"];
-  repeated Node args = 3 [json_name="args"];
-  int32 location = 4 [json_name="location"];
+  uint32 opresulttype = 3 [json_name="opresulttype"];
+  bool opretset = 4 [json_name="opretset"];
+  uint32 opcollid = 5 [json_name="opcollid"];
+  uint32 inputcollid = 6 [json_name="inputcollid"];
+  repeated Node args = 7 [json_name="args"];
+  int32 location = 8 [json_name="location"];
 }
 
 message ScalarArrayOpExpr
@@ -461,8 +519,9 @@ message ScalarArrayOpExpr
   Node xpr = 1 [json_name="xpr"];
   uint32 opno = 2 [json_name="opno"];
   bool use_or = 3 [json_name="useOr"];
-  repeated Node args = 4 [json_name="args"];
-  int32 location = 5 [json_name="location"];
+  uint32 inputcollid = 4 [json_name="inputcollid"];
+  repeated Node args = 5 [json_name="args"];
+  int32 location = 6 [json_name="location"];
 }
 
 message BoolExpr
@@ -479,8 +538,9 @@ message SubLink
   SubLinkType sub_link_type = 2 [json_name="subLinkType"];
   int32 sub_link_id = 3 [json_name="subLinkId"];
   Node testexpr = 4 [json_name="testexpr"];
-  Node subselect = 5 [json_name="subselect"];
-  int32 location = 6 [json_name="location"];
+  repeated Node oper_name = 5 [json_name="operName"];
+  Node subselect = 6 [json_name="subselect"];
+  int32 location = 7 [json_name="location"];
 }
 
 message SubPlan
@@ -515,6 +575,9 @@ message FieldSelect
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   int32 fieldnum = 3 [json_name="fieldnum"];
+  uint32 resulttype = 4 [json_name="resulttype"];
+  int32 resulttypmod = 5 [json_name="resulttypmod"];
+  uint32 resultcollid = 6 [json_name="resultcollid"];
 }
 
 message FieldStore
@@ -522,6 +585,8 @@ message FieldStore
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   repeated Node newvals = 3 [json_name="newvals"];
+  repeated Node fieldnums = 4 [json_name="fieldnums"];
+  uint32 resulttype = 5 [json_name="resulttype"];
 }
 
 message RelabelType
@@ -529,7 +594,10 @@ message RelabelType
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   uint32 resulttype = 3 [json_name="resulttype"];
-  int32 location = 4 [json_name="location"];
+  int32 resulttypmod = 4 [json_name="resulttypmod"];
+  uint32 resultcollid = 5 [json_name="resultcollid"];
+  CoercionForm relabelformat = 6 [json_name="relabelformat"];
+  int32 location = 7 [json_name="location"];
 }
 
 message CoerceViaIO
@@ -537,7 +605,9 @@ message CoerceViaIO
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   uint32 resulttype = 3 [json_name="resulttype"];
-  int32 location = 4 [json_name="location"];
+  uint32 resultcollid = 4 [json_name="resultcollid"];
+  CoercionForm coerceformat = 5 [json_name="coerceformat"];
+  int32 location = 6 [json_name="location"];
 }
 
 message ArrayCoerceExpr
@@ -546,7 +616,10 @@ message ArrayCoerceExpr
   Node arg = 2 [json_name="arg"];
   Node elemexpr = 3 [json_name="elemexpr"];
   uint32 resulttype = 4 [json_name="resulttype"];
-  int32 location = 5 [json_name="location"];
+  int32 resulttypmod = 5 [json_name="resulttypmod"];
+  uint32 resultcollid = 6 [json_name="resultcollid"];
+  CoercionForm coerceformat = 7 [json_name="coerceformat"];
+  int32 location = 8 [json_name="location"];
 }
 
 message ConvertRowtypeExpr
@@ -554,7 +627,8 @@ message ConvertRowtypeExpr
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   uint32 resulttype = 3 [json_name="resulttype"];
-  int32 location = 4 [json_name="location"];
+  CoercionForm convertformat = 4 [json_name="convertformat"];
+  int32 location = 5 [json_name="location"];
 }
 
 message CollateExpr
@@ -568,10 +642,12 @@ message CollateExpr
 message CaseExpr
 {
   Node xpr = 1 [json_name="xpr"];
-  Node arg = 2 [json_name="arg"];
-  repeated Node args = 3 [json_name="args"];
-  Node defresult = 4 [json_name="defresult"];
-  int32 location = 5 [json_name="location"];
+  uint32 casetype = 2 [json_name="casetype"];
+  uint32 casecollid = 3 [json_name="casecollid"];
+  Node arg = 4 [json_name="arg"];
+  repeated Node args = 5 [json_name="args"];
+  Node defresult = 6 [json_name="defresult"];
+  int32 location = 7 [json_name="location"];
 }
 
 message CaseWhen
@@ -586,61 +662,84 @@ message CaseTestExpr
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 type_id = 2 [json_name="typeId"];
+  int32 type_mod = 3 [json_name="typeMod"];
+  uint32 collation = 4 [json_name="collation"];
 }
 
 message ArrayExpr
 {
   Node xpr = 1 [json_name="xpr"];
-  repeated Node elements = 2 [json_name="elements"];
-  int32 location = 3 [json_name="location"];
+  uint32 array_typeid = 2 [json_name="array_typeid"];
+  uint32 array_collid = 3 [json_name="array_collid"];
+  uint32 element_typeid = 4 [json_name="element_typeid"];
+  repeated Node elements = 5 [json_name="elements"];
+  bool multidims = 6 [json_name="multidims"];
+  int32 location = 7 [json_name="location"];
 }
 
 message RowExpr
 {
   Node xpr = 1 [json_name="xpr"];
   repeated Node args = 2 [json_name="args"];
-  int32 location = 3 [json_name="location"];
+  uint32 row_typeid = 3 [json_name="row_typeid"];
+  CoercionForm row_format = 4 [json_name="row_format"];
+  repeated Node colnames = 5 [json_name="colnames"];
+  int32 location = 6 [json_name="location"];
 }
 
 message RowCompareExpr
 {
   Node xpr = 1 [json_name="xpr"];
   RowCompareType rctype = 2 [json_name="rctype"];
-  repeated Node largs = 3 [json_name="largs"];
-  repeated Node rargs = 4 [json_name="rargs"];
+  repeated Node opnos = 3 [json_name="opnos"];
+  repeated Node opfamilies = 4 [json_name="opfamilies"];
+  repeated Node inputcollids = 5 [json_name="inputcollids"];
+  repeated Node largs = 6 [json_name="largs"];
+  repeated Node rargs = 7 [json_name="rargs"];
 }
 
 message CoalesceExpr
 {
   Node xpr = 1 [json_name="xpr"];
-  repeated Node args = 2 [json_name="args"];
-  int32 location = 3 [json_name="location"];
+  uint32 coalescetype = 2 [json_name="coalescetype"];
+  uint32 coalescecollid = 3 [json_name="coalescecollid"];
+  repeated Node args = 4 [json_name="args"];
+  int32 location = 5 [json_name="location"];
 }
 
 message MinMaxExpr
 {
   Node xpr = 1 [json_name="xpr"];
-  MinMaxOp op = 2 [json_name="op"];
-  repeated Node args = 3 [json_name="args"];
-  int32 location = 4 [json_name="location"];
+  uint32 minmaxtype = 2 [json_name="minmaxtype"];
+  uint32 minmaxcollid = 3 [json_name="minmaxcollid"];
+  uint32 inputcollid = 4 [json_name="inputcollid"];
+  MinMaxOp op = 5 [json_name="op"];
+  repeated Node args = 6 [json_name="args"];
+  int32 location = 7 [json_name="location"];
 }
 
 message SQLValueFunction
 {
   Node xpr = 1 [json_name="xpr"];
   SQLValueFunctionOp op = 2 [json_name="op"];
-  int32 typmod = 3 [json_name="typmod"];
-  int32 location = 4 [json_name="location"];
+  uint32 type = 3 [json_name="type"];
+  int32 typmod = 4 [json_name="typmod"];
+  int32 location = 5 [json_name="location"];
 }
 
 message XmlExpr
 {
   Node xpr = 1 [json_name="xpr"];
   XmlExprOp op = 2 [json_name="op"];
-  repeated Node named_args = 3 [json_name="named_args"];
-  repeated Node args = 4 [json_name="args"];
-  bool indent = 5 [json_name="indent"];
-  int32 location = 6 [json_name="location"];
+  string name = 3 [json_name="name"];
+  repeated Node named_args = 4 [json_name="named_args"];
+  repeated Node arg_names = 5 [json_name="arg_names"];
+  repeated Node args = 6 [json_name="args"];
+  XmlOptionType xmloption = 7 [json_name="xmloption"];
+  bool indent = 8 [json_name="indent"];
+  uint32 type = 9 [json_name="type"];
+  int32 typmod = 10 [json_name="typmod"];
+  int32 location = 11 [json_name="location"];
 }
 
 message JsonFormat
@@ -691,7 +790,8 @@ message NullTest
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   NullTestType nulltesttype = 3 [json_name="nulltesttype"];
-  int32 location = 4 [json_name="location"];
+  bool argisrow = 4 [json_name="argisrow"];
+  int32 location = 5 [json_name="location"];
 }
 
 message BooleanTest
@@ -707,21 +807,28 @@ message CoerceToDomain
   Node xpr = 1 [json_name="xpr"];
   Node arg = 2 [json_name="arg"];
   uint32 resulttype = 3 [json_name="resulttype"];
-  int32 location = 4 [json_name="location"];
+  int32 resulttypmod = 4 [json_name="resulttypmod"];
+  uint32 resultcollid = 5 [json_name="resultcollid"];
+  CoercionForm coercionformat = 6 [json_name="coercionformat"];
+  int32 location = 7 [json_name="location"];
 }
 
 message CoerceToDomainValue
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 type_id = 2 [json_name="typeId"];
-  int32 location = 3 [json_name="location"];
+  int32 type_mod = 3 [json_name="typeMod"];
+  uint32 collation = 4 [json_name="collation"];
+  int32 location = 5 [json_name="location"];
 }
 
 message SetToDefault
 {
   Node xpr = 1 [json_name="xpr"];
   uint32 type_id = 2 [json_name="typeId"];
-  int32 location = 3 [json_name="location"];
+  int32 type_mod = 3 [json_name="typeMod"];
+  uint32 collation = 4 [json_name="collation"];
+  int32 location = 5 [json_name="location"];
 }
 
 message CurrentOfExpr
@@ -752,7 +859,11 @@ message TargetEntry
   Node xpr = 1 [json_name="xpr"];
   Node expr = 2 [json_name="expr"];
   int32 resno = 3 [json_name="resno"];
-  uint32 ressortgroupref = 4 [json_name="ressortgroupref"];
+  string resname = 4 [json_name="resname"];
+  uint32 ressortgroupref = 5 [json_name="ressortgroupref"];
+  uint32 resorigtbl = 6 [json_name="resorigtbl"];
+  int32 resorigcol = 7 [json_name="resorigcol"];
+  bool resjunk = 8 [json_name="resjunk"];
 }
 
 message RangeTblRef
@@ -766,8 +877,11 @@ message JoinExpr
   bool is_natural = 2 [json_name="isNatural"];
   Node larg = 3 [json_name="larg"];
   Node rarg = 4 [json_name="rarg"];
-  Node quals = 5 [json_name="quals"];
-  int32 rtindex = 6 [json_name="rtindex"];
+  repeated Node using_clause = 5 [json_name="usingClause"];
+  Alias join_using_alias = 6 [json_name="join_using_alias"];
+  Node quals = 7 [json_name="quals"];
+  Alias alias = 8 [json_name="alias"];
+  int32 rtindex = 9 [json_name="rtindex"];
 }
 
 message FromExpr
@@ -791,27 +905,46 @@ message OnConflictExpr
 message Query
 {
   CmdType command_type = 1 [json_name="commandType"];
-  Node utility_stmt = 2 [json_name="utilityStmt"];
-  repeated Node cte_list = 3 [json_name="cteList"];
-  repeated Node rtable = 4 [json_name="rtable"];
-  FromExpr jointree = 5 [json_name="jointree"];
-  repeated Node merge_action_list = 6 [json_name="mergeActionList"];
-  repeated Node target_list = 7 [json_name="targetList"];
-  OnConflictExpr on_conflict = 8 [json_name="onConflict"];
-  repeated Node returning_list = 9 [json_name="returningList"];
-  repeated Node group_clause = 10 [json_name="groupClause"];
-  bool group_distinct = 11 [json_name="groupDistinct"];
-  repeated Node grouping_sets = 12 [json_name="groupingSets"];
-  Node having_qual = 13 [json_name="havingQual"];
-  repeated Node window_clause = 14 [json_name="windowClause"];
-  repeated Node distinct_clause = 15 [json_name="distinctClause"];
-  repeated Node sort_clause = 16 [json_name="sortClause"];
-  Node limit_offset = 17 [json_name="limitOffset"];
-  Node limit_count = 18 [json_name="limitCount"];
-  LimitOption limit_option = 19 [json_name="limitOption"];
-  repeated Node row_marks = 20 [json_name="rowMarks"];
-  Node set_operations = 21 [json_name="setOperations"];
-  int32 stmt_location = 22 [json_name="stmt_location"];
+  QuerySource query_source = 2 [json_name="querySource"];
+  bool can_set_tag = 3 [json_name="canSetTag"];
+  Node utility_stmt = 4 [json_name="utilityStmt"];
+  int32 result_relation = 5 [json_name="resultRelation"];
+  bool has_aggs = 6 [json_name="hasAggs"];
+  bool has_window_funcs = 7 [json_name="hasWindowFuncs"];
+  bool has_target_srfs = 8 [json_name="hasTargetSRFs"];
+  bool has_sub_links = 9 [json_name="hasSubLinks"];
+  bool has_distinct_on = 10 [json_name="hasDistinctOn"];
+  bool has_recursive = 11 [json_name="hasRecursive"];
+  bool has_modifying_cte = 12 [json_name="hasModifyingCTE"];
+  bool has_for_update = 13 [json_name="hasForUpdate"];
+  bool has_row_security = 14 [json_name="hasRowSecurity"];
+  bool is_return = 15 [json_name="isReturn"];
+  repeated Node cte_list = 16 [json_name="cteList"];
+  repeated Node rtable = 17 [json_name="rtable"];
+  repeated Node rteperminfos = 18 [json_name="rteperminfos"];
+  FromExpr jointree = 19 [json_name="jointree"];
+  repeated Node merge_action_list = 20 [json_name="mergeActionList"];
+  bool merge_use_outer_join = 21 [json_name="mergeUseOuterJoin"];
+  repeated Node target_list = 22 [json_name="targetList"];
+  OverridingKind override = 23 [json_name="override"];
+  OnConflictExpr on_conflict = 24 [json_name="onConflict"];
+  repeated Node returning_list = 25 [json_name="returningList"];
+  repeated Node group_clause = 26 [json_name="groupClause"];
+  bool group_distinct = 27 [json_name="groupDistinct"];
+  repeated Node grouping_sets = 28 [json_name="groupingSets"];
+  Node having_qual = 29 [json_name="havingQual"];
+  repeated Node window_clause = 30 [json_name="windowClause"];
+  repeated Node distinct_clause = 31 [json_name="distinctClause"];
+  repeated Node sort_clause = 32 [json_name="sortClause"];
+  Node limit_offset = 33 [json_name="limitOffset"];
+  Node limit_count = 34 [json_name="limitCount"];
+  LimitOption limit_option = 35 [json_name="limitOption"];
+  repeated Node row_marks = 36 [json_name="rowMarks"];
+  Node set_operations = 37 [json_name="setOperations"];
+  repeated Node constraint_deps = 38 [json_name="constraintDeps"];
+  repeated Node with_check_options = 39 [json_name="withCheckOptions"];
+  int32 stmt_location = 40 [json_name="stmt_location"];
+  int32 stmt_len = 41 [json_name="stmt_len"];
 }
 
 message TypeName
@@ -1149,6 +1282,12 @@ message RTEPermissionInfo
 message RangeTblFunction
 {
   Node funcexpr = 1 [json_name="funcexpr"];
+  int32 funccolcount = 2 [json_name="funccolcount"];
+  repeated Node funccolnames = 3 [json_name="funccolnames"];
+  repeated Node funccoltypes = 4 [json_name="funccoltypes"];
+  repeated Node funccoltypmods = 5 [json_name="funccoltypmods"];
+  repeated Node funccolcollations = 6 [json_name="funccolcollations"];
+  repeated uint64 funcparams = 7 [json_name="funcparams"];
 }
 
 message TableSampleClause
@@ -1173,22 +1312,33 @@ message SortGroupClause
   uint32 eqop = 2 [json_name="eqop"];
   uint32 sortop = 3 [json_name="sortop"];
   bool nulls_first = 4 [json_name="nulls_first"];
+  bool hashable = 5 [json_name="hashable"];
 }
 
 message GroupingSet
 {
-  repeated Node content = 1 [json_name="content"];
-  int32 location = 2 [json_name="location"];
+  GroupingSetKind kind = 1 [json_name="kind"];
+  repeated Node content = 2 [json_name="content"];
+  int32 location = 3 [json_name="location"];
 }
 
 message WindowClause
 {
-  repeated Node partition_clause = 1 [json_name="partitionClause"];
-  repeated Node order_clause = 2 [json_name="orderClause"];
-  int32 frame_options = 3 [json_name="frameOptions"];
-  Node start_offset = 4 [json_name="startOffset"];
-  Node end_offset = 5 [json_name="endOffset"];
-  uint32 winref = 6 [json_name="winref"];
+  string name = 1 [json_name="name"];
+  string refname = 2 [json_name="refname"];
+  repeated Node partition_clause = 3 [json_name="partitionClause"];
+  repeated Node order_clause = 4 [json_name="orderClause"];
+  int32 frame_options = 5 [json_name="frameOptions"];
+  Node start_offset = 6 [json_name="startOffset"];
+  Node end_offset = 7 [json_name="endOffset"];
+  repeated Node run_condition = 8 [json_name="runCondition"];
+  uint32 start_in_range_func = 9 [json_name="startInRangeFunc"];
+  uint32 end_in_range_func = 10 [json_name="endInRangeFunc"];
+  uint32 in_range_coll = 11 [json_name="inRangeColl"];
+  bool in_range_asc = 12 [json_name="inRangeAsc"];
+  bool in_range_nulls_first = 13 [json_name="inRangeNullsFirst"];
+  uint32 winref = 14 [json_name="winref"];
+  bool copied_order = 15 [json_name="copiedOrder"];
 }
 
 message RowMarkClause
@@ -1248,9 +1398,18 @@ message CTECycleClause
 message CommonTableExpr
 {
   string ctename = 1 [json_name="ctename"];
-  CTEMaterialize ctematerialized = 2 [json_name="ctematerialized"];
-  Node ctequery = 3 [json_name="ctequery"];
-  int32 location = 4 [json_name="location"];
+  repeated Node aliascolnames = 2 [json_name="aliascolnames"];
+  CTEMaterialize ctematerialized = 3 [json_name="ctematerialized"];
+  Node ctequery = 4 [json_name="ctequery"];
+  CTESearchClause search_clause = 5 [json_name="search_clause"];
+  CTECycleClause cycle_clause = 6 [json_name="cycle_clause"];
+  int32 location = 7 [json_name="location"];
+  bool cterecursive = 8 [json_name="cterecursive"];
+  int32 cterefcount = 9 [json_name="cterefcount"];
+  repeated Node ctecolnames = 10 [json_name="ctecolnames"];
+  repeated Node ctecoltypes = 11 [json_name="ctecoltypes"];
+  repeated Node ctecoltypmods = 12 [json_name="ctecoltypmods"];
+  repeated Node ctecolcollations = 13 [json_name="ctecolcollations"];
 }
 
 message MergeWhenClause
@@ -1267,8 +1426,10 @@ message MergeAction
 {
   bool matched = 1 [json_name="matched"];
   CmdType command_type = 2 [json_name="commandType"];
-  Node qual = 3 [json_name="qual"];
-  repeated Node target_list = 4 [json_name="targetList"];
+  OverridingKind override = 3 [json_name="override"];
+  Node qual = 4 [json_name="qual"];
+  repeated Node target_list = 5 [json_name="targetList"];
+  repeated Node update_colnos = 6 [json_name="updateColnos"];
 }
 
 message TriggerTransition
@@ -1416,6 +1577,10 @@ message SetOperationStmt
   bool all = 2 [json_name="all"];
   Node larg = 3 [json_name="larg"];
   Node rarg = 4 [json_name="rarg"];
+  repeated Node col_types = 5 [json_name="colTypes"];
+  repeated Node col_typmods = 6 [json_name="colTypmods"];
+  repeated Node col_collations = 7 [json_name="colCollations"];
+  repeated Node group_clauses = 8 [json_name="groupClauses"];
 }
 
 message ReturnStmt
@@ -2033,6 +2198,8 @@ message InlineCodeBlock
 message CallStmt
 {
   FuncCall funccall = 1 [json_name="funccall"];
+  FuncExpr funcexpr = 2 [json_name="funcexpr"];
+  repeated Node outargs = 3 [json_name="outargs"];
 }
 
 message CallContext
