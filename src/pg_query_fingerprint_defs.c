@@ -4815,12 +4815,12 @@ _fingerprintRTEPermissionInfo(FingerprintContext *ctx, const RTEPermissionInfo *
   }
 
   if (true) {
-    int x;
+    int x = -1;
     Bitmapset	*bms = bms_copy(node->insertedCols);
 
     _fingerprintString(ctx, "insertedCols");
 
-  	while ((x = bms_first_member(bms)) >= 0) {
+  	while ((x = bms_next_member(bms, x)) >= 0) {
       char buffer[50];
       sprintf(buffer, "%d", x);
       _fingerprintString(ctx, buffer);
@@ -4844,12 +4844,12 @@ _fingerprintRTEPermissionInfo(FingerprintContext *ctx, const RTEPermissionInfo *
   }
 
   if (true) {
-    int x;
+    int x = -1;
     Bitmapset	*bms = bms_copy(node->selectedCols);
 
     _fingerprintString(ctx, "selectedCols");
 
-  	while ((x = bms_first_member(bms)) >= 0) {
+  	while ((x = bms_next_member(bms, x)) >= 0) {
       char buffer[50];
       sprintf(buffer, "%d", x);
       _fingerprintString(ctx, buffer);
@@ -4859,12 +4859,12 @@ _fingerprintRTEPermissionInfo(FingerprintContext *ctx, const RTEPermissionInfo *
   }
 
   if (true) {
-    int x;
+    int x = -1;
     Bitmapset	*bms = bms_copy(node->updatedCols);
 
     _fingerprintString(ctx, "updatedCols");
 
-  	while ((x = bms_first_member(bms)) >= 0) {
+  	while ((x = bms_next_member(bms, x)) >= 0) {
       char buffer[50];
       sprintf(buffer, "%d", x);
       _fingerprintString(ctx, buffer);
