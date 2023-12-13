@@ -57,11 +57,11 @@
 #define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
 	if (!bms_is_empty(node->fldname)) \
 	{ \
-		int x = 0; \
+		int x = -1; \
 		int i = 0; \
 		out->n_##outname = bms_num_members(node->fldname); \
 		out->outname = palloc(sizeof(PgQuery__Node*) * out->n_##outname); \
-		while ((x = bms_first_member(node->fldname)) >= 0) \
+		while ((x = bms_next_member(node->fldname, x)) >= 0) \
 			out->outname[i++] = x; \
     }
 
