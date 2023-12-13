@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - exprLocation
  * - leftmostLoc
+ * - raw_expression_tree_walker_impl
  *--------------------------------------------------------------------
  */
 
@@ -923,7 +924,618 @@ leftmostLoc(int loc1, int loc2)
  * because this is used mainly during analysis of CTEs, and only DML
  * statements can appear in CTEs.
  */
+bool
+raw_expression_tree_walker_impl(Node *node,
+								tree_walker_callback walker,
+								void *context)
+{
+	ListCell   *temp;
 
+	/*
+	 * The walker has already visited the current node, and so we need only
+	 * recurse into any sub-nodes it has.
+	 */
+	if (node == NULL)
+		return false;
+
+	/* Guard against stack overflow due to overly complex expressions */
+	check_stack_depth();
+
+	switch (nodeTag(node))
+	{
+		case T_JsonFormat:
+		case T_SetToDefault:
+		case T_CurrentOfExpr:
+		case T_SQLValueFunction:
+		case T_Integer:
+		case T_Float:
+		case T_Boolean:
+		case T_String:
+		case T_BitString:
+		case T_ParamRef:
+		case T_A_Const:
+		case T_A_Star:
+			/* primitive node types with no subnodes */
+			break;
+		case T_Alias:
+			/* we assume the colnames list isn't interesting */
+			break;
+		case T_RangeVar:
+			return WALK(((RangeVar *) node)->alias);
+		case T_GroupingFunc:
+			return WALK(((GroupingFunc *) node)->args);
+		case T_SubLink:
+			{
+				SubLink    *sublink = (SubLink *) node;
+
+				if (WALK(sublink->testexpr))
+					return true;
+				/* we assume the operName is not interesting */
+				if (WALK(sublink->subselect))
+					return true;
+			}
+			break;
+		case T_CaseExpr:
+			{
+				CaseExpr   *caseexpr = (CaseExpr *) node;
+
+				if (WALK(caseexpr->arg))
+					return true;
+				/* we assume walker doesn't care about CaseWhens, either */
+				foreach(temp, caseexpr->args)
+				{
+					CaseWhen   *when = lfirst_node(CaseWhen, temp);
+
+					if (WALK(when->expr))
+						return true;
+					if (WALK(when->result))
+						return true;
+				}
+				if (WALK(caseexpr->defresult))
+					return true;
+			}
+			break;
+		case T_RowExpr:
+			/* Assume colnames isn't interesting */
+			return WALK(((RowExpr *) node)->args);
+		case T_CoalesceExpr:
+			return WALK(((CoalesceExpr *) node)->args);
+		case T_MinMaxExpr:
+			return WALK(((MinMaxExpr *) node)->args);
+		case T_XmlExpr:
+			{
+				XmlExpr    *xexpr = (XmlExpr *) node;
+
+				if (WALK(xexpr->named_args))
+					return true;
+				/* we assume walker doesn't care about arg_names */
+				if (WALK(xexpr->args))
+					return true;
+			}
+			break;
+		case T_JsonReturning:
+			return WALK(((JsonReturning *) node)->format);
+		case T_JsonValueExpr:
+			{
+				JsonValueExpr *jve = (JsonValueExpr *) node;
+
+				if (WALK(jve->raw_expr))
+					return true;
+				if (WALK(jve->formatted_expr))
+					return true;
+				if (WALK(jve->format))
+					return true;
+			}
+			break;
+		case T_JsonConstructorExpr:
+			{
+				JsonConstructorExpr *ctor = (JsonConstructorExpr *) node;
+
+				if (WALK(ctor->args))
+					return true;
+				if (WALK(ctor->func))
+					return true;
+				if (WALK(ctor->coercion))
+					return true;
+				if (WALK(ctor->returning))
+					return true;
+			}
+			break;
+		case T_JsonIsPredicate:
+			return WALK(((JsonIsPredicate *) node)->expr);
+		case T_NullTest:
+			return WALK(((NullTest *) node)->arg);
+		case T_BooleanTest:
+			return WALK(((BooleanTest *) node)->arg);
+		case T_JoinExpr:
+			{
+				JoinExpr   *join = (JoinExpr *) node;
+
+				if (WALK(join->larg))
+					return true;
+				if (WALK(join->rarg))
+					return true;
+				if (WALK(join->quals))
+					return true;
+				if (WALK(join->alias))
+					return true;
+				/* using list is deemed uninteresting */
+			}
+			break;
+		case T_IntoClause:
+			{
+				IntoClause *into = (IntoClause *) node;
+
+				if (WALK(into->rel))
+					return true;
+				/* colNames, options are deemed uninteresting */
+				/* viewQuery should be null in raw parsetree, but check it */
+				if (WALK(into->viewQuery))
+					return true;
+			}
+			break;
+		case T_List:
+			foreach(temp, (List *) node)
+			{
+				if (WALK((Node *) lfirst(temp)))
+					return true;
+			}
+			break;
+		case T_InsertStmt:
+			{
+				InsertStmt *stmt = (InsertStmt *) node;
+
+				if (WALK(stmt->relation))
+					return true;
+				if (WALK(stmt->cols))
+					return true;
+				if (WALK(stmt->selectStmt))
+					return true;
+				if (WALK(stmt->onConflictClause))
+					return true;
+				if (WALK(stmt->returningList))
+					return true;
+				if (WALK(stmt->withClause))
+					return true;
+			}
+			break;
+		case T_DeleteStmt:
+			{
+				DeleteStmt *stmt = (DeleteStmt *) node;
+
+				if (WALK(stmt->relation))
+					return true;
+				if (WALK(stmt->usingClause))
+					return true;
+				if (WALK(stmt->whereClause))
+					return true;
+				if (WALK(stmt->returningList))
+					return true;
+				if (WALK(stmt->withClause))
+					return true;
+			}
+			break;
+		case T_UpdateStmt:
+			{
+				UpdateStmt *stmt = (UpdateStmt *) node;
+
+				if (WALK(stmt->relation))
+					return true;
+				if (WALK(stmt->targetList))
+					return true;
+				if (WALK(stmt->whereClause))
+					return true;
+				if (WALK(stmt->fromClause))
+					return true;
+				if (WALK(stmt->returningList))
+					return true;
+				if (WALK(stmt->withClause))
+					return true;
+			}
+			break;
+		case T_MergeStmt:
+			{
+				MergeStmt  *stmt = (MergeStmt *) node;
+
+				if (WALK(stmt->relation))
+					return true;
+				if (WALK(stmt->sourceRelation))
+					return true;
+				if (WALK(stmt->joinCondition))
+					return true;
+				if (WALK(stmt->mergeWhenClauses))
+					return true;
+				if (WALK(stmt->withClause))
+					return true;
+			}
+			break;
+		case T_MergeWhenClause:
+			{
+				MergeWhenClause *mergeWhenClause = (MergeWhenClause *) node;
+
+				if (WALK(mergeWhenClause->condition))
+					return true;
+				if (WALK(mergeWhenClause->targetList))
+					return true;
+				if (WALK(mergeWhenClause->values))
+					return true;
+			}
+			break;
+		case T_SelectStmt:
+			{
+				SelectStmt *stmt = (SelectStmt *) node;
+
+				if (WALK(stmt->distinctClause))
+					return true;
+				if (WALK(stmt->intoClause))
+					return true;
+				if (WALK(stmt->targetList))
+					return true;
+				if (WALK(stmt->fromClause))
+					return true;
+				if (WALK(stmt->whereClause))
+					return true;
+				if (WALK(stmt->groupClause))
+					return true;
+				if (WALK(stmt->havingClause))
+					return true;
+				if (WALK(stmt->windowClause))
+					return true;
+				if (WALK(stmt->valuesLists))
+					return true;
+				if (WALK(stmt->sortClause))
+					return true;
+				if (WALK(stmt->limitOffset))
+					return true;
+				if (WALK(stmt->limitCount))
+					return true;
+				if (WALK(stmt->lockingClause))
+					return true;
+				if (WALK(stmt->withClause))
+					return true;
+				if (WALK(stmt->larg))
+					return true;
+				if (WALK(stmt->rarg))
+					return true;
+			}
+			break;
+		case T_PLAssignStmt:
+			{
+				PLAssignStmt *stmt = (PLAssignStmt *) node;
+
+				if (WALK(stmt->indirection))
+					return true;
+				if (WALK(stmt->val))
+					return true;
+			}
+			break;
+		case T_A_Expr:
+			{
+				A_Expr	   *expr = (A_Expr *) node;
+
+				if (WALK(expr->lexpr))
+					return true;
+				if (WALK(expr->rexpr))
+					return true;
+				/* operator name is deemed uninteresting */
+			}
+			break;
+		case T_BoolExpr:
+			{
+				BoolExpr   *expr = (BoolExpr *) node;
+
+				if (WALK(expr->args))
+					return true;
+			}
+			break;
+		case T_ColumnRef:
+			/* we assume the fields contain nothing interesting */
+			break;
+		case T_FuncCall:
+			{
+				FuncCall   *fcall = (FuncCall *) node;
+
+				if (WALK(fcall->args))
+					return true;
+				if (WALK(fcall->agg_order))
+					return true;
+				if (WALK(fcall->agg_filter))
+					return true;
+				if (WALK(fcall->over))
+					return true;
+				/* function name is deemed uninteresting */
+			}
+			break;
+		case T_NamedArgExpr:
+			return WALK(((NamedArgExpr *) node)->arg);
+		case T_A_Indices:
+			{
+				A_Indices  *indices = (A_Indices *) node;
+
+				if (WALK(indices->lidx))
+					return true;
+				if (WALK(indices->uidx))
+					return true;
+			}
+			break;
+		case T_A_Indirection:
+			{
+				A_Indirection *indir = (A_Indirection *) node;
+
+				if (WALK(indir->arg))
+					return true;
+				if (WALK(indir->indirection))
+					return true;
+			}
+			break;
+		case T_A_ArrayExpr:
+			return WALK(((A_ArrayExpr *) node)->elements);
+		case T_ResTarget:
+			{
+				ResTarget  *rt = (ResTarget *) node;
+
+				if (WALK(rt->indirection))
+					return true;
+				if (WALK(rt->val))
+					return true;
+			}
+			break;
+		case T_MultiAssignRef:
+			return WALK(((MultiAssignRef *) node)->source);
+		case T_TypeCast:
+			{
+				TypeCast   *tc = (TypeCast *) node;
+
+				if (WALK(tc->arg))
+					return true;
+				if (WALK(tc->typeName))
+					return true;
+			}
+			break;
+		case T_CollateClause:
+			return WALK(((CollateClause *) node)->arg);
+		case T_SortBy:
+			return WALK(((SortBy *) node)->node);
+		case T_WindowDef:
+			{
+				WindowDef  *wd = (WindowDef *) node;
+
+				if (WALK(wd->partitionClause))
+					return true;
+				if (WALK(wd->orderClause))
+					return true;
+				if (WALK(wd->startOffset))
+					return true;
+				if (WALK(wd->endOffset))
+					return true;
+			}
+			break;
+		case T_RangeSubselect:
+			{
+				RangeSubselect *rs = (RangeSubselect *) node;
+
+				if (WALK(rs->subquery))
+					return true;
+				if (WALK(rs->alias))
+					return true;
+			}
+			break;
+		case T_RangeFunction:
+			{
+				RangeFunction *rf = (RangeFunction *) node;
+
+				if (WALK(rf->functions))
+					return true;
+				if (WALK(rf->alias))
+					return true;
+				if (WALK(rf->coldeflist))
+					return true;
+			}
+			break;
+		case T_RangeTableSample:
+			{
+				RangeTableSample *rts = (RangeTableSample *) node;
+
+				if (WALK(rts->relation))
+					return true;
+				/* method name is deemed uninteresting */
+				if (WALK(rts->args))
+					return true;
+				if (WALK(rts->repeatable))
+					return true;
+			}
+			break;
+		case T_RangeTableFunc:
+			{
+				RangeTableFunc *rtf = (RangeTableFunc *) node;
+
+				if (WALK(rtf->docexpr))
+					return true;
+				if (WALK(rtf->rowexpr))
+					return true;
+				if (WALK(rtf->namespaces))
+					return true;
+				if (WALK(rtf->columns))
+					return true;
+				if (WALK(rtf->alias))
+					return true;
+			}
+			break;
+		case T_RangeTableFuncCol:
+			{
+				RangeTableFuncCol *rtfc = (RangeTableFuncCol *) node;
+
+				if (WALK(rtfc->colexpr))
+					return true;
+				if (WALK(rtfc->coldefexpr))
+					return true;
+			}
+			break;
+		case T_TypeName:
+			{
+				TypeName   *tn = (TypeName *) node;
+
+				if (WALK(tn->typmods))
+					return true;
+				if (WALK(tn->arrayBounds))
+					return true;
+				/* type name itself is deemed uninteresting */
+			}
+			break;
+		case T_ColumnDef:
+			{
+				ColumnDef  *coldef = (ColumnDef *) node;
+
+				if (WALK(coldef->typeName))
+					return true;
+				if (WALK(coldef->raw_default))
+					return true;
+				if (WALK(coldef->collClause))
+					return true;
+				/* for now, constraints are ignored */
+			}
+			break;
+		case T_IndexElem:
+			{
+				IndexElem  *indelem = (IndexElem *) node;
+
+				if (WALK(indelem->expr))
+					return true;
+				/* collation and opclass names are deemed uninteresting */
+			}
+			break;
+		case T_GroupingSet:
+			return WALK(((GroupingSet *) node)->content);
+		case T_LockingClause:
+			return WALK(((LockingClause *) node)->lockedRels);
+		case T_XmlSerialize:
+			{
+				XmlSerialize *xs = (XmlSerialize *) node;
+
+				if (WALK(xs->expr))
+					return true;
+				if (WALK(xs->typeName))
+					return true;
+			}
+			break;
+		case T_WithClause:
+			return WALK(((WithClause *) node)->ctes);
+		case T_InferClause:
+			{
+				InferClause *stmt = (InferClause *) node;
+
+				if (WALK(stmt->indexElems))
+					return true;
+				if (WALK(stmt->whereClause))
+					return true;
+			}
+			break;
+		case T_OnConflictClause:
+			{
+				OnConflictClause *stmt = (OnConflictClause *) node;
+
+				if (WALK(stmt->infer))
+					return true;
+				if (WALK(stmt->targetList))
+					return true;
+				if (WALK(stmt->whereClause))
+					return true;
+			}
+			break;
+		case T_CommonTableExpr:
+			/* search_clause and cycle_clause are not interesting here */
+			return WALK(((CommonTableExpr *) node)->ctequery);
+		case T_JsonOutput:
+			{
+				JsonOutput *out = (JsonOutput *) node;
+
+				if (WALK(out->typeName))
+					return true;
+				if (WALK(out->returning))
+					return true;
+			}
+			break;
+		case T_JsonKeyValue:
+			{
+				JsonKeyValue *jkv = (JsonKeyValue *) node;
+
+				if (WALK(jkv->key))
+					return true;
+				if (WALK(jkv->value))
+					return true;
+			}
+			break;
+		case T_JsonObjectConstructor:
+			{
+				JsonObjectConstructor *joc = (JsonObjectConstructor *) node;
+
+				if (WALK(joc->output))
+					return true;
+				if (WALK(joc->exprs))
+					return true;
+			}
+			break;
+		case T_JsonArrayConstructor:
+			{
+				JsonArrayConstructor *jac = (JsonArrayConstructor *) node;
+
+				if (WALK(jac->output))
+					return true;
+				if (WALK(jac->exprs))
+					return true;
+			}
+			break;
+		case T_JsonAggConstructor:
+			{
+				JsonAggConstructor *ctor = (JsonAggConstructor *) node;
+
+				if (WALK(ctor->output))
+					return true;
+				if (WALK(ctor->agg_order))
+					return true;
+				if (WALK(ctor->agg_filter))
+					return true;
+				if (WALK(ctor->over))
+					return true;
+			}
+			break;
+		case T_JsonObjectAgg:
+			{
+				JsonObjectAgg *joa = (JsonObjectAgg *) node;
+
+				if (WALK(joa->constructor))
+					return true;
+				if (WALK(joa->arg))
+					return true;
+			}
+			break;
+		case T_JsonArrayAgg:
+			{
+				JsonArrayAgg *jaa = (JsonArrayAgg *) node;
+
+				if (WALK(jaa->constructor))
+					return true;
+				if (WALK(jaa->arg))
+					return true;
+			}
+			break;
+		case T_JsonArrayQueryConstructor:
+			{
+				JsonArrayQueryConstructor *jaqc = (JsonArrayQueryConstructor *) node;
+
+				if (WALK(jaqc->output))
+					return true;
+				if (WALK(jaqc->query))
+					return true;
+			}
+			break;
+		default:
+			elog(ERROR, "unrecognized node type: %d",
+				 (int) nodeTag(node));
+			break;
+	}
+	return false;
+}
 
 /*
  * planstate_tree_walker --- walk plan state trees
