@@ -2188,6 +2188,1822 @@
         },
         {
           "comment": ""
+        },
+        {
+          "name": "List",
+          "value": 1
+        },
+        {
+          "name": "Alias",
+          "value": 2
+        },
+        {
+          "name": "RangeVar",
+          "value": 3
+        },
+        {
+          "name": "TableFunc",
+          "value": 4
+        },
+        {
+          "name": "IntoClause",
+          "value": 5
+        },
+        {
+          "name": "Var",
+          "value": 6
+        },
+        {
+          "name": "Const",
+          "value": 7
+        },
+        {
+          "name": "Param",
+          "value": 8
+        },
+        {
+          "name": "Aggref",
+          "value": 9
+        },
+        {
+          "name": "GroupingFunc",
+          "value": 10
+        },
+        {
+          "name": "WindowFunc",
+          "value": 11
+        },
+        {
+          "name": "SubscriptingRef",
+          "value": 12
+        },
+        {
+          "name": "FuncExpr",
+          "value": 13
+        },
+        {
+          "name": "NamedArgExpr",
+          "value": 14
+        },
+        {
+          "name": "OpExpr",
+          "value": 15
+        },
+        {
+          "name": "DistinctExpr",
+          "value": 16
+        },
+        {
+          "name": "NullIfExpr",
+          "value": 17
+        },
+        {
+          "name": "ScalarArrayOpExpr",
+          "value": 18
+        },
+        {
+          "name": "BoolExpr",
+          "value": 19
+        },
+        {
+          "name": "SubLink",
+          "value": 20
+        },
+        {
+          "name": "SubPlan",
+          "value": 21
+        },
+        {
+          "name": "AlternativeSubPlan",
+          "value": 22
+        },
+        {
+          "name": "FieldSelect",
+          "value": 23
+        },
+        {
+          "name": "FieldStore",
+          "value": 24
+        },
+        {
+          "name": "RelabelType",
+          "value": 25
+        },
+        {
+          "name": "CoerceViaIO",
+          "value": 26
+        },
+        {
+          "name": "ArrayCoerceExpr",
+          "value": 27
+        },
+        {
+          "name": "ConvertRowtypeExpr",
+          "value": 28
+        },
+        {
+          "name": "CollateExpr",
+          "value": 29
+        },
+        {
+          "name": "CaseExpr",
+          "value": 30
+        },
+        {
+          "name": "CaseWhen",
+          "value": 31
+        },
+        {
+          "name": "CaseTestExpr",
+          "value": 32
+        },
+        {
+          "name": "ArrayExpr",
+          "value": 33
+        },
+        {
+          "name": "RowExpr",
+          "value": 34
+        },
+        {
+          "name": "RowCompareExpr",
+          "value": 35
+        },
+        {
+          "name": "CoalesceExpr",
+          "value": 36
+        },
+        {
+          "name": "MinMaxExpr",
+          "value": 37
+        },
+        {
+          "name": "SQLValueFunction",
+          "value": 38
+        },
+        {
+          "name": "XmlExpr",
+          "value": 39
+        },
+        {
+          "name": "JsonFormat",
+          "value": 40
+        },
+        {
+          "name": "JsonReturning",
+          "value": 41
+        },
+        {
+          "name": "JsonValueExpr",
+          "value": 42
+        },
+        {
+          "name": "JsonConstructorExpr",
+          "value": 43
+        },
+        {
+          "name": "JsonIsPredicate",
+          "value": 44
+        },
+        {
+          "name": "NullTest",
+          "value": 45
+        },
+        {
+          "name": "BooleanTest",
+          "value": 46
+        },
+        {
+          "name": "CoerceToDomain",
+          "value": 47
+        },
+        {
+          "name": "CoerceToDomainValue",
+          "value": 48
+        },
+        {
+          "name": "SetToDefault",
+          "value": 49
+        },
+        {
+          "name": "CurrentOfExpr",
+          "value": 50
+        },
+        {
+          "name": "NextValueExpr",
+          "value": 51
+        },
+        {
+          "name": "InferenceElem",
+          "value": 52
+        },
+        {
+          "name": "TargetEntry",
+          "value": 53
+        },
+        {
+          "name": "RangeTblRef",
+          "value": 54
+        },
+        {
+          "name": "JoinExpr",
+          "value": 55
+        },
+        {
+          "name": "FromExpr",
+          "value": 56
+        },
+        {
+          "name": "OnConflictExpr",
+          "value": 57
+        },
+        {
+          "name": "Query",
+          "value": 58
+        },
+        {
+          "name": "TypeName",
+          "value": 59
+        },
+        {
+          "name": "ColumnRef",
+          "value": 60
+        },
+        {
+          "name": "ParamRef",
+          "value": 61
+        },
+        {
+          "name": "A_Expr",
+          "value": 62
+        },
+        {
+          "name": "A_Const",
+          "value": 63
+        },
+        {
+          "name": "TypeCast",
+          "value": 64
+        },
+        {
+          "name": "CollateClause",
+          "value": 65
+        },
+        {
+          "name": "RoleSpec",
+          "value": 66
+        },
+        {
+          "name": "FuncCall",
+          "value": 67
+        },
+        {
+          "name": "A_Star",
+          "value": 68
+        },
+        {
+          "name": "A_Indices",
+          "value": 69
+        },
+        {
+          "name": "A_Indirection",
+          "value": 70
+        },
+        {
+          "name": "A_ArrayExpr",
+          "value": 71
+        },
+        {
+          "name": "ResTarget",
+          "value": 72
+        },
+        {
+          "name": "MultiAssignRef",
+          "value": 73
+        },
+        {
+          "name": "SortBy",
+          "value": 74
+        },
+        {
+          "name": "WindowDef",
+          "value": 75
+        },
+        {
+          "name": "RangeSubselect",
+          "value": 76
+        },
+        {
+          "name": "RangeFunction",
+          "value": 77
+        },
+        {
+          "name": "RangeTableFunc",
+          "value": 78
+        },
+        {
+          "name": "RangeTableFuncCol",
+          "value": 79
+        },
+        {
+          "name": "RangeTableSample",
+          "value": 80
+        },
+        {
+          "name": "ColumnDef",
+          "value": 81
+        },
+        {
+          "name": "TableLikeClause",
+          "value": 82
+        },
+        {
+          "name": "IndexElem",
+          "value": 83
+        },
+        {
+          "name": "DefElem",
+          "value": 84
+        },
+        {
+          "name": "LockingClause",
+          "value": 85
+        },
+        {
+          "name": "XmlSerialize",
+          "value": 86
+        },
+        {
+          "name": "PartitionElem",
+          "value": 87
+        },
+        {
+          "name": "PartitionSpec",
+          "value": 88
+        },
+        {
+          "name": "PartitionBoundSpec",
+          "value": 89
+        },
+        {
+          "name": "PartitionRangeDatum",
+          "value": 90
+        },
+        {
+          "name": "PartitionCmd",
+          "value": 91
+        },
+        {
+          "name": "RangeTblEntry",
+          "value": 92
+        },
+        {
+          "name": "RTEPermissionInfo",
+          "value": 93
+        },
+        {
+          "name": "RangeTblFunction",
+          "value": 94
+        },
+        {
+          "name": "TableSampleClause",
+          "value": 95
+        },
+        {
+          "name": "WithCheckOption",
+          "value": 96
+        },
+        {
+          "name": "SortGroupClause",
+          "value": 97
+        },
+        {
+          "name": "GroupingSet",
+          "value": 98
+        },
+        {
+          "name": "WindowClause",
+          "value": 99
+        },
+        {
+          "name": "RowMarkClause",
+          "value": 100
+        },
+        {
+          "name": "WithClause",
+          "value": 101
+        },
+        {
+          "name": "InferClause",
+          "value": 102
+        },
+        {
+          "name": "OnConflictClause",
+          "value": 103
+        },
+        {
+          "name": "CTESearchClause",
+          "value": 104
+        },
+        {
+          "name": "CTECycleClause",
+          "value": 105
+        },
+        {
+          "name": "CommonTableExpr",
+          "value": 106
+        },
+        {
+          "name": "MergeWhenClause",
+          "value": 107
+        },
+        {
+          "name": "MergeAction",
+          "value": 108
+        },
+        {
+          "name": "TriggerTransition",
+          "value": 109
+        },
+        {
+          "name": "JsonOutput",
+          "value": 110
+        },
+        {
+          "name": "JsonKeyValue",
+          "value": 111
+        },
+        {
+          "name": "JsonObjectConstructor",
+          "value": 112
+        },
+        {
+          "name": "JsonArrayConstructor",
+          "value": 113
+        },
+        {
+          "name": "JsonArrayQueryConstructor",
+          "value": 114
+        },
+        {
+          "name": "JsonAggConstructor",
+          "value": 115
+        },
+        {
+          "name": "JsonObjectAgg",
+          "value": 116
+        },
+        {
+          "name": "JsonArrayAgg",
+          "value": 117
+        },
+        {
+          "name": "RawStmt",
+          "value": 118
+        },
+        {
+          "name": "InsertStmt",
+          "value": 119
+        },
+        {
+          "name": "DeleteStmt",
+          "value": 120
+        },
+        {
+          "name": "UpdateStmt",
+          "value": 121
+        },
+        {
+          "name": "MergeStmt",
+          "value": 122
+        },
+        {
+          "name": "SelectStmt",
+          "value": 123
+        },
+        {
+          "name": "SetOperationStmt",
+          "value": 124
+        },
+        {
+          "name": "ReturnStmt",
+          "value": 125
+        },
+        {
+          "name": "PLAssignStmt",
+          "value": 126
+        },
+        {
+          "name": "CreateSchemaStmt",
+          "value": 127
+        },
+        {
+          "name": "AlterTableStmt",
+          "value": 128
+        },
+        {
+          "name": "ReplicaIdentityStmt",
+          "value": 129
+        },
+        {
+          "name": "AlterTableCmd",
+          "value": 130
+        },
+        {
+          "name": "AlterCollationStmt",
+          "value": 131
+        },
+        {
+          "name": "AlterDomainStmt",
+          "value": 132
+        },
+        {
+          "name": "GrantStmt",
+          "value": 133
+        },
+        {
+          "name": "ObjectWithArgs",
+          "value": 134
+        },
+        {
+          "name": "AccessPriv",
+          "value": 135
+        },
+        {
+          "name": "GrantRoleStmt",
+          "value": 136
+        },
+        {
+          "name": "AlterDefaultPrivilegesStmt",
+          "value": 137
+        },
+        {
+          "name": "CopyStmt",
+          "value": 138
+        },
+        {
+          "name": "VariableSetStmt",
+          "value": 139
+        },
+        {
+          "name": "VariableShowStmt",
+          "value": 140
+        },
+        {
+          "name": "CreateStmt",
+          "value": 141
+        },
+        {
+          "name": "Constraint",
+          "value": 142
+        },
+        {
+          "name": "CreateTableSpaceStmt",
+          "value": 143
+        },
+        {
+          "name": "DropTableSpaceStmt",
+          "value": 144
+        },
+        {
+          "name": "AlterTableSpaceOptionsStmt",
+          "value": 145
+        },
+        {
+          "name": "AlterTableMoveAllStmt",
+          "value": 146
+        },
+        {
+          "name": "CreateExtensionStmt",
+          "value": 147
+        },
+        {
+          "name": "AlterExtensionStmt",
+          "value": 148
+        },
+        {
+          "name": "AlterExtensionContentsStmt",
+          "value": 149
+        },
+        {
+          "name": "CreateFdwStmt",
+          "value": 150
+        },
+        {
+          "name": "AlterFdwStmt",
+          "value": 151
+        },
+        {
+          "name": "CreateForeignServerStmt",
+          "value": 152
+        },
+        {
+          "name": "AlterForeignServerStmt",
+          "value": 153
+        },
+        {
+          "name": "CreateForeignTableStmt",
+          "value": 154
+        },
+        {
+          "name": "CreateUserMappingStmt",
+          "value": 155
+        },
+        {
+          "name": "AlterUserMappingStmt",
+          "value": 156
+        },
+        {
+          "name": "DropUserMappingStmt",
+          "value": 157
+        },
+        {
+          "name": "ImportForeignSchemaStmt",
+          "value": 158
+        },
+        {
+          "name": "CreatePolicyStmt",
+          "value": 159
+        },
+        {
+          "name": "AlterPolicyStmt",
+          "value": 160
+        },
+        {
+          "name": "CreateAmStmt",
+          "value": 161
+        },
+        {
+          "name": "CreateTrigStmt",
+          "value": 162
+        },
+        {
+          "name": "CreateEventTrigStmt",
+          "value": 163
+        },
+        {
+          "name": "AlterEventTrigStmt",
+          "value": 164
+        },
+        {
+          "name": "CreatePLangStmt",
+          "value": 165
+        },
+        {
+          "name": "CreateRoleStmt",
+          "value": 166
+        },
+        {
+          "name": "AlterRoleStmt",
+          "value": 167
+        },
+        {
+          "name": "AlterRoleSetStmt",
+          "value": 168
+        },
+        {
+          "name": "DropRoleStmt",
+          "value": 169
+        },
+        {
+          "name": "CreateSeqStmt",
+          "value": 170
+        },
+        {
+          "name": "AlterSeqStmt",
+          "value": 171
+        },
+        {
+          "name": "DefineStmt",
+          "value": 172
+        },
+        {
+          "name": "CreateDomainStmt",
+          "value": 173
+        },
+        {
+          "name": "CreateOpClassStmt",
+          "value": 174
+        },
+        {
+          "name": "CreateOpClassItem",
+          "value": 175
+        },
+        {
+          "name": "CreateOpFamilyStmt",
+          "value": 176
+        },
+        {
+          "name": "AlterOpFamilyStmt",
+          "value": 177
+        },
+        {
+          "name": "DropStmt",
+          "value": 178
+        },
+        {
+          "name": "TruncateStmt",
+          "value": 179
+        },
+        {
+          "name": "CommentStmt",
+          "value": 180
+        },
+        {
+          "name": "SecLabelStmt",
+          "value": 181
+        },
+        {
+          "name": "DeclareCursorStmt",
+          "value": 182
+        },
+        {
+          "name": "ClosePortalStmt",
+          "value": 183
+        },
+        {
+          "name": "FetchStmt",
+          "value": 184
+        },
+        {
+          "name": "IndexStmt",
+          "value": 185
+        },
+        {
+          "name": "CreateStatsStmt",
+          "value": 186
+        },
+        {
+          "name": "StatsElem",
+          "value": 187
+        },
+        {
+          "name": "AlterStatsStmt",
+          "value": 188
+        },
+        {
+          "name": "CreateFunctionStmt",
+          "value": 189
+        },
+        {
+          "name": "FunctionParameter",
+          "value": 190
+        },
+        {
+          "name": "AlterFunctionStmt",
+          "value": 191
+        },
+        {
+          "name": "DoStmt",
+          "value": 192
+        },
+        {
+          "name": "InlineCodeBlock",
+          "value": 193
+        },
+        {
+          "name": "CallStmt",
+          "value": 194
+        },
+        {
+          "name": "CallContext",
+          "value": 195
+        },
+        {
+          "name": "RenameStmt",
+          "value": 196
+        },
+        {
+          "name": "AlterObjectDependsStmt",
+          "value": 197
+        },
+        {
+          "name": "AlterObjectSchemaStmt",
+          "value": 198
+        },
+        {
+          "name": "AlterOwnerStmt",
+          "value": 199
+        },
+        {
+          "name": "AlterOperatorStmt",
+          "value": 200
+        },
+        {
+          "name": "AlterTypeStmt",
+          "value": 201
+        },
+        {
+          "name": "RuleStmt",
+          "value": 202
+        },
+        {
+          "name": "NotifyStmt",
+          "value": 203
+        },
+        {
+          "name": "ListenStmt",
+          "value": 204
+        },
+        {
+          "name": "UnlistenStmt",
+          "value": 205
+        },
+        {
+          "name": "TransactionStmt",
+          "value": 206
+        },
+        {
+          "name": "CompositeTypeStmt",
+          "value": 207
+        },
+        {
+          "name": "CreateEnumStmt",
+          "value": 208
+        },
+        {
+          "name": "CreateRangeStmt",
+          "value": 209
+        },
+        {
+          "name": "AlterEnumStmt",
+          "value": 210
+        },
+        {
+          "name": "ViewStmt",
+          "value": 211
+        },
+        {
+          "name": "LoadStmt",
+          "value": 212
+        },
+        {
+          "name": "CreatedbStmt",
+          "value": 213
+        },
+        {
+          "name": "AlterDatabaseStmt",
+          "value": 214
+        },
+        {
+          "name": "AlterDatabaseRefreshCollStmt",
+          "value": 215
+        },
+        {
+          "name": "AlterDatabaseSetStmt",
+          "value": 216
+        },
+        {
+          "name": "DropdbStmt",
+          "value": 217
+        },
+        {
+          "name": "AlterSystemStmt",
+          "value": 218
+        },
+        {
+          "name": "ClusterStmt",
+          "value": 219
+        },
+        {
+          "name": "VacuumStmt",
+          "value": 220
+        },
+        {
+          "name": "VacuumRelation",
+          "value": 221
+        },
+        {
+          "name": "ExplainStmt",
+          "value": 222
+        },
+        {
+          "name": "CreateTableAsStmt",
+          "value": 223
+        },
+        {
+          "name": "RefreshMatViewStmt",
+          "value": 224
+        },
+        {
+          "name": "CheckPointStmt",
+          "value": 225
+        },
+        {
+          "name": "DiscardStmt",
+          "value": 226
+        },
+        {
+          "name": "LockStmt",
+          "value": 227
+        },
+        {
+          "name": "ConstraintsSetStmt",
+          "value": 228
+        },
+        {
+          "name": "ReindexStmt",
+          "value": 229
+        },
+        {
+          "name": "CreateConversionStmt",
+          "value": 230
+        },
+        {
+          "name": "CreateCastStmt",
+          "value": 231
+        },
+        {
+          "name": "CreateTransformStmt",
+          "value": 232
+        },
+        {
+          "name": "PrepareStmt",
+          "value": 233
+        },
+        {
+          "name": "ExecuteStmt",
+          "value": 234
+        },
+        {
+          "name": "DeallocateStmt",
+          "value": 235
+        },
+        {
+          "name": "DropOwnedStmt",
+          "value": 236
+        },
+        {
+          "name": "ReassignOwnedStmt",
+          "value": 237
+        },
+        {
+          "name": "AlterTSDictionaryStmt",
+          "value": 238
+        },
+        {
+          "name": "AlterTSConfigurationStmt",
+          "value": 239
+        },
+        {
+          "name": "PublicationTable",
+          "value": 240
+        },
+        {
+          "name": "PublicationObjSpec",
+          "value": 241
+        },
+        {
+          "name": "CreatePublicationStmt",
+          "value": 242
+        },
+        {
+          "name": "AlterPublicationStmt",
+          "value": 243
+        },
+        {
+          "name": "CreateSubscriptionStmt",
+          "value": 244
+        },
+        {
+          "name": "AlterSubscriptionStmt",
+          "value": 245
+        },
+        {
+          "name": "DropSubscriptionStmt",
+          "value": 246
+        },
+        {
+          "name": "PlannerGlobal",
+          "value": 247
+        },
+        {
+          "name": "PlannerInfo",
+          "value": 248
+        },
+        {
+          "name": "RelOptInfo",
+          "value": 249
+        },
+        {
+          "name": "IndexOptInfo",
+          "value": 250
+        },
+        {
+          "name": "ForeignKeyOptInfo",
+          "value": 251
+        },
+        {
+          "name": "StatisticExtInfo",
+          "value": 252
+        },
+        {
+          "name": "JoinDomain",
+          "value": 253
+        },
+        {
+          "name": "EquivalenceClass",
+          "value": 254
+        },
+        {
+          "name": "EquivalenceMember",
+          "value": 255
+        },
+        {
+          "name": "PathKey",
+          "value": 256
+        },
+        {
+          "name": "PathTarget",
+          "value": 257
+        },
+        {
+          "name": "ParamPathInfo",
+          "value": 258
+        },
+        {
+          "name": "Path",
+          "value": 259
+        },
+        {
+          "name": "IndexPath",
+          "value": 260
+        },
+        {
+          "name": "IndexClause",
+          "value": 261
+        },
+        {
+          "name": "BitmapHeapPath",
+          "value": 262
+        },
+        {
+          "name": "BitmapAndPath",
+          "value": 263
+        },
+        {
+          "name": "BitmapOrPath",
+          "value": 264
+        },
+        {
+          "name": "TidPath",
+          "value": 265
+        },
+        {
+          "name": "TidRangePath",
+          "value": 266
+        },
+        {
+          "name": "SubqueryScanPath",
+          "value": 267
+        },
+        {
+          "name": "ForeignPath",
+          "value": 268
+        },
+        {
+          "name": "CustomPath",
+          "value": 269
+        },
+        {
+          "name": "AppendPath",
+          "value": 270
+        },
+        {
+          "name": "MergeAppendPath",
+          "value": 271
+        },
+        {
+          "name": "GroupResultPath",
+          "value": 272
+        },
+        {
+          "name": "MaterialPath",
+          "value": 273
+        },
+        {
+          "name": "MemoizePath",
+          "value": 274
+        },
+        {
+          "name": "UniquePath",
+          "value": 275
+        },
+        {
+          "name": "GatherPath",
+          "value": 276
+        },
+        {
+          "name": "GatherMergePath",
+          "value": 277
+        },
+        {
+          "name": "NestPath",
+          "value": 278
+        },
+        {
+          "name": "MergePath",
+          "value": 279
+        },
+        {
+          "name": "HashPath",
+          "value": 280
+        },
+        {
+          "name": "ProjectionPath",
+          "value": 281
+        },
+        {
+          "name": "ProjectSetPath",
+          "value": 282
+        },
+        {
+          "name": "SortPath",
+          "value": 283
+        },
+        {
+          "name": "IncrementalSortPath",
+          "value": 284
+        },
+        {
+          "name": "GroupPath",
+          "value": 285
+        },
+        {
+          "name": "UpperUniquePath",
+          "value": 286
+        },
+        {
+          "name": "AggPath",
+          "value": 287
+        },
+        {
+          "name": "GroupingSetData",
+          "value": 288
+        },
+        {
+          "name": "RollupData",
+          "value": 289
+        },
+        {
+          "name": "GroupingSetsPath",
+          "value": 290
+        },
+        {
+          "name": "MinMaxAggPath",
+          "value": 291
+        },
+        {
+          "name": "WindowAggPath",
+          "value": 292
+        },
+        {
+          "name": "SetOpPath",
+          "value": 293
+        },
+        {
+          "name": "RecursiveUnionPath",
+          "value": 294
+        },
+        {
+          "name": "LockRowsPath",
+          "value": 295
+        },
+        {
+          "name": "ModifyTablePath",
+          "value": 296
+        },
+        {
+          "name": "LimitPath",
+          "value": 297
+        },
+        {
+          "name": "RestrictInfo",
+          "value": 298
+        },
+        {
+          "name": "PlaceHolderVar",
+          "value": 299
+        },
+        {
+          "name": "SpecialJoinInfo",
+          "value": 300
+        },
+        {
+          "name": "OuterJoinClauseInfo",
+          "value": 301
+        },
+        {
+          "name": "AppendRelInfo",
+          "value": 302
+        },
+        {
+          "name": "RowIdentityVarInfo",
+          "value": 303
+        },
+        {
+          "name": "PlaceHolderInfo",
+          "value": 304
+        },
+        {
+          "name": "MinMaxAggInfo",
+          "value": 305
+        },
+        {
+          "name": "PlannerParamItem",
+          "value": 306
+        },
+        {
+          "name": "AggInfo",
+          "value": 307
+        },
+        {
+          "name": "AggTransInfo",
+          "value": 308
+        },
+        {
+          "name": "PlannedStmt",
+          "value": 309
+        },
+        {
+          "name": "Result",
+          "value": 310
+        },
+        {
+          "name": "ProjectSet",
+          "value": 311
+        },
+        {
+          "name": "ModifyTable",
+          "value": 312
+        },
+        {
+          "name": "Append",
+          "value": 313
+        },
+        {
+          "name": "MergeAppend",
+          "value": 314
+        },
+        {
+          "name": "RecursiveUnion",
+          "value": 315
+        },
+        {
+          "name": "BitmapAnd",
+          "value": 316
+        },
+        {
+          "name": "BitmapOr",
+          "value": 317
+        },
+        {
+          "name": "SeqScan",
+          "value": 318
+        },
+        {
+          "name": "SampleScan",
+          "value": 319
+        },
+        {
+          "name": "IndexScan",
+          "value": 320
+        },
+        {
+          "name": "IndexOnlyScan",
+          "value": 321
+        },
+        {
+          "name": "BitmapIndexScan",
+          "value": 322
+        },
+        {
+          "name": "BitmapHeapScan",
+          "value": 323
+        },
+        {
+          "name": "TidScan",
+          "value": 324
+        },
+        {
+          "name": "TidRangeScan",
+          "value": 325
+        },
+        {
+          "name": "SubqueryScan",
+          "value": 326
+        },
+        {
+          "name": "FunctionScan",
+          "value": 327
+        },
+        {
+          "name": "ValuesScan",
+          "value": 328
+        },
+        {
+          "name": "TableFuncScan",
+          "value": 329
+        },
+        {
+          "name": "CteScan",
+          "value": 330
+        },
+        {
+          "name": "NamedTuplestoreScan",
+          "value": 331
+        },
+        {
+          "name": "WorkTableScan",
+          "value": 332
+        },
+        {
+          "name": "ForeignScan",
+          "value": 333
+        },
+        {
+          "name": "CustomScan",
+          "value": 334
+        },
+        {
+          "name": "NestLoop",
+          "value": 335
+        },
+        {
+          "name": "NestLoopParam",
+          "value": 336
+        },
+        {
+          "name": "MergeJoin",
+          "value": 337
+        },
+        {
+          "name": "HashJoin",
+          "value": 338
+        },
+        {
+          "name": "Material",
+          "value": 339
+        },
+        {
+          "name": "Memoize",
+          "value": 340
+        },
+        {
+          "name": "Sort",
+          "value": 341
+        },
+        {
+          "name": "IncrementalSort",
+          "value": 342
+        },
+        {
+          "name": "Group",
+          "value": 343
+        },
+        {
+          "name": "Agg",
+          "value": 344
+        },
+        {
+          "name": "WindowAgg",
+          "value": 345
+        },
+        {
+          "name": "Unique",
+          "value": 346
+        },
+        {
+          "name": "Gather",
+          "value": 347
+        },
+        {
+          "name": "GatherMerge",
+          "value": 348
+        },
+        {
+          "name": "Hash",
+          "value": 349
+        },
+        {
+          "name": "SetOp",
+          "value": 350
+        },
+        {
+          "name": "LockRows",
+          "value": 351
+        },
+        {
+          "name": "Limit",
+          "value": 352
+        },
+        {
+          "name": "PlanRowMark",
+          "value": 353
+        },
+        {
+          "name": "PartitionPruneInfo",
+          "value": 354
+        },
+        {
+          "name": "PartitionedRelPruneInfo",
+          "value": 355
+        },
+        {
+          "name": "PartitionPruneStepOp",
+          "value": 356
+        },
+        {
+          "name": "PartitionPruneStepCombine",
+          "value": 357
+        },
+        {
+          "name": "PlanInvalItem",
+          "value": 358
+        },
+        {
+          "name": "ExprState",
+          "value": 359
+        },
+        {
+          "name": "IndexInfo",
+          "value": 360
+        },
+        {
+          "name": "ExprContext",
+          "value": 361
+        },
+        {
+          "name": "ReturnSetInfo",
+          "value": 362
+        },
+        {
+          "name": "ProjectionInfo",
+          "value": 363
+        },
+        {
+          "name": "JunkFilter",
+          "value": 364
+        },
+        {
+          "name": "OnConflictSetState",
+          "value": 365
+        },
+        {
+          "name": "MergeActionState",
+          "value": 366
+        },
+        {
+          "name": "ResultRelInfo",
+          "value": 367
+        },
+        {
+          "name": "EState",
+          "value": 368
+        },
+        {
+          "name": "WindowFuncExprState",
+          "value": 369
+        },
+        {
+          "name": "SetExprState",
+          "value": 370
+        },
+        {
+          "name": "SubPlanState",
+          "value": 371
+        },
+        {
+          "name": "DomainConstraintState",
+          "value": 372
+        },
+        {
+          "name": "ResultState",
+          "value": 373
+        },
+        {
+          "name": "ProjectSetState",
+          "value": 374
+        },
+        {
+          "name": "ModifyTableState",
+          "value": 375
+        },
+        {
+          "name": "AppendState",
+          "value": 376
+        },
+        {
+          "name": "MergeAppendState",
+          "value": 377
+        },
+        {
+          "name": "RecursiveUnionState",
+          "value": 378
+        },
+        {
+          "name": "BitmapAndState",
+          "value": 379
+        },
+        {
+          "name": "BitmapOrState",
+          "value": 380
+        },
+        {
+          "name": "ScanState",
+          "value": 381
+        },
+        {
+          "name": "SeqScanState",
+          "value": 382
+        },
+        {
+          "name": "SampleScanState",
+          "value": 383
+        },
+        {
+          "name": "IndexScanState",
+          "value": 384
+        },
+        {
+          "name": "IndexOnlyScanState",
+          "value": 385
+        },
+        {
+          "name": "BitmapIndexScanState",
+          "value": 386
+        },
+        {
+          "name": "BitmapHeapScanState",
+          "value": 387
+        },
+        {
+          "name": "TidScanState",
+          "value": 388
+        },
+        {
+          "name": "TidRangeScanState",
+          "value": 389
+        },
+        {
+          "name": "SubqueryScanState",
+          "value": 390
+        },
+        {
+          "name": "FunctionScanState",
+          "value": 391
+        },
+        {
+          "name": "ValuesScanState",
+          "value": 392
+        },
+        {
+          "name": "TableFuncScanState",
+          "value": 393
+        },
+        {
+          "name": "CteScanState",
+          "value": 394
+        },
+        {
+          "name": "NamedTuplestoreScanState",
+          "value": 395
+        },
+        {
+          "name": "WorkTableScanState",
+          "value": 396
+        },
+        {
+          "name": "ForeignScanState",
+          "value": 397
+        },
+        {
+          "name": "CustomScanState",
+          "value": 398
+        },
+        {
+          "name": "JoinState",
+          "value": 399
+        },
+        {
+          "name": "NestLoopState",
+          "value": 400
+        },
+        {
+          "name": "MergeJoinState",
+          "value": 401
+        },
+        {
+          "name": "HashJoinState",
+          "value": 402
+        },
+        {
+          "name": "MaterialState",
+          "value": 403
+        },
+        {
+          "name": "MemoizeState",
+          "value": 404
+        },
+        {
+          "name": "SortState",
+          "value": 405
+        },
+        {
+          "name": "IncrementalSortState",
+          "value": 406
+        },
+        {
+          "name": "GroupState",
+          "value": 407
+        },
+        {
+          "name": "AggState",
+          "value": 408
+        },
+        {
+          "name": "WindowAggState",
+          "value": 409
+        },
+        {
+          "name": "UniqueState",
+          "value": 410
+        },
+        {
+          "name": "GatherState",
+          "value": 411
+        },
+        {
+          "name": "GatherMergeState",
+          "value": 412
+        },
+        {
+          "name": "HashState",
+          "value": 413
+        },
+        {
+          "name": "SetOpState",
+          "value": 414
+        },
+        {
+          "name": "LockRowsState",
+          "value": 415
+        },
+        {
+          "name": "LimitState",
+          "value": 416
+        },
+        {
+          "name": "IndexAmRoutine",
+          "value": 417
+        },
+        {
+          "name": "TableAmRoutine",
+          "value": 418
+        },
+        {
+          "name": "TsmRoutine",
+          "value": 419
+        },
+        {
+          "name": "EventTriggerData",
+          "value": 420
+        },
+        {
+          "name": "TriggerData",
+          "value": 421
+        },
+        {
+          "name": "TupleTableSlot",
+          "value": 422
+        },
+        {
+          "name": "FdwRoutine",
+          "value": 423
+        },
+        {
+          "name": "Bitmapset",
+          "value": 424
+        },
+        {
+          "name": "ExtensibleNode",
+          "value": 425
+        },
+        {
+          "name": "ErrorSaveContext",
+          "value": 426
+        },
+        {
+          "name": "IdentifySystemCmd",
+          "value": 427
+        },
+        {
+          "name": "BaseBackupCmd",
+          "value": 428
+        },
+        {
+          "name": "CreateReplicationSlotCmd",
+          "value": 429
+        },
+        {
+          "name": "DropReplicationSlotCmd",
+          "value": 430
+        },
+        {
+          "name": "StartReplicationCmd",
+          "value": 431
+        },
+        {
+          "name": "ReadReplicationSlotCmd",
+          "value": 432
+        },
+        {
+          "name": "TimeLineHistoryCmd",
+          "value": 433
+        },
+        {
+          "name": "SupportRequestSimplify",
+          "value": 434
+        },
+        {
+          "name": "SupportRequestSelectivity",
+          "value": 435
+        },
+        {
+          "name": "SupportRequestCost",
+          "value": 436
+        },
+        {
+          "name": "SupportRequestRows",
+          "value": 437
+        },
+        {
+          "name": "SupportRequestIndexCondition",
+          "value": 438
+        },
+        {
+          "name": "SupportRequestWFuncMonotonic",
+          "value": 439
+        },
+        {
+          "name": "SupportRequestOptimizeWindowClause",
+          "value": 440
+        },
+        {
+          "name": "Integer",
+          "value": 441
+        },
+        {
+          "name": "Float",
+          "value": 442
+        },
+        {
+          "name": "Boolean",
+          "value": 443
+        },
+        {
+          "name": "String",
+          "value": 444
+        },
+        {
+          "name": "BitString",
+          "value": 445
+        },
+        {
+          "name": "ForeignKeyCacheInfo",
+          "value": 446
+        },
+        {
+          "name": "IntList",
+          "value": 447
+        },
+        {
+          "name": "OidList",
+          "value": 448
+        },
+        {
+          "name": "XidList",
+          "value": 449
+        },
+        {
+          "name": "AllocSetContext",
+          "value": 450
+        },
+        {
+          "name": "GenerationContext",
+          "value": 451
+        },
+        {
+          "name": "SlabContext",
+          "value": 452
+        },
+        {
+          "name": "TIDBitmap",
+          "value": 453
+        },
+        {
+          "name": "WindowObjectData",
+          "value": 454
         }
       ],
       "comment": "/*\n * The first field of every node is NodeTag. Each node created (with makeNode)\n * will have one of the following tags as the value of its first field.\n *\n * Note that inserting or deleting node types changes the numbers of other\n * node types later in the list.  This is no problem during development, since\n * the node numbers are never stored on disk.  But don't do it in a released\n * branch, because that would represent an ABI break for extensions.\n */\n"
