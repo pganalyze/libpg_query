@@ -7960,10 +7960,20 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 	else
 		appendStringInfoString(str, "REVOKE ");
 
-	// TODO: Fix this.
-	elog(ERROR, "unimplemented");
-	// if (!grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
-	// 	appendStringInfoString(str, "ADMIN OPTION FOR ");
+	if (!grant_role_stmt->is_grant && list_length(grant_role_stmt->opt)) {
+		DefElem *defelem = castNode(DefElem, linitial(grant_role_stmt->opt));
+		Assert(!castNode(Boolean, defelem->arg)->boolval);
+
+		if (strcmp("admin", defelem->defname) == 0) {
+			appendStringInfoString(str, "ADMIN ");
+		} else if (strcmp("inherit", defelem->defname) == 0) {
+			appendStringInfoString(str, "INHERIT ");
+		} else if (strcmp("set", defelem->defname) == 0) {
+			appendStringInfoString(str, "SET ");
+		}
+
+		appendStringInfoString(str, "OPTION FOR ");
+	}
 
 	foreach(lc, grant_role_stmt->granted_roles)
 	{
