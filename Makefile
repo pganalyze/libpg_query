@@ -35,7 +35,7 @@ OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o))
 
 override CFLAGS += -g -I. -I./vendor -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
-override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib
+override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
 override TEST_CFLAGS += -g -I. -I./vendor -Wall
 override TEST_LDFLAGS += -pthread
