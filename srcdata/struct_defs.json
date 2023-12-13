@@ -10139,6 +10139,68 @@
       "comment": "/* Line 1529 of yacc.c.  */\n"
     }
   },
+  "../backend/parser/gramparse": {
+    "base_yy_extra_type": {
+      "fields": [
+        {
+          "comment": "\t/*\n\t * Fields used by the core scanner.\n\t */\n"
+        },
+        {
+          "name": "core_yy_extra",
+          "c_type": "core_yy_extra_type",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * State variables for base_yylex().\n\t */\n"
+        },
+        {
+          "name": "have_lookahead",
+          "c_type": "bool",
+          "comment": "/* is lookahead info valid? */"
+        },
+        {
+          "name": "lookahead_token",
+          "c_type": "int",
+          "comment": "/* one-token lookahead */"
+        },
+        {
+          "name": "lookahead_yylval",
+          "c_type": "core_YYSTYPE",
+          "comment": "/* yylval for lookahead token */"
+        },
+        {
+          "name": "lookahead_yylloc",
+          "c_type": "YYLTYPE",
+          "comment": "/* yylloc for lookahead token */"
+        },
+        {
+          "name": "lookahead_end",
+          "c_type": "char*",
+          "comment": "/* end of current token */"
+        },
+        {
+          "name": "lookahead_hold_char",
+          "c_type": "char",
+          "comment": "/* to be put back at *lookahead_end */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * State variables that belong to the grammar.\n\t */\n"
+        },
+        {
+          "name": "parsetree",
+          "c_type": "List*",
+          "comment": "/* final parse result is delivered here */"
+        }
+      ],
+      "comment": "/*\n * The YY_EXTRA data that a flex scanner allows us to pass around.  Private\n * state needed for raw parsing/lexing goes here.\n */\n"
+    }
+  },
   "nodes/value": {
     "Integer": {
       "fields": [

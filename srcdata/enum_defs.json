@@ -6582,5 +6582,7 @@
       ],
       "comment": "   /* Put the tokens into the symbol table, so that GDB and other debuggers\n      know about them.  */\n"
     }
+  },
+  "../backend/parser/gramparse": {
   }
 }
