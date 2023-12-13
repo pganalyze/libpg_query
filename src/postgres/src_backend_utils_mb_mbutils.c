@@ -45,7 +45,7 @@
  * the result is validly encoded according to the destination encoding.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -62,6 +62,7 @@
 #include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "utils/syscache.h"
+#include "varatt.h"
 
 /*
  * We maintain a simple linked list caching the fmgr lookup info for the
@@ -184,7 +185,7 @@ pg_get_client_encoding(void)
  *
  * The output is null-terminated.
  *
- * If destlen < srclen * MAX_CONVERSION_LENGTH + 1, the converted output
+ * If destlen < srclen * MAX_CONVERSION_INPUT_LENGTH + 1, the converted output
  * wouldn't necessarily fit in the output buffer, and the function will not
  * convert the whole input.
  *
@@ -339,11 +340,19 @@ pg_unicode_to_server(pg_wchar c, unsigned char *s)
 	FunctionCall6(Utf8ToServerConvProc,
 				  Int32GetDatum(PG_UTF8),
 				  Int32GetDatum(server_encoding),
-				  CStringGetDatum(c_as_utf8),
-				  CStringGetDatum(s),
+				  CStringGetDatum((char *) c_as_utf8),
+				  CStringGetDatum((char *) s),
 				  Int32GetDatum(c_as_utf8_len),
 				  BoolGetDatum(false));
 }
+
+/*
+ * Convert a single Unicode code point into a string in the server encoding.
+ *
+ * Same as pg_unicode_to_server(), except that we don't throw errors,
+ * but simply return false on conversion failure.
+ */
+
 
 
 /* convert a multibyte string to a wchar */

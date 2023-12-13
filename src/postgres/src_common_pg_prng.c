@@ -19,7 +19,7 @@
  * About these generators: https://prng.di.unimi.it/
  * See also https://en.wikipedia.org/wiki/List_of_random_number_generators
  *
- * Copyright (c) 2021-2022, PostgreSQL Global Development Group
+ * Copyright (c) 2021-2023, PostgreSQL Global Development Group
  *
  * src/common/pg_prng.c
  *
@@ -28,10 +28,16 @@
 
 #include "c.h"
 
-#include <math.h>				/* for ldexp() */
+#include <math.h>
 
 #include "common/pg_prng.h"
 #include "port/pg_bitutils.h"
+
+/* X/Open (XSI) requires <math.h> to provide M_PI, but core POSIX does not */
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 
 /* process-wide state vector */
 __thread pg_prng_state pg_global_prng_state;
@@ -145,6 +151,17 @@ pg_prng_double(pg_prng_state *state)
 	 */
 	return ldexp((double) (v >> (64 - 52)), -52);
 }
+
+/*
+ * Select a random double from the normal distribution with
+ * mean = 0.0 and stddev = 1.0.
+ *
+ * To get a result from a different normal distribution use
+ *   STDDEV * pg_prng_double_normal() + MEAN
+ *
+ * Uses https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+ */
+
 
 /*
  * Select a random boolean value.

@@ -1,5 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
+ * - pg_strcasecmp
  * - pg_toupper
  *--------------------------------------------------------------------
  */
@@ -24,7 +25,7 @@
  * C library thinks the locale is.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  *
  * src/port/pgstrcasecmp.c
  *
@@ -38,7 +39,34 @@
 /*
  * Case-independent comparison of two null-terminated strings.
  */
+int
+pg_strcasecmp(const char *s1, const char *s2)
+{
+	for (;;)
+	{
+		unsigned char ch1 = (unsigned char) *s1++;
+		unsigned char ch2 = (unsigned char) *s2++;
 
+		if (ch1 != ch2)
+		{
+			if (ch1 >= 'A' && ch1 <= 'Z')
+				ch1 += 'a' - 'A';
+			else if (IS_HIGHBIT_SET(ch1) && isupper(ch1))
+				ch1 = tolower(ch1);
+
+			if (ch2 >= 'A' && ch2 <= 'Z')
+				ch2 += 'a' - 'A';
+			else if (IS_HIGHBIT_SET(ch2) && isupper(ch2))
+				ch2 = tolower(ch2);
+
+			if (ch1 != ch2)
+				return (int) ch1 - (int) ch2;
+		}
+		if (ch1 == 0)
+			break;
+	}
+	return 0;
+}
 
 /*
  * Case-independent comparison of two not-necessarily-null-terminated strings.

@@ -9,7 +9,7 @@
  * encnames.c
  *	  Encoding names and routines for working with them.
  *
- * Portions Copyright (c) 2001-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2001-2023, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/common/encnames.c
@@ -118,6 +118,9 @@ const pg_enc2name pg_enc2name_tbl[] =
  * NULL entries are not supported by ICU, or their mapping is unclear.
  */
 
+
+StaticAssertDecl(lengthof(pg_enc2icu_tbl) == PG_ENCODING_BE_LAST + 1,
+				 "pg_enc2icu_tbl incomplete");
 
 
 /*

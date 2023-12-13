@@ -490,12 +490,13 @@ SELECT * FROM FKTABLE ORDER BY id;
 DROP TABLE FKTABLE;
 DROP TABLE PKTABLE;
 
-CREATE TABLE PKTABLE (ptest1 int PRIMARY KEY);
+-- Test some invalid FK definitions
+CREATE TABLE PKTABLE (ptest1 int PRIMARY KEY, someoid oid);
 CREATE TABLE FKTABLE_FAIL1 ( ftest1 int, CONSTRAINT fkfail1 FOREIGN KEY (ftest2) REFERENCES PKTABLE);
 CREATE TABLE FKTABLE_FAIL2 ( ftest1 int, CONSTRAINT fkfail1 FOREIGN KEY (ftest1) REFERENCES PKTABLE(ptest2));
+CREATE TABLE FKTABLE_FAIL3 ( ftest1 int, CONSTRAINT fkfail1 FOREIGN KEY (tableoid) REFERENCES PKTABLE(someoid));
+CREATE TABLE FKTABLE_FAIL4 ( ftest1 oid, CONSTRAINT fkfail1 FOREIGN KEY (ftest1) REFERENCES PKTABLE(tableoid));
 
-DROP TABLE FKTABLE_FAIL1;
-DROP TABLE FKTABLE_FAIL2;
 DROP TABLE PKTABLE;
 
 -- Test for referencing column number smaller than referenced constraint
@@ -1797,7 +1798,7 @@ DELETE FROM pt;
 DELETE FROM ref;
 ABORT;
 DROP TABLE pt, ref;
--- Multi-level partitioning at at referenced end
+-- Multi-level partitioning at referenced end
 CREATE TABLE pt(f1 int, f2 int, f3 int, PRIMARY KEY(f1,f2))
   PARTITION BY LIST(f1);
 CREATE TABLE pt1_2 PARTITION OF pt FOR VALUES IN (1, 2) PARTITION BY LIST (f1);

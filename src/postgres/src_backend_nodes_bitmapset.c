@@ -2,8 +2,6 @@
  * Symbols referenced in this file:
  * - bms_copy
  * - bms_equal
- * - bms_is_empty
- * - bms_first_member
  * - bms_free
  * - bms_next_member
  * - bms_num_members
@@ -17,13 +15,11 @@
  *
  * A bitmap set can represent any set of nonnegative integers, although
  * it is mainly intended for sets where the maximum value is not large,
- * say at most a few hundred.  By convention, a NULL pointer is always
- * accepted by all operations to represent the empty set.  (But beware
- * that this is not the only representation of the empty set.  Use
- * bms_is_empty() in preference to testing for NULL.)
+ * say at most a few hundred.  By convention, we always represent the
+ * empty set by a NULL pointer.
  *
  *
- * Copyright (c) 2003-2022, PostgreSQL Global Development Group
+ * Copyright (c) 2003-2023, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/nodes/bitmapset.c
@@ -78,6 +74,8 @@
 #error "invalid BITS_PER_BITMAPWORD"
 #endif
 
+static bool bms_is_empty_internal(const Bitmapset *a);
+
 
 /*
  * bms_copy - make a palloc'd copy of a bitmapset
@@ -116,10 +114,10 @@ bms_equal(const Bitmapset *a, const Bitmapset *b)
 	{
 		if (b == NULL)
 			return true;
-		return bms_is_empty(b);
+		return false;
 	}
 	else if (b == NULL)
-		return bms_is_empty(a);
+		return false;
 	/* Identify shorter and longer input */
 	if (a->nwords <= b->nwords)
 	{
@@ -290,28 +288,13 @@ bms_num_members(const Bitmapset *a)
 
 
 /*
- * bms_is_empty - is a set empty?
+ * bms_is_empty_internal - is a set empty?
  *
- * This is even faster than bms_membership().
+ * This is now used only locally, to detect cases where a function has
+ * computed an empty set that we must now get rid of.  Hence, we can
+ * assume the input isn't NULL.
  */
-bool
-bms_is_empty(const Bitmapset *a)
-{
-	int			nwords;
-	int			wordnum;
 
-	if (a == NULL)
-		return true;
-	nwords = a->nwords;
-	for (wordnum = 0; wordnum < nwords; wordnum++)
-	{
-		bitmapword	w = a->words[wordnum];
-
-		if (w != 0)
-			return false;
-	}
-	return true;
-}
 
 
 /*
@@ -369,48 +352,6 @@ bms_is_empty(const Bitmapset *a)
  * bms_join - like bms_union, but *both* inputs are recycled
  */
 
-
-/*
- * bms_first_member - find and remove first member of a set
- *
- * Returns -1 if set is empty.  NB: set is destructively modified!
- *
- * This is intended as support for iterating through the members of a set.
- * The typical pattern is
- *
- *			while ((x = bms_first_member(inputset)) >= 0)
- *				process member x;
- *
- * CAUTION: this destroys the content of "inputset".  If the set must
- * not be modified, use bms_next_member instead.
- */
-int
-bms_first_member(Bitmapset *a)
-{
-	int			nwords;
-	int			wordnum;
-
-	if (a == NULL)
-		return -1;
-	nwords = a->nwords;
-	for (wordnum = 0; wordnum < nwords; wordnum++)
-	{
-		bitmapword	w = a->words[wordnum];
-
-		if (w != 0)
-		{
-			int			result;
-
-			w = RIGHTMOST_ONE(w);
-			a->words[wordnum] &= ~w;
-
-			result = wordnum * BITS_PER_BITMAPWORD;
-			result += bmw_rightmost_one_pos(w);
-			return result;
-		}
-	}
-	return -1;
-}
 
 /*
  * bms_next_member - find next member of a set

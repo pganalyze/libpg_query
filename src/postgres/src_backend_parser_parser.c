@@ -22,7 +22,7 @@
  * analyze.c and related files.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -34,7 +34,7 @@
 #include "postgres.h"
 
 #include "mb/pg_wchar.h"
-#include "parser/gramparse.h"
+#include "gramparse.h"
 #include "parser/parser.h"
 #include "parser/scansup.h"
 
@@ -149,6 +149,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
 	 */
 	switch (cur_token)
 	{
+		case FORMAT:
+			cur_token_length = 6;
+			break;
 		case NOT:
 			cur_token_length = 3;
 			break;
@@ -161,6 +164,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
 		case UIDENT:
 		case USCONST:
 			cur_token_length = strlen(yyextra->core_yy_extra.scanbuf + *llocp);
+			break;
+		case WITHOUT:
+			cur_token_length = 7;
 			break;
 		case SQL_COMMENT:
 		case C_COMMENT:
@@ -203,6 +209,16 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
 	/* Replace cur_token if needed, based on lookahead */
 	switch (cur_token)
 	{
+		case FORMAT:
+			/* Replace FORMAT by FORMAT_LA if it's followed by JSON */
+			switch (next_token)
+			{
+				case JSON:
+					cur_token = FORMAT_LA;
+					break;
+			}
+			break;
+
 		case NOT:
 			/* Replace NOT by NOT_LA if it's followed by BETWEEN, IN, etc */
 			switch (next_token)
@@ -235,6 +251,16 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
 				case TIME:
 				case ORDINALITY:
 					cur_token = WITH_LA;
+					break;
+			}
+			break;
+
+		case WITHOUT:
+			/* Replace WITHOUT by WITHOUT_LA if it's followed by TIME */
+			switch (next_token)
+			{
+				case TIME:
+					cur_token = WITHOUT_LA;
 					break;
 			}
 			break;
