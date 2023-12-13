@@ -30,6 +30,7 @@ typedef struct PgQuery__AConst PgQuery__AConst;
 typedef struct PgQuery__Alias PgQuery__Alias;
 typedef struct PgQuery__RangeVar PgQuery__RangeVar;
 typedef struct PgQuery__TableFunc PgQuery__TableFunc;
+typedef struct PgQuery__IntoClause PgQuery__IntoClause;
 typedef struct PgQuery__Var PgQuery__Var;
 typedef struct PgQuery__Param PgQuery__Param;
 typedef struct PgQuery__Aggref PgQuery__Aggref;
@@ -63,6 +64,11 @@ typedef struct PgQuery__CoalesceExpr PgQuery__CoalesceExpr;
 typedef struct PgQuery__MinMaxExpr PgQuery__MinMaxExpr;
 typedef struct PgQuery__SQLValueFunction PgQuery__SQLValueFunction;
 typedef struct PgQuery__XmlExpr PgQuery__XmlExpr;
+typedef struct PgQuery__JsonFormat PgQuery__JsonFormat;
+typedef struct PgQuery__JsonReturning PgQuery__JsonReturning;
+typedef struct PgQuery__JsonValueExpr PgQuery__JsonValueExpr;
+typedef struct PgQuery__JsonConstructorExpr PgQuery__JsonConstructorExpr;
+typedef struct PgQuery__JsonIsPredicate PgQuery__JsonIsPredicate;
 typedef struct PgQuery__NullTest PgQuery__NullTest;
 typedef struct PgQuery__BooleanTest PgQuery__BooleanTest;
 typedef struct PgQuery__CoerceToDomain PgQuery__CoerceToDomain;
@@ -76,130 +82,14 @@ typedef struct PgQuery__RangeTblRef PgQuery__RangeTblRef;
 typedef struct PgQuery__JoinExpr PgQuery__JoinExpr;
 typedef struct PgQuery__FromExpr PgQuery__FromExpr;
 typedef struct PgQuery__OnConflictExpr PgQuery__OnConflictExpr;
-typedef struct PgQuery__IntoClause PgQuery__IntoClause;
-typedef struct PgQuery__MergeAction PgQuery__MergeAction;
-typedef struct PgQuery__RawStmt PgQuery__RawStmt;
 typedef struct PgQuery__Query PgQuery__Query;
-typedef struct PgQuery__InsertStmt PgQuery__InsertStmt;
-typedef struct PgQuery__DeleteStmt PgQuery__DeleteStmt;
-typedef struct PgQuery__UpdateStmt PgQuery__UpdateStmt;
-typedef struct PgQuery__MergeStmt PgQuery__MergeStmt;
-typedef struct PgQuery__SelectStmt PgQuery__SelectStmt;
-typedef struct PgQuery__ReturnStmt PgQuery__ReturnStmt;
-typedef struct PgQuery__PLAssignStmt PgQuery__PLAssignStmt;
-typedef struct PgQuery__AlterTableStmt PgQuery__AlterTableStmt;
-typedef struct PgQuery__AlterTableCmd PgQuery__AlterTableCmd;
-typedef struct PgQuery__AlterDomainStmt PgQuery__AlterDomainStmt;
-typedef struct PgQuery__SetOperationStmt PgQuery__SetOperationStmt;
-typedef struct PgQuery__GrantStmt PgQuery__GrantStmt;
-typedef struct PgQuery__GrantRoleStmt PgQuery__GrantRoleStmt;
-typedef struct PgQuery__AlterDefaultPrivilegesStmt PgQuery__AlterDefaultPrivilegesStmt;
-typedef struct PgQuery__ClosePortalStmt PgQuery__ClosePortalStmt;
-typedef struct PgQuery__ClusterStmt PgQuery__ClusterStmt;
-typedef struct PgQuery__CopyStmt PgQuery__CopyStmt;
-typedef struct PgQuery__CreateStmt PgQuery__CreateStmt;
-typedef struct PgQuery__DefineStmt PgQuery__DefineStmt;
-typedef struct PgQuery__DropStmt PgQuery__DropStmt;
-typedef struct PgQuery__TruncateStmt PgQuery__TruncateStmt;
-typedef struct PgQuery__CommentStmt PgQuery__CommentStmt;
-typedef struct PgQuery__FetchStmt PgQuery__FetchStmt;
-typedef struct PgQuery__IndexStmt PgQuery__IndexStmt;
-typedef struct PgQuery__CreateFunctionStmt PgQuery__CreateFunctionStmt;
-typedef struct PgQuery__AlterFunctionStmt PgQuery__AlterFunctionStmt;
-typedef struct PgQuery__DoStmt PgQuery__DoStmt;
-typedef struct PgQuery__RenameStmt PgQuery__RenameStmt;
-typedef struct PgQuery__RuleStmt PgQuery__RuleStmt;
-typedef struct PgQuery__NotifyStmt PgQuery__NotifyStmt;
-typedef struct PgQuery__ListenStmt PgQuery__ListenStmt;
-typedef struct PgQuery__UnlistenStmt PgQuery__UnlistenStmt;
-typedef struct PgQuery__TransactionStmt PgQuery__TransactionStmt;
-typedef struct PgQuery__ViewStmt PgQuery__ViewStmt;
-typedef struct PgQuery__LoadStmt PgQuery__LoadStmt;
-typedef struct PgQuery__CreateDomainStmt PgQuery__CreateDomainStmt;
-typedef struct PgQuery__CreatedbStmt PgQuery__CreatedbStmt;
-typedef struct PgQuery__DropdbStmt PgQuery__DropdbStmt;
-typedef struct PgQuery__VacuumStmt PgQuery__VacuumStmt;
-typedef struct PgQuery__ExplainStmt PgQuery__ExplainStmt;
-typedef struct PgQuery__CreateTableAsStmt PgQuery__CreateTableAsStmt;
-typedef struct PgQuery__CreateSeqStmt PgQuery__CreateSeqStmt;
-typedef struct PgQuery__AlterSeqStmt PgQuery__AlterSeqStmt;
-typedef struct PgQuery__VariableSetStmt PgQuery__VariableSetStmt;
-typedef struct PgQuery__VariableShowStmt PgQuery__VariableShowStmt;
-typedef struct PgQuery__DiscardStmt PgQuery__DiscardStmt;
-typedef struct PgQuery__CreateTrigStmt PgQuery__CreateTrigStmt;
-typedef struct PgQuery__CreatePLangStmt PgQuery__CreatePLangStmt;
-typedef struct PgQuery__CreateRoleStmt PgQuery__CreateRoleStmt;
-typedef struct PgQuery__AlterRoleStmt PgQuery__AlterRoleStmt;
-typedef struct PgQuery__DropRoleStmt PgQuery__DropRoleStmt;
-typedef struct PgQuery__LockStmt PgQuery__LockStmt;
-typedef struct PgQuery__ConstraintsSetStmt PgQuery__ConstraintsSetStmt;
-typedef struct PgQuery__ReindexStmt PgQuery__ReindexStmt;
-typedef struct PgQuery__CheckPointStmt PgQuery__CheckPointStmt;
-typedef struct PgQuery__CreateSchemaStmt PgQuery__CreateSchemaStmt;
-typedef struct PgQuery__AlterDatabaseStmt PgQuery__AlterDatabaseStmt;
-typedef struct PgQuery__AlterDatabaseRefreshCollStmt PgQuery__AlterDatabaseRefreshCollStmt;
-typedef struct PgQuery__AlterDatabaseSetStmt PgQuery__AlterDatabaseSetStmt;
-typedef struct PgQuery__AlterRoleSetStmt PgQuery__AlterRoleSetStmt;
-typedef struct PgQuery__CreateConversionStmt PgQuery__CreateConversionStmt;
-typedef struct PgQuery__CreateCastStmt PgQuery__CreateCastStmt;
-typedef struct PgQuery__CreateOpClassStmt PgQuery__CreateOpClassStmt;
-typedef struct PgQuery__CreateOpFamilyStmt PgQuery__CreateOpFamilyStmt;
-typedef struct PgQuery__AlterOpFamilyStmt PgQuery__AlterOpFamilyStmt;
-typedef struct PgQuery__PrepareStmt PgQuery__PrepareStmt;
-typedef struct PgQuery__ExecuteStmt PgQuery__ExecuteStmt;
-typedef struct PgQuery__DeallocateStmt PgQuery__DeallocateStmt;
-typedef struct PgQuery__DeclareCursorStmt PgQuery__DeclareCursorStmt;
-typedef struct PgQuery__CreateTableSpaceStmt PgQuery__CreateTableSpaceStmt;
-typedef struct PgQuery__DropTableSpaceStmt PgQuery__DropTableSpaceStmt;
-typedef struct PgQuery__AlterObjectDependsStmt PgQuery__AlterObjectDependsStmt;
-typedef struct PgQuery__AlterObjectSchemaStmt PgQuery__AlterObjectSchemaStmt;
-typedef struct PgQuery__AlterOwnerStmt PgQuery__AlterOwnerStmt;
-typedef struct PgQuery__AlterOperatorStmt PgQuery__AlterOperatorStmt;
-typedef struct PgQuery__AlterTypeStmt PgQuery__AlterTypeStmt;
-typedef struct PgQuery__DropOwnedStmt PgQuery__DropOwnedStmt;
-typedef struct PgQuery__ReassignOwnedStmt PgQuery__ReassignOwnedStmt;
-typedef struct PgQuery__CompositeTypeStmt PgQuery__CompositeTypeStmt;
-typedef struct PgQuery__CreateEnumStmt PgQuery__CreateEnumStmt;
-typedef struct PgQuery__CreateRangeStmt PgQuery__CreateRangeStmt;
-typedef struct PgQuery__AlterEnumStmt PgQuery__AlterEnumStmt;
-typedef struct PgQuery__AlterTSDictionaryStmt PgQuery__AlterTSDictionaryStmt;
-typedef struct PgQuery__AlterTSConfigurationStmt PgQuery__AlterTSConfigurationStmt;
-typedef struct PgQuery__CreateFdwStmt PgQuery__CreateFdwStmt;
-typedef struct PgQuery__AlterFdwStmt PgQuery__AlterFdwStmt;
-typedef struct PgQuery__CreateForeignServerStmt PgQuery__CreateForeignServerStmt;
-typedef struct PgQuery__AlterForeignServerStmt PgQuery__AlterForeignServerStmt;
-typedef struct PgQuery__CreateUserMappingStmt PgQuery__CreateUserMappingStmt;
-typedef struct PgQuery__AlterUserMappingStmt PgQuery__AlterUserMappingStmt;
-typedef struct PgQuery__DropUserMappingStmt PgQuery__DropUserMappingStmt;
-typedef struct PgQuery__AlterTableSpaceOptionsStmt PgQuery__AlterTableSpaceOptionsStmt;
-typedef struct PgQuery__AlterTableMoveAllStmt PgQuery__AlterTableMoveAllStmt;
-typedef struct PgQuery__SecLabelStmt PgQuery__SecLabelStmt;
-typedef struct PgQuery__CreateForeignTableStmt PgQuery__CreateForeignTableStmt;
-typedef struct PgQuery__ImportForeignSchemaStmt PgQuery__ImportForeignSchemaStmt;
-typedef struct PgQuery__CreateExtensionStmt PgQuery__CreateExtensionStmt;
-typedef struct PgQuery__AlterExtensionStmt PgQuery__AlterExtensionStmt;
-typedef struct PgQuery__AlterExtensionContentsStmt PgQuery__AlterExtensionContentsStmt;
-typedef struct PgQuery__CreateEventTrigStmt PgQuery__CreateEventTrigStmt;
-typedef struct PgQuery__AlterEventTrigStmt PgQuery__AlterEventTrigStmt;
-typedef struct PgQuery__RefreshMatViewStmt PgQuery__RefreshMatViewStmt;
-typedef struct PgQuery__ReplicaIdentityStmt PgQuery__ReplicaIdentityStmt;
-typedef struct PgQuery__AlterSystemStmt PgQuery__AlterSystemStmt;
-typedef struct PgQuery__CreatePolicyStmt PgQuery__CreatePolicyStmt;
-typedef struct PgQuery__AlterPolicyStmt PgQuery__AlterPolicyStmt;
-typedef struct PgQuery__CreateTransformStmt PgQuery__CreateTransformStmt;
-typedef struct PgQuery__CreateAmStmt PgQuery__CreateAmStmt;
-typedef struct PgQuery__CreatePublicationStmt PgQuery__CreatePublicationStmt;
-typedef struct PgQuery__AlterPublicationStmt PgQuery__AlterPublicationStmt;
-typedef struct PgQuery__CreateSubscriptionStmt PgQuery__CreateSubscriptionStmt;
-typedef struct PgQuery__AlterSubscriptionStmt PgQuery__AlterSubscriptionStmt;
-typedef struct PgQuery__DropSubscriptionStmt PgQuery__DropSubscriptionStmt;
-typedef struct PgQuery__CreateStatsStmt PgQuery__CreateStatsStmt;
-typedef struct PgQuery__AlterCollationStmt PgQuery__AlterCollationStmt;
-typedef struct PgQuery__CallStmt PgQuery__CallStmt;
-typedef struct PgQuery__AlterStatsStmt PgQuery__AlterStatsStmt;
-typedef struct PgQuery__AExpr PgQuery__AExpr;
+typedef struct PgQuery__TypeName PgQuery__TypeName;
 typedef struct PgQuery__ColumnRef PgQuery__ColumnRef;
 typedef struct PgQuery__ParamRef PgQuery__ParamRef;
+typedef struct PgQuery__AExpr PgQuery__AExpr;
+typedef struct PgQuery__TypeCast PgQuery__TypeCast;
+typedef struct PgQuery__CollateClause PgQuery__CollateClause;
+typedef struct PgQuery__RoleSpec PgQuery__RoleSpec;
 typedef struct PgQuery__FuncCall PgQuery__FuncCall;
 typedef struct PgQuery__AStar PgQuery__AStar;
 typedef struct PgQuery__AIndices PgQuery__AIndices;
@@ -207,36 +97,33 @@ typedef struct PgQuery__AIndirection PgQuery__AIndirection;
 typedef struct PgQuery__AArrayExpr PgQuery__AArrayExpr;
 typedef struct PgQuery__ResTarget PgQuery__ResTarget;
 typedef struct PgQuery__MultiAssignRef PgQuery__MultiAssignRef;
-typedef struct PgQuery__TypeCast PgQuery__TypeCast;
-typedef struct PgQuery__CollateClause PgQuery__CollateClause;
 typedef struct PgQuery__SortBy PgQuery__SortBy;
 typedef struct PgQuery__WindowDef PgQuery__WindowDef;
 typedef struct PgQuery__RangeSubselect PgQuery__RangeSubselect;
 typedef struct PgQuery__RangeFunction PgQuery__RangeFunction;
-typedef struct PgQuery__RangeTableSample PgQuery__RangeTableSample;
 typedef struct PgQuery__RangeTableFunc PgQuery__RangeTableFunc;
 typedef struct PgQuery__RangeTableFuncCol PgQuery__RangeTableFuncCol;
-typedef struct PgQuery__TypeName PgQuery__TypeName;
+typedef struct PgQuery__RangeTableSample PgQuery__RangeTableSample;
 typedef struct PgQuery__ColumnDef PgQuery__ColumnDef;
+typedef struct PgQuery__TableLikeClause PgQuery__TableLikeClause;
 typedef struct PgQuery__IndexElem PgQuery__IndexElem;
-typedef struct PgQuery__StatsElem PgQuery__StatsElem;
-typedef struct PgQuery__Constraint PgQuery__Constraint;
 typedef struct PgQuery__DefElem PgQuery__DefElem;
+typedef struct PgQuery__LockingClause PgQuery__LockingClause;
+typedef struct PgQuery__XmlSerialize PgQuery__XmlSerialize;
+typedef struct PgQuery__PartitionElem PgQuery__PartitionElem;
+typedef struct PgQuery__PartitionSpec PgQuery__PartitionSpec;
+typedef struct PgQuery__PartitionBoundSpec PgQuery__PartitionBoundSpec;
+typedef struct PgQuery__PartitionRangeDatum PgQuery__PartitionRangeDatum;
+typedef struct PgQuery__PartitionCmd PgQuery__PartitionCmd;
 typedef struct PgQuery__RangeTblEntry PgQuery__RangeTblEntry;
+typedef struct PgQuery__RTEPermissionInfo PgQuery__RTEPermissionInfo;
 typedef struct PgQuery__RangeTblFunction PgQuery__RangeTblFunction;
 typedef struct PgQuery__TableSampleClause PgQuery__TableSampleClause;
 typedef struct PgQuery__WithCheckOption PgQuery__WithCheckOption;
 typedef struct PgQuery__SortGroupClause PgQuery__SortGroupClause;
 typedef struct PgQuery__GroupingSet PgQuery__GroupingSet;
 typedef struct PgQuery__WindowClause PgQuery__WindowClause;
-typedef struct PgQuery__ObjectWithArgs PgQuery__ObjectWithArgs;
-typedef struct PgQuery__AccessPriv PgQuery__AccessPriv;
-typedef struct PgQuery__CreateOpClassItem PgQuery__CreateOpClassItem;
-typedef struct PgQuery__TableLikeClause PgQuery__TableLikeClause;
-typedef struct PgQuery__FunctionParameter PgQuery__FunctionParameter;
-typedef struct PgQuery__LockingClause PgQuery__LockingClause;
 typedef struct PgQuery__RowMarkClause PgQuery__RowMarkClause;
-typedef struct PgQuery__XmlSerialize PgQuery__XmlSerialize;
 typedef struct PgQuery__WithClause PgQuery__WithClause;
 typedef struct PgQuery__InferClause PgQuery__InferClause;
 typedef struct PgQuery__OnConflictClause PgQuery__OnConflictClause;
@@ -244,18 +131,145 @@ typedef struct PgQuery__CTESearchClause PgQuery__CTESearchClause;
 typedef struct PgQuery__CTECycleClause PgQuery__CTECycleClause;
 typedef struct PgQuery__CommonTableExpr PgQuery__CommonTableExpr;
 typedef struct PgQuery__MergeWhenClause PgQuery__MergeWhenClause;
-typedef struct PgQuery__RoleSpec PgQuery__RoleSpec;
+typedef struct PgQuery__MergeAction PgQuery__MergeAction;
 typedef struct PgQuery__TriggerTransition PgQuery__TriggerTransition;
-typedef struct PgQuery__PartitionElem PgQuery__PartitionElem;
-typedef struct PgQuery__PartitionSpec PgQuery__PartitionSpec;
-typedef struct PgQuery__PartitionBoundSpec PgQuery__PartitionBoundSpec;
-typedef struct PgQuery__PartitionRangeDatum PgQuery__PartitionRangeDatum;
-typedef struct PgQuery__PartitionCmd PgQuery__PartitionCmd;
-typedef struct PgQuery__VacuumRelation PgQuery__VacuumRelation;
-typedef struct PgQuery__PublicationObjSpec PgQuery__PublicationObjSpec;
-typedef struct PgQuery__PublicationTable PgQuery__PublicationTable;
+typedef struct PgQuery__JsonOutput PgQuery__JsonOutput;
+typedef struct PgQuery__JsonKeyValue PgQuery__JsonKeyValue;
+typedef struct PgQuery__JsonObjectConstructor PgQuery__JsonObjectConstructor;
+typedef struct PgQuery__JsonArrayConstructor PgQuery__JsonArrayConstructor;
+typedef struct PgQuery__JsonArrayQueryConstructor PgQuery__JsonArrayQueryConstructor;
+typedef struct PgQuery__JsonAggConstructor PgQuery__JsonAggConstructor;
+typedef struct PgQuery__JsonObjectAgg PgQuery__JsonObjectAgg;
+typedef struct PgQuery__JsonArrayAgg PgQuery__JsonArrayAgg;
+typedef struct PgQuery__RawStmt PgQuery__RawStmt;
+typedef struct PgQuery__InsertStmt PgQuery__InsertStmt;
+typedef struct PgQuery__DeleteStmt PgQuery__DeleteStmt;
+typedef struct PgQuery__UpdateStmt PgQuery__UpdateStmt;
+typedef struct PgQuery__MergeStmt PgQuery__MergeStmt;
+typedef struct PgQuery__SelectStmt PgQuery__SelectStmt;
+typedef struct PgQuery__SetOperationStmt PgQuery__SetOperationStmt;
+typedef struct PgQuery__ReturnStmt PgQuery__ReturnStmt;
+typedef struct PgQuery__PLAssignStmt PgQuery__PLAssignStmt;
+typedef struct PgQuery__CreateSchemaStmt PgQuery__CreateSchemaStmt;
+typedef struct PgQuery__AlterTableStmt PgQuery__AlterTableStmt;
+typedef struct PgQuery__ReplicaIdentityStmt PgQuery__ReplicaIdentityStmt;
+typedef struct PgQuery__AlterTableCmd PgQuery__AlterTableCmd;
+typedef struct PgQuery__AlterCollationStmt PgQuery__AlterCollationStmt;
+typedef struct PgQuery__AlterDomainStmt PgQuery__AlterDomainStmt;
+typedef struct PgQuery__GrantStmt PgQuery__GrantStmt;
+typedef struct PgQuery__ObjectWithArgs PgQuery__ObjectWithArgs;
+typedef struct PgQuery__AccessPriv PgQuery__AccessPriv;
+typedef struct PgQuery__GrantRoleStmt PgQuery__GrantRoleStmt;
+typedef struct PgQuery__AlterDefaultPrivilegesStmt PgQuery__AlterDefaultPrivilegesStmt;
+typedef struct PgQuery__CopyStmt PgQuery__CopyStmt;
+typedef struct PgQuery__VariableSetStmt PgQuery__VariableSetStmt;
+typedef struct PgQuery__VariableShowStmt PgQuery__VariableShowStmt;
+typedef struct PgQuery__CreateStmt PgQuery__CreateStmt;
+typedef struct PgQuery__Constraint PgQuery__Constraint;
+typedef struct PgQuery__CreateTableSpaceStmt PgQuery__CreateTableSpaceStmt;
+typedef struct PgQuery__DropTableSpaceStmt PgQuery__DropTableSpaceStmt;
+typedef struct PgQuery__AlterTableSpaceOptionsStmt PgQuery__AlterTableSpaceOptionsStmt;
+typedef struct PgQuery__AlterTableMoveAllStmt PgQuery__AlterTableMoveAllStmt;
+typedef struct PgQuery__CreateExtensionStmt PgQuery__CreateExtensionStmt;
+typedef struct PgQuery__AlterExtensionStmt PgQuery__AlterExtensionStmt;
+typedef struct PgQuery__AlterExtensionContentsStmt PgQuery__AlterExtensionContentsStmt;
+typedef struct PgQuery__CreateFdwStmt PgQuery__CreateFdwStmt;
+typedef struct PgQuery__AlterFdwStmt PgQuery__AlterFdwStmt;
+typedef struct PgQuery__CreateForeignServerStmt PgQuery__CreateForeignServerStmt;
+typedef struct PgQuery__AlterForeignServerStmt PgQuery__AlterForeignServerStmt;
+typedef struct PgQuery__CreateForeignTableStmt PgQuery__CreateForeignTableStmt;
+typedef struct PgQuery__CreateUserMappingStmt PgQuery__CreateUserMappingStmt;
+typedef struct PgQuery__AlterUserMappingStmt PgQuery__AlterUserMappingStmt;
+typedef struct PgQuery__DropUserMappingStmt PgQuery__DropUserMappingStmt;
+typedef struct PgQuery__ImportForeignSchemaStmt PgQuery__ImportForeignSchemaStmt;
+typedef struct PgQuery__CreatePolicyStmt PgQuery__CreatePolicyStmt;
+typedef struct PgQuery__AlterPolicyStmt PgQuery__AlterPolicyStmt;
+typedef struct PgQuery__CreateAmStmt PgQuery__CreateAmStmt;
+typedef struct PgQuery__CreateTrigStmt PgQuery__CreateTrigStmt;
+typedef struct PgQuery__CreateEventTrigStmt PgQuery__CreateEventTrigStmt;
+typedef struct PgQuery__AlterEventTrigStmt PgQuery__AlterEventTrigStmt;
+typedef struct PgQuery__CreatePLangStmt PgQuery__CreatePLangStmt;
+typedef struct PgQuery__CreateRoleStmt PgQuery__CreateRoleStmt;
+typedef struct PgQuery__AlterRoleStmt PgQuery__AlterRoleStmt;
+typedef struct PgQuery__AlterRoleSetStmt PgQuery__AlterRoleSetStmt;
+typedef struct PgQuery__DropRoleStmt PgQuery__DropRoleStmt;
+typedef struct PgQuery__CreateSeqStmt PgQuery__CreateSeqStmt;
+typedef struct PgQuery__AlterSeqStmt PgQuery__AlterSeqStmt;
+typedef struct PgQuery__DefineStmt PgQuery__DefineStmt;
+typedef struct PgQuery__CreateDomainStmt PgQuery__CreateDomainStmt;
+typedef struct PgQuery__CreateOpClassStmt PgQuery__CreateOpClassStmt;
+typedef struct PgQuery__CreateOpClassItem PgQuery__CreateOpClassItem;
+typedef struct PgQuery__CreateOpFamilyStmt PgQuery__CreateOpFamilyStmt;
+typedef struct PgQuery__AlterOpFamilyStmt PgQuery__AlterOpFamilyStmt;
+typedef struct PgQuery__DropStmt PgQuery__DropStmt;
+typedef struct PgQuery__TruncateStmt PgQuery__TruncateStmt;
+typedef struct PgQuery__CommentStmt PgQuery__CommentStmt;
+typedef struct PgQuery__SecLabelStmt PgQuery__SecLabelStmt;
+typedef struct PgQuery__DeclareCursorStmt PgQuery__DeclareCursorStmt;
+typedef struct PgQuery__ClosePortalStmt PgQuery__ClosePortalStmt;
+typedef struct PgQuery__FetchStmt PgQuery__FetchStmt;
+typedef struct PgQuery__IndexStmt PgQuery__IndexStmt;
+typedef struct PgQuery__CreateStatsStmt PgQuery__CreateStatsStmt;
+typedef struct PgQuery__StatsElem PgQuery__StatsElem;
+typedef struct PgQuery__AlterStatsStmt PgQuery__AlterStatsStmt;
+typedef struct PgQuery__CreateFunctionStmt PgQuery__CreateFunctionStmt;
+typedef struct PgQuery__FunctionParameter PgQuery__FunctionParameter;
+typedef struct PgQuery__AlterFunctionStmt PgQuery__AlterFunctionStmt;
+typedef struct PgQuery__DoStmt PgQuery__DoStmt;
 typedef struct PgQuery__InlineCodeBlock PgQuery__InlineCodeBlock;
+typedef struct PgQuery__CallStmt PgQuery__CallStmt;
 typedef struct PgQuery__CallContext PgQuery__CallContext;
+typedef struct PgQuery__RenameStmt PgQuery__RenameStmt;
+typedef struct PgQuery__AlterObjectDependsStmt PgQuery__AlterObjectDependsStmt;
+typedef struct PgQuery__AlterObjectSchemaStmt PgQuery__AlterObjectSchemaStmt;
+typedef struct PgQuery__AlterOwnerStmt PgQuery__AlterOwnerStmt;
+typedef struct PgQuery__AlterOperatorStmt PgQuery__AlterOperatorStmt;
+typedef struct PgQuery__AlterTypeStmt PgQuery__AlterTypeStmt;
+typedef struct PgQuery__RuleStmt PgQuery__RuleStmt;
+typedef struct PgQuery__NotifyStmt PgQuery__NotifyStmt;
+typedef struct PgQuery__ListenStmt PgQuery__ListenStmt;
+typedef struct PgQuery__UnlistenStmt PgQuery__UnlistenStmt;
+typedef struct PgQuery__TransactionStmt PgQuery__TransactionStmt;
+typedef struct PgQuery__CompositeTypeStmt PgQuery__CompositeTypeStmt;
+typedef struct PgQuery__CreateEnumStmt PgQuery__CreateEnumStmt;
+typedef struct PgQuery__CreateRangeStmt PgQuery__CreateRangeStmt;
+typedef struct PgQuery__AlterEnumStmt PgQuery__AlterEnumStmt;
+typedef struct PgQuery__ViewStmt PgQuery__ViewStmt;
+typedef struct PgQuery__LoadStmt PgQuery__LoadStmt;
+typedef struct PgQuery__CreatedbStmt PgQuery__CreatedbStmt;
+typedef struct PgQuery__AlterDatabaseStmt PgQuery__AlterDatabaseStmt;
+typedef struct PgQuery__AlterDatabaseRefreshCollStmt PgQuery__AlterDatabaseRefreshCollStmt;
+typedef struct PgQuery__AlterDatabaseSetStmt PgQuery__AlterDatabaseSetStmt;
+typedef struct PgQuery__DropdbStmt PgQuery__DropdbStmt;
+typedef struct PgQuery__AlterSystemStmt PgQuery__AlterSystemStmt;
+typedef struct PgQuery__ClusterStmt PgQuery__ClusterStmt;
+typedef struct PgQuery__VacuumStmt PgQuery__VacuumStmt;
+typedef struct PgQuery__VacuumRelation PgQuery__VacuumRelation;
+typedef struct PgQuery__ExplainStmt PgQuery__ExplainStmt;
+typedef struct PgQuery__CreateTableAsStmt PgQuery__CreateTableAsStmt;
+typedef struct PgQuery__RefreshMatViewStmt PgQuery__RefreshMatViewStmt;
+typedef struct PgQuery__CheckPointStmt PgQuery__CheckPointStmt;
+typedef struct PgQuery__DiscardStmt PgQuery__DiscardStmt;
+typedef struct PgQuery__LockStmt PgQuery__LockStmt;
+typedef struct PgQuery__ConstraintsSetStmt PgQuery__ConstraintsSetStmt;
+typedef struct PgQuery__ReindexStmt PgQuery__ReindexStmt;
+typedef struct PgQuery__CreateConversionStmt PgQuery__CreateConversionStmt;
+typedef struct PgQuery__CreateCastStmt PgQuery__CreateCastStmt;
+typedef struct PgQuery__CreateTransformStmt PgQuery__CreateTransformStmt;
+typedef struct PgQuery__PrepareStmt PgQuery__PrepareStmt;
+typedef struct PgQuery__ExecuteStmt PgQuery__ExecuteStmt;
+typedef struct PgQuery__DeallocateStmt PgQuery__DeallocateStmt;
+typedef struct PgQuery__DropOwnedStmt PgQuery__DropOwnedStmt;
+typedef struct PgQuery__ReassignOwnedStmt PgQuery__ReassignOwnedStmt;
+typedef struct PgQuery__AlterTSDictionaryStmt PgQuery__AlterTSDictionaryStmt;
+typedef struct PgQuery__AlterTSConfigurationStmt PgQuery__AlterTSConfigurationStmt;
+typedef struct PgQuery__PublicationTable PgQuery__PublicationTable;
+typedef struct PgQuery__PublicationObjSpec PgQuery__PublicationObjSpec;
+typedef struct PgQuery__CreatePublicationStmt PgQuery__CreatePublicationStmt;
+typedef struct PgQuery__AlterPublicationStmt PgQuery__AlterPublicationStmt;
+typedef struct PgQuery__CreateSubscriptionStmt PgQuery__CreateSubscriptionStmt;
+typedef struct PgQuery__AlterSubscriptionStmt PgQuery__AlterSubscriptionStmt;
+typedef struct PgQuery__DropSubscriptionStmt PgQuery__DropSubscriptionStmt;
 typedef struct PgQuery__ScanToken PgQuery__ScanToken;
 
 
@@ -348,6 +362,13 @@ typedef enum _PgQuery__DefElemAction {
   PG_QUERY__DEF_ELEM_ACTION__DEFELEM_DROP = 4
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__DEF_ELEM_ACTION)
 } PgQuery__DefElemAction;
+typedef enum _PgQuery__PartitionStrategy {
+  PG_QUERY__PARTITION_STRATEGY__PARTITION_STRATEGY_UNDEFINED = 0,
+  PG_QUERY__PARTITION_STRATEGY__PARTITION_STRATEGY_LIST = 1,
+  PG_QUERY__PARTITION_STRATEGY__PARTITION_STRATEGY_RANGE = 2,
+  PG_QUERY__PARTITION_STRATEGY__PARTITION_STRATEGY_HASH = 3
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__PARTITION_STRATEGY)
+} PgQuery__PartitionStrategy;
 typedef enum _PgQuery__PartitionRangeDatumKind {
   PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_KIND_UNDEFINED = 0,
   PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_MINVALUE = 1,
@@ -467,76 +488,71 @@ typedef enum _PgQuery__DropBehavior {
 typedef enum _PgQuery__AlterTableType {
   PG_QUERY__ALTER_TABLE_TYPE__ALTER_TABLE_TYPE_UNDEFINED = 0,
   PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumn = 1,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnRecurse = 2,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnToView = 3,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ColumnDefault = 4,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_CookedColumnDefault = 5,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropNotNull = 6,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetNotNull = 7,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropExpression = 8,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_CheckNotNull = 9,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetStatistics = 10,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetOptions = 11,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ResetOptions = 12,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetStorage = 13,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetCompression = 14,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumn = 15,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumnRecurse = 16,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndex = 17,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddIndex = 18,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraint = 19,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraintRecurse = 20,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddConstraint = 21,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddDomainConstraint = 22,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterConstraint = 23,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraint = 24,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraintRecurse = 25,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndexConstraint = 26,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraint = 27,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraintRecurse = 28,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddComment = 29,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnType = 30,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnGenericOptions = 31,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ChangeOwner = 32,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ClusterOn = 33,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropCluster = 34,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetLogged = 35,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetUnLogged = 36,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropOids = 37,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetAccessMethod = 38,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetTableSpace = 39,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetRelOptions = 40,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ResetRelOptions = 41,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReplaceRelOptions = 42,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrig = 43,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysTrig = 44,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaTrig = 45,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrig = 46,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigAll = 47,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigAll = 48,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigUser = 49,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigUser = 50,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRule = 51,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysRule = 52,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaRule = 53,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRule = 54,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddInherit = 55,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropInherit = 56,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddOf = 57,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropOf = 58,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReplicaIdentity = 59,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRowSecurity = 60,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRowSecurity = 61,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ForceRowSecurity = 62,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_NoForceRowSecurity = 63,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_GenericOptions = 64,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AttachPartition = 65,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartition = 66,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartitionFinalize = 67,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIdentity = 68,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_SetIdentity = 69,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_DropIdentity = 70,
-  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddStatistics = 71
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddColumnToView = 2,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ColumnDefault = 3,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_CookedColumnDefault = 4,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropNotNull = 5,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetNotNull = 6,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropExpression = 7,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_CheckNotNull = 8,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetStatistics = 9,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetOptions = 10,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ResetOptions = 11,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetStorage = 12,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetCompression = 13,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropColumn = 14,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndex = 15,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddIndex = 16,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddConstraint = 17,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddConstraint = 18,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddDomainConstraint = 19,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterConstraint = 20,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ValidateConstraint = 21,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIndexConstraint = 22,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropConstraint = 23,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddComment = 24,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnType = 25,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AlterColumnGenericOptions = 26,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ChangeOwner = 27,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ClusterOn = 28,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropCluster = 29,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetLogged = 30,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetUnLogged = 31,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropOids = 32,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetAccessMethod = 33,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetTableSpace = 34,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetRelOptions = 35,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ResetRelOptions = 36,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReplaceRelOptions = 37,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrig = 38,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysTrig = 39,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaTrig = 40,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrig = 41,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigAll = 42,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigAll = 43,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableTrigUser = 44,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableTrigUser = 45,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRule = 46,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableAlwaysRule = 47,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableReplicaRule = 48,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRule = 49,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddInherit = 50,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropInherit = 51,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddOf = 52,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropOf = 53,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReplicaIdentity = 54,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_EnableRowSecurity = 55,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DisableRowSecurity = 56,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ForceRowSecurity = 57,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_NoForceRowSecurity = 58,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_GenericOptions = 59,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AttachPartition = 60,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartition = 61,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DetachPartitionFinalize = 62,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_AddIdentity = 63,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_SetIdentity = 64,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_DropIdentity = 65,
+  PG_QUERY__ALTER_TABLE_TYPE__AT_ReAddStatistics = 66
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__ALTER_TABLE_TYPE)
 } PgQuery__AlterTableType;
 typedef enum _PgQuery__GrantTargetType {
@@ -784,6 +800,37 @@ typedef enum _PgQuery__XmlOptionType {
   PG_QUERY__XML_OPTION_TYPE__XMLOPTION_CONTENT = 2
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__XML_OPTION_TYPE)
 } PgQuery__XmlOptionType;
+typedef enum _PgQuery__JsonEncoding {
+  PG_QUERY__JSON_ENCODING__JSON_ENCODING_UNDEFINED = 0,
+  PG_QUERY__JSON_ENCODING__JS_ENC_DEFAULT = 1,
+  PG_QUERY__JSON_ENCODING__JS_ENC_UTF8 = 2,
+  PG_QUERY__JSON_ENCODING__JS_ENC_UTF16 = 3,
+  PG_QUERY__JSON_ENCODING__JS_ENC_UTF32 = 4
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__JSON_ENCODING)
+} PgQuery__JsonEncoding;
+typedef enum _PgQuery__JsonFormatType {
+  PG_QUERY__JSON_FORMAT_TYPE__JSON_FORMAT_TYPE_UNDEFINED = 0,
+  PG_QUERY__JSON_FORMAT_TYPE__JS_FORMAT_DEFAULT = 1,
+  PG_QUERY__JSON_FORMAT_TYPE__JS_FORMAT_JSON = 2,
+  PG_QUERY__JSON_FORMAT_TYPE__JS_FORMAT_JSONB = 3
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__JSON_FORMAT_TYPE)
+} PgQuery__JsonFormatType;
+typedef enum _PgQuery__JsonConstructorType {
+  PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSON_CONSTRUCTOR_TYPE_UNDEFINED = 0,
+  PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSCTOR_JSON_OBJECT = 1,
+  PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSCTOR_JSON_ARRAY = 2,
+  PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSCTOR_JSON_OBJECTAGG = 3,
+  PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSCTOR_JSON_ARRAYAGG = 4
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__JSON_CONSTRUCTOR_TYPE)
+} PgQuery__JsonConstructorType;
+typedef enum _PgQuery__JsonValueType {
+  PG_QUERY__JSON_VALUE_TYPE__JSON_VALUE_TYPE_UNDEFINED = 0,
+  PG_QUERY__JSON_VALUE_TYPE__JS_TYPE_ANY = 1,
+  PG_QUERY__JSON_VALUE_TYPE__JS_TYPE_OBJECT = 2,
+  PG_QUERY__JSON_VALUE_TYPE__JS_TYPE_ARRAY = 3,
+  PG_QUERY__JSON_VALUE_TYPE__JS_TYPE_SCALAR = 4
+    PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__JSON_VALUE_TYPE)
+} PgQuery__JsonValueType;
 typedef enum _PgQuery__NullTestType {
   PG_QUERY__NULL_TEST_TYPE__NULL_TEST_TYPE_UNDEFINED = 0,
   PG_QUERY__NULL_TEST_TYPE__IS_NULL = 1,
@@ -820,8 +867,9 @@ typedef enum _PgQuery__JoinType {
   PG_QUERY__JOIN_TYPE__JOIN_RIGHT = 4,
   PG_QUERY__JOIN_TYPE__JOIN_SEMI = 5,
   PG_QUERY__JOIN_TYPE__JOIN_ANTI = 6,
-  PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_OUTER = 7,
-  PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_INNER = 8
+  PG_QUERY__JOIN_TYPE__JOIN_RIGHT_ANTI = 7,
+  PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_OUTER = 8,
+  PG_QUERY__JOIN_TYPE__JOIN_UNIQUE_INNER = 9
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__JOIN_TYPE)
 } PgQuery__JoinType;
 typedef enum _PgQuery__AggStrategy {
@@ -1009,474 +1057,487 @@ typedef enum _PgQuery__Token {
   PG_QUERY__TOKEN__SQL_COMMENT = 275,
   PG_QUERY__TOKEN__C_COMMENT = 276,
   PG_QUERY__TOKEN__ABORT_P = 277,
-  PG_QUERY__TOKEN__ABSOLUTE_P = 278,
-  PG_QUERY__TOKEN__ACCESS = 279,
-  PG_QUERY__TOKEN__ACTION = 280,
-  PG_QUERY__TOKEN__ADD_P = 281,
-  PG_QUERY__TOKEN__ADMIN = 282,
-  PG_QUERY__TOKEN__AFTER = 283,
-  PG_QUERY__TOKEN__AGGREGATE = 284,
-  PG_QUERY__TOKEN__ALL = 285,
-  PG_QUERY__TOKEN__ALSO = 286,
-  PG_QUERY__TOKEN__ALTER = 287,
-  PG_QUERY__TOKEN__ALWAYS = 288,
-  PG_QUERY__TOKEN__ANALYSE = 289,
-  PG_QUERY__TOKEN__ANALYZE = 290,
-  PG_QUERY__TOKEN__AND = 291,
-  PG_QUERY__TOKEN__ANY = 292,
-  PG_QUERY__TOKEN__ARRAY = 293,
-  PG_QUERY__TOKEN__AS = 294,
-  PG_QUERY__TOKEN__ASC = 295,
-  PG_QUERY__TOKEN__ASENSITIVE = 296,
-  PG_QUERY__TOKEN__ASSERTION = 297,
-  PG_QUERY__TOKEN__ASSIGNMENT = 298,
-  PG_QUERY__TOKEN__ASYMMETRIC = 299,
-  PG_QUERY__TOKEN__ATOMIC = 300,
-  PG_QUERY__TOKEN__AT = 301,
-  PG_QUERY__TOKEN__ATTACH = 302,
-  PG_QUERY__TOKEN__ATTRIBUTE = 303,
-  PG_QUERY__TOKEN__AUTHORIZATION = 304,
-  PG_QUERY__TOKEN__BACKWARD = 305,
-  PG_QUERY__TOKEN__BEFORE = 306,
-  PG_QUERY__TOKEN__BEGIN_P = 307,
-  PG_QUERY__TOKEN__BETWEEN = 308,
-  PG_QUERY__TOKEN__BIGINT = 309,
-  PG_QUERY__TOKEN__BINARY = 310,
-  PG_QUERY__TOKEN__BIT = 311,
-  PG_QUERY__TOKEN__BOOLEAN_P = 312,
-  PG_QUERY__TOKEN__BOTH = 313,
-  PG_QUERY__TOKEN__BREADTH = 314,
-  PG_QUERY__TOKEN__BY = 315,
-  PG_QUERY__TOKEN__CACHE = 316,
-  PG_QUERY__TOKEN__CALL = 317,
-  PG_QUERY__TOKEN__CALLED = 318,
-  PG_QUERY__TOKEN__CASCADE = 319,
-  PG_QUERY__TOKEN__CASCADED = 320,
-  PG_QUERY__TOKEN__CASE = 321,
-  PG_QUERY__TOKEN__CAST = 322,
-  PG_QUERY__TOKEN__CATALOG_P = 323,
-  PG_QUERY__TOKEN__CHAIN = 324,
-  PG_QUERY__TOKEN__CHAR_P = 325,
-  PG_QUERY__TOKEN__CHARACTER = 326,
-  PG_QUERY__TOKEN__CHARACTERISTICS = 327,
-  PG_QUERY__TOKEN__CHECK = 328,
-  PG_QUERY__TOKEN__CHECKPOINT = 329,
-  PG_QUERY__TOKEN__CLASS = 330,
-  PG_QUERY__TOKEN__CLOSE = 331,
-  PG_QUERY__TOKEN__CLUSTER = 332,
-  PG_QUERY__TOKEN__COALESCE = 333,
-  PG_QUERY__TOKEN__COLLATE = 334,
-  PG_QUERY__TOKEN__COLLATION = 335,
-  PG_QUERY__TOKEN__COLUMN = 336,
-  PG_QUERY__TOKEN__COLUMNS = 337,
-  PG_QUERY__TOKEN__COMMENT = 338,
-  PG_QUERY__TOKEN__COMMENTS = 339,
-  PG_QUERY__TOKEN__COMMIT = 340,
-  PG_QUERY__TOKEN__COMMITTED = 341,
-  PG_QUERY__TOKEN__COMPRESSION = 342,
-  PG_QUERY__TOKEN__CONCURRENTLY = 343,
-  PG_QUERY__TOKEN__CONFIGURATION = 344,
-  PG_QUERY__TOKEN__CONFLICT = 345,
-  PG_QUERY__TOKEN__CONNECTION = 346,
-  PG_QUERY__TOKEN__CONSTRAINT = 347,
-  PG_QUERY__TOKEN__CONSTRAINTS = 348,
-  PG_QUERY__TOKEN__CONTENT_P = 349,
-  PG_QUERY__TOKEN__CONTINUE_P = 350,
-  PG_QUERY__TOKEN__CONVERSION_P = 351,
-  PG_QUERY__TOKEN__COPY = 352,
-  PG_QUERY__TOKEN__COST = 353,
-  PG_QUERY__TOKEN__CREATE = 354,
-  PG_QUERY__TOKEN__CROSS = 355,
-  PG_QUERY__TOKEN__CSV = 356,
-  PG_QUERY__TOKEN__CUBE = 357,
-  PG_QUERY__TOKEN__CURRENT_P = 358,
-  PG_QUERY__TOKEN__CURRENT_CATALOG = 359,
-  PG_QUERY__TOKEN__CURRENT_DATE = 360,
-  PG_QUERY__TOKEN__CURRENT_ROLE = 361,
-  PG_QUERY__TOKEN__CURRENT_SCHEMA = 362,
-  PG_QUERY__TOKEN__CURRENT_TIME = 363,
-  PG_QUERY__TOKEN__CURRENT_TIMESTAMP = 364,
-  PG_QUERY__TOKEN__CURRENT_USER = 365,
-  PG_QUERY__TOKEN__CURSOR = 366,
-  PG_QUERY__TOKEN__CYCLE = 367,
-  PG_QUERY__TOKEN__DATA_P = 368,
-  PG_QUERY__TOKEN__DATABASE = 369,
-  PG_QUERY__TOKEN__DAY_P = 370,
-  PG_QUERY__TOKEN__DEALLOCATE = 371,
-  PG_QUERY__TOKEN__DEC = 372,
-  PG_QUERY__TOKEN__DECIMAL_P = 373,
-  PG_QUERY__TOKEN__DECLARE = 374,
-  PG_QUERY__TOKEN__DEFAULT = 375,
-  PG_QUERY__TOKEN__DEFAULTS = 376,
-  PG_QUERY__TOKEN__DEFERRABLE = 377,
-  PG_QUERY__TOKEN__DEFERRED = 378,
-  PG_QUERY__TOKEN__DEFINER = 379,
-  PG_QUERY__TOKEN__DELETE_P = 380,
-  PG_QUERY__TOKEN__DELIMITER = 381,
-  PG_QUERY__TOKEN__DELIMITERS = 382,
-  PG_QUERY__TOKEN__DEPENDS = 383,
-  PG_QUERY__TOKEN__DEPTH = 384,
-  PG_QUERY__TOKEN__DESC = 385,
-  PG_QUERY__TOKEN__DETACH = 386,
-  PG_QUERY__TOKEN__DICTIONARY = 387,
-  PG_QUERY__TOKEN__DISABLE_P = 388,
-  PG_QUERY__TOKEN__DISCARD = 389,
-  PG_QUERY__TOKEN__DISTINCT = 390,
-  PG_QUERY__TOKEN__DO = 391,
-  PG_QUERY__TOKEN__DOCUMENT_P = 392,
-  PG_QUERY__TOKEN__DOMAIN_P = 393,
-  PG_QUERY__TOKEN__DOUBLE_P = 394,
-  PG_QUERY__TOKEN__DROP = 395,
-  PG_QUERY__TOKEN__EACH = 396,
-  PG_QUERY__TOKEN__ELSE = 397,
-  PG_QUERY__TOKEN__ENABLE_P = 398,
-  PG_QUERY__TOKEN__ENCODING = 399,
-  PG_QUERY__TOKEN__ENCRYPTED = 400,
-  PG_QUERY__TOKEN__END_P = 401,
-  PG_QUERY__TOKEN__ENUM_P = 402,
-  PG_QUERY__TOKEN__ESCAPE = 403,
-  PG_QUERY__TOKEN__EVENT = 404,
-  PG_QUERY__TOKEN__EXCEPT = 405,
-  PG_QUERY__TOKEN__EXCLUDE = 406,
-  PG_QUERY__TOKEN__EXCLUDING = 407,
-  PG_QUERY__TOKEN__EXCLUSIVE = 408,
-  PG_QUERY__TOKEN__EXECUTE = 409,
-  PG_QUERY__TOKEN__EXISTS = 410,
-  PG_QUERY__TOKEN__EXPLAIN = 411,
-  PG_QUERY__TOKEN__EXPRESSION = 412,
-  PG_QUERY__TOKEN__EXTENSION = 413,
-  PG_QUERY__TOKEN__EXTERNAL = 414,
-  PG_QUERY__TOKEN__EXTRACT = 415,
-  PG_QUERY__TOKEN__FALSE_P = 416,
-  PG_QUERY__TOKEN__FAMILY = 417,
-  PG_QUERY__TOKEN__FETCH = 418,
-  PG_QUERY__TOKEN__FILTER = 419,
-  PG_QUERY__TOKEN__FINALIZE = 420,
-  PG_QUERY__TOKEN__FIRST_P = 421,
-  PG_QUERY__TOKEN__FLOAT_P = 422,
-  PG_QUERY__TOKEN__FOLLOWING = 423,
-  PG_QUERY__TOKEN__FOR = 424,
-  PG_QUERY__TOKEN__FORCE = 425,
-  PG_QUERY__TOKEN__FOREIGN = 426,
-  PG_QUERY__TOKEN__FORWARD = 427,
-  PG_QUERY__TOKEN__FREEZE = 428,
-  PG_QUERY__TOKEN__FROM = 429,
-  PG_QUERY__TOKEN__FULL = 430,
-  PG_QUERY__TOKEN__FUNCTION = 431,
-  PG_QUERY__TOKEN__FUNCTIONS = 432,
-  PG_QUERY__TOKEN__GENERATED = 433,
-  PG_QUERY__TOKEN__GLOBAL = 434,
-  PG_QUERY__TOKEN__GRANT = 435,
-  PG_QUERY__TOKEN__GRANTED = 436,
-  PG_QUERY__TOKEN__GREATEST = 437,
-  PG_QUERY__TOKEN__GROUP_P = 438,
-  PG_QUERY__TOKEN__GROUPING = 439,
-  PG_QUERY__TOKEN__GROUPS = 440,
-  PG_QUERY__TOKEN__HANDLER = 441,
-  PG_QUERY__TOKEN__HAVING = 442,
-  PG_QUERY__TOKEN__HEADER_P = 443,
-  PG_QUERY__TOKEN__HOLD = 444,
-  PG_QUERY__TOKEN__HOUR_P = 445,
-  PG_QUERY__TOKEN__IDENTITY_P = 446,
-  PG_QUERY__TOKEN__IF_P = 447,
-  PG_QUERY__TOKEN__ILIKE = 448,
-  PG_QUERY__TOKEN__IMMEDIATE = 449,
-  PG_QUERY__TOKEN__IMMUTABLE = 450,
-  PG_QUERY__TOKEN__IMPLICIT_P = 451,
-  PG_QUERY__TOKEN__IMPORT_P = 452,
-  PG_QUERY__TOKEN__IN_P = 453,
-  PG_QUERY__TOKEN__INCLUDE = 454,
-  PG_QUERY__TOKEN__INCLUDING = 455,
-  PG_QUERY__TOKEN__INCREMENT = 456,
-  PG_QUERY__TOKEN__INDEX = 457,
-  PG_QUERY__TOKEN__INDEXES = 458,
-  PG_QUERY__TOKEN__INHERIT = 459,
-  PG_QUERY__TOKEN__INHERITS = 460,
-  PG_QUERY__TOKEN__INITIALLY = 461,
-  PG_QUERY__TOKEN__INLINE_P = 462,
-  PG_QUERY__TOKEN__INNER_P = 463,
-  PG_QUERY__TOKEN__INOUT = 464,
-  PG_QUERY__TOKEN__INPUT_P = 465,
-  PG_QUERY__TOKEN__INSENSITIVE = 466,
-  PG_QUERY__TOKEN__INSERT = 467,
-  PG_QUERY__TOKEN__INSTEAD = 468,
-  PG_QUERY__TOKEN__INT_P = 469,
-  PG_QUERY__TOKEN__INTEGER = 470,
-  PG_QUERY__TOKEN__INTERSECT = 471,
-  PG_QUERY__TOKEN__INTERVAL = 472,
-  PG_QUERY__TOKEN__INTO = 473,
-  PG_QUERY__TOKEN__INVOKER = 474,
-  PG_QUERY__TOKEN__IS = 475,
-  PG_QUERY__TOKEN__ISNULL = 476,
-  PG_QUERY__TOKEN__ISOLATION = 477,
-  PG_QUERY__TOKEN__JOIN = 478,
-  PG_QUERY__TOKEN__KEY = 479,
-  PG_QUERY__TOKEN__LABEL = 480,
-  PG_QUERY__TOKEN__LANGUAGE = 481,
-  PG_QUERY__TOKEN__LARGE_P = 482,
-  PG_QUERY__TOKEN__LAST_P = 483,
-  PG_QUERY__TOKEN__LATERAL_P = 484,
-  PG_QUERY__TOKEN__LEADING = 485,
-  PG_QUERY__TOKEN__LEAKPROOF = 486,
-  PG_QUERY__TOKEN__LEAST = 487,
-  PG_QUERY__TOKEN__LEFT = 488,
-  PG_QUERY__TOKEN__LEVEL = 489,
-  PG_QUERY__TOKEN__LIKE = 490,
-  PG_QUERY__TOKEN__LIMIT = 491,
-  PG_QUERY__TOKEN__LISTEN = 492,
-  PG_QUERY__TOKEN__LOAD = 493,
-  PG_QUERY__TOKEN__LOCAL = 494,
-  PG_QUERY__TOKEN__LOCALTIME = 495,
-  PG_QUERY__TOKEN__LOCALTIMESTAMP = 496,
-  PG_QUERY__TOKEN__LOCATION = 497,
-  PG_QUERY__TOKEN__LOCK_P = 498,
-  PG_QUERY__TOKEN__LOCKED = 499,
-  PG_QUERY__TOKEN__LOGGED = 500,
-  PG_QUERY__TOKEN__MAPPING = 501,
-  PG_QUERY__TOKEN__MATCH = 502,
-  PG_QUERY__TOKEN__MATCHED = 503,
-  PG_QUERY__TOKEN__MATERIALIZED = 504,
-  PG_QUERY__TOKEN__MAXVALUE = 505,
-  PG_QUERY__TOKEN__MERGE = 506,
-  PG_QUERY__TOKEN__METHOD = 507,
-  PG_QUERY__TOKEN__MINUTE_P = 508,
-  PG_QUERY__TOKEN__MINVALUE = 509,
-  PG_QUERY__TOKEN__MODE = 510,
-  PG_QUERY__TOKEN__MONTH_P = 511,
-  PG_QUERY__TOKEN__MOVE = 512,
-  PG_QUERY__TOKEN__NAME_P = 513,
-  PG_QUERY__TOKEN__NAMES = 514,
-  PG_QUERY__TOKEN__NATIONAL = 515,
-  PG_QUERY__TOKEN__NATURAL = 516,
-  PG_QUERY__TOKEN__NCHAR = 517,
-  PG_QUERY__TOKEN__NEW = 518,
-  PG_QUERY__TOKEN__NEXT = 519,
-  PG_QUERY__TOKEN__NFC = 520,
-  PG_QUERY__TOKEN__NFD = 521,
-  PG_QUERY__TOKEN__NFKC = 522,
-  PG_QUERY__TOKEN__NFKD = 523,
-  PG_QUERY__TOKEN__NO = 524,
-  PG_QUERY__TOKEN__NONE = 525,
-  PG_QUERY__TOKEN__NORMALIZE = 526,
-  PG_QUERY__TOKEN__NORMALIZED = 527,
-  PG_QUERY__TOKEN__NOT = 528,
-  PG_QUERY__TOKEN__NOTHING = 529,
-  PG_QUERY__TOKEN__NOTIFY = 530,
-  PG_QUERY__TOKEN__NOTNULL = 531,
-  PG_QUERY__TOKEN__NOWAIT = 532,
-  PG_QUERY__TOKEN__NULL_P = 533,
-  PG_QUERY__TOKEN__NULLIF = 534,
-  PG_QUERY__TOKEN__NULLS_P = 535,
-  PG_QUERY__TOKEN__NUMERIC = 536,
-  PG_QUERY__TOKEN__OBJECT_P = 537,
-  PG_QUERY__TOKEN__OF = 538,
-  PG_QUERY__TOKEN__OFF = 539,
-  PG_QUERY__TOKEN__OFFSET = 540,
-  PG_QUERY__TOKEN__OIDS = 541,
-  PG_QUERY__TOKEN__OLD = 542,
-  PG_QUERY__TOKEN__ON = 543,
-  PG_QUERY__TOKEN__ONLY = 544,
-  PG_QUERY__TOKEN__OPERATOR = 545,
-  PG_QUERY__TOKEN__OPTION = 546,
-  PG_QUERY__TOKEN__OPTIONS = 547,
-  PG_QUERY__TOKEN__OR = 548,
-  PG_QUERY__TOKEN__ORDER = 549,
-  PG_QUERY__TOKEN__ORDINALITY = 550,
-  PG_QUERY__TOKEN__OTHERS = 551,
-  PG_QUERY__TOKEN__OUT_P = 552,
-  PG_QUERY__TOKEN__OUTER_P = 553,
-  PG_QUERY__TOKEN__OVER = 554,
-  PG_QUERY__TOKEN__OVERLAPS = 555,
-  PG_QUERY__TOKEN__OVERLAY = 556,
-  PG_QUERY__TOKEN__OVERRIDING = 557,
-  PG_QUERY__TOKEN__OWNED = 558,
-  PG_QUERY__TOKEN__OWNER = 559,
-  PG_QUERY__TOKEN__PARALLEL = 560,
-  PG_QUERY__TOKEN__PARAMETER = 561,
-  PG_QUERY__TOKEN__PARSER = 562,
-  PG_QUERY__TOKEN__PARTIAL = 563,
-  PG_QUERY__TOKEN__PARTITION = 564,
-  PG_QUERY__TOKEN__PASSING = 565,
-  PG_QUERY__TOKEN__PASSWORD = 566,
-  PG_QUERY__TOKEN__PLACING = 567,
-  PG_QUERY__TOKEN__PLANS = 568,
-  PG_QUERY__TOKEN__POLICY = 569,
-  PG_QUERY__TOKEN__POSITION = 570,
-  PG_QUERY__TOKEN__PRECEDING = 571,
-  PG_QUERY__TOKEN__PRECISION = 572,
-  PG_QUERY__TOKEN__PRESERVE = 573,
-  PG_QUERY__TOKEN__PREPARE = 574,
-  PG_QUERY__TOKEN__PREPARED = 575,
-  PG_QUERY__TOKEN__PRIMARY = 576,
-  PG_QUERY__TOKEN__PRIOR = 577,
-  PG_QUERY__TOKEN__PRIVILEGES = 578,
-  PG_QUERY__TOKEN__PROCEDURAL = 579,
-  PG_QUERY__TOKEN__PROCEDURE = 580,
-  PG_QUERY__TOKEN__PROCEDURES = 581,
-  PG_QUERY__TOKEN__PROGRAM = 582,
-  PG_QUERY__TOKEN__PUBLICATION = 583,
-  PG_QUERY__TOKEN__QUOTE = 584,
-  PG_QUERY__TOKEN__RANGE = 585,
-  PG_QUERY__TOKEN__READ = 586,
-  PG_QUERY__TOKEN__REAL = 587,
-  PG_QUERY__TOKEN__REASSIGN = 588,
-  PG_QUERY__TOKEN__RECHECK = 589,
-  PG_QUERY__TOKEN__RECURSIVE = 590,
-  PG_QUERY__TOKEN__REF_P = 591,
-  PG_QUERY__TOKEN__REFERENCES = 592,
-  PG_QUERY__TOKEN__REFERENCING = 593,
-  PG_QUERY__TOKEN__REFRESH = 594,
-  PG_QUERY__TOKEN__REINDEX = 595,
-  PG_QUERY__TOKEN__RELATIVE_P = 596,
-  PG_QUERY__TOKEN__RELEASE = 597,
-  PG_QUERY__TOKEN__RENAME = 598,
-  PG_QUERY__TOKEN__REPEATABLE = 599,
-  PG_QUERY__TOKEN__REPLACE = 600,
-  PG_QUERY__TOKEN__REPLICA = 601,
-  PG_QUERY__TOKEN__RESET = 602,
-  PG_QUERY__TOKEN__RESTART = 603,
-  PG_QUERY__TOKEN__RESTRICT = 604,
-  PG_QUERY__TOKEN__RETURN = 605,
-  PG_QUERY__TOKEN__RETURNING = 606,
-  PG_QUERY__TOKEN__RETURNS = 607,
-  PG_QUERY__TOKEN__REVOKE = 608,
-  PG_QUERY__TOKEN__RIGHT = 609,
-  PG_QUERY__TOKEN__ROLE = 610,
-  PG_QUERY__TOKEN__ROLLBACK = 611,
-  PG_QUERY__TOKEN__ROLLUP = 612,
-  PG_QUERY__TOKEN__ROUTINE = 613,
-  PG_QUERY__TOKEN__ROUTINES = 614,
-  PG_QUERY__TOKEN__ROW = 615,
-  PG_QUERY__TOKEN__ROWS = 616,
-  PG_QUERY__TOKEN__RULE = 617,
-  PG_QUERY__TOKEN__SAVEPOINT = 618,
-  PG_QUERY__TOKEN__SCHEMA = 619,
-  PG_QUERY__TOKEN__SCHEMAS = 620,
-  PG_QUERY__TOKEN__SCROLL = 621,
-  PG_QUERY__TOKEN__SEARCH = 622,
-  PG_QUERY__TOKEN__SECOND_P = 623,
-  PG_QUERY__TOKEN__SECURITY = 624,
-  PG_QUERY__TOKEN__SELECT = 625,
-  PG_QUERY__TOKEN__SEQUENCE = 626,
-  PG_QUERY__TOKEN__SEQUENCES = 627,
-  PG_QUERY__TOKEN__SERIALIZABLE = 628,
-  PG_QUERY__TOKEN__SERVER = 629,
-  PG_QUERY__TOKEN__SESSION = 630,
-  PG_QUERY__TOKEN__SESSION_USER = 631,
-  PG_QUERY__TOKEN__SET = 632,
-  PG_QUERY__TOKEN__SETS = 633,
-  PG_QUERY__TOKEN__SETOF = 634,
-  PG_QUERY__TOKEN__SHARE = 635,
-  PG_QUERY__TOKEN__SHOW = 636,
-  PG_QUERY__TOKEN__SIMILAR = 637,
-  PG_QUERY__TOKEN__SIMPLE = 638,
-  PG_QUERY__TOKEN__SKIP = 639,
-  PG_QUERY__TOKEN__SMALLINT = 640,
-  PG_QUERY__TOKEN__SNAPSHOT = 641,
-  PG_QUERY__TOKEN__SOME = 642,
-  PG_QUERY__TOKEN__SQL_P = 643,
-  PG_QUERY__TOKEN__STABLE = 644,
-  PG_QUERY__TOKEN__STANDALONE_P = 645,
-  PG_QUERY__TOKEN__START = 646,
-  PG_QUERY__TOKEN__STATEMENT = 647,
-  PG_QUERY__TOKEN__STATISTICS = 648,
-  PG_QUERY__TOKEN__STDIN = 649,
-  PG_QUERY__TOKEN__STDOUT = 650,
-  PG_QUERY__TOKEN__STORAGE = 651,
-  PG_QUERY__TOKEN__STORED = 652,
-  PG_QUERY__TOKEN__STRICT_P = 653,
-  PG_QUERY__TOKEN__STRIP_P = 654,
-  PG_QUERY__TOKEN__SUBSCRIPTION = 655,
-  PG_QUERY__TOKEN__SUBSTRING = 656,
-  PG_QUERY__TOKEN__SUPPORT = 657,
-  PG_QUERY__TOKEN__SYMMETRIC = 658,
-  PG_QUERY__TOKEN__SYSID = 659,
-  PG_QUERY__TOKEN__SYSTEM_P = 660,
-  PG_QUERY__TOKEN__TABLE = 661,
-  PG_QUERY__TOKEN__TABLES = 662,
-  PG_QUERY__TOKEN__TABLESAMPLE = 663,
-  PG_QUERY__TOKEN__TABLESPACE = 664,
-  PG_QUERY__TOKEN__TEMP = 665,
-  PG_QUERY__TOKEN__TEMPLATE = 666,
-  PG_QUERY__TOKEN__TEMPORARY = 667,
-  PG_QUERY__TOKEN__TEXT_P = 668,
-  PG_QUERY__TOKEN__THEN = 669,
-  PG_QUERY__TOKEN__TIES = 670,
-  PG_QUERY__TOKEN__TIME = 671,
-  PG_QUERY__TOKEN__TIMESTAMP = 672,
-  PG_QUERY__TOKEN__TO = 673,
-  PG_QUERY__TOKEN__TRAILING = 674,
-  PG_QUERY__TOKEN__TRANSACTION = 675,
-  PG_QUERY__TOKEN__TRANSFORM = 676,
-  PG_QUERY__TOKEN__TREAT = 677,
-  PG_QUERY__TOKEN__TRIGGER = 678,
-  PG_QUERY__TOKEN__TRIM = 679,
-  PG_QUERY__TOKEN__TRUE_P = 680,
-  PG_QUERY__TOKEN__TRUNCATE = 681,
-  PG_QUERY__TOKEN__TRUSTED = 682,
-  PG_QUERY__TOKEN__TYPE_P = 683,
-  PG_QUERY__TOKEN__TYPES_P = 684,
-  PG_QUERY__TOKEN__UESCAPE = 685,
-  PG_QUERY__TOKEN__UNBOUNDED = 686,
-  PG_QUERY__TOKEN__UNCOMMITTED = 687,
-  PG_QUERY__TOKEN__UNENCRYPTED = 688,
-  PG_QUERY__TOKEN__UNION = 689,
-  PG_QUERY__TOKEN__UNIQUE = 690,
-  PG_QUERY__TOKEN__UNKNOWN = 691,
-  PG_QUERY__TOKEN__UNLISTEN = 692,
-  PG_QUERY__TOKEN__UNLOGGED = 693,
-  PG_QUERY__TOKEN__UNTIL = 694,
-  PG_QUERY__TOKEN__UPDATE = 695,
-  PG_QUERY__TOKEN__USER = 696,
-  PG_QUERY__TOKEN__USING = 697,
-  PG_QUERY__TOKEN__VACUUM = 698,
-  PG_QUERY__TOKEN__VALID = 699,
-  PG_QUERY__TOKEN__VALIDATE = 700,
-  PG_QUERY__TOKEN__VALIDATOR = 701,
-  PG_QUERY__TOKEN__VALUE_P = 702,
-  PG_QUERY__TOKEN__VALUES = 703,
-  PG_QUERY__TOKEN__VARCHAR = 704,
-  PG_QUERY__TOKEN__VARIADIC = 705,
-  PG_QUERY__TOKEN__VARYING = 706,
-  PG_QUERY__TOKEN__VERBOSE = 707,
-  PG_QUERY__TOKEN__VERSION_P = 708,
-  PG_QUERY__TOKEN__VIEW = 709,
-  PG_QUERY__TOKEN__VIEWS = 710,
-  PG_QUERY__TOKEN__VOLATILE = 711,
-  PG_QUERY__TOKEN__WHEN = 712,
-  PG_QUERY__TOKEN__WHERE = 713,
-  PG_QUERY__TOKEN__WHITESPACE_P = 714,
-  PG_QUERY__TOKEN__WINDOW = 715,
-  PG_QUERY__TOKEN__WITH = 716,
-  PG_QUERY__TOKEN__WITHIN = 717,
-  PG_QUERY__TOKEN__WITHOUT = 718,
-  PG_QUERY__TOKEN__WORK = 719,
-  PG_QUERY__TOKEN__WRAPPER = 720,
-  PG_QUERY__TOKEN__WRITE = 721,
-  PG_QUERY__TOKEN__XML_P = 722,
-  PG_QUERY__TOKEN__XMLATTRIBUTES = 723,
-  PG_QUERY__TOKEN__XMLCONCAT = 724,
-  PG_QUERY__TOKEN__XMLELEMENT = 725,
-  PG_QUERY__TOKEN__XMLEXISTS = 726,
-  PG_QUERY__TOKEN__XMLFOREST = 727,
-  PG_QUERY__TOKEN__XMLNAMESPACES = 728,
-  PG_QUERY__TOKEN__XMLPARSE = 729,
-  PG_QUERY__TOKEN__XMLPI = 730,
-  PG_QUERY__TOKEN__XMLROOT = 731,
-  PG_QUERY__TOKEN__XMLSERIALIZE = 732,
-  PG_QUERY__TOKEN__XMLTABLE = 733,
-  PG_QUERY__TOKEN__YEAR_P = 734,
-  PG_QUERY__TOKEN__YES_P = 735,
-  PG_QUERY__TOKEN__ZONE = 736,
-  PG_QUERY__TOKEN__NOT_LA = 737,
-  PG_QUERY__TOKEN__NULLS_LA = 738,
-  PG_QUERY__TOKEN__WITH_LA = 739,
-  PG_QUERY__TOKEN__MODE_TYPE_NAME = 740,
-  PG_QUERY__TOKEN__MODE_PLPGSQL_EXPR = 741,
-  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN1 = 742,
-  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN2 = 743,
-  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN3 = 744,
-  PG_QUERY__TOKEN__UMINUS = 745
+  PG_QUERY__TOKEN__ABSENT = 278,
+  PG_QUERY__TOKEN__ABSOLUTE_P = 279,
+  PG_QUERY__TOKEN__ACCESS = 280,
+  PG_QUERY__TOKEN__ACTION = 281,
+  PG_QUERY__TOKEN__ADD_P = 282,
+  PG_QUERY__TOKEN__ADMIN = 283,
+  PG_QUERY__TOKEN__AFTER = 284,
+  PG_QUERY__TOKEN__AGGREGATE = 285,
+  PG_QUERY__TOKEN__ALL = 286,
+  PG_QUERY__TOKEN__ALSO = 287,
+  PG_QUERY__TOKEN__ALTER = 288,
+  PG_QUERY__TOKEN__ALWAYS = 289,
+  PG_QUERY__TOKEN__ANALYSE = 290,
+  PG_QUERY__TOKEN__ANALYZE = 291,
+  PG_QUERY__TOKEN__AND = 292,
+  PG_QUERY__TOKEN__ANY = 293,
+  PG_QUERY__TOKEN__ARRAY = 294,
+  PG_QUERY__TOKEN__AS = 295,
+  PG_QUERY__TOKEN__ASC = 296,
+  PG_QUERY__TOKEN__ASENSITIVE = 297,
+  PG_QUERY__TOKEN__ASSERTION = 298,
+  PG_QUERY__TOKEN__ASSIGNMENT = 299,
+  PG_QUERY__TOKEN__ASYMMETRIC = 300,
+  PG_QUERY__TOKEN__ATOMIC = 301,
+  PG_QUERY__TOKEN__AT = 302,
+  PG_QUERY__TOKEN__ATTACH = 303,
+  PG_QUERY__TOKEN__ATTRIBUTE = 304,
+  PG_QUERY__TOKEN__AUTHORIZATION = 305,
+  PG_QUERY__TOKEN__BACKWARD = 306,
+  PG_QUERY__TOKEN__BEFORE = 307,
+  PG_QUERY__TOKEN__BEGIN_P = 308,
+  PG_QUERY__TOKEN__BETWEEN = 309,
+  PG_QUERY__TOKEN__BIGINT = 310,
+  PG_QUERY__TOKEN__BINARY = 311,
+  PG_QUERY__TOKEN__BIT = 312,
+  PG_QUERY__TOKEN__BOOLEAN_P = 313,
+  PG_QUERY__TOKEN__BOTH = 314,
+  PG_QUERY__TOKEN__BREADTH = 315,
+  PG_QUERY__TOKEN__BY = 316,
+  PG_QUERY__TOKEN__CACHE = 317,
+  PG_QUERY__TOKEN__CALL = 318,
+  PG_QUERY__TOKEN__CALLED = 319,
+  PG_QUERY__TOKEN__CASCADE = 320,
+  PG_QUERY__TOKEN__CASCADED = 321,
+  PG_QUERY__TOKEN__CASE = 322,
+  PG_QUERY__TOKEN__CAST = 323,
+  PG_QUERY__TOKEN__CATALOG_P = 324,
+  PG_QUERY__TOKEN__CHAIN = 325,
+  PG_QUERY__TOKEN__CHAR_P = 326,
+  PG_QUERY__TOKEN__CHARACTER = 327,
+  PG_QUERY__TOKEN__CHARACTERISTICS = 328,
+  PG_QUERY__TOKEN__CHECK = 329,
+  PG_QUERY__TOKEN__CHECKPOINT = 330,
+  PG_QUERY__TOKEN__CLASS = 331,
+  PG_QUERY__TOKEN__CLOSE = 332,
+  PG_QUERY__TOKEN__CLUSTER = 333,
+  PG_QUERY__TOKEN__COALESCE = 334,
+  PG_QUERY__TOKEN__COLLATE = 335,
+  PG_QUERY__TOKEN__COLLATION = 336,
+  PG_QUERY__TOKEN__COLUMN = 337,
+  PG_QUERY__TOKEN__COLUMNS = 338,
+  PG_QUERY__TOKEN__COMMENT = 339,
+  PG_QUERY__TOKEN__COMMENTS = 340,
+  PG_QUERY__TOKEN__COMMIT = 341,
+  PG_QUERY__TOKEN__COMMITTED = 342,
+  PG_QUERY__TOKEN__COMPRESSION = 343,
+  PG_QUERY__TOKEN__CONCURRENTLY = 344,
+  PG_QUERY__TOKEN__CONFIGURATION = 345,
+  PG_QUERY__TOKEN__CONFLICT = 346,
+  PG_QUERY__TOKEN__CONNECTION = 347,
+  PG_QUERY__TOKEN__CONSTRAINT = 348,
+  PG_QUERY__TOKEN__CONSTRAINTS = 349,
+  PG_QUERY__TOKEN__CONTENT_P = 350,
+  PG_QUERY__TOKEN__CONTINUE_P = 351,
+  PG_QUERY__TOKEN__CONVERSION_P = 352,
+  PG_QUERY__TOKEN__COPY = 353,
+  PG_QUERY__TOKEN__COST = 354,
+  PG_QUERY__TOKEN__CREATE = 355,
+  PG_QUERY__TOKEN__CROSS = 356,
+  PG_QUERY__TOKEN__CSV = 357,
+  PG_QUERY__TOKEN__CUBE = 358,
+  PG_QUERY__TOKEN__CURRENT_P = 359,
+  PG_QUERY__TOKEN__CURRENT_CATALOG = 360,
+  PG_QUERY__TOKEN__CURRENT_DATE = 361,
+  PG_QUERY__TOKEN__CURRENT_ROLE = 362,
+  PG_QUERY__TOKEN__CURRENT_SCHEMA = 363,
+  PG_QUERY__TOKEN__CURRENT_TIME = 364,
+  PG_QUERY__TOKEN__CURRENT_TIMESTAMP = 365,
+  PG_QUERY__TOKEN__CURRENT_USER = 366,
+  PG_QUERY__TOKEN__CURSOR = 367,
+  PG_QUERY__TOKEN__CYCLE = 368,
+  PG_QUERY__TOKEN__DATA_P = 369,
+  PG_QUERY__TOKEN__DATABASE = 370,
+  PG_QUERY__TOKEN__DAY_P = 371,
+  PG_QUERY__TOKEN__DEALLOCATE = 372,
+  PG_QUERY__TOKEN__DEC = 373,
+  PG_QUERY__TOKEN__DECIMAL_P = 374,
+  PG_QUERY__TOKEN__DECLARE = 375,
+  PG_QUERY__TOKEN__DEFAULT = 376,
+  PG_QUERY__TOKEN__DEFAULTS = 377,
+  PG_QUERY__TOKEN__DEFERRABLE = 378,
+  PG_QUERY__TOKEN__DEFERRED = 379,
+  PG_QUERY__TOKEN__DEFINER = 380,
+  PG_QUERY__TOKEN__DELETE_P = 381,
+  PG_QUERY__TOKEN__DELIMITER = 382,
+  PG_QUERY__TOKEN__DELIMITERS = 383,
+  PG_QUERY__TOKEN__DEPENDS = 384,
+  PG_QUERY__TOKEN__DEPTH = 385,
+  PG_QUERY__TOKEN__DESC = 386,
+  PG_QUERY__TOKEN__DETACH = 387,
+  PG_QUERY__TOKEN__DICTIONARY = 388,
+  PG_QUERY__TOKEN__DISABLE_P = 389,
+  PG_QUERY__TOKEN__DISCARD = 390,
+  PG_QUERY__TOKEN__DISTINCT = 391,
+  PG_QUERY__TOKEN__DO = 392,
+  PG_QUERY__TOKEN__DOCUMENT_P = 393,
+  PG_QUERY__TOKEN__DOMAIN_P = 394,
+  PG_QUERY__TOKEN__DOUBLE_P = 395,
+  PG_QUERY__TOKEN__DROP = 396,
+  PG_QUERY__TOKEN__EACH = 397,
+  PG_QUERY__TOKEN__ELSE = 398,
+  PG_QUERY__TOKEN__ENABLE_P = 399,
+  PG_QUERY__TOKEN__ENCODING = 400,
+  PG_QUERY__TOKEN__ENCRYPTED = 401,
+  PG_QUERY__TOKEN__END_P = 402,
+  PG_QUERY__TOKEN__ENUM_P = 403,
+  PG_QUERY__TOKEN__ESCAPE = 404,
+  PG_QUERY__TOKEN__EVENT = 405,
+  PG_QUERY__TOKEN__EXCEPT = 406,
+  PG_QUERY__TOKEN__EXCLUDE = 407,
+  PG_QUERY__TOKEN__EXCLUDING = 408,
+  PG_QUERY__TOKEN__EXCLUSIVE = 409,
+  PG_QUERY__TOKEN__EXECUTE = 410,
+  PG_QUERY__TOKEN__EXISTS = 411,
+  PG_QUERY__TOKEN__EXPLAIN = 412,
+  PG_QUERY__TOKEN__EXPRESSION = 413,
+  PG_QUERY__TOKEN__EXTENSION = 414,
+  PG_QUERY__TOKEN__EXTERNAL = 415,
+  PG_QUERY__TOKEN__EXTRACT = 416,
+  PG_QUERY__TOKEN__FALSE_P = 417,
+  PG_QUERY__TOKEN__FAMILY = 418,
+  PG_QUERY__TOKEN__FETCH = 419,
+  PG_QUERY__TOKEN__FILTER = 420,
+  PG_QUERY__TOKEN__FINALIZE = 421,
+  PG_QUERY__TOKEN__FIRST_P = 422,
+  PG_QUERY__TOKEN__FLOAT_P = 423,
+  PG_QUERY__TOKEN__FOLLOWING = 424,
+  PG_QUERY__TOKEN__FOR = 425,
+  PG_QUERY__TOKEN__FORCE = 426,
+  PG_QUERY__TOKEN__FOREIGN = 427,
+  PG_QUERY__TOKEN__FORMAT = 428,
+  PG_QUERY__TOKEN__FORWARD = 429,
+  PG_QUERY__TOKEN__FREEZE = 430,
+  PG_QUERY__TOKEN__FROM = 431,
+  PG_QUERY__TOKEN__FULL = 432,
+  PG_QUERY__TOKEN__FUNCTION = 433,
+  PG_QUERY__TOKEN__FUNCTIONS = 434,
+  PG_QUERY__TOKEN__GENERATED = 435,
+  PG_QUERY__TOKEN__GLOBAL = 436,
+  PG_QUERY__TOKEN__GRANT = 437,
+  PG_QUERY__TOKEN__GRANTED = 438,
+  PG_QUERY__TOKEN__GREATEST = 439,
+  PG_QUERY__TOKEN__GROUP_P = 440,
+  PG_QUERY__TOKEN__GROUPING = 441,
+  PG_QUERY__TOKEN__GROUPS = 442,
+  PG_QUERY__TOKEN__HANDLER = 443,
+  PG_QUERY__TOKEN__HAVING = 444,
+  PG_QUERY__TOKEN__HEADER_P = 445,
+  PG_QUERY__TOKEN__HOLD = 446,
+  PG_QUERY__TOKEN__HOUR_P = 447,
+  PG_QUERY__TOKEN__IDENTITY_P = 448,
+  PG_QUERY__TOKEN__IF_P = 449,
+  PG_QUERY__TOKEN__ILIKE = 450,
+  PG_QUERY__TOKEN__IMMEDIATE = 451,
+  PG_QUERY__TOKEN__IMMUTABLE = 452,
+  PG_QUERY__TOKEN__IMPLICIT_P = 453,
+  PG_QUERY__TOKEN__IMPORT_P = 454,
+  PG_QUERY__TOKEN__IN_P = 455,
+  PG_QUERY__TOKEN__INCLUDE = 456,
+  PG_QUERY__TOKEN__INCLUDING = 457,
+  PG_QUERY__TOKEN__INCREMENT = 458,
+  PG_QUERY__TOKEN__INDENT = 459,
+  PG_QUERY__TOKEN__INDEX = 460,
+  PG_QUERY__TOKEN__INDEXES = 461,
+  PG_QUERY__TOKEN__INHERIT = 462,
+  PG_QUERY__TOKEN__INHERITS = 463,
+  PG_QUERY__TOKEN__INITIALLY = 464,
+  PG_QUERY__TOKEN__INLINE_P = 465,
+  PG_QUERY__TOKEN__INNER_P = 466,
+  PG_QUERY__TOKEN__INOUT = 467,
+  PG_QUERY__TOKEN__INPUT_P = 468,
+  PG_QUERY__TOKEN__INSENSITIVE = 469,
+  PG_QUERY__TOKEN__INSERT = 470,
+  PG_QUERY__TOKEN__INSTEAD = 471,
+  PG_QUERY__TOKEN__INT_P = 472,
+  PG_QUERY__TOKEN__INTEGER = 473,
+  PG_QUERY__TOKEN__INTERSECT = 474,
+  PG_QUERY__TOKEN__INTERVAL = 475,
+  PG_QUERY__TOKEN__INTO = 476,
+  PG_QUERY__TOKEN__INVOKER = 477,
+  PG_QUERY__TOKEN__IS = 478,
+  PG_QUERY__TOKEN__ISNULL = 479,
+  PG_QUERY__TOKEN__ISOLATION = 480,
+  PG_QUERY__TOKEN__JOIN = 481,
+  PG_QUERY__TOKEN__JSON = 482,
+  PG_QUERY__TOKEN__JSON_ARRAY = 483,
+  PG_QUERY__TOKEN__JSON_ARRAYAGG = 484,
+  PG_QUERY__TOKEN__JSON_OBJECT = 485,
+  PG_QUERY__TOKEN__JSON_OBJECTAGG = 486,
+  PG_QUERY__TOKEN__KEY = 487,
+  PG_QUERY__TOKEN__KEYS = 488,
+  PG_QUERY__TOKEN__LABEL = 489,
+  PG_QUERY__TOKEN__LANGUAGE = 490,
+  PG_QUERY__TOKEN__LARGE_P = 491,
+  PG_QUERY__TOKEN__LAST_P = 492,
+  PG_QUERY__TOKEN__LATERAL_P = 493,
+  PG_QUERY__TOKEN__LEADING = 494,
+  PG_QUERY__TOKEN__LEAKPROOF = 495,
+  PG_QUERY__TOKEN__LEAST = 496,
+  PG_QUERY__TOKEN__LEFT = 497,
+  PG_QUERY__TOKEN__LEVEL = 498,
+  PG_QUERY__TOKEN__LIKE = 499,
+  PG_QUERY__TOKEN__LIMIT = 500,
+  PG_QUERY__TOKEN__LISTEN = 501,
+  PG_QUERY__TOKEN__LOAD = 502,
+  PG_QUERY__TOKEN__LOCAL = 503,
+  PG_QUERY__TOKEN__LOCALTIME = 504,
+  PG_QUERY__TOKEN__LOCALTIMESTAMP = 505,
+  PG_QUERY__TOKEN__LOCATION = 506,
+  PG_QUERY__TOKEN__LOCK_P = 507,
+  PG_QUERY__TOKEN__LOCKED = 508,
+  PG_QUERY__TOKEN__LOGGED = 509,
+  PG_QUERY__TOKEN__MAPPING = 510,
+  PG_QUERY__TOKEN__MATCH = 511,
+  PG_QUERY__TOKEN__MATCHED = 512,
+  PG_QUERY__TOKEN__MATERIALIZED = 513,
+  PG_QUERY__TOKEN__MAXVALUE = 514,
+  PG_QUERY__TOKEN__MERGE = 515,
+  PG_QUERY__TOKEN__METHOD = 516,
+  PG_QUERY__TOKEN__MINUTE_P = 517,
+  PG_QUERY__TOKEN__MINVALUE = 518,
+  PG_QUERY__TOKEN__MODE = 519,
+  PG_QUERY__TOKEN__MONTH_P = 520,
+  PG_QUERY__TOKEN__MOVE = 521,
+  PG_QUERY__TOKEN__NAME_P = 522,
+  PG_QUERY__TOKEN__NAMES = 523,
+  PG_QUERY__TOKEN__NATIONAL = 524,
+  PG_QUERY__TOKEN__NATURAL = 525,
+  PG_QUERY__TOKEN__NCHAR = 526,
+  PG_QUERY__TOKEN__NEW = 527,
+  PG_QUERY__TOKEN__NEXT = 528,
+  PG_QUERY__TOKEN__NFC = 529,
+  PG_QUERY__TOKEN__NFD = 530,
+  PG_QUERY__TOKEN__NFKC = 531,
+  PG_QUERY__TOKEN__NFKD = 532,
+  PG_QUERY__TOKEN__NO = 533,
+  PG_QUERY__TOKEN__NONE = 534,
+  PG_QUERY__TOKEN__NORMALIZE = 535,
+  PG_QUERY__TOKEN__NORMALIZED = 536,
+  PG_QUERY__TOKEN__NOT = 537,
+  PG_QUERY__TOKEN__NOTHING = 538,
+  PG_QUERY__TOKEN__NOTIFY = 539,
+  PG_QUERY__TOKEN__NOTNULL = 540,
+  PG_QUERY__TOKEN__NOWAIT = 541,
+  PG_QUERY__TOKEN__NULL_P = 542,
+  PG_QUERY__TOKEN__NULLIF = 543,
+  PG_QUERY__TOKEN__NULLS_P = 544,
+  PG_QUERY__TOKEN__NUMERIC = 545,
+  PG_QUERY__TOKEN__OBJECT_P = 546,
+  PG_QUERY__TOKEN__OF = 547,
+  PG_QUERY__TOKEN__OFF = 548,
+  PG_QUERY__TOKEN__OFFSET = 549,
+  PG_QUERY__TOKEN__OIDS = 550,
+  PG_QUERY__TOKEN__OLD = 551,
+  PG_QUERY__TOKEN__ON = 552,
+  PG_QUERY__TOKEN__ONLY = 553,
+  PG_QUERY__TOKEN__OPERATOR = 554,
+  PG_QUERY__TOKEN__OPTION = 555,
+  PG_QUERY__TOKEN__OPTIONS = 556,
+  PG_QUERY__TOKEN__OR = 557,
+  PG_QUERY__TOKEN__ORDER = 558,
+  PG_QUERY__TOKEN__ORDINALITY = 559,
+  PG_QUERY__TOKEN__OTHERS = 560,
+  PG_QUERY__TOKEN__OUT_P = 561,
+  PG_QUERY__TOKEN__OUTER_P = 562,
+  PG_QUERY__TOKEN__OVER = 563,
+  PG_QUERY__TOKEN__OVERLAPS = 564,
+  PG_QUERY__TOKEN__OVERLAY = 565,
+  PG_QUERY__TOKEN__OVERRIDING = 566,
+  PG_QUERY__TOKEN__OWNED = 567,
+  PG_QUERY__TOKEN__OWNER = 568,
+  PG_QUERY__TOKEN__PARALLEL = 569,
+  PG_QUERY__TOKEN__PARAMETER = 570,
+  PG_QUERY__TOKEN__PARSER = 571,
+  PG_QUERY__TOKEN__PARTIAL = 572,
+  PG_QUERY__TOKEN__PARTITION = 573,
+  PG_QUERY__TOKEN__PASSING = 574,
+  PG_QUERY__TOKEN__PASSWORD = 575,
+  PG_QUERY__TOKEN__PLACING = 576,
+  PG_QUERY__TOKEN__PLANS = 577,
+  PG_QUERY__TOKEN__POLICY = 578,
+  PG_QUERY__TOKEN__POSITION = 579,
+  PG_QUERY__TOKEN__PRECEDING = 580,
+  PG_QUERY__TOKEN__PRECISION = 581,
+  PG_QUERY__TOKEN__PRESERVE = 582,
+  PG_QUERY__TOKEN__PREPARE = 583,
+  PG_QUERY__TOKEN__PREPARED = 584,
+  PG_QUERY__TOKEN__PRIMARY = 585,
+  PG_QUERY__TOKEN__PRIOR = 586,
+  PG_QUERY__TOKEN__PRIVILEGES = 587,
+  PG_QUERY__TOKEN__PROCEDURAL = 588,
+  PG_QUERY__TOKEN__PROCEDURE = 589,
+  PG_QUERY__TOKEN__PROCEDURES = 590,
+  PG_QUERY__TOKEN__PROGRAM = 591,
+  PG_QUERY__TOKEN__PUBLICATION = 592,
+  PG_QUERY__TOKEN__QUOTE = 593,
+  PG_QUERY__TOKEN__RANGE = 594,
+  PG_QUERY__TOKEN__READ = 595,
+  PG_QUERY__TOKEN__REAL = 596,
+  PG_QUERY__TOKEN__REASSIGN = 597,
+  PG_QUERY__TOKEN__RECHECK = 598,
+  PG_QUERY__TOKEN__RECURSIVE = 599,
+  PG_QUERY__TOKEN__REF_P = 600,
+  PG_QUERY__TOKEN__REFERENCES = 601,
+  PG_QUERY__TOKEN__REFERENCING = 602,
+  PG_QUERY__TOKEN__REFRESH = 603,
+  PG_QUERY__TOKEN__REINDEX = 604,
+  PG_QUERY__TOKEN__RELATIVE_P = 605,
+  PG_QUERY__TOKEN__RELEASE = 606,
+  PG_QUERY__TOKEN__RENAME = 607,
+  PG_QUERY__TOKEN__REPEATABLE = 608,
+  PG_QUERY__TOKEN__REPLACE = 609,
+  PG_QUERY__TOKEN__REPLICA = 610,
+  PG_QUERY__TOKEN__RESET = 611,
+  PG_QUERY__TOKEN__RESTART = 612,
+  PG_QUERY__TOKEN__RESTRICT = 613,
+  PG_QUERY__TOKEN__RETURN = 614,
+  PG_QUERY__TOKEN__RETURNING = 615,
+  PG_QUERY__TOKEN__RETURNS = 616,
+  PG_QUERY__TOKEN__REVOKE = 617,
+  PG_QUERY__TOKEN__RIGHT = 618,
+  PG_QUERY__TOKEN__ROLE = 619,
+  PG_QUERY__TOKEN__ROLLBACK = 620,
+  PG_QUERY__TOKEN__ROLLUP = 621,
+  PG_QUERY__TOKEN__ROUTINE = 622,
+  PG_QUERY__TOKEN__ROUTINES = 623,
+  PG_QUERY__TOKEN__ROW = 624,
+  PG_QUERY__TOKEN__ROWS = 625,
+  PG_QUERY__TOKEN__RULE = 626,
+  PG_QUERY__TOKEN__SAVEPOINT = 627,
+  PG_QUERY__TOKEN__SCALAR = 628,
+  PG_QUERY__TOKEN__SCHEMA = 629,
+  PG_QUERY__TOKEN__SCHEMAS = 630,
+  PG_QUERY__TOKEN__SCROLL = 631,
+  PG_QUERY__TOKEN__SEARCH = 632,
+  PG_QUERY__TOKEN__SECOND_P = 633,
+  PG_QUERY__TOKEN__SECURITY = 634,
+  PG_QUERY__TOKEN__SELECT = 635,
+  PG_QUERY__TOKEN__SEQUENCE = 636,
+  PG_QUERY__TOKEN__SEQUENCES = 637,
+  PG_QUERY__TOKEN__SERIALIZABLE = 638,
+  PG_QUERY__TOKEN__SERVER = 639,
+  PG_QUERY__TOKEN__SESSION = 640,
+  PG_QUERY__TOKEN__SESSION_USER = 641,
+  PG_QUERY__TOKEN__SET = 642,
+  PG_QUERY__TOKEN__SETS = 643,
+  PG_QUERY__TOKEN__SETOF = 644,
+  PG_QUERY__TOKEN__SHARE = 645,
+  PG_QUERY__TOKEN__SHOW = 646,
+  PG_QUERY__TOKEN__SIMILAR = 647,
+  PG_QUERY__TOKEN__SIMPLE = 648,
+  PG_QUERY__TOKEN__SKIP = 649,
+  PG_QUERY__TOKEN__SMALLINT = 650,
+  PG_QUERY__TOKEN__SNAPSHOT = 651,
+  PG_QUERY__TOKEN__SOME = 652,
+  PG_QUERY__TOKEN__SQL_P = 653,
+  PG_QUERY__TOKEN__STABLE = 654,
+  PG_QUERY__TOKEN__STANDALONE_P = 655,
+  PG_QUERY__TOKEN__START = 656,
+  PG_QUERY__TOKEN__STATEMENT = 657,
+  PG_QUERY__TOKEN__STATISTICS = 658,
+  PG_QUERY__TOKEN__STDIN = 659,
+  PG_QUERY__TOKEN__STDOUT = 660,
+  PG_QUERY__TOKEN__STORAGE = 661,
+  PG_QUERY__TOKEN__STORED = 662,
+  PG_QUERY__TOKEN__STRICT_P = 663,
+  PG_QUERY__TOKEN__STRIP_P = 664,
+  PG_QUERY__TOKEN__SUBSCRIPTION = 665,
+  PG_QUERY__TOKEN__SUBSTRING = 666,
+  PG_QUERY__TOKEN__SUPPORT = 667,
+  PG_QUERY__TOKEN__SYMMETRIC = 668,
+  PG_QUERY__TOKEN__SYSID = 669,
+  PG_QUERY__TOKEN__SYSTEM_P = 670,
+  PG_QUERY__TOKEN__SYSTEM_USER = 671,
+  PG_QUERY__TOKEN__TABLE = 672,
+  PG_QUERY__TOKEN__TABLES = 673,
+  PG_QUERY__TOKEN__TABLESAMPLE = 674,
+  PG_QUERY__TOKEN__TABLESPACE = 675,
+  PG_QUERY__TOKEN__TEMP = 676,
+  PG_QUERY__TOKEN__TEMPLATE = 677,
+  PG_QUERY__TOKEN__TEMPORARY = 678,
+  PG_QUERY__TOKEN__TEXT_P = 679,
+  PG_QUERY__TOKEN__THEN = 680,
+  PG_QUERY__TOKEN__TIES = 681,
+  PG_QUERY__TOKEN__TIME = 682,
+  PG_QUERY__TOKEN__TIMESTAMP = 683,
+  PG_QUERY__TOKEN__TO = 684,
+  PG_QUERY__TOKEN__TRAILING = 685,
+  PG_QUERY__TOKEN__TRANSACTION = 686,
+  PG_QUERY__TOKEN__TRANSFORM = 687,
+  PG_QUERY__TOKEN__TREAT = 688,
+  PG_QUERY__TOKEN__TRIGGER = 689,
+  PG_QUERY__TOKEN__TRIM = 690,
+  PG_QUERY__TOKEN__TRUE_P = 691,
+  PG_QUERY__TOKEN__TRUNCATE = 692,
+  PG_QUERY__TOKEN__TRUSTED = 693,
+  PG_QUERY__TOKEN__TYPE_P = 694,
+  PG_QUERY__TOKEN__TYPES_P = 695,
+  PG_QUERY__TOKEN__UESCAPE = 696,
+  PG_QUERY__TOKEN__UNBOUNDED = 697,
+  PG_QUERY__TOKEN__UNCOMMITTED = 698,
+  PG_QUERY__TOKEN__UNENCRYPTED = 699,
+  PG_QUERY__TOKEN__UNION = 700,
+  PG_QUERY__TOKEN__UNIQUE = 701,
+  PG_QUERY__TOKEN__UNKNOWN = 702,
+  PG_QUERY__TOKEN__UNLISTEN = 703,
+  PG_QUERY__TOKEN__UNLOGGED = 704,
+  PG_QUERY__TOKEN__UNTIL = 705,
+  PG_QUERY__TOKEN__UPDATE = 706,
+  PG_QUERY__TOKEN__USER = 707,
+  PG_QUERY__TOKEN__USING = 708,
+  PG_QUERY__TOKEN__VACUUM = 709,
+  PG_QUERY__TOKEN__VALID = 710,
+  PG_QUERY__TOKEN__VALIDATE = 711,
+  PG_QUERY__TOKEN__VALIDATOR = 712,
+  PG_QUERY__TOKEN__VALUE_P = 713,
+  PG_QUERY__TOKEN__VALUES = 714,
+  PG_QUERY__TOKEN__VARCHAR = 715,
+  PG_QUERY__TOKEN__VARIADIC = 716,
+  PG_QUERY__TOKEN__VARYING = 717,
+  PG_QUERY__TOKEN__VERBOSE = 718,
+  PG_QUERY__TOKEN__VERSION_P = 719,
+  PG_QUERY__TOKEN__VIEW = 720,
+  PG_QUERY__TOKEN__VIEWS = 721,
+  PG_QUERY__TOKEN__VOLATILE = 722,
+  PG_QUERY__TOKEN__WHEN = 723,
+  PG_QUERY__TOKEN__WHERE = 724,
+  PG_QUERY__TOKEN__WHITESPACE_P = 725,
+  PG_QUERY__TOKEN__WINDOW = 726,
+  PG_QUERY__TOKEN__WITH = 727,
+  PG_QUERY__TOKEN__WITHIN = 728,
+  PG_QUERY__TOKEN__WITHOUT = 729,
+  PG_QUERY__TOKEN__WORK = 730,
+  PG_QUERY__TOKEN__WRAPPER = 731,
+  PG_QUERY__TOKEN__WRITE = 732,
+  PG_QUERY__TOKEN__XML_P = 733,
+  PG_QUERY__TOKEN__XMLATTRIBUTES = 734,
+  PG_QUERY__TOKEN__XMLCONCAT = 735,
+  PG_QUERY__TOKEN__XMLELEMENT = 736,
+  PG_QUERY__TOKEN__XMLEXISTS = 737,
+  PG_QUERY__TOKEN__XMLFOREST = 738,
+  PG_QUERY__TOKEN__XMLNAMESPACES = 739,
+  PG_QUERY__TOKEN__XMLPARSE = 740,
+  PG_QUERY__TOKEN__XMLPI = 741,
+  PG_QUERY__TOKEN__XMLROOT = 742,
+  PG_QUERY__TOKEN__XMLSERIALIZE = 743,
+  PG_QUERY__TOKEN__XMLTABLE = 744,
+  PG_QUERY__TOKEN__YEAR_P = 745,
+  PG_QUERY__TOKEN__YES_P = 746,
+  PG_QUERY__TOKEN__ZONE = 747,
+  PG_QUERY__TOKEN__FORMAT_LA = 748,
+  PG_QUERY__TOKEN__NOT_LA = 749,
+  PG_QUERY__TOKEN__NULLS_LA = 750,
+  PG_QUERY__TOKEN__WITH_LA = 751,
+  PG_QUERY__TOKEN__WITHOUT_LA = 752,
+  PG_QUERY__TOKEN__MODE_TYPE_NAME = 753,
+  PG_QUERY__TOKEN__MODE_PLPGSQL_EXPR = 754,
+  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN1 = 755,
+  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN2 = 756,
+  PG_QUERY__TOKEN__MODE_PLPGSQL_ASSIGN3 = 757,
+  PG_QUERY__TOKEN__UMINUS = 758
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__TOKEN)
 } PgQuery__Token;
 
@@ -1511,241 +1572,255 @@ typedef enum {
   PG_QUERY__NODE__NODE_ALIAS = 1,
   PG_QUERY__NODE__NODE_RANGE_VAR = 2,
   PG_QUERY__NODE__NODE_TABLE_FUNC = 3,
-  PG_QUERY__NODE__NODE_VAR = 4,
-  PG_QUERY__NODE__NODE_PARAM = 5,
-  PG_QUERY__NODE__NODE_AGGREF = 6,
-  PG_QUERY__NODE__NODE_GROUPING_FUNC = 7,
-  PG_QUERY__NODE__NODE_WINDOW_FUNC = 8,
-  PG_QUERY__NODE__NODE_SUBSCRIPTING_REF = 9,
-  PG_QUERY__NODE__NODE_FUNC_EXPR = 10,
-  PG_QUERY__NODE__NODE_NAMED_ARG_EXPR = 11,
-  PG_QUERY__NODE__NODE_OP_EXPR = 12,
-  PG_QUERY__NODE__NODE_DISTINCT_EXPR = 13,
-  PG_QUERY__NODE__NODE_NULL_IF_EXPR = 14,
-  PG_QUERY__NODE__NODE_SCALAR_ARRAY_OP_EXPR = 15,
-  PG_QUERY__NODE__NODE_BOOL_EXPR = 16,
-  PG_QUERY__NODE__NODE_SUB_LINK = 17,
-  PG_QUERY__NODE__NODE_SUB_PLAN = 18,
-  PG_QUERY__NODE__NODE_ALTERNATIVE_SUB_PLAN = 19,
-  PG_QUERY__NODE__NODE_FIELD_SELECT = 20,
-  PG_QUERY__NODE__NODE_FIELD_STORE = 21,
-  PG_QUERY__NODE__NODE_RELABEL_TYPE = 22,
-  PG_QUERY__NODE__NODE_COERCE_VIA_IO = 23,
-  PG_QUERY__NODE__NODE_ARRAY_COERCE_EXPR = 24,
-  PG_QUERY__NODE__NODE_CONVERT_ROWTYPE_EXPR = 25,
-  PG_QUERY__NODE__NODE_COLLATE_EXPR = 26,
-  PG_QUERY__NODE__NODE_CASE_EXPR = 27,
-  PG_QUERY__NODE__NODE_CASE_WHEN = 28,
-  PG_QUERY__NODE__NODE_CASE_TEST_EXPR = 29,
-  PG_QUERY__NODE__NODE_ARRAY_EXPR = 30,
-  PG_QUERY__NODE__NODE_ROW_EXPR = 31,
-  PG_QUERY__NODE__NODE_ROW_COMPARE_EXPR = 32,
-  PG_QUERY__NODE__NODE_COALESCE_EXPR = 33,
-  PG_QUERY__NODE__NODE_MIN_MAX_EXPR = 34,
-  PG_QUERY__NODE__NODE_SQLVALUE_FUNCTION = 35,
-  PG_QUERY__NODE__NODE_XML_EXPR = 36,
-  PG_QUERY__NODE__NODE_NULL_TEST = 37,
-  PG_QUERY__NODE__NODE_BOOLEAN_TEST = 38,
-  PG_QUERY__NODE__NODE_COERCE_TO_DOMAIN = 39,
-  PG_QUERY__NODE__NODE_COERCE_TO_DOMAIN_VALUE = 40,
-  PG_QUERY__NODE__NODE_SET_TO_DEFAULT = 41,
-  PG_QUERY__NODE__NODE_CURRENT_OF_EXPR = 42,
-  PG_QUERY__NODE__NODE_NEXT_VALUE_EXPR = 43,
-  PG_QUERY__NODE__NODE_INFERENCE_ELEM = 44,
-  PG_QUERY__NODE__NODE_TARGET_ENTRY = 45,
-  PG_QUERY__NODE__NODE_RANGE_TBL_REF = 46,
-  PG_QUERY__NODE__NODE_JOIN_EXPR = 47,
-  PG_QUERY__NODE__NODE_FROM_EXPR = 48,
-  PG_QUERY__NODE__NODE_ON_CONFLICT_EXPR = 49,
-  PG_QUERY__NODE__NODE_INTO_CLAUSE = 50,
-  PG_QUERY__NODE__NODE_MERGE_ACTION = 51,
-  PG_QUERY__NODE__NODE_RAW_STMT = 52,
-  PG_QUERY__NODE__NODE_QUERY = 53,
-  PG_QUERY__NODE__NODE_INSERT_STMT = 54,
-  PG_QUERY__NODE__NODE_DELETE_STMT = 55,
-  PG_QUERY__NODE__NODE_UPDATE_STMT = 56,
-  PG_QUERY__NODE__NODE_MERGE_STMT = 57,
-  PG_QUERY__NODE__NODE_SELECT_STMT = 58,
-  PG_QUERY__NODE__NODE_RETURN_STMT = 59,
-  PG_QUERY__NODE__NODE_PLASSIGN_STMT = 60,
-  PG_QUERY__NODE__NODE_ALTER_TABLE_STMT = 61,
-  PG_QUERY__NODE__NODE_ALTER_TABLE_CMD = 62,
-  PG_QUERY__NODE__NODE_ALTER_DOMAIN_STMT = 63,
-  PG_QUERY__NODE__NODE_SET_OPERATION_STMT = 64,
-  PG_QUERY__NODE__NODE_GRANT_STMT = 65,
-  PG_QUERY__NODE__NODE_GRANT_ROLE_STMT = 66,
-  PG_QUERY__NODE__NODE_ALTER_DEFAULT_PRIVILEGES_STMT = 67,
-  PG_QUERY__NODE__NODE_CLOSE_PORTAL_STMT = 68,
-  PG_QUERY__NODE__NODE_CLUSTER_STMT = 69,
-  PG_QUERY__NODE__NODE_COPY_STMT = 70,
-  PG_QUERY__NODE__NODE_CREATE_STMT = 71,
-  PG_QUERY__NODE__NODE_DEFINE_STMT = 72,
-  PG_QUERY__NODE__NODE_DROP_STMT = 73,
-  PG_QUERY__NODE__NODE_TRUNCATE_STMT = 74,
-  PG_QUERY__NODE__NODE_COMMENT_STMT = 75,
-  PG_QUERY__NODE__NODE_FETCH_STMT = 76,
-  PG_QUERY__NODE__NODE_INDEX_STMT = 77,
-  PG_QUERY__NODE__NODE_CREATE_FUNCTION_STMT = 78,
-  PG_QUERY__NODE__NODE_ALTER_FUNCTION_STMT = 79,
-  PG_QUERY__NODE__NODE_DO_STMT = 80,
-  PG_QUERY__NODE__NODE_RENAME_STMT = 81,
-  PG_QUERY__NODE__NODE_RULE_STMT = 82,
-  PG_QUERY__NODE__NODE_NOTIFY_STMT = 83,
-  PG_QUERY__NODE__NODE_LISTEN_STMT = 84,
-  PG_QUERY__NODE__NODE_UNLISTEN_STMT = 85,
-  PG_QUERY__NODE__NODE_TRANSACTION_STMT = 86,
-  PG_QUERY__NODE__NODE_VIEW_STMT = 87,
-  PG_QUERY__NODE__NODE_LOAD_STMT = 88,
-  PG_QUERY__NODE__NODE_CREATE_DOMAIN_STMT = 89,
-  PG_QUERY__NODE__NODE_CREATEDB_STMT = 90,
-  PG_QUERY__NODE__NODE_DROPDB_STMT = 91,
-  PG_QUERY__NODE__NODE_VACUUM_STMT = 92,
-  PG_QUERY__NODE__NODE_EXPLAIN_STMT = 93,
-  PG_QUERY__NODE__NODE_CREATE_TABLE_AS_STMT = 94,
-  PG_QUERY__NODE__NODE_CREATE_SEQ_STMT = 95,
-  PG_QUERY__NODE__NODE_ALTER_SEQ_STMT = 96,
-  PG_QUERY__NODE__NODE_VARIABLE_SET_STMT = 97,
-  PG_QUERY__NODE__NODE_VARIABLE_SHOW_STMT = 98,
-  PG_QUERY__NODE__NODE_DISCARD_STMT = 99,
-  PG_QUERY__NODE__NODE_CREATE_TRIG_STMT = 100,
-  PG_QUERY__NODE__NODE_CREATE_PLANG_STMT = 101,
-  PG_QUERY__NODE__NODE_CREATE_ROLE_STMT = 102,
-  PG_QUERY__NODE__NODE_ALTER_ROLE_STMT = 103,
-  PG_QUERY__NODE__NODE_DROP_ROLE_STMT = 104,
-  PG_QUERY__NODE__NODE_LOCK_STMT = 105,
-  PG_QUERY__NODE__NODE_CONSTRAINTS_SET_STMT = 106,
-  PG_QUERY__NODE__NODE_REINDEX_STMT = 107,
-  PG_QUERY__NODE__NODE_CHECK_POINT_STMT = 108,
-  PG_QUERY__NODE__NODE_CREATE_SCHEMA_STMT = 109,
-  PG_QUERY__NODE__NODE_ALTER_DATABASE_STMT = 110,
-  PG_QUERY__NODE__NODE_ALTER_DATABASE_REFRESH_COLL_STMT = 111,
-  PG_QUERY__NODE__NODE_ALTER_DATABASE_SET_STMT = 112,
-  PG_QUERY__NODE__NODE_ALTER_ROLE_SET_STMT = 113,
-  PG_QUERY__NODE__NODE_CREATE_CONVERSION_STMT = 114,
-  PG_QUERY__NODE__NODE_CREATE_CAST_STMT = 115,
-  PG_QUERY__NODE__NODE_CREATE_OP_CLASS_STMT = 116,
-  PG_QUERY__NODE__NODE_CREATE_OP_FAMILY_STMT = 117,
-  PG_QUERY__NODE__NODE_ALTER_OP_FAMILY_STMT = 118,
-  PG_QUERY__NODE__NODE_PREPARE_STMT = 119,
-  PG_QUERY__NODE__NODE_EXECUTE_STMT = 120,
-  PG_QUERY__NODE__NODE_DEALLOCATE_STMT = 121,
-  PG_QUERY__NODE__NODE_DECLARE_CURSOR_STMT = 122,
-  PG_QUERY__NODE__NODE_CREATE_TABLE_SPACE_STMT = 123,
-  PG_QUERY__NODE__NODE_DROP_TABLE_SPACE_STMT = 124,
-  PG_QUERY__NODE__NODE_ALTER_OBJECT_DEPENDS_STMT = 125,
-  PG_QUERY__NODE__NODE_ALTER_OBJECT_SCHEMA_STMT = 126,
-  PG_QUERY__NODE__NODE_ALTER_OWNER_STMT = 127,
-  PG_QUERY__NODE__NODE_ALTER_OPERATOR_STMT = 128,
-  PG_QUERY__NODE__NODE_ALTER_TYPE_STMT = 129,
-  PG_QUERY__NODE__NODE_DROP_OWNED_STMT = 130,
-  PG_QUERY__NODE__NODE_REASSIGN_OWNED_STMT = 131,
-  PG_QUERY__NODE__NODE_COMPOSITE_TYPE_STMT = 132,
-  PG_QUERY__NODE__NODE_CREATE_ENUM_STMT = 133,
-  PG_QUERY__NODE__NODE_CREATE_RANGE_STMT = 134,
-  PG_QUERY__NODE__NODE_ALTER_ENUM_STMT = 135,
-  PG_QUERY__NODE__NODE_ALTER_TSDICTIONARY_STMT = 136,
-  PG_QUERY__NODE__NODE_ALTER_TSCONFIGURATION_STMT = 137,
-  PG_QUERY__NODE__NODE_CREATE_FDW_STMT = 138,
-  PG_QUERY__NODE__NODE_ALTER_FDW_STMT = 139,
-  PG_QUERY__NODE__NODE_CREATE_FOREIGN_SERVER_STMT = 140,
-  PG_QUERY__NODE__NODE_ALTER_FOREIGN_SERVER_STMT = 141,
-  PG_QUERY__NODE__NODE_CREATE_USER_MAPPING_STMT = 142,
-  PG_QUERY__NODE__NODE_ALTER_USER_MAPPING_STMT = 143,
-  PG_QUERY__NODE__NODE_DROP_USER_MAPPING_STMT = 144,
-  PG_QUERY__NODE__NODE_ALTER_TABLE_SPACE_OPTIONS_STMT = 145,
-  PG_QUERY__NODE__NODE_ALTER_TABLE_MOVE_ALL_STMT = 146,
-  PG_QUERY__NODE__NODE_SEC_LABEL_STMT = 147,
-  PG_QUERY__NODE__NODE_CREATE_FOREIGN_TABLE_STMT = 148,
-  PG_QUERY__NODE__NODE_IMPORT_FOREIGN_SCHEMA_STMT = 149,
-  PG_QUERY__NODE__NODE_CREATE_EXTENSION_STMT = 150,
-  PG_QUERY__NODE__NODE_ALTER_EXTENSION_STMT = 151,
-  PG_QUERY__NODE__NODE_ALTER_EXTENSION_CONTENTS_STMT = 152,
-  PG_QUERY__NODE__NODE_CREATE_EVENT_TRIG_STMT = 153,
-  PG_QUERY__NODE__NODE_ALTER_EVENT_TRIG_STMT = 154,
-  PG_QUERY__NODE__NODE_REFRESH_MAT_VIEW_STMT = 155,
-  PG_QUERY__NODE__NODE_REPLICA_IDENTITY_STMT = 156,
-  PG_QUERY__NODE__NODE_ALTER_SYSTEM_STMT = 157,
-  PG_QUERY__NODE__NODE_CREATE_POLICY_STMT = 158,
-  PG_QUERY__NODE__NODE_ALTER_POLICY_STMT = 159,
-  PG_QUERY__NODE__NODE_CREATE_TRANSFORM_STMT = 160,
-  PG_QUERY__NODE__NODE_CREATE_AM_STMT = 161,
-  PG_QUERY__NODE__NODE_CREATE_PUBLICATION_STMT = 162,
-  PG_QUERY__NODE__NODE_ALTER_PUBLICATION_STMT = 163,
-  PG_QUERY__NODE__NODE_CREATE_SUBSCRIPTION_STMT = 164,
-  PG_QUERY__NODE__NODE_ALTER_SUBSCRIPTION_STMT = 165,
-  PG_QUERY__NODE__NODE_DROP_SUBSCRIPTION_STMT = 166,
-  PG_QUERY__NODE__NODE_CREATE_STATS_STMT = 167,
-  PG_QUERY__NODE__NODE_ALTER_COLLATION_STMT = 168,
-  PG_QUERY__NODE__NODE_CALL_STMT = 169,
-  PG_QUERY__NODE__NODE_ALTER_STATS_STMT = 170,
-  PG_QUERY__NODE__NODE_A_EXPR = 171,
-  PG_QUERY__NODE__NODE_COLUMN_REF = 172,
-  PG_QUERY__NODE__NODE_PARAM_REF = 173,
-  PG_QUERY__NODE__NODE_FUNC_CALL = 174,
-  PG_QUERY__NODE__NODE_A_STAR = 175,
-  PG_QUERY__NODE__NODE_A_INDICES = 176,
-  PG_QUERY__NODE__NODE_A_INDIRECTION = 177,
-  PG_QUERY__NODE__NODE_A_ARRAY_EXPR = 178,
-  PG_QUERY__NODE__NODE_RES_TARGET = 179,
-  PG_QUERY__NODE__NODE_MULTI_ASSIGN_REF = 180,
-  PG_QUERY__NODE__NODE_TYPE_CAST = 181,
-  PG_QUERY__NODE__NODE_COLLATE_CLAUSE = 182,
-  PG_QUERY__NODE__NODE_SORT_BY = 183,
-  PG_QUERY__NODE__NODE_WINDOW_DEF = 184,
-  PG_QUERY__NODE__NODE_RANGE_SUBSELECT = 185,
-  PG_QUERY__NODE__NODE_RANGE_FUNCTION = 186,
-  PG_QUERY__NODE__NODE_RANGE_TABLE_SAMPLE = 187,
-  PG_QUERY__NODE__NODE_RANGE_TABLE_FUNC = 188,
-  PG_QUERY__NODE__NODE_RANGE_TABLE_FUNC_COL = 189,
-  PG_QUERY__NODE__NODE_TYPE_NAME = 190,
-  PG_QUERY__NODE__NODE_COLUMN_DEF = 191,
-  PG_QUERY__NODE__NODE_INDEX_ELEM = 192,
-  PG_QUERY__NODE__NODE_STATS_ELEM = 193,
-  PG_QUERY__NODE__NODE_CONSTRAINT = 194,
-  PG_QUERY__NODE__NODE_DEF_ELEM = 195,
-  PG_QUERY__NODE__NODE_RANGE_TBL_ENTRY = 196,
-  PG_QUERY__NODE__NODE_RANGE_TBL_FUNCTION = 197,
-  PG_QUERY__NODE__NODE_TABLE_SAMPLE_CLAUSE = 198,
-  PG_QUERY__NODE__NODE_WITH_CHECK_OPTION = 199,
-  PG_QUERY__NODE__NODE_SORT_GROUP_CLAUSE = 200,
-  PG_QUERY__NODE__NODE_GROUPING_SET = 201,
-  PG_QUERY__NODE__NODE_WINDOW_CLAUSE = 202,
-  PG_QUERY__NODE__NODE_OBJECT_WITH_ARGS = 203,
-  PG_QUERY__NODE__NODE_ACCESS_PRIV = 204,
-  PG_QUERY__NODE__NODE_CREATE_OP_CLASS_ITEM = 205,
-  PG_QUERY__NODE__NODE_TABLE_LIKE_CLAUSE = 206,
-  PG_QUERY__NODE__NODE_FUNCTION_PARAMETER = 207,
-  PG_QUERY__NODE__NODE_LOCKING_CLAUSE = 208,
-  PG_QUERY__NODE__NODE_ROW_MARK_CLAUSE = 209,
-  PG_QUERY__NODE__NODE_XML_SERIALIZE = 210,
-  PG_QUERY__NODE__NODE_WITH_CLAUSE = 211,
-  PG_QUERY__NODE__NODE_INFER_CLAUSE = 212,
-  PG_QUERY__NODE__NODE_ON_CONFLICT_CLAUSE = 213,
-  PG_QUERY__NODE__NODE_CTESEARCH_CLAUSE = 214,
-  PG_QUERY__NODE__NODE_CTECYCLE_CLAUSE = 215,
-  PG_QUERY__NODE__NODE_COMMON_TABLE_EXPR = 216,
-  PG_QUERY__NODE__NODE_MERGE_WHEN_CLAUSE = 217,
-  PG_QUERY__NODE__NODE_ROLE_SPEC = 218,
-  PG_QUERY__NODE__NODE_TRIGGER_TRANSITION = 219,
-  PG_QUERY__NODE__NODE_PARTITION_ELEM = 220,
-  PG_QUERY__NODE__NODE_PARTITION_SPEC = 221,
-  PG_QUERY__NODE__NODE_PARTITION_BOUND_SPEC = 222,
-  PG_QUERY__NODE__NODE_PARTITION_RANGE_DATUM = 223,
-  PG_QUERY__NODE__NODE_PARTITION_CMD = 224,
-  PG_QUERY__NODE__NODE_VACUUM_RELATION = 225,
-  PG_QUERY__NODE__NODE_PUBLICATION_OBJ_SPEC = 226,
-  PG_QUERY__NODE__NODE_PUBLICATION_TABLE = 227,
-  PG_QUERY__NODE__NODE_INLINE_CODE_BLOCK = 228,
-  PG_QUERY__NODE__NODE_CALL_CONTEXT = 229,
-  PG_QUERY__NODE__NODE_INTEGER = 230,
-  PG_QUERY__NODE__NODE_FLOAT = 231,
-  PG_QUERY__NODE__NODE_BOOLEAN = 232,
-  PG_QUERY__NODE__NODE_STRING = 233,
-  PG_QUERY__NODE__NODE_BIT_STRING = 234,
-  PG_QUERY__NODE__NODE_LIST = 235,
-  PG_QUERY__NODE__NODE_INT_LIST = 236,
-  PG_QUERY__NODE__NODE_OID_LIST = 237,
-  PG_QUERY__NODE__NODE_A_CONST = 238
+  PG_QUERY__NODE__NODE_INTO_CLAUSE = 4,
+  PG_QUERY__NODE__NODE_VAR = 5,
+  PG_QUERY__NODE__NODE_PARAM = 6,
+  PG_QUERY__NODE__NODE_AGGREF = 7,
+  PG_QUERY__NODE__NODE_GROUPING_FUNC = 8,
+  PG_QUERY__NODE__NODE_WINDOW_FUNC = 9,
+  PG_QUERY__NODE__NODE_SUBSCRIPTING_REF = 10,
+  PG_QUERY__NODE__NODE_FUNC_EXPR = 11,
+  PG_QUERY__NODE__NODE_NAMED_ARG_EXPR = 12,
+  PG_QUERY__NODE__NODE_OP_EXPR = 13,
+  PG_QUERY__NODE__NODE_DISTINCT_EXPR = 14,
+  PG_QUERY__NODE__NODE_NULL_IF_EXPR = 15,
+  PG_QUERY__NODE__NODE_SCALAR_ARRAY_OP_EXPR = 16,
+  PG_QUERY__NODE__NODE_BOOL_EXPR = 17,
+  PG_QUERY__NODE__NODE_SUB_LINK = 18,
+  PG_QUERY__NODE__NODE_SUB_PLAN = 19,
+  PG_QUERY__NODE__NODE_ALTERNATIVE_SUB_PLAN = 20,
+  PG_QUERY__NODE__NODE_FIELD_SELECT = 21,
+  PG_QUERY__NODE__NODE_FIELD_STORE = 22,
+  PG_QUERY__NODE__NODE_RELABEL_TYPE = 23,
+  PG_QUERY__NODE__NODE_COERCE_VIA_IO = 24,
+  PG_QUERY__NODE__NODE_ARRAY_COERCE_EXPR = 25,
+  PG_QUERY__NODE__NODE_CONVERT_ROWTYPE_EXPR = 26,
+  PG_QUERY__NODE__NODE_COLLATE_EXPR = 27,
+  PG_QUERY__NODE__NODE_CASE_EXPR = 28,
+  PG_QUERY__NODE__NODE_CASE_WHEN = 29,
+  PG_QUERY__NODE__NODE_CASE_TEST_EXPR = 30,
+  PG_QUERY__NODE__NODE_ARRAY_EXPR = 31,
+  PG_QUERY__NODE__NODE_ROW_EXPR = 32,
+  PG_QUERY__NODE__NODE_ROW_COMPARE_EXPR = 33,
+  PG_QUERY__NODE__NODE_COALESCE_EXPR = 34,
+  PG_QUERY__NODE__NODE_MIN_MAX_EXPR = 35,
+  PG_QUERY__NODE__NODE_SQLVALUE_FUNCTION = 36,
+  PG_QUERY__NODE__NODE_XML_EXPR = 37,
+  PG_QUERY__NODE__NODE_JSON_FORMAT = 38,
+  PG_QUERY__NODE__NODE_JSON_RETURNING = 39,
+  PG_QUERY__NODE__NODE_JSON_VALUE_EXPR = 40,
+  PG_QUERY__NODE__NODE_JSON_CONSTRUCTOR_EXPR = 41,
+  PG_QUERY__NODE__NODE_JSON_IS_PREDICATE = 42,
+  PG_QUERY__NODE__NODE_NULL_TEST = 43,
+  PG_QUERY__NODE__NODE_BOOLEAN_TEST = 44,
+  PG_QUERY__NODE__NODE_COERCE_TO_DOMAIN = 45,
+  PG_QUERY__NODE__NODE_COERCE_TO_DOMAIN_VALUE = 46,
+  PG_QUERY__NODE__NODE_SET_TO_DEFAULT = 47,
+  PG_QUERY__NODE__NODE_CURRENT_OF_EXPR = 48,
+  PG_QUERY__NODE__NODE_NEXT_VALUE_EXPR = 49,
+  PG_QUERY__NODE__NODE_INFERENCE_ELEM = 50,
+  PG_QUERY__NODE__NODE_TARGET_ENTRY = 51,
+  PG_QUERY__NODE__NODE_RANGE_TBL_REF = 52,
+  PG_QUERY__NODE__NODE_JOIN_EXPR = 53,
+  PG_QUERY__NODE__NODE_FROM_EXPR = 54,
+  PG_QUERY__NODE__NODE_ON_CONFLICT_EXPR = 55,
+  PG_QUERY__NODE__NODE_QUERY = 56,
+  PG_QUERY__NODE__NODE_TYPE_NAME = 57,
+  PG_QUERY__NODE__NODE_COLUMN_REF = 58,
+  PG_QUERY__NODE__NODE_PARAM_REF = 59,
+  PG_QUERY__NODE__NODE_A_EXPR = 60,
+  PG_QUERY__NODE__NODE_TYPE_CAST = 61,
+  PG_QUERY__NODE__NODE_COLLATE_CLAUSE = 62,
+  PG_QUERY__NODE__NODE_ROLE_SPEC = 63,
+  PG_QUERY__NODE__NODE_FUNC_CALL = 64,
+  PG_QUERY__NODE__NODE_A_STAR = 65,
+  PG_QUERY__NODE__NODE_A_INDICES = 66,
+  PG_QUERY__NODE__NODE_A_INDIRECTION = 67,
+  PG_QUERY__NODE__NODE_A_ARRAY_EXPR = 68,
+  PG_QUERY__NODE__NODE_RES_TARGET = 69,
+  PG_QUERY__NODE__NODE_MULTI_ASSIGN_REF = 70,
+  PG_QUERY__NODE__NODE_SORT_BY = 71,
+  PG_QUERY__NODE__NODE_WINDOW_DEF = 72,
+  PG_QUERY__NODE__NODE_RANGE_SUBSELECT = 73,
+  PG_QUERY__NODE__NODE_RANGE_FUNCTION = 74,
+  PG_QUERY__NODE__NODE_RANGE_TABLE_FUNC = 75,
+  PG_QUERY__NODE__NODE_RANGE_TABLE_FUNC_COL = 76,
+  PG_QUERY__NODE__NODE_RANGE_TABLE_SAMPLE = 77,
+  PG_QUERY__NODE__NODE_COLUMN_DEF = 78,
+  PG_QUERY__NODE__NODE_TABLE_LIKE_CLAUSE = 79,
+  PG_QUERY__NODE__NODE_INDEX_ELEM = 80,
+  PG_QUERY__NODE__NODE_DEF_ELEM = 81,
+  PG_QUERY__NODE__NODE_LOCKING_CLAUSE = 82,
+  PG_QUERY__NODE__NODE_XML_SERIALIZE = 83,
+  PG_QUERY__NODE__NODE_PARTITION_ELEM = 84,
+  PG_QUERY__NODE__NODE_PARTITION_SPEC = 85,
+  PG_QUERY__NODE__NODE_PARTITION_BOUND_SPEC = 86,
+  PG_QUERY__NODE__NODE_PARTITION_RANGE_DATUM = 87,
+  PG_QUERY__NODE__NODE_PARTITION_CMD = 88,
+  PG_QUERY__NODE__NODE_RANGE_TBL_ENTRY = 89,
+  PG_QUERY__NODE__NODE_RTEPERMISSION_INFO = 90,
+  PG_QUERY__NODE__NODE_RANGE_TBL_FUNCTION = 91,
+  PG_QUERY__NODE__NODE_TABLE_SAMPLE_CLAUSE = 92,
+  PG_QUERY__NODE__NODE_WITH_CHECK_OPTION = 93,
+  PG_QUERY__NODE__NODE_SORT_GROUP_CLAUSE = 94,
+  PG_QUERY__NODE__NODE_GROUPING_SET = 95,
+  PG_QUERY__NODE__NODE_WINDOW_CLAUSE = 96,
+  PG_QUERY__NODE__NODE_ROW_MARK_CLAUSE = 97,
+  PG_QUERY__NODE__NODE_WITH_CLAUSE = 98,
+  PG_QUERY__NODE__NODE_INFER_CLAUSE = 99,
+  PG_QUERY__NODE__NODE_ON_CONFLICT_CLAUSE = 100,
+  PG_QUERY__NODE__NODE_CTESEARCH_CLAUSE = 101,
+  PG_QUERY__NODE__NODE_CTECYCLE_CLAUSE = 102,
+  PG_QUERY__NODE__NODE_COMMON_TABLE_EXPR = 103,
+  PG_QUERY__NODE__NODE_MERGE_WHEN_CLAUSE = 104,
+  PG_QUERY__NODE__NODE_MERGE_ACTION = 105,
+  PG_QUERY__NODE__NODE_TRIGGER_TRANSITION = 106,
+  PG_QUERY__NODE__NODE_JSON_OUTPUT = 107,
+  PG_QUERY__NODE__NODE_JSON_KEY_VALUE = 108,
+  PG_QUERY__NODE__NODE_JSON_OBJECT_CONSTRUCTOR = 109,
+  PG_QUERY__NODE__NODE_JSON_ARRAY_CONSTRUCTOR = 110,
+  PG_QUERY__NODE__NODE_JSON_ARRAY_QUERY_CONSTRUCTOR = 111,
+  PG_QUERY__NODE__NODE_JSON_AGG_CONSTRUCTOR = 112,
+  PG_QUERY__NODE__NODE_JSON_OBJECT_AGG = 113,
+  PG_QUERY__NODE__NODE_JSON_ARRAY_AGG = 114,
+  PG_QUERY__NODE__NODE_RAW_STMT = 115,
+  PG_QUERY__NODE__NODE_INSERT_STMT = 116,
+  PG_QUERY__NODE__NODE_DELETE_STMT = 117,
+  PG_QUERY__NODE__NODE_UPDATE_STMT = 118,
+  PG_QUERY__NODE__NODE_MERGE_STMT = 119,
+  PG_QUERY__NODE__NODE_SELECT_STMT = 120,
+  PG_QUERY__NODE__NODE_SET_OPERATION_STMT = 121,
+  PG_QUERY__NODE__NODE_RETURN_STMT = 122,
+  PG_QUERY__NODE__NODE_PLASSIGN_STMT = 123,
+  PG_QUERY__NODE__NODE_CREATE_SCHEMA_STMT = 124,
+  PG_QUERY__NODE__NODE_ALTER_TABLE_STMT = 125,
+  PG_QUERY__NODE__NODE_REPLICA_IDENTITY_STMT = 126,
+  PG_QUERY__NODE__NODE_ALTER_TABLE_CMD = 127,
+  PG_QUERY__NODE__NODE_ALTER_COLLATION_STMT = 128,
+  PG_QUERY__NODE__NODE_ALTER_DOMAIN_STMT = 129,
+  PG_QUERY__NODE__NODE_GRANT_STMT = 130,
+  PG_QUERY__NODE__NODE_OBJECT_WITH_ARGS = 131,
+  PG_QUERY__NODE__NODE_ACCESS_PRIV = 132,
+  PG_QUERY__NODE__NODE_GRANT_ROLE_STMT = 133,
+  PG_QUERY__NODE__NODE_ALTER_DEFAULT_PRIVILEGES_STMT = 134,
+  PG_QUERY__NODE__NODE_COPY_STMT = 135,
+  PG_QUERY__NODE__NODE_VARIABLE_SET_STMT = 136,
+  PG_QUERY__NODE__NODE_VARIABLE_SHOW_STMT = 137,
+  PG_QUERY__NODE__NODE_CREATE_STMT = 138,
+  PG_QUERY__NODE__NODE_CONSTRAINT = 139,
+  PG_QUERY__NODE__NODE_CREATE_TABLE_SPACE_STMT = 140,
+  PG_QUERY__NODE__NODE_DROP_TABLE_SPACE_STMT = 141,
+  PG_QUERY__NODE__NODE_ALTER_TABLE_SPACE_OPTIONS_STMT = 142,
+  PG_QUERY__NODE__NODE_ALTER_TABLE_MOVE_ALL_STMT = 143,
+  PG_QUERY__NODE__NODE_CREATE_EXTENSION_STMT = 144,
+  PG_QUERY__NODE__NODE_ALTER_EXTENSION_STMT = 145,
+  PG_QUERY__NODE__NODE_ALTER_EXTENSION_CONTENTS_STMT = 146,
+  PG_QUERY__NODE__NODE_CREATE_FDW_STMT = 147,
+  PG_QUERY__NODE__NODE_ALTER_FDW_STMT = 148,
+  PG_QUERY__NODE__NODE_CREATE_FOREIGN_SERVER_STMT = 149,
+  PG_QUERY__NODE__NODE_ALTER_FOREIGN_SERVER_STMT = 150,
+  PG_QUERY__NODE__NODE_CREATE_FOREIGN_TABLE_STMT = 151,
+  PG_QUERY__NODE__NODE_CREATE_USER_MAPPING_STMT = 152,
+  PG_QUERY__NODE__NODE_ALTER_USER_MAPPING_STMT = 153,
+  PG_QUERY__NODE__NODE_DROP_USER_MAPPING_STMT = 154,
+  PG_QUERY__NODE__NODE_IMPORT_FOREIGN_SCHEMA_STMT = 155,
+  PG_QUERY__NODE__NODE_CREATE_POLICY_STMT = 156,
+  PG_QUERY__NODE__NODE_ALTER_POLICY_STMT = 157,
+  PG_QUERY__NODE__NODE_CREATE_AM_STMT = 158,
+  PG_QUERY__NODE__NODE_CREATE_TRIG_STMT = 159,
+  PG_QUERY__NODE__NODE_CREATE_EVENT_TRIG_STMT = 160,
+  PG_QUERY__NODE__NODE_ALTER_EVENT_TRIG_STMT = 161,
+  PG_QUERY__NODE__NODE_CREATE_PLANG_STMT = 162,
+  PG_QUERY__NODE__NODE_CREATE_ROLE_STMT = 163,
+  PG_QUERY__NODE__NODE_ALTER_ROLE_STMT = 164,
+  PG_QUERY__NODE__NODE_ALTER_ROLE_SET_STMT = 165,
+  PG_QUERY__NODE__NODE_DROP_ROLE_STMT = 166,
+  PG_QUERY__NODE__NODE_CREATE_SEQ_STMT = 167,
+  PG_QUERY__NODE__NODE_ALTER_SEQ_STMT = 168,
+  PG_QUERY__NODE__NODE_DEFINE_STMT = 169,
+  PG_QUERY__NODE__NODE_CREATE_DOMAIN_STMT = 170,
+  PG_QUERY__NODE__NODE_CREATE_OP_CLASS_STMT = 171,
+  PG_QUERY__NODE__NODE_CREATE_OP_CLASS_ITEM = 172,
+  PG_QUERY__NODE__NODE_CREATE_OP_FAMILY_STMT = 173,
+  PG_QUERY__NODE__NODE_ALTER_OP_FAMILY_STMT = 174,
+  PG_QUERY__NODE__NODE_DROP_STMT = 175,
+  PG_QUERY__NODE__NODE_TRUNCATE_STMT = 176,
+  PG_QUERY__NODE__NODE_COMMENT_STMT = 177,
+  PG_QUERY__NODE__NODE_SEC_LABEL_STMT = 178,
+  PG_QUERY__NODE__NODE_DECLARE_CURSOR_STMT = 179,
+  PG_QUERY__NODE__NODE_CLOSE_PORTAL_STMT = 180,
+  PG_QUERY__NODE__NODE_FETCH_STMT = 181,
+  PG_QUERY__NODE__NODE_INDEX_STMT = 182,
+  PG_QUERY__NODE__NODE_CREATE_STATS_STMT = 183,
+  PG_QUERY__NODE__NODE_STATS_ELEM = 184,
+  PG_QUERY__NODE__NODE_ALTER_STATS_STMT = 185,
+  PG_QUERY__NODE__NODE_CREATE_FUNCTION_STMT = 186,
+  PG_QUERY__NODE__NODE_FUNCTION_PARAMETER = 187,
+  PG_QUERY__NODE__NODE_ALTER_FUNCTION_STMT = 188,
+  PG_QUERY__NODE__NODE_DO_STMT = 189,
+  PG_QUERY__NODE__NODE_INLINE_CODE_BLOCK = 190,
+  PG_QUERY__NODE__NODE_CALL_STMT = 191,
+  PG_QUERY__NODE__NODE_CALL_CONTEXT = 192,
+  PG_QUERY__NODE__NODE_RENAME_STMT = 193,
+  PG_QUERY__NODE__NODE_ALTER_OBJECT_DEPENDS_STMT = 194,
+  PG_QUERY__NODE__NODE_ALTER_OBJECT_SCHEMA_STMT = 195,
+  PG_QUERY__NODE__NODE_ALTER_OWNER_STMT = 196,
+  PG_QUERY__NODE__NODE_ALTER_OPERATOR_STMT = 197,
+  PG_QUERY__NODE__NODE_ALTER_TYPE_STMT = 198,
+  PG_QUERY__NODE__NODE_RULE_STMT = 199,
+  PG_QUERY__NODE__NODE_NOTIFY_STMT = 200,
+  PG_QUERY__NODE__NODE_LISTEN_STMT = 201,
+  PG_QUERY__NODE__NODE_UNLISTEN_STMT = 202,
+  PG_QUERY__NODE__NODE_TRANSACTION_STMT = 203,
+  PG_QUERY__NODE__NODE_COMPOSITE_TYPE_STMT = 204,
+  PG_QUERY__NODE__NODE_CREATE_ENUM_STMT = 205,
+  PG_QUERY__NODE__NODE_CREATE_RANGE_STMT = 206,
+  PG_QUERY__NODE__NODE_ALTER_ENUM_STMT = 207,
+  PG_QUERY__NODE__NODE_VIEW_STMT = 208,
+  PG_QUERY__NODE__NODE_LOAD_STMT = 209,
+  PG_QUERY__NODE__NODE_CREATEDB_STMT = 210,
+  PG_QUERY__NODE__NODE_ALTER_DATABASE_STMT = 211,
+  PG_QUERY__NODE__NODE_ALTER_DATABASE_REFRESH_COLL_STMT = 212,
+  PG_QUERY__NODE__NODE_ALTER_DATABASE_SET_STMT = 213,
+  PG_QUERY__NODE__NODE_DROPDB_STMT = 214,
+  PG_QUERY__NODE__NODE_ALTER_SYSTEM_STMT = 215,
+  PG_QUERY__NODE__NODE_CLUSTER_STMT = 216,
+  PG_QUERY__NODE__NODE_VACUUM_STMT = 217,
+  PG_QUERY__NODE__NODE_VACUUM_RELATION = 218,
+  PG_QUERY__NODE__NODE_EXPLAIN_STMT = 219,
+  PG_QUERY__NODE__NODE_CREATE_TABLE_AS_STMT = 220,
+  PG_QUERY__NODE__NODE_REFRESH_MAT_VIEW_STMT = 221,
+  PG_QUERY__NODE__NODE_CHECK_POINT_STMT = 222,
+  PG_QUERY__NODE__NODE_DISCARD_STMT = 223,
+  PG_QUERY__NODE__NODE_LOCK_STMT = 224,
+  PG_QUERY__NODE__NODE_CONSTRAINTS_SET_STMT = 225,
+  PG_QUERY__NODE__NODE_REINDEX_STMT = 226,
+  PG_QUERY__NODE__NODE_CREATE_CONVERSION_STMT = 227,
+  PG_QUERY__NODE__NODE_CREATE_CAST_STMT = 228,
+  PG_QUERY__NODE__NODE_CREATE_TRANSFORM_STMT = 229,
+  PG_QUERY__NODE__NODE_PREPARE_STMT = 230,
+  PG_QUERY__NODE__NODE_EXECUTE_STMT = 231,
+  PG_QUERY__NODE__NODE_DEALLOCATE_STMT = 232,
+  PG_QUERY__NODE__NODE_DROP_OWNED_STMT = 233,
+  PG_QUERY__NODE__NODE_REASSIGN_OWNED_STMT = 234,
+  PG_QUERY__NODE__NODE_ALTER_TSDICTIONARY_STMT = 235,
+  PG_QUERY__NODE__NODE_ALTER_TSCONFIGURATION_STMT = 236,
+  PG_QUERY__NODE__NODE_PUBLICATION_TABLE = 237,
+  PG_QUERY__NODE__NODE_PUBLICATION_OBJ_SPEC = 238,
+  PG_QUERY__NODE__NODE_CREATE_PUBLICATION_STMT = 239,
+  PG_QUERY__NODE__NODE_ALTER_PUBLICATION_STMT = 240,
+  PG_QUERY__NODE__NODE_CREATE_SUBSCRIPTION_STMT = 241,
+  PG_QUERY__NODE__NODE_ALTER_SUBSCRIPTION_STMT = 242,
+  PG_QUERY__NODE__NODE_DROP_SUBSCRIPTION_STMT = 243,
+  PG_QUERY__NODE__NODE_INTEGER = 244,
+  PG_QUERY__NODE__NODE_FLOAT = 245,
+  PG_QUERY__NODE__NODE_BOOLEAN = 246,
+  PG_QUERY__NODE__NODE_STRING = 247,
+  PG_QUERY__NODE__NODE_BIT_STRING = 248,
+  PG_QUERY__NODE__NODE_LIST = 249,
+  PG_QUERY__NODE__NODE_INT_LIST = 250,
+  PG_QUERY__NODE__NODE_OID_LIST = 251,
+  PG_QUERY__NODE__NODE_A_CONST = 252
     PROTOBUF_C__FORCE_ENUM_TO_BE_INT_SIZE(PG_QUERY__NODE__NODE__CASE)
 } PgQuery__Node__NodeCase;
 
@@ -1757,6 +1832,7 @@ struct  PgQuery__Node
     PgQuery__Alias *alias;
     PgQuery__RangeVar *range_var;
     PgQuery__TableFunc *table_func;
+    PgQuery__IntoClause *into_clause;
     PgQuery__Var *var;
     PgQuery__Param *param;
     PgQuery__Aggref *aggref;
@@ -1790,6 +1866,11 @@ struct  PgQuery__Node
     PgQuery__MinMaxExpr *min_max_expr;
     PgQuery__SQLValueFunction *sqlvalue_function;
     PgQuery__XmlExpr *xml_expr;
+    PgQuery__JsonFormat *json_format;
+    PgQuery__JsonReturning *json_returning;
+    PgQuery__JsonValueExpr *json_value_expr;
+    PgQuery__JsonConstructorExpr *json_constructor_expr;
+    PgQuery__JsonIsPredicate *json_is_predicate;
     PgQuery__NullTest *null_test;
     PgQuery__BooleanTest *boolean_test;
     PgQuery__CoerceToDomain *coerce_to_domain;
@@ -1803,130 +1884,14 @@ struct  PgQuery__Node
     PgQuery__JoinExpr *join_expr;
     PgQuery__FromExpr *from_expr;
     PgQuery__OnConflictExpr *on_conflict_expr;
-    PgQuery__IntoClause *into_clause;
-    PgQuery__MergeAction *merge_action;
-    PgQuery__RawStmt *raw_stmt;
     PgQuery__Query *query;
-    PgQuery__InsertStmt *insert_stmt;
-    PgQuery__DeleteStmt *delete_stmt;
-    PgQuery__UpdateStmt *update_stmt;
-    PgQuery__MergeStmt *merge_stmt;
-    PgQuery__SelectStmt *select_stmt;
-    PgQuery__ReturnStmt *return_stmt;
-    PgQuery__PLAssignStmt *plassign_stmt;
-    PgQuery__AlterTableStmt *alter_table_stmt;
-    PgQuery__AlterTableCmd *alter_table_cmd;
-    PgQuery__AlterDomainStmt *alter_domain_stmt;
-    PgQuery__SetOperationStmt *set_operation_stmt;
-    PgQuery__GrantStmt *grant_stmt;
-    PgQuery__GrantRoleStmt *grant_role_stmt;
-    PgQuery__AlterDefaultPrivilegesStmt *alter_default_privileges_stmt;
-    PgQuery__ClosePortalStmt *close_portal_stmt;
-    PgQuery__ClusterStmt *cluster_stmt;
-    PgQuery__CopyStmt *copy_stmt;
-    PgQuery__CreateStmt *create_stmt;
-    PgQuery__DefineStmt *define_stmt;
-    PgQuery__DropStmt *drop_stmt;
-    PgQuery__TruncateStmt *truncate_stmt;
-    PgQuery__CommentStmt *comment_stmt;
-    PgQuery__FetchStmt *fetch_stmt;
-    PgQuery__IndexStmt *index_stmt;
-    PgQuery__CreateFunctionStmt *create_function_stmt;
-    PgQuery__AlterFunctionStmt *alter_function_stmt;
-    PgQuery__DoStmt *do_stmt;
-    PgQuery__RenameStmt *rename_stmt;
-    PgQuery__RuleStmt *rule_stmt;
-    PgQuery__NotifyStmt *notify_stmt;
-    PgQuery__ListenStmt *listen_stmt;
-    PgQuery__UnlistenStmt *unlisten_stmt;
-    PgQuery__TransactionStmt *transaction_stmt;
-    PgQuery__ViewStmt *view_stmt;
-    PgQuery__LoadStmt *load_stmt;
-    PgQuery__CreateDomainStmt *create_domain_stmt;
-    PgQuery__CreatedbStmt *createdb_stmt;
-    PgQuery__DropdbStmt *dropdb_stmt;
-    PgQuery__VacuumStmt *vacuum_stmt;
-    PgQuery__ExplainStmt *explain_stmt;
-    PgQuery__CreateTableAsStmt *create_table_as_stmt;
-    PgQuery__CreateSeqStmt *create_seq_stmt;
-    PgQuery__AlterSeqStmt *alter_seq_stmt;
-    PgQuery__VariableSetStmt *variable_set_stmt;
-    PgQuery__VariableShowStmt *variable_show_stmt;
-    PgQuery__DiscardStmt *discard_stmt;
-    PgQuery__CreateTrigStmt *create_trig_stmt;
-    PgQuery__CreatePLangStmt *create_plang_stmt;
-    PgQuery__CreateRoleStmt *create_role_stmt;
-    PgQuery__AlterRoleStmt *alter_role_stmt;
-    PgQuery__DropRoleStmt *drop_role_stmt;
-    PgQuery__LockStmt *lock_stmt;
-    PgQuery__ConstraintsSetStmt *constraints_set_stmt;
-    PgQuery__ReindexStmt *reindex_stmt;
-    PgQuery__CheckPointStmt *check_point_stmt;
-    PgQuery__CreateSchemaStmt *create_schema_stmt;
-    PgQuery__AlterDatabaseStmt *alter_database_stmt;
-    PgQuery__AlterDatabaseRefreshCollStmt *alter_database_refresh_coll_stmt;
-    PgQuery__AlterDatabaseSetStmt *alter_database_set_stmt;
-    PgQuery__AlterRoleSetStmt *alter_role_set_stmt;
-    PgQuery__CreateConversionStmt *create_conversion_stmt;
-    PgQuery__CreateCastStmt *create_cast_stmt;
-    PgQuery__CreateOpClassStmt *create_op_class_stmt;
-    PgQuery__CreateOpFamilyStmt *create_op_family_stmt;
-    PgQuery__AlterOpFamilyStmt *alter_op_family_stmt;
-    PgQuery__PrepareStmt *prepare_stmt;
-    PgQuery__ExecuteStmt *execute_stmt;
-    PgQuery__DeallocateStmt *deallocate_stmt;
-    PgQuery__DeclareCursorStmt *declare_cursor_stmt;
-    PgQuery__CreateTableSpaceStmt *create_table_space_stmt;
-    PgQuery__DropTableSpaceStmt *drop_table_space_stmt;
-    PgQuery__AlterObjectDependsStmt *alter_object_depends_stmt;
-    PgQuery__AlterObjectSchemaStmt *alter_object_schema_stmt;
-    PgQuery__AlterOwnerStmt *alter_owner_stmt;
-    PgQuery__AlterOperatorStmt *alter_operator_stmt;
-    PgQuery__AlterTypeStmt *alter_type_stmt;
-    PgQuery__DropOwnedStmt *drop_owned_stmt;
-    PgQuery__ReassignOwnedStmt *reassign_owned_stmt;
-    PgQuery__CompositeTypeStmt *composite_type_stmt;
-    PgQuery__CreateEnumStmt *create_enum_stmt;
-    PgQuery__CreateRangeStmt *create_range_stmt;
-    PgQuery__AlterEnumStmt *alter_enum_stmt;
-    PgQuery__AlterTSDictionaryStmt *alter_tsdictionary_stmt;
-    PgQuery__AlterTSConfigurationStmt *alter_tsconfiguration_stmt;
-    PgQuery__CreateFdwStmt *create_fdw_stmt;
-    PgQuery__AlterFdwStmt *alter_fdw_stmt;
-    PgQuery__CreateForeignServerStmt *create_foreign_server_stmt;
-    PgQuery__AlterForeignServerStmt *alter_foreign_server_stmt;
-    PgQuery__CreateUserMappingStmt *create_user_mapping_stmt;
-    PgQuery__AlterUserMappingStmt *alter_user_mapping_stmt;
-    PgQuery__DropUserMappingStmt *drop_user_mapping_stmt;
-    PgQuery__AlterTableSpaceOptionsStmt *alter_table_space_options_stmt;
-    PgQuery__AlterTableMoveAllStmt *alter_table_move_all_stmt;
-    PgQuery__SecLabelStmt *sec_label_stmt;
-    PgQuery__CreateForeignTableStmt *create_foreign_table_stmt;
-    PgQuery__ImportForeignSchemaStmt *import_foreign_schema_stmt;
-    PgQuery__CreateExtensionStmt *create_extension_stmt;
-    PgQuery__AlterExtensionStmt *alter_extension_stmt;
-    PgQuery__AlterExtensionContentsStmt *alter_extension_contents_stmt;
-    PgQuery__CreateEventTrigStmt *create_event_trig_stmt;
-    PgQuery__AlterEventTrigStmt *alter_event_trig_stmt;
-    PgQuery__RefreshMatViewStmt *refresh_mat_view_stmt;
-    PgQuery__ReplicaIdentityStmt *replica_identity_stmt;
-    PgQuery__AlterSystemStmt *alter_system_stmt;
-    PgQuery__CreatePolicyStmt *create_policy_stmt;
-    PgQuery__AlterPolicyStmt *alter_policy_stmt;
-    PgQuery__CreateTransformStmt *create_transform_stmt;
-    PgQuery__CreateAmStmt *create_am_stmt;
-    PgQuery__CreatePublicationStmt *create_publication_stmt;
-    PgQuery__AlterPublicationStmt *alter_publication_stmt;
-    PgQuery__CreateSubscriptionStmt *create_subscription_stmt;
-    PgQuery__AlterSubscriptionStmt *alter_subscription_stmt;
-    PgQuery__DropSubscriptionStmt *drop_subscription_stmt;
-    PgQuery__CreateStatsStmt *create_stats_stmt;
-    PgQuery__AlterCollationStmt *alter_collation_stmt;
-    PgQuery__CallStmt *call_stmt;
-    PgQuery__AlterStatsStmt *alter_stats_stmt;
-    PgQuery__AExpr *a_expr;
+    PgQuery__TypeName *type_name;
     PgQuery__ColumnRef *column_ref;
     PgQuery__ParamRef *param_ref;
+    PgQuery__AExpr *a_expr;
+    PgQuery__TypeCast *type_cast;
+    PgQuery__CollateClause *collate_clause;
+    PgQuery__RoleSpec *role_spec;
     PgQuery__FuncCall *func_call;
     PgQuery__AStar *a_star;
     PgQuery__AIndices *a_indices;
@@ -1934,36 +1899,33 @@ struct  PgQuery__Node
     PgQuery__AArrayExpr *a_array_expr;
     PgQuery__ResTarget *res_target;
     PgQuery__MultiAssignRef *multi_assign_ref;
-    PgQuery__TypeCast *type_cast;
-    PgQuery__CollateClause *collate_clause;
     PgQuery__SortBy *sort_by;
     PgQuery__WindowDef *window_def;
     PgQuery__RangeSubselect *range_subselect;
     PgQuery__RangeFunction *range_function;
-    PgQuery__RangeTableSample *range_table_sample;
     PgQuery__RangeTableFunc *range_table_func;
     PgQuery__RangeTableFuncCol *range_table_func_col;
-    PgQuery__TypeName *type_name;
+    PgQuery__RangeTableSample *range_table_sample;
     PgQuery__ColumnDef *column_def;
+    PgQuery__TableLikeClause *table_like_clause;
     PgQuery__IndexElem *index_elem;
-    PgQuery__StatsElem *stats_elem;
-    PgQuery__Constraint *constraint;
     PgQuery__DefElem *def_elem;
+    PgQuery__LockingClause *locking_clause;
+    PgQuery__XmlSerialize *xml_serialize;
+    PgQuery__PartitionElem *partition_elem;
+    PgQuery__PartitionSpec *partition_spec;
+    PgQuery__PartitionBoundSpec *partition_bound_spec;
+    PgQuery__PartitionRangeDatum *partition_range_datum;
+    PgQuery__PartitionCmd *partition_cmd;
     PgQuery__RangeTblEntry *range_tbl_entry;
+    PgQuery__RTEPermissionInfo *rtepermission_info;
     PgQuery__RangeTblFunction *range_tbl_function;
     PgQuery__TableSampleClause *table_sample_clause;
     PgQuery__WithCheckOption *with_check_option;
     PgQuery__SortGroupClause *sort_group_clause;
     PgQuery__GroupingSet *grouping_set;
     PgQuery__WindowClause *window_clause;
-    PgQuery__ObjectWithArgs *object_with_args;
-    PgQuery__AccessPriv *access_priv;
-    PgQuery__CreateOpClassItem *create_op_class_item;
-    PgQuery__TableLikeClause *table_like_clause;
-    PgQuery__FunctionParameter *function_parameter;
-    PgQuery__LockingClause *locking_clause;
     PgQuery__RowMarkClause *row_mark_clause;
-    PgQuery__XmlSerialize *xml_serialize;
     PgQuery__WithClause *with_clause;
     PgQuery__InferClause *infer_clause;
     PgQuery__OnConflictClause *on_conflict_clause;
@@ -1971,18 +1933,145 @@ struct  PgQuery__Node
     PgQuery__CTECycleClause *ctecycle_clause;
     PgQuery__CommonTableExpr *common_table_expr;
     PgQuery__MergeWhenClause *merge_when_clause;
-    PgQuery__RoleSpec *role_spec;
+    PgQuery__MergeAction *merge_action;
     PgQuery__TriggerTransition *trigger_transition;
-    PgQuery__PartitionElem *partition_elem;
-    PgQuery__PartitionSpec *partition_spec;
-    PgQuery__PartitionBoundSpec *partition_bound_spec;
-    PgQuery__PartitionRangeDatum *partition_range_datum;
-    PgQuery__PartitionCmd *partition_cmd;
-    PgQuery__VacuumRelation *vacuum_relation;
-    PgQuery__PublicationObjSpec *publication_obj_spec;
-    PgQuery__PublicationTable *publication_table;
+    PgQuery__JsonOutput *json_output;
+    PgQuery__JsonKeyValue *json_key_value;
+    PgQuery__JsonObjectConstructor *json_object_constructor;
+    PgQuery__JsonArrayConstructor *json_array_constructor;
+    PgQuery__JsonArrayQueryConstructor *json_array_query_constructor;
+    PgQuery__JsonAggConstructor *json_agg_constructor;
+    PgQuery__JsonObjectAgg *json_object_agg;
+    PgQuery__JsonArrayAgg *json_array_agg;
+    PgQuery__RawStmt *raw_stmt;
+    PgQuery__InsertStmt *insert_stmt;
+    PgQuery__DeleteStmt *delete_stmt;
+    PgQuery__UpdateStmt *update_stmt;
+    PgQuery__MergeStmt *merge_stmt;
+    PgQuery__SelectStmt *select_stmt;
+    PgQuery__SetOperationStmt *set_operation_stmt;
+    PgQuery__ReturnStmt *return_stmt;
+    PgQuery__PLAssignStmt *plassign_stmt;
+    PgQuery__CreateSchemaStmt *create_schema_stmt;
+    PgQuery__AlterTableStmt *alter_table_stmt;
+    PgQuery__ReplicaIdentityStmt *replica_identity_stmt;
+    PgQuery__AlterTableCmd *alter_table_cmd;
+    PgQuery__AlterCollationStmt *alter_collation_stmt;
+    PgQuery__AlterDomainStmt *alter_domain_stmt;
+    PgQuery__GrantStmt *grant_stmt;
+    PgQuery__ObjectWithArgs *object_with_args;
+    PgQuery__AccessPriv *access_priv;
+    PgQuery__GrantRoleStmt *grant_role_stmt;
+    PgQuery__AlterDefaultPrivilegesStmt *alter_default_privileges_stmt;
+    PgQuery__CopyStmt *copy_stmt;
+    PgQuery__VariableSetStmt *variable_set_stmt;
+    PgQuery__VariableShowStmt *variable_show_stmt;
+    PgQuery__CreateStmt *create_stmt;
+    PgQuery__Constraint *constraint;
+    PgQuery__CreateTableSpaceStmt *create_table_space_stmt;
+    PgQuery__DropTableSpaceStmt *drop_table_space_stmt;
+    PgQuery__AlterTableSpaceOptionsStmt *alter_table_space_options_stmt;
+    PgQuery__AlterTableMoveAllStmt *alter_table_move_all_stmt;
+    PgQuery__CreateExtensionStmt *create_extension_stmt;
+    PgQuery__AlterExtensionStmt *alter_extension_stmt;
+    PgQuery__AlterExtensionContentsStmt *alter_extension_contents_stmt;
+    PgQuery__CreateFdwStmt *create_fdw_stmt;
+    PgQuery__AlterFdwStmt *alter_fdw_stmt;
+    PgQuery__CreateForeignServerStmt *create_foreign_server_stmt;
+    PgQuery__AlterForeignServerStmt *alter_foreign_server_stmt;
+    PgQuery__CreateForeignTableStmt *create_foreign_table_stmt;
+    PgQuery__CreateUserMappingStmt *create_user_mapping_stmt;
+    PgQuery__AlterUserMappingStmt *alter_user_mapping_stmt;
+    PgQuery__DropUserMappingStmt *drop_user_mapping_stmt;
+    PgQuery__ImportForeignSchemaStmt *import_foreign_schema_stmt;
+    PgQuery__CreatePolicyStmt *create_policy_stmt;
+    PgQuery__AlterPolicyStmt *alter_policy_stmt;
+    PgQuery__CreateAmStmt *create_am_stmt;
+    PgQuery__CreateTrigStmt *create_trig_stmt;
+    PgQuery__CreateEventTrigStmt *create_event_trig_stmt;
+    PgQuery__AlterEventTrigStmt *alter_event_trig_stmt;
+    PgQuery__CreatePLangStmt *create_plang_stmt;
+    PgQuery__CreateRoleStmt *create_role_stmt;
+    PgQuery__AlterRoleStmt *alter_role_stmt;
+    PgQuery__AlterRoleSetStmt *alter_role_set_stmt;
+    PgQuery__DropRoleStmt *drop_role_stmt;
+    PgQuery__CreateSeqStmt *create_seq_stmt;
+    PgQuery__AlterSeqStmt *alter_seq_stmt;
+    PgQuery__DefineStmt *define_stmt;
+    PgQuery__CreateDomainStmt *create_domain_stmt;
+    PgQuery__CreateOpClassStmt *create_op_class_stmt;
+    PgQuery__CreateOpClassItem *create_op_class_item;
+    PgQuery__CreateOpFamilyStmt *create_op_family_stmt;
+    PgQuery__AlterOpFamilyStmt *alter_op_family_stmt;
+    PgQuery__DropStmt *drop_stmt;
+    PgQuery__TruncateStmt *truncate_stmt;
+    PgQuery__CommentStmt *comment_stmt;
+    PgQuery__SecLabelStmt *sec_label_stmt;
+    PgQuery__DeclareCursorStmt *declare_cursor_stmt;
+    PgQuery__ClosePortalStmt *close_portal_stmt;
+    PgQuery__FetchStmt *fetch_stmt;
+    PgQuery__IndexStmt *index_stmt;
+    PgQuery__CreateStatsStmt *create_stats_stmt;
+    PgQuery__StatsElem *stats_elem;
+    PgQuery__AlterStatsStmt *alter_stats_stmt;
+    PgQuery__CreateFunctionStmt *create_function_stmt;
+    PgQuery__FunctionParameter *function_parameter;
+    PgQuery__AlterFunctionStmt *alter_function_stmt;
+    PgQuery__DoStmt *do_stmt;
     PgQuery__InlineCodeBlock *inline_code_block;
+    PgQuery__CallStmt *call_stmt;
     PgQuery__CallContext *call_context;
+    PgQuery__RenameStmt *rename_stmt;
+    PgQuery__AlterObjectDependsStmt *alter_object_depends_stmt;
+    PgQuery__AlterObjectSchemaStmt *alter_object_schema_stmt;
+    PgQuery__AlterOwnerStmt *alter_owner_stmt;
+    PgQuery__AlterOperatorStmt *alter_operator_stmt;
+    PgQuery__AlterTypeStmt *alter_type_stmt;
+    PgQuery__RuleStmt *rule_stmt;
+    PgQuery__NotifyStmt *notify_stmt;
+    PgQuery__ListenStmt *listen_stmt;
+    PgQuery__UnlistenStmt *unlisten_stmt;
+    PgQuery__TransactionStmt *transaction_stmt;
+    PgQuery__CompositeTypeStmt *composite_type_stmt;
+    PgQuery__CreateEnumStmt *create_enum_stmt;
+    PgQuery__CreateRangeStmt *create_range_stmt;
+    PgQuery__AlterEnumStmt *alter_enum_stmt;
+    PgQuery__ViewStmt *view_stmt;
+    PgQuery__LoadStmt *load_stmt;
+    PgQuery__CreatedbStmt *createdb_stmt;
+    PgQuery__AlterDatabaseStmt *alter_database_stmt;
+    PgQuery__AlterDatabaseRefreshCollStmt *alter_database_refresh_coll_stmt;
+    PgQuery__AlterDatabaseSetStmt *alter_database_set_stmt;
+    PgQuery__DropdbStmt *dropdb_stmt;
+    PgQuery__AlterSystemStmt *alter_system_stmt;
+    PgQuery__ClusterStmt *cluster_stmt;
+    PgQuery__VacuumStmt *vacuum_stmt;
+    PgQuery__VacuumRelation *vacuum_relation;
+    PgQuery__ExplainStmt *explain_stmt;
+    PgQuery__CreateTableAsStmt *create_table_as_stmt;
+    PgQuery__RefreshMatViewStmt *refresh_mat_view_stmt;
+    PgQuery__CheckPointStmt *check_point_stmt;
+    PgQuery__DiscardStmt *discard_stmt;
+    PgQuery__LockStmt *lock_stmt;
+    PgQuery__ConstraintsSetStmt *constraints_set_stmt;
+    PgQuery__ReindexStmt *reindex_stmt;
+    PgQuery__CreateConversionStmt *create_conversion_stmt;
+    PgQuery__CreateCastStmt *create_cast_stmt;
+    PgQuery__CreateTransformStmt *create_transform_stmt;
+    PgQuery__PrepareStmt *prepare_stmt;
+    PgQuery__ExecuteStmt *execute_stmt;
+    PgQuery__DeallocateStmt *deallocate_stmt;
+    PgQuery__DropOwnedStmt *drop_owned_stmt;
+    PgQuery__ReassignOwnedStmt *reassign_owned_stmt;
+    PgQuery__AlterTSDictionaryStmt *alter_tsdictionary_stmt;
+    PgQuery__AlterTSConfigurationStmt *alter_tsconfiguration_stmt;
+    PgQuery__PublicationTable *publication_table;
+    PgQuery__PublicationObjSpec *publication_obj_spec;
+    PgQuery__CreatePublicationStmt *create_publication_stmt;
+    PgQuery__AlterPublicationStmt *alter_publication_stmt;
+    PgQuery__CreateSubscriptionStmt *create_subscription_stmt;
+    PgQuery__AlterSubscriptionStmt *alter_subscription_stmt;
+    PgQuery__DropSubscriptionStmt *drop_subscription_stmt;
     PgQuery__Integer *integer;
     PgQuery__Float *float_;
     PgQuery__Boolean *boolean;
@@ -2154,32 +2243,33 @@ struct  PgQuery__RangeVar
 struct  PgQuery__TableFunc
 {
   ProtobufCMessage base;
-  size_t n_ns_uris;
-  PgQuery__Node **ns_uris;
-  size_t n_ns_names;
-  PgQuery__Node **ns_names;
   PgQuery__Node *docexpr;
   PgQuery__Node *rowexpr;
-  size_t n_colnames;
-  PgQuery__Node **colnames;
-  size_t n_coltypes;
-  PgQuery__Node **coltypes;
-  size_t n_coltypmods;
-  PgQuery__Node **coltypmods;
-  size_t n_colcollations;
-  PgQuery__Node **colcollations;
   size_t n_colexprs;
   PgQuery__Node **colexprs;
-  size_t n_coldefexprs;
-  PgQuery__Node **coldefexprs;
-  size_t n_notnulls;
-  uint64_t *notnulls;
-  int32_t ordinalitycol;
   int32_t location;
 };
 #define PG_QUERY__TABLE_FUNC__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_func__descriptor) \
-    , 0,NULL, 0,NULL, NULL, NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
+    , NULL, NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__IntoClause
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *rel;
+  size_t n_col_names;
+  PgQuery__Node **col_names;
+  char *access_method;
+  size_t n_options;
+  PgQuery__Node **options;
+  PgQuery__OnCommitAction on_commit;
+  char *table_space_name;
+  protobuf_c_boolean skip_data;
+};
+#define PG_QUERY__INTO_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__into_clause__descriptor) \
+    , NULL, 0,NULL, (char *)protobuf_c_empty_string, 0,NULL, PG_QUERY__ON_COMMIT_ACTION__ON_COMMIT_ACTION_UNDEFINED, (char *)protobuf_c_empty_string, 0 }
 
 
 struct  PgQuery__Var
@@ -2188,17 +2278,12 @@ struct  PgQuery__Var
   PgQuery__Node *xpr;
   int32_t varno;
   int32_t varattno;
-  uint32_t vartype;
-  int32_t vartypmod;
-  uint32_t varcollid;
   uint32_t varlevelsup;
-  uint32_t varnosyn;
-  int32_t varattnosyn;
   int32_t location;
 };
 #define PG_QUERY__VAR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__var__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    , NULL, 0, 0, 0, 0 }
 
 
 struct  PgQuery__Param
@@ -2208,13 +2293,11 @@ struct  PgQuery__Param
   PgQuery__ParamKind paramkind;
   int32_t paramid;
   uint32_t paramtype;
-  int32_t paramtypmod;
-  uint32_t paramcollid;
   int32_t location;
 };
 #define PG_QUERY__PARAM__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__param__descriptor) \
-    , NULL, PG_QUERY__PARAM_KIND__PARAM_KIND_UNDEFINED, 0, 0, 0, 0, 0 }
+    , NULL, PG_QUERY__PARAM_KIND__PARAM_KIND_UNDEFINED, 0, 0, 0 }
 
 
 struct  PgQuery__Aggref
@@ -2222,12 +2305,6 @@ struct  PgQuery__Aggref
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t aggfnoid;
-  uint32_t aggtype;
-  uint32_t aggcollid;
-  uint32_t inputcollid;
-  uint32_t aggtranstype;
-  size_t n_aggargtypes;
-  PgQuery__Node **aggargtypes;
   size_t n_aggdirectargs;
   PgQuery__Node **aggdirectargs;
   size_t n_args;
@@ -2237,36 +2314,23 @@ struct  PgQuery__Aggref
   size_t n_aggdistinct;
   PgQuery__Node **aggdistinct;
   PgQuery__Node *aggfilter;
-  protobuf_c_boolean aggstar;
-  protobuf_c_boolean aggvariadic;
-  char *aggkind;
-  uint32_t agglevelsup;
-  PgQuery__AggSplit aggsplit;
-  int32_t aggno;
-  int32_t aggtransno;
   int32_t location;
 };
 #define PG_QUERY__AGGREF__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__aggref__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL, NULL, 0, 0, (char *)protobuf_c_empty_string, 0, PG_QUERY__AGG_SPLIT__AGG_SPLIT_UNDEFINED, 0, 0, 0 }
+    , NULL, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, NULL, 0 }
 
 
 struct  PgQuery__GroupingFunc
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  size_t n_args;
-  PgQuery__Node **args;
-  size_t n_refs;
-  PgQuery__Node **refs;
-  size_t n_cols;
-  PgQuery__Node **cols;
   uint32_t agglevelsup;
   int32_t location;
 };
 #define PG_QUERY__GROUPING_FUNC__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__grouping_func__descriptor) \
-    , NULL, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
+    , NULL, 0, 0 }
 
 
 struct  PgQuery__WindowFunc
@@ -2274,31 +2338,21 @@ struct  PgQuery__WindowFunc
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t winfnoid;
-  uint32_t wintype;
-  uint32_t wincollid;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   PgQuery__Node *aggfilter;
   uint32_t winref;
-  protobuf_c_boolean winstar;
-  protobuf_c_boolean winagg;
   int32_t location;
 };
 #define PG_QUERY__WINDOW_FUNC__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__window_func__descriptor) \
-    , NULL, 0, 0, 0, 0, 0,NULL, NULL, 0, 0, 0, 0 }
+    , NULL, 0, 0,NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__SubscriptingRef
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  uint32_t refcontainertype;
-  uint32_t refelemtype;
-  uint32_t refrestype;
-  int32_t reftypmod;
-  uint32_t refcollid;
   size_t n_refupperindexpr;
   PgQuery__Node **refupperindexpr;
   size_t n_reflowerindexpr;
@@ -2308,7 +2362,7 @@ struct  PgQuery__SubscriptingRef
 };
 #define PG_QUERY__SUBSCRIPTING_REF__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__subscripting_ref__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0,NULL, 0,NULL, NULL, NULL }
+    , NULL, 0,NULL, 0,NULL, NULL, NULL }
 
 
 struct  PgQuery__FuncExpr
@@ -2316,19 +2370,13 @@ struct  PgQuery__FuncExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t funcid;
-  uint32_t funcresulttype;
-  protobuf_c_boolean funcretset;
-  protobuf_c_boolean funcvariadic;
-  PgQuery__CoercionForm funcformat;
-  uint32_t funccollid;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__FUNC_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__func_expr__descriptor) \
-    , NULL, 0, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0, 0, 0,NULL, 0 }
+    , NULL, 0, 0,NULL, 0 }
 
 
 struct  PgQuery__NamedArgExpr
@@ -2336,13 +2384,12 @@ struct  PgQuery__NamedArgExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
-  char *name;
   int32_t argnumber;
   int32_t location;
 };
 #define PG_QUERY__NAMED_ARG_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__named_arg_expr__descriptor) \
-    , NULL, NULL, (char *)protobuf_c_empty_string, 0, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__OpExpr
@@ -2350,18 +2397,13 @@ struct  PgQuery__OpExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t opno;
-  uint32_t opfuncid;
-  uint32_t opresulttype;
-  protobuf_c_boolean opretset;
-  uint32_t opcollid;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__OP_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__op_expr__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0, 0,NULL, 0 }
+    , NULL, 0, 0,NULL, 0 }
 
 
 struct  PgQuery__DistinctExpr
@@ -2369,18 +2411,13 @@ struct  PgQuery__DistinctExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t opno;
-  uint32_t opfuncid;
-  uint32_t opresulttype;
-  protobuf_c_boolean opretset;
-  uint32_t opcollid;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__DISTINCT_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__distinct_expr__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0, 0,NULL, 0 }
+    , NULL, 0, 0,NULL, 0 }
 
 
 struct  PgQuery__NullIfExpr
@@ -2388,18 +2425,13 @@ struct  PgQuery__NullIfExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t opno;
-  uint32_t opfuncid;
-  uint32_t opresulttype;
-  protobuf_c_boolean opretset;
-  uint32_t opcollid;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__NULL_IF_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__null_if_expr__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0, 0,NULL, 0 }
+    , NULL, 0, 0,NULL, 0 }
 
 
 struct  PgQuery__ScalarArrayOpExpr
@@ -2407,18 +2439,14 @@ struct  PgQuery__ScalarArrayOpExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t opno;
-  uint32_t opfuncid;
-  uint32_t hashfuncid;
-  uint32_t negfuncid;
   protobuf_c_boolean use_or;
-  uint32_t inputcollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__SCALAR_ARRAY_OP_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__scalar_array_op_expr__descriptor) \
-    , NULL, 0, 0, 0, 0, 0, 0, 0,NULL, 0 }
+    , NULL, 0, 0, 0,NULL, 0 }
 
 
 struct  PgQuery__BoolExpr
@@ -2442,14 +2470,12 @@ struct  PgQuery__SubLink
   PgQuery__SubLinkType sub_link_type;
   int32_t sub_link_id;
   PgQuery__Node *testexpr;
-  size_t n_oper_name;
-  PgQuery__Node **oper_name;
   PgQuery__Node *subselect;
   int32_t location;
 };
 #define PG_QUERY__SUB_LINK__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__sub_link__descriptor) \
-    , NULL, PG_QUERY__SUB_LINK_TYPE__SUB_LINK_TYPE_UNDEFINED, 0, NULL, 0,NULL, NULL, 0 }
+    , NULL, PG_QUERY__SUB_LINK_TYPE__SUB_LINK_TYPE_UNDEFINED, 0, NULL, NULL, 0 }
 
 
 struct  PgQuery__SubPlan
@@ -2500,13 +2526,10 @@ struct  PgQuery__FieldSelect
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   int32_t fieldnum;
-  uint32_t resulttype;
-  int32_t resulttypmod;
-  uint32_t resultcollid;
 };
 #define PG_QUERY__FIELD_SELECT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__field_select__descriptor) \
-    , NULL, NULL, 0, 0, 0, 0 }
+    , NULL, NULL, 0 }
 
 
 struct  PgQuery__FieldStore
@@ -2516,13 +2539,10 @@ struct  PgQuery__FieldStore
   PgQuery__Node *arg;
   size_t n_newvals;
   PgQuery__Node **newvals;
-  size_t n_fieldnums;
-  PgQuery__Node **fieldnums;
-  uint32_t resulttype;
 };
 #define PG_QUERY__FIELD_STORE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__field_store__descriptor) \
-    , NULL, NULL, 0,NULL, 0,NULL, 0 }
+    , NULL, NULL, 0,NULL }
 
 
 struct  PgQuery__RelabelType
@@ -2531,14 +2551,11 @@ struct  PgQuery__RelabelType
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   uint32_t resulttype;
-  int32_t resulttypmod;
-  uint32_t resultcollid;
-  PgQuery__CoercionForm relabelformat;
   int32_t location;
 };
 #define PG_QUERY__RELABEL_TYPE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__relabel_type__descriptor) \
-    , NULL, NULL, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__CoerceViaIO
@@ -2547,13 +2564,11 @@ struct  PgQuery__CoerceViaIO
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   uint32_t resulttype;
-  uint32_t resultcollid;
-  PgQuery__CoercionForm coerceformat;
   int32_t location;
 };
 #define PG_QUERY__COERCE_VIA_IO__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__coerce_via_io__descriptor) \
-    , NULL, NULL, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__ArrayCoerceExpr
@@ -2563,14 +2578,11 @@ struct  PgQuery__ArrayCoerceExpr
   PgQuery__Node *arg;
   PgQuery__Node *elemexpr;
   uint32_t resulttype;
-  int32_t resulttypmod;
-  uint32_t resultcollid;
-  PgQuery__CoercionForm coerceformat;
   int32_t location;
 };
 #define PG_QUERY__ARRAY_COERCE_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__array_coerce_expr__descriptor) \
-    , NULL, NULL, NULL, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+    , NULL, NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__ConvertRowtypeExpr
@@ -2579,12 +2591,11 @@ struct  PgQuery__ConvertRowtypeExpr
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   uint32_t resulttype;
-  PgQuery__CoercionForm convertformat;
   int32_t location;
 };
 #define PG_QUERY__CONVERT_ROWTYPE_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__convert_rowtype_expr__descriptor) \
-    , NULL, NULL, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__CollateExpr
@@ -2604,8 +2615,6 @@ struct  PgQuery__CaseExpr
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  uint32_t casetype;
-  uint32_t casecollid;
   PgQuery__Node *arg;
   size_t n_args;
   PgQuery__Node **args;
@@ -2614,7 +2623,7 @@ struct  PgQuery__CaseExpr
 };
 #define PG_QUERY__CASE_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__case_expr__descriptor) \
-    , NULL, 0, 0, NULL, 0,NULL, NULL, 0 }
+    , NULL, NULL, 0,NULL, NULL, 0 }
 
 
 struct  PgQuery__CaseWhen
@@ -2635,29 +2644,23 @@ struct  PgQuery__CaseTestExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t type_id;
-  int32_t type_mod;
-  uint32_t collation;
 };
 #define PG_QUERY__CASE_TEST_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__case_test_expr__descriptor) \
-    , NULL, 0, 0, 0 }
+    , NULL, 0 }
 
 
 struct  PgQuery__ArrayExpr
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  uint32_t array_typeid;
-  uint32_t array_collid;
-  uint32_t element_typeid;
   size_t n_elements;
   PgQuery__Node **elements;
-  protobuf_c_boolean multidims;
   int32_t location;
 };
 #define PG_QUERY__ARRAY_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__array_expr__descriptor) \
-    , NULL, 0, 0, 0, 0,NULL, 0, 0 }
+    , NULL, 0,NULL, 0 }
 
 
 struct  PgQuery__RowExpr
@@ -2666,15 +2669,11 @@ struct  PgQuery__RowExpr
   PgQuery__Node *xpr;
   size_t n_args;
   PgQuery__Node **args;
-  uint32_t row_typeid;
-  PgQuery__CoercionForm row_format;
-  size_t n_colnames;
-  PgQuery__Node **colnames;
   int32_t location;
 };
 #define PG_QUERY__ROW_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__row_expr__descriptor) \
-    , NULL, 0,NULL, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0,NULL, 0 }
+    , NULL, 0,NULL, 0 }
 
 
 struct  PgQuery__RowCompareExpr
@@ -2682,12 +2681,6 @@ struct  PgQuery__RowCompareExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   PgQuery__RowCompareType rctype;
-  size_t n_opnos;
-  PgQuery__Node **opnos;
-  size_t n_opfamilies;
-  PgQuery__Node **opfamilies;
-  size_t n_inputcollids;
-  PgQuery__Node **inputcollids;
   size_t n_largs;
   PgQuery__Node **largs;
   size_t n_rargs;
@@ -2695,31 +2688,26 @@ struct  PgQuery__RowCompareExpr
 };
 #define PG_QUERY__ROW_COMPARE_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__row_compare_expr__descriptor) \
-    , NULL, PG_QUERY__ROW_COMPARE_TYPE__ROW_COMPARE_TYPE_UNDEFINED, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
+    , NULL, PG_QUERY__ROW_COMPARE_TYPE__ROW_COMPARE_TYPE_UNDEFINED, 0,NULL, 0,NULL }
 
 
 struct  PgQuery__CoalesceExpr
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  uint32_t coalescetype;
-  uint32_t coalescecollid;
   size_t n_args;
   PgQuery__Node **args;
   int32_t location;
 };
 #define PG_QUERY__COALESCE_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__coalesce_expr__descriptor) \
-    , NULL, 0, 0, 0,NULL, 0 }
+    , NULL, 0,NULL, 0 }
 
 
 struct  PgQuery__MinMaxExpr
 {
   ProtobufCMessage base;
   PgQuery__Node *xpr;
-  uint32_t minmaxtype;
-  uint32_t minmaxcollid;
-  uint32_t inputcollid;
   PgQuery__MinMaxOp op;
   size_t n_args;
   PgQuery__Node **args;
@@ -2727,7 +2715,7 @@ struct  PgQuery__MinMaxExpr
 };
 #define PG_QUERY__MIN_MAX_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__min_max_expr__descriptor) \
-    , NULL, 0, 0, 0, PG_QUERY__MIN_MAX_OP__MIN_MAX_OP_UNDEFINED, 0,NULL, 0 }
+    , NULL, PG_QUERY__MIN_MAX_OP__MIN_MAX_OP_UNDEFINED, 0,NULL, 0 }
 
 
 struct  PgQuery__SQLValueFunction
@@ -2735,13 +2723,12 @@ struct  PgQuery__SQLValueFunction
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   PgQuery__SQLValueFunctionOp op;
-  uint32_t type;
   int32_t typmod;
   int32_t location;
 };
 #define PG_QUERY__SQLVALUE_FUNCTION__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__sqlvalue_function__descriptor) \
-    , NULL, PG_QUERY__SQLVALUE_FUNCTION_OP__SQLVALUE_FUNCTION_OP_UNDEFINED, 0, 0, 0 }
+    , NULL, PG_QUERY__SQLVALUE_FUNCTION_OP__SQLVALUE_FUNCTION_OP_UNDEFINED, 0, 0 }
 
 
 struct  PgQuery__XmlExpr
@@ -2749,21 +2736,85 @@ struct  PgQuery__XmlExpr
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   PgQuery__XmlExprOp op;
-  char *name;
   size_t n_named_args;
   PgQuery__Node **named_args;
-  size_t n_arg_names;
-  PgQuery__Node **arg_names;
   size_t n_args;
   PgQuery__Node **args;
-  PgQuery__XmlOptionType xmloption;
-  uint32_t type;
-  int32_t typmod;
+  protobuf_c_boolean indent;
   int32_t location;
 };
 #define PG_QUERY__XML_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__xml_expr__descriptor) \
-    , NULL, PG_QUERY__XML_EXPR_OP__XML_EXPR_OP_UNDEFINED, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0,NULL, PG_QUERY__XML_OPTION_TYPE__XML_OPTION_TYPE_UNDEFINED, 0, 0, 0 }
+    , NULL, PG_QUERY__XML_EXPR_OP__XML_EXPR_OP_UNDEFINED, 0,NULL, 0,NULL, 0, 0 }
+
+
+struct  PgQuery__JsonFormat
+{
+  ProtobufCMessage base;
+  PgQuery__JsonFormatType format_type;
+  PgQuery__JsonEncoding encoding;
+  int32_t location;
+};
+#define PG_QUERY__JSON_FORMAT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_format__descriptor) \
+    , PG_QUERY__JSON_FORMAT_TYPE__JSON_FORMAT_TYPE_UNDEFINED, PG_QUERY__JSON_ENCODING__JSON_ENCODING_UNDEFINED, 0 }
+
+
+struct  PgQuery__JsonReturning
+{
+  ProtobufCMessage base;
+  PgQuery__JsonFormat *format;
+  uint32_t typid;
+  int32_t typmod;
+};
+#define PG_QUERY__JSON_RETURNING__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_returning__descriptor) \
+    , NULL, 0, 0 }
+
+
+struct  PgQuery__JsonValueExpr
+{
+  ProtobufCMessage base;
+  PgQuery__Node *raw_expr;
+  PgQuery__Node *formatted_expr;
+  PgQuery__JsonFormat *format;
+};
+#define PG_QUERY__JSON_VALUE_EXPR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_value_expr__descriptor) \
+    , NULL, NULL, NULL }
+
+
+struct  PgQuery__JsonConstructorExpr
+{
+  ProtobufCMessage base;
+  PgQuery__Node *xpr;
+  PgQuery__JsonConstructorType type;
+  size_t n_args;
+  PgQuery__Node **args;
+  PgQuery__Node *func;
+  PgQuery__Node *coercion;
+  PgQuery__JsonReturning *returning;
+  protobuf_c_boolean absent_on_null;
+  protobuf_c_boolean unique;
+  int32_t location;
+};
+#define PG_QUERY__JSON_CONSTRUCTOR_EXPR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_constructor_expr__descriptor) \
+    , NULL, PG_QUERY__JSON_CONSTRUCTOR_TYPE__JSON_CONSTRUCTOR_TYPE_UNDEFINED, 0,NULL, NULL, NULL, NULL, 0, 0, 0 }
+
+
+struct  PgQuery__JsonIsPredicate
+{
+  ProtobufCMessage base;
+  PgQuery__Node *expr;
+  PgQuery__JsonFormat *format;
+  PgQuery__JsonValueType item_type;
+  protobuf_c_boolean unique_keys;
+  int32_t location;
+};
+#define PG_QUERY__JSON_IS_PREDICATE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_is_predicate__descriptor) \
+    , NULL, NULL, PG_QUERY__JSON_VALUE_TYPE__JSON_VALUE_TYPE_UNDEFINED, 0, 0 }
 
 
 struct  PgQuery__NullTest
@@ -2772,12 +2823,11 @@ struct  PgQuery__NullTest
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   PgQuery__NullTestType nulltesttype;
-  protobuf_c_boolean argisrow;
   int32_t location;
 };
 #define PG_QUERY__NULL_TEST__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__null_test__descriptor) \
-    , NULL, NULL, PG_QUERY__NULL_TEST_TYPE__NULL_TEST_TYPE_UNDEFINED, 0, 0 }
+    , NULL, NULL, PG_QUERY__NULL_TEST_TYPE__NULL_TEST_TYPE_UNDEFINED, 0 }
 
 
 struct  PgQuery__BooleanTest
@@ -2799,14 +2849,11 @@ struct  PgQuery__CoerceToDomain
   PgQuery__Node *xpr;
   PgQuery__Node *arg;
   uint32_t resulttype;
-  int32_t resulttypmod;
-  uint32_t resultcollid;
-  PgQuery__CoercionForm coercionformat;
   int32_t location;
 };
 #define PG_QUERY__COERCE_TO_DOMAIN__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__coerce_to_domain__descriptor) \
-    , NULL, NULL, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__CoerceToDomainValue
@@ -2814,13 +2861,11 @@ struct  PgQuery__CoerceToDomainValue
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t type_id;
-  int32_t type_mod;
-  uint32_t collation;
   int32_t location;
 };
 #define PG_QUERY__COERCE_TO_DOMAIN_VALUE__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__coerce_to_domain_value__descriptor) \
-    , NULL, 0, 0, 0, 0 }
+    , NULL, 0, 0 }
 
 
 struct  PgQuery__SetToDefault
@@ -2828,13 +2873,11 @@ struct  PgQuery__SetToDefault
   ProtobufCMessage base;
   PgQuery__Node *xpr;
   uint32_t type_id;
-  int32_t type_mod;
-  uint32_t collation;
   int32_t location;
 };
 #define PG_QUERY__SET_TO_DEFAULT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__set_to_default__descriptor) \
-    , NULL, 0, 0, 0, 0 }
+    , NULL, 0, 0 }
 
 
 struct  PgQuery__CurrentOfExpr
@@ -2881,15 +2924,11 @@ struct  PgQuery__TargetEntry
   PgQuery__Node *xpr;
   PgQuery__Node *expr;
   int32_t resno;
-  char *resname;
   uint32_t ressortgroupref;
-  uint32_t resorigtbl;
-  int32_t resorigcol;
-  protobuf_c_boolean resjunk;
 };
 #define PG_QUERY__TARGET_ENTRY__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__target_entry__descriptor) \
-    , NULL, NULL, 0, (char *)protobuf_c_empty_string, 0, 0, 0, 0 }
+    , NULL, NULL, 0, 0 }
 
 
 struct  PgQuery__RangeTblRef
@@ -2909,16 +2948,12 @@ struct  PgQuery__JoinExpr
   protobuf_c_boolean is_natural;
   PgQuery__Node *larg;
   PgQuery__Node *rarg;
-  size_t n_using_clause;
-  PgQuery__Node **using_clause;
-  PgQuery__Alias *join_using_alias;
   PgQuery__Node *quals;
-  PgQuery__Alias *alias;
   int32_t rtindex;
 };
 #define PG_QUERY__JOIN_EXPR__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__join_expr__descriptor) \
-    , PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, NULL, NULL, 0,NULL, NULL, NULL, NULL, 0 }
+    , PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, NULL, NULL, NULL, 0 }
 
 
 struct  PgQuery__FromExpr
@@ -2953,72 +2988,11 @@ struct  PgQuery__OnConflictExpr
     , PG_QUERY__ON_CONFLICT_ACTION__ON_CONFLICT_ACTION_UNDEFINED, 0,NULL, NULL, 0, 0,NULL, NULL, 0, 0,NULL }
 
 
-struct  PgQuery__IntoClause
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *rel;
-  size_t n_col_names;
-  PgQuery__Node **col_names;
-  char *access_method;
-  size_t n_options;
-  PgQuery__Node **options;
-  PgQuery__OnCommitAction on_commit;
-  char *table_space_name;
-  PgQuery__Node *view_query;
-  protobuf_c_boolean skip_data;
-};
-#define PG_QUERY__INTO_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__into_clause__descriptor) \
-    , NULL, 0,NULL, (char *)protobuf_c_empty_string, 0,NULL, PG_QUERY__ON_COMMIT_ACTION__ON_COMMIT_ACTION_UNDEFINED, (char *)protobuf_c_empty_string, NULL, 0 }
-
-
-struct  PgQuery__MergeAction
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean matched;
-  PgQuery__CmdType command_type;
-  PgQuery__OverridingKind override;
-  PgQuery__Node *qual;
-  size_t n_target_list;
-  PgQuery__Node **target_list;
-  size_t n_update_colnos;
-  PgQuery__Node **update_colnos;
-};
-#define PG_QUERY__MERGE_ACTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__merge_action__descriptor) \
-    , 0, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, PG_QUERY__OVERRIDING_KIND__OVERRIDING_KIND_UNDEFINED, NULL, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__RawStmt
-{
-  ProtobufCMessage base;
-  PgQuery__Node *stmt;
-  int32_t stmt_location;
-  int32_t stmt_len;
-};
-#define PG_QUERY__RAW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__raw_stmt__descriptor) \
-    , NULL, 0, 0 }
-
-
 struct  PgQuery__Query
 {
   ProtobufCMessage base;
   PgQuery__CmdType command_type;
-  PgQuery__QuerySource query_source;
-  protobuf_c_boolean can_set_tag;
   PgQuery__Node *utility_stmt;
-  int32_t result_relation;
-  protobuf_c_boolean has_aggs;
-  protobuf_c_boolean has_window_funcs;
-  protobuf_c_boolean has_target_srfs;
-  protobuf_c_boolean has_sub_links;
-  protobuf_c_boolean has_distinct_on;
-  protobuf_c_boolean has_recursive;
-  protobuf_c_boolean has_modifying_cte;
-  protobuf_c_boolean has_for_update;
-  protobuf_c_boolean has_row_security;
-  protobuf_c_boolean is_return;
   size_t n_cte_list;
   PgQuery__Node **cte_list;
   size_t n_rtable;
@@ -3026,10 +3000,8 @@ struct  PgQuery__Query
   PgQuery__FromExpr *jointree;
   size_t n_merge_action_list;
   PgQuery__Node **merge_action_list;
-  protobuf_c_boolean merge_use_outer_join;
   size_t n_target_list;
   PgQuery__Node **target_list;
-  PgQuery__OverridingKind override;
   PgQuery__OnConflictExpr *on_conflict;
   size_t n_returning_list;
   PgQuery__Node **returning_list;
@@ -3051,16 +3023,899 @@ struct  PgQuery__Query
   size_t n_row_marks;
   PgQuery__Node **row_marks;
   PgQuery__Node *set_operations;
-  size_t n_constraint_deps;
-  PgQuery__Node **constraint_deps;
-  size_t n_with_check_options;
-  PgQuery__Node **with_check_options;
   int32_t stmt_location;
-  int32_t stmt_len;
 };
 #define PG_QUERY__QUERY__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__query__descriptor) \
-    , PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, PG_QUERY__QUERY_SOURCE__QUERY_SOURCE_UNDEFINED, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,NULL, 0,NULL, NULL, 0,NULL, 0, 0,NULL, PG_QUERY__OVERRIDING_KIND__OVERRIDING_KIND_UNDEFINED, NULL, 0,NULL, 0,NULL, 0, 0,NULL, NULL, 0,NULL, 0,NULL, 0,NULL, NULL, NULL, PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_UNDEFINED, 0,NULL, NULL, 0,NULL, 0,NULL, 0, 0 }
+    , PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, NULL, 0,NULL, 0,NULL, NULL, 0,NULL, 0,NULL, NULL, 0,NULL, 0,NULL, 0, 0,NULL, NULL, 0,NULL, 0,NULL, 0,NULL, NULL, NULL, PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_UNDEFINED, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__TypeName
+{
+  ProtobufCMessage base;
+  size_t n_names;
+  PgQuery__Node **names;
+  uint32_t type_oid;
+  protobuf_c_boolean setof;
+  protobuf_c_boolean pct_type;
+  size_t n_typmods;
+  PgQuery__Node **typmods;
+  int32_t typemod;
+  size_t n_array_bounds;
+  PgQuery__Node **array_bounds;
+  int32_t location;
+};
+#define PG_QUERY__TYPE_NAME__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__type_name__descriptor) \
+    , 0,NULL, 0, 0, 0, 0,NULL, 0, 0,NULL, 0 }
+
+
+struct  PgQuery__ColumnRef
+{
+  ProtobufCMessage base;
+  size_t n_fields;
+  PgQuery__Node **fields;
+  int32_t location;
+};
+#define PG_QUERY__COLUMN_REF__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__column_ref__descriptor) \
+    , 0,NULL, 0 }
+
+
+struct  PgQuery__ParamRef
+{
+  ProtobufCMessage base;
+  int32_t number;
+  int32_t location;
+};
+#define PG_QUERY__PARAM_REF__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__param_ref__descriptor) \
+    , 0, 0 }
+
+
+struct  PgQuery__AExpr
+{
+  ProtobufCMessage base;
+  PgQuery__AExprKind kind;
+  size_t n_name;
+  PgQuery__Node **name;
+  PgQuery__Node *lexpr;
+  PgQuery__Node *rexpr;
+  int32_t location;
+};
+#define PG_QUERY__A__EXPR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__expr__descriptor) \
+    , PG_QUERY__A__EXPR__KIND__A_EXPR_KIND_UNDEFINED, 0,NULL, NULL, NULL, 0 }
+
+
+struct  PgQuery__TypeCast
+{
+  ProtobufCMessage base;
+  PgQuery__Node *arg;
+  PgQuery__TypeName *type_name;
+  int32_t location;
+};
+#define PG_QUERY__TYPE_CAST__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__type_cast__descriptor) \
+    , NULL, NULL, 0 }
+
+
+struct  PgQuery__CollateClause
+{
+  ProtobufCMessage base;
+  PgQuery__Node *arg;
+  size_t n_collname;
+  PgQuery__Node **collname;
+  int32_t location;
+};
+#define PG_QUERY__COLLATE_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__collate_clause__descriptor) \
+    , NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__RoleSpec
+{
+  ProtobufCMessage base;
+  PgQuery__RoleSpecType roletype;
+  char *rolename;
+  int32_t location;
+};
+#define PG_QUERY__ROLE_SPEC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__role_spec__descriptor) \
+    , PG_QUERY__ROLE_SPEC_TYPE__ROLE_SPEC_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__FuncCall
+{
+  ProtobufCMessage base;
+  size_t n_funcname;
+  PgQuery__Node **funcname;
+  size_t n_args;
+  PgQuery__Node **args;
+  size_t n_agg_order;
+  PgQuery__Node **agg_order;
+  PgQuery__Node *agg_filter;
+  PgQuery__WindowDef *over;
+  protobuf_c_boolean agg_within_group;
+  protobuf_c_boolean agg_star;
+  protobuf_c_boolean agg_distinct;
+  protobuf_c_boolean func_variadic;
+  PgQuery__CoercionForm funcformat;
+  int32_t location;
+};
+#define PG_QUERY__FUNC_CALL__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__func_call__descriptor) \
+    , 0,NULL, 0,NULL, 0,NULL, NULL, NULL, 0, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
+
+
+struct  PgQuery__AStar
+{
+  ProtobufCMessage base;
+};
+#define PG_QUERY__A__STAR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__star__descriptor) \
+     }
+
+
+struct  PgQuery__AIndices
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean is_slice;
+  PgQuery__Node *lidx;
+  PgQuery__Node *uidx;
+};
+#define PG_QUERY__A__INDICES__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__indices__descriptor) \
+    , 0, NULL, NULL }
+
+
+struct  PgQuery__AIndirection
+{
+  ProtobufCMessage base;
+  PgQuery__Node *arg;
+  size_t n_indirection;
+  PgQuery__Node **indirection;
+};
+#define PG_QUERY__A__INDIRECTION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__indirection__descriptor) \
+    , NULL, 0,NULL }
+
+
+struct  PgQuery__AArrayExpr
+{
+  ProtobufCMessage base;
+  size_t n_elements;
+  PgQuery__Node **elements;
+  int32_t location;
+};
+#define PG_QUERY__A__ARRAY_EXPR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__array_expr__descriptor) \
+    , 0,NULL, 0 }
+
+
+struct  PgQuery__ResTarget
+{
+  ProtobufCMessage base;
+  char *name;
+  size_t n_indirection;
+  PgQuery__Node **indirection;
+  PgQuery__Node *val;
+  int32_t location;
+};
+#define PG_QUERY__RES_TARGET__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__res_target__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__MultiAssignRef
+{
+  ProtobufCMessage base;
+  PgQuery__Node *source;
+  int32_t colno;
+  int32_t ncolumns;
+};
+#define PG_QUERY__MULTI_ASSIGN_REF__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__multi_assign_ref__descriptor) \
+    , NULL, 0, 0 }
+
+
+struct  PgQuery__SortBy
+{
+  ProtobufCMessage base;
+  PgQuery__Node *node;
+  PgQuery__SortByDir sortby_dir;
+  PgQuery__SortByNulls sortby_nulls;
+  size_t n_use_op;
+  PgQuery__Node **use_op;
+  int32_t location;
+};
+#define PG_QUERY__SORT_BY__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__sort_by__descriptor) \
+    , NULL, PG_QUERY__SORT_BY_DIR__SORT_BY_DIR_UNDEFINED, PG_QUERY__SORT_BY_NULLS__SORT_BY_NULLS_UNDEFINED, 0,NULL, 0 }
+
+
+struct  PgQuery__WindowDef
+{
+  ProtobufCMessage base;
+  char *name;
+  char *refname;
+  size_t n_partition_clause;
+  PgQuery__Node **partition_clause;
+  size_t n_order_clause;
+  PgQuery__Node **order_clause;
+  int32_t frame_options;
+  PgQuery__Node *start_offset;
+  PgQuery__Node *end_offset;
+  int32_t location;
+};
+#define PG_QUERY__WINDOW_DEF__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__window_def__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0, NULL, NULL, 0 }
+
+
+struct  PgQuery__RangeSubselect
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean lateral;
+  PgQuery__Node *subquery;
+  PgQuery__Alias *alias;
+};
+#define PG_QUERY__RANGE_SUBSELECT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_subselect__descriptor) \
+    , 0, NULL, NULL }
+
+
+struct  PgQuery__RangeFunction
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean lateral;
+  protobuf_c_boolean ordinality;
+  protobuf_c_boolean is_rowsfrom;
+  size_t n_functions;
+  PgQuery__Node **functions;
+  PgQuery__Alias *alias;
+  size_t n_coldeflist;
+  PgQuery__Node **coldeflist;
+};
+#define PG_QUERY__RANGE_FUNCTION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_function__descriptor) \
+    , 0, 0, 0, 0,NULL, NULL, 0,NULL }
+
+
+struct  PgQuery__RangeTableFunc
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean lateral;
+  PgQuery__Node *docexpr;
+  PgQuery__Node *rowexpr;
+  size_t n_namespaces;
+  PgQuery__Node **namespaces;
+  size_t n_columns;
+  PgQuery__Node **columns;
+  PgQuery__Alias *alias;
+  int32_t location;
+};
+#define PG_QUERY__RANGE_TABLE_FUNC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_func__descriptor) \
+    , 0, NULL, NULL, 0,NULL, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__RangeTableFuncCol
+{
+  ProtobufCMessage base;
+  char *colname;
+  PgQuery__TypeName *type_name;
+  protobuf_c_boolean for_ordinality;
+  protobuf_c_boolean is_not_null;
+  PgQuery__Node *colexpr;
+  PgQuery__Node *coldefexpr;
+  int32_t location;
+};
+#define PG_QUERY__RANGE_TABLE_FUNC_COL__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_func_col__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, 0, 0, NULL, NULL, 0 }
+
+
+struct  PgQuery__RangeTableSample
+{
+  ProtobufCMessage base;
+  PgQuery__Node *relation;
+  size_t n_method;
+  PgQuery__Node **method;
+  size_t n_args;
+  PgQuery__Node **args;
+  PgQuery__Node *repeatable;
+  int32_t location;
+};
+#define PG_QUERY__RANGE_TABLE_SAMPLE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_sample__descriptor) \
+    , NULL, 0,NULL, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__ColumnDef
+{
+  ProtobufCMessage base;
+  char *colname;
+  PgQuery__TypeName *type_name;
+  char *compression;
+  int32_t inhcount;
+  protobuf_c_boolean is_local;
+  protobuf_c_boolean is_not_null;
+  protobuf_c_boolean is_from_type;
+  char *storage;
+  char *storage_name;
+  PgQuery__Node *raw_default;
+  PgQuery__Node *cooked_default;
+  char *identity;
+  PgQuery__RangeVar *identity_sequence;
+  char *generated;
+  PgQuery__CollateClause *coll_clause;
+  uint32_t coll_oid;
+  size_t n_constraints;
+  PgQuery__Node **constraints;
+  size_t n_fdwoptions;
+  PgQuery__Node **fdwoptions;
+  int32_t location;
+};
+#define PG_QUERY__COLUMN_DEF__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__column_def__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, NULL, NULL, (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, NULL, 0, 0,NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__TableLikeClause
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *relation;
+  uint32_t options;
+  uint32_t relation_oid;
+};
+#define PG_QUERY__TABLE_LIKE_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_like_clause__descriptor) \
+    , NULL, 0, 0 }
+
+
+struct  PgQuery__IndexElem
+{
+  ProtobufCMessage base;
+  char *name;
+  PgQuery__Node *expr;
+  char *indexcolname;
+  size_t n_collation;
+  PgQuery__Node **collation;
+  size_t n_opclass;
+  PgQuery__Node **opclass;
+  size_t n_opclassopts;
+  PgQuery__Node **opclassopts;
+  PgQuery__SortByDir ordering;
+  PgQuery__SortByNulls nulls_ordering;
+};
+#define PG_QUERY__INDEX_ELEM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__index_elem__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0,NULL, PG_QUERY__SORT_BY_DIR__SORT_BY_DIR_UNDEFINED, PG_QUERY__SORT_BY_NULLS__SORT_BY_NULLS_UNDEFINED }
+
+
+struct  PgQuery__DefElem
+{
+  ProtobufCMessage base;
+  char *defnamespace;
+  char *defname;
+  PgQuery__Node *arg;
+  PgQuery__DefElemAction defaction;
+  int32_t location;
+};
+#define PG_QUERY__DEF_ELEM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__def_elem__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, NULL, PG_QUERY__DEF_ELEM_ACTION__DEF_ELEM_ACTION_UNDEFINED, 0 }
+
+
+struct  PgQuery__LockingClause
+{
+  ProtobufCMessage base;
+  size_t n_locked_rels;
+  PgQuery__Node **locked_rels;
+  PgQuery__LockClauseStrength strength;
+  PgQuery__LockWaitPolicy wait_policy;
+};
+#define PG_QUERY__LOCKING_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__locking_clause__descriptor) \
+    , 0,NULL, PG_QUERY__LOCK_CLAUSE_STRENGTH__LOCK_CLAUSE_STRENGTH_UNDEFINED, PG_QUERY__LOCK_WAIT_POLICY__LOCK_WAIT_POLICY_UNDEFINED }
+
+
+struct  PgQuery__XmlSerialize
+{
+  ProtobufCMessage base;
+  PgQuery__XmlOptionType xmloption;
+  PgQuery__Node *expr;
+  PgQuery__TypeName *type_name;
+  protobuf_c_boolean indent;
+  int32_t location;
+};
+#define PG_QUERY__XML_SERIALIZE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__xml_serialize__descriptor) \
+    , PG_QUERY__XML_OPTION_TYPE__XML_OPTION_TYPE_UNDEFINED, NULL, NULL, 0, 0 }
+
+
+struct  PgQuery__PartitionElem
+{
+  ProtobufCMessage base;
+  char *name;
+  PgQuery__Node *expr;
+  size_t n_collation;
+  PgQuery__Node **collation;
+  size_t n_opclass;
+  PgQuery__Node **opclass;
+  int32_t location;
+};
+#define PG_QUERY__PARTITION_ELEM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_elem__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, 0,NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__PartitionSpec
+{
+  ProtobufCMessage base;
+  PgQuery__PartitionStrategy strategy;
+  size_t n_part_params;
+  PgQuery__Node **part_params;
+  int32_t location;
+};
+#define PG_QUERY__PARTITION_SPEC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_spec__descriptor) \
+    , PG_QUERY__PARTITION_STRATEGY__PARTITION_STRATEGY_UNDEFINED, 0,NULL, 0 }
+
+
+struct  PgQuery__PartitionBoundSpec
+{
+  ProtobufCMessage base;
+  char *strategy;
+  protobuf_c_boolean is_default;
+  int32_t modulus;
+  int32_t remainder;
+  size_t n_listdatums;
+  PgQuery__Node **listdatums;
+  size_t n_lowerdatums;
+  PgQuery__Node **lowerdatums;
+  size_t n_upperdatums;
+  PgQuery__Node **upperdatums;
+  int32_t location;
+};
+#define PG_QUERY__PARTITION_BOUND_SPEC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_bound_spec__descriptor) \
+    , (char *)protobuf_c_empty_string, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__PartitionRangeDatum
+{
+  ProtobufCMessage base;
+  PgQuery__PartitionRangeDatumKind kind;
+  PgQuery__Node *value;
+  int32_t location;
+};
+#define PG_QUERY__PARTITION_RANGE_DATUM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_range_datum__descriptor) \
+    , PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_KIND_UNDEFINED, NULL, 0 }
+
+
+struct  PgQuery__PartitionCmd
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *name;
+  PgQuery__PartitionBoundSpec *bound;
+  protobuf_c_boolean concurrent;
+};
+#define PG_QUERY__PARTITION_CMD__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_cmd__descriptor) \
+    , NULL, NULL, 0 }
+
+
+struct  PgQuery__RangeTblEntry
+{
+  ProtobufCMessage base;
+  PgQuery__RTEKind rtekind;
+  uint32_t relid;
+  char *relkind;
+  int32_t rellockmode;
+  PgQuery__TableSampleClause *tablesample;
+  uint32_t perminfoindex;
+  PgQuery__Query *subquery;
+  protobuf_c_boolean security_barrier;
+  PgQuery__JoinType jointype;
+  int32_t joinmergedcols;
+  size_t n_joinaliasvars;
+  PgQuery__Node **joinaliasvars;
+  size_t n_joinleftcols;
+  PgQuery__Node **joinleftcols;
+  size_t n_joinrightcols;
+  PgQuery__Node **joinrightcols;
+  PgQuery__Alias *join_using_alias;
+  size_t n_functions;
+  PgQuery__Node **functions;
+  protobuf_c_boolean funcordinality;
+  PgQuery__TableFunc *tablefunc;
+  size_t n_values_lists;
+  PgQuery__Node **values_lists;
+  char *ctename;
+  uint32_t ctelevelsup;
+  protobuf_c_boolean self_reference;
+  size_t n_coltypes;
+  PgQuery__Node **coltypes;
+  size_t n_coltypmods;
+  PgQuery__Node **coltypmods;
+  size_t n_colcollations;
+  PgQuery__Node **colcollations;
+  char *enrname;
+  double enrtuples;
+  PgQuery__Alias *alias;
+  PgQuery__Alias *eref;
+  protobuf_c_boolean lateral;
+  protobuf_c_boolean inh;
+  protobuf_c_boolean in_from_cl;
+  size_t n_security_quals;
+  PgQuery__Node **security_quals;
+};
+#define PG_QUERY__RANGE_TBL_ENTRY__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_entry__descriptor) \
+    , PG_QUERY__RTEKIND__RTEKIND_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0, NULL, 0, NULL, 0, PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, NULL, 0,NULL, 0, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, 0, 0, 0,NULL }
+
+
+struct  PgQuery__RTEPermissionInfo
+{
+  ProtobufCMessage base;
+  uint32_t relid;
+  protobuf_c_boolean inh;
+  uint32_t required_perms;
+  uint32_t check_as_user;
+  size_t n_selected_cols;
+  uint64_t *selected_cols;
+  size_t n_inserted_cols;
+  uint64_t *inserted_cols;
+  size_t n_updated_cols;
+  uint64_t *updated_cols;
+};
+#define PG_QUERY__RTEPERMISSION_INFO__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__rtepermission_info__descriptor) \
+    , 0, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL }
+
+
+struct  PgQuery__RangeTblFunction
+{
+  ProtobufCMessage base;
+  PgQuery__Node *funcexpr;
+};
+#define PG_QUERY__RANGE_TBL_FUNCTION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_function__descriptor) \
+    , NULL }
+
+
+struct  PgQuery__TableSampleClause
+{
+  ProtobufCMessage base;
+  uint32_t tsmhandler;
+  size_t n_args;
+  PgQuery__Node **args;
+  PgQuery__Node *repeatable;
+};
+#define PG_QUERY__TABLE_SAMPLE_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_sample_clause__descriptor) \
+    , 0, 0,NULL, NULL }
+
+
+struct  PgQuery__WithCheckOption
+{
+  ProtobufCMessage base;
+  PgQuery__WCOKind kind;
+  char *relname;
+  char *polname;
+  PgQuery__Node *qual;
+  protobuf_c_boolean cascaded;
+};
+#define PG_QUERY__WITH_CHECK_OPTION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__with_check_option__descriptor) \
+    , PG_QUERY__WCOKIND__WCOKIND_UNDEFINED, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, NULL, 0 }
+
+
+struct  PgQuery__SortGroupClause
+{
+  ProtobufCMessage base;
+  uint32_t tle_sort_group_ref;
+  uint32_t eqop;
+  uint32_t sortop;
+  protobuf_c_boolean nulls_first;
+};
+#define PG_QUERY__SORT_GROUP_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__sort_group_clause__descriptor) \
+    , 0, 0, 0, 0 }
+
+
+struct  PgQuery__GroupingSet
+{
+  ProtobufCMessage base;
+  size_t n_content;
+  PgQuery__Node **content;
+  int32_t location;
+};
+#define PG_QUERY__GROUPING_SET__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__grouping_set__descriptor) \
+    , 0,NULL, 0 }
+
+
+struct  PgQuery__WindowClause
+{
+  ProtobufCMessage base;
+  size_t n_partition_clause;
+  PgQuery__Node **partition_clause;
+  size_t n_order_clause;
+  PgQuery__Node **order_clause;
+  int32_t frame_options;
+  PgQuery__Node *start_offset;
+  PgQuery__Node *end_offset;
+  uint32_t winref;
+};
+#define PG_QUERY__WINDOW_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__window_clause__descriptor) \
+    , 0,NULL, 0,NULL, 0, NULL, NULL, 0 }
+
+
+struct  PgQuery__RowMarkClause
+{
+  ProtobufCMessage base;
+  uint32_t rti;
+  PgQuery__LockClauseStrength strength;
+  PgQuery__LockWaitPolicy wait_policy;
+  protobuf_c_boolean pushed_down;
+};
+#define PG_QUERY__ROW_MARK_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__row_mark_clause__descriptor) \
+    , 0, PG_QUERY__LOCK_CLAUSE_STRENGTH__LOCK_CLAUSE_STRENGTH_UNDEFINED, PG_QUERY__LOCK_WAIT_POLICY__LOCK_WAIT_POLICY_UNDEFINED, 0 }
+
+
+struct  PgQuery__WithClause
+{
+  ProtobufCMessage base;
+  size_t n_ctes;
+  PgQuery__Node **ctes;
+  protobuf_c_boolean recursive;
+  int32_t location;
+};
+#define PG_QUERY__WITH_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__with_clause__descriptor) \
+    , 0,NULL, 0, 0 }
+
+
+struct  PgQuery__InferClause
+{
+  ProtobufCMessage base;
+  size_t n_index_elems;
+  PgQuery__Node **index_elems;
+  PgQuery__Node *where_clause;
+  char *conname;
+  int32_t location;
+};
+#define PG_QUERY__INFER_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__infer_clause__descriptor) \
+    , 0,NULL, NULL, (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__OnConflictClause
+{
+  ProtobufCMessage base;
+  PgQuery__OnConflictAction action;
+  PgQuery__InferClause *infer;
+  size_t n_target_list;
+  PgQuery__Node **target_list;
+  PgQuery__Node *where_clause;
+  int32_t location;
+};
+#define PG_QUERY__ON_CONFLICT_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__on_conflict_clause__descriptor) \
+    , PG_QUERY__ON_CONFLICT_ACTION__ON_CONFLICT_ACTION_UNDEFINED, NULL, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__CTESearchClause
+{
+  ProtobufCMessage base;
+  size_t n_search_col_list;
+  PgQuery__Node **search_col_list;
+  protobuf_c_boolean search_breadth_first;
+  char *search_seq_column;
+  int32_t location;
+};
+#define PG_QUERY__CTESEARCH_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__ctesearch_clause__descriptor) \
+    , 0,NULL, 0, (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__CTECycleClause
+{
+  ProtobufCMessage base;
+  size_t n_cycle_col_list;
+  PgQuery__Node **cycle_col_list;
+  char *cycle_mark_column;
+  PgQuery__Node *cycle_mark_value;
+  PgQuery__Node *cycle_mark_default;
+  char *cycle_path_column;
+  int32_t location;
+  uint32_t cycle_mark_type;
+  int32_t cycle_mark_typmod;
+  uint32_t cycle_mark_collation;
+  uint32_t cycle_mark_neop;
+};
+#define PG_QUERY__CTECYCLE_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__ctecycle_clause__descriptor) \
+    , 0,NULL, (char *)protobuf_c_empty_string, NULL, NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, 0 }
+
+
+struct  PgQuery__CommonTableExpr
+{
+  ProtobufCMessage base;
+  char *ctename;
+  PgQuery__CTEMaterialize ctematerialized;
+  PgQuery__Node *ctequery;
+  int32_t location;
+};
+#define PG_QUERY__COMMON_TABLE_EXPR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__common_table_expr__descriptor) \
+    , (char *)protobuf_c_empty_string, PG_QUERY__CTEMATERIALIZE__CTEMATERIALIZE_UNDEFINED, NULL, 0 }
+
+
+struct  PgQuery__MergeWhenClause
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean matched;
+  PgQuery__CmdType command_type;
+  PgQuery__OverridingKind override;
+  PgQuery__Node *condition;
+  size_t n_target_list;
+  PgQuery__Node **target_list;
+  size_t n_values;
+  PgQuery__Node **values;
+};
+#define PG_QUERY__MERGE_WHEN_CLAUSE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__merge_when_clause__descriptor) \
+    , 0, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, PG_QUERY__OVERRIDING_KIND__OVERRIDING_KIND_UNDEFINED, NULL, 0,NULL, 0,NULL }
+
+
+struct  PgQuery__MergeAction
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean matched;
+  PgQuery__CmdType command_type;
+  PgQuery__Node *qual;
+  size_t n_target_list;
+  PgQuery__Node **target_list;
+};
+#define PG_QUERY__MERGE_ACTION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__merge_action__descriptor) \
+    , 0, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, NULL, 0,NULL }
+
+
+struct  PgQuery__TriggerTransition
+{
+  ProtobufCMessage base;
+  char *name;
+  protobuf_c_boolean is_new;
+  protobuf_c_boolean is_table;
+};
+#define PG_QUERY__TRIGGER_TRANSITION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__trigger_transition__descriptor) \
+    , (char *)protobuf_c_empty_string, 0, 0 }
+
+
+struct  PgQuery__JsonOutput
+{
+  ProtobufCMessage base;
+  PgQuery__TypeName *type_name;
+  PgQuery__JsonReturning *returning;
+};
+#define PG_QUERY__JSON_OUTPUT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_output__descriptor) \
+    , NULL, NULL }
+
+
+struct  PgQuery__JsonKeyValue
+{
+  ProtobufCMessage base;
+  PgQuery__Node *key;
+  PgQuery__JsonValueExpr *value;
+};
+#define PG_QUERY__JSON_KEY_VALUE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_key_value__descriptor) \
+    , NULL, NULL }
+
+
+struct  PgQuery__JsonObjectConstructor
+{
+  ProtobufCMessage base;
+  size_t n_exprs;
+  PgQuery__Node **exprs;
+  PgQuery__JsonOutput *output;
+  protobuf_c_boolean absent_on_null;
+  protobuf_c_boolean unique;
+  int32_t location;
+};
+#define PG_QUERY__JSON_OBJECT_CONSTRUCTOR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_object_constructor__descriptor) \
+    , 0,NULL, NULL, 0, 0, 0 }
+
+
+struct  PgQuery__JsonArrayConstructor
+{
+  ProtobufCMessage base;
+  size_t n_exprs;
+  PgQuery__Node **exprs;
+  PgQuery__JsonOutput *output;
+  protobuf_c_boolean absent_on_null;
+  int32_t location;
+};
+#define PG_QUERY__JSON_ARRAY_CONSTRUCTOR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_array_constructor__descriptor) \
+    , 0,NULL, NULL, 0, 0 }
+
+
+struct  PgQuery__JsonArrayQueryConstructor
+{
+  ProtobufCMessage base;
+  PgQuery__Node *query;
+  PgQuery__JsonOutput *output;
+  PgQuery__JsonFormat *format;
+  protobuf_c_boolean absent_on_null;
+  int32_t location;
+};
+#define PG_QUERY__JSON_ARRAY_QUERY_CONSTRUCTOR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_array_query_constructor__descriptor) \
+    , NULL, NULL, NULL, 0, 0 }
+
+
+struct  PgQuery__JsonAggConstructor
+{
+  ProtobufCMessage base;
+  PgQuery__JsonOutput *output;
+  PgQuery__Node *agg_filter;
+  size_t n_agg_order;
+  PgQuery__Node **agg_order;
+  PgQuery__WindowDef *over;
+  int32_t location;
+};
+#define PG_QUERY__JSON_AGG_CONSTRUCTOR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_agg_constructor__descriptor) \
+    , NULL, NULL, 0,NULL, NULL, 0 }
+
+
+struct  PgQuery__JsonObjectAgg
+{
+  ProtobufCMessage base;
+  PgQuery__JsonAggConstructor *constructor;
+  PgQuery__JsonKeyValue *arg;
+  protobuf_c_boolean absent_on_null;
+  protobuf_c_boolean unique;
+};
+#define PG_QUERY__JSON_OBJECT_AGG__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_object_agg__descriptor) \
+    , NULL, NULL, 0, 0 }
+
+
+struct  PgQuery__JsonArrayAgg
+{
+  ProtobufCMessage base;
+  PgQuery__JsonAggConstructor *constructor;
+  PgQuery__JsonValueExpr *arg;
+  protobuf_c_boolean absent_on_null;
+};
+#define PG_QUERY__JSON_ARRAY_AGG__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__json_array_agg__descriptor) \
+    , NULL, NULL, 0 }
+
+
+struct  PgQuery__RawStmt
+{
+  ProtobufCMessage base;
+  PgQuery__Node *stmt;
+  int32_t stmt_location;
+  int32_t stmt_len;
+};
+#define PG_QUERY__RAW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__raw_stmt__descriptor) \
+    , NULL, 0, 0 }
 
 
 struct  PgQuery__InsertStmt
@@ -3167,6 +4022,19 @@ struct  PgQuery__SelectStmt
     , 0,NULL, NULL, 0,NULL, 0,NULL, NULL, 0,NULL, 0, NULL, 0,NULL, 0,NULL, 0,NULL, NULL, NULL, PG_QUERY__LIMIT_OPTION__LIMIT_OPTION_UNDEFINED, 0,NULL, NULL, PG_QUERY__SET_OPERATION__SET_OPERATION_UNDEFINED, 0, NULL, NULL }
 
 
+struct  PgQuery__SetOperationStmt
+{
+  ProtobufCMessage base;
+  PgQuery__SetOperation op;
+  protobuf_c_boolean all;
+  PgQuery__Node *larg;
+  PgQuery__Node *rarg;
+};
+#define PG_QUERY__SET_OPERATION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__set_operation_stmt__descriptor) \
+    , PG_QUERY__SET_OPERATION__SET_OPERATION_UNDEFINED, 0, NULL, NULL }
+
+
 struct  PgQuery__ReturnStmt
 {
   ProtobufCMessage base;
@@ -3192,6 +4060,20 @@ struct  PgQuery__PLAssignStmt
     , (char *)protobuf_c_empty_string, 0,NULL, 0, NULL, 0 }
 
 
+struct  PgQuery__CreateSchemaStmt
+{
+  ProtobufCMessage base;
+  char *schemaname;
+  PgQuery__RoleSpec *authrole;
+  size_t n_schema_elts;
+  PgQuery__Node **schema_elts;
+  protobuf_c_boolean if_not_exists;
+};
+#define PG_QUERY__CREATE_SCHEMA_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_schema_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, 0,NULL, 0 }
+
+
 struct  PgQuery__AlterTableStmt
 {
   ProtobufCMessage base;
@@ -3204,6 +4086,17 @@ struct  PgQuery__AlterTableStmt
 #define PG_QUERY__ALTER_TABLE_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_table_stmt__descriptor) \
     , NULL, 0,NULL, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0 }
+
+
+struct  PgQuery__ReplicaIdentityStmt
+{
+  ProtobufCMessage base;
+  char *identity_type;
+  char *name;
+};
+#define PG_QUERY__REPLICA_IDENTITY_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__replica_identity_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
 
 
 struct  PgQuery__AlterTableCmd
@@ -3223,6 +4116,17 @@ struct  PgQuery__AlterTableCmd
     , PG_QUERY__ALTER_TABLE_TYPE__ALTER_TABLE_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, 0, NULL, NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0, 0 }
 
 
+struct  PgQuery__AlterCollationStmt
+{
+  ProtobufCMessage base;
+  size_t n_collname;
+  PgQuery__Node **collname;
+};
+#define PG_QUERY__ALTER_COLLATION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_collation_stmt__descriptor) \
+    , 0,NULL }
+
+
 struct  PgQuery__AlterDomainStmt
 {
   ProtobufCMessage base;
@@ -3237,27 +4141,6 @@ struct  PgQuery__AlterDomainStmt
 #define PG_QUERY__ALTER_DOMAIN_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_domain_stmt__descriptor) \
     , (char *)protobuf_c_empty_string, 0,NULL, (char *)protobuf_c_empty_string, NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0 }
-
-
-struct  PgQuery__SetOperationStmt
-{
-  ProtobufCMessage base;
-  PgQuery__SetOperation op;
-  protobuf_c_boolean all;
-  PgQuery__Node *larg;
-  PgQuery__Node *rarg;
-  size_t n_col_types;
-  PgQuery__Node **col_types;
-  size_t n_col_typmods;
-  PgQuery__Node **col_typmods;
-  size_t n_col_collations;
-  PgQuery__Node **col_collations;
-  size_t n_group_clauses;
-  PgQuery__Node **group_clauses;
-};
-#define PG_QUERY__SET_OPERATION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__set_operation_stmt__descriptor) \
-    , PG_QUERY__SET_OPERATION__SET_OPERATION_UNDEFINED, 0, NULL, NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
 
 
 struct  PgQuery__GrantStmt
@@ -3281,6 +4164,34 @@ struct  PgQuery__GrantStmt
     , 0, PG_QUERY__GRANT_TARGET_TYPE__GRANT_TARGET_TYPE_UNDEFINED, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0,NULL, 0,NULL, 0,NULL, 0, NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
 
 
+struct  PgQuery__ObjectWithArgs
+{
+  ProtobufCMessage base;
+  size_t n_objname;
+  PgQuery__Node **objname;
+  size_t n_objargs;
+  PgQuery__Node **objargs;
+  size_t n_objfuncargs;
+  PgQuery__Node **objfuncargs;
+  protobuf_c_boolean args_unspecified;
+};
+#define PG_QUERY__OBJECT_WITH_ARGS__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__object_with_args__descriptor) \
+    , 0,NULL, 0,NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__AccessPriv
+{
+  ProtobufCMessage base;
+  char *priv_name;
+  size_t n_cols;
+  PgQuery__Node **cols;
+};
+#define PG_QUERY__ACCESS_PRIV__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__access_priv__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL }
+
+
 struct  PgQuery__GrantRoleStmt
 {
   ProtobufCMessage base;
@@ -3289,13 +4200,14 @@ struct  PgQuery__GrantRoleStmt
   size_t n_grantee_roles;
   PgQuery__Node **grantee_roles;
   protobuf_c_boolean is_grant;
-  protobuf_c_boolean admin_opt;
+  size_t n_opt;
+  PgQuery__Node **opt;
   PgQuery__RoleSpec *grantor;
   PgQuery__DropBehavior behavior;
 };
 #define PG_QUERY__GRANT_ROLE_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__grant_role_stmt__descriptor) \
-    , 0,NULL, 0,NULL, 0, 0, NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
+    , 0,NULL, 0,NULL, 0, 0,NULL, NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
 
 
 struct  PgQuery__AlterDefaultPrivilegesStmt
@@ -3308,29 +4220,6 @@ struct  PgQuery__AlterDefaultPrivilegesStmt
 #define PG_QUERY__ALTER_DEFAULT_PRIVILEGES_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_default_privileges_stmt__descriptor) \
     , 0,NULL, NULL }
-
-
-struct  PgQuery__ClosePortalStmt
-{
-  ProtobufCMessage base;
-  char *portalname;
-};
-#define PG_QUERY__CLOSE_PORTAL_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__close_portal_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__ClusterStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *relation;
-  char *indexname;
-  size_t n_params;
-  PgQuery__Node **params;
-};
-#define PG_QUERY__CLUSTER_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__cluster_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
 
 
 struct  PgQuery__CopyStmt
@@ -3350,6 +4239,30 @@ struct  PgQuery__CopyStmt
 #define PG_QUERY__COPY_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__copy_stmt__descriptor) \
     , NULL, NULL, 0,NULL, 0, 0, (char *)protobuf_c_empty_string, 0,NULL, NULL }
+
+
+struct  PgQuery__VariableSetStmt
+{
+  ProtobufCMessage base;
+  PgQuery__VariableSetKind kind;
+  char *name;
+  size_t n_args;
+  PgQuery__Node **args;
+  protobuf_c_boolean is_local;
+};
+#define PG_QUERY__VARIABLE_SET_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__variable_set_stmt__descriptor) \
+    , PG_QUERY__VARIABLE_SET_KIND__VARIABLE_SET_KIND_UNDEFINED, (char *)protobuf_c_empty_string, 0,NULL, 0 }
+
+
+struct  PgQuery__VariableShowStmt
+{
+  ProtobufCMessage base;
+  char *name;
+};
+#define PG_QUERY__VARIABLE_SHOW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__variable_show_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
 
 
 struct  PgQuery__CreateStmt
@@ -3377,406 +4290,314 @@ struct  PgQuery__CreateStmt
     , NULL, 0,NULL, 0,NULL, NULL, NULL, NULL, 0,NULL, 0,NULL, PG_QUERY__ON_COMMIT_ACTION__ON_COMMIT_ACTION_UNDEFINED, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0 }
 
 
-struct  PgQuery__DefineStmt
+struct  PgQuery__Constraint
 {
   ProtobufCMessage base;
-  PgQuery__ObjectType kind;
-  protobuf_c_boolean oldstyle;
-  size_t n_defnames;
-  PgQuery__Node **defnames;
-  size_t n_args;
-  PgQuery__Node **args;
-  size_t n_definition;
-  PgQuery__Node **definition;
-  protobuf_c_boolean if_not_exists;
-  protobuf_c_boolean replace;
-};
-#define PG_QUERY__DEFINE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__define_stmt__descriptor) \
-    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
-
-
-struct  PgQuery__DropStmt
-{
-  ProtobufCMessage base;
-  size_t n_objects;
-  PgQuery__Node **objects;
-  PgQuery__ObjectType remove_type;
-  PgQuery__DropBehavior behavior;
-  protobuf_c_boolean missing_ok;
-  protobuf_c_boolean concurrent;
-};
-#define PG_QUERY__DROP_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_stmt__descriptor) \
-    , 0,NULL, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0, 0 }
-
-
-struct  PgQuery__TruncateStmt
-{
-  ProtobufCMessage base;
-  size_t n_relations;
-  PgQuery__Node **relations;
-  protobuf_c_boolean restart_seqs;
-  PgQuery__DropBehavior behavior;
-};
-#define PG_QUERY__TRUNCATE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__truncate_stmt__descriptor) \
-    , 0,NULL, 0, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
-
-
-struct  PgQuery__CommentStmt
-{
-  ProtobufCMessage base;
-  PgQuery__ObjectType objtype;
-  PgQuery__Node *object;
-  char *comment;
-};
-#define PG_QUERY__COMMENT_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__comment_stmt__descriptor) \
-    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__FetchStmt
-{
-  ProtobufCMessage base;
-  PgQuery__FetchDirection direction;
-  int64_t how_many;
-  char *portalname;
-  protobuf_c_boolean ismove;
-};
-#define PG_QUERY__FETCH_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__fetch_stmt__descriptor) \
-    , PG_QUERY__FETCH_DIRECTION__FETCH_DIRECTION_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__IndexStmt
-{
-  ProtobufCMessage base;
-  char *idxname;
-  PgQuery__RangeVar *relation;
-  char *access_method;
-  char *table_space;
-  size_t n_index_params;
-  PgQuery__Node **index_params;
-  size_t n_index_including_params;
-  PgQuery__Node **index_including_params;
-  size_t n_options;
-  PgQuery__Node **options;
-  PgQuery__Node *where_clause;
-  size_t n_exclude_op_names;
-  PgQuery__Node **exclude_op_names;
-  char *idxcomment;
-  uint32_t index_oid;
-  uint32_t old_node;
-  uint32_t old_create_subid;
-  uint32_t old_first_relfilenode_subid;
-  protobuf_c_boolean unique;
-  protobuf_c_boolean nulls_not_distinct;
-  protobuf_c_boolean primary;
-  protobuf_c_boolean isconstraint;
+  PgQuery__ConstrType contype;
+  char *conname;
   protobuf_c_boolean deferrable;
   protobuf_c_boolean initdeferred;
-  protobuf_c_boolean transformed;
-  protobuf_c_boolean concurrent;
-  protobuf_c_boolean if_not_exists;
+  int32_t location;
+  protobuf_c_boolean is_no_inherit;
+  PgQuery__Node *raw_expr;
+  char *cooked_expr;
+  char *generated_when;
+  protobuf_c_boolean nulls_not_distinct;
+  size_t n_keys;
+  PgQuery__Node **keys;
+  size_t n_including;
+  PgQuery__Node **including;
+  size_t n_exclusions;
+  PgQuery__Node **exclusions;
+  size_t n_options;
+  PgQuery__Node **options;
+  char *indexname;
+  char *indexspace;
   protobuf_c_boolean reset_default_tblspc;
-};
-#define PG_QUERY__INDEX_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__index_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0,NULL, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-
-
-struct  PgQuery__CreateFunctionStmt
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean is_procedure;
-  protobuf_c_boolean replace;
-  size_t n_funcname;
-  PgQuery__Node **funcname;
-  size_t n_parameters;
-  PgQuery__Node **parameters;
-  PgQuery__TypeName *return_type;
-  size_t n_options;
-  PgQuery__Node **options;
-  PgQuery__Node *sql_body;
-};
-#define PG_QUERY__CREATE_FUNCTION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_function_stmt__descriptor) \
-    , 0, 0, 0,NULL, 0,NULL, NULL, 0,NULL, NULL }
-
-
-struct  PgQuery__AlterFunctionStmt
-{
-  ProtobufCMessage base;
-  PgQuery__ObjectType objtype;
-  PgQuery__ObjectWithArgs *func;
-  size_t n_actions;
-  PgQuery__Node **actions;
-};
-#define PG_QUERY__ALTER_FUNCTION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_function_stmt__descriptor) \
-    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, 0,NULL }
-
-
-struct  PgQuery__DoStmt
-{
-  ProtobufCMessage base;
-  size_t n_args;
-  PgQuery__Node **args;
-};
-#define PG_QUERY__DO_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__do_stmt__descriptor) \
-    , 0,NULL }
-
-
-struct  PgQuery__RenameStmt
-{
-  ProtobufCMessage base;
-  PgQuery__ObjectType rename_type;
-  PgQuery__ObjectType relation_type;
-  PgQuery__RangeVar *relation;
-  PgQuery__Node *object;
-  char *subname;
-  char *newname;
-  PgQuery__DropBehavior behavior;
-  protobuf_c_boolean missing_ok;
-};
-#define PG_QUERY__RENAME_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__rename_stmt__descriptor) \
-    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0 }
-
-
-struct  PgQuery__RuleStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *relation;
-  char *rulename;
+  char *access_method;
   PgQuery__Node *where_clause;
-  PgQuery__CmdType event;
-  protobuf_c_boolean instead;
-  size_t n_actions;
-  PgQuery__Node **actions;
-  protobuf_c_boolean replace;
+  PgQuery__RangeVar *pktable;
+  size_t n_fk_attrs;
+  PgQuery__Node **fk_attrs;
+  size_t n_pk_attrs;
+  PgQuery__Node **pk_attrs;
+  char *fk_matchtype;
+  char *fk_upd_action;
+  char *fk_del_action;
+  size_t n_fk_del_set_cols;
+  PgQuery__Node **fk_del_set_cols;
+  size_t n_old_conpfeqop;
+  PgQuery__Node **old_conpfeqop;
+  uint32_t old_pktable_oid;
+  protobuf_c_boolean skip_validation;
+  protobuf_c_boolean initially_valid;
 };
-#define PG_QUERY__RULE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__rule_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, NULL, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, 0, 0,NULL, 0 }
+#define PG_QUERY__CONSTRAINT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__constraint__descriptor) \
+    , PG_QUERY__CONSTR_TYPE__CONSTR_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, 0, 0, 0, 0, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, (char *)protobuf_c_empty_string, NULL, NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0, 0, 0 }
 
 
-struct  PgQuery__NotifyStmt
+struct  PgQuery__CreateTableSpaceStmt
 {
   ProtobufCMessage base;
-  char *conditionname;
-  char *payload;
-};
-#define PG_QUERY__NOTIFY_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__notify_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__ListenStmt
-{
-  ProtobufCMessage base;
-  char *conditionname;
-};
-#define PG_QUERY__LISTEN_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__listen_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__UnlistenStmt
-{
-  ProtobufCMessage base;
-  char *conditionname;
-};
-#define PG_QUERY__UNLISTEN_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__unlisten_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__TransactionStmt
-{
-  ProtobufCMessage base;
-  PgQuery__TransactionStmtKind kind;
-  size_t n_options;
-  PgQuery__Node **options;
-  char *savepoint_name;
-  char *gid;
-  protobuf_c_boolean chain;
-};
-#define PG_QUERY__TRANSACTION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__transaction_stmt__descriptor) \
-    , PG_QUERY__TRANSACTION_STMT_KIND__TRANSACTION_STMT_KIND_UNDEFINED, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__ViewStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *view;
-  size_t n_aliases;
-  PgQuery__Node **aliases;
-  PgQuery__Node *query;
-  protobuf_c_boolean replace;
-  size_t n_options;
-  PgQuery__Node **options;
-  PgQuery__ViewCheckOption with_check_option;
-};
-#define PG_QUERY__VIEW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__view_stmt__descriptor) \
-    , NULL, 0,NULL, NULL, 0, 0,NULL, PG_QUERY__VIEW_CHECK_OPTION__VIEW_CHECK_OPTION_UNDEFINED }
-
-
-struct  PgQuery__LoadStmt
-{
-  ProtobufCMessage base;
-  char *filename;
-};
-#define PG_QUERY__LOAD_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__load_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__CreateDomainStmt
-{
-  ProtobufCMessage base;
-  size_t n_domainname;
-  PgQuery__Node **domainname;
-  PgQuery__TypeName *type_name;
-  PgQuery__CollateClause *coll_clause;
-  size_t n_constraints;
-  PgQuery__Node **constraints;
-};
-#define PG_QUERY__CREATE_DOMAIN_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_domain_stmt__descriptor) \
-    , 0,NULL, NULL, NULL, 0,NULL }
-
-
-struct  PgQuery__CreatedbStmt
-{
-  ProtobufCMessage base;
-  char *dbname;
+  char *tablespacename;
+  PgQuery__RoleSpec *owner;
+  char *location;
   size_t n_options;
   PgQuery__Node **options;
 };
-#define PG_QUERY__CREATEDB_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__createdb_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL }
+#define PG_QUERY__CREATE_TABLE_SPACE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_table_space_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0,NULL }
 
 
-struct  PgQuery__DropdbStmt
+struct  PgQuery__DropTableSpaceStmt
 {
   ProtobufCMessage base;
-  char *dbname;
+  char *tablespacename;
   protobuf_c_boolean missing_ok;
+};
+#define PG_QUERY__DROP_TABLE_SPACE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_table_space_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__AlterTableSpaceOptionsStmt
+{
+  ProtobufCMessage base;
+  char *tablespacename;
+  size_t n_options;
+  PgQuery__Node **options;
+  protobuf_c_boolean is_reset;
+};
+#define PG_QUERY__ALTER_TABLE_SPACE_OPTIONS_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_table_space_options_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, 0 }
+
+
+struct  PgQuery__AlterTableMoveAllStmt
+{
+  ProtobufCMessage base;
+  char *orig_tablespacename;
+  PgQuery__ObjectType objtype;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  char *new_tablespacename;
+  protobuf_c_boolean nowait;
+};
+#define PG_QUERY__ALTER_TABLE_MOVE_ALL_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_table_move_all_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0,NULL, (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__CreateExtensionStmt
+{
+  ProtobufCMessage base;
+  char *extname;
+  protobuf_c_boolean if_not_exists;
   size_t n_options;
   PgQuery__Node **options;
 };
-#define PG_QUERY__DROPDB_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__dropdb_stmt__descriptor) \
+#define PG_QUERY__CREATE_EXTENSION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_extension_stmt__descriptor) \
     , (char *)protobuf_c_empty_string, 0, 0,NULL }
 
 
-struct  PgQuery__VacuumStmt
+struct  PgQuery__AlterExtensionStmt
 {
   ProtobufCMessage base;
-  size_t n_options;
-  PgQuery__Node **options;
-  size_t n_rels;
-  PgQuery__Node **rels;
-  protobuf_c_boolean is_vacuumcmd;
-};
-#define PG_QUERY__VACUUM_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__vacuum_stmt__descriptor) \
-    , 0,NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__ExplainStmt
-{
-  ProtobufCMessage base;
-  PgQuery__Node *query;
+  char *extname;
   size_t n_options;
   PgQuery__Node **options;
 };
-#define PG_QUERY__EXPLAIN_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__explain_stmt__descriptor) \
-    , NULL, 0,NULL }
+#define PG_QUERY__ALTER_EXTENSION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_extension_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL }
 
 
-struct  PgQuery__CreateTableAsStmt
+struct  PgQuery__AlterExtensionContentsStmt
 {
   ProtobufCMessage base;
-  PgQuery__Node *query;
-  PgQuery__IntoClause *into;
+  char *extname;
+  int32_t action;
   PgQuery__ObjectType objtype;
-  protobuf_c_boolean is_select_into;
-  protobuf_c_boolean if_not_exists;
+  PgQuery__Node *object;
 };
-#define PG_QUERY__CREATE_TABLE_AS_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_table_as_stmt__descriptor) \
-    , NULL, NULL, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0, 0 }
+#define PG_QUERY__ALTER_EXTENSION_CONTENTS_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_extension_contents_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL }
 
 
-struct  PgQuery__CreateSeqStmt
+struct  PgQuery__CreateFdwStmt
 {
   ProtobufCMessage base;
-  PgQuery__RangeVar *sequence;
+  char *fdwname;
+  size_t n_func_options;
+  PgQuery__Node **func_options;
   size_t n_options;
   PgQuery__Node **options;
-  uint32_t owner_id;
-  protobuf_c_boolean for_identity;
-  protobuf_c_boolean if_not_exists;
 };
-#define PG_QUERY__CREATE_SEQ_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_seq_stmt__descriptor) \
-    , NULL, 0,NULL, 0, 0, 0 }
+#define PG_QUERY__CREATE_FDW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_fdw_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
 
 
-struct  PgQuery__AlterSeqStmt
+struct  PgQuery__AlterFdwStmt
 {
   ProtobufCMessage base;
-  PgQuery__RangeVar *sequence;
+  char *fdwname;
+  size_t n_func_options;
+  PgQuery__Node **func_options;
   size_t n_options;
   PgQuery__Node **options;
-  protobuf_c_boolean for_identity;
+};
+#define PG_QUERY__ALTER_FDW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_fdw_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
+
+
+struct  PgQuery__CreateForeignServerStmt
+{
+  ProtobufCMessage base;
+  char *servername;
+  char *servertype;
+  char *version;
+  char *fdwname;
+  protobuf_c_boolean if_not_exists;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__CREATE_FOREIGN_SERVER_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_foreign_server_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, 0,NULL }
+
+
+struct  PgQuery__AlterForeignServerStmt
+{
+  ProtobufCMessage base;
+  char *servername;
+  char *version;
+  size_t n_options;
+  PgQuery__Node **options;
+  protobuf_c_boolean has_version;
+};
+#define PG_QUERY__ALTER_FOREIGN_SERVER_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_foreign_server_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0 }
+
+
+struct  PgQuery__CreateForeignTableStmt
+{
+  ProtobufCMessage base;
+  PgQuery__CreateStmt *base_stmt;
+  char *servername;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__CREATE_FOREIGN_TABLE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_foreign_table_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__CreateUserMappingStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RoleSpec *user;
+  char *servername;
+  protobuf_c_boolean if_not_exists;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__CREATE_USER_MAPPING_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_user_mapping_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, 0, 0,NULL }
+
+
+struct  PgQuery__AlterUserMappingStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RoleSpec *user;
+  char *servername;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__ALTER_USER_MAPPING_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_user_mapping_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__DropUserMappingStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RoleSpec *user;
+  char *servername;
   protobuf_c_boolean missing_ok;
 };
-#define PG_QUERY__ALTER_SEQ_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_seq_stmt__descriptor) \
-    , NULL, 0,NULL, 0, 0 }
+#define PG_QUERY__DROP_USER_MAPPING_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_user_mapping_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, 0 }
 
 
-struct  PgQuery__VariableSetStmt
+struct  PgQuery__ImportForeignSchemaStmt
 {
   ProtobufCMessage base;
-  PgQuery__VariableSetKind kind;
-  char *name;
-  size_t n_args;
-  PgQuery__Node **args;
-  protobuf_c_boolean is_local;
+  char *server_name;
+  char *remote_schema;
+  char *local_schema;
+  PgQuery__ImportForeignSchemaType list_type;
+  size_t n_table_list;
+  PgQuery__Node **table_list;
+  size_t n_options;
+  PgQuery__Node **options;
 };
-#define PG_QUERY__VARIABLE_SET_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__variable_set_stmt__descriptor) \
-    , PG_QUERY__VARIABLE_SET_KIND__VARIABLE_SET_KIND_UNDEFINED, (char *)protobuf_c_empty_string, 0,NULL, 0 }
+#define PG_QUERY__IMPORT_FOREIGN_SCHEMA_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__import_foreign_schema_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__IMPORT_FOREIGN_SCHEMA_TYPE_UNDEFINED, 0,NULL, 0,NULL }
 
 
-struct  PgQuery__VariableShowStmt
+struct  PgQuery__CreatePolicyStmt
 {
   ProtobufCMessage base;
-  char *name;
+  char *policy_name;
+  PgQuery__RangeVar *table;
+  char *cmd_name;
+  protobuf_c_boolean permissive;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  PgQuery__Node *qual;
+  PgQuery__Node *with_check;
 };
-#define PG_QUERY__VARIABLE_SHOW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__variable_show_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
+#define PG_QUERY__CREATE_POLICY_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_policy_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0, 0,NULL, NULL, NULL }
 
 
-struct  PgQuery__DiscardStmt
+struct  PgQuery__AlterPolicyStmt
 {
   ProtobufCMessage base;
-  PgQuery__DiscardMode target;
+  char *policy_name;
+  PgQuery__RangeVar *table;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  PgQuery__Node *qual;
+  PgQuery__Node *with_check;
 };
-#define PG_QUERY__DISCARD_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__discard_stmt__descriptor) \
-    , PG_QUERY__DISCARD_MODE__DISCARD_MODE_UNDEFINED }
+#define PG_QUERY__ALTER_POLICY_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_policy_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, 0,NULL, NULL, NULL }
+
+
+struct  PgQuery__CreateAmStmt
+{
+  ProtobufCMessage base;
+  char *amname;
+  size_t n_handler_name;
+  PgQuery__Node **handler_name;
+  char *amtype;
+};
+#define PG_QUERY__CREATE_AM_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_am_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, (char *)protobuf_c_empty_string }
 
 
 struct  PgQuery__CreateTrigStmt
@@ -3805,6 +4626,32 @@ struct  PgQuery__CreateTrigStmt
 #define PG_QUERY__CREATE_TRIG_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_trig_stmt__descriptor) \
     , 0, 0, (char *)protobuf_c_empty_string, NULL, 0,NULL, 0,NULL, 0, 0, 0, 0,NULL, NULL, 0,NULL, 0, 0, NULL }
+
+
+struct  PgQuery__CreateEventTrigStmt
+{
+  ProtobufCMessage base;
+  char *trigname;
+  char *eventname;
+  size_t n_whenclause;
+  PgQuery__Node **whenclause;
+  size_t n_funcname;
+  PgQuery__Node **funcname;
+};
+#define PG_QUERY__CREATE_EVENT_TRIG_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_event_trig_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
+
+
+struct  PgQuery__AlterEventTrigStmt
+{
+  ProtobufCMessage base;
+  char *trigname;
+  char *tgenabled;
+};
+#define PG_QUERY__ALTER_EVENT_TRIG_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_event_trig_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
 
 
 struct  PgQuery__CreatePLangStmt
@@ -3851,113 +4698,6 @@ struct  PgQuery__AlterRoleStmt
     , NULL, 0,NULL, 0 }
 
 
-struct  PgQuery__DropRoleStmt
-{
-  ProtobufCMessage base;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  protobuf_c_boolean missing_ok;
-};
-#define PG_QUERY__DROP_ROLE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_role_stmt__descriptor) \
-    , 0,NULL, 0 }
-
-
-struct  PgQuery__LockStmt
-{
-  ProtobufCMessage base;
-  size_t n_relations;
-  PgQuery__Node **relations;
-  int32_t mode;
-  protobuf_c_boolean nowait;
-};
-#define PG_QUERY__LOCK_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__lock_stmt__descriptor) \
-    , 0,NULL, 0, 0 }
-
-
-struct  PgQuery__ConstraintsSetStmt
-{
-  ProtobufCMessage base;
-  size_t n_constraints;
-  PgQuery__Node **constraints;
-  protobuf_c_boolean deferred;
-};
-#define PG_QUERY__CONSTRAINTS_SET_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__constraints_set_stmt__descriptor) \
-    , 0,NULL, 0 }
-
-
-struct  PgQuery__ReindexStmt
-{
-  ProtobufCMessage base;
-  PgQuery__ReindexObjectType kind;
-  PgQuery__RangeVar *relation;
-  char *name;
-  size_t n_params;
-  PgQuery__Node **params;
-};
-#define PG_QUERY__REINDEX_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__reindex_stmt__descriptor) \
-    , PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__CheckPointStmt
-{
-  ProtobufCMessage base;
-};
-#define PG_QUERY__CHECK_POINT_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__check_point_stmt__descriptor) \
-     }
-
-
-struct  PgQuery__CreateSchemaStmt
-{
-  ProtobufCMessage base;
-  char *schemaname;
-  PgQuery__RoleSpec *authrole;
-  size_t n_schema_elts;
-  PgQuery__Node **schema_elts;
-  protobuf_c_boolean if_not_exists;
-};
-#define PG_QUERY__CREATE_SCHEMA_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_schema_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__AlterDatabaseStmt
-{
-  ProtobufCMessage base;
-  char *dbname;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__ALTER_DATABASE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__AlterDatabaseRefreshCollStmt
-{
-  ProtobufCMessage base;
-  char *dbname;
-};
-#define PG_QUERY__ALTER_DATABASE_REFRESH_COLL_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_refresh_coll_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__AlterDatabaseSetStmt
-{
-  ProtobufCMessage base;
-  char *dbname;
-  PgQuery__VariableSetStmt *setstmt;
-};
-#define PG_QUERY__ALTER_DATABASE_SET_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_set_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL }
-
-
 struct  PgQuery__AlterRoleSetStmt
 {
   ProtobufCMessage base;
@@ -3970,34 +4710,79 @@ struct  PgQuery__AlterRoleSetStmt
     , NULL, (char *)protobuf_c_empty_string, NULL }
 
 
-struct  PgQuery__CreateConversionStmt
+struct  PgQuery__DropRoleStmt
 {
   ProtobufCMessage base;
-  size_t n_conversion_name;
-  PgQuery__Node **conversion_name;
-  char *for_encoding_name;
-  char *to_encoding_name;
-  size_t n_func_name;
-  PgQuery__Node **func_name;
-  protobuf_c_boolean def;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  protobuf_c_boolean missing_ok;
 };
-#define PG_QUERY__CREATE_CONVERSION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_conversion_stmt__descriptor) \
-    , 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0 }
+#define PG_QUERY__DROP_ROLE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_role_stmt__descriptor) \
+    , 0,NULL, 0 }
 
 
-struct  PgQuery__CreateCastStmt
+struct  PgQuery__CreateSeqStmt
 {
   ProtobufCMessage base;
-  PgQuery__TypeName *sourcetype;
-  PgQuery__TypeName *targettype;
-  PgQuery__ObjectWithArgs *func;
-  PgQuery__CoercionContext context;
-  protobuf_c_boolean inout;
+  PgQuery__RangeVar *sequence;
+  size_t n_options;
+  PgQuery__Node **options;
+  uint32_t owner_id;
+  protobuf_c_boolean for_identity;
+  protobuf_c_boolean if_not_exists;
 };
-#define PG_QUERY__CREATE_CAST_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_cast_stmt__descriptor) \
-    , NULL, NULL, NULL, PG_QUERY__COERCION_CONTEXT__COERCION_CONTEXT_UNDEFINED, 0 }
+#define PG_QUERY__CREATE_SEQ_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_seq_stmt__descriptor) \
+    , NULL, 0,NULL, 0, 0, 0 }
+
+
+struct  PgQuery__AlterSeqStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *sequence;
+  size_t n_options;
+  PgQuery__Node **options;
+  protobuf_c_boolean for_identity;
+  protobuf_c_boolean missing_ok;
+};
+#define PG_QUERY__ALTER_SEQ_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_seq_stmt__descriptor) \
+    , NULL, 0,NULL, 0, 0 }
+
+
+struct  PgQuery__DefineStmt
+{
+  ProtobufCMessage base;
+  PgQuery__ObjectType kind;
+  protobuf_c_boolean oldstyle;
+  size_t n_defnames;
+  PgQuery__Node **defnames;
+  size_t n_args;
+  PgQuery__Node **args;
+  size_t n_definition;
+  PgQuery__Node **definition;
+  protobuf_c_boolean if_not_exists;
+  protobuf_c_boolean replace;
+};
+#define PG_QUERY__DEFINE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__define_stmt__descriptor) \
+    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, 0, 0 }
+
+
+struct  PgQuery__CreateDomainStmt
+{
+  ProtobufCMessage base;
+  size_t n_domainname;
+  PgQuery__Node **domainname;
+  PgQuery__TypeName *type_name;
+  PgQuery__CollateClause *coll_clause;
+  size_t n_constraints;
+  PgQuery__Node **constraints;
+};
+#define PG_QUERY__CREATE_DOMAIN_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_domain_stmt__descriptor) \
+    , 0,NULL, NULL, NULL, 0,NULL }
 
 
 struct  PgQuery__CreateOpClassStmt
@@ -4016,6 +4801,23 @@ struct  PgQuery__CreateOpClassStmt
 #define PG_QUERY__CREATE_OP_CLASS_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_op_class_stmt__descriptor) \
     , 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__CreateOpClassItem
+{
+  ProtobufCMessage base;
+  int32_t itemtype;
+  PgQuery__ObjectWithArgs *name;
+  int32_t number;
+  size_t n_order_family;
+  PgQuery__Node **order_family;
+  size_t n_class_args;
+  PgQuery__Node **class_args;
+  PgQuery__TypeName *storedtype;
+};
+#define PG_QUERY__CREATE_OP_CLASS_ITEM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_op_class_item__descriptor) \
+    , 0, NULL, 0, 0,NULL, 0,NULL, NULL }
 
 
 struct  PgQuery__CreateOpFamilyStmt
@@ -4045,39 +4847,57 @@ struct  PgQuery__AlterOpFamilyStmt
     , 0,NULL, (char *)protobuf_c_empty_string, 0, 0,NULL }
 
 
-struct  PgQuery__PrepareStmt
+struct  PgQuery__DropStmt
 {
   ProtobufCMessage base;
-  char *name;
-  size_t n_argtypes;
-  PgQuery__Node **argtypes;
-  PgQuery__Node *query;
+  size_t n_objects;
+  PgQuery__Node **objects;
+  PgQuery__ObjectType remove_type;
+  PgQuery__DropBehavior behavior;
+  protobuf_c_boolean missing_ok;
+  protobuf_c_boolean concurrent;
 };
-#define PG_QUERY__PREPARE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__prepare_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, NULL }
+#define PG_QUERY__DROP_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_stmt__descriptor) \
+    , 0,NULL, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0, 0 }
 
 
-struct  PgQuery__ExecuteStmt
+struct  PgQuery__TruncateStmt
 {
   ProtobufCMessage base;
-  char *name;
-  size_t n_params;
-  PgQuery__Node **params;
+  size_t n_relations;
+  PgQuery__Node **relations;
+  protobuf_c_boolean restart_seqs;
+  PgQuery__DropBehavior behavior;
 };
-#define PG_QUERY__EXECUTE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__execute_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL }
+#define PG_QUERY__TRUNCATE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__truncate_stmt__descriptor) \
+    , 0,NULL, 0, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
 
 
-struct  PgQuery__DeallocateStmt
+struct  PgQuery__CommentStmt
 {
   ProtobufCMessage base;
-  char *name;
+  PgQuery__ObjectType objtype;
+  PgQuery__Node *object;
+  char *comment;
 };
-#define PG_QUERY__DEALLOCATE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__deallocate_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string }
+#define PG_QUERY__COMMENT_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__comment_stmt__descriptor) \
+    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__SecLabelStmt
+{
+  ProtobufCMessage base;
+  PgQuery__ObjectType objtype;
+  PgQuery__Node *object;
+  char *provider;
+  char *label;
+};
+#define PG_QUERY__SEC_LABEL_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__sec_label_stmt__descriptor) \
+    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
 
 
 struct  PgQuery__DeclareCursorStmt
@@ -4092,29 +4912,214 @@ struct  PgQuery__DeclareCursorStmt
     , (char *)protobuf_c_empty_string, 0, NULL }
 
 
-struct  PgQuery__CreateTableSpaceStmt
+struct  PgQuery__ClosePortalStmt
 {
   ProtobufCMessage base;
-  char *tablespacename;
-  PgQuery__RoleSpec *owner;
-  char *location;
+  char *portalname;
+};
+#define PG_QUERY__CLOSE_PORTAL_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__close_portal_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__FetchStmt
+{
+  ProtobufCMessage base;
+  PgQuery__FetchDirection direction;
+  int64_t how_many;
+  char *portalname;
+  protobuf_c_boolean ismove;
+};
+#define PG_QUERY__FETCH_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__fetch_stmt__descriptor) \
+    , PG_QUERY__FETCH_DIRECTION__FETCH_DIRECTION_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0 }
+
+
+struct  PgQuery__IndexStmt
+{
+  ProtobufCMessage base;
+  char *idxname;
+  PgQuery__RangeVar *relation;
+  char *access_method;
+  char *table_space;
+  size_t n_index_params;
+  PgQuery__Node **index_params;
+  size_t n_index_including_params;
+  PgQuery__Node **index_including_params;
   size_t n_options;
   PgQuery__Node **options;
+  PgQuery__Node *where_clause;
+  size_t n_exclude_op_names;
+  PgQuery__Node **exclude_op_names;
+  char *idxcomment;
+  uint32_t index_oid;
+  uint32_t old_number;
+  uint32_t old_create_subid;
+  uint32_t old_first_relfilelocator_subid;
+  protobuf_c_boolean unique;
+  protobuf_c_boolean nulls_not_distinct;
+  protobuf_c_boolean primary;
+  protobuf_c_boolean isconstraint;
+  protobuf_c_boolean deferrable;
+  protobuf_c_boolean initdeferred;
+  protobuf_c_boolean transformed;
+  protobuf_c_boolean concurrent;
+  protobuf_c_boolean if_not_exists;
+  protobuf_c_boolean reset_default_tblspc;
 };
-#define PG_QUERY__CREATE_TABLE_SPACE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_table_space_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0,NULL }
+#define PG_QUERY__INDEX_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__index_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0,NULL, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 
 
-struct  PgQuery__DropTableSpaceStmt
+struct  PgQuery__CreateStatsStmt
 {
   ProtobufCMessage base;
-  char *tablespacename;
+  size_t n_defnames;
+  PgQuery__Node **defnames;
+  size_t n_stat_types;
+  PgQuery__Node **stat_types;
+  size_t n_exprs;
+  PgQuery__Node **exprs;
+  size_t n_relations;
+  PgQuery__Node **relations;
+  char *stxcomment;
+  protobuf_c_boolean transformed;
+  protobuf_c_boolean if_not_exists;
+};
+#define PG_QUERY__CREATE_STATS_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_stats_stmt__descriptor) \
+    , 0,NULL, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0 }
+
+
+struct  PgQuery__StatsElem
+{
+  ProtobufCMessage base;
+  char *name;
+  PgQuery__Node *expr;
+};
+#define PG_QUERY__STATS_ELEM__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__stats_elem__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL }
+
+
+struct  PgQuery__AlterStatsStmt
+{
+  ProtobufCMessage base;
+  size_t n_defnames;
+  PgQuery__Node **defnames;
+  int32_t stxstattarget;
   protobuf_c_boolean missing_ok;
 };
-#define PG_QUERY__DROP_TABLE_SPACE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_table_space_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0 }
+#define PG_QUERY__ALTER_STATS_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_stats_stmt__descriptor) \
+    , 0,NULL, 0, 0 }
+
+
+struct  PgQuery__CreateFunctionStmt
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean is_procedure;
+  protobuf_c_boolean replace;
+  size_t n_funcname;
+  PgQuery__Node **funcname;
+  size_t n_parameters;
+  PgQuery__Node **parameters;
+  PgQuery__TypeName *return_type;
+  size_t n_options;
+  PgQuery__Node **options;
+  PgQuery__Node *sql_body;
+};
+#define PG_QUERY__CREATE_FUNCTION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_function_stmt__descriptor) \
+    , 0, 0, 0,NULL, 0,NULL, NULL, 0,NULL, NULL }
+
+
+struct  PgQuery__FunctionParameter
+{
+  ProtobufCMessage base;
+  char *name;
+  PgQuery__TypeName *arg_type;
+  PgQuery__FunctionParameterMode mode;
+  PgQuery__Node *defexpr;
+};
+#define PG_QUERY__FUNCTION_PARAMETER__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__function_parameter__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL, PG_QUERY__FUNCTION_PARAMETER_MODE__FUNCTION_PARAMETER_MODE_UNDEFINED, NULL }
+
+
+struct  PgQuery__AlterFunctionStmt
+{
+  ProtobufCMessage base;
+  PgQuery__ObjectType objtype;
+  PgQuery__ObjectWithArgs *func;
+  size_t n_actions;
+  PgQuery__Node **actions;
+};
+#define PG_QUERY__ALTER_FUNCTION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_function_stmt__descriptor) \
+    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, 0,NULL }
+
+
+struct  PgQuery__DoStmt
+{
+  ProtobufCMessage base;
+  size_t n_args;
+  PgQuery__Node **args;
+};
+#define PG_QUERY__DO_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__do_stmt__descriptor) \
+    , 0,NULL }
+
+
+struct  PgQuery__InlineCodeBlock
+{
+  ProtobufCMessage base;
+  char *source_text;
+  uint32_t lang_oid;
+  protobuf_c_boolean lang_is_trusted;
+  protobuf_c_boolean atomic;
+};
+#define PG_QUERY__INLINE_CODE_BLOCK__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__inline_code_block__descriptor) \
+    , (char *)protobuf_c_empty_string, 0, 0, 0 }
+
+
+struct  PgQuery__CallStmt
+{
+  ProtobufCMessage base;
+  PgQuery__FuncCall *funccall;
+};
+#define PG_QUERY__CALL_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__call_stmt__descriptor) \
+    , NULL }
+
+
+struct  PgQuery__CallContext
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean atomic;
+};
+#define PG_QUERY__CALL_CONTEXT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__call_context__descriptor) \
+    , 0 }
+
+
+struct  PgQuery__RenameStmt
+{
+  ProtobufCMessage base;
+  PgQuery__ObjectType rename_type;
+  PgQuery__ObjectType relation_type;
+  PgQuery__RangeVar *relation;
+  PgQuery__Node *object;
+  char *subname;
+  char *newname;
+  PgQuery__DropBehavior behavior;
+  protobuf_c_boolean missing_ok;
+};
+#define PG_QUERY__RENAME_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__rename_stmt__descriptor) \
+    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED, 0 }
 
 
 struct  PgQuery__AlterObjectDependsStmt
@@ -4183,28 +5188,67 @@ struct  PgQuery__AlterTypeStmt
     , 0,NULL, 0,NULL }
 
 
-struct  PgQuery__DropOwnedStmt
+struct  PgQuery__RuleStmt
 {
   ProtobufCMessage base;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  PgQuery__DropBehavior behavior;
+  PgQuery__RangeVar *relation;
+  char *rulename;
+  PgQuery__Node *where_clause;
+  PgQuery__CmdType event;
+  protobuf_c_boolean instead;
+  size_t n_actions;
+  PgQuery__Node **actions;
+  protobuf_c_boolean replace;
 };
-#define PG_QUERY__DROP_OWNED_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_owned_stmt__descriptor) \
-    , 0,NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
+#define PG_QUERY__RULE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__rule_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, NULL, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, 0, 0,NULL, 0 }
 
 
-struct  PgQuery__ReassignOwnedStmt
+struct  PgQuery__NotifyStmt
 {
   ProtobufCMessage base;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  PgQuery__RoleSpec *newrole;
+  char *conditionname;
+  char *payload;
 };
-#define PG_QUERY__REASSIGN_OWNED_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__reassign_owned_stmt__descriptor) \
-    , 0,NULL, NULL }
+#define PG_QUERY__NOTIFY_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__notify_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__ListenStmt
+{
+  ProtobufCMessage base;
+  char *conditionname;
+};
+#define PG_QUERY__LISTEN_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__listen_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__UnlistenStmt
+{
+  ProtobufCMessage base;
+  char *conditionname;
+};
+#define PG_QUERY__UNLISTEN_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__unlisten_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__TransactionStmt
+{
+  ProtobufCMessage base;
+  PgQuery__TransactionStmtKind kind;
+  size_t n_options;
+  PgQuery__Node **options;
+  char *savepoint_name;
+  char *gid;
+  protobuf_c_boolean chain;
+};
+#define PG_QUERY__TRANSACTION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__transaction_stmt__descriptor) \
+    , PG_QUERY__TRANSACTION_STMT_KIND__TRANSACTION_STMT_KIND_UNDEFINED, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0 }
 
 
 struct  PgQuery__CompositeTypeStmt
@@ -4261,6 +5305,340 @@ struct  PgQuery__AlterEnumStmt
     , 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, 0 }
 
 
+struct  PgQuery__ViewStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *view;
+  size_t n_aliases;
+  PgQuery__Node **aliases;
+  PgQuery__Node *query;
+  protobuf_c_boolean replace;
+  size_t n_options;
+  PgQuery__Node **options;
+  PgQuery__ViewCheckOption with_check_option;
+};
+#define PG_QUERY__VIEW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__view_stmt__descriptor) \
+    , NULL, 0,NULL, NULL, 0, 0,NULL, PG_QUERY__VIEW_CHECK_OPTION__VIEW_CHECK_OPTION_UNDEFINED }
+
+
+struct  PgQuery__LoadStmt
+{
+  ProtobufCMessage base;
+  char *filename;
+};
+#define PG_QUERY__LOAD_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__load_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__CreatedbStmt
+{
+  ProtobufCMessage base;
+  char *dbname;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__CREATEDB_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__createdb_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__AlterDatabaseStmt
+{
+  ProtobufCMessage base;
+  char *dbname;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__ALTER_DATABASE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__AlterDatabaseRefreshCollStmt
+{
+  ProtobufCMessage base;
+  char *dbname;
+};
+#define PG_QUERY__ALTER_DATABASE_REFRESH_COLL_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_refresh_coll_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__AlterDatabaseSetStmt
+{
+  ProtobufCMessage base;
+  char *dbname;
+  PgQuery__VariableSetStmt *setstmt;
+};
+#define PG_QUERY__ALTER_DATABASE_SET_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_database_set_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, NULL }
+
+
+struct  PgQuery__DropdbStmt
+{
+  ProtobufCMessage base;
+  char *dbname;
+  protobuf_c_boolean missing_ok;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__DROPDB_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__dropdb_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0, 0,NULL }
+
+
+struct  PgQuery__AlterSystemStmt
+{
+  ProtobufCMessage base;
+  PgQuery__VariableSetStmt *setstmt;
+};
+#define PG_QUERY__ALTER_SYSTEM_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_system_stmt__descriptor) \
+    , NULL }
+
+
+struct  PgQuery__ClusterStmt
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *relation;
+  char *indexname;
+  size_t n_params;
+  PgQuery__Node **params;
+};
+#define PG_QUERY__CLUSTER_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__cluster_stmt__descriptor) \
+    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__VacuumStmt
+{
+  ProtobufCMessage base;
+  size_t n_options;
+  PgQuery__Node **options;
+  size_t n_rels;
+  PgQuery__Node **rels;
+  protobuf_c_boolean is_vacuumcmd;
+};
+#define PG_QUERY__VACUUM_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__vacuum_stmt__descriptor) \
+    , 0,NULL, 0,NULL, 0 }
+
+
+struct  PgQuery__VacuumRelation
+{
+  ProtobufCMessage base;
+  PgQuery__RangeVar *relation;
+  uint32_t oid;
+  size_t n_va_cols;
+  PgQuery__Node **va_cols;
+};
+#define PG_QUERY__VACUUM_RELATION__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__vacuum_relation__descriptor) \
+    , NULL, 0, 0,NULL }
+
+
+struct  PgQuery__ExplainStmt
+{
+  ProtobufCMessage base;
+  PgQuery__Node *query;
+  size_t n_options;
+  PgQuery__Node **options;
+};
+#define PG_QUERY__EXPLAIN_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__explain_stmt__descriptor) \
+    , NULL, 0,NULL }
+
+
+struct  PgQuery__CreateTableAsStmt
+{
+  ProtobufCMessage base;
+  PgQuery__Node *query;
+  PgQuery__IntoClause *into;
+  PgQuery__ObjectType objtype;
+  protobuf_c_boolean is_select_into;
+  protobuf_c_boolean if_not_exists;
+};
+#define PG_QUERY__CREATE_TABLE_AS_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_table_as_stmt__descriptor) \
+    , NULL, NULL, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0, 0 }
+
+
+struct  PgQuery__RefreshMatViewStmt
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean concurrent;
+  protobuf_c_boolean skip_data;
+  PgQuery__RangeVar *relation;
+};
+#define PG_QUERY__REFRESH_MAT_VIEW_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__refresh_mat_view_stmt__descriptor) \
+    , 0, 0, NULL }
+
+
+struct  PgQuery__CheckPointStmt
+{
+  ProtobufCMessage base;
+};
+#define PG_QUERY__CHECK_POINT_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__check_point_stmt__descriptor) \
+     }
+
+
+struct  PgQuery__DiscardStmt
+{
+  ProtobufCMessage base;
+  PgQuery__DiscardMode target;
+};
+#define PG_QUERY__DISCARD_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__discard_stmt__descriptor) \
+    , PG_QUERY__DISCARD_MODE__DISCARD_MODE_UNDEFINED }
+
+
+struct  PgQuery__LockStmt
+{
+  ProtobufCMessage base;
+  size_t n_relations;
+  PgQuery__Node **relations;
+  int32_t mode;
+  protobuf_c_boolean nowait;
+};
+#define PG_QUERY__LOCK_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__lock_stmt__descriptor) \
+    , 0,NULL, 0, 0 }
+
+
+struct  PgQuery__ConstraintsSetStmt
+{
+  ProtobufCMessage base;
+  size_t n_constraints;
+  PgQuery__Node **constraints;
+  protobuf_c_boolean deferred;
+};
+#define PG_QUERY__CONSTRAINTS_SET_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__constraints_set_stmt__descriptor) \
+    , 0,NULL, 0 }
+
+
+struct  PgQuery__ReindexStmt
+{
+  ProtobufCMessage base;
+  PgQuery__ReindexObjectType kind;
+  PgQuery__RangeVar *relation;
+  char *name;
+  size_t n_params;
+  PgQuery__Node **params;
+};
+#define PG_QUERY__REINDEX_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__reindex_stmt__descriptor) \
+    , PG_QUERY__REINDEX_OBJECT_TYPE__REINDEX_OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__CreateConversionStmt
+{
+  ProtobufCMessage base;
+  size_t n_conversion_name;
+  PgQuery__Node **conversion_name;
+  char *for_encoding_name;
+  char *to_encoding_name;
+  size_t n_func_name;
+  PgQuery__Node **func_name;
+  protobuf_c_boolean def;
+};
+#define PG_QUERY__CREATE_CONVERSION_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_conversion_stmt__descriptor) \
+    , 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0 }
+
+
+struct  PgQuery__CreateCastStmt
+{
+  ProtobufCMessage base;
+  PgQuery__TypeName *sourcetype;
+  PgQuery__TypeName *targettype;
+  PgQuery__ObjectWithArgs *func;
+  PgQuery__CoercionContext context;
+  protobuf_c_boolean inout;
+};
+#define PG_QUERY__CREATE_CAST_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_cast_stmt__descriptor) \
+    , NULL, NULL, NULL, PG_QUERY__COERCION_CONTEXT__COERCION_CONTEXT_UNDEFINED, 0 }
+
+
+struct  PgQuery__CreateTransformStmt
+{
+  ProtobufCMessage base;
+  protobuf_c_boolean replace;
+  PgQuery__TypeName *type_name;
+  char *lang;
+  PgQuery__ObjectWithArgs *fromsql;
+  PgQuery__ObjectWithArgs *tosql;
+};
+#define PG_QUERY__CREATE_TRANSFORM_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_transform_stmt__descriptor) \
+    , 0, NULL, (char *)protobuf_c_empty_string, NULL, NULL }
+
+
+struct  PgQuery__PrepareStmt
+{
+  ProtobufCMessage base;
+  char *name;
+  size_t n_argtypes;
+  PgQuery__Node **argtypes;
+  PgQuery__Node *query;
+};
+#define PG_QUERY__PREPARE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__prepare_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL, NULL }
+
+
+struct  PgQuery__ExecuteStmt
+{
+  ProtobufCMessage base;
+  char *name;
+  size_t n_params;
+  PgQuery__Node **params;
+};
+#define PG_QUERY__EXECUTE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__execute_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string, 0,NULL }
+
+
+struct  PgQuery__DeallocateStmt
+{
+  ProtobufCMessage base;
+  char *name;
+};
+#define PG_QUERY__DEALLOCATE_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__deallocate_stmt__descriptor) \
+    , (char *)protobuf_c_empty_string }
+
+
+struct  PgQuery__DropOwnedStmt
+{
+  ProtobufCMessage base;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  PgQuery__DropBehavior behavior;
+};
+#define PG_QUERY__DROP_OWNED_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_owned_stmt__descriptor) \
+    , 0,NULL, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
+
+
+struct  PgQuery__ReassignOwnedStmt
+{
+  ProtobufCMessage base;
+  size_t n_roles;
+  PgQuery__Node **roles;
+  PgQuery__RoleSpec *newrole;
+};
+#define PG_QUERY__REASSIGN_OWNED_STMT__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__reassign_owned_stmt__descriptor) \
+    , 0,NULL, NULL }
+
+
 struct  PgQuery__AlterTSDictionaryStmt
 {
   ProtobufCMessage base;
@@ -4293,328 +5671,30 @@ struct  PgQuery__AlterTSConfigurationStmt
     , PG_QUERY__ALTER_TSCONFIG_TYPE__ALTER_TSCONFIG_TYPE_UNDEFINED, 0,NULL, 0,NULL, 0,NULL, 0, 0, 0 }
 
 
-struct  PgQuery__CreateFdwStmt
+struct  PgQuery__PublicationTable
 {
   ProtobufCMessage base;
-  char *fdwname;
-  size_t n_func_options;
-  PgQuery__Node **func_options;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__CREATE_FDW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_fdw_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__AlterFdwStmt
-{
-  ProtobufCMessage base;
-  char *fdwname;
-  size_t n_func_options;
-  PgQuery__Node **func_options;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__ALTER_FDW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_fdw_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__CreateForeignServerStmt
-{
-  ProtobufCMessage base;
-  char *servername;
-  char *servertype;
-  char *version;
-  char *fdwname;
-  protobuf_c_boolean if_not_exists;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__CREATE_FOREIGN_SERVER_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_foreign_server_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, 0,NULL }
-
-
-struct  PgQuery__AlterForeignServerStmt
-{
-  ProtobufCMessage base;
-  char *servername;
-  char *version;
-  size_t n_options;
-  PgQuery__Node **options;
-  protobuf_c_boolean has_version;
-};
-#define PG_QUERY__ALTER_FOREIGN_SERVER_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_foreign_server_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0 }
-
-
-struct  PgQuery__CreateUserMappingStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RoleSpec *user;
-  char *servername;
-  protobuf_c_boolean if_not_exists;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__CREATE_USER_MAPPING_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_user_mapping_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, 0, 0,NULL }
-
-
-struct  PgQuery__AlterUserMappingStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RoleSpec *user;
-  char *servername;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__ALTER_USER_MAPPING_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_user_mapping_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__DropUserMappingStmt
-{
-  ProtobufCMessage base;
-  PgQuery__RoleSpec *user;
-  char *servername;
-  protobuf_c_boolean missing_ok;
-};
-#define PG_QUERY__DROP_USER_MAPPING_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_user_mapping_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__AlterTableSpaceOptionsStmt
-{
-  ProtobufCMessage base;
-  char *tablespacename;
-  size_t n_options;
-  PgQuery__Node **options;
-  protobuf_c_boolean is_reset;
-};
-#define PG_QUERY__ALTER_TABLE_SPACE_OPTIONS_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_table_space_options_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, 0 }
-
-
-struct  PgQuery__AlterTableMoveAllStmt
-{
-  ProtobufCMessage base;
-  char *orig_tablespacename;
-  PgQuery__ObjectType objtype;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  char *new_tablespacename;
-  protobuf_c_boolean nowait;
-};
-#define PG_QUERY__ALTER_TABLE_MOVE_ALL_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_table_move_all_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, 0,NULL, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__SecLabelStmt
-{
-  ProtobufCMessage base;
-  PgQuery__ObjectType objtype;
-  PgQuery__Node *object;
-  char *provider;
-  char *label;
-};
-#define PG_QUERY__SEC_LABEL_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__sec_label_stmt__descriptor) \
-    , PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__CreateForeignTableStmt
-{
-  ProtobufCMessage base;
-  PgQuery__CreateStmt *base_stmt;
-  char *servername;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__CREATE_FOREIGN_TABLE_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_foreign_table_stmt__descriptor) \
-    , NULL, (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__ImportForeignSchemaStmt
-{
-  ProtobufCMessage base;
-  char *server_name;
-  char *remote_schema;
-  char *local_schema;
-  PgQuery__ImportForeignSchemaType list_type;
-  size_t n_table_list;
-  PgQuery__Node **table_list;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__IMPORT_FOREIGN_SCHEMA_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__import_foreign_schema_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, PG_QUERY__IMPORT_FOREIGN_SCHEMA_TYPE__IMPORT_FOREIGN_SCHEMA_TYPE_UNDEFINED, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__CreateExtensionStmt
-{
-  ProtobufCMessage base;
-  char *extname;
-  protobuf_c_boolean if_not_exists;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__CREATE_EXTENSION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_extension_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0, 0,NULL }
-
-
-struct  PgQuery__AlterExtensionStmt
-{
-  ProtobufCMessage base;
-  char *extname;
-  size_t n_options;
-  PgQuery__Node **options;
-};
-#define PG_QUERY__ALTER_EXTENSION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_extension_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__AlterExtensionContentsStmt
-{
-  ProtobufCMessage base;
-  char *extname;
-  int32_t action;
-  PgQuery__ObjectType objtype;
-  PgQuery__Node *object;
-};
-#define PG_QUERY__ALTER_EXTENSION_CONTENTS_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_extension_contents_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0, PG_QUERY__OBJECT_TYPE__OBJECT_TYPE_UNDEFINED, NULL }
-
-
-struct  PgQuery__CreateEventTrigStmt
-{
-  ProtobufCMessage base;
-  char *trigname;
-  char *eventname;
-  size_t n_whenclause;
-  PgQuery__Node **whenclause;
-  size_t n_funcname;
-  PgQuery__Node **funcname;
-};
-#define PG_QUERY__CREATE_EVENT_TRIG_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_event_trig_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__AlterEventTrigStmt
-{
-  ProtobufCMessage base;
-  char *trigname;
-  char *tgenabled;
-};
-#define PG_QUERY__ALTER_EVENT_TRIG_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_event_trig_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__RefreshMatViewStmt
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean concurrent;
-  protobuf_c_boolean skip_data;
   PgQuery__RangeVar *relation;
+  PgQuery__Node *where_clause;
+  size_t n_columns;
+  PgQuery__Node **columns;
 };
-#define PG_QUERY__REFRESH_MAT_VIEW_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__refresh_mat_view_stmt__descriptor) \
-    , 0, 0, NULL }
+#define PG_QUERY__PUBLICATION_TABLE__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__publication_table__descriptor) \
+    , NULL, NULL, 0,NULL }
 
 
-struct  PgQuery__ReplicaIdentityStmt
+struct  PgQuery__PublicationObjSpec
 {
   ProtobufCMessage base;
-  char *identity_type;
+  PgQuery__PublicationObjSpecType pubobjtype;
   char *name;
+  PgQuery__PublicationTable *pubtable;
+  int32_t location;
 };
-#define PG_QUERY__REPLICA_IDENTITY_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__replica_identity_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string }
-
-
-struct  PgQuery__AlterSystemStmt
-{
-  ProtobufCMessage base;
-  PgQuery__VariableSetStmt *setstmt;
-};
-#define PG_QUERY__ALTER_SYSTEM_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_system_stmt__descriptor) \
-    , NULL }
-
-
-struct  PgQuery__CreatePolicyStmt
-{
-  ProtobufCMessage base;
-  char *policy_name;
-  PgQuery__RangeVar *table;
-  char *cmd_name;
-  protobuf_c_boolean permissive;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  PgQuery__Node *qual;
-  PgQuery__Node *with_check;
-};
-#define PG_QUERY__CREATE_POLICY_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_policy_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0, 0,NULL, NULL, NULL }
-
-
-struct  PgQuery__AlterPolicyStmt
-{
-  ProtobufCMessage base;
-  char *policy_name;
-  PgQuery__RangeVar *table;
-  size_t n_roles;
-  PgQuery__Node **roles;
-  PgQuery__Node *qual;
-  PgQuery__Node *with_check;
-};
-#define PG_QUERY__ALTER_POLICY_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_policy_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, 0,NULL, NULL, NULL }
-
-
-struct  PgQuery__CreateTransformStmt
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean replace;
-  PgQuery__TypeName *type_name;
-  char *lang;
-  PgQuery__ObjectWithArgs *fromsql;
-  PgQuery__ObjectWithArgs *tosql;
-};
-#define PG_QUERY__CREATE_TRANSFORM_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_transform_stmt__descriptor) \
-    , 0, NULL, (char *)protobuf_c_empty_string, NULL, NULL }
-
-
-struct  PgQuery__CreateAmStmt
-{
-  ProtobufCMessage base;
-  char *amname;
-  size_t n_handler_name;
-  PgQuery__Node **handler_name;
-  char *amtype;
-};
-#define PG_QUERY__CREATE_AM_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_am_stmt__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, (char *)protobuf_c_empty_string }
+#define PG_QUERY__PUBLICATION_OBJ_SPEC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&pg_query__publication_obj_spec__descriptor) \
+    , PG_QUERY__PUBLICATION_OBJ_SPEC_TYPE__PUBLICATION_OBJ_SPEC_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, NULL, 0 }
 
 
 struct  PgQuery__CreatePublicationStmt
@@ -4689,1023 +5769,6 @@ struct  PgQuery__DropSubscriptionStmt
 #define PG_QUERY__DROP_SUBSCRIPTION_STMT__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&pg_query__drop_subscription_stmt__descriptor) \
     , (char *)protobuf_c_empty_string, 0, PG_QUERY__DROP_BEHAVIOR__DROP_BEHAVIOR_UNDEFINED }
-
-
-struct  PgQuery__CreateStatsStmt
-{
-  ProtobufCMessage base;
-  size_t n_defnames;
-  PgQuery__Node **defnames;
-  size_t n_stat_types;
-  PgQuery__Node **stat_types;
-  size_t n_exprs;
-  PgQuery__Node **exprs;
-  size_t n_relations;
-  PgQuery__Node **relations;
-  char *stxcomment;
-  protobuf_c_boolean transformed;
-  protobuf_c_boolean if_not_exists;
-};
-#define PG_QUERY__CREATE_STATS_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_stats_stmt__descriptor) \
-    , 0,NULL, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0 }
-
-
-struct  PgQuery__AlterCollationStmt
-{
-  ProtobufCMessage base;
-  size_t n_collname;
-  PgQuery__Node **collname;
-};
-#define PG_QUERY__ALTER_COLLATION_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_collation_stmt__descriptor) \
-    , 0,NULL }
-
-
-struct  PgQuery__CallStmt
-{
-  ProtobufCMessage base;
-  PgQuery__FuncCall *funccall;
-  PgQuery__FuncExpr *funcexpr;
-  size_t n_outargs;
-  PgQuery__Node **outargs;
-};
-#define PG_QUERY__CALL_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__call_stmt__descriptor) \
-    , NULL, NULL, 0,NULL }
-
-
-struct  PgQuery__AlterStatsStmt
-{
-  ProtobufCMessage base;
-  size_t n_defnames;
-  PgQuery__Node **defnames;
-  int32_t stxstattarget;
-  protobuf_c_boolean missing_ok;
-};
-#define PG_QUERY__ALTER_STATS_STMT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__alter_stats_stmt__descriptor) \
-    , 0,NULL, 0, 0 }
-
-
-struct  PgQuery__AExpr
-{
-  ProtobufCMessage base;
-  PgQuery__AExprKind kind;
-  size_t n_name;
-  PgQuery__Node **name;
-  PgQuery__Node *lexpr;
-  PgQuery__Node *rexpr;
-  int32_t location;
-};
-#define PG_QUERY__A__EXPR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__expr__descriptor) \
-    , PG_QUERY__A__EXPR__KIND__A_EXPR_KIND_UNDEFINED, 0,NULL, NULL, NULL, 0 }
-
-
-struct  PgQuery__ColumnRef
-{
-  ProtobufCMessage base;
-  size_t n_fields;
-  PgQuery__Node **fields;
-  int32_t location;
-};
-#define PG_QUERY__COLUMN_REF__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__column_ref__descriptor) \
-    , 0,NULL, 0 }
-
-
-struct  PgQuery__ParamRef
-{
-  ProtobufCMessage base;
-  int32_t number;
-  int32_t location;
-};
-#define PG_QUERY__PARAM_REF__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__param_ref__descriptor) \
-    , 0, 0 }
-
-
-struct  PgQuery__FuncCall
-{
-  ProtobufCMessage base;
-  size_t n_funcname;
-  PgQuery__Node **funcname;
-  size_t n_args;
-  PgQuery__Node **args;
-  size_t n_agg_order;
-  PgQuery__Node **agg_order;
-  PgQuery__Node *agg_filter;
-  PgQuery__WindowDef *over;
-  protobuf_c_boolean agg_within_group;
-  protobuf_c_boolean agg_star;
-  protobuf_c_boolean agg_distinct;
-  protobuf_c_boolean func_variadic;
-  PgQuery__CoercionForm funcformat;
-  int32_t location;
-};
-#define PG_QUERY__FUNC_CALL__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__func_call__descriptor) \
-    , 0,NULL, 0,NULL, 0,NULL, NULL, NULL, 0, 0, 0, 0, PG_QUERY__COERCION_FORM__COERCION_FORM_UNDEFINED, 0 }
-
-
-struct  PgQuery__AStar
-{
-  ProtobufCMessage base;
-};
-#define PG_QUERY__A__STAR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__star__descriptor) \
-     }
-
-
-struct  PgQuery__AIndices
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean is_slice;
-  PgQuery__Node *lidx;
-  PgQuery__Node *uidx;
-};
-#define PG_QUERY__A__INDICES__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__indices__descriptor) \
-    , 0, NULL, NULL }
-
-
-struct  PgQuery__AIndirection
-{
-  ProtobufCMessage base;
-  PgQuery__Node *arg;
-  size_t n_indirection;
-  PgQuery__Node **indirection;
-};
-#define PG_QUERY__A__INDIRECTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__indirection__descriptor) \
-    , NULL, 0,NULL }
-
-
-struct  PgQuery__AArrayExpr
-{
-  ProtobufCMessage base;
-  size_t n_elements;
-  PgQuery__Node **elements;
-  int32_t location;
-};
-#define PG_QUERY__A__ARRAY_EXPR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__a__array_expr__descriptor) \
-    , 0,NULL, 0 }
-
-
-struct  PgQuery__ResTarget
-{
-  ProtobufCMessage base;
-  char *name;
-  size_t n_indirection;
-  PgQuery__Node **indirection;
-  PgQuery__Node *val;
-  int32_t location;
-};
-#define PG_QUERY__RES_TARGET__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__res_target__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, NULL, 0 }
-
-
-struct  PgQuery__MultiAssignRef
-{
-  ProtobufCMessage base;
-  PgQuery__Node *source;
-  int32_t colno;
-  int32_t ncolumns;
-};
-#define PG_QUERY__MULTI_ASSIGN_REF__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__multi_assign_ref__descriptor) \
-    , NULL, 0, 0 }
-
-
-struct  PgQuery__TypeCast
-{
-  ProtobufCMessage base;
-  PgQuery__Node *arg;
-  PgQuery__TypeName *type_name;
-  int32_t location;
-};
-#define PG_QUERY__TYPE_CAST__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__type_cast__descriptor) \
-    , NULL, NULL, 0 }
-
-
-struct  PgQuery__CollateClause
-{
-  ProtobufCMessage base;
-  PgQuery__Node *arg;
-  size_t n_collname;
-  PgQuery__Node **collname;
-  int32_t location;
-};
-#define PG_QUERY__COLLATE_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__collate_clause__descriptor) \
-    , NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__SortBy
-{
-  ProtobufCMessage base;
-  PgQuery__Node *node;
-  PgQuery__SortByDir sortby_dir;
-  PgQuery__SortByNulls sortby_nulls;
-  size_t n_use_op;
-  PgQuery__Node **use_op;
-  int32_t location;
-};
-#define PG_QUERY__SORT_BY__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__sort_by__descriptor) \
-    , NULL, PG_QUERY__SORT_BY_DIR__SORT_BY_DIR_UNDEFINED, PG_QUERY__SORT_BY_NULLS__SORT_BY_NULLS_UNDEFINED, 0,NULL, 0 }
-
-
-struct  PgQuery__WindowDef
-{
-  ProtobufCMessage base;
-  char *name;
-  char *refname;
-  size_t n_partition_clause;
-  PgQuery__Node **partition_clause;
-  size_t n_order_clause;
-  PgQuery__Node **order_clause;
-  int32_t frame_options;
-  PgQuery__Node *start_offset;
-  PgQuery__Node *end_offset;
-  int32_t location;
-};
-#define PG_QUERY__WINDOW_DEF__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__window_def__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0, NULL, NULL, 0 }
-
-
-struct  PgQuery__RangeSubselect
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean lateral;
-  PgQuery__Node *subquery;
-  PgQuery__Alias *alias;
-};
-#define PG_QUERY__RANGE_SUBSELECT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_subselect__descriptor) \
-    , 0, NULL, NULL }
-
-
-struct  PgQuery__RangeFunction
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean lateral;
-  protobuf_c_boolean ordinality;
-  protobuf_c_boolean is_rowsfrom;
-  size_t n_functions;
-  PgQuery__Node **functions;
-  PgQuery__Alias *alias;
-  size_t n_coldeflist;
-  PgQuery__Node **coldeflist;
-};
-#define PG_QUERY__RANGE_FUNCTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_function__descriptor) \
-    , 0, 0, 0, 0,NULL, NULL, 0,NULL }
-
-
-struct  PgQuery__RangeTableSample
-{
-  ProtobufCMessage base;
-  PgQuery__Node *relation;
-  size_t n_method;
-  PgQuery__Node **method;
-  size_t n_args;
-  PgQuery__Node **args;
-  PgQuery__Node *repeatable;
-  int32_t location;
-};
-#define PG_QUERY__RANGE_TABLE_SAMPLE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_sample__descriptor) \
-    , NULL, 0,NULL, 0,NULL, NULL, 0 }
-
-
-struct  PgQuery__RangeTableFunc
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean lateral;
-  PgQuery__Node *docexpr;
-  PgQuery__Node *rowexpr;
-  size_t n_namespaces;
-  PgQuery__Node **namespaces;
-  size_t n_columns;
-  PgQuery__Node **columns;
-  PgQuery__Alias *alias;
-  int32_t location;
-};
-#define PG_QUERY__RANGE_TABLE_FUNC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_func__descriptor) \
-    , 0, NULL, NULL, 0,NULL, 0,NULL, NULL, 0 }
-
-
-struct  PgQuery__RangeTableFuncCol
-{
-  ProtobufCMessage base;
-  char *colname;
-  PgQuery__TypeName *type_name;
-  protobuf_c_boolean for_ordinality;
-  protobuf_c_boolean is_not_null;
-  PgQuery__Node *colexpr;
-  PgQuery__Node *coldefexpr;
-  int32_t location;
-};
-#define PG_QUERY__RANGE_TABLE_FUNC_COL__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_table_func_col__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, 0, 0, NULL, NULL, 0 }
-
-
-struct  PgQuery__TypeName
-{
-  ProtobufCMessage base;
-  size_t n_names;
-  PgQuery__Node **names;
-  uint32_t type_oid;
-  protobuf_c_boolean setof;
-  protobuf_c_boolean pct_type;
-  size_t n_typmods;
-  PgQuery__Node **typmods;
-  int32_t typemod;
-  size_t n_array_bounds;
-  PgQuery__Node **array_bounds;
-  int32_t location;
-};
-#define PG_QUERY__TYPE_NAME__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__type_name__descriptor) \
-    , 0,NULL, 0, 0, 0, 0,NULL, 0, 0,NULL, 0 }
-
-
-struct  PgQuery__ColumnDef
-{
-  ProtobufCMessage base;
-  char *colname;
-  PgQuery__TypeName *type_name;
-  char *compression;
-  int32_t inhcount;
-  protobuf_c_boolean is_local;
-  protobuf_c_boolean is_not_null;
-  protobuf_c_boolean is_from_type;
-  char *storage;
-  PgQuery__Node *raw_default;
-  PgQuery__Node *cooked_default;
-  char *identity;
-  PgQuery__RangeVar *identity_sequence;
-  char *generated;
-  PgQuery__CollateClause *coll_clause;
-  uint32_t coll_oid;
-  size_t n_constraints;
-  PgQuery__Node **constraints;
-  size_t n_fdwoptions;
-  PgQuery__Node **fdwoptions;
-  int32_t location;
-};
-#define PG_QUERY__COLUMN_DEF__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__column_def__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, (char *)protobuf_c_empty_string, NULL, NULL, (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, NULL, 0, 0,NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__IndexElem
-{
-  ProtobufCMessage base;
-  char *name;
-  PgQuery__Node *expr;
-  char *indexcolname;
-  size_t n_collation;
-  PgQuery__Node **collation;
-  size_t n_opclass;
-  PgQuery__Node **opclass;
-  size_t n_opclassopts;
-  PgQuery__Node **opclassopts;
-  PgQuery__SortByDir ordering;
-  PgQuery__SortByNulls nulls_ordering;
-};
-#define PG_QUERY__INDEX_ELEM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__index_elem__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0,NULL, PG_QUERY__SORT_BY_DIR__SORT_BY_DIR_UNDEFINED, PG_QUERY__SORT_BY_NULLS__SORT_BY_NULLS_UNDEFINED }
-
-
-struct  PgQuery__StatsElem
-{
-  ProtobufCMessage base;
-  char *name;
-  PgQuery__Node *expr;
-};
-#define PG_QUERY__STATS_ELEM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__stats_elem__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL }
-
-
-struct  PgQuery__Constraint
-{
-  ProtobufCMessage base;
-  PgQuery__ConstrType contype;
-  char *conname;
-  protobuf_c_boolean deferrable;
-  protobuf_c_boolean initdeferred;
-  int32_t location;
-  protobuf_c_boolean is_no_inherit;
-  PgQuery__Node *raw_expr;
-  char *cooked_expr;
-  char *generated_when;
-  protobuf_c_boolean nulls_not_distinct;
-  size_t n_keys;
-  PgQuery__Node **keys;
-  size_t n_including;
-  PgQuery__Node **including;
-  size_t n_exclusions;
-  PgQuery__Node **exclusions;
-  size_t n_options;
-  PgQuery__Node **options;
-  char *indexname;
-  char *indexspace;
-  protobuf_c_boolean reset_default_tblspc;
-  char *access_method;
-  PgQuery__Node *where_clause;
-  PgQuery__RangeVar *pktable;
-  size_t n_fk_attrs;
-  PgQuery__Node **fk_attrs;
-  size_t n_pk_attrs;
-  PgQuery__Node **pk_attrs;
-  char *fk_matchtype;
-  char *fk_upd_action;
-  char *fk_del_action;
-  size_t n_fk_del_set_cols;
-  PgQuery__Node **fk_del_set_cols;
-  size_t n_old_conpfeqop;
-  PgQuery__Node **old_conpfeqop;
-  uint32_t old_pktable_oid;
-  protobuf_c_boolean skip_validation;
-  protobuf_c_boolean initially_valid;
-};
-#define PG_QUERY__CONSTRAINT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__constraint__descriptor) \
-    , PG_QUERY__CONSTR_TYPE__CONSTR_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, 0, 0, 0, 0, NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0, (char *)protobuf_c_empty_string, NULL, NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0, 0, 0 }
-
-
-struct  PgQuery__DefElem
-{
-  ProtobufCMessage base;
-  char *defnamespace;
-  char *defname;
-  PgQuery__Node *arg;
-  PgQuery__DefElemAction defaction;
-  int32_t location;
-};
-#define PG_QUERY__DEF_ELEM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__def_elem__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, NULL, PG_QUERY__DEF_ELEM_ACTION__DEF_ELEM_ACTION_UNDEFINED, 0 }
-
-
-struct  PgQuery__RangeTblEntry
-{
-  ProtobufCMessage base;
-  PgQuery__RTEKind rtekind;
-  uint32_t relid;
-  char *relkind;
-  int32_t rellockmode;
-  PgQuery__TableSampleClause *tablesample;
-  PgQuery__Query *subquery;
-  protobuf_c_boolean security_barrier;
-  PgQuery__JoinType jointype;
-  int32_t joinmergedcols;
-  size_t n_joinaliasvars;
-  PgQuery__Node **joinaliasvars;
-  size_t n_joinleftcols;
-  PgQuery__Node **joinleftcols;
-  size_t n_joinrightcols;
-  PgQuery__Node **joinrightcols;
-  PgQuery__Alias *join_using_alias;
-  size_t n_functions;
-  PgQuery__Node **functions;
-  protobuf_c_boolean funcordinality;
-  PgQuery__TableFunc *tablefunc;
-  size_t n_values_lists;
-  PgQuery__Node **values_lists;
-  char *ctename;
-  uint32_t ctelevelsup;
-  protobuf_c_boolean self_reference;
-  size_t n_coltypes;
-  PgQuery__Node **coltypes;
-  size_t n_coltypmods;
-  PgQuery__Node **coltypmods;
-  size_t n_colcollations;
-  PgQuery__Node **colcollations;
-  char *enrname;
-  double enrtuples;
-  PgQuery__Alias *alias;
-  PgQuery__Alias *eref;
-  protobuf_c_boolean lateral;
-  protobuf_c_boolean inh;
-  protobuf_c_boolean in_from_cl;
-  uint32_t required_perms;
-  uint32_t check_as_user;
-  size_t n_selected_cols;
-  uint64_t *selected_cols;
-  size_t n_inserted_cols;
-  uint64_t *inserted_cols;
-  size_t n_updated_cols;
-  uint64_t *updated_cols;
-  size_t n_extra_updated_cols;
-  uint64_t *extra_updated_cols;
-  size_t n_security_quals;
-  PgQuery__Node **security_quals;
-};
-#define PG_QUERY__RANGE_TBL_ENTRY__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_entry__descriptor) \
-    , PG_QUERY__RTEKIND__RTEKIND_UNDEFINED, 0, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, PG_QUERY__JOIN_TYPE__JOIN_TYPE_UNDEFINED, 0, 0,NULL, 0,NULL, 0,NULL, NULL, 0,NULL, 0, NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, 0, 0,NULL, 0,NULL, 0,NULL, (char *)protobuf_c_empty_string, 0, NULL, NULL, 0, 0, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__RangeTblFunction
-{
-  ProtobufCMessage base;
-  PgQuery__Node *funcexpr;
-  int32_t funccolcount;
-  size_t n_funccolnames;
-  PgQuery__Node **funccolnames;
-  size_t n_funccoltypes;
-  PgQuery__Node **funccoltypes;
-  size_t n_funccoltypmods;
-  PgQuery__Node **funccoltypmods;
-  size_t n_funccolcollations;
-  PgQuery__Node **funccolcollations;
-  size_t n_funcparams;
-  uint64_t *funcparams;
-};
-#define PG_QUERY__RANGE_TBL_FUNCTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__range_tbl_function__descriptor) \
-    , NULL, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__TableSampleClause
-{
-  ProtobufCMessage base;
-  uint32_t tsmhandler;
-  size_t n_args;
-  PgQuery__Node **args;
-  PgQuery__Node *repeatable;
-};
-#define PG_QUERY__TABLE_SAMPLE_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_sample_clause__descriptor) \
-    , 0, 0,NULL, NULL }
-
-
-struct  PgQuery__WithCheckOption
-{
-  ProtobufCMessage base;
-  PgQuery__WCOKind kind;
-  char *relname;
-  char *polname;
-  PgQuery__Node *qual;
-  protobuf_c_boolean cascaded;
-};
-#define PG_QUERY__WITH_CHECK_OPTION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__with_check_option__descriptor) \
-    , PG_QUERY__WCOKIND__WCOKIND_UNDEFINED, (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, NULL, 0 }
-
-
-struct  PgQuery__SortGroupClause
-{
-  ProtobufCMessage base;
-  uint32_t tle_sort_group_ref;
-  uint32_t eqop;
-  uint32_t sortop;
-  protobuf_c_boolean nulls_first;
-  protobuf_c_boolean hashable;
-};
-#define PG_QUERY__SORT_GROUP_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__sort_group_clause__descriptor) \
-    , 0, 0, 0, 0, 0 }
-
-
-struct  PgQuery__GroupingSet
-{
-  ProtobufCMessage base;
-  PgQuery__GroupingSetKind kind;
-  size_t n_content;
-  PgQuery__Node **content;
-  int32_t location;
-};
-#define PG_QUERY__GROUPING_SET__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__grouping_set__descriptor) \
-    , PG_QUERY__GROUPING_SET_KIND__GROUPING_SET_KIND_UNDEFINED, 0,NULL, 0 }
-
-
-struct  PgQuery__WindowClause
-{
-  ProtobufCMessage base;
-  char *name;
-  char *refname;
-  size_t n_partition_clause;
-  PgQuery__Node **partition_clause;
-  size_t n_order_clause;
-  PgQuery__Node **order_clause;
-  int32_t frame_options;
-  PgQuery__Node *start_offset;
-  PgQuery__Node *end_offset;
-  size_t n_run_condition;
-  PgQuery__Node **run_condition;
-  uint32_t start_in_range_func;
-  uint32_t end_in_range_func;
-  uint32_t in_range_coll;
-  protobuf_c_boolean in_range_asc;
-  protobuf_c_boolean in_range_nulls_first;
-  uint32_t winref;
-  protobuf_c_boolean copied_order;
-};
-#define PG_QUERY__WINDOW_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__window_clause__descriptor) \
-    , (char *)protobuf_c_empty_string, (char *)protobuf_c_empty_string, 0,NULL, 0,NULL, 0, NULL, NULL, 0,NULL, 0, 0, 0, 0, 0, 0, 0 }
-
-
-struct  PgQuery__ObjectWithArgs
-{
-  ProtobufCMessage base;
-  size_t n_objname;
-  PgQuery__Node **objname;
-  size_t n_objargs;
-  PgQuery__Node **objargs;
-  size_t n_objfuncargs;
-  PgQuery__Node **objfuncargs;
-  protobuf_c_boolean args_unspecified;
-};
-#define PG_QUERY__OBJECT_WITH_ARGS__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__object_with_args__descriptor) \
-    , 0,NULL, 0,NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__AccessPriv
-{
-  ProtobufCMessage base;
-  char *priv_name;
-  size_t n_cols;
-  PgQuery__Node **cols;
-};
-#define PG_QUERY__ACCESS_PRIV__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__access_priv__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL }
-
-
-struct  PgQuery__CreateOpClassItem
-{
-  ProtobufCMessage base;
-  int32_t itemtype;
-  PgQuery__ObjectWithArgs *name;
-  int32_t number;
-  size_t n_order_family;
-  PgQuery__Node **order_family;
-  size_t n_class_args;
-  PgQuery__Node **class_args;
-  PgQuery__TypeName *storedtype;
-};
-#define PG_QUERY__CREATE_OP_CLASS_ITEM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__create_op_class_item__descriptor) \
-    , 0, NULL, 0, 0,NULL, 0,NULL, NULL }
-
-
-struct  PgQuery__TableLikeClause
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *relation;
-  uint32_t options;
-  uint32_t relation_oid;
-};
-#define PG_QUERY__TABLE_LIKE_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__table_like_clause__descriptor) \
-    , NULL, 0, 0 }
-
-
-struct  PgQuery__FunctionParameter
-{
-  ProtobufCMessage base;
-  char *name;
-  PgQuery__TypeName *arg_type;
-  PgQuery__FunctionParameterMode mode;
-  PgQuery__Node *defexpr;
-};
-#define PG_QUERY__FUNCTION_PARAMETER__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__function_parameter__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, PG_QUERY__FUNCTION_PARAMETER_MODE__FUNCTION_PARAMETER_MODE_UNDEFINED, NULL }
-
-
-struct  PgQuery__LockingClause
-{
-  ProtobufCMessage base;
-  size_t n_locked_rels;
-  PgQuery__Node **locked_rels;
-  PgQuery__LockClauseStrength strength;
-  PgQuery__LockWaitPolicy wait_policy;
-};
-#define PG_QUERY__LOCKING_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__locking_clause__descriptor) \
-    , 0,NULL, PG_QUERY__LOCK_CLAUSE_STRENGTH__LOCK_CLAUSE_STRENGTH_UNDEFINED, PG_QUERY__LOCK_WAIT_POLICY__LOCK_WAIT_POLICY_UNDEFINED }
-
-
-struct  PgQuery__RowMarkClause
-{
-  ProtobufCMessage base;
-  uint32_t rti;
-  PgQuery__LockClauseStrength strength;
-  PgQuery__LockWaitPolicy wait_policy;
-  protobuf_c_boolean pushed_down;
-};
-#define PG_QUERY__ROW_MARK_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__row_mark_clause__descriptor) \
-    , 0, PG_QUERY__LOCK_CLAUSE_STRENGTH__LOCK_CLAUSE_STRENGTH_UNDEFINED, PG_QUERY__LOCK_WAIT_POLICY__LOCK_WAIT_POLICY_UNDEFINED, 0 }
-
-
-struct  PgQuery__XmlSerialize
-{
-  ProtobufCMessage base;
-  PgQuery__XmlOptionType xmloption;
-  PgQuery__Node *expr;
-  PgQuery__TypeName *type_name;
-  int32_t location;
-};
-#define PG_QUERY__XML_SERIALIZE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__xml_serialize__descriptor) \
-    , PG_QUERY__XML_OPTION_TYPE__XML_OPTION_TYPE_UNDEFINED, NULL, NULL, 0 }
-
-
-struct  PgQuery__WithClause
-{
-  ProtobufCMessage base;
-  size_t n_ctes;
-  PgQuery__Node **ctes;
-  protobuf_c_boolean recursive;
-  int32_t location;
-};
-#define PG_QUERY__WITH_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__with_clause__descriptor) \
-    , 0,NULL, 0, 0 }
-
-
-struct  PgQuery__InferClause
-{
-  ProtobufCMessage base;
-  size_t n_index_elems;
-  PgQuery__Node **index_elems;
-  PgQuery__Node *where_clause;
-  char *conname;
-  int32_t location;
-};
-#define PG_QUERY__INFER_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__infer_clause__descriptor) \
-    , 0,NULL, NULL, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__OnConflictClause
-{
-  ProtobufCMessage base;
-  PgQuery__OnConflictAction action;
-  PgQuery__InferClause *infer;
-  size_t n_target_list;
-  PgQuery__Node **target_list;
-  PgQuery__Node *where_clause;
-  int32_t location;
-};
-#define PG_QUERY__ON_CONFLICT_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__on_conflict_clause__descriptor) \
-    , PG_QUERY__ON_CONFLICT_ACTION__ON_CONFLICT_ACTION_UNDEFINED, NULL, 0,NULL, NULL, 0 }
-
-
-struct  PgQuery__CTESearchClause
-{
-  ProtobufCMessage base;
-  size_t n_search_col_list;
-  PgQuery__Node **search_col_list;
-  protobuf_c_boolean search_breadth_first;
-  char *search_seq_column;
-  int32_t location;
-};
-#define PG_QUERY__CTESEARCH_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__ctesearch_clause__descriptor) \
-    , 0,NULL, 0, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__CTECycleClause
-{
-  ProtobufCMessage base;
-  size_t n_cycle_col_list;
-  PgQuery__Node **cycle_col_list;
-  char *cycle_mark_column;
-  PgQuery__Node *cycle_mark_value;
-  PgQuery__Node *cycle_mark_default;
-  char *cycle_path_column;
-  int32_t location;
-  uint32_t cycle_mark_type;
-  int32_t cycle_mark_typmod;
-  uint32_t cycle_mark_collation;
-  uint32_t cycle_mark_neop;
-};
-#define PG_QUERY__CTECYCLE_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__ctecycle_clause__descriptor) \
-    , 0,NULL, (char *)protobuf_c_empty_string, NULL, NULL, (char *)protobuf_c_empty_string, 0, 0, 0, 0, 0 }
-
-
-struct  PgQuery__CommonTableExpr
-{
-  ProtobufCMessage base;
-  char *ctename;
-  size_t n_aliascolnames;
-  PgQuery__Node **aliascolnames;
-  PgQuery__CTEMaterialize ctematerialized;
-  PgQuery__Node *ctequery;
-  PgQuery__CTESearchClause *search_clause;
-  PgQuery__CTECycleClause *cycle_clause;
-  int32_t location;
-  protobuf_c_boolean cterecursive;
-  int32_t cterefcount;
-  size_t n_ctecolnames;
-  PgQuery__Node **ctecolnames;
-  size_t n_ctecoltypes;
-  PgQuery__Node **ctecoltypes;
-  size_t n_ctecoltypmods;
-  PgQuery__Node **ctecoltypmods;
-  size_t n_ctecolcollations;
-  PgQuery__Node **ctecolcollations;
-};
-#define PG_QUERY__COMMON_TABLE_EXPR__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__common_table_expr__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, PG_QUERY__CTEMATERIALIZE__CTEMATERIALIZE_UNDEFINED, NULL, NULL, NULL, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__MergeWhenClause
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean matched;
-  PgQuery__CmdType command_type;
-  PgQuery__OverridingKind override;
-  PgQuery__Node *condition;
-  size_t n_target_list;
-  PgQuery__Node **target_list;
-  size_t n_values;
-  PgQuery__Node **values;
-};
-#define PG_QUERY__MERGE_WHEN_CLAUSE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__merge_when_clause__descriptor) \
-    , 0, PG_QUERY__CMD_TYPE__CMD_TYPE_UNDEFINED, PG_QUERY__OVERRIDING_KIND__OVERRIDING_KIND_UNDEFINED, NULL, 0,NULL, 0,NULL }
-
-
-struct  PgQuery__RoleSpec
-{
-  ProtobufCMessage base;
-  PgQuery__RoleSpecType roletype;
-  char *rolename;
-  int32_t location;
-};
-#define PG_QUERY__ROLE_SPEC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__role_spec__descriptor) \
-    , PG_QUERY__ROLE_SPEC_TYPE__ROLE_SPEC_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, 0 }
-
-
-struct  PgQuery__TriggerTransition
-{
-  ProtobufCMessage base;
-  char *name;
-  protobuf_c_boolean is_new;
-  protobuf_c_boolean is_table;
-};
-#define PG_QUERY__TRIGGER_TRANSITION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__trigger_transition__descriptor) \
-    , (char *)protobuf_c_empty_string, 0, 0 }
-
-
-struct  PgQuery__PartitionElem
-{
-  ProtobufCMessage base;
-  char *name;
-  PgQuery__Node *expr;
-  size_t n_collation;
-  PgQuery__Node **collation;
-  size_t n_opclass;
-  PgQuery__Node **opclass;
-  int32_t location;
-};
-#define PG_QUERY__PARTITION_ELEM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_elem__descriptor) \
-    , (char *)protobuf_c_empty_string, NULL, 0,NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__PartitionSpec
-{
-  ProtobufCMessage base;
-  char *strategy;
-  size_t n_part_params;
-  PgQuery__Node **part_params;
-  int32_t location;
-};
-#define PG_QUERY__PARTITION_SPEC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_spec__descriptor) \
-    , (char *)protobuf_c_empty_string, 0,NULL, 0 }
-
-
-struct  PgQuery__PartitionBoundSpec
-{
-  ProtobufCMessage base;
-  char *strategy;
-  protobuf_c_boolean is_default;
-  int32_t modulus;
-  int32_t remainder;
-  size_t n_listdatums;
-  PgQuery__Node **listdatums;
-  size_t n_lowerdatums;
-  PgQuery__Node **lowerdatums;
-  size_t n_upperdatums;
-  PgQuery__Node **upperdatums;
-  int32_t location;
-};
-#define PG_QUERY__PARTITION_BOUND_SPEC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_bound_spec__descriptor) \
-    , (char *)protobuf_c_empty_string, 0, 0, 0, 0,NULL, 0,NULL, 0,NULL, 0 }
-
-
-struct  PgQuery__PartitionRangeDatum
-{
-  ProtobufCMessage base;
-  PgQuery__PartitionRangeDatumKind kind;
-  PgQuery__Node *value;
-  int32_t location;
-};
-#define PG_QUERY__PARTITION_RANGE_DATUM__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_range_datum__descriptor) \
-    , PG_QUERY__PARTITION_RANGE_DATUM_KIND__PARTITION_RANGE_DATUM_KIND_UNDEFINED, NULL, 0 }
-
-
-struct  PgQuery__PartitionCmd
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *name;
-  PgQuery__PartitionBoundSpec *bound;
-  protobuf_c_boolean concurrent;
-};
-#define PG_QUERY__PARTITION_CMD__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__partition_cmd__descriptor) \
-    , NULL, NULL, 0 }
-
-
-struct  PgQuery__VacuumRelation
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *relation;
-  uint32_t oid;
-  size_t n_va_cols;
-  PgQuery__Node **va_cols;
-};
-#define PG_QUERY__VACUUM_RELATION__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__vacuum_relation__descriptor) \
-    , NULL, 0, 0,NULL }
-
-
-struct  PgQuery__PublicationObjSpec
-{
-  ProtobufCMessage base;
-  PgQuery__PublicationObjSpecType pubobjtype;
-  char *name;
-  PgQuery__PublicationTable *pubtable;
-  int32_t location;
-};
-#define PG_QUERY__PUBLICATION_OBJ_SPEC__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__publication_obj_spec__descriptor) \
-    , PG_QUERY__PUBLICATION_OBJ_SPEC_TYPE__PUBLICATION_OBJ_SPEC_TYPE_UNDEFINED, (char *)protobuf_c_empty_string, NULL, 0 }
-
-
-struct  PgQuery__PublicationTable
-{
-  ProtobufCMessage base;
-  PgQuery__RangeVar *relation;
-  PgQuery__Node *where_clause;
-  size_t n_columns;
-  PgQuery__Node **columns;
-};
-#define PG_QUERY__PUBLICATION_TABLE__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__publication_table__descriptor) \
-    , NULL, NULL, 0,NULL }
-
-
-struct  PgQuery__InlineCodeBlock
-{
-  ProtobufCMessage base;
-  char *source_text;
-  uint32_t lang_oid;
-  protobuf_c_boolean lang_is_trusted;
-  protobuf_c_boolean atomic;
-};
-#define PG_QUERY__INLINE_CODE_BLOCK__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__inline_code_block__descriptor) \
-    , (char *)protobuf_c_empty_string, 0, 0, 0 }
-
-
-struct  PgQuery__CallContext
-{
-  ProtobufCMessage base;
-  protobuf_c_boolean atomic;
-};
-#define PG_QUERY__CALL_CONTEXT__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&pg_query__call_context__descriptor) \
-    , 0 }
 
 
 struct  PgQuery__ScanToken
@@ -6005,6 +6068,25 @@ PgQuery__TableFunc *
                       const uint8_t       *data);
 void   pg_query__table_func__free_unpacked
                      (PgQuery__TableFunc *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__IntoClause methods */
+void   pg_query__into_clause__init
+                     (PgQuery__IntoClause         *message);
+size_t pg_query__into_clause__get_packed_size
+                     (const PgQuery__IntoClause   *message);
+size_t pg_query__into_clause__pack
+                     (const PgQuery__IntoClause   *message,
+                      uint8_t             *out);
+size_t pg_query__into_clause__pack_to_buffer
+                     (const PgQuery__IntoClause   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__IntoClause *
+       pg_query__into_clause__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__into_clause__free_unpacked
+                     (PgQuery__IntoClause *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__Var methods */
 void   pg_query__var__init
@@ -6633,6 +6715,101 @@ PgQuery__XmlExpr *
 void   pg_query__xml_expr__free_unpacked
                      (PgQuery__XmlExpr *message,
                       ProtobufCAllocator *allocator);
+/* PgQuery__JsonFormat methods */
+void   pg_query__json_format__init
+                     (PgQuery__JsonFormat         *message);
+size_t pg_query__json_format__get_packed_size
+                     (const PgQuery__JsonFormat   *message);
+size_t pg_query__json_format__pack
+                     (const PgQuery__JsonFormat   *message,
+                      uint8_t             *out);
+size_t pg_query__json_format__pack_to_buffer
+                     (const PgQuery__JsonFormat   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__JsonFormat *
+       pg_query__json_format__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__json_format__free_unpacked
+                     (PgQuery__JsonFormat *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__JsonReturning methods */
+void   pg_query__json_returning__init
+                     (PgQuery__JsonReturning         *message);
+size_t pg_query__json_returning__get_packed_size
+                     (const PgQuery__JsonReturning   *message);
+size_t pg_query__json_returning__pack
+                     (const PgQuery__JsonReturning   *message,
+                      uint8_t             *out);
+size_t pg_query__json_returning__pack_to_buffer
+                     (const PgQuery__JsonReturning   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__JsonReturning *
+       pg_query__json_returning__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__json_returning__free_unpacked
+                     (PgQuery__JsonReturning *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__JsonValueExpr methods */
+void   pg_query__json_value_expr__init
+                     (PgQuery__JsonValueExpr         *message);
+size_t pg_query__json_value_expr__get_packed_size
+                     (const PgQuery__JsonValueExpr   *message);
+size_t pg_query__json_value_expr__pack
+                     (const PgQuery__JsonValueExpr   *message,
+                      uint8_t             *out);
+size_t pg_query__json_value_expr__pack_to_buffer
+                     (const PgQuery__JsonValueExpr   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__JsonValueExpr *
+       pg_query__json_value_expr__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__json_value_expr__free_unpacked
+                     (PgQuery__JsonValueExpr *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__JsonConstructorExpr methods */
+void   pg_query__json_constructor_expr__init
+                     (PgQuery__JsonConstructorExpr         *message);
+size_t pg_query__json_constructor_expr__get_packed_size
+                     (const PgQuery__JsonConstructorExpr   *message);
+size_t pg_query__json_constructor_expr__pack
+                     (const PgQuery__JsonConstructorExpr   *message,
+                      uint8_t             *out);
+size_t pg_query__json_constructor_expr__pack_to_buffer
+                     (const PgQuery__JsonConstructorExpr   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__JsonConstructorExpr *
+       pg_query__json_constructor_expr__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__json_constructor_expr__free_unpacked
+                     (PgQuery__JsonConstructorExpr *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__JsonIsPredicate methods */
+void   pg_query__json_is_predicate__init
+                     (PgQuery__JsonIsPredicate         *message);
+size_t pg_query__json_is_predicate__get_packed_size
+                     (const PgQuery__JsonIsPredicate   *message);
+size_t pg_query__json_is_predicate__pack
+                     (const PgQuery__JsonIsPredicate   *message,
+                      uint8_t             *out);
+size_t pg_query__json_is_predicate__pack_to_buffer
+                     (const PgQuery__JsonIsPredicate   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__JsonIsPredicate *
+       pg_query__json_is_predicate__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__json_is_predicate__free_unpacked
+                     (PgQuery__JsonIsPredicate *message,
+                      ProtobufCAllocator *allocator);
 /* PgQuery__NullTest methods */
 void   pg_query__null_test__init
                      (PgQuery__NullTest         *message);
@@ -6880,63 +7057,6 @@ PgQuery__OnConflictExpr *
 void   pg_query__on_conflict_expr__free_unpacked
                      (PgQuery__OnConflictExpr *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__IntoClause methods */
-void   pg_query__into_clause__init
-                     (PgQuery__IntoClause         *message);
-size_t pg_query__into_clause__get_packed_size
-                     (const PgQuery__IntoClause   *message);
-size_t pg_query__into_clause__pack
-                     (const PgQuery__IntoClause   *message,
-                      uint8_t             *out);
-size_t pg_query__into_clause__pack_to_buffer
-                     (const PgQuery__IntoClause   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__IntoClause *
-       pg_query__into_clause__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__into_clause__free_unpacked
-                     (PgQuery__IntoClause *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__MergeAction methods */
-void   pg_query__merge_action__init
-                     (PgQuery__MergeAction         *message);
-size_t pg_query__merge_action__get_packed_size
-                     (const PgQuery__MergeAction   *message);
-size_t pg_query__merge_action__pack
-                     (const PgQuery__MergeAction   *message,
-                      uint8_t             *out);
-size_t pg_query__merge_action__pack_to_buffer
-                     (const PgQuery__MergeAction   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__MergeAction *
-       pg_query__merge_action__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__merge_action__free_unpacked
-                     (PgQuery__MergeAction *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__RawStmt methods */
-void   pg_query__raw_stmt__init
-                     (PgQuery__RawStmt         *message);
-size_t pg_query__raw_stmt__get_packed_size
-                     (const PgQuery__RawStmt   *message);
-size_t pg_query__raw_stmt__pack
-                     (const PgQuery__RawStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__raw_stmt__pack_to_buffer
-                     (const PgQuery__RawStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__RawStmt *
-       pg_query__raw_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__raw_stmt__free_unpacked
-                     (PgQuery__RawStmt *message,
-                      ProtobufCAllocator *allocator);
 /* PgQuery__Query methods */
 void   pg_query__query__init
                      (PgQuery__Query         *message);
@@ -6956,2247 +7076,24 @@ PgQuery__Query *
 void   pg_query__query__free_unpacked
                      (PgQuery__Query *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__InsertStmt methods */
-void   pg_query__insert_stmt__init
-                     (PgQuery__InsertStmt         *message);
-size_t pg_query__insert_stmt__get_packed_size
-                     (const PgQuery__InsertStmt   *message);
-size_t pg_query__insert_stmt__pack
-                     (const PgQuery__InsertStmt   *message,
+/* PgQuery__TypeName methods */
+void   pg_query__type_name__init
+                     (PgQuery__TypeName         *message);
+size_t pg_query__type_name__get_packed_size
+                     (const PgQuery__TypeName   *message);
+size_t pg_query__type_name__pack
+                     (const PgQuery__TypeName   *message,
                       uint8_t             *out);
-size_t pg_query__insert_stmt__pack_to_buffer
-                     (const PgQuery__InsertStmt   *message,
+size_t pg_query__type_name__pack_to_buffer
+                     (const PgQuery__TypeName   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__InsertStmt *
-       pg_query__insert_stmt__unpack
+PgQuery__TypeName *
+       pg_query__type_name__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__insert_stmt__free_unpacked
-                     (PgQuery__InsertStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DeleteStmt methods */
-void   pg_query__delete_stmt__init
-                     (PgQuery__DeleteStmt         *message);
-size_t pg_query__delete_stmt__get_packed_size
-                     (const PgQuery__DeleteStmt   *message);
-size_t pg_query__delete_stmt__pack
-                     (const PgQuery__DeleteStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__delete_stmt__pack_to_buffer
-                     (const PgQuery__DeleteStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DeleteStmt *
-       pg_query__delete_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__delete_stmt__free_unpacked
-                     (PgQuery__DeleteStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__UpdateStmt methods */
-void   pg_query__update_stmt__init
-                     (PgQuery__UpdateStmt         *message);
-size_t pg_query__update_stmt__get_packed_size
-                     (const PgQuery__UpdateStmt   *message);
-size_t pg_query__update_stmt__pack
-                     (const PgQuery__UpdateStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__update_stmt__pack_to_buffer
-                     (const PgQuery__UpdateStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__UpdateStmt *
-       pg_query__update_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__update_stmt__free_unpacked
-                     (PgQuery__UpdateStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__MergeStmt methods */
-void   pg_query__merge_stmt__init
-                     (PgQuery__MergeStmt         *message);
-size_t pg_query__merge_stmt__get_packed_size
-                     (const PgQuery__MergeStmt   *message);
-size_t pg_query__merge_stmt__pack
-                     (const PgQuery__MergeStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__merge_stmt__pack_to_buffer
-                     (const PgQuery__MergeStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__MergeStmt *
-       pg_query__merge_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__merge_stmt__free_unpacked
-                     (PgQuery__MergeStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__SelectStmt methods */
-void   pg_query__select_stmt__init
-                     (PgQuery__SelectStmt         *message);
-size_t pg_query__select_stmt__get_packed_size
-                     (const PgQuery__SelectStmt   *message);
-size_t pg_query__select_stmt__pack
-                     (const PgQuery__SelectStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__select_stmt__pack_to_buffer
-                     (const PgQuery__SelectStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__SelectStmt *
-       pg_query__select_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__select_stmt__free_unpacked
-                     (PgQuery__SelectStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ReturnStmt methods */
-void   pg_query__return_stmt__init
-                     (PgQuery__ReturnStmt         *message);
-size_t pg_query__return_stmt__get_packed_size
-                     (const PgQuery__ReturnStmt   *message);
-size_t pg_query__return_stmt__pack
-                     (const PgQuery__ReturnStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__return_stmt__pack_to_buffer
-                     (const PgQuery__ReturnStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ReturnStmt *
-       pg_query__return_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__return_stmt__free_unpacked
-                     (PgQuery__ReturnStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__PLAssignStmt methods */
-void   pg_query__plassign_stmt__init
-                     (PgQuery__PLAssignStmt         *message);
-size_t pg_query__plassign_stmt__get_packed_size
-                     (const PgQuery__PLAssignStmt   *message);
-size_t pg_query__plassign_stmt__pack
-                     (const PgQuery__PLAssignStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__plassign_stmt__pack_to_buffer
-                     (const PgQuery__PLAssignStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__PLAssignStmt *
-       pg_query__plassign_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__plassign_stmt__free_unpacked
-                     (PgQuery__PLAssignStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTableStmt methods */
-void   pg_query__alter_table_stmt__init
-                     (PgQuery__AlterTableStmt         *message);
-size_t pg_query__alter_table_stmt__get_packed_size
-                     (const PgQuery__AlterTableStmt   *message);
-size_t pg_query__alter_table_stmt__pack
-                     (const PgQuery__AlterTableStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_table_stmt__pack_to_buffer
-                     (const PgQuery__AlterTableStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTableStmt *
-       pg_query__alter_table_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_table_stmt__free_unpacked
-                     (PgQuery__AlterTableStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTableCmd methods */
-void   pg_query__alter_table_cmd__init
-                     (PgQuery__AlterTableCmd         *message);
-size_t pg_query__alter_table_cmd__get_packed_size
-                     (const PgQuery__AlterTableCmd   *message);
-size_t pg_query__alter_table_cmd__pack
-                     (const PgQuery__AlterTableCmd   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_table_cmd__pack_to_buffer
-                     (const PgQuery__AlterTableCmd   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTableCmd *
-       pg_query__alter_table_cmd__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_table_cmd__free_unpacked
-                     (PgQuery__AlterTableCmd *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterDomainStmt methods */
-void   pg_query__alter_domain_stmt__init
-                     (PgQuery__AlterDomainStmt         *message);
-size_t pg_query__alter_domain_stmt__get_packed_size
-                     (const PgQuery__AlterDomainStmt   *message);
-size_t pg_query__alter_domain_stmt__pack
-                     (const PgQuery__AlterDomainStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_domain_stmt__pack_to_buffer
-                     (const PgQuery__AlterDomainStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterDomainStmt *
-       pg_query__alter_domain_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_domain_stmt__free_unpacked
-                     (PgQuery__AlterDomainStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__SetOperationStmt methods */
-void   pg_query__set_operation_stmt__init
-                     (PgQuery__SetOperationStmt         *message);
-size_t pg_query__set_operation_stmt__get_packed_size
-                     (const PgQuery__SetOperationStmt   *message);
-size_t pg_query__set_operation_stmt__pack
-                     (const PgQuery__SetOperationStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__set_operation_stmt__pack_to_buffer
-                     (const PgQuery__SetOperationStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__SetOperationStmt *
-       pg_query__set_operation_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__set_operation_stmt__free_unpacked
-                     (PgQuery__SetOperationStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__GrantStmt methods */
-void   pg_query__grant_stmt__init
-                     (PgQuery__GrantStmt         *message);
-size_t pg_query__grant_stmt__get_packed_size
-                     (const PgQuery__GrantStmt   *message);
-size_t pg_query__grant_stmt__pack
-                     (const PgQuery__GrantStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__grant_stmt__pack_to_buffer
-                     (const PgQuery__GrantStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__GrantStmt *
-       pg_query__grant_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__grant_stmt__free_unpacked
-                     (PgQuery__GrantStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__GrantRoleStmt methods */
-void   pg_query__grant_role_stmt__init
-                     (PgQuery__GrantRoleStmt         *message);
-size_t pg_query__grant_role_stmt__get_packed_size
-                     (const PgQuery__GrantRoleStmt   *message);
-size_t pg_query__grant_role_stmt__pack
-                     (const PgQuery__GrantRoleStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__grant_role_stmt__pack_to_buffer
-                     (const PgQuery__GrantRoleStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__GrantRoleStmt *
-       pg_query__grant_role_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__grant_role_stmt__free_unpacked
-                     (PgQuery__GrantRoleStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterDefaultPrivilegesStmt methods */
-void   pg_query__alter_default_privileges_stmt__init
-                     (PgQuery__AlterDefaultPrivilegesStmt         *message);
-size_t pg_query__alter_default_privileges_stmt__get_packed_size
-                     (const PgQuery__AlterDefaultPrivilegesStmt   *message);
-size_t pg_query__alter_default_privileges_stmt__pack
-                     (const PgQuery__AlterDefaultPrivilegesStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_default_privileges_stmt__pack_to_buffer
-                     (const PgQuery__AlterDefaultPrivilegesStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterDefaultPrivilegesStmt *
-       pg_query__alter_default_privileges_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_default_privileges_stmt__free_unpacked
-                     (PgQuery__AlterDefaultPrivilegesStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ClosePortalStmt methods */
-void   pg_query__close_portal_stmt__init
-                     (PgQuery__ClosePortalStmt         *message);
-size_t pg_query__close_portal_stmt__get_packed_size
-                     (const PgQuery__ClosePortalStmt   *message);
-size_t pg_query__close_portal_stmt__pack
-                     (const PgQuery__ClosePortalStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__close_portal_stmt__pack_to_buffer
-                     (const PgQuery__ClosePortalStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ClosePortalStmt *
-       pg_query__close_portal_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__close_portal_stmt__free_unpacked
-                     (PgQuery__ClosePortalStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ClusterStmt methods */
-void   pg_query__cluster_stmt__init
-                     (PgQuery__ClusterStmt         *message);
-size_t pg_query__cluster_stmt__get_packed_size
-                     (const PgQuery__ClusterStmt   *message);
-size_t pg_query__cluster_stmt__pack
-                     (const PgQuery__ClusterStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__cluster_stmt__pack_to_buffer
-                     (const PgQuery__ClusterStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ClusterStmt *
-       pg_query__cluster_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__cluster_stmt__free_unpacked
-                     (PgQuery__ClusterStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CopyStmt methods */
-void   pg_query__copy_stmt__init
-                     (PgQuery__CopyStmt         *message);
-size_t pg_query__copy_stmt__get_packed_size
-                     (const PgQuery__CopyStmt   *message);
-size_t pg_query__copy_stmt__pack
-                     (const PgQuery__CopyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__copy_stmt__pack_to_buffer
-                     (const PgQuery__CopyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CopyStmt *
-       pg_query__copy_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__copy_stmt__free_unpacked
-                     (PgQuery__CopyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateStmt methods */
-void   pg_query__create_stmt__init
-                     (PgQuery__CreateStmt         *message);
-size_t pg_query__create_stmt__get_packed_size
-                     (const PgQuery__CreateStmt   *message);
-size_t pg_query__create_stmt__pack
-                     (const PgQuery__CreateStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_stmt__pack_to_buffer
-                     (const PgQuery__CreateStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateStmt *
-       pg_query__create_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_stmt__free_unpacked
-                     (PgQuery__CreateStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DefineStmt methods */
-void   pg_query__define_stmt__init
-                     (PgQuery__DefineStmt         *message);
-size_t pg_query__define_stmt__get_packed_size
-                     (const PgQuery__DefineStmt   *message);
-size_t pg_query__define_stmt__pack
-                     (const PgQuery__DefineStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__define_stmt__pack_to_buffer
-                     (const PgQuery__DefineStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DefineStmt *
-       pg_query__define_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__define_stmt__free_unpacked
-                     (PgQuery__DefineStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropStmt methods */
-void   pg_query__drop_stmt__init
-                     (PgQuery__DropStmt         *message);
-size_t pg_query__drop_stmt__get_packed_size
-                     (const PgQuery__DropStmt   *message);
-size_t pg_query__drop_stmt__pack
-                     (const PgQuery__DropStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_stmt__pack_to_buffer
-                     (const PgQuery__DropStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropStmt *
-       pg_query__drop_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_stmt__free_unpacked
-                     (PgQuery__DropStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__TruncateStmt methods */
-void   pg_query__truncate_stmt__init
-                     (PgQuery__TruncateStmt         *message);
-size_t pg_query__truncate_stmt__get_packed_size
-                     (const PgQuery__TruncateStmt   *message);
-size_t pg_query__truncate_stmt__pack
-                     (const PgQuery__TruncateStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__truncate_stmt__pack_to_buffer
-                     (const PgQuery__TruncateStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__TruncateStmt *
-       pg_query__truncate_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__truncate_stmt__free_unpacked
-                     (PgQuery__TruncateStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CommentStmt methods */
-void   pg_query__comment_stmt__init
-                     (PgQuery__CommentStmt         *message);
-size_t pg_query__comment_stmt__get_packed_size
-                     (const PgQuery__CommentStmt   *message);
-size_t pg_query__comment_stmt__pack
-                     (const PgQuery__CommentStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__comment_stmt__pack_to_buffer
-                     (const PgQuery__CommentStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CommentStmt *
-       pg_query__comment_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__comment_stmt__free_unpacked
-                     (PgQuery__CommentStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__FetchStmt methods */
-void   pg_query__fetch_stmt__init
-                     (PgQuery__FetchStmt         *message);
-size_t pg_query__fetch_stmt__get_packed_size
-                     (const PgQuery__FetchStmt   *message);
-size_t pg_query__fetch_stmt__pack
-                     (const PgQuery__FetchStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__fetch_stmt__pack_to_buffer
-                     (const PgQuery__FetchStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__FetchStmt *
-       pg_query__fetch_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__fetch_stmt__free_unpacked
-                     (PgQuery__FetchStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__IndexStmt methods */
-void   pg_query__index_stmt__init
-                     (PgQuery__IndexStmt         *message);
-size_t pg_query__index_stmt__get_packed_size
-                     (const PgQuery__IndexStmt   *message);
-size_t pg_query__index_stmt__pack
-                     (const PgQuery__IndexStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__index_stmt__pack_to_buffer
-                     (const PgQuery__IndexStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__IndexStmt *
-       pg_query__index_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__index_stmt__free_unpacked
-                     (PgQuery__IndexStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateFunctionStmt methods */
-void   pg_query__create_function_stmt__init
-                     (PgQuery__CreateFunctionStmt         *message);
-size_t pg_query__create_function_stmt__get_packed_size
-                     (const PgQuery__CreateFunctionStmt   *message);
-size_t pg_query__create_function_stmt__pack
-                     (const PgQuery__CreateFunctionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_function_stmt__pack_to_buffer
-                     (const PgQuery__CreateFunctionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateFunctionStmt *
-       pg_query__create_function_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_function_stmt__free_unpacked
-                     (PgQuery__CreateFunctionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterFunctionStmt methods */
-void   pg_query__alter_function_stmt__init
-                     (PgQuery__AlterFunctionStmt         *message);
-size_t pg_query__alter_function_stmt__get_packed_size
-                     (const PgQuery__AlterFunctionStmt   *message);
-size_t pg_query__alter_function_stmt__pack
-                     (const PgQuery__AlterFunctionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_function_stmt__pack_to_buffer
-                     (const PgQuery__AlterFunctionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterFunctionStmt *
-       pg_query__alter_function_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_function_stmt__free_unpacked
-                     (PgQuery__AlterFunctionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DoStmt methods */
-void   pg_query__do_stmt__init
-                     (PgQuery__DoStmt         *message);
-size_t pg_query__do_stmt__get_packed_size
-                     (const PgQuery__DoStmt   *message);
-size_t pg_query__do_stmt__pack
-                     (const PgQuery__DoStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__do_stmt__pack_to_buffer
-                     (const PgQuery__DoStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DoStmt *
-       pg_query__do_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__do_stmt__free_unpacked
-                     (PgQuery__DoStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__RenameStmt methods */
-void   pg_query__rename_stmt__init
-                     (PgQuery__RenameStmt         *message);
-size_t pg_query__rename_stmt__get_packed_size
-                     (const PgQuery__RenameStmt   *message);
-size_t pg_query__rename_stmt__pack
-                     (const PgQuery__RenameStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__rename_stmt__pack_to_buffer
-                     (const PgQuery__RenameStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__RenameStmt *
-       pg_query__rename_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__rename_stmt__free_unpacked
-                     (PgQuery__RenameStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__RuleStmt methods */
-void   pg_query__rule_stmt__init
-                     (PgQuery__RuleStmt         *message);
-size_t pg_query__rule_stmt__get_packed_size
-                     (const PgQuery__RuleStmt   *message);
-size_t pg_query__rule_stmt__pack
-                     (const PgQuery__RuleStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__rule_stmt__pack_to_buffer
-                     (const PgQuery__RuleStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__RuleStmt *
-       pg_query__rule_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__rule_stmt__free_unpacked
-                     (PgQuery__RuleStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__NotifyStmt methods */
-void   pg_query__notify_stmt__init
-                     (PgQuery__NotifyStmt         *message);
-size_t pg_query__notify_stmt__get_packed_size
-                     (const PgQuery__NotifyStmt   *message);
-size_t pg_query__notify_stmt__pack
-                     (const PgQuery__NotifyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__notify_stmt__pack_to_buffer
-                     (const PgQuery__NotifyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__NotifyStmt *
-       pg_query__notify_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__notify_stmt__free_unpacked
-                     (PgQuery__NotifyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ListenStmt methods */
-void   pg_query__listen_stmt__init
-                     (PgQuery__ListenStmt         *message);
-size_t pg_query__listen_stmt__get_packed_size
-                     (const PgQuery__ListenStmt   *message);
-size_t pg_query__listen_stmt__pack
-                     (const PgQuery__ListenStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__listen_stmt__pack_to_buffer
-                     (const PgQuery__ListenStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ListenStmt *
-       pg_query__listen_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__listen_stmt__free_unpacked
-                     (PgQuery__ListenStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__UnlistenStmt methods */
-void   pg_query__unlisten_stmt__init
-                     (PgQuery__UnlistenStmt         *message);
-size_t pg_query__unlisten_stmt__get_packed_size
-                     (const PgQuery__UnlistenStmt   *message);
-size_t pg_query__unlisten_stmt__pack
-                     (const PgQuery__UnlistenStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__unlisten_stmt__pack_to_buffer
-                     (const PgQuery__UnlistenStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__UnlistenStmt *
-       pg_query__unlisten_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__unlisten_stmt__free_unpacked
-                     (PgQuery__UnlistenStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__TransactionStmt methods */
-void   pg_query__transaction_stmt__init
-                     (PgQuery__TransactionStmt         *message);
-size_t pg_query__transaction_stmt__get_packed_size
-                     (const PgQuery__TransactionStmt   *message);
-size_t pg_query__transaction_stmt__pack
-                     (const PgQuery__TransactionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__transaction_stmt__pack_to_buffer
-                     (const PgQuery__TransactionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__TransactionStmt *
-       pg_query__transaction_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__transaction_stmt__free_unpacked
-                     (PgQuery__TransactionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ViewStmt methods */
-void   pg_query__view_stmt__init
-                     (PgQuery__ViewStmt         *message);
-size_t pg_query__view_stmt__get_packed_size
-                     (const PgQuery__ViewStmt   *message);
-size_t pg_query__view_stmt__pack
-                     (const PgQuery__ViewStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__view_stmt__pack_to_buffer
-                     (const PgQuery__ViewStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ViewStmt *
-       pg_query__view_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__view_stmt__free_unpacked
-                     (PgQuery__ViewStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__LoadStmt methods */
-void   pg_query__load_stmt__init
-                     (PgQuery__LoadStmt         *message);
-size_t pg_query__load_stmt__get_packed_size
-                     (const PgQuery__LoadStmt   *message);
-size_t pg_query__load_stmt__pack
-                     (const PgQuery__LoadStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__load_stmt__pack_to_buffer
-                     (const PgQuery__LoadStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__LoadStmt *
-       pg_query__load_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__load_stmt__free_unpacked
-                     (PgQuery__LoadStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateDomainStmt methods */
-void   pg_query__create_domain_stmt__init
-                     (PgQuery__CreateDomainStmt         *message);
-size_t pg_query__create_domain_stmt__get_packed_size
-                     (const PgQuery__CreateDomainStmt   *message);
-size_t pg_query__create_domain_stmt__pack
-                     (const PgQuery__CreateDomainStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_domain_stmt__pack_to_buffer
-                     (const PgQuery__CreateDomainStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateDomainStmt *
-       pg_query__create_domain_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_domain_stmt__free_unpacked
-                     (PgQuery__CreateDomainStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreatedbStmt methods */
-void   pg_query__createdb_stmt__init
-                     (PgQuery__CreatedbStmt         *message);
-size_t pg_query__createdb_stmt__get_packed_size
-                     (const PgQuery__CreatedbStmt   *message);
-size_t pg_query__createdb_stmt__pack
-                     (const PgQuery__CreatedbStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__createdb_stmt__pack_to_buffer
-                     (const PgQuery__CreatedbStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreatedbStmt *
-       pg_query__createdb_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__createdb_stmt__free_unpacked
-                     (PgQuery__CreatedbStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropdbStmt methods */
-void   pg_query__dropdb_stmt__init
-                     (PgQuery__DropdbStmt         *message);
-size_t pg_query__dropdb_stmt__get_packed_size
-                     (const PgQuery__DropdbStmt   *message);
-size_t pg_query__dropdb_stmt__pack
-                     (const PgQuery__DropdbStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__dropdb_stmt__pack_to_buffer
-                     (const PgQuery__DropdbStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropdbStmt *
-       pg_query__dropdb_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__dropdb_stmt__free_unpacked
-                     (PgQuery__DropdbStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__VacuumStmt methods */
-void   pg_query__vacuum_stmt__init
-                     (PgQuery__VacuumStmt         *message);
-size_t pg_query__vacuum_stmt__get_packed_size
-                     (const PgQuery__VacuumStmt   *message);
-size_t pg_query__vacuum_stmt__pack
-                     (const PgQuery__VacuumStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__vacuum_stmt__pack_to_buffer
-                     (const PgQuery__VacuumStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__VacuumStmt *
-       pg_query__vacuum_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__vacuum_stmt__free_unpacked
-                     (PgQuery__VacuumStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ExplainStmt methods */
-void   pg_query__explain_stmt__init
-                     (PgQuery__ExplainStmt         *message);
-size_t pg_query__explain_stmt__get_packed_size
-                     (const PgQuery__ExplainStmt   *message);
-size_t pg_query__explain_stmt__pack
-                     (const PgQuery__ExplainStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__explain_stmt__pack_to_buffer
-                     (const PgQuery__ExplainStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ExplainStmt *
-       pg_query__explain_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__explain_stmt__free_unpacked
-                     (PgQuery__ExplainStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateTableAsStmt methods */
-void   pg_query__create_table_as_stmt__init
-                     (PgQuery__CreateTableAsStmt         *message);
-size_t pg_query__create_table_as_stmt__get_packed_size
-                     (const PgQuery__CreateTableAsStmt   *message);
-size_t pg_query__create_table_as_stmt__pack
-                     (const PgQuery__CreateTableAsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_table_as_stmt__pack_to_buffer
-                     (const PgQuery__CreateTableAsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateTableAsStmt *
-       pg_query__create_table_as_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_table_as_stmt__free_unpacked
-                     (PgQuery__CreateTableAsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateSeqStmt methods */
-void   pg_query__create_seq_stmt__init
-                     (PgQuery__CreateSeqStmt         *message);
-size_t pg_query__create_seq_stmt__get_packed_size
-                     (const PgQuery__CreateSeqStmt   *message);
-size_t pg_query__create_seq_stmt__pack
-                     (const PgQuery__CreateSeqStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_seq_stmt__pack_to_buffer
-                     (const PgQuery__CreateSeqStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateSeqStmt *
-       pg_query__create_seq_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_seq_stmt__free_unpacked
-                     (PgQuery__CreateSeqStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterSeqStmt methods */
-void   pg_query__alter_seq_stmt__init
-                     (PgQuery__AlterSeqStmt         *message);
-size_t pg_query__alter_seq_stmt__get_packed_size
-                     (const PgQuery__AlterSeqStmt   *message);
-size_t pg_query__alter_seq_stmt__pack
-                     (const PgQuery__AlterSeqStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_seq_stmt__pack_to_buffer
-                     (const PgQuery__AlterSeqStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterSeqStmt *
-       pg_query__alter_seq_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_seq_stmt__free_unpacked
-                     (PgQuery__AlterSeqStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__VariableSetStmt methods */
-void   pg_query__variable_set_stmt__init
-                     (PgQuery__VariableSetStmt         *message);
-size_t pg_query__variable_set_stmt__get_packed_size
-                     (const PgQuery__VariableSetStmt   *message);
-size_t pg_query__variable_set_stmt__pack
-                     (const PgQuery__VariableSetStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__variable_set_stmt__pack_to_buffer
-                     (const PgQuery__VariableSetStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__VariableSetStmt *
-       pg_query__variable_set_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__variable_set_stmt__free_unpacked
-                     (PgQuery__VariableSetStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__VariableShowStmt methods */
-void   pg_query__variable_show_stmt__init
-                     (PgQuery__VariableShowStmt         *message);
-size_t pg_query__variable_show_stmt__get_packed_size
-                     (const PgQuery__VariableShowStmt   *message);
-size_t pg_query__variable_show_stmt__pack
-                     (const PgQuery__VariableShowStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__variable_show_stmt__pack_to_buffer
-                     (const PgQuery__VariableShowStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__VariableShowStmt *
-       pg_query__variable_show_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__variable_show_stmt__free_unpacked
-                     (PgQuery__VariableShowStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DiscardStmt methods */
-void   pg_query__discard_stmt__init
-                     (PgQuery__DiscardStmt         *message);
-size_t pg_query__discard_stmt__get_packed_size
-                     (const PgQuery__DiscardStmt   *message);
-size_t pg_query__discard_stmt__pack
-                     (const PgQuery__DiscardStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__discard_stmt__pack_to_buffer
-                     (const PgQuery__DiscardStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DiscardStmt *
-       pg_query__discard_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__discard_stmt__free_unpacked
-                     (PgQuery__DiscardStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateTrigStmt methods */
-void   pg_query__create_trig_stmt__init
-                     (PgQuery__CreateTrigStmt         *message);
-size_t pg_query__create_trig_stmt__get_packed_size
-                     (const PgQuery__CreateTrigStmt   *message);
-size_t pg_query__create_trig_stmt__pack
-                     (const PgQuery__CreateTrigStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_trig_stmt__pack_to_buffer
-                     (const PgQuery__CreateTrigStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateTrigStmt *
-       pg_query__create_trig_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_trig_stmt__free_unpacked
-                     (PgQuery__CreateTrigStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreatePLangStmt methods */
-void   pg_query__create_plang_stmt__init
-                     (PgQuery__CreatePLangStmt         *message);
-size_t pg_query__create_plang_stmt__get_packed_size
-                     (const PgQuery__CreatePLangStmt   *message);
-size_t pg_query__create_plang_stmt__pack
-                     (const PgQuery__CreatePLangStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_plang_stmt__pack_to_buffer
-                     (const PgQuery__CreatePLangStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreatePLangStmt *
-       pg_query__create_plang_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_plang_stmt__free_unpacked
-                     (PgQuery__CreatePLangStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateRoleStmt methods */
-void   pg_query__create_role_stmt__init
-                     (PgQuery__CreateRoleStmt         *message);
-size_t pg_query__create_role_stmt__get_packed_size
-                     (const PgQuery__CreateRoleStmt   *message);
-size_t pg_query__create_role_stmt__pack
-                     (const PgQuery__CreateRoleStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_role_stmt__pack_to_buffer
-                     (const PgQuery__CreateRoleStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateRoleStmt *
-       pg_query__create_role_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_role_stmt__free_unpacked
-                     (PgQuery__CreateRoleStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterRoleStmt methods */
-void   pg_query__alter_role_stmt__init
-                     (PgQuery__AlterRoleStmt         *message);
-size_t pg_query__alter_role_stmt__get_packed_size
-                     (const PgQuery__AlterRoleStmt   *message);
-size_t pg_query__alter_role_stmt__pack
-                     (const PgQuery__AlterRoleStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_role_stmt__pack_to_buffer
-                     (const PgQuery__AlterRoleStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterRoleStmt *
-       pg_query__alter_role_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_role_stmt__free_unpacked
-                     (PgQuery__AlterRoleStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropRoleStmt methods */
-void   pg_query__drop_role_stmt__init
-                     (PgQuery__DropRoleStmt         *message);
-size_t pg_query__drop_role_stmt__get_packed_size
-                     (const PgQuery__DropRoleStmt   *message);
-size_t pg_query__drop_role_stmt__pack
-                     (const PgQuery__DropRoleStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_role_stmt__pack_to_buffer
-                     (const PgQuery__DropRoleStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropRoleStmt *
-       pg_query__drop_role_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_role_stmt__free_unpacked
-                     (PgQuery__DropRoleStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__LockStmt methods */
-void   pg_query__lock_stmt__init
-                     (PgQuery__LockStmt         *message);
-size_t pg_query__lock_stmt__get_packed_size
-                     (const PgQuery__LockStmt   *message);
-size_t pg_query__lock_stmt__pack
-                     (const PgQuery__LockStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__lock_stmt__pack_to_buffer
-                     (const PgQuery__LockStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__LockStmt *
-       pg_query__lock_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__lock_stmt__free_unpacked
-                     (PgQuery__LockStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ConstraintsSetStmt methods */
-void   pg_query__constraints_set_stmt__init
-                     (PgQuery__ConstraintsSetStmt         *message);
-size_t pg_query__constraints_set_stmt__get_packed_size
-                     (const PgQuery__ConstraintsSetStmt   *message);
-size_t pg_query__constraints_set_stmt__pack
-                     (const PgQuery__ConstraintsSetStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__constraints_set_stmt__pack_to_buffer
-                     (const PgQuery__ConstraintsSetStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ConstraintsSetStmt *
-       pg_query__constraints_set_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__constraints_set_stmt__free_unpacked
-                     (PgQuery__ConstraintsSetStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ReindexStmt methods */
-void   pg_query__reindex_stmt__init
-                     (PgQuery__ReindexStmt         *message);
-size_t pg_query__reindex_stmt__get_packed_size
-                     (const PgQuery__ReindexStmt   *message);
-size_t pg_query__reindex_stmt__pack
-                     (const PgQuery__ReindexStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__reindex_stmt__pack_to_buffer
-                     (const PgQuery__ReindexStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ReindexStmt *
-       pg_query__reindex_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__reindex_stmt__free_unpacked
-                     (PgQuery__ReindexStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CheckPointStmt methods */
-void   pg_query__check_point_stmt__init
-                     (PgQuery__CheckPointStmt         *message);
-size_t pg_query__check_point_stmt__get_packed_size
-                     (const PgQuery__CheckPointStmt   *message);
-size_t pg_query__check_point_stmt__pack
-                     (const PgQuery__CheckPointStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__check_point_stmt__pack_to_buffer
-                     (const PgQuery__CheckPointStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CheckPointStmt *
-       pg_query__check_point_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__check_point_stmt__free_unpacked
-                     (PgQuery__CheckPointStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateSchemaStmt methods */
-void   pg_query__create_schema_stmt__init
-                     (PgQuery__CreateSchemaStmt         *message);
-size_t pg_query__create_schema_stmt__get_packed_size
-                     (const PgQuery__CreateSchemaStmt   *message);
-size_t pg_query__create_schema_stmt__pack
-                     (const PgQuery__CreateSchemaStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_schema_stmt__pack_to_buffer
-                     (const PgQuery__CreateSchemaStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateSchemaStmt *
-       pg_query__create_schema_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_schema_stmt__free_unpacked
-                     (PgQuery__CreateSchemaStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterDatabaseStmt methods */
-void   pg_query__alter_database_stmt__init
-                     (PgQuery__AlterDatabaseStmt         *message);
-size_t pg_query__alter_database_stmt__get_packed_size
-                     (const PgQuery__AlterDatabaseStmt   *message);
-size_t pg_query__alter_database_stmt__pack
-                     (const PgQuery__AlterDatabaseStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_database_stmt__pack_to_buffer
-                     (const PgQuery__AlterDatabaseStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterDatabaseStmt *
-       pg_query__alter_database_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_database_stmt__free_unpacked
-                     (PgQuery__AlterDatabaseStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterDatabaseRefreshCollStmt methods */
-void   pg_query__alter_database_refresh_coll_stmt__init
-                     (PgQuery__AlterDatabaseRefreshCollStmt         *message);
-size_t pg_query__alter_database_refresh_coll_stmt__get_packed_size
-                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message);
-size_t pg_query__alter_database_refresh_coll_stmt__pack
-                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_database_refresh_coll_stmt__pack_to_buffer
-                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterDatabaseRefreshCollStmt *
-       pg_query__alter_database_refresh_coll_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_database_refresh_coll_stmt__free_unpacked
-                     (PgQuery__AlterDatabaseRefreshCollStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterDatabaseSetStmt methods */
-void   pg_query__alter_database_set_stmt__init
-                     (PgQuery__AlterDatabaseSetStmt         *message);
-size_t pg_query__alter_database_set_stmt__get_packed_size
-                     (const PgQuery__AlterDatabaseSetStmt   *message);
-size_t pg_query__alter_database_set_stmt__pack
-                     (const PgQuery__AlterDatabaseSetStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_database_set_stmt__pack_to_buffer
-                     (const PgQuery__AlterDatabaseSetStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterDatabaseSetStmt *
-       pg_query__alter_database_set_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_database_set_stmt__free_unpacked
-                     (PgQuery__AlterDatabaseSetStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterRoleSetStmt methods */
-void   pg_query__alter_role_set_stmt__init
-                     (PgQuery__AlterRoleSetStmt         *message);
-size_t pg_query__alter_role_set_stmt__get_packed_size
-                     (const PgQuery__AlterRoleSetStmt   *message);
-size_t pg_query__alter_role_set_stmt__pack
-                     (const PgQuery__AlterRoleSetStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_role_set_stmt__pack_to_buffer
-                     (const PgQuery__AlterRoleSetStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterRoleSetStmt *
-       pg_query__alter_role_set_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_role_set_stmt__free_unpacked
-                     (PgQuery__AlterRoleSetStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateConversionStmt methods */
-void   pg_query__create_conversion_stmt__init
-                     (PgQuery__CreateConversionStmt         *message);
-size_t pg_query__create_conversion_stmt__get_packed_size
-                     (const PgQuery__CreateConversionStmt   *message);
-size_t pg_query__create_conversion_stmt__pack
-                     (const PgQuery__CreateConversionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_conversion_stmt__pack_to_buffer
-                     (const PgQuery__CreateConversionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateConversionStmt *
-       pg_query__create_conversion_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_conversion_stmt__free_unpacked
-                     (PgQuery__CreateConversionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateCastStmt methods */
-void   pg_query__create_cast_stmt__init
-                     (PgQuery__CreateCastStmt         *message);
-size_t pg_query__create_cast_stmt__get_packed_size
-                     (const PgQuery__CreateCastStmt   *message);
-size_t pg_query__create_cast_stmt__pack
-                     (const PgQuery__CreateCastStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_cast_stmt__pack_to_buffer
-                     (const PgQuery__CreateCastStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateCastStmt *
-       pg_query__create_cast_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_cast_stmt__free_unpacked
-                     (PgQuery__CreateCastStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateOpClassStmt methods */
-void   pg_query__create_op_class_stmt__init
-                     (PgQuery__CreateOpClassStmt         *message);
-size_t pg_query__create_op_class_stmt__get_packed_size
-                     (const PgQuery__CreateOpClassStmt   *message);
-size_t pg_query__create_op_class_stmt__pack
-                     (const PgQuery__CreateOpClassStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_op_class_stmt__pack_to_buffer
-                     (const PgQuery__CreateOpClassStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateOpClassStmt *
-       pg_query__create_op_class_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_op_class_stmt__free_unpacked
-                     (PgQuery__CreateOpClassStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateOpFamilyStmt methods */
-void   pg_query__create_op_family_stmt__init
-                     (PgQuery__CreateOpFamilyStmt         *message);
-size_t pg_query__create_op_family_stmt__get_packed_size
-                     (const PgQuery__CreateOpFamilyStmt   *message);
-size_t pg_query__create_op_family_stmt__pack
-                     (const PgQuery__CreateOpFamilyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_op_family_stmt__pack_to_buffer
-                     (const PgQuery__CreateOpFamilyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateOpFamilyStmt *
-       pg_query__create_op_family_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_op_family_stmt__free_unpacked
-                     (PgQuery__CreateOpFamilyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterOpFamilyStmt methods */
-void   pg_query__alter_op_family_stmt__init
-                     (PgQuery__AlterOpFamilyStmt         *message);
-size_t pg_query__alter_op_family_stmt__get_packed_size
-                     (const PgQuery__AlterOpFamilyStmt   *message);
-size_t pg_query__alter_op_family_stmt__pack
-                     (const PgQuery__AlterOpFamilyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_op_family_stmt__pack_to_buffer
-                     (const PgQuery__AlterOpFamilyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterOpFamilyStmt *
-       pg_query__alter_op_family_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_op_family_stmt__free_unpacked
-                     (PgQuery__AlterOpFamilyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__PrepareStmt methods */
-void   pg_query__prepare_stmt__init
-                     (PgQuery__PrepareStmt         *message);
-size_t pg_query__prepare_stmt__get_packed_size
-                     (const PgQuery__PrepareStmt   *message);
-size_t pg_query__prepare_stmt__pack
-                     (const PgQuery__PrepareStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__prepare_stmt__pack_to_buffer
-                     (const PgQuery__PrepareStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__PrepareStmt *
-       pg_query__prepare_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__prepare_stmt__free_unpacked
-                     (PgQuery__PrepareStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ExecuteStmt methods */
-void   pg_query__execute_stmt__init
-                     (PgQuery__ExecuteStmt         *message);
-size_t pg_query__execute_stmt__get_packed_size
-                     (const PgQuery__ExecuteStmt   *message);
-size_t pg_query__execute_stmt__pack
-                     (const PgQuery__ExecuteStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__execute_stmt__pack_to_buffer
-                     (const PgQuery__ExecuteStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ExecuteStmt *
-       pg_query__execute_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__execute_stmt__free_unpacked
-                     (PgQuery__ExecuteStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DeallocateStmt methods */
-void   pg_query__deallocate_stmt__init
-                     (PgQuery__DeallocateStmt         *message);
-size_t pg_query__deallocate_stmt__get_packed_size
-                     (const PgQuery__DeallocateStmt   *message);
-size_t pg_query__deallocate_stmt__pack
-                     (const PgQuery__DeallocateStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__deallocate_stmt__pack_to_buffer
-                     (const PgQuery__DeallocateStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DeallocateStmt *
-       pg_query__deallocate_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__deallocate_stmt__free_unpacked
-                     (PgQuery__DeallocateStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DeclareCursorStmt methods */
-void   pg_query__declare_cursor_stmt__init
-                     (PgQuery__DeclareCursorStmt         *message);
-size_t pg_query__declare_cursor_stmt__get_packed_size
-                     (const PgQuery__DeclareCursorStmt   *message);
-size_t pg_query__declare_cursor_stmt__pack
-                     (const PgQuery__DeclareCursorStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__declare_cursor_stmt__pack_to_buffer
-                     (const PgQuery__DeclareCursorStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DeclareCursorStmt *
-       pg_query__declare_cursor_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__declare_cursor_stmt__free_unpacked
-                     (PgQuery__DeclareCursorStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateTableSpaceStmt methods */
-void   pg_query__create_table_space_stmt__init
-                     (PgQuery__CreateTableSpaceStmt         *message);
-size_t pg_query__create_table_space_stmt__get_packed_size
-                     (const PgQuery__CreateTableSpaceStmt   *message);
-size_t pg_query__create_table_space_stmt__pack
-                     (const PgQuery__CreateTableSpaceStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_table_space_stmt__pack_to_buffer
-                     (const PgQuery__CreateTableSpaceStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateTableSpaceStmt *
-       pg_query__create_table_space_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_table_space_stmt__free_unpacked
-                     (PgQuery__CreateTableSpaceStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropTableSpaceStmt methods */
-void   pg_query__drop_table_space_stmt__init
-                     (PgQuery__DropTableSpaceStmt         *message);
-size_t pg_query__drop_table_space_stmt__get_packed_size
-                     (const PgQuery__DropTableSpaceStmt   *message);
-size_t pg_query__drop_table_space_stmt__pack
-                     (const PgQuery__DropTableSpaceStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_table_space_stmt__pack_to_buffer
-                     (const PgQuery__DropTableSpaceStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropTableSpaceStmt *
-       pg_query__drop_table_space_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_table_space_stmt__free_unpacked
-                     (PgQuery__DropTableSpaceStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterObjectDependsStmt methods */
-void   pg_query__alter_object_depends_stmt__init
-                     (PgQuery__AlterObjectDependsStmt         *message);
-size_t pg_query__alter_object_depends_stmt__get_packed_size
-                     (const PgQuery__AlterObjectDependsStmt   *message);
-size_t pg_query__alter_object_depends_stmt__pack
-                     (const PgQuery__AlterObjectDependsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_object_depends_stmt__pack_to_buffer
-                     (const PgQuery__AlterObjectDependsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterObjectDependsStmt *
-       pg_query__alter_object_depends_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_object_depends_stmt__free_unpacked
-                     (PgQuery__AlterObjectDependsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterObjectSchemaStmt methods */
-void   pg_query__alter_object_schema_stmt__init
-                     (PgQuery__AlterObjectSchemaStmt         *message);
-size_t pg_query__alter_object_schema_stmt__get_packed_size
-                     (const PgQuery__AlterObjectSchemaStmt   *message);
-size_t pg_query__alter_object_schema_stmt__pack
-                     (const PgQuery__AlterObjectSchemaStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_object_schema_stmt__pack_to_buffer
-                     (const PgQuery__AlterObjectSchemaStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterObjectSchemaStmt *
-       pg_query__alter_object_schema_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_object_schema_stmt__free_unpacked
-                     (PgQuery__AlterObjectSchemaStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterOwnerStmt methods */
-void   pg_query__alter_owner_stmt__init
-                     (PgQuery__AlterOwnerStmt         *message);
-size_t pg_query__alter_owner_stmt__get_packed_size
-                     (const PgQuery__AlterOwnerStmt   *message);
-size_t pg_query__alter_owner_stmt__pack
-                     (const PgQuery__AlterOwnerStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_owner_stmt__pack_to_buffer
-                     (const PgQuery__AlterOwnerStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterOwnerStmt *
-       pg_query__alter_owner_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_owner_stmt__free_unpacked
-                     (PgQuery__AlterOwnerStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterOperatorStmt methods */
-void   pg_query__alter_operator_stmt__init
-                     (PgQuery__AlterOperatorStmt         *message);
-size_t pg_query__alter_operator_stmt__get_packed_size
-                     (const PgQuery__AlterOperatorStmt   *message);
-size_t pg_query__alter_operator_stmt__pack
-                     (const PgQuery__AlterOperatorStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_operator_stmt__pack_to_buffer
-                     (const PgQuery__AlterOperatorStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterOperatorStmt *
-       pg_query__alter_operator_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_operator_stmt__free_unpacked
-                     (PgQuery__AlterOperatorStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTypeStmt methods */
-void   pg_query__alter_type_stmt__init
-                     (PgQuery__AlterTypeStmt         *message);
-size_t pg_query__alter_type_stmt__get_packed_size
-                     (const PgQuery__AlterTypeStmt   *message);
-size_t pg_query__alter_type_stmt__pack
-                     (const PgQuery__AlterTypeStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_type_stmt__pack_to_buffer
-                     (const PgQuery__AlterTypeStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTypeStmt *
-       pg_query__alter_type_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_type_stmt__free_unpacked
-                     (PgQuery__AlterTypeStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropOwnedStmt methods */
-void   pg_query__drop_owned_stmt__init
-                     (PgQuery__DropOwnedStmt         *message);
-size_t pg_query__drop_owned_stmt__get_packed_size
-                     (const PgQuery__DropOwnedStmt   *message);
-size_t pg_query__drop_owned_stmt__pack
-                     (const PgQuery__DropOwnedStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_owned_stmt__pack_to_buffer
-                     (const PgQuery__DropOwnedStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropOwnedStmt *
-       pg_query__drop_owned_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_owned_stmt__free_unpacked
-                     (PgQuery__DropOwnedStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ReassignOwnedStmt methods */
-void   pg_query__reassign_owned_stmt__init
-                     (PgQuery__ReassignOwnedStmt         *message);
-size_t pg_query__reassign_owned_stmt__get_packed_size
-                     (const PgQuery__ReassignOwnedStmt   *message);
-size_t pg_query__reassign_owned_stmt__pack
-                     (const PgQuery__ReassignOwnedStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__reassign_owned_stmt__pack_to_buffer
-                     (const PgQuery__ReassignOwnedStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ReassignOwnedStmt *
-       pg_query__reassign_owned_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__reassign_owned_stmt__free_unpacked
-                     (PgQuery__ReassignOwnedStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CompositeTypeStmt methods */
-void   pg_query__composite_type_stmt__init
-                     (PgQuery__CompositeTypeStmt         *message);
-size_t pg_query__composite_type_stmt__get_packed_size
-                     (const PgQuery__CompositeTypeStmt   *message);
-size_t pg_query__composite_type_stmt__pack
-                     (const PgQuery__CompositeTypeStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__composite_type_stmt__pack_to_buffer
-                     (const PgQuery__CompositeTypeStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CompositeTypeStmt *
-       pg_query__composite_type_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__composite_type_stmt__free_unpacked
-                     (PgQuery__CompositeTypeStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateEnumStmt methods */
-void   pg_query__create_enum_stmt__init
-                     (PgQuery__CreateEnumStmt         *message);
-size_t pg_query__create_enum_stmt__get_packed_size
-                     (const PgQuery__CreateEnumStmt   *message);
-size_t pg_query__create_enum_stmt__pack
-                     (const PgQuery__CreateEnumStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_enum_stmt__pack_to_buffer
-                     (const PgQuery__CreateEnumStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateEnumStmt *
-       pg_query__create_enum_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_enum_stmt__free_unpacked
-                     (PgQuery__CreateEnumStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateRangeStmt methods */
-void   pg_query__create_range_stmt__init
-                     (PgQuery__CreateRangeStmt         *message);
-size_t pg_query__create_range_stmt__get_packed_size
-                     (const PgQuery__CreateRangeStmt   *message);
-size_t pg_query__create_range_stmt__pack
-                     (const PgQuery__CreateRangeStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_range_stmt__pack_to_buffer
-                     (const PgQuery__CreateRangeStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateRangeStmt *
-       pg_query__create_range_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_range_stmt__free_unpacked
-                     (PgQuery__CreateRangeStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterEnumStmt methods */
-void   pg_query__alter_enum_stmt__init
-                     (PgQuery__AlterEnumStmt         *message);
-size_t pg_query__alter_enum_stmt__get_packed_size
-                     (const PgQuery__AlterEnumStmt   *message);
-size_t pg_query__alter_enum_stmt__pack
-                     (const PgQuery__AlterEnumStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_enum_stmt__pack_to_buffer
-                     (const PgQuery__AlterEnumStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterEnumStmt *
-       pg_query__alter_enum_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_enum_stmt__free_unpacked
-                     (PgQuery__AlterEnumStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTSDictionaryStmt methods */
-void   pg_query__alter_tsdictionary_stmt__init
-                     (PgQuery__AlterTSDictionaryStmt         *message);
-size_t pg_query__alter_tsdictionary_stmt__get_packed_size
-                     (const PgQuery__AlterTSDictionaryStmt   *message);
-size_t pg_query__alter_tsdictionary_stmt__pack
-                     (const PgQuery__AlterTSDictionaryStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_tsdictionary_stmt__pack_to_buffer
-                     (const PgQuery__AlterTSDictionaryStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTSDictionaryStmt *
-       pg_query__alter_tsdictionary_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_tsdictionary_stmt__free_unpacked
-                     (PgQuery__AlterTSDictionaryStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTSConfigurationStmt methods */
-void   pg_query__alter_tsconfiguration_stmt__init
-                     (PgQuery__AlterTSConfigurationStmt         *message);
-size_t pg_query__alter_tsconfiguration_stmt__get_packed_size
-                     (const PgQuery__AlterTSConfigurationStmt   *message);
-size_t pg_query__alter_tsconfiguration_stmt__pack
-                     (const PgQuery__AlterTSConfigurationStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_tsconfiguration_stmt__pack_to_buffer
-                     (const PgQuery__AlterTSConfigurationStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTSConfigurationStmt *
-       pg_query__alter_tsconfiguration_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_tsconfiguration_stmt__free_unpacked
-                     (PgQuery__AlterTSConfigurationStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateFdwStmt methods */
-void   pg_query__create_fdw_stmt__init
-                     (PgQuery__CreateFdwStmt         *message);
-size_t pg_query__create_fdw_stmt__get_packed_size
-                     (const PgQuery__CreateFdwStmt   *message);
-size_t pg_query__create_fdw_stmt__pack
-                     (const PgQuery__CreateFdwStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_fdw_stmt__pack_to_buffer
-                     (const PgQuery__CreateFdwStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateFdwStmt *
-       pg_query__create_fdw_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_fdw_stmt__free_unpacked
-                     (PgQuery__CreateFdwStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterFdwStmt methods */
-void   pg_query__alter_fdw_stmt__init
-                     (PgQuery__AlterFdwStmt         *message);
-size_t pg_query__alter_fdw_stmt__get_packed_size
-                     (const PgQuery__AlterFdwStmt   *message);
-size_t pg_query__alter_fdw_stmt__pack
-                     (const PgQuery__AlterFdwStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_fdw_stmt__pack_to_buffer
-                     (const PgQuery__AlterFdwStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterFdwStmt *
-       pg_query__alter_fdw_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_fdw_stmt__free_unpacked
-                     (PgQuery__AlterFdwStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateForeignServerStmt methods */
-void   pg_query__create_foreign_server_stmt__init
-                     (PgQuery__CreateForeignServerStmt         *message);
-size_t pg_query__create_foreign_server_stmt__get_packed_size
-                     (const PgQuery__CreateForeignServerStmt   *message);
-size_t pg_query__create_foreign_server_stmt__pack
-                     (const PgQuery__CreateForeignServerStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_foreign_server_stmt__pack_to_buffer
-                     (const PgQuery__CreateForeignServerStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateForeignServerStmt *
-       pg_query__create_foreign_server_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_foreign_server_stmt__free_unpacked
-                     (PgQuery__CreateForeignServerStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterForeignServerStmt methods */
-void   pg_query__alter_foreign_server_stmt__init
-                     (PgQuery__AlterForeignServerStmt         *message);
-size_t pg_query__alter_foreign_server_stmt__get_packed_size
-                     (const PgQuery__AlterForeignServerStmt   *message);
-size_t pg_query__alter_foreign_server_stmt__pack
-                     (const PgQuery__AlterForeignServerStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_foreign_server_stmt__pack_to_buffer
-                     (const PgQuery__AlterForeignServerStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterForeignServerStmt *
-       pg_query__alter_foreign_server_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_foreign_server_stmt__free_unpacked
-                     (PgQuery__AlterForeignServerStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateUserMappingStmt methods */
-void   pg_query__create_user_mapping_stmt__init
-                     (PgQuery__CreateUserMappingStmt         *message);
-size_t pg_query__create_user_mapping_stmt__get_packed_size
-                     (const PgQuery__CreateUserMappingStmt   *message);
-size_t pg_query__create_user_mapping_stmt__pack
-                     (const PgQuery__CreateUserMappingStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_user_mapping_stmt__pack_to_buffer
-                     (const PgQuery__CreateUserMappingStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateUserMappingStmt *
-       pg_query__create_user_mapping_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_user_mapping_stmt__free_unpacked
-                     (PgQuery__CreateUserMappingStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterUserMappingStmt methods */
-void   pg_query__alter_user_mapping_stmt__init
-                     (PgQuery__AlterUserMappingStmt         *message);
-size_t pg_query__alter_user_mapping_stmt__get_packed_size
-                     (const PgQuery__AlterUserMappingStmt   *message);
-size_t pg_query__alter_user_mapping_stmt__pack
-                     (const PgQuery__AlterUserMappingStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_user_mapping_stmt__pack_to_buffer
-                     (const PgQuery__AlterUserMappingStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterUserMappingStmt *
-       pg_query__alter_user_mapping_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_user_mapping_stmt__free_unpacked
-                     (PgQuery__AlterUserMappingStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropUserMappingStmt methods */
-void   pg_query__drop_user_mapping_stmt__init
-                     (PgQuery__DropUserMappingStmt         *message);
-size_t pg_query__drop_user_mapping_stmt__get_packed_size
-                     (const PgQuery__DropUserMappingStmt   *message);
-size_t pg_query__drop_user_mapping_stmt__pack
-                     (const PgQuery__DropUserMappingStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_user_mapping_stmt__pack_to_buffer
-                     (const PgQuery__DropUserMappingStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropUserMappingStmt *
-       pg_query__drop_user_mapping_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_user_mapping_stmt__free_unpacked
-                     (PgQuery__DropUserMappingStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTableSpaceOptionsStmt methods */
-void   pg_query__alter_table_space_options_stmt__init
-                     (PgQuery__AlterTableSpaceOptionsStmt         *message);
-size_t pg_query__alter_table_space_options_stmt__get_packed_size
-                     (const PgQuery__AlterTableSpaceOptionsStmt   *message);
-size_t pg_query__alter_table_space_options_stmt__pack
-                     (const PgQuery__AlterTableSpaceOptionsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_table_space_options_stmt__pack_to_buffer
-                     (const PgQuery__AlterTableSpaceOptionsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTableSpaceOptionsStmt *
-       pg_query__alter_table_space_options_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_table_space_options_stmt__free_unpacked
-                     (PgQuery__AlterTableSpaceOptionsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterTableMoveAllStmt methods */
-void   pg_query__alter_table_move_all_stmt__init
-                     (PgQuery__AlterTableMoveAllStmt         *message);
-size_t pg_query__alter_table_move_all_stmt__get_packed_size
-                     (const PgQuery__AlterTableMoveAllStmt   *message);
-size_t pg_query__alter_table_move_all_stmt__pack
-                     (const PgQuery__AlterTableMoveAllStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_table_move_all_stmt__pack_to_buffer
-                     (const PgQuery__AlterTableMoveAllStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterTableMoveAllStmt *
-       pg_query__alter_table_move_all_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_table_move_all_stmt__free_unpacked
-                     (PgQuery__AlterTableMoveAllStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__SecLabelStmt methods */
-void   pg_query__sec_label_stmt__init
-                     (PgQuery__SecLabelStmt         *message);
-size_t pg_query__sec_label_stmt__get_packed_size
-                     (const PgQuery__SecLabelStmt   *message);
-size_t pg_query__sec_label_stmt__pack
-                     (const PgQuery__SecLabelStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__sec_label_stmt__pack_to_buffer
-                     (const PgQuery__SecLabelStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__SecLabelStmt *
-       pg_query__sec_label_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__sec_label_stmt__free_unpacked
-                     (PgQuery__SecLabelStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateForeignTableStmt methods */
-void   pg_query__create_foreign_table_stmt__init
-                     (PgQuery__CreateForeignTableStmt         *message);
-size_t pg_query__create_foreign_table_stmt__get_packed_size
-                     (const PgQuery__CreateForeignTableStmt   *message);
-size_t pg_query__create_foreign_table_stmt__pack
-                     (const PgQuery__CreateForeignTableStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_foreign_table_stmt__pack_to_buffer
-                     (const PgQuery__CreateForeignTableStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateForeignTableStmt *
-       pg_query__create_foreign_table_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_foreign_table_stmt__free_unpacked
-                     (PgQuery__CreateForeignTableStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ImportForeignSchemaStmt methods */
-void   pg_query__import_foreign_schema_stmt__init
-                     (PgQuery__ImportForeignSchemaStmt         *message);
-size_t pg_query__import_foreign_schema_stmt__get_packed_size
-                     (const PgQuery__ImportForeignSchemaStmt   *message);
-size_t pg_query__import_foreign_schema_stmt__pack
-                     (const PgQuery__ImportForeignSchemaStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__import_foreign_schema_stmt__pack_to_buffer
-                     (const PgQuery__ImportForeignSchemaStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ImportForeignSchemaStmt *
-       pg_query__import_foreign_schema_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__import_foreign_schema_stmt__free_unpacked
-                     (PgQuery__ImportForeignSchemaStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateExtensionStmt methods */
-void   pg_query__create_extension_stmt__init
-                     (PgQuery__CreateExtensionStmt         *message);
-size_t pg_query__create_extension_stmt__get_packed_size
-                     (const PgQuery__CreateExtensionStmt   *message);
-size_t pg_query__create_extension_stmt__pack
-                     (const PgQuery__CreateExtensionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_extension_stmt__pack_to_buffer
-                     (const PgQuery__CreateExtensionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateExtensionStmt *
-       pg_query__create_extension_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_extension_stmt__free_unpacked
-                     (PgQuery__CreateExtensionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterExtensionStmt methods */
-void   pg_query__alter_extension_stmt__init
-                     (PgQuery__AlterExtensionStmt         *message);
-size_t pg_query__alter_extension_stmt__get_packed_size
-                     (const PgQuery__AlterExtensionStmt   *message);
-size_t pg_query__alter_extension_stmt__pack
-                     (const PgQuery__AlterExtensionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_extension_stmt__pack_to_buffer
-                     (const PgQuery__AlterExtensionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterExtensionStmt *
-       pg_query__alter_extension_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_extension_stmt__free_unpacked
-                     (PgQuery__AlterExtensionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterExtensionContentsStmt methods */
-void   pg_query__alter_extension_contents_stmt__init
-                     (PgQuery__AlterExtensionContentsStmt         *message);
-size_t pg_query__alter_extension_contents_stmt__get_packed_size
-                     (const PgQuery__AlterExtensionContentsStmt   *message);
-size_t pg_query__alter_extension_contents_stmt__pack
-                     (const PgQuery__AlterExtensionContentsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_extension_contents_stmt__pack_to_buffer
-                     (const PgQuery__AlterExtensionContentsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterExtensionContentsStmt *
-       pg_query__alter_extension_contents_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_extension_contents_stmt__free_unpacked
-                     (PgQuery__AlterExtensionContentsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateEventTrigStmt methods */
-void   pg_query__create_event_trig_stmt__init
-                     (PgQuery__CreateEventTrigStmt         *message);
-size_t pg_query__create_event_trig_stmt__get_packed_size
-                     (const PgQuery__CreateEventTrigStmt   *message);
-size_t pg_query__create_event_trig_stmt__pack
-                     (const PgQuery__CreateEventTrigStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_event_trig_stmt__pack_to_buffer
-                     (const PgQuery__CreateEventTrigStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateEventTrigStmt *
-       pg_query__create_event_trig_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_event_trig_stmt__free_unpacked
-                     (PgQuery__CreateEventTrigStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterEventTrigStmt methods */
-void   pg_query__alter_event_trig_stmt__init
-                     (PgQuery__AlterEventTrigStmt         *message);
-size_t pg_query__alter_event_trig_stmt__get_packed_size
-                     (const PgQuery__AlterEventTrigStmt   *message);
-size_t pg_query__alter_event_trig_stmt__pack
-                     (const PgQuery__AlterEventTrigStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_event_trig_stmt__pack_to_buffer
-                     (const PgQuery__AlterEventTrigStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterEventTrigStmt *
-       pg_query__alter_event_trig_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_event_trig_stmt__free_unpacked
-                     (PgQuery__AlterEventTrigStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__RefreshMatViewStmt methods */
-void   pg_query__refresh_mat_view_stmt__init
-                     (PgQuery__RefreshMatViewStmt         *message);
-size_t pg_query__refresh_mat_view_stmt__get_packed_size
-                     (const PgQuery__RefreshMatViewStmt   *message);
-size_t pg_query__refresh_mat_view_stmt__pack
-                     (const PgQuery__RefreshMatViewStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__refresh_mat_view_stmt__pack_to_buffer
-                     (const PgQuery__RefreshMatViewStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__RefreshMatViewStmt *
-       pg_query__refresh_mat_view_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__refresh_mat_view_stmt__free_unpacked
-                     (PgQuery__RefreshMatViewStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__ReplicaIdentityStmt methods */
-void   pg_query__replica_identity_stmt__init
-                     (PgQuery__ReplicaIdentityStmt         *message);
-size_t pg_query__replica_identity_stmt__get_packed_size
-                     (const PgQuery__ReplicaIdentityStmt   *message);
-size_t pg_query__replica_identity_stmt__pack
-                     (const PgQuery__ReplicaIdentityStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__replica_identity_stmt__pack_to_buffer
-                     (const PgQuery__ReplicaIdentityStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ReplicaIdentityStmt *
-       pg_query__replica_identity_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__replica_identity_stmt__free_unpacked
-                     (PgQuery__ReplicaIdentityStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterSystemStmt methods */
-void   pg_query__alter_system_stmt__init
-                     (PgQuery__AlterSystemStmt         *message);
-size_t pg_query__alter_system_stmt__get_packed_size
-                     (const PgQuery__AlterSystemStmt   *message);
-size_t pg_query__alter_system_stmt__pack
-                     (const PgQuery__AlterSystemStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_system_stmt__pack_to_buffer
-                     (const PgQuery__AlterSystemStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterSystemStmt *
-       pg_query__alter_system_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_system_stmt__free_unpacked
-                     (PgQuery__AlterSystemStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreatePolicyStmt methods */
-void   pg_query__create_policy_stmt__init
-                     (PgQuery__CreatePolicyStmt         *message);
-size_t pg_query__create_policy_stmt__get_packed_size
-                     (const PgQuery__CreatePolicyStmt   *message);
-size_t pg_query__create_policy_stmt__pack
-                     (const PgQuery__CreatePolicyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_policy_stmt__pack_to_buffer
-                     (const PgQuery__CreatePolicyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreatePolicyStmt *
-       pg_query__create_policy_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_policy_stmt__free_unpacked
-                     (PgQuery__CreatePolicyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterPolicyStmt methods */
-void   pg_query__alter_policy_stmt__init
-                     (PgQuery__AlterPolicyStmt         *message);
-size_t pg_query__alter_policy_stmt__get_packed_size
-                     (const PgQuery__AlterPolicyStmt   *message);
-size_t pg_query__alter_policy_stmt__pack
-                     (const PgQuery__AlterPolicyStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_policy_stmt__pack_to_buffer
-                     (const PgQuery__AlterPolicyStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterPolicyStmt *
-       pg_query__alter_policy_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_policy_stmt__free_unpacked
-                     (PgQuery__AlterPolicyStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateTransformStmt methods */
-void   pg_query__create_transform_stmt__init
-                     (PgQuery__CreateTransformStmt         *message);
-size_t pg_query__create_transform_stmt__get_packed_size
-                     (const PgQuery__CreateTransformStmt   *message);
-size_t pg_query__create_transform_stmt__pack
-                     (const PgQuery__CreateTransformStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_transform_stmt__pack_to_buffer
-                     (const PgQuery__CreateTransformStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateTransformStmt *
-       pg_query__create_transform_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_transform_stmt__free_unpacked
-                     (PgQuery__CreateTransformStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateAmStmt methods */
-void   pg_query__create_am_stmt__init
-                     (PgQuery__CreateAmStmt         *message);
-size_t pg_query__create_am_stmt__get_packed_size
-                     (const PgQuery__CreateAmStmt   *message);
-size_t pg_query__create_am_stmt__pack
-                     (const PgQuery__CreateAmStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_am_stmt__pack_to_buffer
-                     (const PgQuery__CreateAmStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateAmStmt *
-       pg_query__create_am_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_am_stmt__free_unpacked
-                     (PgQuery__CreateAmStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreatePublicationStmt methods */
-void   pg_query__create_publication_stmt__init
-                     (PgQuery__CreatePublicationStmt         *message);
-size_t pg_query__create_publication_stmt__get_packed_size
-                     (const PgQuery__CreatePublicationStmt   *message);
-size_t pg_query__create_publication_stmt__pack
-                     (const PgQuery__CreatePublicationStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_publication_stmt__pack_to_buffer
-                     (const PgQuery__CreatePublicationStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreatePublicationStmt *
-       pg_query__create_publication_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_publication_stmt__free_unpacked
-                     (PgQuery__CreatePublicationStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterPublicationStmt methods */
-void   pg_query__alter_publication_stmt__init
-                     (PgQuery__AlterPublicationStmt         *message);
-size_t pg_query__alter_publication_stmt__get_packed_size
-                     (const PgQuery__AlterPublicationStmt   *message);
-size_t pg_query__alter_publication_stmt__pack
-                     (const PgQuery__AlterPublicationStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_publication_stmt__pack_to_buffer
-                     (const PgQuery__AlterPublicationStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterPublicationStmt *
-       pg_query__alter_publication_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_publication_stmt__free_unpacked
-                     (PgQuery__AlterPublicationStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateSubscriptionStmt methods */
-void   pg_query__create_subscription_stmt__init
-                     (PgQuery__CreateSubscriptionStmt         *message);
-size_t pg_query__create_subscription_stmt__get_packed_size
-                     (const PgQuery__CreateSubscriptionStmt   *message);
-size_t pg_query__create_subscription_stmt__pack
-                     (const PgQuery__CreateSubscriptionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_subscription_stmt__pack_to_buffer
-                     (const PgQuery__CreateSubscriptionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateSubscriptionStmt *
-       pg_query__create_subscription_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_subscription_stmt__free_unpacked
-                     (PgQuery__CreateSubscriptionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterSubscriptionStmt methods */
-void   pg_query__alter_subscription_stmt__init
-                     (PgQuery__AlterSubscriptionStmt         *message);
-size_t pg_query__alter_subscription_stmt__get_packed_size
-                     (const PgQuery__AlterSubscriptionStmt   *message);
-size_t pg_query__alter_subscription_stmt__pack
-                     (const PgQuery__AlterSubscriptionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_subscription_stmt__pack_to_buffer
-                     (const PgQuery__AlterSubscriptionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterSubscriptionStmt *
-       pg_query__alter_subscription_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_subscription_stmt__free_unpacked
-                     (PgQuery__AlterSubscriptionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__DropSubscriptionStmt methods */
-void   pg_query__drop_subscription_stmt__init
-                     (PgQuery__DropSubscriptionStmt         *message);
-size_t pg_query__drop_subscription_stmt__get_packed_size
-                     (const PgQuery__DropSubscriptionStmt   *message);
-size_t pg_query__drop_subscription_stmt__pack
-                     (const PgQuery__DropSubscriptionStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__drop_subscription_stmt__pack_to_buffer
-                     (const PgQuery__DropSubscriptionStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__DropSubscriptionStmt *
-       pg_query__drop_subscription_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__drop_subscription_stmt__free_unpacked
-                     (PgQuery__DropSubscriptionStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateStatsStmt methods */
-void   pg_query__create_stats_stmt__init
-                     (PgQuery__CreateStatsStmt         *message);
-size_t pg_query__create_stats_stmt__get_packed_size
-                     (const PgQuery__CreateStatsStmt   *message);
-size_t pg_query__create_stats_stmt__pack
-                     (const PgQuery__CreateStatsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__create_stats_stmt__pack_to_buffer
-                     (const PgQuery__CreateStatsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateStatsStmt *
-       pg_query__create_stats_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_stats_stmt__free_unpacked
-                     (PgQuery__CreateStatsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterCollationStmt methods */
-void   pg_query__alter_collation_stmt__init
-                     (PgQuery__AlterCollationStmt         *message);
-size_t pg_query__alter_collation_stmt__get_packed_size
-                     (const PgQuery__AlterCollationStmt   *message);
-size_t pg_query__alter_collation_stmt__pack
-                     (const PgQuery__AlterCollationStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_collation_stmt__pack_to_buffer
-                     (const PgQuery__AlterCollationStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterCollationStmt *
-       pg_query__alter_collation_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_collation_stmt__free_unpacked
-                     (PgQuery__AlterCollationStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CallStmt methods */
-void   pg_query__call_stmt__init
-                     (PgQuery__CallStmt         *message);
-size_t pg_query__call_stmt__get_packed_size
-                     (const PgQuery__CallStmt   *message);
-size_t pg_query__call_stmt__pack
-                     (const PgQuery__CallStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__call_stmt__pack_to_buffer
-                     (const PgQuery__CallStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CallStmt *
-       pg_query__call_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__call_stmt__free_unpacked
-                     (PgQuery__CallStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AlterStatsStmt methods */
-void   pg_query__alter_stats_stmt__init
-                     (PgQuery__AlterStatsStmt         *message);
-size_t pg_query__alter_stats_stmt__get_packed_size
-                     (const PgQuery__AlterStatsStmt   *message);
-size_t pg_query__alter_stats_stmt__pack
-                     (const PgQuery__AlterStatsStmt   *message,
-                      uint8_t             *out);
-size_t pg_query__alter_stats_stmt__pack_to_buffer
-                     (const PgQuery__AlterStatsStmt   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AlterStatsStmt *
-       pg_query__alter_stats_stmt__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__alter_stats_stmt__free_unpacked
-                     (PgQuery__AlterStatsStmt *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AExpr methods */
-void   pg_query__a__expr__init
-                     (PgQuery__AExpr         *message);
-size_t pg_query__a__expr__get_packed_size
-                     (const PgQuery__AExpr   *message);
-size_t pg_query__a__expr__pack
-                     (const PgQuery__AExpr   *message,
-                      uint8_t             *out);
-size_t pg_query__a__expr__pack_to_buffer
-                     (const PgQuery__AExpr   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AExpr *
-       pg_query__a__expr__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__a__expr__free_unpacked
-                     (PgQuery__AExpr *message,
+void   pg_query__type_name__free_unpacked
+                     (PgQuery__TypeName *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__ColumnRef methods */
 void   pg_query__column_ref__init
@@ -9235,6 +7132,82 @@ PgQuery__ParamRef *
                       const uint8_t       *data);
 void   pg_query__param_ref__free_unpacked
                      (PgQuery__ParamRef *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AExpr methods */
+void   pg_query__a__expr__init
+                     (PgQuery__AExpr         *message);
+size_t pg_query__a__expr__get_packed_size
+                     (const PgQuery__AExpr   *message);
+size_t pg_query__a__expr__pack
+                     (const PgQuery__AExpr   *message,
+                      uint8_t             *out);
+size_t pg_query__a__expr__pack_to_buffer
+                     (const PgQuery__AExpr   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AExpr *
+       pg_query__a__expr__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__a__expr__free_unpacked
+                     (PgQuery__AExpr *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__TypeCast methods */
+void   pg_query__type_cast__init
+                     (PgQuery__TypeCast         *message);
+size_t pg_query__type_cast__get_packed_size
+                     (const PgQuery__TypeCast   *message);
+size_t pg_query__type_cast__pack
+                     (const PgQuery__TypeCast   *message,
+                      uint8_t             *out);
+size_t pg_query__type_cast__pack_to_buffer
+                     (const PgQuery__TypeCast   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__TypeCast *
+       pg_query__type_cast__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__type_cast__free_unpacked
+                     (PgQuery__TypeCast *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CollateClause methods */
+void   pg_query__collate_clause__init
+                     (PgQuery__CollateClause         *message);
+size_t pg_query__collate_clause__get_packed_size
+                     (const PgQuery__CollateClause   *message);
+size_t pg_query__collate_clause__pack
+                     (const PgQuery__CollateClause   *message,
+                      uint8_t             *out);
+size_t pg_query__collate_clause__pack_to_buffer
+                     (const PgQuery__CollateClause   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CollateClause *
+       pg_query__collate_clause__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__collate_clause__free_unpacked
+                     (PgQuery__CollateClause *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RoleSpec methods */
+void   pg_query__role_spec__init
+                     (PgQuery__RoleSpec         *message);
+size_t pg_query__role_spec__get_packed_size
+                     (const PgQuery__RoleSpec   *message);
+size_t pg_query__role_spec__pack
+                     (const PgQuery__RoleSpec   *message,
+                      uint8_t             *out);
+size_t pg_query__role_spec__pack_to_buffer
+                     (const PgQuery__RoleSpec   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RoleSpec *
+       pg_query__role_spec__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__role_spec__free_unpacked
+                     (PgQuery__RoleSpec *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__FuncCall methods */
 void   pg_query__func_call__init
@@ -9369,44 +7342,6 @@ PgQuery__MultiAssignRef *
 void   pg_query__multi_assign_ref__free_unpacked
                      (PgQuery__MultiAssignRef *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__TypeCast methods */
-void   pg_query__type_cast__init
-                     (PgQuery__TypeCast         *message);
-size_t pg_query__type_cast__get_packed_size
-                     (const PgQuery__TypeCast   *message);
-size_t pg_query__type_cast__pack
-                     (const PgQuery__TypeCast   *message,
-                      uint8_t             *out);
-size_t pg_query__type_cast__pack_to_buffer
-                     (const PgQuery__TypeCast   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__TypeCast *
-       pg_query__type_cast__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__type_cast__free_unpacked
-                     (PgQuery__TypeCast *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CollateClause methods */
-void   pg_query__collate_clause__init
-                     (PgQuery__CollateClause         *message);
-size_t pg_query__collate_clause__get_packed_size
-                     (const PgQuery__CollateClause   *message);
-size_t pg_query__collate_clause__pack
-                     (const PgQuery__CollateClause   *message,
-                      uint8_t             *out);
-size_t pg_query__collate_clause__pack_to_buffer
-                     (const PgQuery__CollateClause   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CollateClause *
-       pg_query__collate_clause__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__collate_clause__free_unpacked
-                     (PgQuery__CollateClause *message,
-                      ProtobufCAllocator *allocator);
 /* PgQuery__SortBy methods */
 void   pg_query__sort_by__init
                      (PgQuery__SortBy         *message);
@@ -9483,25 +7418,6 @@ PgQuery__RangeFunction *
 void   pg_query__range_function__free_unpacked
                      (PgQuery__RangeFunction *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__RangeTableSample methods */
-void   pg_query__range_table_sample__init
-                     (PgQuery__RangeTableSample         *message);
-size_t pg_query__range_table_sample__get_packed_size
-                     (const PgQuery__RangeTableSample   *message);
-size_t pg_query__range_table_sample__pack
-                     (const PgQuery__RangeTableSample   *message,
-                      uint8_t             *out);
-size_t pg_query__range_table_sample__pack_to_buffer
-                     (const PgQuery__RangeTableSample   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__RangeTableSample *
-       pg_query__range_table_sample__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__range_table_sample__free_unpacked
-                     (PgQuery__RangeTableSample *message,
-                      ProtobufCAllocator *allocator);
 /* PgQuery__RangeTableFunc methods */
 void   pg_query__range_table_func__init
                      (PgQuery__RangeTableFunc         *message);
@@ -9540,24 +7456,24 @@ PgQuery__RangeTableFuncCol *
 void   pg_query__range_table_func_col__free_unpacked
                      (PgQuery__RangeTableFuncCol *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__TypeName methods */
-void   pg_query__type_name__init
-                     (PgQuery__TypeName         *message);
-size_t pg_query__type_name__get_packed_size
-                     (const PgQuery__TypeName   *message);
-size_t pg_query__type_name__pack
-                     (const PgQuery__TypeName   *message,
+/* PgQuery__RangeTableSample methods */
+void   pg_query__range_table_sample__init
+                     (PgQuery__RangeTableSample         *message);
+size_t pg_query__range_table_sample__get_packed_size
+                     (const PgQuery__RangeTableSample   *message);
+size_t pg_query__range_table_sample__pack
+                     (const PgQuery__RangeTableSample   *message,
                       uint8_t             *out);
-size_t pg_query__type_name__pack_to_buffer
-                     (const PgQuery__TypeName   *message,
+size_t pg_query__range_table_sample__pack_to_buffer
+                     (const PgQuery__RangeTableSample   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__TypeName *
-       pg_query__type_name__unpack
+PgQuery__RangeTableSample *
+       pg_query__range_table_sample__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__type_name__free_unpacked
-                     (PgQuery__TypeName *message,
+void   pg_query__range_table_sample__free_unpacked
+                     (PgQuery__RangeTableSample *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__ColumnDef methods */
 void   pg_query__column_def__init
@@ -9578,6 +7494,25 @@ PgQuery__ColumnDef *
 void   pg_query__column_def__free_unpacked
                      (PgQuery__ColumnDef *message,
                       ProtobufCAllocator *allocator);
+/* PgQuery__TableLikeClause methods */
+void   pg_query__table_like_clause__init
+                     (PgQuery__TableLikeClause         *message);
+size_t pg_query__table_like_clause__get_packed_size
+                     (const PgQuery__TableLikeClause   *message);
+size_t pg_query__table_like_clause__pack
+                     (const PgQuery__TableLikeClause   *message,
+                      uint8_t             *out);
+size_t pg_query__table_like_clause__pack_to_buffer
+                     (const PgQuery__TableLikeClause   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__TableLikeClause *
+       pg_query__table_like_clause__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__table_like_clause__free_unpacked
+                     (PgQuery__TableLikeClause *message,
+                      ProtobufCAllocator *allocator);
 /* PgQuery__IndexElem methods */
 void   pg_query__index_elem__init
                      (PgQuery__IndexElem         *message);
@@ -9596,44 +7531,6 @@ PgQuery__IndexElem *
                       const uint8_t       *data);
 void   pg_query__index_elem__free_unpacked
                      (PgQuery__IndexElem *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__StatsElem methods */
-void   pg_query__stats_elem__init
-                     (PgQuery__StatsElem         *message);
-size_t pg_query__stats_elem__get_packed_size
-                     (const PgQuery__StatsElem   *message);
-size_t pg_query__stats_elem__pack
-                     (const PgQuery__StatsElem   *message,
-                      uint8_t             *out);
-size_t pg_query__stats_elem__pack_to_buffer
-                     (const PgQuery__StatsElem   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__StatsElem *
-       pg_query__stats_elem__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__stats_elem__free_unpacked
-                     (PgQuery__StatsElem *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__Constraint methods */
-void   pg_query__constraint__init
-                     (PgQuery__Constraint         *message);
-size_t pg_query__constraint__get_packed_size
-                     (const PgQuery__Constraint   *message);
-size_t pg_query__constraint__pack
-                     (const PgQuery__Constraint   *message,
-                      uint8_t             *out);
-size_t pg_query__constraint__pack_to_buffer
-                     (const PgQuery__Constraint   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__Constraint *
-       pg_query__constraint__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__constraint__free_unpacked
-                     (PgQuery__Constraint *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__DefElem methods */
 void   pg_query__def_elem__init
@@ -9654,6 +7551,139 @@ PgQuery__DefElem *
 void   pg_query__def_elem__free_unpacked
                      (PgQuery__DefElem *message,
                       ProtobufCAllocator *allocator);
+/* PgQuery__LockingClause methods */
+void   pg_query__locking_clause__init
+                     (PgQuery__LockingClause         *message);
+size_t pg_query__locking_clause__get_packed_size
+                     (const PgQuery__LockingClause   *message);
+size_t pg_query__locking_clause__pack
+                     (const PgQuery__LockingClause   *message,
+                      uint8_t             *out);
+size_t pg_query__locking_clause__pack_to_buffer
+                     (const PgQuery__LockingClause   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__LockingClause *
+       pg_query__locking_clause__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__locking_clause__free_unpacked
+                     (PgQuery__LockingClause *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__XmlSerialize methods */
+void   pg_query__xml_serialize__init
+                     (PgQuery__XmlSerialize         *message);
+size_t pg_query__xml_serialize__get_packed_size
+                     (const PgQuery__XmlSerialize   *message);
+size_t pg_query__xml_serialize__pack
+                     (const PgQuery__XmlSerialize   *message,
+                      uint8_t             *out);
+size_t pg_query__xml_serialize__pack_to_buffer
+                     (const PgQuery__XmlSerialize   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__XmlSerialize *
+       pg_query__xml_serialize__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__xml_serialize__free_unpacked
+                     (PgQuery__XmlSerialize *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PartitionElem methods */
+void   pg_query__partition_elem__init
+                     (PgQuery__PartitionElem         *message);
+size_t pg_query__partition_elem__get_packed_size
+                     (const PgQuery__PartitionElem   *message);
+size_t pg_query__partition_elem__pack
+                     (const PgQuery__PartitionElem   *message,
+                      uint8_t             *out);
+size_t pg_query__partition_elem__pack_to_buffer
+                     (const PgQuery__PartitionElem   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PartitionElem *
+       pg_query__partition_elem__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__partition_elem__free_unpacked
+                     (PgQuery__PartitionElem *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PartitionSpec methods */
+void   pg_query__partition_spec__init
+                     (PgQuery__PartitionSpec         *message);
+size_t pg_query__partition_spec__get_packed_size
+                     (const PgQuery__PartitionSpec   *message);
+size_t pg_query__partition_spec__pack
+                     (const PgQuery__PartitionSpec   *message,
+                      uint8_t             *out);
+size_t pg_query__partition_spec__pack_to_buffer
+                     (const PgQuery__PartitionSpec   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PartitionSpec *
+       pg_query__partition_spec__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__partition_spec__free_unpacked
+                     (PgQuery__PartitionSpec *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PartitionBoundSpec methods */
+void   pg_query__partition_bound_spec__init
+                     (PgQuery__PartitionBoundSpec         *message);
+size_t pg_query__partition_bound_spec__get_packed_size
+                     (const PgQuery__PartitionBoundSpec   *message);
+size_t pg_query__partition_bound_spec__pack
+                     (const PgQuery__PartitionBoundSpec   *message,
+                      uint8_t             *out);
+size_t pg_query__partition_bound_spec__pack_to_buffer
+                     (const PgQuery__PartitionBoundSpec   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PartitionBoundSpec *
+       pg_query__partition_bound_spec__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__partition_bound_spec__free_unpacked
+                     (PgQuery__PartitionBoundSpec *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PartitionRangeDatum methods */
+void   pg_query__partition_range_datum__init
+                     (PgQuery__PartitionRangeDatum         *message);
+size_t pg_query__partition_range_datum__get_packed_size
+                     (const PgQuery__PartitionRangeDatum   *message);
+size_t pg_query__partition_range_datum__pack
+                     (const PgQuery__PartitionRangeDatum   *message,
+                      uint8_t             *out);
+size_t pg_query__partition_range_datum__pack_to_buffer
+                     (const PgQuery__PartitionRangeDatum   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PartitionRangeDatum *
+       pg_query__partition_range_datum__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__partition_range_datum__free_unpacked
+                     (PgQuery__PartitionRangeDatum *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PartitionCmd methods */
+void   pg_query__partition_cmd__init
+                     (PgQuery__PartitionCmd         *message);
+size_t pg_query__partition_cmd__get_packed_size
+                     (const PgQuery__PartitionCmd   *message);
+size_t pg_query__partition_cmd__pack
+                     (const PgQuery__PartitionCmd   *message,
+                      uint8_t             *out);
+size_t pg_query__partition_cmd__pack_to_buffer
+                     (const PgQuery__PartitionCmd   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PartitionCmd *
+       pg_query__partition_cmd__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__partition_cmd__free_unpacked
+                     (PgQuery__PartitionCmd *message,
+                      ProtobufCAllocator *allocator);
 /* PgQuery__RangeTblEntry methods */
 void   pg_query__range_tbl_entry__init
                      (PgQuery__RangeTblEntry         *message);
@@ -9672,6 +7702,25 @@ PgQuery__RangeTblEntry *
                       const uint8_t       *data);
 void   pg_query__range_tbl_entry__free_unpacked
                      (PgQuery__RangeTblEntry *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RTEPermissionInfo methods */
+void   pg_query__rtepermission_info__init
+                     (PgQuery__RTEPermissionInfo         *message);
+size_t pg_query__rtepermission_info__get_packed_size
+                     (const PgQuery__RTEPermissionInfo   *message);
+size_t pg_query__rtepermission_info__pack
+                     (const PgQuery__RTEPermissionInfo   *message,
+                      uint8_t             *out);
+size_t pg_query__rtepermission_info__pack_to_buffer
+                     (const PgQuery__RTEPermissionInfo   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RTEPermissionInfo *
+       pg_query__rtepermission_info__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__rtepermission_info__free_unpacked
+                     (PgQuery__RTEPermissionInfo *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__RangeTblFunction methods */
 void   pg_query__range_tbl_function__init
@@ -9787,120 +7836,6 @@ PgQuery__WindowClause *
 void   pg_query__window_clause__free_unpacked
                      (PgQuery__WindowClause *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__ObjectWithArgs methods */
-void   pg_query__object_with_args__init
-                     (PgQuery__ObjectWithArgs         *message);
-size_t pg_query__object_with_args__get_packed_size
-                     (const PgQuery__ObjectWithArgs   *message);
-size_t pg_query__object_with_args__pack
-                     (const PgQuery__ObjectWithArgs   *message,
-                      uint8_t             *out);
-size_t pg_query__object_with_args__pack_to_buffer
-                     (const PgQuery__ObjectWithArgs   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__ObjectWithArgs *
-       pg_query__object_with_args__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__object_with_args__free_unpacked
-                     (PgQuery__ObjectWithArgs *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__AccessPriv methods */
-void   pg_query__access_priv__init
-                     (PgQuery__AccessPriv         *message);
-size_t pg_query__access_priv__get_packed_size
-                     (const PgQuery__AccessPriv   *message);
-size_t pg_query__access_priv__pack
-                     (const PgQuery__AccessPriv   *message,
-                      uint8_t             *out);
-size_t pg_query__access_priv__pack_to_buffer
-                     (const PgQuery__AccessPriv   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__AccessPriv *
-       pg_query__access_priv__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__access_priv__free_unpacked
-                     (PgQuery__AccessPriv *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__CreateOpClassItem methods */
-void   pg_query__create_op_class_item__init
-                     (PgQuery__CreateOpClassItem         *message);
-size_t pg_query__create_op_class_item__get_packed_size
-                     (const PgQuery__CreateOpClassItem   *message);
-size_t pg_query__create_op_class_item__pack
-                     (const PgQuery__CreateOpClassItem   *message,
-                      uint8_t             *out);
-size_t pg_query__create_op_class_item__pack_to_buffer
-                     (const PgQuery__CreateOpClassItem   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__CreateOpClassItem *
-       pg_query__create_op_class_item__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__create_op_class_item__free_unpacked
-                     (PgQuery__CreateOpClassItem *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__TableLikeClause methods */
-void   pg_query__table_like_clause__init
-                     (PgQuery__TableLikeClause         *message);
-size_t pg_query__table_like_clause__get_packed_size
-                     (const PgQuery__TableLikeClause   *message);
-size_t pg_query__table_like_clause__pack
-                     (const PgQuery__TableLikeClause   *message,
-                      uint8_t             *out);
-size_t pg_query__table_like_clause__pack_to_buffer
-                     (const PgQuery__TableLikeClause   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__TableLikeClause *
-       pg_query__table_like_clause__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__table_like_clause__free_unpacked
-                     (PgQuery__TableLikeClause *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__FunctionParameter methods */
-void   pg_query__function_parameter__init
-                     (PgQuery__FunctionParameter         *message);
-size_t pg_query__function_parameter__get_packed_size
-                     (const PgQuery__FunctionParameter   *message);
-size_t pg_query__function_parameter__pack
-                     (const PgQuery__FunctionParameter   *message,
-                      uint8_t             *out);
-size_t pg_query__function_parameter__pack_to_buffer
-                     (const PgQuery__FunctionParameter   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__FunctionParameter *
-       pg_query__function_parameter__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__function_parameter__free_unpacked
-                     (PgQuery__FunctionParameter *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__LockingClause methods */
-void   pg_query__locking_clause__init
-                     (PgQuery__LockingClause         *message);
-size_t pg_query__locking_clause__get_packed_size
-                     (const PgQuery__LockingClause   *message);
-size_t pg_query__locking_clause__pack
-                     (const PgQuery__LockingClause   *message,
-                      uint8_t             *out);
-size_t pg_query__locking_clause__pack_to_buffer
-                     (const PgQuery__LockingClause   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__LockingClause *
-       pg_query__locking_clause__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__locking_clause__free_unpacked
-                     (PgQuery__LockingClause *message,
-                      ProtobufCAllocator *allocator);
 /* PgQuery__RowMarkClause methods */
 void   pg_query__row_mark_clause__init
                      (PgQuery__RowMarkClause         *message);
@@ -9919,25 +7854,6 @@ PgQuery__RowMarkClause *
                       const uint8_t       *data);
 void   pg_query__row_mark_clause__free_unpacked
                      (PgQuery__RowMarkClause *message,
-                      ProtobufCAllocator *allocator);
-/* PgQuery__XmlSerialize methods */
-void   pg_query__xml_serialize__init
-                     (PgQuery__XmlSerialize         *message);
-size_t pg_query__xml_serialize__get_packed_size
-                     (const PgQuery__XmlSerialize   *message);
-size_t pg_query__xml_serialize__pack
-                     (const PgQuery__XmlSerialize   *message,
-                      uint8_t             *out);
-size_t pg_query__xml_serialize__pack_to_buffer
-                     (const PgQuery__XmlSerialize   *message,
-                      ProtobufCBuffer     *buffer);
-PgQuery__XmlSerialize *
-       pg_query__xml_serialize__unpack
-                     (ProtobufCAllocator  *allocator,
-                      size_t               len,
-                      const uint8_t       *data);
-void   pg_query__xml_serialize__free_unpacked
-                     (PgQuery__XmlSerialize *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__WithClause methods */
 void   pg_query__with_clause__init
@@ -10072,24 +7988,24 @@ PgQuery__MergeWhenClause *
 void   pg_query__merge_when_clause__free_unpacked
                      (PgQuery__MergeWhenClause *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__RoleSpec methods */
-void   pg_query__role_spec__init
-                     (PgQuery__RoleSpec         *message);
-size_t pg_query__role_spec__get_packed_size
-                     (const PgQuery__RoleSpec   *message);
-size_t pg_query__role_spec__pack
-                     (const PgQuery__RoleSpec   *message,
+/* PgQuery__MergeAction methods */
+void   pg_query__merge_action__init
+                     (PgQuery__MergeAction         *message);
+size_t pg_query__merge_action__get_packed_size
+                     (const PgQuery__MergeAction   *message);
+size_t pg_query__merge_action__pack
+                     (const PgQuery__MergeAction   *message,
                       uint8_t             *out);
-size_t pg_query__role_spec__pack_to_buffer
-                     (const PgQuery__RoleSpec   *message,
+size_t pg_query__merge_action__pack_to_buffer
+                     (const PgQuery__MergeAction   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__RoleSpec *
-       pg_query__role_spec__unpack
+PgQuery__MergeAction *
+       pg_query__merge_action__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__role_spec__free_unpacked
-                     (PgQuery__RoleSpec *message,
+void   pg_query__merge_action__free_unpacked
+                     (PgQuery__MergeAction *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__TriggerTransition methods */
 void   pg_query__trigger_transition__init
@@ -10110,157 +8026,1582 @@ PgQuery__TriggerTransition *
 void   pg_query__trigger_transition__free_unpacked
                      (PgQuery__TriggerTransition *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PartitionElem methods */
-void   pg_query__partition_elem__init
-                     (PgQuery__PartitionElem         *message);
-size_t pg_query__partition_elem__get_packed_size
-                     (const PgQuery__PartitionElem   *message);
-size_t pg_query__partition_elem__pack
-                     (const PgQuery__PartitionElem   *message,
+/* PgQuery__JsonOutput methods */
+void   pg_query__json_output__init
+                     (PgQuery__JsonOutput         *message);
+size_t pg_query__json_output__get_packed_size
+                     (const PgQuery__JsonOutput   *message);
+size_t pg_query__json_output__pack
+                     (const PgQuery__JsonOutput   *message,
                       uint8_t             *out);
-size_t pg_query__partition_elem__pack_to_buffer
-                     (const PgQuery__PartitionElem   *message,
+size_t pg_query__json_output__pack_to_buffer
+                     (const PgQuery__JsonOutput   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PartitionElem *
-       pg_query__partition_elem__unpack
+PgQuery__JsonOutput *
+       pg_query__json_output__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__partition_elem__free_unpacked
-                     (PgQuery__PartitionElem *message,
+void   pg_query__json_output__free_unpacked
+                     (PgQuery__JsonOutput *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PartitionSpec methods */
-void   pg_query__partition_spec__init
-                     (PgQuery__PartitionSpec         *message);
-size_t pg_query__partition_spec__get_packed_size
-                     (const PgQuery__PartitionSpec   *message);
-size_t pg_query__partition_spec__pack
-                     (const PgQuery__PartitionSpec   *message,
+/* PgQuery__JsonKeyValue methods */
+void   pg_query__json_key_value__init
+                     (PgQuery__JsonKeyValue         *message);
+size_t pg_query__json_key_value__get_packed_size
+                     (const PgQuery__JsonKeyValue   *message);
+size_t pg_query__json_key_value__pack
+                     (const PgQuery__JsonKeyValue   *message,
                       uint8_t             *out);
-size_t pg_query__partition_spec__pack_to_buffer
-                     (const PgQuery__PartitionSpec   *message,
+size_t pg_query__json_key_value__pack_to_buffer
+                     (const PgQuery__JsonKeyValue   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PartitionSpec *
-       pg_query__partition_spec__unpack
+PgQuery__JsonKeyValue *
+       pg_query__json_key_value__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__partition_spec__free_unpacked
-                     (PgQuery__PartitionSpec *message,
+void   pg_query__json_key_value__free_unpacked
+                     (PgQuery__JsonKeyValue *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PartitionBoundSpec methods */
-void   pg_query__partition_bound_spec__init
-                     (PgQuery__PartitionBoundSpec         *message);
-size_t pg_query__partition_bound_spec__get_packed_size
-                     (const PgQuery__PartitionBoundSpec   *message);
-size_t pg_query__partition_bound_spec__pack
-                     (const PgQuery__PartitionBoundSpec   *message,
+/* PgQuery__JsonObjectConstructor methods */
+void   pg_query__json_object_constructor__init
+                     (PgQuery__JsonObjectConstructor         *message);
+size_t pg_query__json_object_constructor__get_packed_size
+                     (const PgQuery__JsonObjectConstructor   *message);
+size_t pg_query__json_object_constructor__pack
+                     (const PgQuery__JsonObjectConstructor   *message,
                       uint8_t             *out);
-size_t pg_query__partition_bound_spec__pack_to_buffer
-                     (const PgQuery__PartitionBoundSpec   *message,
+size_t pg_query__json_object_constructor__pack_to_buffer
+                     (const PgQuery__JsonObjectConstructor   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PartitionBoundSpec *
-       pg_query__partition_bound_spec__unpack
+PgQuery__JsonObjectConstructor *
+       pg_query__json_object_constructor__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__partition_bound_spec__free_unpacked
-                     (PgQuery__PartitionBoundSpec *message,
+void   pg_query__json_object_constructor__free_unpacked
+                     (PgQuery__JsonObjectConstructor *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PartitionRangeDatum methods */
-void   pg_query__partition_range_datum__init
-                     (PgQuery__PartitionRangeDatum         *message);
-size_t pg_query__partition_range_datum__get_packed_size
-                     (const PgQuery__PartitionRangeDatum   *message);
-size_t pg_query__partition_range_datum__pack
-                     (const PgQuery__PartitionRangeDatum   *message,
+/* PgQuery__JsonArrayConstructor methods */
+void   pg_query__json_array_constructor__init
+                     (PgQuery__JsonArrayConstructor         *message);
+size_t pg_query__json_array_constructor__get_packed_size
+                     (const PgQuery__JsonArrayConstructor   *message);
+size_t pg_query__json_array_constructor__pack
+                     (const PgQuery__JsonArrayConstructor   *message,
                       uint8_t             *out);
-size_t pg_query__partition_range_datum__pack_to_buffer
-                     (const PgQuery__PartitionRangeDatum   *message,
+size_t pg_query__json_array_constructor__pack_to_buffer
+                     (const PgQuery__JsonArrayConstructor   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PartitionRangeDatum *
-       pg_query__partition_range_datum__unpack
+PgQuery__JsonArrayConstructor *
+       pg_query__json_array_constructor__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__partition_range_datum__free_unpacked
-                     (PgQuery__PartitionRangeDatum *message,
+void   pg_query__json_array_constructor__free_unpacked
+                     (PgQuery__JsonArrayConstructor *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PartitionCmd methods */
-void   pg_query__partition_cmd__init
-                     (PgQuery__PartitionCmd         *message);
-size_t pg_query__partition_cmd__get_packed_size
-                     (const PgQuery__PartitionCmd   *message);
-size_t pg_query__partition_cmd__pack
-                     (const PgQuery__PartitionCmd   *message,
+/* PgQuery__JsonArrayQueryConstructor methods */
+void   pg_query__json_array_query_constructor__init
+                     (PgQuery__JsonArrayQueryConstructor         *message);
+size_t pg_query__json_array_query_constructor__get_packed_size
+                     (const PgQuery__JsonArrayQueryConstructor   *message);
+size_t pg_query__json_array_query_constructor__pack
+                     (const PgQuery__JsonArrayQueryConstructor   *message,
                       uint8_t             *out);
-size_t pg_query__partition_cmd__pack_to_buffer
-                     (const PgQuery__PartitionCmd   *message,
+size_t pg_query__json_array_query_constructor__pack_to_buffer
+                     (const PgQuery__JsonArrayQueryConstructor   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PartitionCmd *
-       pg_query__partition_cmd__unpack
+PgQuery__JsonArrayQueryConstructor *
+       pg_query__json_array_query_constructor__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__partition_cmd__free_unpacked
-                     (PgQuery__PartitionCmd *message,
+void   pg_query__json_array_query_constructor__free_unpacked
+                     (PgQuery__JsonArrayQueryConstructor *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__VacuumRelation methods */
-void   pg_query__vacuum_relation__init
-                     (PgQuery__VacuumRelation         *message);
-size_t pg_query__vacuum_relation__get_packed_size
-                     (const PgQuery__VacuumRelation   *message);
-size_t pg_query__vacuum_relation__pack
-                     (const PgQuery__VacuumRelation   *message,
+/* PgQuery__JsonAggConstructor methods */
+void   pg_query__json_agg_constructor__init
+                     (PgQuery__JsonAggConstructor         *message);
+size_t pg_query__json_agg_constructor__get_packed_size
+                     (const PgQuery__JsonAggConstructor   *message);
+size_t pg_query__json_agg_constructor__pack
+                     (const PgQuery__JsonAggConstructor   *message,
                       uint8_t             *out);
-size_t pg_query__vacuum_relation__pack_to_buffer
-                     (const PgQuery__VacuumRelation   *message,
+size_t pg_query__json_agg_constructor__pack_to_buffer
+                     (const PgQuery__JsonAggConstructor   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__VacuumRelation *
-       pg_query__vacuum_relation__unpack
+PgQuery__JsonAggConstructor *
+       pg_query__json_agg_constructor__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__vacuum_relation__free_unpacked
-                     (PgQuery__VacuumRelation *message,
+void   pg_query__json_agg_constructor__free_unpacked
+                     (PgQuery__JsonAggConstructor *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PublicationObjSpec methods */
-void   pg_query__publication_obj_spec__init
-                     (PgQuery__PublicationObjSpec         *message);
-size_t pg_query__publication_obj_spec__get_packed_size
-                     (const PgQuery__PublicationObjSpec   *message);
-size_t pg_query__publication_obj_spec__pack
-                     (const PgQuery__PublicationObjSpec   *message,
+/* PgQuery__JsonObjectAgg methods */
+void   pg_query__json_object_agg__init
+                     (PgQuery__JsonObjectAgg         *message);
+size_t pg_query__json_object_agg__get_packed_size
+                     (const PgQuery__JsonObjectAgg   *message);
+size_t pg_query__json_object_agg__pack
+                     (const PgQuery__JsonObjectAgg   *message,
                       uint8_t             *out);
-size_t pg_query__publication_obj_spec__pack_to_buffer
-                     (const PgQuery__PublicationObjSpec   *message,
+size_t pg_query__json_object_agg__pack_to_buffer
+                     (const PgQuery__JsonObjectAgg   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PublicationObjSpec *
-       pg_query__publication_obj_spec__unpack
+PgQuery__JsonObjectAgg *
+       pg_query__json_object_agg__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__publication_obj_spec__free_unpacked
-                     (PgQuery__PublicationObjSpec *message,
+void   pg_query__json_object_agg__free_unpacked
+                     (PgQuery__JsonObjectAgg *message,
                       ProtobufCAllocator *allocator);
-/* PgQuery__PublicationTable methods */
-void   pg_query__publication_table__init
-                     (PgQuery__PublicationTable         *message);
-size_t pg_query__publication_table__get_packed_size
-                     (const PgQuery__PublicationTable   *message);
-size_t pg_query__publication_table__pack
-                     (const PgQuery__PublicationTable   *message,
+/* PgQuery__JsonArrayAgg methods */
+void   pg_query__json_array_agg__init
+                     (PgQuery__JsonArrayAgg         *message);
+size_t pg_query__json_array_agg__get_packed_size
+                     (const PgQuery__JsonArrayAgg   *message);
+size_t pg_query__json_array_agg__pack
+                     (const PgQuery__JsonArrayAgg   *message,
                       uint8_t             *out);
-size_t pg_query__publication_table__pack_to_buffer
-                     (const PgQuery__PublicationTable   *message,
+size_t pg_query__json_array_agg__pack_to_buffer
+                     (const PgQuery__JsonArrayAgg   *message,
                       ProtobufCBuffer     *buffer);
-PgQuery__PublicationTable *
-       pg_query__publication_table__unpack
+PgQuery__JsonArrayAgg *
+       pg_query__json_array_agg__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   pg_query__publication_table__free_unpacked
-                     (PgQuery__PublicationTable *message,
+void   pg_query__json_array_agg__free_unpacked
+                     (PgQuery__JsonArrayAgg *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RawStmt methods */
+void   pg_query__raw_stmt__init
+                     (PgQuery__RawStmt         *message);
+size_t pg_query__raw_stmt__get_packed_size
+                     (const PgQuery__RawStmt   *message);
+size_t pg_query__raw_stmt__pack
+                     (const PgQuery__RawStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__raw_stmt__pack_to_buffer
+                     (const PgQuery__RawStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RawStmt *
+       pg_query__raw_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__raw_stmt__free_unpacked
+                     (PgQuery__RawStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__InsertStmt methods */
+void   pg_query__insert_stmt__init
+                     (PgQuery__InsertStmt         *message);
+size_t pg_query__insert_stmt__get_packed_size
+                     (const PgQuery__InsertStmt   *message);
+size_t pg_query__insert_stmt__pack
+                     (const PgQuery__InsertStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__insert_stmt__pack_to_buffer
+                     (const PgQuery__InsertStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__InsertStmt *
+       pg_query__insert_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__insert_stmt__free_unpacked
+                     (PgQuery__InsertStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DeleteStmt methods */
+void   pg_query__delete_stmt__init
+                     (PgQuery__DeleteStmt         *message);
+size_t pg_query__delete_stmt__get_packed_size
+                     (const PgQuery__DeleteStmt   *message);
+size_t pg_query__delete_stmt__pack
+                     (const PgQuery__DeleteStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__delete_stmt__pack_to_buffer
+                     (const PgQuery__DeleteStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DeleteStmt *
+       pg_query__delete_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__delete_stmt__free_unpacked
+                     (PgQuery__DeleteStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__UpdateStmt methods */
+void   pg_query__update_stmt__init
+                     (PgQuery__UpdateStmt         *message);
+size_t pg_query__update_stmt__get_packed_size
+                     (const PgQuery__UpdateStmt   *message);
+size_t pg_query__update_stmt__pack
+                     (const PgQuery__UpdateStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__update_stmt__pack_to_buffer
+                     (const PgQuery__UpdateStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__UpdateStmt *
+       pg_query__update_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__update_stmt__free_unpacked
+                     (PgQuery__UpdateStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__MergeStmt methods */
+void   pg_query__merge_stmt__init
+                     (PgQuery__MergeStmt         *message);
+size_t pg_query__merge_stmt__get_packed_size
+                     (const PgQuery__MergeStmt   *message);
+size_t pg_query__merge_stmt__pack
+                     (const PgQuery__MergeStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__merge_stmt__pack_to_buffer
+                     (const PgQuery__MergeStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__MergeStmt *
+       pg_query__merge_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__merge_stmt__free_unpacked
+                     (PgQuery__MergeStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__SelectStmt methods */
+void   pg_query__select_stmt__init
+                     (PgQuery__SelectStmt         *message);
+size_t pg_query__select_stmt__get_packed_size
+                     (const PgQuery__SelectStmt   *message);
+size_t pg_query__select_stmt__pack
+                     (const PgQuery__SelectStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__select_stmt__pack_to_buffer
+                     (const PgQuery__SelectStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__SelectStmt *
+       pg_query__select_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__select_stmt__free_unpacked
+                     (PgQuery__SelectStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__SetOperationStmt methods */
+void   pg_query__set_operation_stmt__init
+                     (PgQuery__SetOperationStmt         *message);
+size_t pg_query__set_operation_stmt__get_packed_size
+                     (const PgQuery__SetOperationStmt   *message);
+size_t pg_query__set_operation_stmt__pack
+                     (const PgQuery__SetOperationStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__set_operation_stmt__pack_to_buffer
+                     (const PgQuery__SetOperationStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__SetOperationStmt *
+       pg_query__set_operation_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__set_operation_stmt__free_unpacked
+                     (PgQuery__SetOperationStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ReturnStmt methods */
+void   pg_query__return_stmt__init
+                     (PgQuery__ReturnStmt         *message);
+size_t pg_query__return_stmt__get_packed_size
+                     (const PgQuery__ReturnStmt   *message);
+size_t pg_query__return_stmt__pack
+                     (const PgQuery__ReturnStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__return_stmt__pack_to_buffer
+                     (const PgQuery__ReturnStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ReturnStmt *
+       pg_query__return_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__return_stmt__free_unpacked
+                     (PgQuery__ReturnStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PLAssignStmt methods */
+void   pg_query__plassign_stmt__init
+                     (PgQuery__PLAssignStmt         *message);
+size_t pg_query__plassign_stmt__get_packed_size
+                     (const PgQuery__PLAssignStmt   *message);
+size_t pg_query__plassign_stmt__pack
+                     (const PgQuery__PLAssignStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__plassign_stmt__pack_to_buffer
+                     (const PgQuery__PLAssignStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PLAssignStmt *
+       pg_query__plassign_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__plassign_stmt__free_unpacked
+                     (PgQuery__PLAssignStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateSchemaStmt methods */
+void   pg_query__create_schema_stmt__init
+                     (PgQuery__CreateSchemaStmt         *message);
+size_t pg_query__create_schema_stmt__get_packed_size
+                     (const PgQuery__CreateSchemaStmt   *message);
+size_t pg_query__create_schema_stmt__pack
+                     (const PgQuery__CreateSchemaStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_schema_stmt__pack_to_buffer
+                     (const PgQuery__CreateSchemaStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateSchemaStmt *
+       pg_query__create_schema_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_schema_stmt__free_unpacked
+                     (PgQuery__CreateSchemaStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTableStmt methods */
+void   pg_query__alter_table_stmt__init
+                     (PgQuery__AlterTableStmt         *message);
+size_t pg_query__alter_table_stmt__get_packed_size
+                     (const PgQuery__AlterTableStmt   *message);
+size_t pg_query__alter_table_stmt__pack
+                     (const PgQuery__AlterTableStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_table_stmt__pack_to_buffer
+                     (const PgQuery__AlterTableStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTableStmt *
+       pg_query__alter_table_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_table_stmt__free_unpacked
+                     (PgQuery__AlterTableStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ReplicaIdentityStmt methods */
+void   pg_query__replica_identity_stmt__init
+                     (PgQuery__ReplicaIdentityStmt         *message);
+size_t pg_query__replica_identity_stmt__get_packed_size
+                     (const PgQuery__ReplicaIdentityStmt   *message);
+size_t pg_query__replica_identity_stmt__pack
+                     (const PgQuery__ReplicaIdentityStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__replica_identity_stmt__pack_to_buffer
+                     (const PgQuery__ReplicaIdentityStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ReplicaIdentityStmt *
+       pg_query__replica_identity_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__replica_identity_stmt__free_unpacked
+                     (PgQuery__ReplicaIdentityStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTableCmd methods */
+void   pg_query__alter_table_cmd__init
+                     (PgQuery__AlterTableCmd         *message);
+size_t pg_query__alter_table_cmd__get_packed_size
+                     (const PgQuery__AlterTableCmd   *message);
+size_t pg_query__alter_table_cmd__pack
+                     (const PgQuery__AlterTableCmd   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_table_cmd__pack_to_buffer
+                     (const PgQuery__AlterTableCmd   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTableCmd *
+       pg_query__alter_table_cmd__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_table_cmd__free_unpacked
+                     (PgQuery__AlterTableCmd *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterCollationStmt methods */
+void   pg_query__alter_collation_stmt__init
+                     (PgQuery__AlterCollationStmt         *message);
+size_t pg_query__alter_collation_stmt__get_packed_size
+                     (const PgQuery__AlterCollationStmt   *message);
+size_t pg_query__alter_collation_stmt__pack
+                     (const PgQuery__AlterCollationStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_collation_stmt__pack_to_buffer
+                     (const PgQuery__AlterCollationStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterCollationStmt *
+       pg_query__alter_collation_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_collation_stmt__free_unpacked
+                     (PgQuery__AlterCollationStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterDomainStmt methods */
+void   pg_query__alter_domain_stmt__init
+                     (PgQuery__AlterDomainStmt         *message);
+size_t pg_query__alter_domain_stmt__get_packed_size
+                     (const PgQuery__AlterDomainStmt   *message);
+size_t pg_query__alter_domain_stmt__pack
+                     (const PgQuery__AlterDomainStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_domain_stmt__pack_to_buffer
+                     (const PgQuery__AlterDomainStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterDomainStmt *
+       pg_query__alter_domain_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_domain_stmt__free_unpacked
+                     (PgQuery__AlterDomainStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__GrantStmt methods */
+void   pg_query__grant_stmt__init
+                     (PgQuery__GrantStmt         *message);
+size_t pg_query__grant_stmt__get_packed_size
+                     (const PgQuery__GrantStmt   *message);
+size_t pg_query__grant_stmt__pack
+                     (const PgQuery__GrantStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__grant_stmt__pack_to_buffer
+                     (const PgQuery__GrantStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__GrantStmt *
+       pg_query__grant_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__grant_stmt__free_unpacked
+                     (PgQuery__GrantStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ObjectWithArgs methods */
+void   pg_query__object_with_args__init
+                     (PgQuery__ObjectWithArgs         *message);
+size_t pg_query__object_with_args__get_packed_size
+                     (const PgQuery__ObjectWithArgs   *message);
+size_t pg_query__object_with_args__pack
+                     (const PgQuery__ObjectWithArgs   *message,
+                      uint8_t             *out);
+size_t pg_query__object_with_args__pack_to_buffer
+                     (const PgQuery__ObjectWithArgs   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ObjectWithArgs *
+       pg_query__object_with_args__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__object_with_args__free_unpacked
+                     (PgQuery__ObjectWithArgs *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AccessPriv methods */
+void   pg_query__access_priv__init
+                     (PgQuery__AccessPriv         *message);
+size_t pg_query__access_priv__get_packed_size
+                     (const PgQuery__AccessPriv   *message);
+size_t pg_query__access_priv__pack
+                     (const PgQuery__AccessPriv   *message,
+                      uint8_t             *out);
+size_t pg_query__access_priv__pack_to_buffer
+                     (const PgQuery__AccessPriv   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AccessPriv *
+       pg_query__access_priv__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__access_priv__free_unpacked
+                     (PgQuery__AccessPriv *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__GrantRoleStmt methods */
+void   pg_query__grant_role_stmt__init
+                     (PgQuery__GrantRoleStmt         *message);
+size_t pg_query__grant_role_stmt__get_packed_size
+                     (const PgQuery__GrantRoleStmt   *message);
+size_t pg_query__grant_role_stmt__pack
+                     (const PgQuery__GrantRoleStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__grant_role_stmt__pack_to_buffer
+                     (const PgQuery__GrantRoleStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__GrantRoleStmt *
+       pg_query__grant_role_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__grant_role_stmt__free_unpacked
+                     (PgQuery__GrantRoleStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterDefaultPrivilegesStmt methods */
+void   pg_query__alter_default_privileges_stmt__init
+                     (PgQuery__AlterDefaultPrivilegesStmt         *message);
+size_t pg_query__alter_default_privileges_stmt__get_packed_size
+                     (const PgQuery__AlterDefaultPrivilegesStmt   *message);
+size_t pg_query__alter_default_privileges_stmt__pack
+                     (const PgQuery__AlterDefaultPrivilegesStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_default_privileges_stmt__pack_to_buffer
+                     (const PgQuery__AlterDefaultPrivilegesStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterDefaultPrivilegesStmt *
+       pg_query__alter_default_privileges_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_default_privileges_stmt__free_unpacked
+                     (PgQuery__AlterDefaultPrivilegesStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CopyStmt methods */
+void   pg_query__copy_stmt__init
+                     (PgQuery__CopyStmt         *message);
+size_t pg_query__copy_stmt__get_packed_size
+                     (const PgQuery__CopyStmt   *message);
+size_t pg_query__copy_stmt__pack
+                     (const PgQuery__CopyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__copy_stmt__pack_to_buffer
+                     (const PgQuery__CopyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CopyStmt *
+       pg_query__copy_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__copy_stmt__free_unpacked
+                     (PgQuery__CopyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__VariableSetStmt methods */
+void   pg_query__variable_set_stmt__init
+                     (PgQuery__VariableSetStmt         *message);
+size_t pg_query__variable_set_stmt__get_packed_size
+                     (const PgQuery__VariableSetStmt   *message);
+size_t pg_query__variable_set_stmt__pack
+                     (const PgQuery__VariableSetStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__variable_set_stmt__pack_to_buffer
+                     (const PgQuery__VariableSetStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__VariableSetStmt *
+       pg_query__variable_set_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__variable_set_stmt__free_unpacked
+                     (PgQuery__VariableSetStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__VariableShowStmt methods */
+void   pg_query__variable_show_stmt__init
+                     (PgQuery__VariableShowStmt         *message);
+size_t pg_query__variable_show_stmt__get_packed_size
+                     (const PgQuery__VariableShowStmt   *message);
+size_t pg_query__variable_show_stmt__pack
+                     (const PgQuery__VariableShowStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__variable_show_stmt__pack_to_buffer
+                     (const PgQuery__VariableShowStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__VariableShowStmt *
+       pg_query__variable_show_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__variable_show_stmt__free_unpacked
+                     (PgQuery__VariableShowStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateStmt methods */
+void   pg_query__create_stmt__init
+                     (PgQuery__CreateStmt         *message);
+size_t pg_query__create_stmt__get_packed_size
+                     (const PgQuery__CreateStmt   *message);
+size_t pg_query__create_stmt__pack
+                     (const PgQuery__CreateStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_stmt__pack_to_buffer
+                     (const PgQuery__CreateStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateStmt *
+       pg_query__create_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_stmt__free_unpacked
+                     (PgQuery__CreateStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__Constraint methods */
+void   pg_query__constraint__init
+                     (PgQuery__Constraint         *message);
+size_t pg_query__constraint__get_packed_size
+                     (const PgQuery__Constraint   *message);
+size_t pg_query__constraint__pack
+                     (const PgQuery__Constraint   *message,
+                      uint8_t             *out);
+size_t pg_query__constraint__pack_to_buffer
+                     (const PgQuery__Constraint   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__Constraint *
+       pg_query__constraint__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__constraint__free_unpacked
+                     (PgQuery__Constraint *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateTableSpaceStmt methods */
+void   pg_query__create_table_space_stmt__init
+                     (PgQuery__CreateTableSpaceStmt         *message);
+size_t pg_query__create_table_space_stmt__get_packed_size
+                     (const PgQuery__CreateTableSpaceStmt   *message);
+size_t pg_query__create_table_space_stmt__pack
+                     (const PgQuery__CreateTableSpaceStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_table_space_stmt__pack_to_buffer
+                     (const PgQuery__CreateTableSpaceStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateTableSpaceStmt *
+       pg_query__create_table_space_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_table_space_stmt__free_unpacked
+                     (PgQuery__CreateTableSpaceStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropTableSpaceStmt methods */
+void   pg_query__drop_table_space_stmt__init
+                     (PgQuery__DropTableSpaceStmt         *message);
+size_t pg_query__drop_table_space_stmt__get_packed_size
+                     (const PgQuery__DropTableSpaceStmt   *message);
+size_t pg_query__drop_table_space_stmt__pack
+                     (const PgQuery__DropTableSpaceStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_table_space_stmt__pack_to_buffer
+                     (const PgQuery__DropTableSpaceStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropTableSpaceStmt *
+       pg_query__drop_table_space_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_table_space_stmt__free_unpacked
+                     (PgQuery__DropTableSpaceStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTableSpaceOptionsStmt methods */
+void   pg_query__alter_table_space_options_stmt__init
+                     (PgQuery__AlterTableSpaceOptionsStmt         *message);
+size_t pg_query__alter_table_space_options_stmt__get_packed_size
+                     (const PgQuery__AlterTableSpaceOptionsStmt   *message);
+size_t pg_query__alter_table_space_options_stmt__pack
+                     (const PgQuery__AlterTableSpaceOptionsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_table_space_options_stmt__pack_to_buffer
+                     (const PgQuery__AlterTableSpaceOptionsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTableSpaceOptionsStmt *
+       pg_query__alter_table_space_options_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_table_space_options_stmt__free_unpacked
+                     (PgQuery__AlterTableSpaceOptionsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTableMoveAllStmt methods */
+void   pg_query__alter_table_move_all_stmt__init
+                     (PgQuery__AlterTableMoveAllStmt         *message);
+size_t pg_query__alter_table_move_all_stmt__get_packed_size
+                     (const PgQuery__AlterTableMoveAllStmt   *message);
+size_t pg_query__alter_table_move_all_stmt__pack
+                     (const PgQuery__AlterTableMoveAllStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_table_move_all_stmt__pack_to_buffer
+                     (const PgQuery__AlterTableMoveAllStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTableMoveAllStmt *
+       pg_query__alter_table_move_all_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_table_move_all_stmt__free_unpacked
+                     (PgQuery__AlterTableMoveAllStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateExtensionStmt methods */
+void   pg_query__create_extension_stmt__init
+                     (PgQuery__CreateExtensionStmt         *message);
+size_t pg_query__create_extension_stmt__get_packed_size
+                     (const PgQuery__CreateExtensionStmt   *message);
+size_t pg_query__create_extension_stmt__pack
+                     (const PgQuery__CreateExtensionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_extension_stmt__pack_to_buffer
+                     (const PgQuery__CreateExtensionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateExtensionStmt *
+       pg_query__create_extension_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_extension_stmt__free_unpacked
+                     (PgQuery__CreateExtensionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterExtensionStmt methods */
+void   pg_query__alter_extension_stmt__init
+                     (PgQuery__AlterExtensionStmt         *message);
+size_t pg_query__alter_extension_stmt__get_packed_size
+                     (const PgQuery__AlterExtensionStmt   *message);
+size_t pg_query__alter_extension_stmt__pack
+                     (const PgQuery__AlterExtensionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_extension_stmt__pack_to_buffer
+                     (const PgQuery__AlterExtensionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterExtensionStmt *
+       pg_query__alter_extension_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_extension_stmt__free_unpacked
+                     (PgQuery__AlterExtensionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterExtensionContentsStmt methods */
+void   pg_query__alter_extension_contents_stmt__init
+                     (PgQuery__AlterExtensionContentsStmt         *message);
+size_t pg_query__alter_extension_contents_stmt__get_packed_size
+                     (const PgQuery__AlterExtensionContentsStmt   *message);
+size_t pg_query__alter_extension_contents_stmt__pack
+                     (const PgQuery__AlterExtensionContentsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_extension_contents_stmt__pack_to_buffer
+                     (const PgQuery__AlterExtensionContentsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterExtensionContentsStmt *
+       pg_query__alter_extension_contents_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_extension_contents_stmt__free_unpacked
+                     (PgQuery__AlterExtensionContentsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateFdwStmt methods */
+void   pg_query__create_fdw_stmt__init
+                     (PgQuery__CreateFdwStmt         *message);
+size_t pg_query__create_fdw_stmt__get_packed_size
+                     (const PgQuery__CreateFdwStmt   *message);
+size_t pg_query__create_fdw_stmt__pack
+                     (const PgQuery__CreateFdwStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_fdw_stmt__pack_to_buffer
+                     (const PgQuery__CreateFdwStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateFdwStmt *
+       pg_query__create_fdw_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_fdw_stmt__free_unpacked
+                     (PgQuery__CreateFdwStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterFdwStmt methods */
+void   pg_query__alter_fdw_stmt__init
+                     (PgQuery__AlterFdwStmt         *message);
+size_t pg_query__alter_fdw_stmt__get_packed_size
+                     (const PgQuery__AlterFdwStmt   *message);
+size_t pg_query__alter_fdw_stmt__pack
+                     (const PgQuery__AlterFdwStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_fdw_stmt__pack_to_buffer
+                     (const PgQuery__AlterFdwStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterFdwStmt *
+       pg_query__alter_fdw_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_fdw_stmt__free_unpacked
+                     (PgQuery__AlterFdwStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateForeignServerStmt methods */
+void   pg_query__create_foreign_server_stmt__init
+                     (PgQuery__CreateForeignServerStmt         *message);
+size_t pg_query__create_foreign_server_stmt__get_packed_size
+                     (const PgQuery__CreateForeignServerStmt   *message);
+size_t pg_query__create_foreign_server_stmt__pack
+                     (const PgQuery__CreateForeignServerStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_foreign_server_stmt__pack_to_buffer
+                     (const PgQuery__CreateForeignServerStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateForeignServerStmt *
+       pg_query__create_foreign_server_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_foreign_server_stmt__free_unpacked
+                     (PgQuery__CreateForeignServerStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterForeignServerStmt methods */
+void   pg_query__alter_foreign_server_stmt__init
+                     (PgQuery__AlterForeignServerStmt         *message);
+size_t pg_query__alter_foreign_server_stmt__get_packed_size
+                     (const PgQuery__AlterForeignServerStmt   *message);
+size_t pg_query__alter_foreign_server_stmt__pack
+                     (const PgQuery__AlterForeignServerStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_foreign_server_stmt__pack_to_buffer
+                     (const PgQuery__AlterForeignServerStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterForeignServerStmt *
+       pg_query__alter_foreign_server_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_foreign_server_stmt__free_unpacked
+                     (PgQuery__AlterForeignServerStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateForeignTableStmt methods */
+void   pg_query__create_foreign_table_stmt__init
+                     (PgQuery__CreateForeignTableStmt         *message);
+size_t pg_query__create_foreign_table_stmt__get_packed_size
+                     (const PgQuery__CreateForeignTableStmt   *message);
+size_t pg_query__create_foreign_table_stmt__pack
+                     (const PgQuery__CreateForeignTableStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_foreign_table_stmt__pack_to_buffer
+                     (const PgQuery__CreateForeignTableStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateForeignTableStmt *
+       pg_query__create_foreign_table_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_foreign_table_stmt__free_unpacked
+                     (PgQuery__CreateForeignTableStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateUserMappingStmt methods */
+void   pg_query__create_user_mapping_stmt__init
+                     (PgQuery__CreateUserMappingStmt         *message);
+size_t pg_query__create_user_mapping_stmt__get_packed_size
+                     (const PgQuery__CreateUserMappingStmt   *message);
+size_t pg_query__create_user_mapping_stmt__pack
+                     (const PgQuery__CreateUserMappingStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_user_mapping_stmt__pack_to_buffer
+                     (const PgQuery__CreateUserMappingStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateUserMappingStmt *
+       pg_query__create_user_mapping_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_user_mapping_stmt__free_unpacked
+                     (PgQuery__CreateUserMappingStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterUserMappingStmt methods */
+void   pg_query__alter_user_mapping_stmt__init
+                     (PgQuery__AlterUserMappingStmt         *message);
+size_t pg_query__alter_user_mapping_stmt__get_packed_size
+                     (const PgQuery__AlterUserMappingStmt   *message);
+size_t pg_query__alter_user_mapping_stmt__pack
+                     (const PgQuery__AlterUserMappingStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_user_mapping_stmt__pack_to_buffer
+                     (const PgQuery__AlterUserMappingStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterUserMappingStmt *
+       pg_query__alter_user_mapping_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_user_mapping_stmt__free_unpacked
+                     (PgQuery__AlterUserMappingStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropUserMappingStmt methods */
+void   pg_query__drop_user_mapping_stmt__init
+                     (PgQuery__DropUserMappingStmt         *message);
+size_t pg_query__drop_user_mapping_stmt__get_packed_size
+                     (const PgQuery__DropUserMappingStmt   *message);
+size_t pg_query__drop_user_mapping_stmt__pack
+                     (const PgQuery__DropUserMappingStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_user_mapping_stmt__pack_to_buffer
+                     (const PgQuery__DropUserMappingStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropUserMappingStmt *
+       pg_query__drop_user_mapping_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_user_mapping_stmt__free_unpacked
+                     (PgQuery__DropUserMappingStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ImportForeignSchemaStmt methods */
+void   pg_query__import_foreign_schema_stmt__init
+                     (PgQuery__ImportForeignSchemaStmt         *message);
+size_t pg_query__import_foreign_schema_stmt__get_packed_size
+                     (const PgQuery__ImportForeignSchemaStmt   *message);
+size_t pg_query__import_foreign_schema_stmt__pack
+                     (const PgQuery__ImportForeignSchemaStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__import_foreign_schema_stmt__pack_to_buffer
+                     (const PgQuery__ImportForeignSchemaStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ImportForeignSchemaStmt *
+       pg_query__import_foreign_schema_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__import_foreign_schema_stmt__free_unpacked
+                     (PgQuery__ImportForeignSchemaStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreatePolicyStmt methods */
+void   pg_query__create_policy_stmt__init
+                     (PgQuery__CreatePolicyStmt         *message);
+size_t pg_query__create_policy_stmt__get_packed_size
+                     (const PgQuery__CreatePolicyStmt   *message);
+size_t pg_query__create_policy_stmt__pack
+                     (const PgQuery__CreatePolicyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_policy_stmt__pack_to_buffer
+                     (const PgQuery__CreatePolicyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreatePolicyStmt *
+       pg_query__create_policy_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_policy_stmt__free_unpacked
+                     (PgQuery__CreatePolicyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterPolicyStmt methods */
+void   pg_query__alter_policy_stmt__init
+                     (PgQuery__AlterPolicyStmt         *message);
+size_t pg_query__alter_policy_stmt__get_packed_size
+                     (const PgQuery__AlterPolicyStmt   *message);
+size_t pg_query__alter_policy_stmt__pack
+                     (const PgQuery__AlterPolicyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_policy_stmt__pack_to_buffer
+                     (const PgQuery__AlterPolicyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterPolicyStmt *
+       pg_query__alter_policy_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_policy_stmt__free_unpacked
+                     (PgQuery__AlterPolicyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateAmStmt methods */
+void   pg_query__create_am_stmt__init
+                     (PgQuery__CreateAmStmt         *message);
+size_t pg_query__create_am_stmt__get_packed_size
+                     (const PgQuery__CreateAmStmt   *message);
+size_t pg_query__create_am_stmt__pack
+                     (const PgQuery__CreateAmStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_am_stmt__pack_to_buffer
+                     (const PgQuery__CreateAmStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateAmStmt *
+       pg_query__create_am_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_am_stmt__free_unpacked
+                     (PgQuery__CreateAmStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateTrigStmt methods */
+void   pg_query__create_trig_stmt__init
+                     (PgQuery__CreateTrigStmt         *message);
+size_t pg_query__create_trig_stmt__get_packed_size
+                     (const PgQuery__CreateTrigStmt   *message);
+size_t pg_query__create_trig_stmt__pack
+                     (const PgQuery__CreateTrigStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_trig_stmt__pack_to_buffer
+                     (const PgQuery__CreateTrigStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateTrigStmt *
+       pg_query__create_trig_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_trig_stmt__free_unpacked
+                     (PgQuery__CreateTrigStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateEventTrigStmt methods */
+void   pg_query__create_event_trig_stmt__init
+                     (PgQuery__CreateEventTrigStmt         *message);
+size_t pg_query__create_event_trig_stmt__get_packed_size
+                     (const PgQuery__CreateEventTrigStmt   *message);
+size_t pg_query__create_event_trig_stmt__pack
+                     (const PgQuery__CreateEventTrigStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_event_trig_stmt__pack_to_buffer
+                     (const PgQuery__CreateEventTrigStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateEventTrigStmt *
+       pg_query__create_event_trig_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_event_trig_stmt__free_unpacked
+                     (PgQuery__CreateEventTrigStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterEventTrigStmt methods */
+void   pg_query__alter_event_trig_stmt__init
+                     (PgQuery__AlterEventTrigStmt         *message);
+size_t pg_query__alter_event_trig_stmt__get_packed_size
+                     (const PgQuery__AlterEventTrigStmt   *message);
+size_t pg_query__alter_event_trig_stmt__pack
+                     (const PgQuery__AlterEventTrigStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_event_trig_stmt__pack_to_buffer
+                     (const PgQuery__AlterEventTrigStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterEventTrigStmt *
+       pg_query__alter_event_trig_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_event_trig_stmt__free_unpacked
+                     (PgQuery__AlterEventTrigStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreatePLangStmt methods */
+void   pg_query__create_plang_stmt__init
+                     (PgQuery__CreatePLangStmt         *message);
+size_t pg_query__create_plang_stmt__get_packed_size
+                     (const PgQuery__CreatePLangStmt   *message);
+size_t pg_query__create_plang_stmt__pack
+                     (const PgQuery__CreatePLangStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_plang_stmt__pack_to_buffer
+                     (const PgQuery__CreatePLangStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreatePLangStmt *
+       pg_query__create_plang_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_plang_stmt__free_unpacked
+                     (PgQuery__CreatePLangStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateRoleStmt methods */
+void   pg_query__create_role_stmt__init
+                     (PgQuery__CreateRoleStmt         *message);
+size_t pg_query__create_role_stmt__get_packed_size
+                     (const PgQuery__CreateRoleStmt   *message);
+size_t pg_query__create_role_stmt__pack
+                     (const PgQuery__CreateRoleStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_role_stmt__pack_to_buffer
+                     (const PgQuery__CreateRoleStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateRoleStmt *
+       pg_query__create_role_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_role_stmt__free_unpacked
+                     (PgQuery__CreateRoleStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterRoleStmt methods */
+void   pg_query__alter_role_stmt__init
+                     (PgQuery__AlterRoleStmt         *message);
+size_t pg_query__alter_role_stmt__get_packed_size
+                     (const PgQuery__AlterRoleStmt   *message);
+size_t pg_query__alter_role_stmt__pack
+                     (const PgQuery__AlterRoleStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_role_stmt__pack_to_buffer
+                     (const PgQuery__AlterRoleStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterRoleStmt *
+       pg_query__alter_role_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_role_stmt__free_unpacked
+                     (PgQuery__AlterRoleStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterRoleSetStmt methods */
+void   pg_query__alter_role_set_stmt__init
+                     (PgQuery__AlterRoleSetStmt         *message);
+size_t pg_query__alter_role_set_stmt__get_packed_size
+                     (const PgQuery__AlterRoleSetStmt   *message);
+size_t pg_query__alter_role_set_stmt__pack
+                     (const PgQuery__AlterRoleSetStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_role_set_stmt__pack_to_buffer
+                     (const PgQuery__AlterRoleSetStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterRoleSetStmt *
+       pg_query__alter_role_set_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_role_set_stmt__free_unpacked
+                     (PgQuery__AlterRoleSetStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropRoleStmt methods */
+void   pg_query__drop_role_stmt__init
+                     (PgQuery__DropRoleStmt         *message);
+size_t pg_query__drop_role_stmt__get_packed_size
+                     (const PgQuery__DropRoleStmt   *message);
+size_t pg_query__drop_role_stmt__pack
+                     (const PgQuery__DropRoleStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_role_stmt__pack_to_buffer
+                     (const PgQuery__DropRoleStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropRoleStmt *
+       pg_query__drop_role_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_role_stmt__free_unpacked
+                     (PgQuery__DropRoleStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateSeqStmt methods */
+void   pg_query__create_seq_stmt__init
+                     (PgQuery__CreateSeqStmt         *message);
+size_t pg_query__create_seq_stmt__get_packed_size
+                     (const PgQuery__CreateSeqStmt   *message);
+size_t pg_query__create_seq_stmt__pack
+                     (const PgQuery__CreateSeqStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_seq_stmt__pack_to_buffer
+                     (const PgQuery__CreateSeqStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateSeqStmt *
+       pg_query__create_seq_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_seq_stmt__free_unpacked
+                     (PgQuery__CreateSeqStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterSeqStmt methods */
+void   pg_query__alter_seq_stmt__init
+                     (PgQuery__AlterSeqStmt         *message);
+size_t pg_query__alter_seq_stmt__get_packed_size
+                     (const PgQuery__AlterSeqStmt   *message);
+size_t pg_query__alter_seq_stmt__pack
+                     (const PgQuery__AlterSeqStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_seq_stmt__pack_to_buffer
+                     (const PgQuery__AlterSeqStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterSeqStmt *
+       pg_query__alter_seq_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_seq_stmt__free_unpacked
+                     (PgQuery__AlterSeqStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DefineStmt methods */
+void   pg_query__define_stmt__init
+                     (PgQuery__DefineStmt         *message);
+size_t pg_query__define_stmt__get_packed_size
+                     (const PgQuery__DefineStmt   *message);
+size_t pg_query__define_stmt__pack
+                     (const PgQuery__DefineStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__define_stmt__pack_to_buffer
+                     (const PgQuery__DefineStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DefineStmt *
+       pg_query__define_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__define_stmt__free_unpacked
+                     (PgQuery__DefineStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateDomainStmt methods */
+void   pg_query__create_domain_stmt__init
+                     (PgQuery__CreateDomainStmt         *message);
+size_t pg_query__create_domain_stmt__get_packed_size
+                     (const PgQuery__CreateDomainStmt   *message);
+size_t pg_query__create_domain_stmt__pack
+                     (const PgQuery__CreateDomainStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_domain_stmt__pack_to_buffer
+                     (const PgQuery__CreateDomainStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateDomainStmt *
+       pg_query__create_domain_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_domain_stmt__free_unpacked
+                     (PgQuery__CreateDomainStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateOpClassStmt methods */
+void   pg_query__create_op_class_stmt__init
+                     (PgQuery__CreateOpClassStmt         *message);
+size_t pg_query__create_op_class_stmt__get_packed_size
+                     (const PgQuery__CreateOpClassStmt   *message);
+size_t pg_query__create_op_class_stmt__pack
+                     (const PgQuery__CreateOpClassStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_op_class_stmt__pack_to_buffer
+                     (const PgQuery__CreateOpClassStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateOpClassStmt *
+       pg_query__create_op_class_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_op_class_stmt__free_unpacked
+                     (PgQuery__CreateOpClassStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateOpClassItem methods */
+void   pg_query__create_op_class_item__init
+                     (PgQuery__CreateOpClassItem         *message);
+size_t pg_query__create_op_class_item__get_packed_size
+                     (const PgQuery__CreateOpClassItem   *message);
+size_t pg_query__create_op_class_item__pack
+                     (const PgQuery__CreateOpClassItem   *message,
+                      uint8_t             *out);
+size_t pg_query__create_op_class_item__pack_to_buffer
+                     (const PgQuery__CreateOpClassItem   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateOpClassItem *
+       pg_query__create_op_class_item__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_op_class_item__free_unpacked
+                     (PgQuery__CreateOpClassItem *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateOpFamilyStmt methods */
+void   pg_query__create_op_family_stmt__init
+                     (PgQuery__CreateOpFamilyStmt         *message);
+size_t pg_query__create_op_family_stmt__get_packed_size
+                     (const PgQuery__CreateOpFamilyStmt   *message);
+size_t pg_query__create_op_family_stmt__pack
+                     (const PgQuery__CreateOpFamilyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_op_family_stmt__pack_to_buffer
+                     (const PgQuery__CreateOpFamilyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateOpFamilyStmt *
+       pg_query__create_op_family_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_op_family_stmt__free_unpacked
+                     (PgQuery__CreateOpFamilyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterOpFamilyStmt methods */
+void   pg_query__alter_op_family_stmt__init
+                     (PgQuery__AlterOpFamilyStmt         *message);
+size_t pg_query__alter_op_family_stmt__get_packed_size
+                     (const PgQuery__AlterOpFamilyStmt   *message);
+size_t pg_query__alter_op_family_stmt__pack
+                     (const PgQuery__AlterOpFamilyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_op_family_stmt__pack_to_buffer
+                     (const PgQuery__AlterOpFamilyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterOpFamilyStmt *
+       pg_query__alter_op_family_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_op_family_stmt__free_unpacked
+                     (PgQuery__AlterOpFamilyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropStmt methods */
+void   pg_query__drop_stmt__init
+                     (PgQuery__DropStmt         *message);
+size_t pg_query__drop_stmt__get_packed_size
+                     (const PgQuery__DropStmt   *message);
+size_t pg_query__drop_stmt__pack
+                     (const PgQuery__DropStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_stmt__pack_to_buffer
+                     (const PgQuery__DropStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropStmt *
+       pg_query__drop_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_stmt__free_unpacked
+                     (PgQuery__DropStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__TruncateStmt methods */
+void   pg_query__truncate_stmt__init
+                     (PgQuery__TruncateStmt         *message);
+size_t pg_query__truncate_stmt__get_packed_size
+                     (const PgQuery__TruncateStmt   *message);
+size_t pg_query__truncate_stmt__pack
+                     (const PgQuery__TruncateStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__truncate_stmt__pack_to_buffer
+                     (const PgQuery__TruncateStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__TruncateStmt *
+       pg_query__truncate_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__truncate_stmt__free_unpacked
+                     (PgQuery__TruncateStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CommentStmt methods */
+void   pg_query__comment_stmt__init
+                     (PgQuery__CommentStmt         *message);
+size_t pg_query__comment_stmt__get_packed_size
+                     (const PgQuery__CommentStmt   *message);
+size_t pg_query__comment_stmt__pack
+                     (const PgQuery__CommentStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__comment_stmt__pack_to_buffer
+                     (const PgQuery__CommentStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CommentStmt *
+       pg_query__comment_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__comment_stmt__free_unpacked
+                     (PgQuery__CommentStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__SecLabelStmt methods */
+void   pg_query__sec_label_stmt__init
+                     (PgQuery__SecLabelStmt         *message);
+size_t pg_query__sec_label_stmt__get_packed_size
+                     (const PgQuery__SecLabelStmt   *message);
+size_t pg_query__sec_label_stmt__pack
+                     (const PgQuery__SecLabelStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__sec_label_stmt__pack_to_buffer
+                     (const PgQuery__SecLabelStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__SecLabelStmt *
+       pg_query__sec_label_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__sec_label_stmt__free_unpacked
+                     (PgQuery__SecLabelStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DeclareCursorStmt methods */
+void   pg_query__declare_cursor_stmt__init
+                     (PgQuery__DeclareCursorStmt         *message);
+size_t pg_query__declare_cursor_stmt__get_packed_size
+                     (const PgQuery__DeclareCursorStmt   *message);
+size_t pg_query__declare_cursor_stmt__pack
+                     (const PgQuery__DeclareCursorStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__declare_cursor_stmt__pack_to_buffer
+                     (const PgQuery__DeclareCursorStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DeclareCursorStmt *
+       pg_query__declare_cursor_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__declare_cursor_stmt__free_unpacked
+                     (PgQuery__DeclareCursorStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ClosePortalStmt methods */
+void   pg_query__close_portal_stmt__init
+                     (PgQuery__ClosePortalStmt         *message);
+size_t pg_query__close_portal_stmt__get_packed_size
+                     (const PgQuery__ClosePortalStmt   *message);
+size_t pg_query__close_portal_stmt__pack
+                     (const PgQuery__ClosePortalStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__close_portal_stmt__pack_to_buffer
+                     (const PgQuery__ClosePortalStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ClosePortalStmt *
+       pg_query__close_portal_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__close_portal_stmt__free_unpacked
+                     (PgQuery__ClosePortalStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__FetchStmt methods */
+void   pg_query__fetch_stmt__init
+                     (PgQuery__FetchStmt         *message);
+size_t pg_query__fetch_stmt__get_packed_size
+                     (const PgQuery__FetchStmt   *message);
+size_t pg_query__fetch_stmt__pack
+                     (const PgQuery__FetchStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__fetch_stmt__pack_to_buffer
+                     (const PgQuery__FetchStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__FetchStmt *
+       pg_query__fetch_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__fetch_stmt__free_unpacked
+                     (PgQuery__FetchStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__IndexStmt methods */
+void   pg_query__index_stmt__init
+                     (PgQuery__IndexStmt         *message);
+size_t pg_query__index_stmt__get_packed_size
+                     (const PgQuery__IndexStmt   *message);
+size_t pg_query__index_stmt__pack
+                     (const PgQuery__IndexStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__index_stmt__pack_to_buffer
+                     (const PgQuery__IndexStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__IndexStmt *
+       pg_query__index_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__index_stmt__free_unpacked
+                     (PgQuery__IndexStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateStatsStmt methods */
+void   pg_query__create_stats_stmt__init
+                     (PgQuery__CreateStatsStmt         *message);
+size_t pg_query__create_stats_stmt__get_packed_size
+                     (const PgQuery__CreateStatsStmt   *message);
+size_t pg_query__create_stats_stmt__pack
+                     (const PgQuery__CreateStatsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_stats_stmt__pack_to_buffer
+                     (const PgQuery__CreateStatsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateStatsStmt *
+       pg_query__create_stats_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_stats_stmt__free_unpacked
+                     (PgQuery__CreateStatsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__StatsElem methods */
+void   pg_query__stats_elem__init
+                     (PgQuery__StatsElem         *message);
+size_t pg_query__stats_elem__get_packed_size
+                     (const PgQuery__StatsElem   *message);
+size_t pg_query__stats_elem__pack
+                     (const PgQuery__StatsElem   *message,
+                      uint8_t             *out);
+size_t pg_query__stats_elem__pack_to_buffer
+                     (const PgQuery__StatsElem   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__StatsElem *
+       pg_query__stats_elem__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__stats_elem__free_unpacked
+                     (PgQuery__StatsElem *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterStatsStmt methods */
+void   pg_query__alter_stats_stmt__init
+                     (PgQuery__AlterStatsStmt         *message);
+size_t pg_query__alter_stats_stmt__get_packed_size
+                     (const PgQuery__AlterStatsStmt   *message);
+size_t pg_query__alter_stats_stmt__pack
+                     (const PgQuery__AlterStatsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_stats_stmt__pack_to_buffer
+                     (const PgQuery__AlterStatsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterStatsStmt *
+       pg_query__alter_stats_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_stats_stmt__free_unpacked
+                     (PgQuery__AlterStatsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateFunctionStmt methods */
+void   pg_query__create_function_stmt__init
+                     (PgQuery__CreateFunctionStmt         *message);
+size_t pg_query__create_function_stmt__get_packed_size
+                     (const PgQuery__CreateFunctionStmt   *message);
+size_t pg_query__create_function_stmt__pack
+                     (const PgQuery__CreateFunctionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_function_stmt__pack_to_buffer
+                     (const PgQuery__CreateFunctionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateFunctionStmt *
+       pg_query__create_function_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_function_stmt__free_unpacked
+                     (PgQuery__CreateFunctionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__FunctionParameter methods */
+void   pg_query__function_parameter__init
+                     (PgQuery__FunctionParameter         *message);
+size_t pg_query__function_parameter__get_packed_size
+                     (const PgQuery__FunctionParameter   *message);
+size_t pg_query__function_parameter__pack
+                     (const PgQuery__FunctionParameter   *message,
+                      uint8_t             *out);
+size_t pg_query__function_parameter__pack_to_buffer
+                     (const PgQuery__FunctionParameter   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__FunctionParameter *
+       pg_query__function_parameter__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__function_parameter__free_unpacked
+                     (PgQuery__FunctionParameter *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterFunctionStmt methods */
+void   pg_query__alter_function_stmt__init
+                     (PgQuery__AlterFunctionStmt         *message);
+size_t pg_query__alter_function_stmt__get_packed_size
+                     (const PgQuery__AlterFunctionStmt   *message);
+size_t pg_query__alter_function_stmt__pack
+                     (const PgQuery__AlterFunctionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_function_stmt__pack_to_buffer
+                     (const PgQuery__AlterFunctionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterFunctionStmt *
+       pg_query__alter_function_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_function_stmt__free_unpacked
+                     (PgQuery__AlterFunctionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DoStmt methods */
+void   pg_query__do_stmt__init
+                     (PgQuery__DoStmt         *message);
+size_t pg_query__do_stmt__get_packed_size
+                     (const PgQuery__DoStmt   *message);
+size_t pg_query__do_stmt__pack
+                     (const PgQuery__DoStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__do_stmt__pack_to_buffer
+                     (const PgQuery__DoStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DoStmt *
+       pg_query__do_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__do_stmt__free_unpacked
+                     (PgQuery__DoStmt *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__InlineCodeBlock methods */
 void   pg_query__inline_code_block__init
@@ -10281,6 +9622,25 @@ PgQuery__InlineCodeBlock *
 void   pg_query__inline_code_block__free_unpacked
                      (PgQuery__InlineCodeBlock *message,
                       ProtobufCAllocator *allocator);
+/* PgQuery__CallStmt methods */
+void   pg_query__call_stmt__init
+                     (PgQuery__CallStmt         *message);
+size_t pg_query__call_stmt__get_packed_size
+                     (const PgQuery__CallStmt   *message);
+size_t pg_query__call_stmt__pack
+                     (const PgQuery__CallStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__call_stmt__pack_to_buffer
+                     (const PgQuery__CallStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CallStmt *
+       pg_query__call_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__call_stmt__free_unpacked
+                     (PgQuery__CallStmt *message,
+                      ProtobufCAllocator *allocator);
 /* PgQuery__CallContext methods */
 void   pg_query__call_context__init
                      (PgQuery__CallContext         *message);
@@ -10299,6 +9659,975 @@ PgQuery__CallContext *
                       const uint8_t       *data);
 void   pg_query__call_context__free_unpacked
                      (PgQuery__CallContext *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RenameStmt methods */
+void   pg_query__rename_stmt__init
+                     (PgQuery__RenameStmt         *message);
+size_t pg_query__rename_stmt__get_packed_size
+                     (const PgQuery__RenameStmt   *message);
+size_t pg_query__rename_stmt__pack
+                     (const PgQuery__RenameStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__rename_stmt__pack_to_buffer
+                     (const PgQuery__RenameStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RenameStmt *
+       pg_query__rename_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__rename_stmt__free_unpacked
+                     (PgQuery__RenameStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterObjectDependsStmt methods */
+void   pg_query__alter_object_depends_stmt__init
+                     (PgQuery__AlterObjectDependsStmt         *message);
+size_t pg_query__alter_object_depends_stmt__get_packed_size
+                     (const PgQuery__AlterObjectDependsStmt   *message);
+size_t pg_query__alter_object_depends_stmt__pack
+                     (const PgQuery__AlterObjectDependsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_object_depends_stmt__pack_to_buffer
+                     (const PgQuery__AlterObjectDependsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterObjectDependsStmt *
+       pg_query__alter_object_depends_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_object_depends_stmt__free_unpacked
+                     (PgQuery__AlterObjectDependsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterObjectSchemaStmt methods */
+void   pg_query__alter_object_schema_stmt__init
+                     (PgQuery__AlterObjectSchemaStmt         *message);
+size_t pg_query__alter_object_schema_stmt__get_packed_size
+                     (const PgQuery__AlterObjectSchemaStmt   *message);
+size_t pg_query__alter_object_schema_stmt__pack
+                     (const PgQuery__AlterObjectSchemaStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_object_schema_stmt__pack_to_buffer
+                     (const PgQuery__AlterObjectSchemaStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterObjectSchemaStmt *
+       pg_query__alter_object_schema_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_object_schema_stmt__free_unpacked
+                     (PgQuery__AlterObjectSchemaStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterOwnerStmt methods */
+void   pg_query__alter_owner_stmt__init
+                     (PgQuery__AlterOwnerStmt         *message);
+size_t pg_query__alter_owner_stmt__get_packed_size
+                     (const PgQuery__AlterOwnerStmt   *message);
+size_t pg_query__alter_owner_stmt__pack
+                     (const PgQuery__AlterOwnerStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_owner_stmt__pack_to_buffer
+                     (const PgQuery__AlterOwnerStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterOwnerStmt *
+       pg_query__alter_owner_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_owner_stmt__free_unpacked
+                     (PgQuery__AlterOwnerStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterOperatorStmt methods */
+void   pg_query__alter_operator_stmt__init
+                     (PgQuery__AlterOperatorStmt         *message);
+size_t pg_query__alter_operator_stmt__get_packed_size
+                     (const PgQuery__AlterOperatorStmt   *message);
+size_t pg_query__alter_operator_stmt__pack
+                     (const PgQuery__AlterOperatorStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_operator_stmt__pack_to_buffer
+                     (const PgQuery__AlterOperatorStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterOperatorStmt *
+       pg_query__alter_operator_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_operator_stmt__free_unpacked
+                     (PgQuery__AlterOperatorStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTypeStmt methods */
+void   pg_query__alter_type_stmt__init
+                     (PgQuery__AlterTypeStmt         *message);
+size_t pg_query__alter_type_stmt__get_packed_size
+                     (const PgQuery__AlterTypeStmt   *message);
+size_t pg_query__alter_type_stmt__pack
+                     (const PgQuery__AlterTypeStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_type_stmt__pack_to_buffer
+                     (const PgQuery__AlterTypeStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTypeStmt *
+       pg_query__alter_type_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_type_stmt__free_unpacked
+                     (PgQuery__AlterTypeStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RuleStmt methods */
+void   pg_query__rule_stmt__init
+                     (PgQuery__RuleStmt         *message);
+size_t pg_query__rule_stmt__get_packed_size
+                     (const PgQuery__RuleStmt   *message);
+size_t pg_query__rule_stmt__pack
+                     (const PgQuery__RuleStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__rule_stmt__pack_to_buffer
+                     (const PgQuery__RuleStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RuleStmt *
+       pg_query__rule_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__rule_stmt__free_unpacked
+                     (PgQuery__RuleStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__NotifyStmt methods */
+void   pg_query__notify_stmt__init
+                     (PgQuery__NotifyStmt         *message);
+size_t pg_query__notify_stmt__get_packed_size
+                     (const PgQuery__NotifyStmt   *message);
+size_t pg_query__notify_stmt__pack
+                     (const PgQuery__NotifyStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__notify_stmt__pack_to_buffer
+                     (const PgQuery__NotifyStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__NotifyStmt *
+       pg_query__notify_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__notify_stmt__free_unpacked
+                     (PgQuery__NotifyStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ListenStmt methods */
+void   pg_query__listen_stmt__init
+                     (PgQuery__ListenStmt         *message);
+size_t pg_query__listen_stmt__get_packed_size
+                     (const PgQuery__ListenStmt   *message);
+size_t pg_query__listen_stmt__pack
+                     (const PgQuery__ListenStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__listen_stmt__pack_to_buffer
+                     (const PgQuery__ListenStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ListenStmt *
+       pg_query__listen_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__listen_stmt__free_unpacked
+                     (PgQuery__ListenStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__UnlistenStmt methods */
+void   pg_query__unlisten_stmt__init
+                     (PgQuery__UnlistenStmt         *message);
+size_t pg_query__unlisten_stmt__get_packed_size
+                     (const PgQuery__UnlistenStmt   *message);
+size_t pg_query__unlisten_stmt__pack
+                     (const PgQuery__UnlistenStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__unlisten_stmt__pack_to_buffer
+                     (const PgQuery__UnlistenStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__UnlistenStmt *
+       pg_query__unlisten_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__unlisten_stmt__free_unpacked
+                     (PgQuery__UnlistenStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__TransactionStmt methods */
+void   pg_query__transaction_stmt__init
+                     (PgQuery__TransactionStmt         *message);
+size_t pg_query__transaction_stmt__get_packed_size
+                     (const PgQuery__TransactionStmt   *message);
+size_t pg_query__transaction_stmt__pack
+                     (const PgQuery__TransactionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__transaction_stmt__pack_to_buffer
+                     (const PgQuery__TransactionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__TransactionStmt *
+       pg_query__transaction_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__transaction_stmt__free_unpacked
+                     (PgQuery__TransactionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CompositeTypeStmt methods */
+void   pg_query__composite_type_stmt__init
+                     (PgQuery__CompositeTypeStmt         *message);
+size_t pg_query__composite_type_stmt__get_packed_size
+                     (const PgQuery__CompositeTypeStmt   *message);
+size_t pg_query__composite_type_stmt__pack
+                     (const PgQuery__CompositeTypeStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__composite_type_stmt__pack_to_buffer
+                     (const PgQuery__CompositeTypeStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CompositeTypeStmt *
+       pg_query__composite_type_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__composite_type_stmt__free_unpacked
+                     (PgQuery__CompositeTypeStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateEnumStmt methods */
+void   pg_query__create_enum_stmt__init
+                     (PgQuery__CreateEnumStmt         *message);
+size_t pg_query__create_enum_stmt__get_packed_size
+                     (const PgQuery__CreateEnumStmt   *message);
+size_t pg_query__create_enum_stmt__pack
+                     (const PgQuery__CreateEnumStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_enum_stmt__pack_to_buffer
+                     (const PgQuery__CreateEnumStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateEnumStmt *
+       pg_query__create_enum_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_enum_stmt__free_unpacked
+                     (PgQuery__CreateEnumStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateRangeStmt methods */
+void   pg_query__create_range_stmt__init
+                     (PgQuery__CreateRangeStmt         *message);
+size_t pg_query__create_range_stmt__get_packed_size
+                     (const PgQuery__CreateRangeStmt   *message);
+size_t pg_query__create_range_stmt__pack
+                     (const PgQuery__CreateRangeStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_range_stmt__pack_to_buffer
+                     (const PgQuery__CreateRangeStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateRangeStmt *
+       pg_query__create_range_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_range_stmt__free_unpacked
+                     (PgQuery__CreateRangeStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterEnumStmt methods */
+void   pg_query__alter_enum_stmt__init
+                     (PgQuery__AlterEnumStmt         *message);
+size_t pg_query__alter_enum_stmt__get_packed_size
+                     (const PgQuery__AlterEnumStmt   *message);
+size_t pg_query__alter_enum_stmt__pack
+                     (const PgQuery__AlterEnumStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_enum_stmt__pack_to_buffer
+                     (const PgQuery__AlterEnumStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterEnumStmt *
+       pg_query__alter_enum_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_enum_stmt__free_unpacked
+                     (PgQuery__AlterEnumStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ViewStmt methods */
+void   pg_query__view_stmt__init
+                     (PgQuery__ViewStmt         *message);
+size_t pg_query__view_stmt__get_packed_size
+                     (const PgQuery__ViewStmt   *message);
+size_t pg_query__view_stmt__pack
+                     (const PgQuery__ViewStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__view_stmt__pack_to_buffer
+                     (const PgQuery__ViewStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ViewStmt *
+       pg_query__view_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__view_stmt__free_unpacked
+                     (PgQuery__ViewStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__LoadStmt methods */
+void   pg_query__load_stmt__init
+                     (PgQuery__LoadStmt         *message);
+size_t pg_query__load_stmt__get_packed_size
+                     (const PgQuery__LoadStmt   *message);
+size_t pg_query__load_stmt__pack
+                     (const PgQuery__LoadStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__load_stmt__pack_to_buffer
+                     (const PgQuery__LoadStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__LoadStmt *
+       pg_query__load_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__load_stmt__free_unpacked
+                     (PgQuery__LoadStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreatedbStmt methods */
+void   pg_query__createdb_stmt__init
+                     (PgQuery__CreatedbStmt         *message);
+size_t pg_query__createdb_stmt__get_packed_size
+                     (const PgQuery__CreatedbStmt   *message);
+size_t pg_query__createdb_stmt__pack
+                     (const PgQuery__CreatedbStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__createdb_stmt__pack_to_buffer
+                     (const PgQuery__CreatedbStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreatedbStmt *
+       pg_query__createdb_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__createdb_stmt__free_unpacked
+                     (PgQuery__CreatedbStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterDatabaseStmt methods */
+void   pg_query__alter_database_stmt__init
+                     (PgQuery__AlterDatabaseStmt         *message);
+size_t pg_query__alter_database_stmt__get_packed_size
+                     (const PgQuery__AlterDatabaseStmt   *message);
+size_t pg_query__alter_database_stmt__pack
+                     (const PgQuery__AlterDatabaseStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_database_stmt__pack_to_buffer
+                     (const PgQuery__AlterDatabaseStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterDatabaseStmt *
+       pg_query__alter_database_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_database_stmt__free_unpacked
+                     (PgQuery__AlterDatabaseStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterDatabaseRefreshCollStmt methods */
+void   pg_query__alter_database_refresh_coll_stmt__init
+                     (PgQuery__AlterDatabaseRefreshCollStmt         *message);
+size_t pg_query__alter_database_refresh_coll_stmt__get_packed_size
+                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message);
+size_t pg_query__alter_database_refresh_coll_stmt__pack
+                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_database_refresh_coll_stmt__pack_to_buffer
+                     (const PgQuery__AlterDatabaseRefreshCollStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterDatabaseRefreshCollStmt *
+       pg_query__alter_database_refresh_coll_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_database_refresh_coll_stmt__free_unpacked
+                     (PgQuery__AlterDatabaseRefreshCollStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterDatabaseSetStmt methods */
+void   pg_query__alter_database_set_stmt__init
+                     (PgQuery__AlterDatabaseSetStmt         *message);
+size_t pg_query__alter_database_set_stmt__get_packed_size
+                     (const PgQuery__AlterDatabaseSetStmt   *message);
+size_t pg_query__alter_database_set_stmt__pack
+                     (const PgQuery__AlterDatabaseSetStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_database_set_stmt__pack_to_buffer
+                     (const PgQuery__AlterDatabaseSetStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterDatabaseSetStmt *
+       pg_query__alter_database_set_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_database_set_stmt__free_unpacked
+                     (PgQuery__AlterDatabaseSetStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropdbStmt methods */
+void   pg_query__dropdb_stmt__init
+                     (PgQuery__DropdbStmt         *message);
+size_t pg_query__dropdb_stmt__get_packed_size
+                     (const PgQuery__DropdbStmt   *message);
+size_t pg_query__dropdb_stmt__pack
+                     (const PgQuery__DropdbStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__dropdb_stmt__pack_to_buffer
+                     (const PgQuery__DropdbStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropdbStmt *
+       pg_query__dropdb_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__dropdb_stmt__free_unpacked
+                     (PgQuery__DropdbStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterSystemStmt methods */
+void   pg_query__alter_system_stmt__init
+                     (PgQuery__AlterSystemStmt         *message);
+size_t pg_query__alter_system_stmt__get_packed_size
+                     (const PgQuery__AlterSystemStmt   *message);
+size_t pg_query__alter_system_stmt__pack
+                     (const PgQuery__AlterSystemStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_system_stmt__pack_to_buffer
+                     (const PgQuery__AlterSystemStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterSystemStmt *
+       pg_query__alter_system_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_system_stmt__free_unpacked
+                     (PgQuery__AlterSystemStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ClusterStmt methods */
+void   pg_query__cluster_stmt__init
+                     (PgQuery__ClusterStmt         *message);
+size_t pg_query__cluster_stmt__get_packed_size
+                     (const PgQuery__ClusterStmt   *message);
+size_t pg_query__cluster_stmt__pack
+                     (const PgQuery__ClusterStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__cluster_stmt__pack_to_buffer
+                     (const PgQuery__ClusterStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ClusterStmt *
+       pg_query__cluster_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__cluster_stmt__free_unpacked
+                     (PgQuery__ClusterStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__VacuumStmt methods */
+void   pg_query__vacuum_stmt__init
+                     (PgQuery__VacuumStmt         *message);
+size_t pg_query__vacuum_stmt__get_packed_size
+                     (const PgQuery__VacuumStmt   *message);
+size_t pg_query__vacuum_stmt__pack
+                     (const PgQuery__VacuumStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__vacuum_stmt__pack_to_buffer
+                     (const PgQuery__VacuumStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__VacuumStmt *
+       pg_query__vacuum_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__vacuum_stmt__free_unpacked
+                     (PgQuery__VacuumStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__VacuumRelation methods */
+void   pg_query__vacuum_relation__init
+                     (PgQuery__VacuumRelation         *message);
+size_t pg_query__vacuum_relation__get_packed_size
+                     (const PgQuery__VacuumRelation   *message);
+size_t pg_query__vacuum_relation__pack
+                     (const PgQuery__VacuumRelation   *message,
+                      uint8_t             *out);
+size_t pg_query__vacuum_relation__pack_to_buffer
+                     (const PgQuery__VacuumRelation   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__VacuumRelation *
+       pg_query__vacuum_relation__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__vacuum_relation__free_unpacked
+                     (PgQuery__VacuumRelation *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ExplainStmt methods */
+void   pg_query__explain_stmt__init
+                     (PgQuery__ExplainStmt         *message);
+size_t pg_query__explain_stmt__get_packed_size
+                     (const PgQuery__ExplainStmt   *message);
+size_t pg_query__explain_stmt__pack
+                     (const PgQuery__ExplainStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__explain_stmt__pack_to_buffer
+                     (const PgQuery__ExplainStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ExplainStmt *
+       pg_query__explain_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__explain_stmt__free_unpacked
+                     (PgQuery__ExplainStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateTableAsStmt methods */
+void   pg_query__create_table_as_stmt__init
+                     (PgQuery__CreateTableAsStmt         *message);
+size_t pg_query__create_table_as_stmt__get_packed_size
+                     (const PgQuery__CreateTableAsStmt   *message);
+size_t pg_query__create_table_as_stmt__pack
+                     (const PgQuery__CreateTableAsStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_table_as_stmt__pack_to_buffer
+                     (const PgQuery__CreateTableAsStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateTableAsStmt *
+       pg_query__create_table_as_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_table_as_stmt__free_unpacked
+                     (PgQuery__CreateTableAsStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__RefreshMatViewStmt methods */
+void   pg_query__refresh_mat_view_stmt__init
+                     (PgQuery__RefreshMatViewStmt         *message);
+size_t pg_query__refresh_mat_view_stmt__get_packed_size
+                     (const PgQuery__RefreshMatViewStmt   *message);
+size_t pg_query__refresh_mat_view_stmt__pack
+                     (const PgQuery__RefreshMatViewStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__refresh_mat_view_stmt__pack_to_buffer
+                     (const PgQuery__RefreshMatViewStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__RefreshMatViewStmt *
+       pg_query__refresh_mat_view_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__refresh_mat_view_stmt__free_unpacked
+                     (PgQuery__RefreshMatViewStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CheckPointStmt methods */
+void   pg_query__check_point_stmt__init
+                     (PgQuery__CheckPointStmt         *message);
+size_t pg_query__check_point_stmt__get_packed_size
+                     (const PgQuery__CheckPointStmt   *message);
+size_t pg_query__check_point_stmt__pack
+                     (const PgQuery__CheckPointStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__check_point_stmt__pack_to_buffer
+                     (const PgQuery__CheckPointStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CheckPointStmt *
+       pg_query__check_point_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__check_point_stmt__free_unpacked
+                     (PgQuery__CheckPointStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DiscardStmt methods */
+void   pg_query__discard_stmt__init
+                     (PgQuery__DiscardStmt         *message);
+size_t pg_query__discard_stmt__get_packed_size
+                     (const PgQuery__DiscardStmt   *message);
+size_t pg_query__discard_stmt__pack
+                     (const PgQuery__DiscardStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__discard_stmt__pack_to_buffer
+                     (const PgQuery__DiscardStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DiscardStmt *
+       pg_query__discard_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__discard_stmt__free_unpacked
+                     (PgQuery__DiscardStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__LockStmt methods */
+void   pg_query__lock_stmt__init
+                     (PgQuery__LockStmt         *message);
+size_t pg_query__lock_stmt__get_packed_size
+                     (const PgQuery__LockStmt   *message);
+size_t pg_query__lock_stmt__pack
+                     (const PgQuery__LockStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__lock_stmt__pack_to_buffer
+                     (const PgQuery__LockStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__LockStmt *
+       pg_query__lock_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__lock_stmt__free_unpacked
+                     (PgQuery__LockStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ConstraintsSetStmt methods */
+void   pg_query__constraints_set_stmt__init
+                     (PgQuery__ConstraintsSetStmt         *message);
+size_t pg_query__constraints_set_stmt__get_packed_size
+                     (const PgQuery__ConstraintsSetStmt   *message);
+size_t pg_query__constraints_set_stmt__pack
+                     (const PgQuery__ConstraintsSetStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__constraints_set_stmt__pack_to_buffer
+                     (const PgQuery__ConstraintsSetStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ConstraintsSetStmt *
+       pg_query__constraints_set_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__constraints_set_stmt__free_unpacked
+                     (PgQuery__ConstraintsSetStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ReindexStmt methods */
+void   pg_query__reindex_stmt__init
+                     (PgQuery__ReindexStmt         *message);
+size_t pg_query__reindex_stmt__get_packed_size
+                     (const PgQuery__ReindexStmt   *message);
+size_t pg_query__reindex_stmt__pack
+                     (const PgQuery__ReindexStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__reindex_stmt__pack_to_buffer
+                     (const PgQuery__ReindexStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ReindexStmt *
+       pg_query__reindex_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__reindex_stmt__free_unpacked
+                     (PgQuery__ReindexStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateConversionStmt methods */
+void   pg_query__create_conversion_stmt__init
+                     (PgQuery__CreateConversionStmt         *message);
+size_t pg_query__create_conversion_stmt__get_packed_size
+                     (const PgQuery__CreateConversionStmt   *message);
+size_t pg_query__create_conversion_stmt__pack
+                     (const PgQuery__CreateConversionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_conversion_stmt__pack_to_buffer
+                     (const PgQuery__CreateConversionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateConversionStmt *
+       pg_query__create_conversion_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_conversion_stmt__free_unpacked
+                     (PgQuery__CreateConversionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateCastStmt methods */
+void   pg_query__create_cast_stmt__init
+                     (PgQuery__CreateCastStmt         *message);
+size_t pg_query__create_cast_stmt__get_packed_size
+                     (const PgQuery__CreateCastStmt   *message);
+size_t pg_query__create_cast_stmt__pack
+                     (const PgQuery__CreateCastStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_cast_stmt__pack_to_buffer
+                     (const PgQuery__CreateCastStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateCastStmt *
+       pg_query__create_cast_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_cast_stmt__free_unpacked
+                     (PgQuery__CreateCastStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateTransformStmt methods */
+void   pg_query__create_transform_stmt__init
+                     (PgQuery__CreateTransformStmt         *message);
+size_t pg_query__create_transform_stmt__get_packed_size
+                     (const PgQuery__CreateTransformStmt   *message);
+size_t pg_query__create_transform_stmt__pack
+                     (const PgQuery__CreateTransformStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_transform_stmt__pack_to_buffer
+                     (const PgQuery__CreateTransformStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateTransformStmt *
+       pg_query__create_transform_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_transform_stmt__free_unpacked
+                     (PgQuery__CreateTransformStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PrepareStmt methods */
+void   pg_query__prepare_stmt__init
+                     (PgQuery__PrepareStmt         *message);
+size_t pg_query__prepare_stmt__get_packed_size
+                     (const PgQuery__PrepareStmt   *message);
+size_t pg_query__prepare_stmt__pack
+                     (const PgQuery__PrepareStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__prepare_stmt__pack_to_buffer
+                     (const PgQuery__PrepareStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PrepareStmt *
+       pg_query__prepare_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__prepare_stmt__free_unpacked
+                     (PgQuery__PrepareStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ExecuteStmt methods */
+void   pg_query__execute_stmt__init
+                     (PgQuery__ExecuteStmt         *message);
+size_t pg_query__execute_stmt__get_packed_size
+                     (const PgQuery__ExecuteStmt   *message);
+size_t pg_query__execute_stmt__pack
+                     (const PgQuery__ExecuteStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__execute_stmt__pack_to_buffer
+                     (const PgQuery__ExecuteStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ExecuteStmt *
+       pg_query__execute_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__execute_stmt__free_unpacked
+                     (PgQuery__ExecuteStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DeallocateStmt methods */
+void   pg_query__deallocate_stmt__init
+                     (PgQuery__DeallocateStmt         *message);
+size_t pg_query__deallocate_stmt__get_packed_size
+                     (const PgQuery__DeallocateStmt   *message);
+size_t pg_query__deallocate_stmt__pack
+                     (const PgQuery__DeallocateStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__deallocate_stmt__pack_to_buffer
+                     (const PgQuery__DeallocateStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DeallocateStmt *
+       pg_query__deallocate_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__deallocate_stmt__free_unpacked
+                     (PgQuery__DeallocateStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropOwnedStmt methods */
+void   pg_query__drop_owned_stmt__init
+                     (PgQuery__DropOwnedStmt         *message);
+size_t pg_query__drop_owned_stmt__get_packed_size
+                     (const PgQuery__DropOwnedStmt   *message);
+size_t pg_query__drop_owned_stmt__pack
+                     (const PgQuery__DropOwnedStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_owned_stmt__pack_to_buffer
+                     (const PgQuery__DropOwnedStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropOwnedStmt *
+       pg_query__drop_owned_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_owned_stmt__free_unpacked
+                     (PgQuery__DropOwnedStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__ReassignOwnedStmt methods */
+void   pg_query__reassign_owned_stmt__init
+                     (PgQuery__ReassignOwnedStmt         *message);
+size_t pg_query__reassign_owned_stmt__get_packed_size
+                     (const PgQuery__ReassignOwnedStmt   *message);
+size_t pg_query__reassign_owned_stmt__pack
+                     (const PgQuery__ReassignOwnedStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__reassign_owned_stmt__pack_to_buffer
+                     (const PgQuery__ReassignOwnedStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__ReassignOwnedStmt *
+       pg_query__reassign_owned_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__reassign_owned_stmt__free_unpacked
+                     (PgQuery__ReassignOwnedStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTSDictionaryStmt methods */
+void   pg_query__alter_tsdictionary_stmt__init
+                     (PgQuery__AlterTSDictionaryStmt         *message);
+size_t pg_query__alter_tsdictionary_stmt__get_packed_size
+                     (const PgQuery__AlterTSDictionaryStmt   *message);
+size_t pg_query__alter_tsdictionary_stmt__pack
+                     (const PgQuery__AlterTSDictionaryStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_tsdictionary_stmt__pack_to_buffer
+                     (const PgQuery__AlterTSDictionaryStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTSDictionaryStmt *
+       pg_query__alter_tsdictionary_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_tsdictionary_stmt__free_unpacked
+                     (PgQuery__AlterTSDictionaryStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterTSConfigurationStmt methods */
+void   pg_query__alter_tsconfiguration_stmt__init
+                     (PgQuery__AlterTSConfigurationStmt         *message);
+size_t pg_query__alter_tsconfiguration_stmt__get_packed_size
+                     (const PgQuery__AlterTSConfigurationStmt   *message);
+size_t pg_query__alter_tsconfiguration_stmt__pack
+                     (const PgQuery__AlterTSConfigurationStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_tsconfiguration_stmt__pack_to_buffer
+                     (const PgQuery__AlterTSConfigurationStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterTSConfigurationStmt *
+       pg_query__alter_tsconfiguration_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_tsconfiguration_stmt__free_unpacked
+                     (PgQuery__AlterTSConfigurationStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PublicationTable methods */
+void   pg_query__publication_table__init
+                     (PgQuery__PublicationTable         *message);
+size_t pg_query__publication_table__get_packed_size
+                     (const PgQuery__PublicationTable   *message);
+size_t pg_query__publication_table__pack
+                     (const PgQuery__PublicationTable   *message,
+                      uint8_t             *out);
+size_t pg_query__publication_table__pack_to_buffer
+                     (const PgQuery__PublicationTable   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PublicationTable *
+       pg_query__publication_table__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__publication_table__free_unpacked
+                     (PgQuery__PublicationTable *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__PublicationObjSpec methods */
+void   pg_query__publication_obj_spec__init
+                     (PgQuery__PublicationObjSpec         *message);
+size_t pg_query__publication_obj_spec__get_packed_size
+                     (const PgQuery__PublicationObjSpec   *message);
+size_t pg_query__publication_obj_spec__pack
+                     (const PgQuery__PublicationObjSpec   *message,
+                      uint8_t             *out);
+size_t pg_query__publication_obj_spec__pack_to_buffer
+                     (const PgQuery__PublicationObjSpec   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__PublicationObjSpec *
+       pg_query__publication_obj_spec__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__publication_obj_spec__free_unpacked
+                     (PgQuery__PublicationObjSpec *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreatePublicationStmt methods */
+void   pg_query__create_publication_stmt__init
+                     (PgQuery__CreatePublicationStmt         *message);
+size_t pg_query__create_publication_stmt__get_packed_size
+                     (const PgQuery__CreatePublicationStmt   *message);
+size_t pg_query__create_publication_stmt__pack
+                     (const PgQuery__CreatePublicationStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_publication_stmt__pack_to_buffer
+                     (const PgQuery__CreatePublicationStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreatePublicationStmt *
+       pg_query__create_publication_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_publication_stmt__free_unpacked
+                     (PgQuery__CreatePublicationStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterPublicationStmt methods */
+void   pg_query__alter_publication_stmt__init
+                     (PgQuery__AlterPublicationStmt         *message);
+size_t pg_query__alter_publication_stmt__get_packed_size
+                     (const PgQuery__AlterPublicationStmt   *message);
+size_t pg_query__alter_publication_stmt__pack
+                     (const PgQuery__AlterPublicationStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_publication_stmt__pack_to_buffer
+                     (const PgQuery__AlterPublicationStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterPublicationStmt *
+       pg_query__alter_publication_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_publication_stmt__free_unpacked
+                     (PgQuery__AlterPublicationStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__CreateSubscriptionStmt methods */
+void   pg_query__create_subscription_stmt__init
+                     (PgQuery__CreateSubscriptionStmt         *message);
+size_t pg_query__create_subscription_stmt__get_packed_size
+                     (const PgQuery__CreateSubscriptionStmt   *message);
+size_t pg_query__create_subscription_stmt__pack
+                     (const PgQuery__CreateSubscriptionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__create_subscription_stmt__pack_to_buffer
+                     (const PgQuery__CreateSubscriptionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__CreateSubscriptionStmt *
+       pg_query__create_subscription_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__create_subscription_stmt__free_unpacked
+                     (PgQuery__CreateSubscriptionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__AlterSubscriptionStmt methods */
+void   pg_query__alter_subscription_stmt__init
+                     (PgQuery__AlterSubscriptionStmt         *message);
+size_t pg_query__alter_subscription_stmt__get_packed_size
+                     (const PgQuery__AlterSubscriptionStmt   *message);
+size_t pg_query__alter_subscription_stmt__pack
+                     (const PgQuery__AlterSubscriptionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__alter_subscription_stmt__pack_to_buffer
+                     (const PgQuery__AlterSubscriptionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__AlterSubscriptionStmt *
+       pg_query__alter_subscription_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__alter_subscription_stmt__free_unpacked
+                     (PgQuery__AlterSubscriptionStmt *message,
+                      ProtobufCAllocator *allocator);
+/* PgQuery__DropSubscriptionStmt methods */
+void   pg_query__drop_subscription_stmt__init
+                     (PgQuery__DropSubscriptionStmt         *message);
+size_t pg_query__drop_subscription_stmt__get_packed_size
+                     (const PgQuery__DropSubscriptionStmt   *message);
+size_t pg_query__drop_subscription_stmt__pack
+                     (const PgQuery__DropSubscriptionStmt   *message,
+                      uint8_t             *out);
+size_t pg_query__drop_subscription_stmt__pack_to_buffer
+                     (const PgQuery__DropSubscriptionStmt   *message,
+                      ProtobufCBuffer     *buffer);
+PgQuery__DropSubscriptionStmt *
+       pg_query__drop_subscription_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   pg_query__drop_subscription_stmt__free_unpacked
+                     (PgQuery__DropSubscriptionStmt *message,
                       ProtobufCAllocator *allocator);
 /* PgQuery__ScanToken methods */
 void   pg_query__scan_token__init
@@ -10365,6 +10694,9 @@ typedef void (*PgQuery__RangeVar_Closure)
                   void *closure_data);
 typedef void (*PgQuery__TableFunc_Closure)
                  (const PgQuery__TableFunc *message,
+                  void *closure_data);
+typedef void (*PgQuery__IntoClause_Closure)
+                 (const PgQuery__IntoClause *message,
                   void *closure_data);
 typedef void (*PgQuery__Var_Closure)
                  (const PgQuery__Var *message,
@@ -10465,6 +10797,21 @@ typedef void (*PgQuery__SQLValueFunction_Closure)
 typedef void (*PgQuery__XmlExpr_Closure)
                  (const PgQuery__XmlExpr *message,
                   void *closure_data);
+typedef void (*PgQuery__JsonFormat_Closure)
+                 (const PgQuery__JsonFormat *message,
+                  void *closure_data);
+typedef void (*PgQuery__JsonReturning_Closure)
+                 (const PgQuery__JsonReturning *message,
+                  void *closure_data);
+typedef void (*PgQuery__JsonValueExpr_Closure)
+                 (const PgQuery__JsonValueExpr *message,
+                  void *closure_data);
+typedef void (*PgQuery__JsonConstructorExpr_Closure)
+                 (const PgQuery__JsonConstructorExpr *message,
+                  void *closure_data);
+typedef void (*PgQuery__JsonIsPredicate_Closure)
+                 (const PgQuery__JsonIsPredicate *message,
+                  void *closure_data);
 typedef void (*PgQuery__NullTest_Closure)
                  (const PgQuery__NullTest *message,
                   void *closure_data);
@@ -10504,377 +10851,29 @@ typedef void (*PgQuery__FromExpr_Closure)
 typedef void (*PgQuery__OnConflictExpr_Closure)
                  (const PgQuery__OnConflictExpr *message,
                   void *closure_data);
-typedef void (*PgQuery__IntoClause_Closure)
-                 (const PgQuery__IntoClause *message,
-                  void *closure_data);
-typedef void (*PgQuery__MergeAction_Closure)
-                 (const PgQuery__MergeAction *message,
-                  void *closure_data);
-typedef void (*PgQuery__RawStmt_Closure)
-                 (const PgQuery__RawStmt *message,
-                  void *closure_data);
 typedef void (*PgQuery__Query_Closure)
                  (const PgQuery__Query *message,
                   void *closure_data);
-typedef void (*PgQuery__InsertStmt_Closure)
-                 (const PgQuery__InsertStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DeleteStmt_Closure)
-                 (const PgQuery__DeleteStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__UpdateStmt_Closure)
-                 (const PgQuery__UpdateStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__MergeStmt_Closure)
-                 (const PgQuery__MergeStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__SelectStmt_Closure)
-                 (const PgQuery__SelectStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ReturnStmt_Closure)
-                 (const PgQuery__ReturnStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__PLAssignStmt_Closure)
-                 (const PgQuery__PLAssignStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTableStmt_Closure)
-                 (const PgQuery__AlterTableStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTableCmd_Closure)
-                 (const PgQuery__AlterTableCmd *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterDomainStmt_Closure)
-                 (const PgQuery__AlterDomainStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__SetOperationStmt_Closure)
-                 (const PgQuery__SetOperationStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__GrantStmt_Closure)
-                 (const PgQuery__GrantStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__GrantRoleStmt_Closure)
-                 (const PgQuery__GrantRoleStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterDefaultPrivilegesStmt_Closure)
-                 (const PgQuery__AlterDefaultPrivilegesStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ClosePortalStmt_Closure)
-                 (const PgQuery__ClosePortalStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ClusterStmt_Closure)
-                 (const PgQuery__ClusterStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CopyStmt_Closure)
-                 (const PgQuery__CopyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateStmt_Closure)
-                 (const PgQuery__CreateStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DefineStmt_Closure)
-                 (const PgQuery__DefineStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropStmt_Closure)
-                 (const PgQuery__DropStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__TruncateStmt_Closure)
-                 (const PgQuery__TruncateStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CommentStmt_Closure)
-                 (const PgQuery__CommentStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__FetchStmt_Closure)
-                 (const PgQuery__FetchStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__IndexStmt_Closure)
-                 (const PgQuery__IndexStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateFunctionStmt_Closure)
-                 (const PgQuery__CreateFunctionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterFunctionStmt_Closure)
-                 (const PgQuery__AlterFunctionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DoStmt_Closure)
-                 (const PgQuery__DoStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__RenameStmt_Closure)
-                 (const PgQuery__RenameStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__RuleStmt_Closure)
-                 (const PgQuery__RuleStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__NotifyStmt_Closure)
-                 (const PgQuery__NotifyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ListenStmt_Closure)
-                 (const PgQuery__ListenStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__UnlistenStmt_Closure)
-                 (const PgQuery__UnlistenStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__TransactionStmt_Closure)
-                 (const PgQuery__TransactionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ViewStmt_Closure)
-                 (const PgQuery__ViewStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__LoadStmt_Closure)
-                 (const PgQuery__LoadStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateDomainStmt_Closure)
-                 (const PgQuery__CreateDomainStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreatedbStmt_Closure)
-                 (const PgQuery__CreatedbStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropdbStmt_Closure)
-                 (const PgQuery__DropdbStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__VacuumStmt_Closure)
-                 (const PgQuery__VacuumStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ExplainStmt_Closure)
-                 (const PgQuery__ExplainStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateTableAsStmt_Closure)
-                 (const PgQuery__CreateTableAsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateSeqStmt_Closure)
-                 (const PgQuery__CreateSeqStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterSeqStmt_Closure)
-                 (const PgQuery__AlterSeqStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__VariableSetStmt_Closure)
-                 (const PgQuery__VariableSetStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__VariableShowStmt_Closure)
-                 (const PgQuery__VariableShowStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DiscardStmt_Closure)
-                 (const PgQuery__DiscardStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateTrigStmt_Closure)
-                 (const PgQuery__CreateTrigStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreatePLangStmt_Closure)
-                 (const PgQuery__CreatePLangStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateRoleStmt_Closure)
-                 (const PgQuery__CreateRoleStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterRoleStmt_Closure)
-                 (const PgQuery__AlterRoleStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropRoleStmt_Closure)
-                 (const PgQuery__DropRoleStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__LockStmt_Closure)
-                 (const PgQuery__LockStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ConstraintsSetStmt_Closure)
-                 (const PgQuery__ConstraintsSetStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ReindexStmt_Closure)
-                 (const PgQuery__ReindexStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CheckPointStmt_Closure)
-                 (const PgQuery__CheckPointStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateSchemaStmt_Closure)
-                 (const PgQuery__CreateSchemaStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterDatabaseStmt_Closure)
-                 (const PgQuery__AlterDatabaseStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterDatabaseRefreshCollStmt_Closure)
-                 (const PgQuery__AlterDatabaseRefreshCollStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterDatabaseSetStmt_Closure)
-                 (const PgQuery__AlterDatabaseSetStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterRoleSetStmt_Closure)
-                 (const PgQuery__AlterRoleSetStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateConversionStmt_Closure)
-                 (const PgQuery__CreateConversionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateCastStmt_Closure)
-                 (const PgQuery__CreateCastStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateOpClassStmt_Closure)
-                 (const PgQuery__CreateOpClassStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateOpFamilyStmt_Closure)
-                 (const PgQuery__CreateOpFamilyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterOpFamilyStmt_Closure)
-                 (const PgQuery__AlterOpFamilyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__PrepareStmt_Closure)
-                 (const PgQuery__PrepareStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ExecuteStmt_Closure)
-                 (const PgQuery__ExecuteStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DeallocateStmt_Closure)
-                 (const PgQuery__DeallocateStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DeclareCursorStmt_Closure)
-                 (const PgQuery__DeclareCursorStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateTableSpaceStmt_Closure)
-                 (const PgQuery__CreateTableSpaceStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropTableSpaceStmt_Closure)
-                 (const PgQuery__DropTableSpaceStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterObjectDependsStmt_Closure)
-                 (const PgQuery__AlterObjectDependsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterObjectSchemaStmt_Closure)
-                 (const PgQuery__AlterObjectSchemaStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterOwnerStmt_Closure)
-                 (const PgQuery__AlterOwnerStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterOperatorStmt_Closure)
-                 (const PgQuery__AlterOperatorStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTypeStmt_Closure)
-                 (const PgQuery__AlterTypeStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropOwnedStmt_Closure)
-                 (const PgQuery__DropOwnedStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ReassignOwnedStmt_Closure)
-                 (const PgQuery__ReassignOwnedStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CompositeTypeStmt_Closure)
-                 (const PgQuery__CompositeTypeStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateEnumStmt_Closure)
-                 (const PgQuery__CreateEnumStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateRangeStmt_Closure)
-                 (const PgQuery__CreateRangeStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterEnumStmt_Closure)
-                 (const PgQuery__AlterEnumStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTSDictionaryStmt_Closure)
-                 (const PgQuery__AlterTSDictionaryStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTSConfigurationStmt_Closure)
-                 (const PgQuery__AlterTSConfigurationStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateFdwStmt_Closure)
-                 (const PgQuery__CreateFdwStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterFdwStmt_Closure)
-                 (const PgQuery__AlterFdwStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateForeignServerStmt_Closure)
-                 (const PgQuery__CreateForeignServerStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterForeignServerStmt_Closure)
-                 (const PgQuery__AlterForeignServerStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateUserMappingStmt_Closure)
-                 (const PgQuery__CreateUserMappingStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterUserMappingStmt_Closure)
-                 (const PgQuery__AlterUserMappingStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropUserMappingStmt_Closure)
-                 (const PgQuery__DropUserMappingStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTableSpaceOptionsStmt_Closure)
-                 (const PgQuery__AlterTableSpaceOptionsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterTableMoveAllStmt_Closure)
-                 (const PgQuery__AlterTableMoveAllStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__SecLabelStmt_Closure)
-                 (const PgQuery__SecLabelStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateForeignTableStmt_Closure)
-                 (const PgQuery__CreateForeignTableStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ImportForeignSchemaStmt_Closure)
-                 (const PgQuery__ImportForeignSchemaStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateExtensionStmt_Closure)
-                 (const PgQuery__CreateExtensionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterExtensionStmt_Closure)
-                 (const PgQuery__AlterExtensionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterExtensionContentsStmt_Closure)
-                 (const PgQuery__AlterExtensionContentsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateEventTrigStmt_Closure)
-                 (const PgQuery__CreateEventTrigStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterEventTrigStmt_Closure)
-                 (const PgQuery__AlterEventTrigStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__RefreshMatViewStmt_Closure)
-                 (const PgQuery__RefreshMatViewStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__ReplicaIdentityStmt_Closure)
-                 (const PgQuery__ReplicaIdentityStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterSystemStmt_Closure)
-                 (const PgQuery__AlterSystemStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreatePolicyStmt_Closure)
-                 (const PgQuery__CreatePolicyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterPolicyStmt_Closure)
-                 (const PgQuery__AlterPolicyStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateTransformStmt_Closure)
-                 (const PgQuery__CreateTransformStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateAmStmt_Closure)
-                 (const PgQuery__CreateAmStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreatePublicationStmt_Closure)
-                 (const PgQuery__CreatePublicationStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterPublicationStmt_Closure)
-                 (const PgQuery__AlterPublicationStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateSubscriptionStmt_Closure)
-                 (const PgQuery__CreateSubscriptionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterSubscriptionStmt_Closure)
-                 (const PgQuery__AlterSubscriptionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__DropSubscriptionStmt_Closure)
-                 (const PgQuery__DropSubscriptionStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateStatsStmt_Closure)
-                 (const PgQuery__CreateStatsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterCollationStmt_Closure)
-                 (const PgQuery__AlterCollationStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__CallStmt_Closure)
-                 (const PgQuery__CallStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AlterStatsStmt_Closure)
-                 (const PgQuery__AlterStatsStmt *message,
-                  void *closure_data);
-typedef void (*PgQuery__AExpr_Closure)
-                 (const PgQuery__AExpr *message,
+typedef void (*PgQuery__TypeName_Closure)
+                 (const PgQuery__TypeName *message,
                   void *closure_data);
 typedef void (*PgQuery__ColumnRef_Closure)
                  (const PgQuery__ColumnRef *message,
                   void *closure_data);
 typedef void (*PgQuery__ParamRef_Closure)
                  (const PgQuery__ParamRef *message,
+                  void *closure_data);
+typedef void (*PgQuery__AExpr_Closure)
+                 (const PgQuery__AExpr *message,
+                  void *closure_data);
+typedef void (*PgQuery__TypeCast_Closure)
+                 (const PgQuery__TypeCast *message,
+                  void *closure_data);
+typedef void (*PgQuery__CollateClause_Closure)
+                 (const PgQuery__CollateClause *message,
+                  void *closure_data);
+typedef void (*PgQuery__RoleSpec_Closure)
+                 (const PgQuery__RoleSpec *message,
                   void *closure_data);
 typedef void (*PgQuery__FuncCall_Closure)
                  (const PgQuery__FuncCall *message,
@@ -10897,12 +10896,6 @@ typedef void (*PgQuery__ResTarget_Closure)
 typedef void (*PgQuery__MultiAssignRef_Closure)
                  (const PgQuery__MultiAssignRef *message,
                   void *closure_data);
-typedef void (*PgQuery__TypeCast_Closure)
-                 (const PgQuery__TypeCast *message,
-                  void *closure_data);
-typedef void (*PgQuery__CollateClause_Closure)
-                 (const PgQuery__CollateClause *message,
-                  void *closure_data);
 typedef void (*PgQuery__SortBy_Closure)
                  (const PgQuery__SortBy *message,
                   void *closure_data);
@@ -10915,35 +10908,53 @@ typedef void (*PgQuery__RangeSubselect_Closure)
 typedef void (*PgQuery__RangeFunction_Closure)
                  (const PgQuery__RangeFunction *message,
                   void *closure_data);
-typedef void (*PgQuery__RangeTableSample_Closure)
-                 (const PgQuery__RangeTableSample *message,
-                  void *closure_data);
 typedef void (*PgQuery__RangeTableFunc_Closure)
                  (const PgQuery__RangeTableFunc *message,
                   void *closure_data);
 typedef void (*PgQuery__RangeTableFuncCol_Closure)
                  (const PgQuery__RangeTableFuncCol *message,
                   void *closure_data);
-typedef void (*PgQuery__TypeName_Closure)
-                 (const PgQuery__TypeName *message,
+typedef void (*PgQuery__RangeTableSample_Closure)
+                 (const PgQuery__RangeTableSample *message,
                   void *closure_data);
 typedef void (*PgQuery__ColumnDef_Closure)
                  (const PgQuery__ColumnDef *message,
                   void *closure_data);
+typedef void (*PgQuery__TableLikeClause_Closure)
+                 (const PgQuery__TableLikeClause *message,
+                  void *closure_data);
 typedef void (*PgQuery__IndexElem_Closure)
                  (const PgQuery__IndexElem *message,
-                  void *closure_data);
-typedef void (*PgQuery__StatsElem_Closure)
-                 (const PgQuery__StatsElem *message,
-                  void *closure_data);
-typedef void (*PgQuery__Constraint_Closure)
-                 (const PgQuery__Constraint *message,
                   void *closure_data);
 typedef void (*PgQuery__DefElem_Closure)
                  (const PgQuery__DefElem *message,
                   void *closure_data);
+typedef void (*PgQuery__LockingClause_Closure)
+                 (const PgQuery__LockingClause *message,
+                  void *closure_data);
+typedef void (*PgQuery__XmlSerialize_Closure)
+                 (const PgQuery__XmlSerialize *message,
+                  void *closure_data);
+typedef void (*PgQuery__PartitionElem_Closure)
+                 (const PgQuery__PartitionElem *message,
+                  void *closure_data);
+typedef void (*PgQuery__PartitionSpec_Closure)
+                 (const PgQuery__PartitionSpec *message,
+                  void *closure_data);
+typedef void (*PgQuery__PartitionBoundSpec_Closure)
+                 (const PgQuery__PartitionBoundSpec *message,
+                  void *closure_data);
+typedef void (*PgQuery__PartitionRangeDatum_Closure)
+                 (const PgQuery__PartitionRangeDatum *message,
+                  void *closure_data);
+typedef void (*PgQuery__PartitionCmd_Closure)
+                 (const PgQuery__PartitionCmd *message,
+                  void *closure_data);
 typedef void (*PgQuery__RangeTblEntry_Closure)
                  (const PgQuery__RangeTblEntry *message,
+                  void *closure_data);
+typedef void (*PgQuery__RTEPermissionInfo_Closure)
+                 (const PgQuery__RTEPermissionInfo *message,
                   void *closure_data);
 typedef void (*PgQuery__RangeTblFunction_Closure)
                  (const PgQuery__RangeTblFunction *message,
@@ -10963,29 +10974,8 @@ typedef void (*PgQuery__GroupingSet_Closure)
 typedef void (*PgQuery__WindowClause_Closure)
                  (const PgQuery__WindowClause *message,
                   void *closure_data);
-typedef void (*PgQuery__ObjectWithArgs_Closure)
-                 (const PgQuery__ObjectWithArgs *message,
-                  void *closure_data);
-typedef void (*PgQuery__AccessPriv_Closure)
-                 (const PgQuery__AccessPriv *message,
-                  void *closure_data);
-typedef void (*PgQuery__CreateOpClassItem_Closure)
-                 (const PgQuery__CreateOpClassItem *message,
-                  void *closure_data);
-typedef void (*PgQuery__TableLikeClause_Closure)
-                 (const PgQuery__TableLikeClause *message,
-                  void *closure_data);
-typedef void (*PgQuery__FunctionParameter_Closure)
-                 (const PgQuery__FunctionParameter *message,
-                  void *closure_data);
-typedef void (*PgQuery__LockingClause_Closure)
-                 (const PgQuery__LockingClause *message,
-                  void *closure_data);
 typedef void (*PgQuery__RowMarkClause_Closure)
                  (const PgQuery__RowMarkClause *message,
-                  void *closure_data);
-typedef void (*PgQuery__XmlSerialize_Closure)
-                 (const PgQuery__XmlSerialize *message,
                   void *closure_data);
 typedef void (*PgQuery__WithClause_Closure)
                  (const PgQuery__WithClause *message,
@@ -11008,41 +10998,422 @@ typedef void (*PgQuery__CommonTableExpr_Closure)
 typedef void (*PgQuery__MergeWhenClause_Closure)
                  (const PgQuery__MergeWhenClause *message,
                   void *closure_data);
-typedef void (*PgQuery__RoleSpec_Closure)
-                 (const PgQuery__RoleSpec *message,
+typedef void (*PgQuery__MergeAction_Closure)
+                 (const PgQuery__MergeAction *message,
                   void *closure_data);
 typedef void (*PgQuery__TriggerTransition_Closure)
                  (const PgQuery__TriggerTransition *message,
                   void *closure_data);
-typedef void (*PgQuery__PartitionElem_Closure)
-                 (const PgQuery__PartitionElem *message,
+typedef void (*PgQuery__JsonOutput_Closure)
+                 (const PgQuery__JsonOutput *message,
                   void *closure_data);
-typedef void (*PgQuery__PartitionSpec_Closure)
-                 (const PgQuery__PartitionSpec *message,
+typedef void (*PgQuery__JsonKeyValue_Closure)
+                 (const PgQuery__JsonKeyValue *message,
                   void *closure_data);
-typedef void (*PgQuery__PartitionBoundSpec_Closure)
-                 (const PgQuery__PartitionBoundSpec *message,
+typedef void (*PgQuery__JsonObjectConstructor_Closure)
+                 (const PgQuery__JsonObjectConstructor *message,
                   void *closure_data);
-typedef void (*PgQuery__PartitionRangeDatum_Closure)
-                 (const PgQuery__PartitionRangeDatum *message,
+typedef void (*PgQuery__JsonArrayConstructor_Closure)
+                 (const PgQuery__JsonArrayConstructor *message,
                   void *closure_data);
-typedef void (*PgQuery__PartitionCmd_Closure)
-                 (const PgQuery__PartitionCmd *message,
+typedef void (*PgQuery__JsonArrayQueryConstructor_Closure)
+                 (const PgQuery__JsonArrayQueryConstructor *message,
                   void *closure_data);
-typedef void (*PgQuery__VacuumRelation_Closure)
-                 (const PgQuery__VacuumRelation *message,
+typedef void (*PgQuery__JsonAggConstructor_Closure)
+                 (const PgQuery__JsonAggConstructor *message,
                   void *closure_data);
-typedef void (*PgQuery__PublicationObjSpec_Closure)
-                 (const PgQuery__PublicationObjSpec *message,
+typedef void (*PgQuery__JsonObjectAgg_Closure)
+                 (const PgQuery__JsonObjectAgg *message,
                   void *closure_data);
-typedef void (*PgQuery__PublicationTable_Closure)
-                 (const PgQuery__PublicationTable *message,
+typedef void (*PgQuery__JsonArrayAgg_Closure)
+                 (const PgQuery__JsonArrayAgg *message,
+                  void *closure_data);
+typedef void (*PgQuery__RawStmt_Closure)
+                 (const PgQuery__RawStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__InsertStmt_Closure)
+                 (const PgQuery__InsertStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DeleteStmt_Closure)
+                 (const PgQuery__DeleteStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__UpdateStmt_Closure)
+                 (const PgQuery__UpdateStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__MergeStmt_Closure)
+                 (const PgQuery__MergeStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__SelectStmt_Closure)
+                 (const PgQuery__SelectStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__SetOperationStmt_Closure)
+                 (const PgQuery__SetOperationStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ReturnStmt_Closure)
+                 (const PgQuery__ReturnStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__PLAssignStmt_Closure)
+                 (const PgQuery__PLAssignStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateSchemaStmt_Closure)
+                 (const PgQuery__CreateSchemaStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTableStmt_Closure)
+                 (const PgQuery__AlterTableStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ReplicaIdentityStmt_Closure)
+                 (const PgQuery__ReplicaIdentityStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTableCmd_Closure)
+                 (const PgQuery__AlterTableCmd *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterCollationStmt_Closure)
+                 (const PgQuery__AlterCollationStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterDomainStmt_Closure)
+                 (const PgQuery__AlterDomainStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__GrantStmt_Closure)
+                 (const PgQuery__GrantStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ObjectWithArgs_Closure)
+                 (const PgQuery__ObjectWithArgs *message,
+                  void *closure_data);
+typedef void (*PgQuery__AccessPriv_Closure)
+                 (const PgQuery__AccessPriv *message,
+                  void *closure_data);
+typedef void (*PgQuery__GrantRoleStmt_Closure)
+                 (const PgQuery__GrantRoleStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterDefaultPrivilegesStmt_Closure)
+                 (const PgQuery__AlterDefaultPrivilegesStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CopyStmt_Closure)
+                 (const PgQuery__CopyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__VariableSetStmt_Closure)
+                 (const PgQuery__VariableSetStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__VariableShowStmt_Closure)
+                 (const PgQuery__VariableShowStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateStmt_Closure)
+                 (const PgQuery__CreateStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__Constraint_Closure)
+                 (const PgQuery__Constraint *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateTableSpaceStmt_Closure)
+                 (const PgQuery__CreateTableSpaceStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropTableSpaceStmt_Closure)
+                 (const PgQuery__DropTableSpaceStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTableSpaceOptionsStmt_Closure)
+                 (const PgQuery__AlterTableSpaceOptionsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTableMoveAllStmt_Closure)
+                 (const PgQuery__AlterTableMoveAllStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateExtensionStmt_Closure)
+                 (const PgQuery__CreateExtensionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterExtensionStmt_Closure)
+                 (const PgQuery__AlterExtensionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterExtensionContentsStmt_Closure)
+                 (const PgQuery__AlterExtensionContentsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateFdwStmt_Closure)
+                 (const PgQuery__CreateFdwStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterFdwStmt_Closure)
+                 (const PgQuery__AlterFdwStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateForeignServerStmt_Closure)
+                 (const PgQuery__CreateForeignServerStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterForeignServerStmt_Closure)
+                 (const PgQuery__AlterForeignServerStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateForeignTableStmt_Closure)
+                 (const PgQuery__CreateForeignTableStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateUserMappingStmt_Closure)
+                 (const PgQuery__CreateUserMappingStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterUserMappingStmt_Closure)
+                 (const PgQuery__AlterUserMappingStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropUserMappingStmt_Closure)
+                 (const PgQuery__DropUserMappingStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ImportForeignSchemaStmt_Closure)
+                 (const PgQuery__ImportForeignSchemaStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreatePolicyStmt_Closure)
+                 (const PgQuery__CreatePolicyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterPolicyStmt_Closure)
+                 (const PgQuery__AlterPolicyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateAmStmt_Closure)
+                 (const PgQuery__CreateAmStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateTrigStmt_Closure)
+                 (const PgQuery__CreateTrigStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateEventTrigStmt_Closure)
+                 (const PgQuery__CreateEventTrigStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterEventTrigStmt_Closure)
+                 (const PgQuery__AlterEventTrigStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreatePLangStmt_Closure)
+                 (const PgQuery__CreatePLangStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateRoleStmt_Closure)
+                 (const PgQuery__CreateRoleStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterRoleStmt_Closure)
+                 (const PgQuery__AlterRoleStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterRoleSetStmt_Closure)
+                 (const PgQuery__AlterRoleSetStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropRoleStmt_Closure)
+                 (const PgQuery__DropRoleStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateSeqStmt_Closure)
+                 (const PgQuery__CreateSeqStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterSeqStmt_Closure)
+                 (const PgQuery__AlterSeqStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DefineStmt_Closure)
+                 (const PgQuery__DefineStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateDomainStmt_Closure)
+                 (const PgQuery__CreateDomainStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateOpClassStmt_Closure)
+                 (const PgQuery__CreateOpClassStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateOpClassItem_Closure)
+                 (const PgQuery__CreateOpClassItem *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateOpFamilyStmt_Closure)
+                 (const PgQuery__CreateOpFamilyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterOpFamilyStmt_Closure)
+                 (const PgQuery__AlterOpFamilyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropStmt_Closure)
+                 (const PgQuery__DropStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__TruncateStmt_Closure)
+                 (const PgQuery__TruncateStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CommentStmt_Closure)
+                 (const PgQuery__CommentStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__SecLabelStmt_Closure)
+                 (const PgQuery__SecLabelStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DeclareCursorStmt_Closure)
+                 (const PgQuery__DeclareCursorStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ClosePortalStmt_Closure)
+                 (const PgQuery__ClosePortalStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__FetchStmt_Closure)
+                 (const PgQuery__FetchStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__IndexStmt_Closure)
+                 (const PgQuery__IndexStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateStatsStmt_Closure)
+                 (const PgQuery__CreateStatsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__StatsElem_Closure)
+                 (const PgQuery__StatsElem *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterStatsStmt_Closure)
+                 (const PgQuery__AlterStatsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateFunctionStmt_Closure)
+                 (const PgQuery__CreateFunctionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__FunctionParameter_Closure)
+                 (const PgQuery__FunctionParameter *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterFunctionStmt_Closure)
+                 (const PgQuery__AlterFunctionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DoStmt_Closure)
+                 (const PgQuery__DoStmt *message,
                   void *closure_data);
 typedef void (*PgQuery__InlineCodeBlock_Closure)
                  (const PgQuery__InlineCodeBlock *message,
                   void *closure_data);
+typedef void (*PgQuery__CallStmt_Closure)
+                 (const PgQuery__CallStmt *message,
+                  void *closure_data);
 typedef void (*PgQuery__CallContext_Closure)
                  (const PgQuery__CallContext *message,
+                  void *closure_data);
+typedef void (*PgQuery__RenameStmt_Closure)
+                 (const PgQuery__RenameStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterObjectDependsStmt_Closure)
+                 (const PgQuery__AlterObjectDependsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterObjectSchemaStmt_Closure)
+                 (const PgQuery__AlterObjectSchemaStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterOwnerStmt_Closure)
+                 (const PgQuery__AlterOwnerStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterOperatorStmt_Closure)
+                 (const PgQuery__AlterOperatorStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTypeStmt_Closure)
+                 (const PgQuery__AlterTypeStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__RuleStmt_Closure)
+                 (const PgQuery__RuleStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__NotifyStmt_Closure)
+                 (const PgQuery__NotifyStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ListenStmt_Closure)
+                 (const PgQuery__ListenStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__UnlistenStmt_Closure)
+                 (const PgQuery__UnlistenStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__TransactionStmt_Closure)
+                 (const PgQuery__TransactionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CompositeTypeStmt_Closure)
+                 (const PgQuery__CompositeTypeStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateEnumStmt_Closure)
+                 (const PgQuery__CreateEnumStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateRangeStmt_Closure)
+                 (const PgQuery__CreateRangeStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterEnumStmt_Closure)
+                 (const PgQuery__AlterEnumStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ViewStmt_Closure)
+                 (const PgQuery__ViewStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__LoadStmt_Closure)
+                 (const PgQuery__LoadStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreatedbStmt_Closure)
+                 (const PgQuery__CreatedbStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterDatabaseStmt_Closure)
+                 (const PgQuery__AlterDatabaseStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterDatabaseRefreshCollStmt_Closure)
+                 (const PgQuery__AlterDatabaseRefreshCollStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterDatabaseSetStmt_Closure)
+                 (const PgQuery__AlterDatabaseSetStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropdbStmt_Closure)
+                 (const PgQuery__DropdbStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterSystemStmt_Closure)
+                 (const PgQuery__AlterSystemStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ClusterStmt_Closure)
+                 (const PgQuery__ClusterStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__VacuumStmt_Closure)
+                 (const PgQuery__VacuumStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__VacuumRelation_Closure)
+                 (const PgQuery__VacuumRelation *message,
+                  void *closure_data);
+typedef void (*PgQuery__ExplainStmt_Closure)
+                 (const PgQuery__ExplainStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateTableAsStmt_Closure)
+                 (const PgQuery__CreateTableAsStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__RefreshMatViewStmt_Closure)
+                 (const PgQuery__RefreshMatViewStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CheckPointStmt_Closure)
+                 (const PgQuery__CheckPointStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DiscardStmt_Closure)
+                 (const PgQuery__DiscardStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__LockStmt_Closure)
+                 (const PgQuery__LockStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ConstraintsSetStmt_Closure)
+                 (const PgQuery__ConstraintsSetStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ReindexStmt_Closure)
+                 (const PgQuery__ReindexStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateConversionStmt_Closure)
+                 (const PgQuery__CreateConversionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateCastStmt_Closure)
+                 (const PgQuery__CreateCastStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateTransformStmt_Closure)
+                 (const PgQuery__CreateTransformStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__PrepareStmt_Closure)
+                 (const PgQuery__PrepareStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ExecuteStmt_Closure)
+                 (const PgQuery__ExecuteStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DeallocateStmt_Closure)
+                 (const PgQuery__DeallocateStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropOwnedStmt_Closure)
+                 (const PgQuery__DropOwnedStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__ReassignOwnedStmt_Closure)
+                 (const PgQuery__ReassignOwnedStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTSDictionaryStmt_Closure)
+                 (const PgQuery__AlterTSDictionaryStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterTSConfigurationStmt_Closure)
+                 (const PgQuery__AlterTSConfigurationStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__PublicationTable_Closure)
+                 (const PgQuery__PublicationTable *message,
+                  void *closure_data);
+typedef void (*PgQuery__PublicationObjSpec_Closure)
+                 (const PgQuery__PublicationObjSpec *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreatePublicationStmt_Closure)
+                 (const PgQuery__CreatePublicationStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterPublicationStmt_Closure)
+                 (const PgQuery__AlterPublicationStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__CreateSubscriptionStmt_Closure)
+                 (const PgQuery__CreateSubscriptionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__AlterSubscriptionStmt_Closure)
+                 (const PgQuery__AlterSubscriptionStmt *message,
+                  void *closure_data);
+typedef void (*PgQuery__DropSubscriptionStmt_Closure)
+                 (const PgQuery__DropSubscriptionStmt *message,
                   void *closure_data);
 typedef void (*PgQuery__ScanToken_Closure)
                  (const PgQuery__ScanToken *message,
@@ -11062,6 +11433,7 @@ extern const ProtobufCEnumDescriptor    pg_query__a__expr__kind__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__role_spec_type__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__table_like_option__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__def_elem_action__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__partition_strategy__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__partition_range_datum_kind__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__rtekind__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__wcokind__descriptor;
@@ -11097,6 +11469,10 @@ extern const ProtobufCEnumDescriptor    pg_query__min_max_op__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__sqlvalue_function_op__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__xml_expr_op__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__xml_option_type__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__json_encoding__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__json_format_type__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__json_constructor_type__descriptor;
+extern const ProtobufCEnumDescriptor    pg_query__json_value_type__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__null_test_type__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__bool_test_type__descriptor;
 extern const ProtobufCEnumDescriptor    pg_query__cmd_type__descriptor;
@@ -11127,6 +11503,7 @@ extern const ProtobufCMessageDescriptor pg_query__a__const__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__alias__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_var__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__table_func__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__into_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__var__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__param__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__aggref__descriptor;
@@ -11160,6 +11537,11 @@ extern const ProtobufCMessageDescriptor pg_query__coalesce_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__min_max_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__sqlvalue_function__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__xml_expr__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_format__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_returning__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_value_expr__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_constructor_expr__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_is_predicate__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__null_test__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__boolean_test__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__coerce_to_domain__descriptor;
@@ -11173,130 +11555,14 @@ extern const ProtobufCMessageDescriptor pg_query__range_tbl_ref__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__join_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__from_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__on_conflict_expr__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__into_clause__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__merge_action__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__raw_stmt__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__query__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__insert_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__delete_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__update_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__merge_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__select_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__return_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__plassign_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_table_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_table_cmd__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_domain_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__set_operation_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__grant_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__grant_role_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_default_privileges_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__close_portal_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__cluster_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__copy_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__define_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__truncate_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__comment_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__fetch_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__index_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_function_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_function_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__do_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__rename_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__rule_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__notify_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__listen_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__unlisten_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__transaction_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__view_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__load_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_domain_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__createdb_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__dropdb_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__vacuum_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__explain_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_table_as_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_seq_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_seq_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__variable_set_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__variable_show_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__discard_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_trig_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_plang_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_role_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_role_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_role_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__lock_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__constraints_set_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__reindex_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__check_point_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_schema_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_database_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_database_refresh_coll_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_database_set_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_role_set_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_conversion_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_cast_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_op_class_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_op_family_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_op_family_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__prepare_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__execute_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__deallocate_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__declare_cursor_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_table_space_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_table_space_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_object_depends_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_object_schema_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_owner_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_operator_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_type_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_owned_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__reassign_owned_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__composite_type_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_enum_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_range_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_enum_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_tsdictionary_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_tsconfiguration_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_fdw_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_fdw_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_foreign_server_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_foreign_server_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_user_mapping_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_user_mapping_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_user_mapping_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_table_space_options_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_table_move_all_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__sec_label_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_foreign_table_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__import_foreign_schema_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_extension_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_extension_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_extension_contents_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_event_trig_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_event_trig_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__refresh_mat_view_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__replica_identity_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_system_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_policy_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_policy_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_transform_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_am_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_publication_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_publication_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_subscription_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_subscription_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__drop_subscription_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_stats_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_collation_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__call_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__alter_stats_stmt__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__a__expr__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__type_name__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__column_ref__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__param_ref__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__a__expr__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__type_cast__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__collate_clause__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__role_spec__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__func_call__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__a__star__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__a__indices__descriptor;
@@ -11304,36 +11570,33 @@ extern const ProtobufCMessageDescriptor pg_query__a__indirection__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__a__array_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__res_target__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__multi_assign_ref__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__type_cast__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__collate_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__sort_by__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__window_def__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_subselect__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_function__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__range_table_sample__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_table_func__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_table_func_col__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__type_name__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__range_table_sample__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__column_def__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__table_like_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__index_elem__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__stats_elem__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__constraint__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__def_elem__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__locking_clause__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__xml_serialize__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__partition_elem__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__partition_spec__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__partition_bound_spec__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__partition_range_datum__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__partition_cmd__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_tbl_entry__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__rtepermission_info__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__range_tbl_function__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__table_sample_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__with_check_option__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__sort_group_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__grouping_set__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__window_clause__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__object_with_args__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__access_priv__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__create_op_class_item__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__table_like_clause__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__function_parameter__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__locking_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__row_mark_clause__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__xml_serialize__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__with_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__infer_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__on_conflict_clause__descriptor;
@@ -11341,18 +11604,145 @@ extern const ProtobufCMessageDescriptor pg_query__ctesearch_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__ctecycle_clause__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__common_table_expr__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__merge_when_clause__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__role_spec__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__merge_action__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__trigger_transition__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__partition_elem__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__partition_spec__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__partition_bound_spec__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__partition_range_datum__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__partition_cmd__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__vacuum_relation__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__publication_obj_spec__descriptor;
-extern const ProtobufCMessageDescriptor pg_query__publication_table__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_output__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_key_value__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_object_constructor__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_array_constructor__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_array_query_constructor__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_agg_constructor__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_object_agg__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__json_array_agg__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__raw_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__insert_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__delete_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__update_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__merge_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__select_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__set_operation_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__return_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__plassign_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_schema_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_table_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__replica_identity_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_table_cmd__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_collation_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_domain_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__grant_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__object_with_args__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__access_priv__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__grant_role_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_default_privileges_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__copy_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__variable_set_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__variable_show_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__constraint__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_table_space_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_table_space_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_table_space_options_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_table_move_all_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_extension_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_extension_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_extension_contents_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_fdw_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_fdw_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_foreign_server_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_foreign_server_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_foreign_table_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_user_mapping_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_user_mapping_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_user_mapping_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__import_foreign_schema_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_policy_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_policy_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_am_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_trig_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_event_trig_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_event_trig_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_plang_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_role_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_role_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_role_set_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_role_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_seq_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_seq_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__define_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_domain_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_op_class_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_op_class_item__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_op_family_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_op_family_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__truncate_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__comment_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__sec_label_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__declare_cursor_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__close_portal_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__fetch_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__index_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_stats_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__stats_elem__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_stats_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_function_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__function_parameter__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_function_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__do_stmt__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__inline_code_block__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__call_stmt__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__call_context__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__rename_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_object_depends_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_object_schema_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_owner_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_operator_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_type_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__rule_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__notify_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__listen_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__unlisten_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__transaction_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__composite_type_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_enum_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_range_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_enum_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__view_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__load_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__createdb_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_database_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_database_refresh_coll_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_database_set_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__dropdb_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_system_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__cluster_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__vacuum_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__vacuum_relation__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__explain_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_table_as_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__refresh_mat_view_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__check_point_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__discard_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__lock_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__constraints_set_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__reindex_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_conversion_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_cast_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_transform_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__prepare_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__execute_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__deallocate_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_owned_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__reassign_owned_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_tsdictionary_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_tsconfiguration_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__publication_table__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__publication_obj_spec__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_publication_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_publication_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__create_subscription_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__alter_subscription_stmt__descriptor;
+extern const ProtobufCMessageDescriptor pg_query__drop_subscription_stmt__descriptor;
 extern const ProtobufCMessageDescriptor pg_query__scan_token__descriptor;
 
 PROTOBUF_C__END_DECLS
