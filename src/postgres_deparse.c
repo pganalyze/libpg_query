@@ -8023,6 +8023,10 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 		deparseRoleSpec(str, castNode(RoleSpec, grant_role_stmt->grantor));
 	}
 
+	if (grant_role_stmt->behavior == DROP_CASCADE) {
+		appendStringInfoString(str, "CASCADE ");
+	}
+
 	removeTrailingSpace(str);
 }
 
