@@ -3320,6 +3320,7 @@ static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 			break;
 		case JOIN_SEMI:
 		case JOIN_ANTI:
+		case JOIN_RIGHT_ANTI:
 		case JOIN_UNIQUE_OUTER:
 		case JOIN_UNIQUE_INNER:
 			// Only used by the planner/executor, not seen in parser output
