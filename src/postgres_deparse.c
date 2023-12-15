@@ -2584,7 +2584,18 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
 		 * Note that the arguments are swapped in this case
 		 */
-		deparseExpr(str, lsecond(func_call->args));
+		Expr* e = lsecond(func_call->args);
+
+		if (IsA(e, A_Expr)) {
+			appendStringInfoChar(str, '(');
+		}
+
+		deparseExpr(str, (Node*) e);
+
+		if (IsA(e, A_Expr)) {
+			appendStringInfoChar(str, ')');
+		}
+
 		appendStringInfoString(str, " AT TIME ZONE ");
 		deparseExpr(str, linitial(func_call->args));
 		return;
