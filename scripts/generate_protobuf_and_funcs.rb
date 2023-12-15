@@ -84,7 +84,7 @@ class Generator
             @readmethods[node_type] += format("  READ_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['uint', 'uint16', 'uint32', 'Index', 'bits32', 'Oid', 'AclMode', 'SubTransactionId'].include?(type)
+          elsif ['uint', 'uint16', 'uint32', 'Index', 'bits32', 'Oid', 'AclMode', 'SubTransactionId', 'RelFileNumber'].include?(type)
             @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
