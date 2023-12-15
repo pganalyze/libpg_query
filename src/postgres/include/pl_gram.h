@@ -138,36 +138,37 @@
      K_PG_EXCEPTION_CONTEXT = 354,
      K_PG_EXCEPTION_DETAIL = 355,
      K_PG_EXCEPTION_HINT = 356,
-     K_PRINT_STRICT_PARAMS = 357,
-     K_PRIOR = 358,
-     K_QUERY = 359,
-     K_RAISE = 360,
-     K_RELATIVE = 361,
-     K_RETURN = 362,
-     K_RETURNED_SQLSTATE = 363,
-     K_REVERSE = 364,
-     K_ROLLBACK = 365,
-     K_ROW_COUNT = 366,
-     K_ROWTYPE = 367,
-     K_SCHEMA = 368,
-     K_SCHEMA_NAME = 369,
-     K_SCROLL = 370,
-     K_SLICE = 371,
-     K_SQLSTATE = 372,
-     K_STACKED = 373,
-     K_STRICT = 374,
-     K_TABLE = 375,
-     K_TABLE_NAME = 376,
-     K_THEN = 377,
-     K_TO = 378,
-     K_TYPE = 379,
-     K_USE_COLUMN = 380,
-     K_USE_VARIABLE = 381,
-     K_USING = 382,
-     K_VARIABLE_CONFLICT = 383,
-     K_WARNING = 384,
-     K_WHEN = 385,
-     K_WHILE = 386
+     K_PG_ROUTINE_OID = 357,
+     K_PRINT_STRICT_PARAMS = 358,
+     K_PRIOR = 359,
+     K_QUERY = 360,
+     K_RAISE = 361,
+     K_RELATIVE = 362,
+     K_RETURN = 363,
+     K_RETURNED_SQLSTATE = 364,
+     K_REVERSE = 365,
+     K_ROLLBACK = 366,
+     K_ROW_COUNT = 367,
+     K_ROWTYPE = 368,
+     K_SCHEMA = 369,
+     K_SCHEMA_NAME = 370,
+     K_SCROLL = 371,
+     K_SLICE = 372,
+     K_SQLSTATE = 373,
+     K_STACKED = 374,
+     K_STRICT = 375,
+     K_TABLE = 376,
+     K_TABLE_NAME = 377,
+     K_THEN = 378,
+     K_TO = 379,
+     K_TYPE = 380,
+     K_USE_COLUMN = 381,
+     K_USE_VARIABLE = 382,
+     K_USING = 383,
+     K_VARIABLE_CONFLICT = 384,
+     K_WARNING = 385,
+     K_WHEN = 386,
+     K_WHILE = 387
    };
 #endif
 /* Tokens.  */
@@ -270,43 +271,44 @@
 #define K_PG_EXCEPTION_CONTEXT 354
 #define K_PG_EXCEPTION_DETAIL 355
 #define K_PG_EXCEPTION_HINT 356
-#define K_PRINT_STRICT_PARAMS 357
-#define K_PRIOR 358
-#define K_QUERY 359
-#define K_RAISE 360
-#define K_RELATIVE 361
-#define K_RETURN 362
-#define K_RETURNED_SQLSTATE 363
-#define K_REVERSE 364
-#define K_ROLLBACK 365
-#define K_ROW_COUNT 366
-#define K_ROWTYPE 367
-#define K_SCHEMA 368
-#define K_SCHEMA_NAME 369
-#define K_SCROLL 370
-#define K_SLICE 371
-#define K_SQLSTATE 372
-#define K_STACKED 373
-#define K_STRICT 374
-#define K_TABLE 375
-#define K_TABLE_NAME 376
-#define K_THEN 377
-#define K_TO 378
-#define K_TYPE 379
-#define K_USE_COLUMN 380
-#define K_USE_VARIABLE 381
-#define K_USING 382
-#define K_VARIABLE_CONFLICT 383
-#define K_WARNING 384
-#define K_WHEN 385
-#define K_WHILE 386
+#define K_PG_ROUTINE_OID 357
+#define K_PRINT_STRICT_PARAMS 358
+#define K_PRIOR 359
+#define K_QUERY 360
+#define K_RAISE 361
+#define K_RELATIVE 362
+#define K_RETURN 363
+#define K_RETURNED_SQLSTATE 364
+#define K_REVERSE 365
+#define K_ROLLBACK 366
+#define K_ROW_COUNT 367
+#define K_ROWTYPE 368
+#define K_SCHEMA 369
+#define K_SCHEMA_NAME 370
+#define K_SCROLL 371
+#define K_SLICE 372
+#define K_SQLSTATE 373
+#define K_STACKED 374
+#define K_STRICT 375
+#define K_TABLE 376
+#define K_TABLE_NAME 377
+#define K_THEN 378
+#define K_TO 379
+#define K_TYPE 380
+#define K_USE_COLUMN 381
+#define K_USE_VARIABLE 382
+#define K_USING 383
+#define K_VARIABLE_CONFLICT 384
+#define K_WARNING 385
+#define K_WHEN 386
+#define K_WHILE 387
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 120 "pl_gram.y"
+#line 117 "pl_gram.y"
 {
 	core_YYSTYPE core_yystype;
 	/* these fields must match core_YYSTYPE: */
@@ -358,7 +360,7 @@ typedef union YYSTYPE
 	PLpgSQL_case_when *casewhen;
 }
 /* Line 1529 of yacc.c.  */
-#line 362 "pl_gram.h"
+#line 364 "pl_gram.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

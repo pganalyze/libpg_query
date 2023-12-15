@@ -16,7 +16,7 @@
  * postgres.c
  *	  POSTGRES C Backend Interface
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -36,17 +36,12 @@
 #include <limits.h>
 #include <signal.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-#ifdef HAVE_SYS_RESOURCE_H
-#include <sys/time.h>
 #include <sys/resource.h>
-#endif
+#include <sys/socket.h>
+#include <sys/time.h>
 
-#ifndef HAVE_GETRUSAGE
-#include "rusagestub.h"
+#ifdef USE_VALGRIND
+#include <valgrind/valgrind.h>
 #endif
 
 #include "access/parallel.h"
@@ -88,6 +83,7 @@
 #include "tcop/pquery.h"
 #include "tcop/tcopprot.h"
 #include "tcop/utility.h"
+#include "utils/guc_hooks.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
 #include "utils/ps_status.h"
@@ -149,13 +145,6 @@ static __thread long max_stack_depth_bytes = 100 * 1024L;
  */
 static __thread char *stack_base_ptr = NULL;
 
-
-/*
- * On IA64 we also have to remember the register stack base.
- */
-#if defined(__ia64__) || defined(__ia64)
-static char *register_stack_base_ptr = NULL;
-#endif
 
 /*
  * Flag to keep track of whether we have started a transaction.
@@ -222,6 +211,36 @@ static void drop_unnamed_stmt(void);
 static void log_disconnections(int code, Datum arg);
 static void enable_statement_timeout(void);
 static void disable_statement_timeout(void);
+
+
+/* ----------------------------------------------------------------
+ *		infrastructure for valgrind debugging
+ * ----------------------------------------------------------------
+ */
+#ifdef USE_VALGRIND
+/* This variable should be set at the top of the main loop. */
+static unsigned int old_valgrind_error_count;
+
+/*
+ * If Valgrind detected any errors since old_valgrind_error_count was updated,
+ * report the current query as the cause.  This should be called at the end
+ * of message processing.
+ */
+static void
+valgrind_report_error_query(const char *query)
+{
+	unsigned int valgrind_error_count = VALGRIND_COUNT_ERRORS;
+
+	if (unlikely(valgrind_error_count != old_valgrind_error_count) &&
+		query != NULL)
+		VALGRIND_PRINTF("Valgrind detected %u error(s) during execution of \"%s\"\n",
+						valgrind_error_count - old_valgrind_error_count,
+						query);
+}
+
+#else							/* !USE_VALGRIND */
+#define valgrind_report_error_query(query) ((void) 0)
+#endif							/* USE_VALGRIND */
 
 
 /* ----------------------------------------------------------------
@@ -304,6 +323,8 @@ static void disable_statement_timeout(void);
  * commands are not processed any further than the raw parse stage.
  */
 #ifdef COPY_PARSE_PLAN_TREES
+#endif
+#ifdef WRITE_READ_PARSE_PLAN_TREES
 #endif
 
 /*
@@ -558,45 +579,6 @@ static void disable_statement_timeout(void);
 void ProcessInterrupts(void) {}
 
 
-
-/*
- * IA64-specific code to fetch the AR.BSP register for stack depth checks.
- *
- * We currently support gcc, icc, and HP-UX's native compiler here.
- *
- * Note: while icc accepts gcc asm blocks on x86[_64], this is not true on
- * ia64 (at least not in icc versions before 12.x).  So we have to carry a
- * separate implementation for it.
- */
-#if defined(__ia64__) || defined(__ia64)
-
-#if defined(__hpux) && !defined(__GNUC__) && !defined(__INTEL_COMPILER)
-/* Assume it's HP-UX native compiler */
-#include <ia64/sys/inline.h>
-#define ia64_get_bsp() ((char *) (_Asm_mov_from_ar(_AREG_BSP, _NO_FENCE)))
-#elif defined(__INTEL_COMPILER)
-/* icc */
-#include <asm/ia64regs.h>
-#define ia64_get_bsp() ((char *) __getReg(_IA64_REG_AR_BSP))
-#else
-/* gcc */
-static __inline__ char *
-ia64_get_bsp(void)
-{
-	char	   *ret;
-
-	/* the ;; is a "stop", seems to be required before fetching BSP */
-	__asm__ __volatile__(
-						 ";;\n"
-						 "	mov	%0=ar.bsp	\n"
-:						 "=r"(ret));
-
-	return ret;
-}
-#endif
-#endif							/* IA64 */
-
-
 /*
  * set_stack_base: set up reference point for stack depth checking
  *
@@ -604,13 +586,8 @@ ia64_get_bsp(void)
  */
 #ifndef HAVE__BUILTIN_FRAME_ADDRESS
 #endif
-#if defined(__ia64__) || defined(__ia64)
-#else
-#endif
 #ifdef HAVE__BUILTIN_FRAME_ADDRESS
 #else
-#endif
-#if defined(__ia64__) || defined(__ia64)
 #endif
 
 /*
@@ -622,9 +599,7 @@ ia64_get_bsp(void)
  * the main thread's stack, so it sets the base pointer before the call, and
  * restores it afterwards.
  */
-#if defined(__ia64__) || defined(__ia64)
-#else
-#endif
+
 
 /*
  * check_stack_depth/stack_is_too_deep: check for excessively deep recursion
@@ -680,22 +655,6 @@ stack_is_too_deep(void)
 		stack_base_ptr != NULL)
 		return true;
 
-	/*
-	 * On IA64 there is a separate "register" stack that requires its own
-	 * independent check.  For this, we have to measure the change in the
-	 * "BSP" pointer from PostgresMain to here.  Logic is just as above,
-	 * except that we know IA64's register stack grows up.
-	 *
-	 * Note we assume that the same max_stack_depth applies to both stacks.
-	 */
-#if defined(__ia64__) || defined(__ia64)
-	stack_depth = (long) (ia64_get_bsp() - register_stack_base_ptr);
-
-	if (stack_depth > max_stack_depth_bytes &&
-		register_stack_base_ptr != NULL)
-		return true;
-#endif							/* IA64 */
-
 	return false;
 }
 
@@ -703,6 +662,28 @@ stack_is_too_deep(void)
 
 
 /* GUC assign hook for max_stack_depth */
+
+
+/*
+ * GUC check_hook for client_connection_check_interval
+ */
+
+
+/*
+ * GUC check_hook for log_parser_stats, log_planner_stats, log_executor_stats
+ *
+ * This function and check_log_stats interact to prevent their variables from
+ * being set in a disallowed combination.  This is a hack that doesn't really
+ * work right; for example it might fail while applying pg_db_role_setting
+ * values even though the final state would have been acceptable.  However,
+ * since these variables are legacy settings with little production usage,
+ * we tolerate that.
+ */
+
+
+/*
+ * GUC check_hook for log_statement_stats
+ */
 
 
 
@@ -769,7 +750,8 @@ stack_is_too_deep(void)
  * if reasonably possible.
  * ----------------------------------------------------------------
  */
-
+#ifdef USE_VALGRIND
+#endif
 
 /*
  * Throw an error if we're a WAL sender process.
@@ -786,11 +768,8 @@ stack_is_too_deep(void)
  *
  * Return -1 if unknown
  */
-#if defined(HAVE_GETRLIMIT) && defined(RLIMIT_STACK)
-#else							/* no getrlimit */
-#if defined(WIN32) || defined(__CYGWIN__)
-#else							/* not windows ... give up */
-#endif
+#if defined(HAVE_GETRLIMIT)
+#else
 #endif
 
 
@@ -799,11 +778,11 @@ stack_is_too_deep(void)
 
 
 
-#if defined(HAVE_GETRUSAGE)
+#ifndef WIN32
 #if defined(__darwin__)
 #else
 #endif
-#endif							/* HAVE_GETRUSAGE */
+#endif							/* !WIN32 */
 
 /*
  * on_proc_exit handler to log end of session

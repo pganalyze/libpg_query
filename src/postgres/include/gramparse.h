@@ -4,14 +4,14 @@
  *		Shared definitions for the "raw" parser (flex and bison phases only)
  *
  * NOTE: this file is only meant to be included in the core parsing files,
- * ie, parser.c, gram.y, scan.l, and src/common/keywords.c.
+ * i.e., parser.c, gram.y, and scan.l.
  * Definitions that are needed outside the core parser should be in parser.h.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
- * src/include/parser/gramparse.h
+ * src/backend/parser/gramparse.h
  *
  *-------------------------------------------------------------------------
  */
@@ -26,7 +26,7 @@
  * NB: include gram.h only AFTER including scanner.h, because scanner.h
  * is what #defines YYLTYPE.
  */
-#include "parser/gram.h"
+#include "gram.h"
 
 /*
  * The YY_EXTRA data that a flex scanner allows us to pass around.  Private
