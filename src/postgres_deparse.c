@@ -2643,6 +2643,13 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		deparseExpr(str, lsecond(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
+	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), "system_user") == 0)
+	{
+		appendStringInfoString(str, "SYSTEM_USER");
+		return;
 	}
 		
 	deparseFuncName(str, func_call->funcname);
