@@ -233,7 +233,7 @@ class Extractor
 
     # Fixup node tags, as they are included from a different auto-generated file: `nodes/nodetags.h`.
     @nodetypes.each_with_index do |name, i|
-      @enum_defs['nodes/nodes']['NodeTag'][:values] << { name: name, value: i + 1 }
+      @enum_defs['nodes/nodes']['NodeTag'][:values] << { name: "T_#{name}", value: i + 1 }
     end
 
     @struct_defs['nodes/value'] = {}
