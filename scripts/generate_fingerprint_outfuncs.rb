@@ -200,12 +200,12 @@ class Generator
 
   FINGERPRINT_INT_ARRAY = <<-EOL
   if (true) {
-    int x;
+    int x = -1;
     Bitmapset	*bms = bms_copy(node->%<name>s);
 
     _fingerprintString(ctx, "%<name>s");
 
-  	while ((x = bms_first_member(bms)) >= 0) {
+  	while ((x = bms_next_member(bms, x)) >= 0) {
       char buffer[50];
       sprintf(buffer, "%%d", x);
       _fingerprintString(ctx, buffer);
