@@ -7993,8 +7993,31 @@ static void deparseGrantRoleStmt(StringInfo str, GrantRoleStmt *grant_role_stmt)
 	deparseRoleList(str, grant_role_stmt->grantee_roles);
 	appendStringInfoChar(str, ' ');
 
-	if (grant_role_stmt->is_grant && grant_role_stmt->admin_opt)
-		appendStringInfoString(str, "WITH ADMIN OPTION ");
+	if (grant_role_stmt->is_grant) {
+		if (list_length(grant_role_stmt->opt) > 0) {
+			appendStringInfoString(str, "WITH ");
+		}
+
+		foreach(lc, grant_role_stmt->opt) {
+			DefElem *defelem = castNode(DefElem, lfirst(lc));
+			if (strcmp("admin", defelem->defname) == 0) {
+				appendStringInfoString(str, "ADMIN ");
+				appendStringInfoString(str, castNode(Boolean, defelem->arg)->boolval ? "OPTION" : "FALSE");
+			} else if (strcmp("inherit", defelem->defname) == 0) {
+				appendStringInfoString(str, "INHERIT ");
+				appendStringInfoString(str, castNode(Boolean, defelem->arg)->boolval ? "OPTION" : "FALSE");
+			} else if (strcmp("set", defelem->defname) == 0) {
+				appendStringInfoString(str, "SET ");
+				appendStringInfoString(str, castNode(Boolean, defelem->arg)->boolval ? "OPTION" : "FALSE");
+			}
+
+			if (lnext(grant_role_stmt->opt, lc)) {
+				appendStringInfoChar(str, ',');
+			}
+
+			appendStringInfoChar(str, ' ');
+		}
+	}
 
 	if (grant_role_stmt->grantor)
 	{
