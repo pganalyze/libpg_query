@@ -7333,6 +7333,8 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 						appendStringInfoString(str, "BINARY");
 					else if (strcmp(format, "csv") == 0)
 						appendStringInfoString(str, "CSV");
+					else if (strcmp(format, "text") == 0)
+						appendStringInfoString(str, "TEXT");
 					else
 						Assert(false);
 				}
