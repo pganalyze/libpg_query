@@ -11,6 +11,11 @@
  * - makeTypeName
  * - makeFuncCall
  * - makeA_Expr
+ * - makeJsonFormat
+ * - makeJsonIsPredicate
+ * - makeJsonValueExpr
+ * - makeJsonEncoding
+ * - makeJsonKeyValue
  * - makeBoolExpr
  *--------------------------------------------------------------------
  */
@@ -21,7 +26,7 @@
  *	  creator functions for various nodes. The functions here are for the
  *	  most frequently created nodes.
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -36,6 +41,7 @@
 #include "catalog/pg_type.h"
 #include "nodes/makefuncs.h"
 #include "nodes/nodeFuncs.h"
+#include "utils/errcodes.h"
 #include "utils/lsyscache.h"
 
 
@@ -415,4 +421,92 @@ makeVacuumRelation(RangeVar *relation, Oid oid, List *va_cols)
 	v->oid = oid;
 	v->va_cols = va_cols;
 	return v;
+}
+
+/*
+ * makeJsonFormat -
+ *	  creates a JsonFormat node
+ */
+JsonFormat *
+makeJsonFormat(JsonFormatType type, JsonEncoding encoding, int location)
+{
+	JsonFormat *jf = makeNode(JsonFormat);
+
+	jf->format_type = type;
+	jf->encoding = encoding;
+	jf->location = location;
+
+	return jf;
+}
+
+/*
+ * makeJsonValueExpr -
+ *	  creates a JsonValueExpr node
+ */
+JsonValueExpr *
+makeJsonValueExpr(Expr *raw_expr, Expr *formatted_expr,
+				  JsonFormat *format)
+{
+	JsonValueExpr *jve = makeNode(JsonValueExpr);
+
+	jve->raw_expr = raw_expr;
+	jve->formatted_expr = formatted_expr;
+	jve->format = format;
+
+	return jve;
+}
+
+/*
+ * makeJsonEncoding -
+ *	  converts JSON encoding name to enum JsonEncoding
+ */
+JsonEncoding
+makeJsonEncoding(char *name)
+{
+	if (!pg_strcasecmp(name, "utf8"))
+		return JS_ENC_UTF8;
+	if (!pg_strcasecmp(name, "utf16"))
+		return JS_ENC_UTF16;
+	if (!pg_strcasecmp(name, "utf32"))
+		return JS_ENC_UTF32;
+
+	ereport(ERROR,
+			errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			errmsg("unrecognized JSON encoding: %s", name));
+
+	return JS_ENC_DEFAULT;
+}
+
+/*
+ * makeJsonKeyValue -
+ *	  creates a JsonKeyValue node
+ */
+Node *
+makeJsonKeyValue(Node *key, Node *value)
+{
+	JsonKeyValue *n = makeNode(JsonKeyValue);
+
+	n->key = (Expr *) key;
+	n->value = castNode(JsonValueExpr, value);
+
+	return (Node *) n;
+}
+
+/*
+ * makeJsonIsPredicate -
+ *	  creates a JsonIsPredicate node
+ */
+Node *
+makeJsonIsPredicate(Node *expr, JsonFormat *format, JsonValueType item_type,
+					bool unique_keys, int location)
+{
+	JsonIsPredicate *n = makeNode(JsonIsPredicate);
+
+	n->expr = expr;
+	n->format = format;
+	n->item_type = item_type;
+	n->unique_keys = unique_keys;
+	n->location = location;
+
+	return (Node *) n;
 }

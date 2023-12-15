@@ -16,7 +16,7 @@
  * and implementing search-path-controlled searches.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -35,6 +35,7 @@
 #include "catalog/pg_authid.h"
 #include "catalog/pg_collation.h"
 #include "catalog/pg_conversion.h"
+#include "catalog/pg_database.h"
 #include "catalog/pg_namespace.h"
 #include "catalog/pg_opclass.h"
 #include "catalog/pg_operator.h"
@@ -58,7 +59,7 @@
 #include "utils/acl.h"
 #include "utils/builtins.h"
 #include "utils/catcache.h"
-#include "utils/guc.h"
+#include "utils/guc_hooks.h"
 #include "utils/inval.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
@@ -868,6 +869,10 @@ NameListToString(List *names)
 
 /*
  * PushOverrideSearchPath - temporarily override the search path
+ *
+ * Do not use this function; almost any usage introduces a security
+ * vulnerability.  It exists for the benefit of legacy code running in
+ * non-security-sensitive environments.
  *
  * We allow nested overrides, hence the push/pop terminology.  The GUC
  * search_path variable is ignored while an override is active.

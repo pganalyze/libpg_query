@@ -11,7 +11,7 @@
  *	  Functions to convert stored expressions/querytrees back to
  *	  source text
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -419,6 +419,8 @@ static void get_update_query_targetlist_def(Query *query, List *targetList,
 											RangeTblEntry *rte);
 static void get_delete_query_def(Query *query, deparse_context *context,
 								 bool colNamesVisible);
+static void get_merge_query_def(Query *query, deparse_context *context,
+								bool colNamesVisible);
 static void get_utility_query_def(Query *query, deparse_context *context);
 static void get_basic_select_query(Query *query, deparse_context *context,
 								   TupleDesc resultDesc, bool colNamesVisible);
@@ -465,9 +467,15 @@ static void get_func_expr(FuncExpr *expr, deparse_context *context,
 						  bool showimplicit);
 static void get_agg_expr(Aggref *aggref, deparse_context *context,
 						 Aggref *original_aggref);
+static void get_agg_expr_helper(Aggref *aggref, deparse_context *context,
+								Aggref *original_aggref, const char *funcname,
+								const char *options, bool is_json_objectagg);
 static void get_agg_combine_expr(Node *node, deparse_context *context,
 								 void *callback_arg);
 static void get_windowfunc_expr(WindowFunc *wfunc, deparse_context *context);
+static void get_windowfunc_expr_helper(WindowFunc *wfunc, deparse_context *context,
+									   const char *funcname, const char *options,
+									   bool is_json_objectagg);
 static bool get_func_sql_syntax(FuncExpr *expr, deparse_context *context);
 static void get_coercion_expr(Node *arg, deparse_context *context,
 							  Oid resulttype, int32 resulttypmod,
@@ -475,6 +483,15 @@ static void get_coercion_expr(Node *arg, deparse_context *context,
 static void get_const_expr(Const *constval, deparse_context *context,
 						   int showtype);
 static void get_const_collation(Const *constval, deparse_context *context);
+static void get_json_format(JsonFormat *format, StringInfo buf);
+static void get_json_constructor(JsonConstructorExpr *ctor,
+								 deparse_context *context, bool showimplicit);
+static void get_json_constructor_options(JsonConstructorExpr *ctor,
+										 StringInfo buf);
+static void get_json_agg_constructor(JsonConstructorExpr *ctor,
+									 deparse_context *context,
+									 const char *funcname,
+									 bool is_json_objectagg);
 static void simple_quote_literal(StringInfo buf, const char *val);
 static void get_sublink_expr(SubLink *sublink, deparse_context *context);
 static void get_tablefunc(TableFunc *tf, deparse_context *context,
@@ -483,6 +500,8 @@ static void get_from_clause(Query *query, const char *prefix,
 							deparse_context *context);
 static void get_from_clause_item(Node *jtnode, Query *query,
 								 deparse_context *context);
+static void get_rte_alias(RangeTblEntry *rte, int varno, bool use_as,
+						  deparse_context *context);
 static void get_column_alias_list(deparse_columns *colinfo,
 								  deparse_context *context);
 static void get_from_clause_coldeflist(RangeTblFunction *rtfunc,
@@ -584,6 +603,9 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 /* Internal version that just reports the key-column definitions */
 
 
+/* Internal version, extensible with flags to control its behavior */
+
+
 /*
  * Internal workhorse to decompile an index definition.
  *
@@ -637,7 +659,7 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  *
  * Returns the partition key specification, ie, the following:
  *
- * PARTITION BY { RANGE | LIST | HASH } (column opt_collation opt_opclass [, ...])
+ * { RANGE | LIST | HASH } (column opt_collation opt_opclass [, ...])
  */
 
 
@@ -744,8 +766,8 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  *
  * Note: if you change the output format of this function, be careful not
  * to break psql's rules (in \ef and \sf) for identifying the start of the
- * function body.  To wit: the function body starts on a line that begins
- * with "AS ", and no preceding line will look like that.
+ * function body.  To wit: the function body starts on a line that begins with
+ * "AS ", "BEGIN ", or "RETURN ", and no preceding line will look like that.
  */
 
 
@@ -1215,6 +1237,13 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 
 /* ----------
+ * get_merge_query_def				- Parse back a MERGE parsetree
+ * ----------
+ */
+
+
+
+/* ----------
  * get_utility_query_def			- Parse back a UTILITY parsetree
  * ----------
  */
@@ -1414,6 +1443,12 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 
 /*
+ * get_agg_expr_helper		- subroutine for get_agg_expr and
+ *							get_json_agg_constructor
+ */
+
+
+/*
  * This is a helper function for get_agg_expr().  It's used when we deparse
  * a combining Aggref; resolve_special_varno locates the corresponding partial
  * Aggref and then calls this.
@@ -1422,6 +1457,13 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 /*
  * get_windowfunc_expr	- Parse back a WindowFunc node
+ */
+
+
+
+/*
+ * get_windowfunc_expr_helper	- subroutine for get_windowfunc_expr and
+ *								get_json_agg_constructor
  */
 
 
@@ -1464,6 +1506,31 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 
 /*
+ * get_json_format			- Parse back a JsonFormat node
+ */
+
+
+/*
+ * get_json_returning		- Parse back a JsonReturning structure
+ */
+
+
+/*
+ * get_json_constructor		- Parse back a JsonConstructorExpr node
+ */
+
+
+/*
+ * Append options, if any, to the JSON constructor being deparsed
+ */
+
+
+/*
+ * get_json_agg_constructor - Parse back an aggregate JsonConstructorExpr node
+ */
+
+
+/*
  * simple_quote_literal - Format a string as a SQL literal, append to buf
  */
 
@@ -1492,6 +1559,13 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  */
 
 
+
+
+/*
+ * get_rte_alias - print the relation's alias, if needed
+ *
+ * If printed, the alias is preceded by a space, or by " AS " if use_as is true.
+ */
 
 
 /*
@@ -1533,7 +1607,7 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 /*
  * generate_opclass_name
- *		Compute the name to display for a opclass specified by OID
+ *		Compute the name to display for an opclass specified by OID
  *
  * The result includes all necessary quoting and schema-prefixing.
  */

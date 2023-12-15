@@ -38,7 +38,7 @@
  *	  clients.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -83,10 +83,6 @@
 #include <netdb.h>
 #include <limits.h>
 
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-
 #ifdef USE_BONJOUR
 #include <dns_sd.h>
 #endif
@@ -112,6 +108,7 @@
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "libpq/pqsignal.h"
+#include "nodes/queryjumble.h"
 #include "pg_getopt.h"
 #include "pgstat.h"
 #include "port/pg_bswap.h"
@@ -136,7 +133,6 @@
 #include "utils/memutils.h"
 #include "utils/pidfile.h"
 #include "utils/ps_status.h"
-#include "utils/queryjumble.h"
 #include "utils/timeout.h"
 #include "utils/timestamp.h"
 #include "utils/varlena.h"
@@ -214,28 +210,28 @@ static Backend *ShmemBackendArray;
 
 
 /*
- * ReservedBackends is the number of backends reserved for superuser use.
- * This number is taken out of the pool size given by MaxConnections so
- * number of backend slots available to non-superusers is
- * (MaxConnections - ReservedBackends).  Note what this really means is
- * "if there are <= ReservedBackends connections available, only superusers
- * can make new connections" --- pre-existing superuser connections don't
- * count against the limit.
+ * SuperuserReservedConnections is the number of backends reserved for
+ * superuser use, and ReservedConnections is the number of backends reserved
+ * for use by roles with privileges of the pg_use_reserved_connections
+ * predefined role.  These are taken out of the pool of MaxConnections backend
+ * slots, so the number of backend slots available for roles that are neither
+ * superuser nor have privileges of pg_use_reserved_connections is
+ * (MaxConnections - SuperuserReservedConnections - ReservedConnections).
+ *
+ * If the number of remaining slots is less than or equal to
+ * SuperuserReservedConnections, only superusers can make new connections.  If
+ * the number of remaining slots is greater than SuperuserReservedConnections
+ * but less than or equal to
+ * (SuperuserReservedConnections + ReservedConnections), only superusers and
+ * roles with privileges of pg_use_reserved_connections can make new
+ * connections.  Note that pre-existing superuser and
+ * pg_use_reserved_connections connections don't count against the limits.
  */
+
 
 
 /* The socket(s) we're listening to. */
 #define MAXLISTEN	64
-
-
-/*
- * These globals control the behavior of the postmaster in case some
- * backend dumps core.  Normally, it kills all peers of the dead backend
- * and reinitializes shared memory.  By specifying -s or -n, we can have
- * the postmaster stop (rather than kill) peers and not reinitialize
- * shared data structures.  (Reinit is currently dead code, though.)
- */
-
 
 
 /* still more option variables */
@@ -245,6 +241,8 @@ static Backend *ShmemBackendArray;
 
 
 		/* for ps display and logging */
+
+
 
 
 
@@ -380,6 +378,17 @@ __thread bool		ClientAuthInProgress = false;
 
 
 
+/* set when signals arrive */
+
+
+
+
+
+
+
+/* event multiplexing object */
+
+
 #ifdef USE_SSL
 /* Set when and if SSL has been initialized properly */
 static bool LoadedSSL = false;
@@ -398,11 +407,14 @@ static void getInstallationPaths(const char *argv0);
 static void checkControlFile(void);
 static Port *ConnCreate(int serverFd);
 static void ConnFree(Port *port);
-static void reset_shared(void);
-static void SIGHUP_handler(SIGNAL_ARGS);
-static void pmdie(SIGNAL_ARGS);
-static void reaper(SIGNAL_ARGS);
-static void sigusr1_handler(SIGNAL_ARGS);
+static void handle_pm_pmsignal_signal(SIGNAL_ARGS);
+static void handle_pm_child_exit_signal(SIGNAL_ARGS);
+static void handle_pm_reload_request_signal(SIGNAL_ARGS);
+static void handle_pm_shutdown_request_signal(SIGNAL_ARGS);
+static void process_pm_pmsignal(void);
+static void process_pm_child_exit(void);
+static void process_pm_reload_request(void);
+static void process_pm_shutdown_request(void);
 static void process_startup_packet_die(SIGNAL_ARGS);
 static void dummy_handler(SIGNAL_ARGS);
 static void StartupPacketTimeoutHandler(void);
@@ -420,12 +432,12 @@ static int	BackendStartup(Port *port);
 static int	ProcessStartupPacket(Port *port, bool ssl_done, bool gss_done);
 static void SendNegotiateProtocolVersion(List *unrecognized_protocol_options);
 static void processCancelRequest(Port *port, void *pkt);
-static int	initMasks(fd_set *rmask);
 static void report_fork_failure_to_client(Port *port, int errnum);
 static CAC_state canAcceptConnections(int backend_type);
 static bool RandomCancelKey(int32 *cancel_key);
 static void signal_child(pid_t pid, int signal);
-static bool SignalSomeChildren(int signal, int targets);
+static void sigquit_child(pid_t pid);
+static bool SignalSomeChildren(int signal, int target);
 static void TerminateChildren(int signal);
 
 #define SignalChildren(sig)			   SignalSomeChildren(sig, BACKEND_TYPE_ALL)
@@ -579,8 +591,6 @@ HANDLE		PostmasterHandle;
  */
 #ifdef WIN32
 #endif
-#ifdef SIGURG
-#endif
 #ifdef SIGTTIN
 #endif
 #ifdef SIGTTOU
@@ -596,8 +606,6 @@ HANDLE		PostmasterHandle;
 #ifdef EXEC_BACKEND
 #endif
 #ifdef USE_BONJOUR
-#endif
-#ifdef HAVE_UNIX_SOCKETS
 #endif
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
 #endif
@@ -630,7 +638,7 @@ HANDLE		PostmasterHandle;
 
 
 /*
- * Determine how long should we let ServerLoop sleep.
+ * Determine how long should we let ServerLoop sleep, in milliseconds.
  *
  * In normal conditions we wait at most one minute, to ensure that the other
  * background tasks handled by ServerLoop get done even when no requests are
@@ -641,19 +649,21 @@ HANDLE		PostmasterHandle;
 
 
 /*
+ * Activate or deactivate notifications of server socket events.  Since we
+ * don't currently have a way to remove events from an existing WaitEventSet,
+ * we'll just destroy and recreate the whole thing.  This is called during
+ * shutdown so we can wait for backends to exit without accepting new
+ * connections, and during crash reinitialization when we need to start
+ * listening for new connections again.  The WaitEventSet will be freed in fork
+ * children by ClosePostmasterPorts().
+ */
+
+
+/*
  * Main idle loop of postmaster
- *
- * NB: Needs to be called with signals blocked
  */
 #ifdef HAVE_PTHREAD_IS_THREADED_NP
 #endif
-
-/*
- * Initialise the masks for select() for the ports we are listening on.
- * Return the number of sockets to listen on.
- */
-
-
 
 /*
  * Read a client's startup packet and do something according to it.
@@ -766,48 +776,47 @@ HANDLE		PostmasterHandle;
 #ifndef WIN32
 #endif
 
-
 /*
- * reset_shared -- reset shared memory and semaphores
+ * Child processes use SIGUSR1 to notify us of 'pmsignals'.  pg_ctl uses
+ * SIGUSR1 to ask postmaster to check for logrotate and promote files.
  */
 
 
+/*
+ * pg_ctl uses SIGHUP to request a reload of the configuration files.
+ */
+
 
 /*
- * SIGHUP -- reread config files, and tell children to do same
+ * Re-read config files, and tell children to do same.
  */
-#ifdef WIN32
-#endif
 #ifdef USE_SSL
 #endif
 #ifdef EXEC_BACKEND
 #endif
-#ifdef WIN32
-#endif
+
+/*
+ * pg_ctl uses SIGTERM, SIGINT and SIGQUIT to request different types of
+ * shutdown.
+ */
 
 
 /*
- * pmdie -- signal handler for processing various postmaster signals.
+ * Process shutdown request.
  */
-#ifdef WIN32
-#endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
-#endif
-#ifdef WIN32
 #endif
 
+
+
 /*
- * Reaper -- signal handler to cleanup after a child process dies.
+ * Cleanup after a child process dies.
  */
-#ifdef WIN32
-#endif
 #ifdef USE_SYSTEMD
-#endif
-#ifdef WIN32
 #endif
 
 /*
@@ -858,8 +867,9 @@ HANDLE		PostmasterHandle;
 /*
  * Advance the postmaster's state machine and take actions as appropriate
  *
- * This is common code for pmdie(), reaper() and sigusr1_handler(), which
- * receive the signals that might mean we need to change state.
+ * This is common code for process_pm_shutdown_request(),
+ * process_pm_child_exit() and process_pm_pmsignal(), which process the signals
+ * that might mean we need to change state.
  */
 
 
@@ -882,6 +892,16 @@ HANDLE		PostmasterHandle;
  */
 #ifdef HAVE_SETSID
 #endif
+
+/*
+ * Convenience function for killing a child process after a crash of some
+ * other child process.  We log the action at a higher level than we would
+ * otherwise do, and we apply send_abort_for_crash to decide which signal
+ * to send.  Normally it's SIGQUIT -- and most other comments in this file
+ * are written on the assumption that it is -- but developers might prefer
+ * to use SIGABRT to collect per-child core dumps.
+ */
+
 
 /*
  * Send a signal to the targeted children (but NOT special children;
@@ -1267,18 +1287,10 @@ retry:
 
 	/*
 	 * Queue a waiter to signal when this child dies. The wait will be handled
-	 * automatically by an operating system thread pool.
-	 *
-	 * Note: use malloc instead of palloc, since it needs to be thread-safe.
-	 * Struct will be free():d from the callback function that runs on a
-	 * different thread.
+	 * automatically by an operating system thread pool.  The memory will be
+	 * freed by a later call to waitpid().
 	 */
-	childinfo = malloc(sizeof(win32_deadchild_waitinfo));
-	if (!childinfo)
-		ereport(FATAL,
-				(errcode(ERRCODE_OUT_OF_MEMORY),
-				 errmsg("out of memory")));
-
+	childinfo = palloc(sizeof(win32_deadchild_waitinfo));
 	childinfo->procHandle = pi.hProcess;
 	childinfo->procId = pi.dwProcessId;
 
@@ -1292,7 +1304,7 @@ retry:
 				(errmsg_internal("could not register process for wait: error code %lu",
 								 GetLastError())));
 
-	/* Don't close pi.hProcess here - the wait thread needs access to it */
+	/* Don't close pi.hProcess here - waitpid() needs access to it */
 
 	CloseHandle(pi.hThread);
 
@@ -1532,15 +1544,12 @@ SubPostmasterMain(int argc, char *argv[])
 #endif
 
 /*
- * sigusr1_handler - handle signal conditions from child processes
+ * Handle pmsignal conditions representing requests from backends,
+ * and check for promote and logrotate requests from pg_ctl.
  */
-#ifdef WIN32
-#endif
 #ifdef USE_SYSTEMD
 #endif
 #ifdef USE_SYSTEMD
-#endif
-#ifdef WIN32
 #endif
 
 /*
@@ -2124,36 +2133,21 @@ ShmemBackendArrayRemove(Backend *bn)
 static pid_t
 waitpid(pid_t pid, int *exitstatus, int options)
 {
+	win32_deadchild_waitinfo *childinfo;
+	DWORD		exitcode;
 	DWORD		dwd;
 	ULONG_PTR	key;
 	OVERLAPPED *ovl;
 
-	/*
-	 * Check if there are any dead children. If there are, return the pid of
-	 * the first one that died.
-	 */
-	if (GetQueuedCompletionStatus(win32ChildQueue, &dwd, &key, &ovl, 0))
+	/* Try to consume one win32_deadchild_waitinfo from the queue. */
+	if (!GetQueuedCompletionStatus(win32ChildQueue, &dwd, &key, &ovl, 0))
 	{
-		*exitstatus = (int) key;
-		return dwd;
+		errno = EAGAIN;
+		return -1;
 	}
 
-	return -1;
-}
-
-/*
- * Note! Code below executes on a thread pool! All operations must
- * be thread safe! Note that elog() and friends must *not* be used.
- */
-static void WINAPI
-pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
-{
-	win32_deadchild_waitinfo *childinfo = (win32_deadchild_waitinfo *) lpParameter;
-	DWORD		exitcode;
-
-	if (TimerOrWaitFired)
-		return;					/* timeout. Should never happen, since we use
-								 * INFINITE as timeout value. */
+	childinfo = (win32_deadchild_waitinfo *) key;
+	pid = childinfo->procId;
 
 	/*
 	 * Remove handle from wait - required even though it's set to wait only
@@ -2169,13 +2163,11 @@ pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
 		write_stderr("could not read exit code for process\n");
 		exitcode = 255;
 	}
-
-	if (!PostQueuedCompletionStatus(win32ChildQueue, childinfo->procId, (ULONG_PTR) exitcode, NULL))
-		write_stderr("could not post child completion status\n");
+	*exitstatus = exitcode;
 
 	/*
-	 * Handle is per-process, so we close it here instead of in the
-	 * originating thread
+	 * Close the process handle.  Only after this point can the PID can be
+	 * recycled by the kernel.
 	 */
 	CloseHandle(childinfo->procHandle);
 
@@ -2183,9 +2175,36 @@ pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
 	 * Free struct that was allocated before the call to
 	 * RegisterWaitForSingleObject()
 	 */
-	free(childinfo);
+	pfree(childinfo);
 
-	/* Queue SIGCHLD signal */
+	return pid;
+}
+
+/*
+ * Note! Code below executes on a thread pool! All operations must
+ * be thread safe! Note that elog() and friends must *not* be used.
+ */
+static void WINAPI
+pgwin32_deadchild_callback(PVOID lpParameter, BOOLEAN TimerOrWaitFired)
+{
+	/* Should never happen, since we use INFINITE as timeout value. */
+	if (TimerOrWaitFired)
+		return;
+
+	/*
+	 * Post the win32_deadchild_waitinfo object for waitpid() to deal with. If
+	 * that fails, we leak the object, but we also leak a whole process and
+	 * get into an unrecoverable state, so there's not much point in worrying
+	 * about that.  We'd like to panic, but we can't use that infrastructure
+	 * from this thread.
+	 */
+	if (!PostQueuedCompletionStatus(win32ChildQueue,
+									0,
+									(ULONG_PTR) lpParameter,
+									NULL))
+		write_stderr("could not post child completion status\n");
+
+	/* Queue SIGCHLD signal. */
 	pg_queue_signal(SIGCHLD);
 }
 #endif							/* WIN32 */

@@ -2,7 +2,7 @@
  *
  * Pseudo-Random Number Generator
  *
- * Copyright (c) 2021-2022, PostgreSQL Global Development Group
+ * Copyright (c) 2021-2023, PostgreSQL Global Development Group
  *
  * src/include/common/pg_prng.h
  *
@@ -26,7 +26,7 @@ typedef struct pg_prng_state
  * Callers not needing local PRNG series may use this global state vector,
  * after initializing it with one of the pg_prng_...seed functions.
  */
-extern PGDLLIMPORT __thread  pg_prng_state pg_global_prng_state;
+extern PGDLLIMPORT pg_prng_state pg_global_prng_state;
 
 extern void pg_prng_seed(pg_prng_state *state, uint64 seed);
 extern void pg_prng_fseed(pg_prng_state *state, double fseed);
@@ -55,6 +55,7 @@ extern uint32 pg_prng_uint32(pg_prng_state *state);
 extern int32 pg_prng_int32(pg_prng_state *state);
 extern int32 pg_prng_int32p(pg_prng_state *state);
 extern double pg_prng_double(pg_prng_state *state);
+extern double pg_prng_double_normal(pg_prng_state *state);
 extern bool pg_prng_bool(pg_prng_state *state);
 
 #endif							/* PG_PRNG_H */

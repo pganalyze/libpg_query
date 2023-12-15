@@ -31,7 +31,7 @@
  * See comments in pg_list.h.
  *
  *
- * Portions Copyright (c) 1996-2022, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -79,6 +79,7 @@
 #define IsPointerList(l)		((l) == NIL || IsA((l), List))
 #define IsIntegerList(l)		((l) == NIL || IsA((l), IntList))
 #define IsOidList(l)			((l) == NIL || IsA((l), OidList))
+#define IsXidList(l)			((l) == NIL || IsA((l), XidList))
 
 #ifdef USE_ASSERT_CHECKING
 /*
@@ -96,7 +97,8 @@ check_list_invariants(const List *list)
 
 	Assert(list->type == T_List ||
 		   list->type == T_IntList ||
-		   list->type == T_OidList);
+		   list->type == T_OidList ||
+		   list->type == T_XidList);
 }
 #else
 #define check_list_invariants(l)  ((void) 0)
@@ -370,6 +372,11 @@ lappend(List *list, void *datum)
 
 
 /*
+ * Append a TransactionId to the specified list. See lappend()
+ */
+
+
+/*
  * Make room for a new cell at position 'pos' (measured from 0).
  * The data in the cell is left undefined, and must be filled in by the
  * caller. 'list' is assumed to be non-NIL, and 'pos' must be a valid
@@ -538,6 +545,11 @@ list_truncate(List *list, int new_size)
 
 /*
  * Return true iff the OID 'datum' is a member of the list.
+ */
+
+
+/*
+ * Return true iff the TransactionId 'datum' is a member of the list.
  */
 
 
