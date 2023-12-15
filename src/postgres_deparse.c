@@ -10154,6 +10154,11 @@ static void deparseXmlSerialize(StringInfo str, XmlSerialize *xml_serialize)
 	deparseExpr(str, xml_serialize->expr);
 	appendStringInfoString(str, " AS ");
 	deparseTypeName(str, xml_serialize->typeName);
+
+	if (xml_serialize->indent) {
+		appendStringInfoString(str, " INDENT");
+	}
+
 	appendStringInfoString(str, ")");
 }
 
