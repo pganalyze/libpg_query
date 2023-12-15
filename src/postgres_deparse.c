@@ -6180,9 +6180,6 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			else
 				appendStringInfoString(str, "ADD COLUMN ");
 			break;
-		case AT_AddColumnRecurse: /* internal to commands/tablecmds.c */
-			Assert(false);
-			break;
 		case AT_AddColumnToView: /* implicitly via CREATE OR REPLACE VIEW */
 			// Not present in raw parser output
 			Assert(false);
@@ -6241,9 +6238,6 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			else
 				appendStringInfoString(str, "DROP ");
 			break;
-		case AT_DropColumnRecurse: /* internal to commands/tablecmds.c */
-			Assert(false);
-			break;
 		case AT_AddIndex: /* add index */
 			appendStringInfoString(str, "ADD INDEX ");
 			break;
@@ -6252,9 +6246,6 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			break;
 		case AT_AddConstraint: /* add constraint */
 			appendStringInfoString(str, "ADD ");
-			break;
-		case AT_AddConstraintRecurse: /* internal to commands/tablecmds.c */
-			Assert(false);
 			break;
 		case AT_ReAddConstraint: /* internal to commands/tablecmds.c */
 			Assert(false);
@@ -6268,18 +6259,12 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_ValidateConstraint: /* validate constraint */
 			appendStringInfoString(str, "VALIDATE CONSTRAINT ");
 			break;
-		case AT_ValidateConstraintRecurse: /* internal to commands/tablecmds.c */
-			Assert(false);
-			break;
 		case AT_AddIndexConstraint: /* add constraint using existing index */
 			// Not present in raw parser output
 			Assert(false);
 			break;
 		case AT_DropConstraint: /* drop constraint */
 			appendStringInfoString(str, "DROP CONSTRAINT ");
-			break;
-		case AT_DropConstraintRecurse: /* internal to commands/tablecmds.c */
-			Assert(false);
 			break;
 		case AT_ReAddComment: /* internal to commands/tablecmds.c */
 		case AT_ReAddStatistics: /* internal to commands/tablecmds.c */
