@@ -22,7 +22,9 @@
           "comment": "\t/* where did I come from? */\n"
         },
         {
-          "comment": ""
+          "name": "querySource",
+          "c_type": "QuerySource",
+          "comment": null
         },
         {
           "comment": ""
@@ -40,7 +42,9 @@
           "comment": "\t/* do I set the command result tag? */\n"
         },
         {
-          "comment": ""
+          "name": "canSetTag",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -57,7 +61,9 @@
           "comment": "\t/*\n\t * rtable index of target relation for INSERT/UPDATE/DELETE/MERGE; 0 for\n\t * SELECT.  This is ignored in the query jumble as unrelated to the\n\t * compilation of the query ID.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "resultRelation",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": ""
@@ -66,61 +72,81 @@
           "comment": "\t/* has aggregates in tlist or havingQual */\n"
         },
         {
-          "comment": ""
+          "name": "hasAggs",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* has window functions in tlist */\n"
         },
         {
-          "comment": ""
+          "name": "hasWindowFuncs",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* has set-returning functions in tlist */\n"
         },
         {
-          "comment": ""
+          "name": "hasTargetSRFs",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* has subquery SubLink */\n"
         },
         {
-          "comment": ""
+          "name": "hasSubLinks",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* distinctClause is from DISTINCT ON */\n"
         },
         {
-          "comment": ""
+          "name": "hasDistinctOn",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* WITH RECURSIVE was specified */\n"
         },
         {
-          "comment": ""
+          "name": "hasRecursive",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* has INSERT/UPDATE/DELETE in WITH */\n"
         },
         {
-          "comment": ""
+          "name": "hasModifyingCTE",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* FOR [KEY] UPDATE/SHARE was specified */\n"
         },
         {
-          "comment": ""
+          "name": "hasForUpdate",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* rewriter has applied some RLS policy */\n"
         },
         {
-          "comment": ""
+          "name": "hasRowSecurity",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* is a RETURN statement */\n"
         },
         {
-          "comment": ""
+          "name": "isReturn",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -145,7 +171,9 @@
           "comment": "\t/*\n\t * list of RTEPermissionInfo nodes for the rtable entries having\n\t * perminfoindex > 0\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "rteperminfos",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "name": "jointree",
@@ -164,7 +192,9 @@
           "comment": "\t/* whether to use outer join */\n"
         },
         {
-          "comment": ""
+          "name": "mergeUseOuterJoin",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -181,7 +211,9 @@
           "comment": "\t/* OVERRIDING clause */\n"
         },
         {
-          "comment": ""
+          "name": "override",
+          "c_type": "OverridingKind",
+          "comment": null
         },
         {
           "comment": ""
@@ -293,7 +325,9 @@
           "comment": "\t/*\n\t * A list of pg_constraint OIDs that the query depends on to be\n\t * semantically valid\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "constraintDeps",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -302,7 +336,9 @@
           "comment": "\t/* a list of WithCheckOption's (added during rewrite) */\n"
         },
         {
-          "comment": ""
+          "name": "withCheckOptions",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -322,7 +358,9 @@
           "comment": "\t/* length in bytes; 0 means \"rest of string\" */\n"
         },
         {
-          "comment": ""
+          "name": "stmt_len",
+          "c_type": "int",
+          "comment": null
         }
       ],
       "comment": "/*\n * Query -\n *\t  Parse analysis turns all statements into a Query tree\n *\t  for further processing by the rewriter and planner.\n *\n *\t  Utility statements (i.e. non-optimizable statements) have the\n *\t  utilityStmt field set, and the rest of the Query is mostly dummy.\n *\n *\t  Planning converts a Query tree into a Plan tree headed by a PlannedStmt\n *\t  node --- the Query structure is not used by the executor.\n *\n *\t  All the fields ignored for the query jumbling are not semantically\n *\t  significant (such as alias names), as is ignored anything that can\n *\t  be deduced from child nodes (else we'd just be double-hashing that\n *\t  piece of information).\n */\n"
@@ -1774,7 +1812,9 @@
           "comment": "\t/* number of columns it contributes to RTE */\n"
         },
         {
-          "comment": ""
+          "name": "funccolcount",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": "\t/* These fields record the contents of a column definition list, if any: */\n"
@@ -1783,25 +1823,33 @@
           "comment": "\t/* column names (list of String) */\n"
         },
         {
-          "comment": ""
+          "name": "funccolnames",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of column type OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "funccoltypes",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* integer list of column typmods */\n"
         },
         {
-          "comment": ""
+          "name": "funccoltypmods",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of column collation OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "funccolcollations",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -1813,7 +1861,9 @@
           "comment": "\t/* PARAM_EXEC Param IDs affecting this func */\n"
         },
         {
-          "comment": ""
+          "name": "funcparams",
+          "c_type": "Bitmapset*",
+          "comment": null
         }
       ],
       "comment": "/*\n * RangeTblFunction -\n *\t  RangeTblEntry subsidiary data for one function in a FUNCTION RTE.\n *\n * If the function had a column definition list (required for an\n * otherwise-unspecified RECORD result), funccolnames lists the names given\n * in the definition list, funccoltypes lists their declared column types,\n * funccoltypmods lists their typmods, funccolcollations their collations.\n * Otherwise, those fields are NIL.\n *\n * Notice we don't attempt to store info about the results of functions\n * returning named composite types, because those can change from time to\n * time.  We do however remember how many columns we thought the type had\n * (including dropped columns!), so that we can successfully ignore any\n * columns added after the query was parsed.\n *\n * The query jumbling only needs to track the function expression.\n */\n"
@@ -1909,7 +1959,9 @@
           "comment": "\t/* can eqop be implemented by hashing? */\n"
         },
         {
-          "comment": ""
+          "name": "hashable",
+          "c_type": "bool",
+          "comment": null
         }
       ],
       "comment": "/*\n * SortGroupClause -\n *\t\trepresentation of ORDER BY, GROUP BY, PARTITION BY,\n *\t\tDISTINCT, DISTINCT ON items\n *\n * You might think that ORDER BY is only interested in defining ordering,\n * and GROUP/DISTINCT are only interested in defining equality.  However,\n * one way to implement grouping is to sort and then apply a \"uniq\"-like\n * filter.  So it's also interesting to keep track of possible sort operators\n * for GROUP/DISTINCT, and in particular to try to sort for the grouping\n * in a way that will also yield a requested ORDER BY ordering.  So we need\n * to be able to compare ORDER BY and GROUP/DISTINCT lists, which motivates\n * the decision to give them the same representation.\n *\n * tleSortGroupRef must match ressortgroupref of exactly one entry of the\n *\t\tquery's targetlist; that is the expression to be sorted or grouped by.\n * eqop is the OID of the equality operator.\n * sortop is the OID of the ordering operator (a \"<\" or \">\" operator),\n *\t\tor InvalidOid if not available.\n * nulls_first means about what you'd expect.  If sortop is InvalidOid\n *\t\tthen nulls_first is meaningless and should be set to false.\n * hashable is true if eqop is hashable (note this condition also depends\n *\t\ton the datatype of the input expression).\n *\n * In an ORDER BY item, all fields must be valid.  (The eqop isn't essential\n * here, but it's cheap to get it along with the sortop, and requiring it\n * to be valid eases comparisons to grouping items.)  Note that this isn't\n * actually enough information to determine an ordering: if the sortop is\n * collation-sensitive, a collation OID is needed too.  We don't store the\n * collation in SortGroupClause because it's not available at the time the\n * parser builds the SortGroupClause; instead, consult the exposed collation\n * of the referenced targetlist expression to find out what it is.\n *\n * In a grouping item, eqop must be valid.  If the eqop is a btree equality\n * operator, then sortop should be set to a compatible ordering operator.\n * We prefer to set eqop/sortop/nulls_first to match any ORDER BY item that\n * the query presents for the same tlist item.  If there is none, we just\n * use the default ordering op for the datatype.\n *\n * If the tlist item's type has a hash opclass but no btree opclass, then\n * we will set eqop to the hash equality operator, sortop to InvalidOid,\n * and nulls_first to false.  A grouping item of this kind can only be\n * implemented by hashing, and of course it'll never match an ORDER BY item.\n *\n * The hashable flag is provided since we generally have the requisite\n * information readily available when the SortGroupClause is constructed,\n * and it's relatively expensive to get it again later.  Note there is no\n * need for a \"sortable\" flag since OidIsValid(sortop) serves the purpose.\n *\n * A query might have both ORDER BY and DISTINCT (or DISTINCT ON) clauses.\n * In SELECT DISTINCT, the distinctClause list is as long or longer than the\n * sortClause list, while in SELECT DISTINCT ON it's typically shorter.\n * The two lists must match up to the end of the shorter one --- the parser\n * rearranges the distinctClause if necessary to make this true.  (This\n * restriction ensures that only one sort step is needed to both satisfy the\n * ORDER BY and set up for the Unique step.  This is semantically necessary\n * for DISTINCT ON, and presents no real drawback for DISTINCT.)\n */\n"
@@ -1922,7 +1974,9 @@
           "comment": null
         },
         {
-          "comment": ""
+          "name": "kind",
+          "c_type": "GroupingSetKind",
+          "comment": null
         },
         {
           "name": "content",
@@ -1948,13 +2002,17 @@
           "comment": "\t/* window name (NULL in an OVER clause) */\n"
         },
         {
-          "comment": ""
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "comment": "\t/* referenced window name, if any */\n"
         },
         {
-          "comment": ""
+          "name": "refname",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "name": "partitionClause",
@@ -1988,37 +2046,49 @@
           "comment": "\t/* qual to help short-circuit execution */\n"
         },
         {
-          "comment": ""
+          "name": "runCondition",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* in_range function for startOffset */\n"
         },
         {
-          "comment": ""
+          "name": "startInRangeFunc",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* in_range function for endOffset */\n"
         },
         {
-          "comment": ""
+          "name": "endInRangeFunc",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* collation for in_range tests */\n"
         },
         {
-          "comment": ""
+          "name": "inRangeColl",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* use ASC sort order for in_range tests? */\n"
         },
         {
-          "comment": ""
+          "name": "inRangeAsc",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* nulls sort first for in_range tests? */\n"
         },
         {
-          "comment": ""
+          "name": "inRangeNullsFirst",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "name": "winref",
@@ -2029,7 +2099,9 @@
           "comment": "\t/* did we copy orderClause from refname? */\n"
         },
         {
-          "comment": ""
+          "name": "copiedOrder",
+          "c_type": "bool",
+          "comment": null
         }
       ],
       "comment": "/*\n * WindowClause -\n *\t\ttransformed representation of WINDOW and OVER clauses\n *\n * A parsed Query's windowClause list contains these structs.  \"name\" is set\n * if the clause originally came from WINDOW, and is NULL if it originally\n * was an OVER clause (but note that we collapse out duplicate OVERs).\n * partitionClause and orderClause are lists of SortGroupClause structs.\n * If we have RANGE with offset PRECEDING/FOLLOWING, the semantics of that are\n * specified by startInRangeFunc/inRangeColl/inRangeAsc/inRangeNullsFirst\n * for the start offset, or endInRangeFunc/inRange* for the end offset.\n * winref is an ID number referenced by WindowFunc nodes; it must be unique\n * among the members of a Query's windowClause list.\n * When refname isn't null, the partitionClause is always copied from there;\n * the orderClause might or might not be copied (see copiedOrder); the framing\n * options are never copied, per spec.\n *\n * The information relevant for the query jumbling is the partition clause\n * type and its bounds.\n */\n"
@@ -2269,7 +2341,9 @@
           "comment": "\t/* optional list of column names */\n"
         },
         {
-          "comment": ""
+          "name": "aliascolnames",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "name": "ctematerialized",
@@ -2285,10 +2359,14 @@
           "comment": "/* the CTE's subquery */"
         },
         {
-          "comment": ""
+          "name": "search_clause",
+          "c_type": "CTESearchClause*",
+          "comment": null
         },
         {
-          "comment": ""
+          "name": "cycle_clause",
+          "c_type": "CTECycleClause*",
+          "comment": null
         },
         {
           "name": "location",
@@ -2302,7 +2380,9 @@
           "comment": "\t/* is this CTE actually recursive? */\n"
         },
         {
-          "comment": ""
+          "name": "cterecursive",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -2311,31 +2391,41 @@
           "comment": "\t/*\n\t * Number of RTEs referencing this CTE (excluding internal\n\t * self-references), irrelevant for query jumbling.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "cterefcount",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": "\t/* list of output column names */\n"
         },
         {
-          "comment": ""
+          "name": "ctecolnames",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of output column type OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "ctecoltypes",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* integer list of output column typmods */\n"
         },
         {
-          "comment": ""
+          "name": "ctecoltypmods",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of column collation OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "ctecolcollations",
+          "c_type": "List*",
+          "comment": null
         }
       ],
       "comment": null
@@ -2404,7 +2494,9 @@
           "comment": "\t/* OVERRIDING clause */\n"
         },
         {
-          "comment": ""
+          "name": "override",
+          "c_type": "OverridingKind",
+          "comment": null
         },
         {
           "name": "qual",
@@ -2420,7 +2512,9 @@
           "comment": "\t/* target attribute numbers of an UPDATE */\n"
         },
         {
-          "comment": ""
+          "name": "updateColnos",
+          "c_type": "List*",
+          "comment": null
         }
       ],
       "comment": "/*\n * MergeAction -\n *\t\tTransformed representation of a WHEN clause in a MERGE statement\n */\n"
@@ -3037,25 +3131,33 @@
           "comment": "\t/* OID list of output column type OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "colTypes",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* integer list of output column typmods */\n"
         },
         {
-          "comment": ""
+          "name": "colTypmods",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of output column collation OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "colCollations",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* a list of SortGroupClause's */\n"
         },
         {
-          "comment": ""
+          "name": "groupClauses",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* groupClauses is NIL if UNION ALL, but must be set otherwise */\n"
@@ -5513,13 +5615,17 @@
           "comment": "\t/* transformed call, with only input args */\n"
         },
         {
-          "comment": ""
+          "name": "funcexpr",
+          "c_type": "FuncExpr*",
+          "comment": null
         },
         {
           "comment": "\t/* transformed output-argument expressions */\n"
         },
         {
-          "comment": ""
+          "name": "outargs",
+          "c_type": "List*",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\t\tCALL statement\n *\n * OUT-mode arguments are removed from the transformed funcexpr.  The outargs\n * list contains copies of the expressions for all output arguments, in the\n * order of the procedure's declared arguments.  (outargs is never evaluated,\n * but is useful to the caller as a reference for what to assign to.)\n * The transformed call state is not relevant in the query jumbling, only the\n * function call is.\n * ----------------------\n */\n"
@@ -7005,13 +7111,17 @@
           "comment": "\t/* list of namespace URI expressions */\n"
         },
         {
-          "comment": ""
+          "name": "ns_uris",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* list of namespace names or NULL */\n"
         },
         {
-          "comment": ""
+          "name": "ns_names",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* input document expression */\n"
@@ -7033,25 +7143,33 @@
           "comment": "\t/* column names (list of String) */\n"
         },
         {
-          "comment": ""
+          "name": "colnames",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of column type OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "coltypes",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* integer list of column typmods */\n"
         },
         {
-          "comment": ""
+          "name": "coltypmods",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of column collation OIDs */\n"
         },
         {
-          "comment": ""
+          "name": "colcollations",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* list of column filter expressions */\n"
@@ -7065,19 +7183,25 @@
           "comment": "\t/* list of column default expressions */\n"
         },
         {
-          "comment": ""
+          "name": "coldefexprs",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* nullability flag for each output column */\n"
         },
         {
-          "comment": ""
+          "name": "notnulls",
+          "c_type": "Bitmapset*",
+          "comment": null
         },
         {
           "comment": "\t/* counts from 0; -1 if none specified */\n"
         },
         {
-          "comment": ""
+          "name": "ordinalitycol",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -7134,7 +7258,9 @@
           "comment": "\t/* materialized view's SELECT query */\n"
         },
         {
-          "comment": ""
+          "name": "viewQuery",
+          "c_type": "Node*",
+          "comment": null
         },
         {
           "name": "skipData",
@@ -7190,19 +7316,25 @@
           "comment": "\t/* pg_type OID for the type of this var */\n"
         },
         {
-          "comment": ""
+          "name": "vartype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* pg_attribute typmod value */\n"
         },
         {
-          "comment": ""
+          "name": "vartypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "varcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7211,7 +7343,9 @@
           "comment": "\t/*\n\t * RT indexes of outer joins that can replace the Var's value with null.\n\t * We can omit varnullingrels in the query jumble, because it's fully\n\t * determined by varno/varlevelsup plus the Var's query location.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "varnullingrels",
+          "c_type": "Bitmapset*",
+          "comment": null
         },
         {
           "comment": ""
@@ -7275,31 +7409,41 @@
           "comment": "\t/* typmod value, if any */\n"
         },
         {
-          "comment": ""
+          "name": "consttypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "constcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* typlen of the constant's datatype */\n"
         },
         {
-          "comment": ""
+          "name": "constlen",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": "\t/* the constant's value */\n"
         },
         {
-          "comment": ""
+          "name": "constvalue",
+          "c_type": "Datum",
+          "comment": null
         },
         {
           "comment": "\t/* whether the constant is null (if true, constvalue is undefined) */\n"
         },
         {
-          "comment": ""
+          "name": "constisnull",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7308,7 +7452,9 @@
           "comment": "\t/*\n\t * Whether this datatype is passed by value.  If true, then all the\n\t * information is stored in the Datum.  If false, then the Datum contains\n\t * a pointer to the information.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "constbyval",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7317,7 +7463,9 @@
           "comment": "\t/*\n\t * token location, or -1 if unknown.  All constants are tracked as\n\t * locations in query jumbling, to be marked as parameters.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "location",
+          "c_type": "int",
+          "comment": null
         }
       ],
       "comment": "/*\n * Const\n *\n * Note: for varlena data types, we make a rule that a Const node's value\n * must be in non-extended form (4-byte header, no compression or external\n * references).  This ensures that the Const node is self-contained and makes\n * it more likely that equal() will see logically identical values as equal.\n *\n * Only the constant type OID is relevant for the query jumbling.\n */\n"
@@ -7348,13 +7496,17 @@
           "comment": "\t/* typmod value, if known */\n"
         },
         {
-          "comment": ""
+          "name": "paramtypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "paramcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -7392,7 +7544,9 @@
           "comment": "\t/* type Oid of result of the aggregate */\n"
         },
         {
-          "comment": ""
+          "name": "aggtype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7401,7 +7555,9 @@
           "comment": "\t/* OID of collation of result */\n"
         },
         {
-          "comment": ""
+          "name": "aggcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7410,7 +7566,9 @@
           "comment": "\t/* OID of collation that function should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7428,7 +7586,9 @@
           "comment": "\t/* type Oids of direct and aggregated args */\n"
         },
         {
-          "comment": ""
+          "name": "aggargtypes",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -7492,7 +7652,9 @@
           "comment": "\t/* true if argument list was really '*' */\n"
         },
         {
-          "comment": ""
+          "name": "aggstar",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7501,7 +7663,9 @@
           "comment": "\t/*\n\t * true if variadic arguments have been combined into an array last\n\t * argument\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "aggvariadic",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7510,7 +7674,9 @@
           "comment": "\t/* aggregate kind (see pg_aggregate.h) */\n"
         },
         {
-          "comment": ""
+          "name": "aggkind",
+          "c_type": "char",
+          "comment": null
         },
         {
           "comment": ""
@@ -7528,7 +7694,9 @@
           "comment": "\t/* > 0 if agg belongs to outer query */\n"
         },
         {
-          "comment": ""
+          "name": "agglevelsup",
+          "c_type": "Index",
+          "comment": null
         },
         {
           "comment": ""
@@ -7537,7 +7705,9 @@
           "comment": "\t/* expected agg-splitting mode of parent Agg */\n"
         },
         {
-          "comment": ""
+          "name": "aggsplit",
+          "c_type": "AggSplit",
+          "comment": null
         },
         {
           "comment": ""
@@ -7546,7 +7716,9 @@
           "comment": "\t/* unique ID within the Agg node */\n"
         },
         {
-          "comment": ""
+          "name": "aggno",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": ""
@@ -7555,7 +7727,9 @@
           "comment": "\t/* unique ID of transition state in the Agg */\n"
         },
         {
-          "comment": ""
+          "name": "aggtransno",
+          "c_type": "int",
+          "comment": null
         },
         {
           "comment": ""
@@ -7585,7 +7759,9 @@
           "comment": "\t/* arguments, not evaluated but kept for benefit of EXPLAIN etc. */\n"
         },
         {
-          "comment": ""
+          "name": "args",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -7594,7 +7770,9 @@
           "comment": "\t/* ressortgrouprefs of arguments */\n"
         },
         {
-          "comment": ""
+          "name": "refs",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -7649,19 +7827,25 @@
           "comment": "\t/* type Oid of result of the window function */\n"
         },
         {
-          "comment": ""
+          "name": "wintype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation of result */\n"
         },
         {
-          "comment": ""
+          "name": "wincollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation that function should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* arguments to the window function */\n"
@@ -7691,13 +7875,17 @@
           "comment": "\t/* true if argument list was really '*' */\n"
         },
         {
-          "comment": ""
+          "name": "winstar",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* is function a simple aggregate? */\n"
         },
         {
-          "comment": ""
+          "name": "winagg",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -7721,31 +7909,41 @@
           "comment": "\t/* type of the container proper */\n"
         },
         {
-          "comment": ""
+          "name": "refcontainertype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* the container type's pg_type.typelem */\n"
         },
         {
-          "comment": ""
+          "name": "refelemtype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* type of the SubscriptingRef's result */\n"
         },
         {
-          "comment": ""
+          "name": "refrestype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* typmod of the result */\n"
         },
         {
-          "comment": ""
+          "name": "reftypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* collation of result, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "refcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* expressions that evaluate to upper container indexes */\n"
@@ -7804,13 +8002,17 @@
           "comment": "\t/* PG_TYPE OID of result value */\n"
         },
         {
-          "comment": ""
+          "name": "funcresulttype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* true if function returns set */\n"
         },
         {
-          "comment": ""
+          "name": "funcretset",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7819,25 +8021,33 @@
           "comment": "\t/*\n\t * true if variadic arguments have been combined into an array last\n\t * argument\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "funcvariadic",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* how to display this function call */\n"
         },
         {
-          "comment": ""
+          "name": "funcformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation of result */\n"
         },
         {
-          "comment": ""
+          "name": "funccollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation that function should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* arguments to the function */\n"
@@ -7877,7 +8087,9 @@
           "comment": "\t/* the name */\n"
         },
         {
-          "comment": ""
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "comment": "\t/* argument's number in positional notation */\n"
@@ -7932,7 +8144,9 @@
           "comment": "\t/* PG_TYPE OID of result value */\n"
         },
         {
-          "comment": ""
+          "name": "opresulttype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7941,7 +8155,9 @@
           "comment": "\t/* true if operator returns set */\n"
         },
         {
-          "comment": ""
+          "name": "opretset",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -7950,7 +8166,9 @@
           "comment": "\t/* OID of collation of result */\n"
         },
         {
-          "comment": ""
+          "name": "opcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -7959,7 +8177,9 @@
           "comment": "\t/* OID of collation that operator should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8049,7 +8269,9 @@
           "comment": "\t/* OID of collation that operator should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8127,7 +8349,9 @@
           "comment": "\t/* originally specified operator name */\n"
         },
         {
-          "comment": ""
+          "name": "operName",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* subselect as Query* or raw parsetree */\n"
@@ -8301,19 +8525,25 @@
           "comment": "\t/* type of the field (result type of this node) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* output typmod (usually -1) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation of the field */\n"
         },
         {
-          "comment": ""
+          "name": "resultcollid",
+          "c_type": "Oid",
+          "comment": null
         }
       ],
       "comment": "/* ----------------\n * FieldSelect\n *\n * FieldSelect represents the operation of extracting one field from a tuple\n * value.  At runtime, the input expression is expected to yield a rowtype\n * Datum.  The specified field number is extracted and returned as a Datum.\n * ----------------\n */\n"
@@ -8339,13 +8569,17 @@
           "comment": "\t/* integer list of field attnums */\n"
         },
         {
-          "comment": ""
+          "name": "fieldnums",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* type of result (same as type of arg) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* Like RowExpr, we deliberately omit a typmod and collation here */\n"
@@ -8374,19 +8608,25 @@
           "comment": "\t/* output typmod (usually -1) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "resultcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "relabelformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "name": "location",
@@ -8420,13 +8660,17 @@
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "resultcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "coerceformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "name": "location",
@@ -8462,19 +8706,25 @@
           "comment": "\t/* output typmod (also element typmod) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "resultcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "coerceformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "name": "location",
@@ -8508,7 +8758,9 @@
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "convertformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "name": "location",
@@ -8554,13 +8806,17 @@
           "comment": "\t/* type of expression result */\n"
         },
         {
-          "comment": ""
+          "name": "casetype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "casecollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "name": "arg",
@@ -8626,13 +8882,17 @@
           "comment": "\t/* typemod for substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "typeMod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* collation for the substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "collation",
+          "c_type": "Oid",
+          "comment": null
         }
       ],
       "comment": "/*\n * Placeholder node for the test value to be processed by a CASE expression.\n * This is effectively like a Param, but can be implemented more simply\n * since we need only one replacement value at a time.\n *\n * We also abuse this node type for some other purposes, including:\n *\t* Placeholder for the current array element value in ArrayCoerceExpr;\n *\t  see build_coercion_expression().\n *\t* Nested FieldStore/SubscriptingRef assignment expressions in INSERT/UPDATE;\n *\t  see transformAssignmentIndirection().\n *\t* Placeholder for intermediate results in some SQL/JSON expression nodes,\n *\t  such as JsonConstructorExpr.\n *\n * The uses in CaseExpr and ArrayCoerceExpr are safe only to the extent that\n * there is not any other CaseExpr or ArrayCoerceExpr between the value source\n * node and its child CaseTestExpr(s).  This is true in the parse analysis\n * output, but the planner's function-inlining logic has to be careful not to\n * break it.\n *\n * The nested-assignment-expression case is safe because the only node types\n * that can be above such CaseTestExprs are FieldStore and SubscriptingRef.\n */\n"
@@ -8648,19 +8908,25 @@
           "comment": "\t/* type of expression result */\n"
         },
         {
-          "comment": ""
+          "name": "array_typeid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "array_collid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* common type of array elements */\n"
         },
         {
-          "comment": ""
+          "name": "element_typeid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* the array elements or sub-arrays */\n"
@@ -8674,7 +8940,9 @@
           "comment": "\t/* true if elements are sub-arrays */\n"
         },
         {
-          "comment": ""
+          "name": "multidims",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -8706,7 +8974,9 @@
           "comment": "\t/* RECORDOID or a composite type's ID */\n"
         },
         {
-          "comment": ""
+          "name": "row_typeid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8721,7 +8991,9 @@
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "row_format",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "comment": ""
@@ -8730,7 +9002,9 @@
           "comment": "\t/* list of String, or NIL */\n"
         },
         {
-          "comment": ""
+          "name": "colnames",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -8765,19 +9039,25 @@
           "comment": "\t/* OID list of pairwise comparison ops */\n"
         },
         {
-          "comment": ""
+          "name": "opnos",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of containing operator families */\n"
         },
         {
-          "comment": ""
+          "name": "opfamilies",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* OID list of collations for comparisons */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollids",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* the left-hand input arguments */\n"
@@ -8809,13 +9089,17 @@
           "comment": "\t/* type of expression result */\n"
         },
         {
-          "comment": ""
+          "name": "coalescetype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "coalescecollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* the arguments */\n"
@@ -8847,19 +9131,25 @@
           "comment": "\t/* common type of arguments and result */\n"
         },
         {
-          "comment": ""
+          "name": "minmaxtype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation of result */\n"
         },
         {
-          "comment": ""
+          "name": "minmaxcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation that function should use */\n"
         },
         {
-          "comment": ""
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* function to execute */\n"
@@ -8907,7 +9197,9 @@
           "comment": "\t/*\n\t * Result type/typmod.  Type is fully determined by \"op\", so no need to\n\t * include this Oid in the query jumbling.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "type",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "name": "typmod",
@@ -8941,7 +9233,9 @@
           "comment": "\t/* name in xml(NAME foo ...) syntaxes */\n"
         },
         {
-          "comment": ""
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "comment": "\t/* non-XML expressions for xml_attributes */\n"
@@ -8955,7 +9249,9 @@
           "comment": "\t/* parallel list of String values */\n"
         },
         {
-          "comment": ""
+          "name": "arg_names",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* list of expressions */\n"
@@ -8969,7 +9265,9 @@
           "comment": "\t/* DOCUMENT or CONTENT */\n"
         },
         {
-          "comment": ""
+          "name": "xmloption",
+          "c_type": "XmlOptionType",
+          "comment": null
         },
         {
           "comment": "\t/* INDENT option for XMLSERIALIZE */\n"
@@ -8983,10 +9281,14 @@
           "comment": "\t/* target type/typmod for XMLSERIALIZE */\n"
         },
         {
-          "comment": ""
+          "name": "type",
+          "c_type": "Oid",
+          "comment": null
         },
         {
-          "comment": ""
+          "name": "typmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -9180,7 +9482,9 @@
           "comment": "\t/* T to perform field-by-field null checks */\n"
         },
         {
-          "comment": ""
+          "name": "argisrow",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "name": "location",
@@ -9236,19 +9540,25 @@
           "comment": "\t/* output typmod (currently always -1) */\n"
         },
         {
-          "comment": ""
+          "name": "resulttypmod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* OID of collation, or InvalidOid if none */\n"
         },
         {
-          "comment": ""
+          "name": "resultcollid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* how to display this node */\n"
         },
         {
-          "comment": ""
+          "name": "coercionformat",
+          "c_type": "CoercionForm",
+          "comment": null
         },
         {
           "name": "location",
@@ -9277,13 +9587,17 @@
           "comment": "\t/* typemod for substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "typeMod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* collation for the substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "collation",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -9315,13 +9629,17 @@
           "comment": "\t/* typemod for substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "typeMod",
+          "c_type": "int32",
+          "comment": null
         },
         {
           "comment": "\t/* collation for the substituted value */\n"
         },
         {
-          "comment": ""
+          "name": "collation",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* token location, or -1 if unknown */\n"
@@ -9431,7 +9749,9 @@
           "comment": "\t/* name of the column (could be NULL) */\n"
         },
         {
-          "comment": ""
+          "name": "resname",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "comment": "\t/* nonzero if referenced by a sort/group clause */\n"
@@ -9445,19 +9765,25 @@
           "comment": "\t/* OID of column's source table */\n"
         },
         {
-          "comment": ""
+          "name": "resorigtbl",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": "\t/* column's number in source table */\n"
         },
         {
-          "comment": ""
+          "name": "resorigcol",
+          "c_type": "AttrNumber",
+          "comment": null
         },
         {
           "comment": "\t/* set to true to eliminate the attribute from final target list */\n"
         },
         {
-          "comment": ""
+          "name": "resjunk",
+          "c_type": "bool",
+          "comment": null
         }
       ],
       "comment": "/*--------------------\n * TargetEntry -\n *\t   a target entry (used in query target lists)\n *\n * Strictly speaking, a TargetEntry isn't an expression node (since it can't\n * be evaluated by ExecEvalExpr).  But we treat it as one anyway, since in\n * very many places it's convenient to process a whole query targetlist as a\n * single expression tree.\n *\n * In a SELECT's targetlist, resno should always be equal to the item's\n * ordinal position (counting from 1).  However, in an INSERT or UPDATE\n * targetlist, resno represents the attribute number of the destination\n * column for the item; so there may be missing or out-of-order resnos.\n * It is even legal to have duplicated resnos; consider\n *\t\tUPDATE table SET arraycol[1] = ..., arraycol[2] = ..., ...\n * In an INSERT, the rewriter and planner will normalize the tlist by\n * reordering it into physical column order and filling in default values\n * for any columns not assigned values by the original query.  In an UPDATE,\n * after the rewriter merges multiple assignments for the same column, the\n * planner extracts the target-column numbers into a separate \"update_colnos\"\n * list, and then renumbers the tlist elements serially.  Thus, tlist resnos\n * match ordinal position in all tlists seen by the executor; but it is wrong\n * to assume that before planning has happened.\n *\n * resname is required to represent the correct column name in non-resjunk\n * entries of top-level SELECT targetlists, since it will be used as the\n * column title sent to the frontend.  In most other contexts it is only\n * a debugging aid, and may be wrong or even NULL.  (In particular, it may\n * be wrong in a tlist from a stored rule, if the referenced column has been\n * renamed by ALTER TABLE since the rule was made.  Also, the planner tends\n * to store NULL rather than look up a valid name for tlist entries in\n * non-toplevel plan nodes.)  In resjunk entries, resname should be either\n * a specific system-generated name (such as \"ctid\") or NULL; anything else\n * risks confusing ExecGetJunkAttribute!\n *\n * ressortgroupref is used in the representation of ORDER BY, GROUP BY, and\n * DISTINCT items.  Targetlist entries with ressortgroupref=0 are not\n * sort/group items.  If ressortgroupref>0, then this item is an ORDER BY,\n * GROUP BY, and/or DISTINCT target value.  No two entries in a targetlist\n * may have the same nonzero ressortgroupref --- but there is no particular\n * meaning to the nonzero values, except as tags.  (For example, one must\n * not assume that lower ressortgroupref means a more significant sort key.)\n * The order of the associated SortGroupClause lists determine the semantics.\n *\n * resorigtbl/resorigcol identify the source of the column, if it is a\n * simple reference to a column of a base table (or view).  If it is not\n * a simple reference, these fields are zeroes.\n *\n * If resjunk is true then the column is a working column (such as a sort key)\n * that should be removed from the final output of the query.  Resjunk columns\n * must have resnos that cannot duplicate any regular column's resno.  Also\n * note that there are places that assume resjunk columns come after non-junk\n * columns.\n *--------------------\n */\n"
@@ -9508,13 +9834,17 @@
           "comment": "\t/* USING clause, if any (list of String) */\n"
         },
         {
-          "comment": ""
+          "name": "usingClause",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": "\t/* alias attached to USING clause, if any */\n"
         },
         {
-          "comment": ""
+          "name": "join_using_alias",
+          "c_type": "Alias*",
+          "comment": null
         },
         {
           "comment": "\t/* qualifiers on join, if any */\n"
@@ -9528,7 +9858,9 @@
           "comment": "\t/* user-written alias clause, if any */\n"
         },
         {
-          "comment": ""
+          "name": "alias",
+          "c_type": "Alias*",
+          "comment": null
         },
         {
           "comment": "\t/* RT index assigned for join, or 0 */\n"

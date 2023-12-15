@@ -3,6 +3,7 @@
 static void _outAlias(OUT_TYPE(Alias, Alias) out_node, const Alias *node);
 static void _outRangeVar(OUT_TYPE(RangeVar, RangeVar) out_node, const RangeVar *node);
 static void _outTableFunc(OUT_TYPE(TableFunc, TableFunc) out_node, const TableFunc *node);
+static void _outIntoClause(OUT_TYPE(IntoClause, IntoClause) out_node, const IntoClause *node);
 static void _outVar(OUT_TYPE(Var, Var) out_node, const Var *node);
 static void _outParam(OUT_TYPE(Param, Param) out_node, const Param *node);
 static void _outAggref(OUT_TYPE(Aggref, Aggref) out_node, const Aggref *node);
@@ -36,6 +37,11 @@ static void _outCoalesceExpr(OUT_TYPE(CoalesceExpr, CoalesceExpr) out_node, cons
 static void _outMinMaxExpr(OUT_TYPE(MinMaxExpr, MinMaxExpr) out_node, const MinMaxExpr *node);
 static void _outSQLValueFunction(OUT_TYPE(SQLValueFunction, SQLValueFunction) out_node, const SQLValueFunction *node);
 static void _outXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) out_node, const XmlExpr *node);
+static void _outJsonFormat(OUT_TYPE(JsonFormat, JsonFormat) out_node, const JsonFormat *node);
+static void _outJsonReturning(OUT_TYPE(JsonReturning, JsonReturning) out_node, const JsonReturning *node);
+static void _outJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) out_node, const JsonValueExpr *node);
+static void _outJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) out_node, const JsonConstructorExpr *node);
+static void _outJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) out_node, const JsonIsPredicate *node);
 static void _outNullTest(OUT_TYPE(NullTest, NullTest) out_node, const NullTest *node);
 static void _outBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) out_node, const BooleanTest *node);
 static void _outCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) out_node, const CoerceToDomain *node);
@@ -49,130 +55,14 @@ static void _outRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) out_node, const R
 static void _outJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) out_node, const JoinExpr *node);
 static void _outFromExpr(OUT_TYPE(FromExpr, FromExpr) out_node, const FromExpr *node);
 static void _outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out_node, const OnConflictExpr *node);
-static void _outIntoClause(OUT_TYPE(IntoClause, IntoClause) out_node, const IntoClause *node);
-static void _outMergeAction(OUT_TYPE(MergeAction, MergeAction) out_node, const MergeAction *node);
-static void _outRawStmt(OUT_TYPE(RawStmt, RawStmt) out_node, const RawStmt *node);
 static void _outQuery(OUT_TYPE(Query, Query) out_node, const Query *node);
-static void _outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out_node, const InsertStmt *node);
-static void _outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out_node, const DeleteStmt *node);
-static void _outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out_node, const UpdateStmt *node);
-static void _outMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) out_node, const MergeStmt *node);
-static void _outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out_node, const SelectStmt *node);
-static void _outReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) out_node, const ReturnStmt *node);
-static void _outPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) out_node, const PLAssignStmt *node);
-static void _outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out_node, const AlterTableStmt *node);
-static void _outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out_node, const AlterTableCmd *node);
-static void _outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out_node, const AlterDomainStmt *node);
-static void _outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out_node, const SetOperationStmt *node);
-static void _outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out_node, const GrantStmt *node);
-static void _outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out_node, const GrantRoleStmt *node);
-static void _outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out_node, const AlterDefaultPrivilegesStmt *node);
-static void _outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out_node, const ClosePortalStmt *node);
-static void _outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out_node, const ClusterStmt *node);
-static void _outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out_node, const CopyStmt *node);
-static void _outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out_node, const CreateStmt *node);
-static void _outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out_node, const DefineStmt *node);
-static void _outDropStmt(OUT_TYPE(DropStmt, DropStmt) out_node, const DropStmt *node);
-static void _outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out_node, const TruncateStmt *node);
-static void _outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out_node, const CommentStmt *node);
-static void _outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out_node, const FetchStmt *node);
-static void _outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out_node, const IndexStmt *node);
-static void _outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out_node, const CreateFunctionStmt *node);
-static void _outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out_node, const AlterFunctionStmt *node);
-static void _outDoStmt(OUT_TYPE(DoStmt, DoStmt) out_node, const DoStmt *node);
-static void _outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out_node, const RenameStmt *node);
-static void _outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out_node, const RuleStmt *node);
-static void _outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out_node, const NotifyStmt *node);
-static void _outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out_node, const ListenStmt *node);
-static void _outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out_node, const UnlistenStmt *node);
-static void _outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out_node, const TransactionStmt *node);
-static void _outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out_node, const ViewStmt *node);
-static void _outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out_node, const LoadStmt *node);
-static void _outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out_node, const CreateDomainStmt *node);
-static void _outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out_node, const CreatedbStmt *node);
-static void _outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out_node, const DropdbStmt *node);
-static void _outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out_node, const VacuumStmt *node);
-static void _outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out_node, const ExplainStmt *node);
-static void _outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out_node, const CreateTableAsStmt *node);
-static void _outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out_node, const CreateSeqStmt *node);
-static void _outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out_node, const AlterSeqStmt *node);
-static void _outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out_node, const VariableSetStmt *node);
-static void _outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out_node, const VariableShowStmt *node);
-static void _outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out_node, const DiscardStmt *node);
-static void _outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out_node, const CreateTrigStmt *node);
-static void _outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out_node, const CreatePLangStmt *node);
-static void _outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out_node, const CreateRoleStmt *node);
-static void _outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out_node, const AlterRoleStmt *node);
-static void _outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out_node, const DropRoleStmt *node);
-static void _outLockStmt(OUT_TYPE(LockStmt, LockStmt) out_node, const LockStmt *node);
-static void _outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out_node, const ConstraintsSetStmt *node);
-static void _outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out_node, const ReindexStmt *node);
-static void _outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out_node, const CheckPointStmt *node);
-static void _outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out_node, const CreateSchemaStmt *node);
-static void _outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out_node, const AlterDatabaseStmt *node);
-static void _outAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) out_node, const AlterDatabaseRefreshCollStmt *node);
-static void _outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out_node, const AlterDatabaseSetStmt *node);
-static void _outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out_node, const AlterRoleSetStmt *node);
-static void _outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out_node, const CreateConversionStmt *node);
-static void _outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out_node, const CreateCastStmt *node);
-static void _outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out_node, const CreateOpClassStmt *node);
-static void _outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out_node, const CreateOpFamilyStmt *node);
-static void _outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out_node, const AlterOpFamilyStmt *node);
-static void _outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out_node, const PrepareStmt *node);
-static void _outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out_node, const ExecuteStmt *node);
-static void _outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out_node, const DeallocateStmt *node);
-static void _outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out_node, const DeclareCursorStmt *node);
-static void _outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out_node, const CreateTableSpaceStmt *node);
-static void _outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out_node, const DropTableSpaceStmt *node);
-static void _outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out_node, const AlterObjectDependsStmt *node);
-static void _outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out_node, const AlterObjectSchemaStmt *node);
-static void _outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out_node, const AlterOwnerStmt *node);
-static void _outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out_node, const AlterOperatorStmt *node);
-static void _outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out_node, const AlterTypeStmt *node);
-static void _outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out_node, const DropOwnedStmt *node);
-static void _outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out_node, const ReassignOwnedStmt *node);
-static void _outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out_node, const CompositeTypeStmt *node);
-static void _outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out_node, const CreateEnumStmt *node);
-static void _outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out_node, const CreateRangeStmt *node);
-static void _outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out_node, const AlterEnumStmt *node);
-static void _outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out_node, const AlterTSDictionaryStmt *node);
-static void _outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out_node, const AlterTSConfigurationStmt *node);
-static void _outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out_node, const CreateFdwStmt *node);
-static void _outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out_node, const AlterFdwStmt *node);
-static void _outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out_node, const CreateForeignServerStmt *node);
-static void _outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out_node, const AlterForeignServerStmt *node);
-static void _outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out_node, const CreateUserMappingStmt *node);
-static void _outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out_node, const AlterUserMappingStmt *node);
-static void _outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out_node, const DropUserMappingStmt *node);
-static void _outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out_node, const AlterTableSpaceOptionsStmt *node);
-static void _outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out_node, const AlterTableMoveAllStmt *node);
-static void _outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out_node, const SecLabelStmt *node);
-static void _outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out_node, const CreateForeignTableStmt *node);
-static void _outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out_node, const ImportForeignSchemaStmt *node);
-static void _outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out_node, const CreateExtensionStmt *node);
-static void _outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out_node, const AlterExtensionStmt *node);
-static void _outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out_node, const AlterExtensionContentsStmt *node);
-static void _outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out_node, const CreateEventTrigStmt *node);
-static void _outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out_node, const AlterEventTrigStmt *node);
-static void _outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out_node, const RefreshMatViewStmt *node);
-static void _outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out_node, const ReplicaIdentityStmt *node);
-static void _outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out_node, const AlterSystemStmt *node);
-static void _outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out_node, const CreatePolicyStmt *node);
-static void _outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out_node, const AlterPolicyStmt *node);
-static void _outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out_node, const CreateTransformStmt *node);
-static void _outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out_node, const CreateAmStmt *node);
-static void _outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out_node, const CreatePublicationStmt *node);
-static void _outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out_node, const AlterPublicationStmt *node);
-static void _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out_node, const CreateSubscriptionStmt *node);
-static void _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out_node, const AlterSubscriptionStmt *node);
-static void _outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out_node, const DropSubscriptionStmt *node);
-static void _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out_node, const CreateStatsStmt *node);
-static void _outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out_node, const AlterCollationStmt *node);
-static void _outCallStmt(OUT_TYPE(CallStmt, CallStmt) out_node, const CallStmt *node);
-static void _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out_node, const AlterStatsStmt *node);
-static void _outAExpr(OUT_TYPE(A_Expr, AExpr) out_node, const A_Expr *node);
+static void _outTypeName(OUT_TYPE(TypeName, TypeName) out_node, const TypeName *node);
 static void _outColumnRef(OUT_TYPE(ColumnRef, ColumnRef) out_node, const ColumnRef *node);
 static void _outParamRef(OUT_TYPE(ParamRef, ParamRef) out_node, const ParamRef *node);
+static void _outAExpr(OUT_TYPE(A_Expr, AExpr) out_node, const A_Expr *node);
+static void _outTypeCast(OUT_TYPE(TypeCast, TypeCast) out_node, const TypeCast *node);
+static void _outCollateClause(OUT_TYPE(CollateClause, CollateClause) out_node, const CollateClause *node);
+static void _outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out_node, const RoleSpec *node);
 static void _outFuncCall(OUT_TYPE(FuncCall, FuncCall) out_node, const FuncCall *node);
 static void _outAStar(OUT_TYPE(A_Star, AStar) out_node, const A_Star *node);
 static void _outAIndices(OUT_TYPE(A_Indices, AIndices) out_node, const A_Indices *node);
@@ -180,36 +70,33 @@ static void _outAIndirection(OUT_TYPE(A_Indirection, AIndirection) out_node, con
 static void _outAArrayExpr(OUT_TYPE(A_ArrayExpr, AArrayExpr) out_node, const A_ArrayExpr *node);
 static void _outResTarget(OUT_TYPE(ResTarget, ResTarget) out_node, const ResTarget *node);
 static void _outMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) out_node, const MultiAssignRef *node);
-static void _outTypeCast(OUT_TYPE(TypeCast, TypeCast) out_node, const TypeCast *node);
-static void _outCollateClause(OUT_TYPE(CollateClause, CollateClause) out_node, const CollateClause *node);
 static void _outSortBy(OUT_TYPE(SortBy, SortBy) out_node, const SortBy *node);
 static void _outWindowDef(OUT_TYPE(WindowDef, WindowDef) out_node, const WindowDef *node);
 static void _outRangeSubselect(OUT_TYPE(RangeSubselect, RangeSubselect) out_node, const RangeSubselect *node);
 static void _outRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) out_node, const RangeFunction *node);
-static void _outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out_node, const RangeTableSample *node);
 static void _outRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) out_node, const RangeTableFunc *node);
 static void _outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) out_node, const RangeTableFuncCol *node);
-static void _outTypeName(OUT_TYPE(TypeName, TypeName) out_node, const TypeName *node);
+static void _outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out_node, const RangeTableSample *node);
 static void _outColumnDef(OUT_TYPE(ColumnDef, ColumnDef) out_node, const ColumnDef *node);
+static void _outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out_node, const TableLikeClause *node);
 static void _outIndexElem(OUT_TYPE(IndexElem, IndexElem) out_node, const IndexElem *node);
-static void _outStatsElem(OUT_TYPE(StatsElem, StatsElem) out_node, const StatsElem *node);
-static void _outConstraint(OUT_TYPE(Constraint, Constraint) out_node, const Constraint *node);
 static void _outDefElem(OUT_TYPE(DefElem, DefElem) out_node, const DefElem *node);
+static void _outLockingClause(OUT_TYPE(LockingClause, LockingClause) out_node, const LockingClause *node);
+static void _outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out_node, const XmlSerialize *node);
+static void _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out_node, const PartitionElem *node);
+static void _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out_node, const PartitionSpec *node);
+static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
+static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
+static void _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out_node, const PartitionCmd *node);
 static void _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out_node, const RangeTblEntry *node);
+static void _outRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) out_node, const RTEPermissionInfo *node);
 static void _outRangeTblFunction(OUT_TYPE(RangeTblFunction, RangeTblFunction) out_node, const RangeTblFunction *node);
 static void _outTableSampleClause(OUT_TYPE(TableSampleClause, TableSampleClause) out_node, const TableSampleClause *node);
 static void _outWithCheckOption(OUT_TYPE(WithCheckOption, WithCheckOption) out_node, const WithCheckOption *node);
 static void _outSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) out_node, const SortGroupClause *node);
 static void _outGroupingSet(OUT_TYPE(GroupingSet, GroupingSet) out_node, const GroupingSet *node);
 static void _outWindowClause(OUT_TYPE(WindowClause, WindowClause) out_node, const WindowClause *node);
-static void _outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out_node, const ObjectWithArgs *node);
-static void _outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out_node, const AccessPriv *node);
-static void _outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out_node, const CreateOpClassItem *node);
-static void _outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out_node, const TableLikeClause *node);
-static void _outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out_node, const FunctionParameter *node);
-static void _outLockingClause(OUT_TYPE(LockingClause, LockingClause) out_node, const LockingClause *node);
 static void _outRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) out_node, const RowMarkClause *node);
-static void _outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out_node, const XmlSerialize *node);
 static void _outWithClause(OUT_TYPE(WithClause, WithClause) out_node, const WithClause *node);
 static void _outInferClause(OUT_TYPE(InferClause, InferClause) out_node, const InferClause *node);
 static void _outOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) out_node, const OnConflictClause *node);
@@ -217,18 +104,145 @@ static void _outCTESearchClause(OUT_TYPE(CTESearchClause, CTESearchClause) out_n
 static void _outCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) out_node, const CTECycleClause *node);
 static void _outCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) out_node, const CommonTableExpr *node);
 static void _outMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) out_node, const MergeWhenClause *node);
-static void _outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out_node, const RoleSpec *node);
+static void _outMergeAction(OUT_TYPE(MergeAction, MergeAction) out_node, const MergeAction *node);
 static void _outTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) out_node, const TriggerTransition *node);
-static void _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out_node, const PartitionElem *node);
-static void _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out_node, const PartitionSpec *node);
-static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
-static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
-static void _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out_node, const PartitionCmd *node);
-static void _outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out_node, const VacuumRelation *node);
-static void _outPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) out_node, const PublicationObjSpec *node);
-static void _outPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) out_node, const PublicationTable *node);
+static void _outJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) out_node, const JsonOutput *node);
+static void _outJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) out_node, const JsonKeyValue *node);
+static void _outJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) out_node, const JsonObjectConstructor *node);
+static void _outJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) out_node, const JsonArrayConstructor *node);
+static void _outJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) out_node, const JsonArrayQueryConstructor *node);
+static void _outJsonAggConstructor(OUT_TYPE(JsonAggConstructor, JsonAggConstructor) out_node, const JsonAggConstructor *node);
+static void _outJsonObjectAgg(OUT_TYPE(JsonObjectAgg, JsonObjectAgg) out_node, const JsonObjectAgg *node);
+static void _outJsonArrayAgg(OUT_TYPE(JsonArrayAgg, JsonArrayAgg) out_node, const JsonArrayAgg *node);
+static void _outRawStmt(OUT_TYPE(RawStmt, RawStmt) out_node, const RawStmt *node);
+static void _outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out_node, const InsertStmt *node);
+static void _outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out_node, const DeleteStmt *node);
+static void _outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out_node, const UpdateStmt *node);
+static void _outMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) out_node, const MergeStmt *node);
+static void _outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out_node, const SelectStmt *node);
+static void _outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out_node, const SetOperationStmt *node);
+static void _outReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) out_node, const ReturnStmt *node);
+static void _outPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) out_node, const PLAssignStmt *node);
+static void _outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out_node, const CreateSchemaStmt *node);
+static void _outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out_node, const AlterTableStmt *node);
+static void _outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out_node, const ReplicaIdentityStmt *node);
+static void _outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out_node, const AlterTableCmd *node);
+static void _outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out_node, const AlterCollationStmt *node);
+static void _outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out_node, const AlterDomainStmt *node);
+static void _outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out_node, const GrantStmt *node);
+static void _outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out_node, const ObjectWithArgs *node);
+static void _outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out_node, const AccessPriv *node);
+static void _outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out_node, const GrantRoleStmt *node);
+static void _outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out_node, const AlterDefaultPrivilegesStmt *node);
+static void _outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out_node, const CopyStmt *node);
+static void _outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out_node, const VariableSetStmt *node);
+static void _outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out_node, const VariableShowStmt *node);
+static void _outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out_node, const CreateStmt *node);
+static void _outConstraint(OUT_TYPE(Constraint, Constraint) out_node, const Constraint *node);
+static void _outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out_node, const CreateTableSpaceStmt *node);
+static void _outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out_node, const DropTableSpaceStmt *node);
+static void _outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out_node, const AlterTableSpaceOptionsStmt *node);
+static void _outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out_node, const AlterTableMoveAllStmt *node);
+static void _outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out_node, const CreateExtensionStmt *node);
+static void _outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out_node, const AlterExtensionStmt *node);
+static void _outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out_node, const AlterExtensionContentsStmt *node);
+static void _outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out_node, const CreateFdwStmt *node);
+static void _outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out_node, const AlterFdwStmt *node);
+static void _outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out_node, const CreateForeignServerStmt *node);
+static void _outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out_node, const AlterForeignServerStmt *node);
+static void _outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out_node, const CreateForeignTableStmt *node);
+static void _outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out_node, const CreateUserMappingStmt *node);
+static void _outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out_node, const AlterUserMappingStmt *node);
+static void _outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out_node, const DropUserMappingStmt *node);
+static void _outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out_node, const ImportForeignSchemaStmt *node);
+static void _outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out_node, const CreatePolicyStmt *node);
+static void _outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out_node, const AlterPolicyStmt *node);
+static void _outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out_node, const CreateAmStmt *node);
+static void _outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out_node, const CreateTrigStmt *node);
+static void _outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out_node, const CreateEventTrigStmt *node);
+static void _outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out_node, const AlterEventTrigStmt *node);
+static void _outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out_node, const CreatePLangStmt *node);
+static void _outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out_node, const CreateRoleStmt *node);
+static void _outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out_node, const AlterRoleStmt *node);
+static void _outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out_node, const AlterRoleSetStmt *node);
+static void _outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out_node, const DropRoleStmt *node);
+static void _outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out_node, const CreateSeqStmt *node);
+static void _outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out_node, const AlterSeqStmt *node);
+static void _outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out_node, const DefineStmt *node);
+static void _outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out_node, const CreateDomainStmt *node);
+static void _outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out_node, const CreateOpClassStmt *node);
+static void _outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out_node, const CreateOpClassItem *node);
+static void _outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out_node, const CreateOpFamilyStmt *node);
+static void _outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out_node, const AlterOpFamilyStmt *node);
+static void _outDropStmt(OUT_TYPE(DropStmt, DropStmt) out_node, const DropStmt *node);
+static void _outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out_node, const TruncateStmt *node);
+static void _outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out_node, const CommentStmt *node);
+static void _outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out_node, const SecLabelStmt *node);
+static void _outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out_node, const DeclareCursorStmt *node);
+static void _outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out_node, const ClosePortalStmt *node);
+static void _outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out_node, const FetchStmt *node);
+static void _outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out_node, const IndexStmt *node);
+static void _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out_node, const CreateStatsStmt *node);
+static void _outStatsElem(OUT_TYPE(StatsElem, StatsElem) out_node, const StatsElem *node);
+static void _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out_node, const AlterStatsStmt *node);
+static void _outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out_node, const CreateFunctionStmt *node);
+static void _outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out_node, const FunctionParameter *node);
+static void _outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out_node, const AlterFunctionStmt *node);
+static void _outDoStmt(OUT_TYPE(DoStmt, DoStmt) out_node, const DoStmt *node);
 static void _outInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) out_node, const InlineCodeBlock *node);
+static void _outCallStmt(OUT_TYPE(CallStmt, CallStmt) out_node, const CallStmt *node);
 static void _outCallContext(OUT_TYPE(CallContext, CallContext) out_node, const CallContext *node);
+static void _outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out_node, const RenameStmt *node);
+static void _outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out_node, const AlterObjectDependsStmt *node);
+static void _outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out_node, const AlterObjectSchemaStmt *node);
+static void _outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out_node, const AlterOwnerStmt *node);
+static void _outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out_node, const AlterOperatorStmt *node);
+static void _outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out_node, const AlterTypeStmt *node);
+static void _outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out_node, const RuleStmt *node);
+static void _outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out_node, const NotifyStmt *node);
+static void _outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out_node, const ListenStmt *node);
+static void _outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out_node, const UnlistenStmt *node);
+static void _outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out_node, const TransactionStmt *node);
+static void _outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out_node, const CompositeTypeStmt *node);
+static void _outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out_node, const CreateEnumStmt *node);
+static void _outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out_node, const CreateRangeStmt *node);
+static void _outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out_node, const AlterEnumStmt *node);
+static void _outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out_node, const ViewStmt *node);
+static void _outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out_node, const LoadStmt *node);
+static void _outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out_node, const CreatedbStmt *node);
+static void _outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out_node, const AlterDatabaseStmt *node);
+static void _outAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) out_node, const AlterDatabaseRefreshCollStmt *node);
+static void _outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out_node, const AlterDatabaseSetStmt *node);
+static void _outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out_node, const DropdbStmt *node);
+static void _outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out_node, const AlterSystemStmt *node);
+static void _outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out_node, const ClusterStmt *node);
+static void _outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out_node, const VacuumStmt *node);
+static void _outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out_node, const VacuumRelation *node);
+static void _outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out_node, const ExplainStmt *node);
+static void _outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out_node, const CreateTableAsStmt *node);
+static void _outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out_node, const RefreshMatViewStmt *node);
+static void _outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out_node, const CheckPointStmt *node);
+static void _outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out_node, const DiscardStmt *node);
+static void _outLockStmt(OUT_TYPE(LockStmt, LockStmt) out_node, const LockStmt *node);
+static void _outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out_node, const ConstraintsSetStmt *node);
+static void _outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out_node, const ReindexStmt *node);
+static void _outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out_node, const CreateConversionStmt *node);
+static void _outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out_node, const CreateCastStmt *node);
+static void _outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out_node, const CreateTransformStmt *node);
+static void _outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out_node, const PrepareStmt *node);
+static void _outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out_node, const ExecuteStmt *node);
+static void _outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out_node, const DeallocateStmt *node);
+static void _outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out_node, const DropOwnedStmt *node);
+static void _outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out_node, const ReassignOwnedStmt *node);
+static void _outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out_node, const AlterTSDictionaryStmt *node);
+static void _outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out_node, const AlterTSConfigurationStmt *node);
+static void _outPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) out_node, const PublicationTable *node);
+static void _outPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) out_node, const PublicationObjSpec *node);
+static void _outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out_node, const CreatePublicationStmt *node);
+static void _outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out_node, const AlterPublicationStmt *node);
+static void _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out_node, const CreateSubscriptionStmt *node);
+static void _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out_node, const AlterSubscriptionStmt *node);
+static void _outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out_node, const DropSubscriptionStmt *node);
 
 
 static void
@@ -269,6 +283,19 @@ _outTableFunc(OUT_TYPE(TableFunc, TableFunc) out, const TableFunc *node)
 }
 
 static void
+_outIntoClause(OUT_TYPE(IntoClause, IntoClause) out, const IntoClause *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, rel, rel, rel);
+  WRITE_LIST_FIELD(col_names, colNames, colNames);
+  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
+  WRITE_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
+  WRITE_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
+  WRITE_BOOL_FIELD(skip_data, skipData, skipData);
+}
+
+static void
 _outVar(OUT_TYPE(Var, Var) out, const Var *node)
 {
   WRITE_INT_FIELD(varno, varno, varno);
@@ -276,9 +303,8 @@ _outVar(OUT_TYPE(Var, Var) out, const Var *node)
   WRITE_UINT_FIELD(vartype, vartype, vartype);
   WRITE_INT_FIELD(vartypmod, vartypmod, vartypmod);
   WRITE_UINT_FIELD(varcollid, varcollid, varcollid);
+  WRITE_BITMAPSET_FIELD(varnullingrels, varnullingrels, varnullingrels);
   WRITE_UINT_FIELD(varlevelsup, varlevelsup, varlevelsup);
-  WRITE_UINT_FIELD(varnosyn, varnosyn, varnosyn);
-  WRITE_INT_FIELD(varattnosyn, varattnosyn, varattnosyn);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -300,7 +326,6 @@ _outAggref(OUT_TYPE(Aggref, Aggref) out, const Aggref *node)
   WRITE_UINT_FIELD(aggtype, aggtype, aggtype);
   WRITE_UINT_FIELD(aggcollid, aggcollid, aggcollid);
   WRITE_UINT_FIELD(inputcollid, inputcollid, inputcollid);
-  WRITE_UINT_FIELD(aggtranstype, aggtranstype, aggtranstype);
   WRITE_LIST_FIELD(aggargtypes, aggargtypes, aggargtypes);
   WRITE_LIST_FIELD(aggdirectargs, aggdirectargs, aggdirectargs);
   WRITE_LIST_FIELD(args, args, args);
@@ -322,7 +347,6 @@ _outGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) out, const GroupingFunc *n
 {
   WRITE_LIST_FIELD(args, args, args);
   WRITE_LIST_FIELD(refs, refs, refs);
-  WRITE_LIST_FIELD(cols, cols, cols);
   WRITE_UINT_FIELD(agglevelsup, agglevelsup, agglevelsup);
   WRITE_INT_FIELD(location, location, location);
 }
@@ -383,7 +407,6 @@ static void
 _outOpExpr(OUT_TYPE(OpExpr, OpExpr) out, const OpExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
-  WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   WRITE_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   WRITE_BOOL_FIELD(opretset, opretset, opretset);
   WRITE_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -396,7 +419,6 @@ static void
 _outDistinctExpr(OUT_TYPE(DistinctExpr, DistinctExpr) out, const DistinctExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
-  WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   WRITE_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   WRITE_BOOL_FIELD(opretset, opretset, opretset);
   WRITE_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -409,7 +431,6 @@ static void
 _outNullIfExpr(OUT_TYPE(NullIfExpr, NullIfExpr) out, const NullIfExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
-  WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   WRITE_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   WRITE_BOOL_FIELD(opretset, opretset, opretset);
   WRITE_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -422,9 +443,6 @@ static void
 _outScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) out, const ScalarArrayOpExpr *node)
 {
   WRITE_UINT_FIELD(opno, opno, opno);
-  WRITE_UINT_FIELD(opfuncid, opfuncid, opfuncid);
-  WRITE_UINT_FIELD(hashfuncid, hashfuncid, hashfuncid);
-  WRITE_UINT_FIELD(negfuncid, negfuncid, negfuncid);
   WRITE_BOOL_FIELD(use_or, useOr, useOr);
   WRITE_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   WRITE_LIST_FIELD(args, args, args);
@@ -643,8 +661,56 @@ _outXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) out, const XmlExpr *node)
   WRITE_LIST_FIELD(arg_names, arg_names, arg_names);
   WRITE_LIST_FIELD(args, args, args);
   WRITE_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
+  WRITE_BOOL_FIELD(indent, indent, indent);
   WRITE_UINT_FIELD(type, type, type);
   WRITE_INT_FIELD(typmod, typmod, typmod);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonFormat(OUT_TYPE(JsonFormat, JsonFormat) out, const JsonFormat *node)
+{
+  WRITE_ENUM_FIELD(JsonFormatType, format_type, format_type, format_type);
+  WRITE_ENUM_FIELD(JsonEncoding, encoding, encoding, encoding);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonReturning(OUT_TYPE(JsonReturning, JsonReturning) out, const JsonReturning *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  WRITE_UINT_FIELD(typid, typid, typid);
+  WRITE_INT_FIELD(typmod, typmod, typmod);
+}
+
+static void
+_outJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) out, const JsonValueExpr *node)
+{
+  WRITE_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
+  WRITE_NODE_PTR_FIELD(formatted_expr, formatted_expr, formatted_expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+}
+
+static void
+_outJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) out, const JsonConstructorExpr *node)
+{
+  WRITE_ENUM_FIELD(JsonConstructorType, type, type, type);
+  WRITE_LIST_FIELD(args, args, args);
+  WRITE_NODE_PTR_FIELD(func, func, func);
+  WRITE_NODE_PTR_FIELD(coercion, coercion, coercion);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  WRITE_BOOL_FIELD(unique, unique, unique);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) out, const JsonIsPredicate *node)
+{
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  WRITE_ENUM_FIELD(JsonValueType, item_type, item_type, item_type);
+  WRITE_BOOL_FIELD(unique_keys, unique_keys, unique_keys);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -770,38 +836,6 @@ _outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out, const OnConflic
 }
 
 static void
-_outIntoClause(OUT_TYPE(IntoClause, IntoClause) out, const IntoClause *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, rel, rel, rel);
-  WRITE_LIST_FIELD(col_names, colNames, colNames);
-  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
-  WRITE_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
-  WRITE_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
-  WRITE_BOOL_FIELD(skip_data, skipData, skipData);
-}
-
-static void
-_outMergeAction(OUT_TYPE(MergeAction, MergeAction) out, const MergeAction *node)
-{
-  WRITE_BOOL_FIELD(matched, matched, matched);
-  WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
-  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
-  WRITE_NODE_PTR_FIELD(qual, qual, qual);
-  WRITE_LIST_FIELD(target_list, targetList, targetList);
-  WRITE_LIST_FIELD(update_colnos, updateColnos, updateColnos);
-}
-
-static void
-_outRawStmt(OUT_TYPE(RawStmt, RawStmt) out, const RawStmt *node)
-{
-  WRITE_NODE_PTR_FIELD(stmt, stmt, stmt);
-  WRITE_INT_FIELD(stmt_location, stmt_location, stmt_location);
-  WRITE_INT_FIELD(stmt_len, stmt_len, stmt_len);
-}
-
-static void
 _outQuery(OUT_TYPE(Query, Query) out, const Query *node)
 {
   WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
@@ -821,6 +855,7 @@ _outQuery(OUT_TYPE(Query, Query) out, const Query *node)
   WRITE_BOOL_FIELD(is_return, isReturn, isReturn);
   WRITE_LIST_FIELD(cte_list, cteList, cteList);
   WRITE_LIST_FIELD(rtable, rtable, rtable);
+  WRITE_LIST_FIELD(rteperminfos, rteperminfos, rteperminfos);
   WRITE_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
   WRITE_LIST_FIELD(merge_action_list, mergeActionList, mergeActionList);
   WRITE_BOOL_FIELD(merge_use_outer_join, mergeUseOuterJoin, mergeUseOuterJoin);
@@ -847,1088 +882,15 @@ _outQuery(OUT_TYPE(Query, Query) out, const Query *node)
 }
 
 static void
-_outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out, const InsertStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(cols, cols, cols);
-  WRITE_NODE_PTR_FIELD(select_stmt, selectStmt, selectStmt);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(OnConflictClause, on_conflict_clause, on_conflict_clause, onConflictClause, onConflictClause);
-  WRITE_LIST_FIELD(returning_list, returningList, returningList);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
-}
-
-static void
-_outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out, const DeleteStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(using_clause, usingClause, usingClause);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_LIST_FIELD(returning_list, returningList, returningList);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-}
-
-static void
-_outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out, const UpdateStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(target_list, targetList, targetList);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_LIST_FIELD(from_clause, fromClause, fromClause);
-  WRITE_LIST_FIELD(returning_list, returningList, returningList);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-}
-
-static void
-_outMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) out, const MergeStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
-  WRITE_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
-  WRITE_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-}
-
-static void
-_outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out, const SelectStmt *node)
-{
-  WRITE_LIST_FIELD(distinct_clause, distinctClause, distinctClause);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into_clause, intoClause, intoClause);
-  WRITE_LIST_FIELD(target_list, targetList, targetList);
-  WRITE_LIST_FIELD(from_clause, fromClause, fromClause);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_LIST_FIELD(group_clause, groupClause, groupClause);
-  WRITE_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
-  WRITE_NODE_PTR_FIELD(having_clause, havingClause, havingClause);
-  WRITE_LIST_FIELD(window_clause, windowClause, windowClause);
-  WRITE_LIST_FIELD(values_lists, valuesLists, valuesLists);
-  WRITE_LIST_FIELD(sort_clause, sortClause, sortClause);
-  WRITE_NODE_PTR_FIELD(limit_offset, limitOffset, limitOffset);
-  WRITE_NODE_PTR_FIELD(limit_count, limitCount, limitCount);
-  WRITE_ENUM_FIELD(LimitOption, limit_option, limitOption, limitOption);
-  WRITE_LIST_FIELD(locking_clause, lockingClause, lockingClause);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  WRITE_ENUM_FIELD(SetOperation, op, op, op);
-  WRITE_BOOL_FIELD(all, all, all);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, larg, larg, larg);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, rarg, rarg, rarg);
-}
-
-static void
-_outReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) out, const ReturnStmt *node)
-{
-  WRITE_NODE_PTR_FIELD(returnval, returnval, returnval);
-}
-
-static void
-_outPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) out, const PLAssignStmt *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_LIST_FIELD(indirection, indirection, indirection);
-  WRITE_INT_FIELD(nnames, nnames, nnames);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, val, val, val);
-  WRITE_INT_FIELD(location, location, location);
-}
-
-static void
-_outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out, const AlterTableStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(cmds, cmds, cmds);
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out, const AlterTableCmd *node)
-{
-  WRITE_ENUM_FIELD(AlterTableType, subtype, subtype, subtype);
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_INT_FIELD(num, num, num);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
-  WRITE_NODE_PTR_FIELD(def, def, def);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  WRITE_BOOL_FIELD(recurse, recurse, recurse);
-}
-
-static void
-_outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out, const AlterDomainStmt *node)
-{
-  WRITE_CHAR_FIELD(subtype, subtype, subtype);
-  WRITE_LIST_FIELD(type_name, typeName, typeName);
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_NODE_PTR_FIELD(def, def, def);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out, const SetOperationStmt *node)
-{
-  WRITE_ENUM_FIELD(SetOperation, op, op, op);
-  WRITE_BOOL_FIELD(all, all, all);
-  WRITE_NODE_PTR_FIELD(larg, larg, larg);
-  WRITE_NODE_PTR_FIELD(rarg, rarg, rarg);
-  WRITE_LIST_FIELD(col_types, colTypes, colTypes);
-  WRITE_LIST_FIELD(col_typmods, colTypmods, colTypmods);
-  WRITE_LIST_FIELD(col_collations, colCollations, colCollations);
-  WRITE_LIST_FIELD(group_clauses, groupClauses, groupClauses);
-}
-
-static void
-_outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out, const GrantStmt *node)
-{
-  WRITE_BOOL_FIELD(is_grant, is_grant, is_grant);
-  WRITE_ENUM_FIELD(GrantTargetType, targtype, targtype, targtype);
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_LIST_FIELD(objects, objects, objects);
-  WRITE_LIST_FIELD(privileges, privileges, privileges);
-  WRITE_LIST_FIELD(grantees, grantees, grantees);
-  WRITE_BOOL_FIELD(grant_option, grant_option, grant_option);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-}
-
-static void
-_outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out, const GrantRoleStmt *node)
-{
-  WRITE_LIST_FIELD(granted_roles, granted_roles, granted_roles);
-  WRITE_LIST_FIELD(grantee_roles, grantee_roles, grantee_roles);
-  WRITE_BOOL_FIELD(is_grant, is_grant, is_grant);
-  WRITE_BOOL_FIELD(admin_opt, admin_opt, admin_opt);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-}
-
-static void
-_outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out, const AlterDefaultPrivilegesStmt *node)
-{
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(GrantStmt, grant_stmt, action, action, action);
-}
-
-static void
-_outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out, const ClosePortalStmt *node)
-{
-  WRITE_STRING_FIELD(portalname, portalname, portalname);
-}
-
-static void
-_outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out, const ClusterStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_STRING_FIELD(indexname, indexname, indexname);
-  WRITE_LIST_FIELD(params, params, params);
-}
-
-static void
-_outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out, const CopyStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(query, query, query);
-  WRITE_LIST_FIELD(attlist, attlist, attlist);
-  WRITE_BOOL_FIELD(is_from, is_from, is_from);
-  WRITE_BOOL_FIELD(is_program, is_program, is_program);
-  WRITE_STRING_FIELD(filename, filename, filename);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-}
-
-static void
-_outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out, const CreateStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(table_elts, tableElts, tableElts);
-  WRITE_LIST_FIELD(inh_relations, inhRelations, inhRelations);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, partbound, partbound, partbound);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionSpec, partition_spec, partspec, partspec, partspec);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, of_typename, ofTypename, ofTypename);
-  WRITE_LIST_FIELD(constraints, constraints, constraints);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_ENUM_FIELD(OnCommitAction, oncommit, oncommit, oncommit);
-  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-}
-
-static void
-_outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out, const DefineStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, kind, kind, kind);
-  WRITE_BOOL_FIELD(oldstyle, oldstyle, oldstyle);
-  WRITE_LIST_FIELD(defnames, defnames, defnames);
-  WRITE_LIST_FIELD(args, args, args);
-  WRITE_LIST_FIELD(definition, definition, definition);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  WRITE_BOOL_FIELD(replace, replace, replace);
-}
-
-static void
-_outDropStmt(OUT_TYPE(DropStmt, DropStmt) out, const DropStmt *node)
-{
-  WRITE_LIST_FIELD(objects, objects, objects);
-  WRITE_ENUM_FIELD(ObjectType, remove_type, removeType, removeType);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
-}
-
-static void
-_outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out, const TruncateStmt *node)
-{
-  WRITE_LIST_FIELD(relations, relations, relations);
-  WRITE_BOOL_FIELD(restart_seqs, restart_seqs, restart_seqs);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-}
-
-static void
-_outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out, const CommentStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_STRING_FIELD(comment, comment, comment);
-}
-
-static void
-_outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out, const FetchStmt *node)
-{
-  WRITE_ENUM_FIELD(FetchDirection, direction, direction, direction);
-  WRITE_LONG_FIELD(how_many, howMany, howMany);
-  WRITE_STRING_FIELD(portalname, portalname, portalname);
-  WRITE_BOOL_FIELD(ismove, ismove, ismove);
-}
-
-static void
-_outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out, const IndexStmt *node)
-{
-  WRITE_STRING_FIELD(idxname, idxname, idxname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
-  WRITE_STRING_FIELD(table_space, tableSpace, tableSpace);
-  WRITE_LIST_FIELD(index_params, indexParams, indexParams);
-  WRITE_LIST_FIELD(index_including_params, indexIncludingParams, indexIncludingParams);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
-  WRITE_STRING_FIELD(idxcomment, idxcomment, idxcomment);
-  WRITE_UINT_FIELD(index_oid, indexOid, indexOid);
-  WRITE_UINT_FIELD(old_node, oldNode, oldNode);
-  WRITE_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
-  WRITE_UINT_FIELD(old_first_relfilenode_subid, oldFirstRelfilenodeSubid, oldFirstRelfilenodeSubid);
-  WRITE_BOOL_FIELD(unique, unique, unique);
-  WRITE_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
-  WRITE_BOOL_FIELD(primary, primary, primary);
-  WRITE_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
-  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
-  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  WRITE_BOOL_FIELD(transformed, transformed, transformed);
-  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  WRITE_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
-}
-
-static void
-_outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out, const CreateFunctionStmt *node)
-{
-  WRITE_BOOL_FIELD(is_procedure, is_procedure, is_procedure);
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_LIST_FIELD(funcname, funcname, funcname);
-  WRITE_LIST_FIELD(parameters, parameters, parameters);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, return_type, returnType, returnType);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_NODE_PTR_FIELD(sql_body, sql_body, sql_body);
-}
-
-static void
-_outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out, const AlterFunctionStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
-  WRITE_LIST_FIELD(actions, actions, actions);
-}
-
-static void
-_outDoStmt(OUT_TYPE(DoStmt, DoStmt) out, const DoStmt *node)
-{
-  WRITE_LIST_FIELD(args, args, args);
-}
-
-static void
-_outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out, const RenameStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, rename_type, renameType, renameType);
-  WRITE_ENUM_FIELD(ObjectType, relation_type, relationType, relationType);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_STRING_FIELD(subname, subname, subname);
-  WRITE_STRING_FIELD(newname, newname, newname);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out, const RuleStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_STRING_FIELD(rulename, rulename, rulename);
-  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_ENUM_FIELD(CmdType, event, event, event);
-  WRITE_BOOL_FIELD(instead, instead, instead);
-  WRITE_LIST_FIELD(actions, actions, actions);
-  WRITE_BOOL_FIELD(replace, replace, replace);
-}
-
-static void
-_outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out, const NotifyStmt *node)
-{
-  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
-  WRITE_STRING_FIELD(payload, payload, payload);
-}
-
-static void
-_outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out, const ListenStmt *node)
-{
-  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
-}
-
-static void
-_outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out, const UnlistenStmt *node)
-{
-  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
-}
-
-static void
-_outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out, const TransactionStmt *node)
-{
-  WRITE_ENUM_FIELD(TransactionStmtKind, kind, kind, kind);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
-  WRITE_STRING_FIELD(gid, gid, gid);
-  WRITE_BOOL_FIELD(chain, chain, chain);
-}
-
-static void
-_outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out, const ViewStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, view, view, view);
-  WRITE_LIST_FIELD(aliases, aliases, aliases);
-  WRITE_NODE_PTR_FIELD(query, query, query);
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_ENUM_FIELD(ViewCheckOption, with_check_option, withCheckOption, withCheckOption);
-}
-
-static void
-_outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out, const LoadStmt *node)
-{
-  WRITE_STRING_FIELD(filename, filename, filename);
-}
-
-static void
-_outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out, const CreateDomainStmt *node)
-{
-  WRITE_LIST_FIELD(domainname, domainname, domainname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(CollateClause, collate_clause, coll_clause, collClause, collClause);
-  WRITE_LIST_FIELD(constraints, constraints, constraints);
-}
-
-static void
-_outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out, const CreatedbStmt *node)
-{
-  WRITE_STRING_FIELD(dbname, dbname, dbname);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out, const DropdbStmt *node)
-{
-  WRITE_STRING_FIELD(dbname, dbname, dbname);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out, const VacuumStmt *node)
-{
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_LIST_FIELD(rels, rels, rels);
-  WRITE_BOOL_FIELD(is_vacuumcmd, is_vacuumcmd, is_vacuumcmd);
-}
-
-static void
-_outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out, const ExplainStmt *node)
-{
-  WRITE_NODE_PTR_FIELD(query, query, query);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out, const CreateTableAsStmt *node)
-{
-  WRITE_NODE_PTR_FIELD(query, query, query);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_BOOL_FIELD(is_select_into, is_select_into, is_select_into);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-}
-
-static void
-_outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out, const CreateSeqStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_UINT_FIELD(owner_id, ownerId, ownerId);
-  WRITE_BOOL_FIELD(for_identity, for_identity, for_identity);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-}
-
-static void
-_outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out, const AlterSeqStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_BOOL_FIELD(for_identity, for_identity, for_identity);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out, const VariableSetStmt *node)
-{
-  WRITE_ENUM_FIELD(VariableSetKind, kind, kind, kind);
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_LIST_FIELD(args, args, args);
-  WRITE_BOOL_FIELD(is_local, is_local, is_local);
-}
-
-static void
-_outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out, const VariableShowStmt *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-}
-
-static void
-_outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out, const DiscardStmt *node)
-{
-  WRITE_ENUM_FIELD(DiscardMode, target, target, target);
-}
-
-static void
-_outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out, const CreateTrigStmt *node)
-{
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
-  WRITE_STRING_FIELD(trigname, trigname, trigname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_LIST_FIELD(funcname, funcname, funcname);
-  WRITE_LIST_FIELD(args, args, args);
-  WRITE_BOOL_FIELD(row, row, row);
-  WRITE_INT_FIELD(timing, timing, timing);
-  WRITE_INT_FIELD(events, events, events);
-  WRITE_LIST_FIELD(columns, columns, columns);
-  WRITE_NODE_PTR_FIELD(when_clause, whenClause, whenClause);
-  WRITE_LIST_FIELD(transition_rels, transitionRels, transitionRels);
-  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
-  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, constrrel, constrrel, constrrel);
-}
-
-static void
-_outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out, const CreatePLangStmt *node)
-{
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_STRING_FIELD(plname, plname, plname);
-  WRITE_LIST_FIELD(plhandler, plhandler, plhandler);
-  WRITE_LIST_FIELD(plinline, plinline, plinline);
-  WRITE_LIST_FIELD(plvalidator, plvalidator, plvalidator);
-  WRITE_BOOL_FIELD(pltrusted, pltrusted, pltrusted);
-}
-
-static void
-_outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out, const CreateRoleStmt *node)
-{
-  WRITE_ENUM_FIELD(RoleStmtType, stmt_type, stmt_type, stmt_type);
-  WRITE_STRING_FIELD(role, role, role);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out, const AlterRoleStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_INT_FIELD(action, action, action);
-}
-
-static void
-_outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out, const DropRoleStmt *node)
-{
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outLockStmt(OUT_TYPE(LockStmt, LockStmt) out, const LockStmt *node)
-{
-  WRITE_LIST_FIELD(relations, relations, relations);
-  WRITE_INT_FIELD(mode, mode, mode);
-  WRITE_BOOL_FIELD(nowait, nowait, nowait);
-}
-
-static void
-_outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out, const ConstraintsSetStmt *node)
-{
-  WRITE_LIST_FIELD(constraints, constraints, constraints);
-  WRITE_BOOL_FIELD(deferred, deferred, deferred);
-}
-
-static void
-_outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out, const ReindexStmt *node)
-{
-  WRITE_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_LIST_FIELD(params, params, params);
-}
-
-static void
-_outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out, const CheckPointStmt *node)
-{
-}
-
-static void
-_outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out, const CreateSchemaStmt *node)
-{
-  WRITE_STRING_FIELD(schemaname, schemaname, schemaname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, authrole, authrole, authrole);
-  WRITE_LIST_FIELD(schema_elts, schemaElts, schemaElts);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-}
-
-static void
-_outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out, const AlterDatabaseStmt *node)
-{
-  WRITE_STRING_FIELD(dbname, dbname, dbname);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) out, const AlterDatabaseRefreshCollStmt *node)
-{
-  WRITE_STRING_FIELD(dbname, dbname, dbname);
-}
-
-static void
-_outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out, const AlterDatabaseSetStmt *node)
-{
-  WRITE_STRING_FIELD(dbname, dbname, dbname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-}
-
-static void
-_outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out, const AlterRoleSetStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
-  WRITE_STRING_FIELD(database, database, database);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-}
-
-static void
-_outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out, const CreateConversionStmt *node)
-{
-  WRITE_LIST_FIELD(conversion_name, conversion_name, conversion_name);
-  WRITE_STRING_FIELD(for_encoding_name, for_encoding_name, for_encoding_name);
-  WRITE_STRING_FIELD(to_encoding_name, to_encoding_name, to_encoding_name);
-  WRITE_LIST_FIELD(func_name, func_name, func_name);
-  WRITE_BOOL_FIELD(def, def, def);
-}
-
-static void
-_outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out, const CreateCastStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, sourcetype, sourcetype, sourcetype);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, targettype, targettype, targettype);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
-  WRITE_ENUM_FIELD(CoercionContext, context, context, context);
-  WRITE_BOOL_FIELD(inout, inout, inout);
-}
-
-static void
-_outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out, const CreateOpClassStmt *node)
-{
-  WRITE_LIST_FIELD(opclassname, opclassname, opclassname);
-  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  WRITE_STRING_FIELD(amname, amname, amname);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, datatype, datatype, datatype);
-  WRITE_LIST_FIELD(items, items, items);
-  WRITE_BOOL_FIELD(is_default, isDefault, isDefault);
-}
-
-static void
-_outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out, const CreateOpFamilyStmt *node)
-{
-  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  WRITE_STRING_FIELD(amname, amname, amname);
-}
-
-static void
-_outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out, const AlterOpFamilyStmt *node)
-{
-  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  WRITE_STRING_FIELD(amname, amname, amname);
-  WRITE_BOOL_FIELD(is_drop, isDrop, isDrop);
-  WRITE_LIST_FIELD(items, items, items);
-}
-
-static void
-_outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out, const PrepareStmt *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_LIST_FIELD(argtypes, argtypes, argtypes);
-  WRITE_NODE_PTR_FIELD(query, query, query);
-}
-
-static void
-_outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out, const ExecuteStmt *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_LIST_FIELD(params, params, params);
-}
-
-static void
-_outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out, const DeallocateStmt *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-}
-
-static void
-_outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out, const DeclareCursorStmt *node)
-{
-  WRITE_STRING_FIELD(portalname, portalname, portalname);
-  WRITE_INT_FIELD(options, options, options);
-  WRITE_NODE_PTR_FIELD(query, query, query);
-}
-
-static void
-_outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out, const CreateTableSpaceStmt *node)
-{
-  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, owner, owner, owner);
-  WRITE_STRING_FIELD(location, location, location);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out, const DropTableSpaceStmt *node)
-{
-  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out, const AlterObjectDependsStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(String, string, extname, extname, extname);
-  WRITE_BOOL_FIELD(remove, remove, remove);
-}
-
-static void
-_outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out, const AlterObjectSchemaStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_STRING_FIELD(newschema, newschema, newschema);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out, const AlterOwnerStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
-}
-
-static void
-_outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out, const AlterOperatorStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, opername, opername, opername);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out, const AlterTypeStmt *node)
-{
-  WRITE_LIST_FIELD(type_name, typeName, typeName);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out, const DropOwnedStmt *node)
-{
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-}
-
-static void
-_outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out, const ReassignOwnedStmt *node)
-{
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newrole, newrole, newrole);
-}
-
-static void
-_outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out, const CompositeTypeStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, typevar, typevar, typevar);
-  WRITE_LIST_FIELD(coldeflist, coldeflist, coldeflist);
-}
-
-static void
-_outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out, const CreateEnumStmt *node)
-{
-  WRITE_LIST_FIELD(type_name, typeName, typeName);
-  WRITE_LIST_FIELD(vals, vals, vals);
-}
-
-static void
-_outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out, const CreateRangeStmt *node)
-{
-  WRITE_LIST_FIELD(type_name, typeName, typeName);
-  WRITE_LIST_FIELD(params, params, params);
-}
-
-static void
-_outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out, const AlterEnumStmt *node)
-{
-  WRITE_LIST_FIELD(type_name, typeName, typeName);
-  WRITE_STRING_FIELD(old_val, oldVal, oldVal);
-  WRITE_STRING_FIELD(new_val, newVal, newVal);
-  WRITE_STRING_FIELD(new_val_neighbor, newValNeighbor, newValNeighbor);
-  WRITE_BOOL_FIELD(new_val_is_after, newValIsAfter, newValIsAfter);
-  WRITE_BOOL_FIELD(skip_if_new_val_exists, skipIfNewValExists, skipIfNewValExists);
-}
-
-static void
-_outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out, const AlterTSDictionaryStmt *node)
-{
-  WRITE_LIST_FIELD(dictname, dictname, dictname);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out, const AlterTSConfigurationStmt *node)
-{
-  WRITE_ENUM_FIELD(AlterTSConfigType, kind, kind, kind);
-  WRITE_LIST_FIELD(cfgname, cfgname, cfgname);
-  WRITE_LIST_FIELD(tokentype, tokentype, tokentype);
-  WRITE_LIST_FIELD(dicts, dicts, dicts);
-  WRITE_BOOL_FIELD(override, override, override);
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out, const CreateFdwStmt *node)
-{
-  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
-  WRITE_LIST_FIELD(func_options, func_options, func_options);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out, const AlterFdwStmt *node)
-{
-  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
-  WRITE_LIST_FIELD(func_options, func_options, func_options);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out, const CreateForeignServerStmt *node)
-{
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_STRING_FIELD(servertype, servertype, servertype);
-  WRITE_STRING_FIELD(version, version, version);
-  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out, const AlterForeignServerStmt *node)
-{
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_STRING_FIELD(version, version, version);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_BOOL_FIELD(has_version, has_version, has_version);
-}
-
-static void
-_outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out, const CreateUserMappingStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out, const AlterUserMappingStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out, const DropUserMappingStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out, const AlterTableSpaceOptionsStmt *node)
-{
-  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_BOOL_FIELD(is_reset, isReset, isReset);
-}
-
-static void
-_outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out, const AlterTableMoveAllStmt *node)
-{
-  WRITE_STRING_FIELD(orig_tablespacename, orig_tablespacename, orig_tablespacename);
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_STRING_FIELD(new_tablespacename, new_tablespacename, new_tablespacename);
-  WRITE_BOOL_FIELD(nowait, nowait, nowait);
-}
-
-static void
-_outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out, const SecLabelStmt *node)
-{
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-  WRITE_STRING_FIELD(provider, provider, provider);
-  WRITE_STRING_FIELD(label, label, label);
-}
-
-static void
-_outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out, const CreateForeignTableStmt *node)
-{
-  WRITE_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
-  WRITE_STRING_FIELD(servername, servername, servername);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out, const ImportForeignSchemaStmt *node)
-{
-  WRITE_STRING_FIELD(server_name, server_name, server_name);
-  WRITE_STRING_FIELD(remote_schema, remote_schema, remote_schema);
-  WRITE_STRING_FIELD(local_schema, local_schema, local_schema);
-  WRITE_ENUM_FIELD(ImportForeignSchemaType, list_type, list_type, list_type);
-  WRITE_LIST_FIELD(table_list, table_list, table_list);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out, const CreateExtensionStmt *node)
-{
-  WRITE_STRING_FIELD(extname, extname, extname);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out, const AlterExtensionStmt *node)
-{
-  WRITE_STRING_FIELD(extname, extname, extname);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out, const AlterExtensionContentsStmt *node)
-{
-  WRITE_STRING_FIELD(extname, extname, extname);
-  WRITE_INT_FIELD(action, action, action);
-  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  WRITE_NODE_PTR_FIELD(object, object, object);
-}
-
-static void
-_outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out, const CreateEventTrigStmt *node)
-{
-  WRITE_STRING_FIELD(trigname, trigname, trigname);
-  WRITE_STRING_FIELD(eventname, eventname, eventname);
-  WRITE_LIST_FIELD(whenclause, whenclause, whenclause);
-  WRITE_LIST_FIELD(funcname, funcname, funcname);
-}
-
-static void
-_outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out, const AlterEventTrigStmt *node)
-{
-  WRITE_STRING_FIELD(trigname, trigname, trigname);
-  WRITE_CHAR_FIELD(tgenabled, tgenabled, tgenabled);
-}
-
-static void
-_outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out, const RefreshMatViewStmt *node)
-{
-  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
-  WRITE_BOOL_FIELD(skip_data, skipData, skipData);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-}
-
-static void
-_outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out, const ReplicaIdentityStmt *node)
-{
-  WRITE_CHAR_FIELD(identity_type, identity_type, identity_type);
-  WRITE_STRING_FIELD(name, name, name);
-}
-
-static void
-_outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out, const AlterSystemStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-}
-
-static void
-_outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out, const CreatePolicyStmt *node)
-{
-  WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
-  WRITE_STRING_FIELD(cmd_name, cmd_name, cmd_name);
-  WRITE_BOOL_FIELD(permissive, permissive, permissive);
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_NODE_PTR_FIELD(qual, qual, qual);
-  WRITE_NODE_PTR_FIELD(with_check, with_check, with_check);
-}
-
-static void
-_outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out, const AlterPolicyStmt *node)
-{
-  WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
-  WRITE_LIST_FIELD(roles, roles, roles);
-  WRITE_NODE_PTR_FIELD(qual, qual, qual);
-  WRITE_NODE_PTR_FIELD(with_check, with_check, with_check);
-}
-
-static void
-_outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out, const CreateTransformStmt *node)
-{
-  WRITE_BOOL_FIELD(replace, replace, replace);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, type_name, type_name);
-  WRITE_STRING_FIELD(lang, lang, lang);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, fromsql, fromsql, fromsql);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, tosql, tosql, tosql);
-}
-
-static void
-_outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out, const CreateAmStmt *node)
-{
-  WRITE_STRING_FIELD(amname, amname, amname);
-  WRITE_LIST_FIELD(handler_name, handler_name, handler_name);
-  WRITE_CHAR_FIELD(amtype, amtype, amtype);
-}
-
-static void
-_outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out, const CreatePublicationStmt *node)
-{
-  WRITE_STRING_FIELD(pubname, pubname, pubname);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_LIST_FIELD(pubobjects, pubobjects, pubobjects);
-  WRITE_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
-}
-
-static void
-_outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out, const AlterPublicationStmt *node)
-{
-  WRITE_STRING_FIELD(pubname, pubname, pubname);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_LIST_FIELD(pubobjects, pubobjects, pubobjects);
-  WRITE_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
-  WRITE_ENUM_FIELD(AlterPublicationAction, action, action, action);
-}
-
-static void
-_outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out, const CreateSubscriptionStmt *node)
-{
-  WRITE_STRING_FIELD(subname, subname, subname);
-  WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
-  WRITE_LIST_FIELD(publication, publication, publication);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out, const AlterSubscriptionStmt *node)
-{
-  WRITE_ENUM_FIELD(AlterSubscriptionType, kind, kind, kind);
-  WRITE_STRING_FIELD(subname, subname, subname);
-  WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
-  WRITE_LIST_FIELD(publication, publication, publication);
-  WRITE_LIST_FIELD(options, options, options);
-}
-
-static void
-_outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out, const DropSubscriptionStmt *node)
-{
-  WRITE_STRING_FIELD(subname, subname, subname);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-}
-
-static void
-_outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out, const CreateStatsStmt *node)
-{
-  WRITE_LIST_FIELD(defnames, defnames, defnames);
-  WRITE_LIST_FIELD(stat_types, stat_types, stat_types);
-  WRITE_LIST_FIELD(exprs, exprs, exprs);
-  WRITE_LIST_FIELD(relations, relations, relations);
-  WRITE_STRING_FIELD(stxcomment, stxcomment, stxcomment);
-  WRITE_BOOL_FIELD(transformed, transformed, transformed);
-  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-}
-
-static void
-_outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out, const AlterCollationStmt *node)
-{
-  WRITE_LIST_FIELD(collname, collname, collname);
-}
-
-static void
-_outCallStmt(OUT_TYPE(CallStmt, CallStmt) out, const CallStmt *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
-  WRITE_LIST_FIELD(outargs, outargs, outargs);
-}
-
-static void
-_outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out, const AlterStatsStmt *node)
-{
-  WRITE_LIST_FIELD(defnames, defnames, defnames);
-  WRITE_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
-  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-}
-
-static void
-_outAExpr(OUT_TYPE(A_Expr, AExpr) out, const A_Expr *node)
-{
-  WRITE_ENUM_FIELD(A_Expr_Kind, kind, kind, kind);
-  WRITE_LIST_FIELD(name, name, name);
-  WRITE_NODE_PTR_FIELD(lexpr, lexpr, lexpr);
-  WRITE_NODE_PTR_FIELD(rexpr, rexpr, rexpr);
+_outTypeName(OUT_TYPE(TypeName, TypeName) out, const TypeName *node)
+{
+  WRITE_LIST_FIELD(names, names, names);
+  WRITE_UINT_FIELD(type_oid, typeOid, typeOid);
+  WRITE_BOOL_FIELD(setof, setof, setof);
+  WRITE_BOOL_FIELD(pct_type, pct_type, pct_type);
+  WRITE_LIST_FIELD(typmods, typmods, typmods);
+  WRITE_INT_FIELD(typemod, typemod, typemod);
+  WRITE_LIST_FIELD(array_bounds, arrayBounds, arrayBounds);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -1943,6 +905,40 @@ static void
 _outParamRef(OUT_TYPE(ParamRef, ParamRef) out, const ParamRef *node)
 {
   WRITE_INT_FIELD(number, number, number);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outAExpr(OUT_TYPE(A_Expr, AExpr) out, const A_Expr *node)
+{
+  WRITE_ENUM_FIELD(A_Expr_Kind, kind, kind, kind);
+  WRITE_LIST_FIELD(name, name, name);
+  WRITE_NODE_PTR_FIELD(lexpr, lexpr, lexpr);
+  WRITE_NODE_PTR_FIELD(rexpr, rexpr, rexpr);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outTypeCast(OUT_TYPE(TypeCast, TypeCast) out, const TypeCast *node)
+{
+  WRITE_NODE_PTR_FIELD(arg, arg, arg);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outCollateClause(OUT_TYPE(CollateClause, CollateClause) out, const CollateClause *node)
+{
+  WRITE_NODE_PTR_FIELD(arg, arg, arg);
+  WRITE_LIST_FIELD(collname, collname, collname);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out, const RoleSpec *node)
+{
+  WRITE_ENUM_FIELD(RoleSpecType, roletype, roletype, roletype);
+  WRITE_STRING_FIELD(rolename, rolename, rolename);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -2007,22 +1003,6 @@ _outMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) out, const MultiAssi
 }
 
 static void
-_outTypeCast(OUT_TYPE(TypeCast, TypeCast) out, const TypeCast *node)
-{
-  WRITE_NODE_PTR_FIELD(arg, arg, arg);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  WRITE_INT_FIELD(location, location, location);
-}
-
-static void
-_outCollateClause(OUT_TYPE(CollateClause, CollateClause) out, const CollateClause *node)
-{
-  WRITE_NODE_PTR_FIELD(arg, arg, arg);
-  WRITE_LIST_FIELD(collname, collname, collname);
-  WRITE_INT_FIELD(location, location, location);
-}
-
-static void
 _outSortBy(OUT_TYPE(SortBy, SortBy) out, const SortBy *node)
 {
   WRITE_NODE_PTR_FIELD(node, node, node);
@@ -2065,16 +1045,6 @@ _outRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) out, const RangeFunctio
 }
 
 static void
-_outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out, const RangeTableSample *node)
-{
-  WRITE_NODE_PTR_FIELD(relation, relation, relation);
-  WRITE_LIST_FIELD(method, method, method);
-  WRITE_LIST_FIELD(args, args, args);
-  WRITE_NODE_PTR_FIELD(repeatable, repeatable, repeatable);
-  WRITE_INT_FIELD(location, location, location);
-}
-
-static void
 _outRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) out, const RangeTableFunc *node)
 {
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
@@ -2099,15 +1069,12 @@ _outRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) out, const 
 }
 
 static void
-_outTypeName(OUT_TYPE(TypeName, TypeName) out, const TypeName *node)
+_outRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) out, const RangeTableSample *node)
 {
-  WRITE_LIST_FIELD(names, names, names);
-  WRITE_UINT_FIELD(type_oid, typeOid, typeOid);
-  WRITE_BOOL_FIELD(setof, setof, setof);
-  WRITE_BOOL_FIELD(pct_type, pct_type, pct_type);
-  WRITE_LIST_FIELD(typmods, typmods, typmods);
-  WRITE_INT_FIELD(typemod, typemod, typemod);
-  WRITE_LIST_FIELD(array_bounds, arrayBounds, arrayBounds);
+  WRITE_NODE_PTR_FIELD(relation, relation, relation);
+  WRITE_LIST_FIELD(method, method, method);
+  WRITE_LIST_FIELD(args, args, args);
+  WRITE_NODE_PTR_FIELD(repeatable, repeatable, repeatable);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -2122,6 +1089,7 @@ _outColumnDef(OUT_TYPE(ColumnDef, ColumnDef) out, const ColumnDef *node)
   WRITE_BOOL_FIELD(is_not_null, is_not_null, is_not_null);
   WRITE_BOOL_FIELD(is_from_type, is_from_type, is_from_type);
   WRITE_CHAR_FIELD(storage, storage, storage);
+  WRITE_STRING_FIELD(storage_name, storage_name, storage_name);
   WRITE_NODE_PTR_FIELD(raw_default, raw_default, raw_default);
   WRITE_NODE_PTR_FIELD(cooked_default, cooked_default, cooked_default);
   WRITE_CHAR_FIELD(identity, identity, identity);
@@ -2132,6 +1100,14 @@ _outColumnDef(OUT_TYPE(ColumnDef, ColumnDef) out, const ColumnDef *node)
   WRITE_LIST_FIELD(constraints, constraints, constraints);
   WRITE_LIST_FIELD(fdwoptions, fdwoptions, fdwoptions);
   WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out, const TableLikeClause *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_UINT_FIELD(options, options, options);
+  WRITE_UINT_FIELD(relation_oid, relationOid, relationOid);
 }
 
 static void
@@ -2148,48 +1124,6 @@ _outIndexElem(OUT_TYPE(IndexElem, IndexElem) out, const IndexElem *node)
 }
 
 static void
-_outStatsElem(OUT_TYPE(StatsElem, StatsElem) out, const StatsElem *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_NODE_PTR_FIELD(expr, expr, expr);
-}
-
-static void
-_outConstraint(OUT_TYPE(Constraint, Constraint) out, const Constraint *node)
-{
-  WRITE_ENUM_FIELD(ConstrType, contype, contype, contype);
-  WRITE_STRING_FIELD(conname, conname, conname);
-  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
-  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  WRITE_INT_FIELD(location, location, location);
-  WRITE_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
-  WRITE_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
-  WRITE_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
-  WRITE_CHAR_FIELD(generated_when, generated_when, generated_when);
-  WRITE_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
-  WRITE_LIST_FIELD(keys, keys, keys);
-  WRITE_LIST_FIELD(including, including, including);
-  WRITE_LIST_FIELD(exclusions, exclusions, exclusions);
-  WRITE_LIST_FIELD(options, options, options);
-  WRITE_STRING_FIELD(indexname, indexname, indexname);
-  WRITE_STRING_FIELD(indexspace, indexspace, indexspace);
-  WRITE_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
-  WRITE_STRING_FIELD(access_method, access_method, access_method);
-  WRITE_NODE_PTR_FIELD(where_clause, where_clause, where_clause);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, pktable, pktable, pktable);
-  WRITE_LIST_FIELD(fk_attrs, fk_attrs, fk_attrs);
-  WRITE_LIST_FIELD(pk_attrs, pk_attrs, pk_attrs);
-  WRITE_CHAR_FIELD(fk_matchtype, fk_matchtype, fk_matchtype);
-  WRITE_CHAR_FIELD(fk_upd_action, fk_upd_action, fk_upd_action);
-  WRITE_CHAR_FIELD(fk_del_action, fk_del_action, fk_del_action);
-  WRITE_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
-  WRITE_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
-  WRITE_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
-  WRITE_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
-  WRITE_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
-}
-
-static void
 _outDefElem(OUT_TYPE(DefElem, DefElem) out, const DefElem *node)
 {
   WRITE_STRING_FIELD(defnamespace, defnamespace, defnamespace);
@@ -2200,6 +1134,71 @@ _outDefElem(OUT_TYPE(DefElem, DefElem) out, const DefElem *node)
 }
 
 static void
+_outLockingClause(OUT_TYPE(LockingClause, LockingClause) out, const LockingClause *node)
+{
+  WRITE_LIST_FIELD(locked_rels, lockedRels, lockedRels);
+  WRITE_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
+  WRITE_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
+}
+
+static void
+_outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out, const XmlSerialize *node)
+{
+  WRITE_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  WRITE_BOOL_FIELD(indent, indent, indent);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out, const PartitionElem *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+  WRITE_LIST_FIELD(collation, collation, collation);
+  WRITE_LIST_FIELD(opclass, opclass, opclass);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out, const PartitionSpec *node)
+{
+  WRITE_ENUM_FIELD(PartitionStrategy, strategy, strategy, strategy);
+  WRITE_LIST_FIELD(part_params, partParams, partParams);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out, const PartitionBoundSpec *node)
+{
+  WRITE_CHAR_FIELD(strategy, strategy, strategy);
+  WRITE_BOOL_FIELD(is_default, is_default, is_default);
+  WRITE_INT_FIELD(modulus, modulus, modulus);
+  WRITE_INT_FIELD(remainder, remainder, remainder);
+  WRITE_LIST_FIELD(listdatums, listdatums, listdatums);
+  WRITE_LIST_FIELD(lowerdatums, lowerdatums, lowerdatums);
+  WRITE_LIST_FIELD(upperdatums, upperdatums, upperdatums);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out, const PartitionRangeDatum *node)
+{
+  WRITE_ENUM_FIELD(PartitionRangeDatumKind, kind, kind, kind);
+  WRITE_NODE_PTR_FIELD(value, value, value);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out, const PartitionCmd *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
+  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
+}
+
+static void
 _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntry *node)
 {
   WRITE_ENUM_FIELD(RTEKind, rtekind, rtekind, rtekind);
@@ -2207,6 +1206,7 @@ _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntr
   WRITE_CHAR_FIELD(relkind, relkind, relkind);
   WRITE_INT_FIELD(rellockmode, rellockmode, rellockmode);
   WRITE_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
+  WRITE_UINT_FIELD(perminfoindex, perminfoindex, perminfoindex);
   WRITE_SPECIFIC_NODE_PTR_FIELD(Query, query, subquery, subquery, subquery);
   WRITE_BOOL_FIELD(security_barrier, security_barrier, security_barrier);
   WRITE_ENUM_FIELD(JoinType, jointype, jointype, jointype);
@@ -2232,13 +1232,19 @@ _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntr
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
   WRITE_BOOL_FIELD(inh, inh, inh);
   WRITE_BOOL_FIELD(in_from_cl, inFromCl, inFromCl);
-  WRITE_UINT_FIELD(required_perms, requiredPerms, requiredPerms);
+  WRITE_LIST_FIELD(security_quals, securityQuals, securityQuals);
+}
+
+static void
+_outRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) out, const RTEPermissionInfo *node)
+{
+  WRITE_UINT_FIELD(relid, relid, relid);
+  WRITE_BOOL_FIELD(inh, inh, inh);
+  WRITE_LONG_FIELD(required_perms, requiredPerms, requiredPerms);
   WRITE_UINT_FIELD(check_as_user, checkAsUser, checkAsUser);
   WRITE_BITMAPSET_FIELD(selected_cols, selectedCols, selectedCols);
   WRITE_BITMAPSET_FIELD(inserted_cols, insertedCols, insertedCols);
   WRITE_BITMAPSET_FIELD(updated_cols, updatedCols, updatedCols);
-  WRITE_BITMAPSET_FIELD(extra_updated_cols, extraUpdatedCols, extraUpdatedCols);
-  WRITE_LIST_FIELD(security_quals, securityQuals, securityQuals);
 }
 
 static void
@@ -2310,73 +1316,12 @@ _outWindowClause(OUT_TYPE(WindowClause, WindowClause) out, const WindowClause *n
 }
 
 static void
-_outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out, const ObjectWithArgs *node)
-{
-  WRITE_LIST_FIELD(objname, objname, objname);
-  WRITE_LIST_FIELD(objargs, objargs, objargs);
-  WRITE_LIST_FIELD(objfuncargs, objfuncargs, objfuncargs);
-  WRITE_BOOL_FIELD(args_unspecified, args_unspecified, args_unspecified);
-}
-
-static void
-_outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out, const AccessPriv *node)
-{
-  WRITE_STRING_FIELD(priv_name, priv_name, priv_name);
-  WRITE_LIST_FIELD(cols, cols, cols);
-}
-
-static void
-_outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out, const CreateOpClassItem *node)
-{
-  WRITE_INT_FIELD(itemtype, itemtype, itemtype);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, name, name, name);
-  WRITE_INT_FIELD(number, number, number);
-  WRITE_LIST_FIELD(order_family, order_family, order_family);
-  WRITE_LIST_FIELD(class_args, class_args, class_args);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, storedtype, storedtype, storedtype);
-}
-
-static void
-_outTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) out, const TableLikeClause *node)
-{
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_UINT_FIELD(options, options, options);
-  WRITE_UINT_FIELD(relation_oid, relationOid, relationOid);
-}
-
-static void
-_outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out, const FunctionParameter *node)
-{
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
-  WRITE_ENUM_FIELD(FunctionParameterMode, mode, mode, mode);
-  WRITE_NODE_PTR_FIELD(defexpr, defexpr, defexpr);
-}
-
-static void
-_outLockingClause(OUT_TYPE(LockingClause, LockingClause) out, const LockingClause *node)
-{
-  WRITE_LIST_FIELD(locked_rels, lockedRels, lockedRels);
-  WRITE_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
-  WRITE_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
-}
-
-static void
 _outRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) out, const RowMarkClause *node)
 {
   WRITE_UINT_FIELD(rti, rti, rti);
   WRITE_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
   WRITE_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
   WRITE_BOOL_FIELD(pushed_down, pushedDown, pushedDown);
-}
-
-static void
-_outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out, const XmlSerialize *node)
-{
-  WRITE_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
-  WRITE_NODE_PTR_FIELD(expr, expr, expr);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  WRITE_INT_FIELD(location, location, location);
 }
 
 static void
@@ -2460,11 +1405,14 @@ _outMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) out, const MergeW
 }
 
 static void
-_outRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) out, const RoleSpec *node)
+_outMergeAction(OUT_TYPE(MergeAction, MergeAction) out, const MergeAction *node)
 {
-  WRITE_ENUM_FIELD(RoleSpecType, roletype, roletype, roletype);
-  WRITE_STRING_FIELD(rolename, rolename, rolename);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_BOOL_FIELD(matched, matched, matched);
+  WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
+  WRITE_NODE_PTR_FIELD(qual, qual, qual);
+  WRITE_LIST_FIELD(target_list, targetList, targetList);
+  WRITE_LIST_FIELD(update_colnos, updateColnos, updateColnos);
 }
 
 static void
@@ -2476,75 +1424,834 @@ _outTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) out, const 
 }
 
 static void
-_outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out, const PartitionElem *node)
+_outJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) out, const JsonOutput *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+}
+
+static void
+_outJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) out, const JsonKeyValue *node)
+{
+  WRITE_NODE_PTR_FIELD(key, key, key);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, value, value, value);
+}
+
+static void
+_outJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) out, const JsonObjectConstructor *node)
+{
+  WRITE_LIST_FIELD(exprs, exprs, exprs);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  WRITE_BOOL_FIELD(unique, unique, unique);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) out, const JsonArrayConstructor *node)
+{
+  WRITE_LIST_FIELD(exprs, exprs, exprs);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) out, const JsonArrayQueryConstructor *node)
+{
+  WRITE_NODE_PTR_FIELD(query, query, query);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonAggConstructor(OUT_TYPE(JsonAggConstructor, JsonAggConstructor) out, const JsonAggConstructor *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_NODE_PTR_FIELD(agg_filter, agg_filter, agg_filter);
+  WRITE_LIST_FIELD(agg_order, agg_order, agg_order);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WindowDef, window_def, over, over, over);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonObjectAgg(OUT_TYPE(JsonObjectAgg, JsonObjectAgg) out, const JsonObjectAgg *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonAggConstructor, json_agg_constructor, constructor, constructor, constructor);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonKeyValue, json_key_value, arg, arg, arg);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  WRITE_BOOL_FIELD(unique, unique, unique);
+}
+
+static void
+_outJsonArrayAgg(OUT_TYPE(JsonArrayAgg, JsonArrayAgg) out, const JsonArrayAgg *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonAggConstructor, json_agg_constructor, constructor, constructor, constructor);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, arg, arg, arg);
+  WRITE_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+}
+
+static void
+_outRawStmt(OUT_TYPE(RawStmt, RawStmt) out, const RawStmt *node)
+{
+  WRITE_NODE_PTR_FIELD(stmt, stmt, stmt);
+  WRITE_INT_FIELD(stmt_location, stmt_location, stmt_location);
+  WRITE_INT_FIELD(stmt_len, stmt_len, stmt_len);
+}
+
+static void
+_outInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) out, const InsertStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(cols, cols, cols);
+  WRITE_NODE_PTR_FIELD(select_stmt, selectStmt, selectStmt);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(OnConflictClause, on_conflict_clause, on_conflict_clause, onConflictClause, onConflictClause);
+  WRITE_LIST_FIELD(returning_list, returningList, returningList);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
+}
+
+static void
+_outDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) out, const DeleteStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(using_clause, usingClause, usingClause);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  WRITE_LIST_FIELD(returning_list, returningList, returningList);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+}
+
+static void
+_outUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) out, const UpdateStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(target_list, targetList, targetList);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  WRITE_LIST_FIELD(from_clause, fromClause, fromClause);
+  WRITE_LIST_FIELD(returning_list, returningList, returningList);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+}
+
+static void
+_outMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) out, const MergeStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
+  WRITE_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
+  WRITE_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+}
+
+static void
+_outSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) out, const SelectStmt *node)
+{
+  WRITE_LIST_FIELD(distinct_clause, distinctClause, distinctClause);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into_clause, intoClause, intoClause);
+  WRITE_LIST_FIELD(target_list, targetList, targetList);
+  WRITE_LIST_FIELD(from_clause, fromClause, fromClause);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  WRITE_LIST_FIELD(group_clause, groupClause, groupClause);
+  WRITE_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
+  WRITE_NODE_PTR_FIELD(having_clause, havingClause, havingClause);
+  WRITE_LIST_FIELD(window_clause, windowClause, windowClause);
+  WRITE_LIST_FIELD(values_lists, valuesLists, valuesLists);
+  WRITE_LIST_FIELD(sort_clause, sortClause, sortClause);
+  WRITE_NODE_PTR_FIELD(limit_offset, limitOffset, limitOffset);
+  WRITE_NODE_PTR_FIELD(limit_count, limitCount, limitCount);
+  WRITE_ENUM_FIELD(LimitOption, limit_option, limitOption, limitOption);
+  WRITE_LIST_FIELD(locking_clause, lockingClause, lockingClause);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  WRITE_ENUM_FIELD(SetOperation, op, op, op);
+  WRITE_BOOL_FIELD(all, all, all);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, larg, larg, larg);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, rarg, rarg, rarg);
+}
+
+static void
+_outSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) out, const SetOperationStmt *node)
+{
+  WRITE_ENUM_FIELD(SetOperation, op, op, op);
+  WRITE_BOOL_FIELD(all, all, all);
+  WRITE_NODE_PTR_FIELD(larg, larg, larg);
+  WRITE_NODE_PTR_FIELD(rarg, rarg, rarg);
+  WRITE_LIST_FIELD(col_types, colTypes, colTypes);
+  WRITE_LIST_FIELD(col_typmods, colTypmods, colTypmods);
+  WRITE_LIST_FIELD(col_collations, colCollations, colCollations);
+  WRITE_LIST_FIELD(group_clauses, groupClauses, groupClauses);
+}
+
+static void
+_outReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) out, const ReturnStmt *node)
+{
+  WRITE_NODE_PTR_FIELD(returnval, returnval, returnval);
+}
+
+static void
+_outPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) out, const PLAssignStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
-  WRITE_NODE_PTR_FIELD(expr, expr, expr);
-  WRITE_LIST_FIELD(collation, collation, collation);
-  WRITE_LIST_FIELD(opclass, opclass, opclass);
+  WRITE_LIST_FIELD(indirection, indirection, indirection);
+  WRITE_INT_FIELD(nnames, nnames, nnames);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, val, val, val);
   WRITE_INT_FIELD(location, location, location);
 }
 
 static void
-_outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out, const PartitionSpec *node)
+_outCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) out, const CreateSchemaStmt *node)
 {
-  WRITE_STRING_FIELD(strategy, strategy, strategy);
-  WRITE_LIST_FIELD(part_params, partParams, partParams);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_STRING_FIELD(schemaname, schemaname, schemaname);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, authrole, authrole, authrole);
+  WRITE_LIST_FIELD(schema_elts, schemaElts, schemaElts);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
 }
 
 static void
-_outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out, const PartitionBoundSpec *node)
+_outAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) out, const AlterTableStmt *node)
 {
-  WRITE_CHAR_FIELD(strategy, strategy, strategy);
-  WRITE_BOOL_FIELD(is_default, is_default, is_default);
-  WRITE_INT_FIELD(modulus, modulus, modulus);
-  WRITE_INT_FIELD(remainder, remainder, remainder);
-  WRITE_LIST_FIELD(listdatums, listdatums, listdatums);
-  WRITE_LIST_FIELD(lowerdatums, lowerdatums, lowerdatums);
-  WRITE_LIST_FIELD(upperdatums, upperdatums, upperdatums);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(cmds, cmds, cmds);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
 }
 
 static void
-_outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out, const PartitionRangeDatum *node)
+_outReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) out, const ReplicaIdentityStmt *node)
 {
-  WRITE_ENUM_FIELD(PartitionRangeDatumKind, kind, kind, kind);
-  WRITE_NODE_PTR_FIELD(value, value, value);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_CHAR_FIELD(identity_type, identity_type, identity_type);
+  WRITE_STRING_FIELD(name, name, name);
 }
 
 static void
-_outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out, const PartitionCmd *node)
+_outAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) out, const AlterTableCmd *node)
 {
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
+  WRITE_ENUM_FIELD(AlterTableType, subtype, subtype, subtype);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_INT_FIELD(num, num, num);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
+  WRITE_NODE_PTR_FIELD(def, def, def);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  WRITE_BOOL_FIELD(recurse, recurse, recurse);
+}
+
+static void
+_outAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) out, const AlterCollationStmt *node)
+{
+  WRITE_LIST_FIELD(collname, collname, collname);
+}
+
+static void
+_outAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) out, const AlterDomainStmt *node)
+{
+  WRITE_CHAR_FIELD(subtype, subtype, subtype);
+  WRITE_LIST_FIELD(type_name, typeName, typeName);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_NODE_PTR_FIELD(def, def, def);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) out, const GrantStmt *node)
+{
+  WRITE_BOOL_FIELD(is_grant, is_grant, is_grant);
+  WRITE_ENUM_FIELD(GrantTargetType, targtype, targtype, targtype);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_LIST_FIELD(objects, objects, objects);
+  WRITE_LIST_FIELD(privileges, privileges, privileges);
+  WRITE_LIST_FIELD(grantees, grantees, grantees);
+  WRITE_BOOL_FIELD(grant_option, grant_option, grant_option);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+}
+
+static void
+_outObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) out, const ObjectWithArgs *node)
+{
+  WRITE_LIST_FIELD(objname, objname, objname);
+  WRITE_LIST_FIELD(objargs, objargs, objargs);
+  WRITE_LIST_FIELD(objfuncargs, objfuncargs, objfuncargs);
+  WRITE_BOOL_FIELD(args_unspecified, args_unspecified, args_unspecified);
+}
+
+static void
+_outAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) out, const AccessPriv *node)
+{
+  WRITE_STRING_FIELD(priv_name, priv_name, priv_name);
+  WRITE_LIST_FIELD(cols, cols, cols);
+}
+
+static void
+_outGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) out, const GrantRoleStmt *node)
+{
+  WRITE_LIST_FIELD(granted_roles, granted_roles, granted_roles);
+  WRITE_LIST_FIELD(grantee_roles, grantee_roles, grantee_roles);
+  WRITE_BOOL_FIELD(is_grant, is_grant, is_grant);
+  WRITE_LIST_FIELD(opt, opt, opt);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+}
+
+static void
+_outAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) out, const AlterDefaultPrivilegesStmt *node)
+{
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(GrantStmt, grant_stmt, action, action, action);
+}
+
+static void
+_outCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) out, const CopyStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(query, query, query);
+  WRITE_LIST_FIELD(attlist, attlist, attlist);
+  WRITE_BOOL_FIELD(is_from, is_from, is_from);
+  WRITE_BOOL_FIELD(is_program, is_program, is_program);
+  WRITE_STRING_FIELD(filename, filename, filename);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+}
+
+static void
+_outVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) out, const VariableSetStmt *node)
+{
+  WRITE_ENUM_FIELD(VariableSetKind, kind, kind, kind);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_LIST_FIELD(args, args, args);
+  WRITE_BOOL_FIELD(is_local, is_local, is_local);
+}
+
+static void
+_outVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) out, const VariableShowStmt *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+}
+
+static void
+_outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out, const CreateStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(table_elts, tableElts, tableElts);
+  WRITE_LIST_FIELD(inh_relations, inhRelations, inhRelations);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, partbound, partbound, partbound);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionSpec, partition_spec, partspec, partspec, partspec);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, of_typename, ofTypename, ofTypename);
+  WRITE_LIST_FIELD(constraints, constraints, constraints);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_ENUM_FIELD(OnCommitAction, oncommit, oncommit, oncommit);
+  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+}
+
+static void
+_outConstraint(OUT_TYPE(Constraint, Constraint) out, const Constraint *node)
+{
+  WRITE_ENUM_FIELD(ConstrType, contype, contype, contype);
+  WRITE_STRING_FIELD(conname, conname, conname);
+  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
+  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  WRITE_INT_FIELD(location, location, location);
+  WRITE_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
+  WRITE_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
+  WRITE_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
+  WRITE_CHAR_FIELD(generated_when, generated_when, generated_when);
+  WRITE_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
+  WRITE_LIST_FIELD(keys, keys, keys);
+  WRITE_LIST_FIELD(including, including, including);
+  WRITE_LIST_FIELD(exclusions, exclusions, exclusions);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_STRING_FIELD(indexname, indexname, indexname);
+  WRITE_STRING_FIELD(indexspace, indexspace, indexspace);
+  WRITE_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
+  WRITE_STRING_FIELD(access_method, access_method, access_method);
+  WRITE_NODE_PTR_FIELD(where_clause, where_clause, where_clause);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, pktable, pktable, pktable);
+  WRITE_LIST_FIELD(fk_attrs, fk_attrs, fk_attrs);
+  WRITE_LIST_FIELD(pk_attrs, pk_attrs, pk_attrs);
+  WRITE_CHAR_FIELD(fk_matchtype, fk_matchtype, fk_matchtype);
+  WRITE_CHAR_FIELD(fk_upd_action, fk_upd_action, fk_upd_action);
+  WRITE_CHAR_FIELD(fk_del_action, fk_del_action, fk_del_action);
+  WRITE_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
+  WRITE_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
+  WRITE_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
+  WRITE_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
+  WRITE_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
+}
+
+static void
+_outCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) out, const CreateTableSpaceStmt *node)
+{
+  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, owner, owner, owner);
+  WRITE_STRING_FIELD(location, location, location);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) out, const DropTableSpaceStmt *node)
+{
+  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) out, const AlterTableSpaceOptionsStmt *node)
+{
+  WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_BOOL_FIELD(is_reset, isReset, isReset);
+}
+
+static void
+_outAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) out, const AlterTableMoveAllStmt *node)
+{
+  WRITE_STRING_FIELD(orig_tablespacename, orig_tablespacename, orig_tablespacename);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_STRING_FIELD(new_tablespacename, new_tablespacename, new_tablespacename);
+  WRITE_BOOL_FIELD(nowait, nowait, nowait);
+}
+
+static void
+_outCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) out, const CreateExtensionStmt *node)
+{
+  WRITE_STRING_FIELD(extname, extname, extname);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) out, const AlterExtensionStmt *node)
+{
+  WRITE_STRING_FIELD(extname, extname, extname);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) out, const AlterExtensionContentsStmt *node)
+{
+  WRITE_STRING_FIELD(extname, extname, extname);
+  WRITE_INT_FIELD(action, action, action);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+}
+
+static void
+_outCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) out, const CreateFdwStmt *node)
+{
+  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
+  WRITE_LIST_FIELD(func_options, func_options, func_options);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) out, const AlterFdwStmt *node)
+{
+  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
+  WRITE_LIST_FIELD(func_options, func_options, func_options);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) out, const CreateForeignServerStmt *node)
+{
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_STRING_FIELD(servertype, servertype, servertype);
+  WRITE_STRING_FIELD(version, version, version);
+  WRITE_STRING_FIELD(fdwname, fdwname, fdwname);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) out, const AlterForeignServerStmt *node)
+{
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_STRING_FIELD(version, version, version);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_BOOL_FIELD(has_version, has_version, has_version);
+}
+
+static void
+_outCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) out, const CreateForeignTableStmt *node)
+{
+  WRITE_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) out, const CreateUserMappingStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) out, const AlterUserMappingStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) out, const DropUserMappingStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  WRITE_STRING_FIELD(servername, servername, servername);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) out, const ImportForeignSchemaStmt *node)
+{
+  WRITE_STRING_FIELD(server_name, server_name, server_name);
+  WRITE_STRING_FIELD(remote_schema, remote_schema, remote_schema);
+  WRITE_STRING_FIELD(local_schema, local_schema, local_schema);
+  WRITE_ENUM_FIELD(ImportForeignSchemaType, list_type, list_type, list_type);
+  WRITE_LIST_FIELD(table_list, table_list, table_list);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) out, const CreatePolicyStmt *node)
+{
+  WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
+  WRITE_STRING_FIELD(cmd_name, cmd_name, cmd_name);
+  WRITE_BOOL_FIELD(permissive, permissive, permissive);
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_NODE_PTR_FIELD(qual, qual, qual);
+  WRITE_NODE_PTR_FIELD(with_check, with_check, with_check);
+}
+
+static void
+_outAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) out, const AlterPolicyStmt *node)
+{
+  WRITE_STRING_FIELD(policy_name, policy_name, policy_name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_NODE_PTR_FIELD(qual, qual, qual);
+  WRITE_NODE_PTR_FIELD(with_check, with_check, with_check);
+}
+
+static void
+_outCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) out, const CreateAmStmt *node)
+{
+  WRITE_STRING_FIELD(amname, amname, amname);
+  WRITE_LIST_FIELD(handler_name, handler_name, handler_name);
+  WRITE_CHAR_FIELD(amtype, amtype, amtype);
+}
+
+static void
+_outCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) out, const CreateTrigStmt *node)
+{
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
+  WRITE_STRING_FIELD(trigname, trigname, trigname);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_LIST_FIELD(funcname, funcname, funcname);
+  WRITE_LIST_FIELD(args, args, args);
+  WRITE_BOOL_FIELD(row, row, row);
+  WRITE_INT_FIELD(timing, timing, timing);
+  WRITE_INT_FIELD(events, events, events);
+  WRITE_LIST_FIELD(columns, columns, columns);
+  WRITE_NODE_PTR_FIELD(when_clause, whenClause, whenClause);
+  WRITE_LIST_FIELD(transition_rels, transitionRels, transitionRels);
+  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
+  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, constrrel, constrrel, constrrel);
+}
+
+static void
+_outCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) out, const CreateEventTrigStmt *node)
+{
+  WRITE_STRING_FIELD(trigname, trigname, trigname);
+  WRITE_STRING_FIELD(eventname, eventname, eventname);
+  WRITE_LIST_FIELD(whenclause, whenclause, whenclause);
+  WRITE_LIST_FIELD(funcname, funcname, funcname);
+}
+
+static void
+_outAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) out, const AlterEventTrigStmt *node)
+{
+  WRITE_STRING_FIELD(trigname, trigname, trigname);
+  WRITE_CHAR_FIELD(tgenabled, tgenabled, tgenabled);
+}
+
+static void
+_outCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) out, const CreatePLangStmt *node)
+{
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_STRING_FIELD(plname, plname, plname);
+  WRITE_LIST_FIELD(plhandler, plhandler, plhandler);
+  WRITE_LIST_FIELD(plinline, plinline, plinline);
+  WRITE_LIST_FIELD(plvalidator, plvalidator, plvalidator);
+  WRITE_BOOL_FIELD(pltrusted, pltrusted, pltrusted);
+}
+
+static void
+_outCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) out, const CreateRoleStmt *node)
+{
+  WRITE_ENUM_FIELD(RoleStmtType, stmt_type, stmt_type, stmt_type);
+  WRITE_STRING_FIELD(role, role, role);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) out, const AlterRoleStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_INT_FIELD(action, action, action);
+}
+
+static void
+_outAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) out, const AlterRoleSetStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
+  WRITE_STRING_FIELD(database, database, database);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+}
+
+static void
+_outDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) out, const DropRoleStmt *node)
+{
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) out, const CreateSeqStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_UINT_FIELD(owner_id, ownerId, ownerId);
+  WRITE_BOOL_FIELD(for_identity, for_identity, for_identity);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+}
+
+static void
+_outAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) out, const AlterSeqStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_BOOL_FIELD(for_identity, for_identity, for_identity);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) out, const DefineStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, kind, kind, kind);
+  WRITE_BOOL_FIELD(oldstyle, oldstyle, oldstyle);
+  WRITE_LIST_FIELD(defnames, defnames, defnames);
+  WRITE_LIST_FIELD(args, args, args);
+  WRITE_LIST_FIELD(definition, definition, definition);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_BOOL_FIELD(replace, replace, replace);
+}
+
+static void
+_outCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) out, const CreateDomainStmt *node)
+{
+  WRITE_LIST_FIELD(domainname, domainname, domainname);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(CollateClause, collate_clause, coll_clause, collClause, collClause);
+  WRITE_LIST_FIELD(constraints, constraints, constraints);
+}
+
+static void
+_outCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) out, const CreateOpClassStmt *node)
+{
+  WRITE_LIST_FIELD(opclassname, opclassname, opclassname);
+  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  WRITE_STRING_FIELD(amname, amname, amname);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, datatype, datatype, datatype);
+  WRITE_LIST_FIELD(items, items, items);
+  WRITE_BOOL_FIELD(is_default, isDefault, isDefault);
+}
+
+static void
+_outCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) out, const CreateOpClassItem *node)
+{
+  WRITE_INT_FIELD(itemtype, itemtype, itemtype);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, name, name, name);
+  WRITE_INT_FIELD(number, number, number);
+  WRITE_LIST_FIELD(order_family, order_family, order_family);
+  WRITE_LIST_FIELD(class_args, class_args, class_args);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, storedtype, storedtype, storedtype);
+}
+
+static void
+_outCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) out, const CreateOpFamilyStmt *node)
+{
+  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  WRITE_STRING_FIELD(amname, amname, amname);
+}
+
+static void
+_outAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) out, const AlterOpFamilyStmt *node)
+{
+  WRITE_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  WRITE_STRING_FIELD(amname, amname, amname);
+  WRITE_BOOL_FIELD(is_drop, isDrop, isDrop);
+  WRITE_LIST_FIELD(items, items, items);
+}
+
+static void
+_outDropStmt(OUT_TYPE(DropStmt, DropStmt) out, const DropStmt *node)
+{
+  WRITE_LIST_FIELD(objects, objects, objects);
+  WRITE_ENUM_FIELD(ObjectType, remove_type, removeType, removeType);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
 }
 
 static void
-_outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out, const VacuumRelation *node)
+_outTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) out, const TruncateStmt *node)
 {
-  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  WRITE_UINT_FIELD(oid, oid, oid);
-  WRITE_LIST_FIELD(va_cols, va_cols, va_cols);
+  WRITE_LIST_FIELD(relations, relations, relations);
+  WRITE_BOOL_FIELD(restart_seqs, restart_seqs, restart_seqs);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
 }
 
 static void
-_outPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) out, const PublicationObjSpec *node)
+_outCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) out, const CommentStmt *node)
 {
-  WRITE_ENUM_FIELD(PublicationObjSpecType, pubobjtype, pubobjtype, pubobjtype);
-  WRITE_STRING_FIELD(name, name, name);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(PublicationTable, publication_table, pubtable, pubtable, pubtable);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_STRING_FIELD(comment, comment, comment);
 }
 
 static void
-_outPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) out, const PublicationTable *node)
+_outSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) out, const SecLabelStmt *node)
 {
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_STRING_FIELD(provider, provider, provider);
+  WRITE_STRING_FIELD(label, label, label);
+}
+
+static void
+_outDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) out, const DeclareCursorStmt *node)
+{
+  WRITE_STRING_FIELD(portalname, portalname, portalname);
+  WRITE_INT_FIELD(options, options, options);
+  WRITE_NODE_PTR_FIELD(query, query, query);
+}
+
+static void
+_outClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) out, const ClosePortalStmt *node)
+{
+  WRITE_STRING_FIELD(portalname, portalname, portalname);
+}
+
+static void
+_outFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) out, const FetchStmt *node)
+{
+  WRITE_ENUM_FIELD(FetchDirection, direction, direction, direction);
+  WRITE_LONG_FIELD(how_many, howMany, howMany);
+  WRITE_STRING_FIELD(portalname, portalname, portalname);
+  WRITE_BOOL_FIELD(ismove, ismove, ismove);
+}
+
+static void
+_outIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) out, const IndexStmt *node)
+{
+  WRITE_STRING_FIELD(idxname, idxname, idxname);
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
+  WRITE_STRING_FIELD(table_space, tableSpace, tableSpace);
+  WRITE_LIST_FIELD(index_params, indexParams, indexParams);
+  WRITE_LIST_FIELD(index_including_params, indexIncludingParams, indexIncludingParams);
+  WRITE_LIST_FIELD(options, options, options);
   WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  WRITE_LIST_FIELD(columns, columns, columns);
+  WRITE_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
+  WRITE_STRING_FIELD(idxcomment, idxcomment, idxcomment);
+  WRITE_UINT_FIELD(index_oid, indexOid, indexOid);
+  WRITE_UINT_FIELD(old_number, oldNumber, oldNumber);
+  WRITE_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
+  WRITE_UINT_FIELD(old_first_relfilelocator_subid, oldFirstRelfilelocatorSubid, oldFirstRelfilelocatorSubid);
+  WRITE_BOOL_FIELD(unique, unique, unique);
+  WRITE_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
+  WRITE_BOOL_FIELD(primary, primary, primary);
+  WRITE_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
+  WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
+  WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  WRITE_BOOL_FIELD(transformed, transformed, transformed);
+  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
+}
+
+static void
+_outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out, const CreateStatsStmt *node)
+{
+  WRITE_LIST_FIELD(defnames, defnames, defnames);
+  WRITE_LIST_FIELD(stat_types, stat_types, stat_types);
+  WRITE_LIST_FIELD(exprs, exprs, exprs);
+  WRITE_LIST_FIELD(relations, relations, relations);
+  WRITE_STRING_FIELD(stxcomment, stxcomment, stxcomment);
+  WRITE_BOOL_FIELD(transformed, transformed, transformed);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+}
+
+static void
+_outStatsElem(OUT_TYPE(StatsElem, StatsElem) out, const StatsElem *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+}
+
+static void
+_outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out, const AlterStatsStmt *node)
+{
+  WRITE_LIST_FIELD(defnames, defnames, defnames);
+  WRITE_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) out, const CreateFunctionStmt *node)
+{
+  WRITE_BOOL_FIELD(is_procedure, is_procedure, is_procedure);
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_LIST_FIELD(funcname, funcname, funcname);
+  WRITE_LIST_FIELD(parameters, parameters, parameters);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, return_type, returnType, returnType);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_NODE_PTR_FIELD(sql_body, sql_body, sql_body);
+}
+
+static void
+_outFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) out, const FunctionParameter *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
+  WRITE_ENUM_FIELD(FunctionParameterMode, mode, mode, mode);
+  WRITE_NODE_PTR_FIELD(defexpr, defexpr, defexpr);
+}
+
+static void
+_outAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) out, const AlterFunctionStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
+  WRITE_LIST_FIELD(actions, actions, actions);
+}
+
+static void
+_outDoStmt(OUT_TYPE(DoStmt, DoStmt) out, const DoStmt *node)
+{
+  WRITE_LIST_FIELD(args, args, args);
 }
 
 static void
@@ -2557,8 +2264,434 @@ _outInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) out, const Inline
 }
 
 static void
+_outCallStmt(OUT_TYPE(CallStmt, CallStmt) out, const CallStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
+  WRITE_LIST_FIELD(outargs, outargs, outargs);
+}
+
+static void
 _outCallContext(OUT_TYPE(CallContext, CallContext) out, const CallContext *node)
 {
   WRITE_BOOL_FIELD(atomic, atomic, atomic);
+}
+
+static void
+_outRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) out, const RenameStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, rename_type, renameType, renameType);
+  WRITE_ENUM_FIELD(ObjectType, relation_type, relationType, relationType);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_STRING_FIELD(subname, subname, subname);
+  WRITE_STRING_FIELD(newname, newname, newname);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) out, const AlterObjectDependsStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(String, string, extname, extname, extname);
+  WRITE_BOOL_FIELD(remove, remove, remove);
+}
+
+static void
+_outAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) out, const AlterObjectSchemaStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_STRING_FIELD(newschema, newschema, newschema);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) out, const AlterOwnerStmt *node)
+{
+  WRITE_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(object, object, object);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
+}
+
+static void
+_outAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) out, const AlterOperatorStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, opername, opername, opername);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) out, const AlterTypeStmt *node)
+{
+  WRITE_LIST_FIELD(type_name, typeName, typeName);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) out, const RuleStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_STRING_FIELD(rulename, rulename, rulename);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  WRITE_ENUM_FIELD(CmdType, event, event, event);
+  WRITE_BOOL_FIELD(instead, instead, instead);
+  WRITE_LIST_FIELD(actions, actions, actions);
+  WRITE_BOOL_FIELD(replace, replace, replace);
+}
+
+static void
+_outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out, const NotifyStmt *node)
+{
+  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
+  WRITE_STRING_FIELD(payload, payload, payload);
+}
+
+static void
+_outListenStmt(OUT_TYPE(ListenStmt, ListenStmt) out, const ListenStmt *node)
+{
+  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
+}
+
+static void
+_outUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) out, const UnlistenStmt *node)
+{
+  WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
+}
+
+static void
+_outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out, const TransactionStmt *node)
+{
+  WRITE_ENUM_FIELD(TransactionStmtKind, kind, kind, kind);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
+  WRITE_STRING_FIELD(gid, gid, gid);
+  WRITE_BOOL_FIELD(chain, chain, chain);
+}
+
+static void
+_outCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) out, const CompositeTypeStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, typevar, typevar, typevar);
+  WRITE_LIST_FIELD(coldeflist, coldeflist, coldeflist);
+}
+
+static void
+_outCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) out, const CreateEnumStmt *node)
+{
+  WRITE_LIST_FIELD(type_name, typeName, typeName);
+  WRITE_LIST_FIELD(vals, vals, vals);
+}
+
+static void
+_outCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) out, const CreateRangeStmt *node)
+{
+  WRITE_LIST_FIELD(type_name, typeName, typeName);
+  WRITE_LIST_FIELD(params, params, params);
+}
+
+static void
+_outAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) out, const AlterEnumStmt *node)
+{
+  WRITE_LIST_FIELD(type_name, typeName, typeName);
+  WRITE_STRING_FIELD(old_val, oldVal, oldVal);
+  WRITE_STRING_FIELD(new_val, newVal, newVal);
+  WRITE_STRING_FIELD(new_val_neighbor, newValNeighbor, newValNeighbor);
+  WRITE_BOOL_FIELD(new_val_is_after, newValIsAfter, newValIsAfter);
+  WRITE_BOOL_FIELD(skip_if_new_val_exists, skipIfNewValExists, skipIfNewValExists);
+}
+
+static void
+_outViewStmt(OUT_TYPE(ViewStmt, ViewStmt) out, const ViewStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, view, view, view);
+  WRITE_LIST_FIELD(aliases, aliases, aliases);
+  WRITE_NODE_PTR_FIELD(query, query, query);
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_ENUM_FIELD(ViewCheckOption, with_check_option, withCheckOption, withCheckOption);
+}
+
+static void
+_outLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) out, const LoadStmt *node)
+{
+  WRITE_STRING_FIELD(filename, filename, filename);
+}
+
+static void
+_outCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) out, const CreatedbStmt *node)
+{
+  WRITE_STRING_FIELD(dbname, dbname, dbname);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) out, const AlterDatabaseStmt *node)
+{
+  WRITE_STRING_FIELD(dbname, dbname, dbname);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) out, const AlterDatabaseRefreshCollStmt *node)
+{
+  WRITE_STRING_FIELD(dbname, dbname, dbname);
+}
+
+static void
+_outAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) out, const AlterDatabaseSetStmt *node)
+{
+  WRITE_STRING_FIELD(dbname, dbname, dbname);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+}
+
+static void
+_outDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) out, const DropdbStmt *node)
+{
+  WRITE_STRING_FIELD(dbname, dbname, dbname);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) out, const AlterSystemStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+}
+
+static void
+_outClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) out, const ClusterStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_STRING_FIELD(indexname, indexname, indexname);
+  WRITE_LIST_FIELD(params, params, params);
+}
+
+static void
+_outVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) out, const VacuumStmt *node)
+{
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_LIST_FIELD(rels, rels, rels);
+  WRITE_BOOL_FIELD(is_vacuumcmd, is_vacuumcmd, is_vacuumcmd);
+}
+
+static void
+_outVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) out, const VacuumRelation *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_UINT_FIELD(oid, oid, oid);
+  WRITE_LIST_FIELD(va_cols, va_cols, va_cols);
+}
+
+static void
+_outExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) out, const ExplainStmt *node)
+{
+  WRITE_NODE_PTR_FIELD(query, query, query);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) out, const CreateTableAsStmt *node)
+{
+  WRITE_NODE_PTR_FIELD(query, query, query);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
+  WRITE_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  WRITE_BOOL_FIELD(is_select_into, is_select_into, is_select_into);
+  WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+}
+
+static void
+_outRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) out, const RefreshMatViewStmt *node)
+{
+  WRITE_BOOL_FIELD(concurrent, concurrent, concurrent);
+  WRITE_BOOL_FIELD(skip_data, skipData, skipData);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+}
+
+static void
+_outCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) out, const CheckPointStmt *node)
+{
+}
+
+static void
+_outDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) out, const DiscardStmt *node)
+{
+  WRITE_ENUM_FIELD(DiscardMode, target, target, target);
+}
+
+static void
+_outLockStmt(OUT_TYPE(LockStmt, LockStmt) out, const LockStmt *node)
+{
+  WRITE_LIST_FIELD(relations, relations, relations);
+  WRITE_INT_FIELD(mode, mode, mode);
+  WRITE_BOOL_FIELD(nowait, nowait, nowait);
+}
+
+static void
+_outConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) out, const ConstraintsSetStmt *node)
+{
+  WRITE_LIST_FIELD(constraints, constraints, constraints);
+  WRITE_BOOL_FIELD(deferred, deferred, deferred);
+}
+
+static void
+_outReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) out, const ReindexStmt *node)
+{
+  WRITE_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_LIST_FIELD(params, params, params);
+}
+
+static void
+_outCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) out, const CreateConversionStmt *node)
+{
+  WRITE_LIST_FIELD(conversion_name, conversion_name, conversion_name);
+  WRITE_STRING_FIELD(for_encoding_name, for_encoding_name, for_encoding_name);
+  WRITE_STRING_FIELD(to_encoding_name, to_encoding_name, to_encoding_name);
+  WRITE_LIST_FIELD(func_name, func_name, func_name);
+  WRITE_BOOL_FIELD(def, def, def);
+}
+
+static void
+_outCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) out, const CreateCastStmt *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, sourcetype, sourcetype, sourcetype);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, targettype, targettype, targettype);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
+  WRITE_ENUM_FIELD(CoercionContext, context, context, context);
+  WRITE_BOOL_FIELD(inout, inout, inout);
+}
+
+static void
+_outCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) out, const CreateTransformStmt *node)
+{
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, type_name, type_name);
+  WRITE_STRING_FIELD(lang, lang, lang);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, fromsql, fromsql, fromsql);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, tosql, tosql, tosql);
+}
+
+static void
+_outPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) out, const PrepareStmt *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_LIST_FIELD(argtypes, argtypes, argtypes);
+  WRITE_NODE_PTR_FIELD(query, query, query);
+}
+
+static void
+_outExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) out, const ExecuteStmt *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_LIST_FIELD(params, params, params);
+}
+
+static void
+_outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out, const DeallocateStmt *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+}
+
+static void
+_outDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) out, const DropOwnedStmt *node)
+{
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+}
+
+static void
+_outReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) out, const ReassignOwnedStmt *node)
+{
+  WRITE_LIST_FIELD(roles, roles, roles);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newrole, newrole, newrole);
+}
+
+static void
+_outAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) out, const AlterTSDictionaryStmt *node)
+{
+  WRITE_LIST_FIELD(dictname, dictname, dictname);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) out, const AlterTSConfigurationStmt *node)
+{
+  WRITE_ENUM_FIELD(AlterTSConfigType, kind, kind, kind);
+  WRITE_LIST_FIELD(cfgname, cfgname, cfgname);
+  WRITE_LIST_FIELD(tokentype, tokentype, tokentype);
+  WRITE_LIST_FIELD(dicts, dicts, dicts);
+  WRITE_BOOL_FIELD(override, override, override);
+  WRITE_BOOL_FIELD(replace, replace, replace);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+}
+
+static void
+_outPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) out, const PublicationTable *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  WRITE_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  WRITE_LIST_FIELD(columns, columns, columns);
+}
+
+static void
+_outPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) out, const PublicationObjSpec *node)
+{
+  WRITE_ENUM_FIELD(PublicationObjSpecType, pubobjtype, pubobjtype, pubobjtype);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PublicationTable, publication_table, pubtable, pubtable, pubtable);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) out, const CreatePublicationStmt *node)
+{
+  WRITE_STRING_FIELD(pubname, pubname, pubname);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_LIST_FIELD(pubobjects, pubobjects, pubobjects);
+  WRITE_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
+}
+
+static void
+_outAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) out, const AlterPublicationStmt *node)
+{
+  WRITE_STRING_FIELD(pubname, pubname, pubname);
+  WRITE_LIST_FIELD(options, options, options);
+  WRITE_LIST_FIELD(pubobjects, pubobjects, pubobjects);
+  WRITE_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
+  WRITE_ENUM_FIELD(AlterPublicationAction, action, action, action);
+}
+
+static void
+_outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) out, const CreateSubscriptionStmt *node)
+{
+  WRITE_STRING_FIELD(subname, subname, subname);
+  WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
+  WRITE_LIST_FIELD(publication, publication, publication);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) out, const AlterSubscriptionStmt *node)
+{
+  WRITE_ENUM_FIELD(AlterSubscriptionType, kind, kind, kind);
+  WRITE_STRING_FIELD(subname, subname, subname);
+  WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
+  WRITE_LIST_FIELD(publication, publication, publication);
+  WRITE_LIST_FIELD(options, options, options);
+}
+
+static void
+_outDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) out, const DropSubscriptionStmt *node)
+{
+  WRITE_STRING_FIELD(subname, subname, subname);
+  WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  WRITE_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
 }
 

@@ -3,6 +3,7 @@
 static Alias * _readAlias(OUT_TYPE(Alias, Alias) msg);
 static RangeVar * _readRangeVar(OUT_TYPE(RangeVar, RangeVar) msg);
 static TableFunc * _readTableFunc(OUT_TYPE(TableFunc, TableFunc) msg);
+static IntoClause * _readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg);
 static Var * _readVar(OUT_TYPE(Var, Var) msg);
 static Param * _readParam(OUT_TYPE(Param, Param) msg);
 static Aggref * _readAggref(OUT_TYPE(Aggref, Aggref) msg);
@@ -36,6 +37,11 @@ static CoalesceExpr * _readCoalesceExpr(OUT_TYPE(CoalesceExpr, CoalesceExpr) msg
 static MinMaxExpr * _readMinMaxExpr(OUT_TYPE(MinMaxExpr, MinMaxExpr) msg);
 static SQLValueFunction * _readSQLValueFunction(OUT_TYPE(SQLValueFunction, SQLValueFunction) msg);
 static XmlExpr * _readXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) msg);
+static JsonFormat * _readJsonFormat(OUT_TYPE(JsonFormat, JsonFormat) msg);
+static JsonReturning * _readJsonReturning(OUT_TYPE(JsonReturning, JsonReturning) msg);
+static JsonValueExpr * _readJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) msg);
+static JsonConstructorExpr * _readJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) msg);
+static JsonIsPredicate * _readJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) msg);
 static NullTest * _readNullTest(OUT_TYPE(NullTest, NullTest) msg);
 static BooleanTest * _readBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) msg);
 static CoerceToDomain * _readCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) msg);
@@ -49,130 +55,14 @@ static RangeTblRef * _readRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) msg);
 static JoinExpr * _readJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) msg);
 static FromExpr * _readFromExpr(OUT_TYPE(FromExpr, FromExpr) msg);
 static OnConflictExpr * _readOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) msg);
-static IntoClause * _readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg);
-static MergeAction * _readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg);
-static RawStmt * _readRawStmt(OUT_TYPE(RawStmt, RawStmt) msg);
 static Query * _readQuery(OUT_TYPE(Query, Query) msg);
-static InsertStmt * _readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg);
-static DeleteStmt * _readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg);
-static UpdateStmt * _readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg);
-static MergeStmt * _readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg);
-static SelectStmt * _readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg);
-static ReturnStmt * _readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg);
-static PLAssignStmt * _readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg);
-static AlterTableStmt * _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg);
-static AlterTableCmd * _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg);
-static AlterDomainStmt * _readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg);
-static SetOperationStmt * _readSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) msg);
-static GrantStmt * _readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg);
-static GrantRoleStmt * _readGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) msg);
-static AlterDefaultPrivilegesStmt * _readAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) msg);
-static ClosePortalStmt * _readClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) msg);
-static ClusterStmt * _readClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) msg);
-static CopyStmt * _readCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) msg);
-static CreateStmt * _readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg);
-static DefineStmt * _readDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) msg);
-static DropStmt * _readDropStmt(OUT_TYPE(DropStmt, DropStmt) msg);
-static TruncateStmt * _readTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) msg);
-static CommentStmt * _readCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) msg);
-static FetchStmt * _readFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) msg);
-static IndexStmt * _readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg);
-static CreateFunctionStmt * _readCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) msg);
-static AlterFunctionStmt * _readAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) msg);
-static DoStmt * _readDoStmt(OUT_TYPE(DoStmt, DoStmt) msg);
-static RenameStmt * _readRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) msg);
-static RuleStmt * _readRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) msg);
-static NotifyStmt * _readNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) msg);
-static ListenStmt * _readListenStmt(OUT_TYPE(ListenStmt, ListenStmt) msg);
-static UnlistenStmt * _readUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) msg);
-static TransactionStmt * _readTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) msg);
-static ViewStmt * _readViewStmt(OUT_TYPE(ViewStmt, ViewStmt) msg);
-static LoadStmt * _readLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) msg);
-static CreateDomainStmt * _readCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) msg);
-static CreatedbStmt * _readCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) msg);
-static DropdbStmt * _readDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) msg);
-static VacuumStmt * _readVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) msg);
-static ExplainStmt * _readExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) msg);
-static CreateTableAsStmt * _readCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) msg);
-static CreateSeqStmt * _readCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) msg);
-static AlterSeqStmt * _readAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) msg);
-static VariableSetStmt * _readVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) msg);
-static VariableShowStmt * _readVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) msg);
-static DiscardStmt * _readDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) msg);
-static CreateTrigStmt * _readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg);
-static CreatePLangStmt * _readCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) msg);
-static CreateRoleStmt * _readCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) msg);
-static AlterRoleStmt * _readAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) msg);
-static DropRoleStmt * _readDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) msg);
-static LockStmt * _readLockStmt(OUT_TYPE(LockStmt, LockStmt) msg);
-static ConstraintsSetStmt * _readConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) msg);
-static ReindexStmt * _readReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) msg);
-static CheckPointStmt * _readCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) msg);
-static CreateSchemaStmt * _readCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) msg);
-static AlterDatabaseStmt * _readAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) msg);
-static AlterDatabaseRefreshCollStmt * _readAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) msg);
-static AlterDatabaseSetStmt * _readAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) msg);
-static AlterRoleSetStmt * _readAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) msg);
-static CreateConversionStmt * _readCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) msg);
-static CreateCastStmt * _readCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) msg);
-static CreateOpClassStmt * _readCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) msg);
-static CreateOpFamilyStmt * _readCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) msg);
-static AlterOpFamilyStmt * _readAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) msg);
-static PrepareStmt * _readPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) msg);
-static ExecuteStmt * _readExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) msg);
-static DeallocateStmt * _readDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) msg);
-static DeclareCursorStmt * _readDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) msg);
-static CreateTableSpaceStmt * _readCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) msg);
-static DropTableSpaceStmt * _readDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) msg);
-static AlterObjectDependsStmt * _readAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) msg);
-static AlterObjectSchemaStmt * _readAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) msg);
-static AlterOwnerStmt * _readAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) msg);
-static AlterOperatorStmt * _readAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) msg);
-static AlterTypeStmt * _readAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) msg);
-static DropOwnedStmt * _readDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) msg);
-static ReassignOwnedStmt * _readReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) msg);
-static CompositeTypeStmt * _readCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) msg);
-static CreateEnumStmt * _readCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) msg);
-static CreateRangeStmt * _readCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) msg);
-static AlterEnumStmt * _readAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) msg);
-static AlterTSDictionaryStmt * _readAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) msg);
-static AlterTSConfigurationStmt * _readAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) msg);
-static CreateFdwStmt * _readCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) msg);
-static AlterFdwStmt * _readAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) msg);
-static CreateForeignServerStmt * _readCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) msg);
-static AlterForeignServerStmt * _readAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) msg);
-static CreateUserMappingStmt * _readCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) msg);
-static AlterUserMappingStmt * _readAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) msg);
-static DropUserMappingStmt * _readDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) msg);
-static AlterTableSpaceOptionsStmt * _readAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) msg);
-static AlterTableMoveAllStmt * _readAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) msg);
-static SecLabelStmt * _readSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) msg);
-static CreateForeignTableStmt * _readCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) msg);
-static ImportForeignSchemaStmt * _readImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) msg);
-static CreateExtensionStmt * _readCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) msg);
-static AlterExtensionStmt * _readAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) msg);
-static AlterExtensionContentsStmt * _readAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) msg);
-static CreateEventTrigStmt * _readCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) msg);
-static AlterEventTrigStmt * _readAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) msg);
-static RefreshMatViewStmt * _readRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) msg);
-static ReplicaIdentityStmt * _readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg);
-static AlterSystemStmt * _readAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) msg);
-static CreatePolicyStmt * _readCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) msg);
-static AlterPolicyStmt * _readAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) msg);
-static CreateTransformStmt * _readCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) msg);
-static CreateAmStmt * _readCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) msg);
-static CreatePublicationStmt * _readCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) msg);
-static AlterPublicationStmt * _readAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) msg);
-static CreateSubscriptionStmt * _readCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) msg);
-static AlterSubscriptionStmt * _readAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) msg);
-static DropSubscriptionStmt * _readDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) msg);
-static CreateStatsStmt * _readCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg);
-static AlterCollationStmt * _readAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) msg);
-static CallStmt * _readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg);
-static AlterStatsStmt * _readAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) msg);
-static A_Expr * _readAExpr(OUT_TYPE(A_Expr, AExpr) msg);
+static TypeName * _readTypeName(OUT_TYPE(TypeName, TypeName) msg);
 static ColumnRef * _readColumnRef(OUT_TYPE(ColumnRef, ColumnRef) msg);
 static ParamRef * _readParamRef(OUT_TYPE(ParamRef, ParamRef) msg);
+static A_Expr * _readAExpr(OUT_TYPE(A_Expr, AExpr) msg);
+static TypeCast * _readTypeCast(OUT_TYPE(TypeCast, TypeCast) msg);
+static CollateClause * _readCollateClause(OUT_TYPE(CollateClause, CollateClause) msg);
+static RoleSpec * _readRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) msg);
 static FuncCall * _readFuncCall(OUT_TYPE(FuncCall, FuncCall) msg);
 static A_Star * _readAStar(OUT_TYPE(A_Star, AStar) msg);
 static A_Indices * _readAIndices(OUT_TYPE(A_Indices, AIndices) msg);
@@ -180,36 +70,33 @@ static A_Indirection * _readAIndirection(OUT_TYPE(A_Indirection, AIndirection) m
 static A_ArrayExpr * _readAArrayExpr(OUT_TYPE(A_ArrayExpr, AArrayExpr) msg);
 static ResTarget * _readResTarget(OUT_TYPE(ResTarget, ResTarget) msg);
 static MultiAssignRef * _readMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) msg);
-static TypeCast * _readTypeCast(OUT_TYPE(TypeCast, TypeCast) msg);
-static CollateClause * _readCollateClause(OUT_TYPE(CollateClause, CollateClause) msg);
 static SortBy * _readSortBy(OUT_TYPE(SortBy, SortBy) msg);
 static WindowDef * _readWindowDef(OUT_TYPE(WindowDef, WindowDef) msg);
 static RangeSubselect * _readRangeSubselect(OUT_TYPE(RangeSubselect, RangeSubselect) msg);
 static RangeFunction * _readRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) msg);
-static RangeTableSample * _readRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) msg);
 static RangeTableFunc * _readRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) msg);
 static RangeTableFuncCol * _readRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) msg);
-static TypeName * _readTypeName(OUT_TYPE(TypeName, TypeName) msg);
+static RangeTableSample * _readRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) msg);
 static ColumnDef * _readColumnDef(OUT_TYPE(ColumnDef, ColumnDef) msg);
+static TableLikeClause * _readTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) msg);
 static IndexElem * _readIndexElem(OUT_TYPE(IndexElem, IndexElem) msg);
-static StatsElem * _readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg);
-static Constraint * _readConstraint(OUT_TYPE(Constraint, Constraint) msg);
 static DefElem * _readDefElem(OUT_TYPE(DefElem, DefElem) msg);
+static LockingClause * _readLockingClause(OUT_TYPE(LockingClause, LockingClause) msg);
+static XmlSerialize * _readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg);
+static PartitionElem * _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg);
+static PartitionSpec * _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg);
+static PartitionBoundSpec * _readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg);
+static PartitionRangeDatum * _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg);
+static PartitionCmd * _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg);
 static RangeTblEntry * _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg);
+static RTEPermissionInfo * _readRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) msg);
 static RangeTblFunction * _readRangeTblFunction(OUT_TYPE(RangeTblFunction, RangeTblFunction) msg);
 static TableSampleClause * _readTableSampleClause(OUT_TYPE(TableSampleClause, TableSampleClause) msg);
 static WithCheckOption * _readWithCheckOption(OUT_TYPE(WithCheckOption, WithCheckOption) msg);
 static SortGroupClause * _readSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) msg);
 static GroupingSet * _readGroupingSet(OUT_TYPE(GroupingSet, GroupingSet) msg);
 static WindowClause * _readWindowClause(OUT_TYPE(WindowClause, WindowClause) msg);
-static ObjectWithArgs * _readObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) msg);
-static AccessPriv * _readAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) msg);
-static CreateOpClassItem * _readCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) msg);
-static TableLikeClause * _readTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) msg);
-static FunctionParameter * _readFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) msg);
-static LockingClause * _readLockingClause(OUT_TYPE(LockingClause, LockingClause) msg);
 static RowMarkClause * _readRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) msg);
-static XmlSerialize * _readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg);
 static WithClause * _readWithClause(OUT_TYPE(WithClause, WithClause) msg);
 static InferClause * _readInferClause(OUT_TYPE(InferClause, InferClause) msg);
 static OnConflictClause * _readOnConflictClause(OUT_TYPE(OnConflictClause, OnConflictClause) msg);
@@ -217,18 +104,145 @@ static CTESearchClause * _readCTESearchClause(OUT_TYPE(CTESearchClause, CTESearc
 static CTECycleClause * _readCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) msg);
 static CommonTableExpr * _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg);
 static MergeWhenClause * _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg);
-static RoleSpec * _readRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) msg);
+static MergeAction * _readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg);
 static TriggerTransition * _readTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) msg);
-static PartitionElem * _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg);
-static PartitionSpec * _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg);
-static PartitionBoundSpec * _readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg);
-static PartitionRangeDatum * _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg);
-static PartitionCmd * _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg);
-static VacuumRelation * _readVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) msg);
-static PublicationObjSpec * _readPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) msg);
-static PublicationTable * _readPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) msg);
+static JsonOutput * _readJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) msg);
+static JsonKeyValue * _readJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) msg);
+static JsonObjectConstructor * _readJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) msg);
+static JsonArrayConstructor * _readJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) msg);
+static JsonArrayQueryConstructor * _readJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) msg);
+static JsonAggConstructor * _readJsonAggConstructor(OUT_TYPE(JsonAggConstructor, JsonAggConstructor) msg);
+static JsonObjectAgg * _readJsonObjectAgg(OUT_TYPE(JsonObjectAgg, JsonObjectAgg) msg);
+static JsonArrayAgg * _readJsonArrayAgg(OUT_TYPE(JsonArrayAgg, JsonArrayAgg) msg);
+static RawStmt * _readRawStmt(OUT_TYPE(RawStmt, RawStmt) msg);
+static InsertStmt * _readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg);
+static DeleteStmt * _readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg);
+static UpdateStmt * _readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg);
+static MergeStmt * _readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg);
+static SelectStmt * _readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg);
+static SetOperationStmt * _readSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) msg);
+static ReturnStmt * _readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg);
+static PLAssignStmt * _readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg);
+static CreateSchemaStmt * _readCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) msg);
+static AlterTableStmt * _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg);
+static ReplicaIdentityStmt * _readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg);
+static AlterTableCmd * _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg);
+static AlterCollationStmt * _readAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) msg);
+static AlterDomainStmt * _readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg);
+static GrantStmt * _readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg);
+static ObjectWithArgs * _readObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) msg);
+static AccessPriv * _readAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) msg);
+static GrantRoleStmt * _readGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) msg);
+static AlterDefaultPrivilegesStmt * _readAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) msg);
+static CopyStmt * _readCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) msg);
+static VariableSetStmt * _readVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) msg);
+static VariableShowStmt * _readVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) msg);
+static CreateStmt * _readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg);
+static Constraint * _readConstraint(OUT_TYPE(Constraint, Constraint) msg);
+static CreateTableSpaceStmt * _readCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) msg);
+static DropTableSpaceStmt * _readDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) msg);
+static AlterTableSpaceOptionsStmt * _readAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) msg);
+static AlterTableMoveAllStmt * _readAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) msg);
+static CreateExtensionStmt * _readCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) msg);
+static AlterExtensionStmt * _readAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) msg);
+static AlterExtensionContentsStmt * _readAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) msg);
+static CreateFdwStmt * _readCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) msg);
+static AlterFdwStmt * _readAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) msg);
+static CreateForeignServerStmt * _readCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) msg);
+static AlterForeignServerStmt * _readAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) msg);
+static CreateForeignTableStmt * _readCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) msg);
+static CreateUserMappingStmt * _readCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) msg);
+static AlterUserMappingStmt * _readAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) msg);
+static DropUserMappingStmt * _readDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) msg);
+static ImportForeignSchemaStmt * _readImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) msg);
+static CreatePolicyStmt * _readCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) msg);
+static AlterPolicyStmt * _readAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) msg);
+static CreateAmStmt * _readCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) msg);
+static CreateTrigStmt * _readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg);
+static CreateEventTrigStmt * _readCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) msg);
+static AlterEventTrigStmt * _readAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) msg);
+static CreatePLangStmt * _readCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) msg);
+static CreateRoleStmt * _readCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) msg);
+static AlterRoleStmt * _readAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) msg);
+static AlterRoleSetStmt * _readAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) msg);
+static DropRoleStmt * _readDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) msg);
+static CreateSeqStmt * _readCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) msg);
+static AlterSeqStmt * _readAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) msg);
+static DefineStmt * _readDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) msg);
+static CreateDomainStmt * _readCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) msg);
+static CreateOpClassStmt * _readCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) msg);
+static CreateOpClassItem * _readCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) msg);
+static CreateOpFamilyStmt * _readCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) msg);
+static AlterOpFamilyStmt * _readAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) msg);
+static DropStmt * _readDropStmt(OUT_TYPE(DropStmt, DropStmt) msg);
+static TruncateStmt * _readTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) msg);
+static CommentStmt * _readCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) msg);
+static SecLabelStmt * _readSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) msg);
+static DeclareCursorStmt * _readDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) msg);
+static ClosePortalStmt * _readClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) msg);
+static FetchStmt * _readFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) msg);
+static IndexStmt * _readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg);
+static CreateStatsStmt * _readCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg);
+static StatsElem * _readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg);
+static AlterStatsStmt * _readAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) msg);
+static CreateFunctionStmt * _readCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) msg);
+static FunctionParameter * _readFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) msg);
+static AlterFunctionStmt * _readAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) msg);
+static DoStmt * _readDoStmt(OUT_TYPE(DoStmt, DoStmt) msg);
 static InlineCodeBlock * _readInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) msg);
+static CallStmt * _readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg);
 static CallContext * _readCallContext(OUT_TYPE(CallContext, CallContext) msg);
+static RenameStmt * _readRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) msg);
+static AlterObjectDependsStmt * _readAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) msg);
+static AlterObjectSchemaStmt * _readAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) msg);
+static AlterOwnerStmt * _readAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) msg);
+static AlterOperatorStmt * _readAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) msg);
+static AlterTypeStmt * _readAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) msg);
+static RuleStmt * _readRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) msg);
+static NotifyStmt * _readNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) msg);
+static ListenStmt * _readListenStmt(OUT_TYPE(ListenStmt, ListenStmt) msg);
+static UnlistenStmt * _readUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) msg);
+static TransactionStmt * _readTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) msg);
+static CompositeTypeStmt * _readCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) msg);
+static CreateEnumStmt * _readCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) msg);
+static CreateRangeStmt * _readCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) msg);
+static AlterEnumStmt * _readAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) msg);
+static ViewStmt * _readViewStmt(OUT_TYPE(ViewStmt, ViewStmt) msg);
+static LoadStmt * _readLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) msg);
+static CreatedbStmt * _readCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) msg);
+static AlterDatabaseStmt * _readAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) msg);
+static AlterDatabaseRefreshCollStmt * _readAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) msg);
+static AlterDatabaseSetStmt * _readAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) msg);
+static DropdbStmt * _readDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) msg);
+static AlterSystemStmt * _readAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) msg);
+static ClusterStmt * _readClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) msg);
+static VacuumStmt * _readVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) msg);
+static VacuumRelation * _readVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) msg);
+static ExplainStmt * _readExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) msg);
+static CreateTableAsStmt * _readCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) msg);
+static RefreshMatViewStmt * _readRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) msg);
+static CheckPointStmt * _readCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) msg);
+static DiscardStmt * _readDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) msg);
+static LockStmt * _readLockStmt(OUT_TYPE(LockStmt, LockStmt) msg);
+static ConstraintsSetStmt * _readConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) msg);
+static ReindexStmt * _readReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) msg);
+static CreateConversionStmt * _readCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) msg);
+static CreateCastStmt * _readCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) msg);
+static CreateTransformStmt * _readCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) msg);
+static PrepareStmt * _readPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) msg);
+static ExecuteStmt * _readExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) msg);
+static DeallocateStmt * _readDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) msg);
+static DropOwnedStmt * _readDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) msg);
+static ReassignOwnedStmt * _readReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) msg);
+static AlterTSDictionaryStmt * _readAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) msg);
+static AlterTSConfigurationStmt * _readAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) msg);
+static PublicationTable * _readPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) msg);
+static PublicationObjSpec * _readPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) msg);
+static CreatePublicationStmt * _readCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) msg);
+static AlterPublicationStmt * _readAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) msg);
+static CreateSubscriptionStmt * _readCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) msg);
+static AlterSubscriptionStmt * _readAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) msg);
+static DropSubscriptionStmt * _readDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) msg);
 
 
 static Alias *
@@ -274,6 +288,21 @@ _readTableFunc(OUT_TYPE(TableFunc, TableFunc) msg)
   return node;
 }
 
+static IntoClause *
+_readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg)
+{
+  IntoClause *node = makeNode(IntoClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, rel, rel, rel);
+  READ_LIST_FIELD(col_names, colNames, colNames);
+  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
+  READ_LIST_FIELD(options, options, options);
+  READ_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
+  READ_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
+  READ_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
+  READ_BOOL_FIELD(skip_data, skipData, skipData);
+  return node;
+}
+
 static Var *
 _readVar(OUT_TYPE(Var, Var) msg)
 {
@@ -283,9 +312,8 @@ _readVar(OUT_TYPE(Var, Var) msg)
   READ_UINT_FIELD(vartype, vartype, vartype);
   READ_INT_FIELD(vartypmod, vartypmod, vartypmod);
   READ_UINT_FIELD(varcollid, varcollid, varcollid);
+  READ_BITMAPSET_FIELD(varnullingrels, varnullingrels, varnullingrels);
   READ_UINT_FIELD(varlevelsup, varlevelsup, varlevelsup);
-  READ_UINT_FIELD(varnosyn, varnosyn, varnosyn);
-  READ_INT_FIELD(varattnosyn, varattnosyn, varattnosyn);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -311,7 +339,6 @@ _readAggref(OUT_TYPE(Aggref, Aggref) msg)
   READ_UINT_FIELD(aggtype, aggtype, aggtype);
   READ_UINT_FIELD(aggcollid, aggcollid, aggcollid);
   READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
-  READ_UINT_FIELD(aggtranstype, aggtranstype, aggtranstype);
   READ_LIST_FIELD(aggargtypes, aggargtypes, aggargtypes);
   READ_LIST_FIELD(aggdirectargs, aggdirectargs, aggdirectargs);
   READ_LIST_FIELD(args, args, args);
@@ -335,7 +362,6 @@ _readGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) msg)
   GroupingFunc *node = makeNode(GroupingFunc);
   READ_LIST_FIELD(args, args, args);
   READ_LIST_FIELD(refs, refs, refs);
-  READ_LIST_FIELD(cols, cols, cols);
   READ_UINT_FIELD(agglevelsup, agglevelsup, agglevelsup);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -406,7 +432,6 @@ _readOpExpr(OUT_TYPE(OpExpr, OpExpr) msg)
 {
   OpExpr *node = makeNode(OpExpr);
   READ_UINT_FIELD(opno, opno, opno);
-  READ_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   READ_BOOL_FIELD(opretset, opretset, opretset);
   READ_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -421,7 +446,6 @@ _readDistinctExpr(OUT_TYPE(DistinctExpr, DistinctExpr) msg)
 {
   DistinctExpr *node = makeNode(DistinctExpr);
   READ_UINT_FIELD(opno, opno, opno);
-  READ_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   READ_BOOL_FIELD(opretset, opretset, opretset);
   READ_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -436,7 +460,6 @@ _readNullIfExpr(OUT_TYPE(NullIfExpr, NullIfExpr) msg)
 {
   NullIfExpr *node = makeNode(NullIfExpr);
   READ_UINT_FIELD(opno, opno, opno);
-  READ_UINT_FIELD(opfuncid, opfuncid, opfuncid);
   READ_UINT_FIELD(opresulttype, opresulttype, opresulttype);
   READ_BOOL_FIELD(opretset, opretset, opretset);
   READ_UINT_FIELD(opcollid, opcollid, opcollid);
@@ -451,9 +474,6 @@ _readScalarArrayOpExpr(OUT_TYPE(ScalarArrayOpExpr, ScalarArrayOpExpr) msg)
 {
   ScalarArrayOpExpr *node = makeNode(ScalarArrayOpExpr);
   READ_UINT_FIELD(opno, opno, opno);
-  READ_UINT_FIELD(opfuncid, opfuncid, opfuncid);
-  READ_UINT_FIELD(hashfuncid, hashfuncid, hashfuncid);
-  READ_UINT_FIELD(negfuncid, negfuncid, negfuncid);
   READ_BOOL_FIELD(use_or, useOr, useOr);
   READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
@@ -714,8 +734,66 @@ _readXmlExpr(OUT_TYPE(XmlExpr, XmlExpr) msg)
   READ_LIST_FIELD(arg_names, arg_names, arg_names);
   READ_LIST_FIELD(args, args, args);
   READ_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
+  READ_BOOL_FIELD(indent, indent, indent);
   READ_UINT_FIELD(type, type, type);
   READ_INT_FIELD(typmod, typmod, typmod);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonFormat *
+_readJsonFormat(OUT_TYPE(JsonFormat, JsonFormat) msg)
+{
+  JsonFormat *node = makeNode(JsonFormat);
+  READ_ENUM_FIELD(JsonFormatType, format_type, format_type, format_type);
+  READ_ENUM_FIELD(JsonEncoding, encoding, encoding, encoding);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonReturning *
+_readJsonReturning(OUT_TYPE(JsonReturning, JsonReturning) msg)
+{
+  JsonReturning *node = makeNode(JsonReturning);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  READ_UINT_FIELD(typid, typid, typid);
+  READ_INT_FIELD(typmod, typmod, typmod);
+  return node;
+}
+
+static JsonValueExpr *
+_readJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) msg)
+{
+  JsonValueExpr *node = makeNode(JsonValueExpr);
+  READ_EXPR_PTR_FIELD(raw_expr, raw_expr, raw_expr);
+  READ_EXPR_PTR_FIELD(formatted_expr, formatted_expr, formatted_expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  return node;
+}
+
+static JsonConstructorExpr *
+_readJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) msg)
+{
+  JsonConstructorExpr *node = makeNode(JsonConstructorExpr);
+  READ_ENUM_FIELD(JsonConstructorType, type, type, type);
+  READ_LIST_FIELD(args, args, args);
+  READ_EXPR_PTR_FIELD(func, func, func);
+  READ_EXPR_PTR_FIELD(coercion, coercion, coercion);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  READ_BOOL_FIELD(unique, unique, unique);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonIsPredicate *
+_readJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) msg)
+{
+  JsonIsPredicate *node = makeNode(JsonIsPredicate);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  READ_ENUM_FIELD(JsonValueType, item_type, item_type, item_type);
+  READ_BOOL_FIELD(unique_keys, unique_keys, unique_keys);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -867,44 +945,6 @@ _readOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) msg)
   return node;
 }
 
-static IntoClause *
-_readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg)
-{
-  IntoClause *node = makeNode(IntoClause);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, rel, rel, rel);
-  READ_LIST_FIELD(col_names, colNames, colNames);
-  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
-  READ_LIST_FIELD(options, options, options);
-  READ_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
-  READ_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
-  READ_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
-  READ_BOOL_FIELD(skip_data, skipData, skipData);
-  return node;
-}
-
-static MergeAction *
-_readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg)
-{
-  MergeAction *node = makeNode(MergeAction);
-  READ_BOOL_FIELD(matched, matched, matched);
-  READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
-  READ_ENUM_FIELD(OverridingKind, override, override, override);
-  READ_NODE_PTR_FIELD(qual, qual, qual);
-  READ_LIST_FIELD(target_list, targetList, targetList);
-  READ_LIST_FIELD(update_colnos, updateColnos, updateColnos);
-  return node;
-}
-
-static RawStmt *
-_readRawStmt(OUT_TYPE(RawStmt, RawStmt) msg)
-{
-  RawStmt *node = makeNode(RawStmt);
-  READ_NODE_PTR_FIELD(stmt, stmt, stmt);
-  READ_INT_FIELD(stmt_location, stmt_location, stmt_location);
-  READ_INT_FIELD(stmt_len, stmt_len, stmt_len);
-  return node;
-}
-
 static Query *
 _readQuery(OUT_TYPE(Query, Query) msg)
 {
@@ -926,6 +966,7 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_BOOL_FIELD(is_return, isReturn, isReturn);
   READ_LIST_FIELD(cte_list, cteList, cteList);
   READ_LIST_FIELD(rtable, rtable, rtable);
+  READ_LIST_FIELD(rteperminfos, rteperminfos, rteperminfos);
   READ_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
   READ_LIST_FIELD(merge_action_list, mergeActionList, mergeActionList);
   READ_BOOL_FIELD(merge_use_outer_join, mergeUseOuterJoin, mergeUseOuterJoin);
@@ -952,1325 +993,17 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   return node;
 }
 
-static InsertStmt *
-_readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg)
-{
-  InsertStmt *node = makeNode(InsertStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(cols, cols, cols);
-  READ_NODE_PTR_FIELD(select_stmt, selectStmt, selectStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(OnConflictClause, on_conflict_clause, on_conflict_clause, onConflictClause, onConflictClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
-  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  READ_ENUM_FIELD(OverridingKind, override, override, override);
-  return node;
-}
-
-static DeleteStmt *
-_readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg)
-{
-  DeleteStmt *node = makeNode(DeleteStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(using_clause, usingClause, usingClause);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
-  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  return node;
-}
-
-static UpdateStmt *
-_readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg)
-{
-  UpdateStmt *node = makeNode(UpdateStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(target_list, targetList, targetList);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(from_clause, fromClause, fromClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
-  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  return node;
-}
-
-static MergeStmt *
-_readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg)
-{
-  MergeStmt *node = makeNode(MergeStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
-  READ_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
-  READ_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
-  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  return node;
-}
-
-static SelectStmt *
-_readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg)
-{
-  SelectStmt *node = makeNode(SelectStmt);
-  READ_LIST_FIELD(distinct_clause, distinctClause, distinctClause);
-  READ_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into_clause, intoClause, intoClause);
-  READ_LIST_FIELD(target_list, targetList, targetList);
-  READ_LIST_FIELD(from_clause, fromClause, fromClause);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(group_clause, groupClause, groupClause);
-  READ_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
-  READ_NODE_PTR_FIELD(having_clause, havingClause, havingClause);
-  READ_LIST_FIELD(window_clause, windowClause, windowClause);
-  READ_LIST_FIELD(values_lists, valuesLists, valuesLists);
-  READ_LIST_FIELD(sort_clause, sortClause, sortClause);
-  READ_NODE_PTR_FIELD(limit_offset, limitOffset, limitOffset);
-  READ_NODE_PTR_FIELD(limit_count, limitCount, limitCount);
-  READ_ENUM_FIELD(LimitOption, limit_option, limitOption, limitOption);
-  READ_LIST_FIELD(locking_clause, lockingClause, lockingClause);
-  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
-  READ_ENUM_FIELD(SetOperation, op, op, op);
-  READ_BOOL_FIELD(all, all, all);
-  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, larg, larg, larg);
-  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, rarg, rarg, rarg);
-  return node;
-}
-
-static ReturnStmt *
-_readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg)
-{
-  ReturnStmt *node = makeNode(ReturnStmt);
-  READ_NODE_PTR_FIELD(returnval, returnval, returnval);
-  return node;
-}
-
-static PLAssignStmt *
-_readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg)
-{
-  PLAssignStmt *node = makeNode(PLAssignStmt);
-  READ_STRING_FIELD(name, name, name);
-  READ_LIST_FIELD(indirection, indirection, indirection);
-  READ_INT_FIELD(nnames, nnames, nnames);
-  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, val, val, val);
-  READ_INT_FIELD(location, location, location);
-  return node;
-}
-
-static AlterTableStmt *
-_readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg)
-{
-  AlterTableStmt *node = makeNode(AlterTableStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(cmds, cmds, cmds);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static AlterTableCmd *
-_readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg)
-{
-  AlterTableCmd *node = makeNode(AlterTableCmd);
-  READ_ENUM_FIELD(AlterTableType, subtype, subtype, subtype);
-  READ_STRING_FIELD(name, name, name);
-  READ_INT_FIELD(num, num, num);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
-  READ_NODE_PTR_FIELD(def, def, def);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  READ_BOOL_FIELD(recurse, recurse, recurse);
-  return node;
-}
-
-static AlterDomainStmt *
-_readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg)
-{
-  AlterDomainStmt *node = makeNode(AlterDomainStmt);
-  READ_CHAR_FIELD(subtype, subtype, subtype);
-  READ_LIST_FIELD(type_name, typeName, typeName);
-  READ_STRING_FIELD(name, name, name);
-  READ_NODE_PTR_FIELD(def, def, def);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static SetOperationStmt *
-_readSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) msg)
-{
-  SetOperationStmt *node = makeNode(SetOperationStmt);
-  READ_ENUM_FIELD(SetOperation, op, op, op);
-  READ_BOOL_FIELD(all, all, all);
-  READ_NODE_PTR_FIELD(larg, larg, larg);
-  READ_NODE_PTR_FIELD(rarg, rarg, rarg);
-  READ_LIST_FIELD(col_types, colTypes, colTypes);
-  READ_LIST_FIELD(col_typmods, colTypmods, colTypmods);
-  READ_LIST_FIELD(col_collations, colCollations, colCollations);
-  READ_LIST_FIELD(group_clauses, groupClauses, groupClauses);
-  return node;
-}
-
-static GrantStmt *
-_readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg)
-{
-  GrantStmt *node = makeNode(GrantStmt);
-  READ_BOOL_FIELD(is_grant, is_grant, is_grant);
-  READ_ENUM_FIELD(GrantTargetType, targtype, targtype, targtype);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_LIST_FIELD(objects, objects, objects);
-  READ_LIST_FIELD(privileges, privileges, privileges);
-  READ_LIST_FIELD(grantees, grantees, grantees);
-  READ_BOOL_FIELD(grant_option, grant_option, grant_option);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  return node;
-}
-
-static GrantRoleStmt *
-_readGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) msg)
-{
-  GrantRoleStmt *node = makeNode(GrantRoleStmt);
-  READ_LIST_FIELD(granted_roles, granted_roles, granted_roles);
-  READ_LIST_FIELD(grantee_roles, grantee_roles, grantee_roles);
-  READ_BOOL_FIELD(is_grant, is_grant, is_grant);
-  READ_BOOL_FIELD(admin_opt, admin_opt, admin_opt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  return node;
-}
-
-static AlterDefaultPrivilegesStmt *
-_readAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) msg)
-{
-  AlterDefaultPrivilegesStmt *node = makeNode(AlterDefaultPrivilegesStmt);
-  READ_LIST_FIELD(options, options, options);
-  READ_SPECIFIC_NODE_PTR_FIELD(GrantStmt, grant_stmt, action, action, action);
-  return node;
-}
-
-static ClosePortalStmt *
-_readClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) msg)
-{
-  ClosePortalStmt *node = makeNode(ClosePortalStmt);
-  READ_STRING_FIELD(portalname, portalname, portalname);
-  return node;
-}
-
-static ClusterStmt *
-_readClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) msg)
-{
-  ClusterStmt *node = makeNode(ClusterStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_STRING_FIELD(indexname, indexname, indexname);
-  READ_LIST_FIELD(params, params, params);
-  return node;
-}
-
-static CopyStmt *
-_readCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) msg)
-{
-  CopyStmt *node = makeNode(CopyStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(query, query, query);
-  READ_LIST_FIELD(attlist, attlist, attlist);
-  READ_BOOL_FIELD(is_from, is_from, is_from);
-  READ_BOOL_FIELD(is_program, is_program, is_program);
-  READ_STRING_FIELD(filename, filename, filename);
-  READ_LIST_FIELD(options, options, options);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  return node;
-}
-
-static CreateStmt *
-_readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg)
-{
-  CreateStmt *node = makeNode(CreateStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(table_elts, tableElts, tableElts);
-  READ_LIST_FIELD(inh_relations, inhRelations, inhRelations);
-  READ_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, partbound, partbound, partbound);
-  READ_SPECIFIC_NODE_PTR_FIELD(PartitionSpec, partition_spec, partspec, partspec, partspec);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, of_typename, ofTypename, ofTypename);
-  READ_LIST_FIELD(constraints, constraints, constraints);
-  READ_LIST_FIELD(options, options, options);
-  READ_ENUM_FIELD(OnCommitAction, oncommit, oncommit, oncommit);
-  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  return node;
-}
-
-static DefineStmt *
-_readDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) msg)
-{
-  DefineStmt *node = makeNode(DefineStmt);
-  READ_ENUM_FIELD(ObjectType, kind, kind, kind);
-  READ_BOOL_FIELD(oldstyle, oldstyle, oldstyle);
-  READ_LIST_FIELD(defnames, defnames, defnames);
-  READ_LIST_FIELD(args, args, args);
-  READ_LIST_FIELD(definition, definition, definition);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  READ_BOOL_FIELD(replace, replace, replace);
-  return node;
-}
-
-static DropStmt *
-_readDropStmt(OUT_TYPE(DropStmt, DropStmt) msg)
-{
-  DropStmt *node = makeNode(DropStmt);
-  READ_LIST_FIELD(objects, objects, objects);
-  READ_ENUM_FIELD(ObjectType, remove_type, removeType, removeType);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
-  return node;
-}
-
-static TruncateStmt *
-_readTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) msg)
-{
-  TruncateStmt *node = makeNode(TruncateStmt);
-  READ_LIST_FIELD(relations, relations, relations);
-  READ_BOOL_FIELD(restart_seqs, restart_seqs, restart_seqs);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  return node;
-}
-
-static CommentStmt *
-_readCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) msg)
-{
-  CommentStmt *node = makeNode(CommentStmt);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_STRING_FIELD(comment, comment, comment);
-  return node;
-}
-
-static FetchStmt *
-_readFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) msg)
-{
-  FetchStmt *node = makeNode(FetchStmt);
-  READ_ENUM_FIELD(FetchDirection, direction, direction, direction);
-  READ_LONG_FIELD(how_many, howMany, howMany);
-  READ_STRING_FIELD(portalname, portalname, portalname);
-  READ_BOOL_FIELD(ismove, ismove, ismove);
-  return node;
-}
-
-static IndexStmt *
-_readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg)
-{
-  IndexStmt *node = makeNode(IndexStmt);
-  READ_STRING_FIELD(idxname, idxname, idxname);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
-  READ_STRING_FIELD(table_space, tableSpace, tableSpace);
-  READ_LIST_FIELD(index_params, indexParams, indexParams);
-  READ_LIST_FIELD(index_including_params, indexIncludingParams, indexIncludingParams);
-  READ_LIST_FIELD(options, options, options);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
-  READ_STRING_FIELD(idxcomment, idxcomment, idxcomment);
-  READ_UINT_FIELD(index_oid, indexOid, indexOid);
-  READ_UINT_FIELD(old_node, oldNode, oldNode);
-  READ_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
-  READ_UINT_FIELD(old_first_relfilenode_subid, oldFirstRelfilenodeSubid, oldFirstRelfilenodeSubid);
-  READ_BOOL_FIELD(unique, unique, unique);
-  READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
-  READ_BOOL_FIELD(primary, primary, primary);
-  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
-  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
-  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  READ_BOOL_FIELD(transformed, transformed, transformed);
-  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  READ_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
-  return node;
-}
-
-static CreateFunctionStmt *
-_readCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) msg)
-{
-  CreateFunctionStmt *node = makeNode(CreateFunctionStmt);
-  READ_BOOL_FIELD(is_procedure, is_procedure, is_procedure);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_LIST_FIELD(funcname, funcname, funcname);
-  READ_LIST_FIELD(parameters, parameters, parameters);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, return_type, returnType, returnType);
-  READ_LIST_FIELD(options, options, options);
-  READ_NODE_PTR_FIELD(sql_body, sql_body, sql_body);
-  return node;
-}
-
-static AlterFunctionStmt *
-_readAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) msg)
-{
-  AlterFunctionStmt *node = makeNode(AlterFunctionStmt);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
-  READ_LIST_FIELD(actions, actions, actions);
-  return node;
-}
-
-static DoStmt *
-_readDoStmt(OUT_TYPE(DoStmt, DoStmt) msg)
-{
-  DoStmt *node = makeNode(DoStmt);
-  READ_LIST_FIELD(args, args, args);
-  return node;
-}
-
-static RenameStmt *
-_readRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) msg)
-{
-  RenameStmt *node = makeNode(RenameStmt);
-  READ_ENUM_FIELD(ObjectType, rename_type, renameType, renameType);
-  READ_ENUM_FIELD(ObjectType, relation_type, relationType, relationType);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_STRING_FIELD(subname, subname, subname);
-  READ_STRING_FIELD(newname, newname, newname);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static RuleStmt *
-_readRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) msg)
-{
-  RuleStmt *node = makeNode(RuleStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_STRING_FIELD(rulename, rulename, rulename);
-  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_ENUM_FIELD(CmdType, event, event, event);
-  READ_BOOL_FIELD(instead, instead, instead);
-  READ_LIST_FIELD(actions, actions, actions);
-  READ_BOOL_FIELD(replace, replace, replace);
-  return node;
-}
-
-static NotifyStmt *
-_readNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) msg)
-{
-  NotifyStmt *node = makeNode(NotifyStmt);
-  READ_STRING_FIELD(conditionname, conditionname, conditionname);
-  READ_STRING_FIELD(payload, payload, payload);
-  return node;
-}
-
-static ListenStmt *
-_readListenStmt(OUT_TYPE(ListenStmt, ListenStmt) msg)
-{
-  ListenStmt *node = makeNode(ListenStmt);
-  READ_STRING_FIELD(conditionname, conditionname, conditionname);
-  return node;
-}
-
-static UnlistenStmt *
-_readUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) msg)
-{
-  UnlistenStmt *node = makeNode(UnlistenStmt);
-  READ_STRING_FIELD(conditionname, conditionname, conditionname);
-  return node;
-}
-
-static TransactionStmt *
-_readTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) msg)
-{
-  TransactionStmt *node = makeNode(TransactionStmt);
-  READ_ENUM_FIELD(TransactionStmtKind, kind, kind, kind);
-  READ_LIST_FIELD(options, options, options);
-  READ_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
-  READ_STRING_FIELD(gid, gid, gid);
-  READ_BOOL_FIELD(chain, chain, chain);
-  return node;
-}
-
-static ViewStmt *
-_readViewStmt(OUT_TYPE(ViewStmt, ViewStmt) msg)
-{
-  ViewStmt *node = makeNode(ViewStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, view, view, view);
-  READ_LIST_FIELD(aliases, aliases, aliases);
-  READ_NODE_PTR_FIELD(query, query, query);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_LIST_FIELD(options, options, options);
-  READ_ENUM_FIELD(ViewCheckOption, with_check_option, withCheckOption, withCheckOption);
-  return node;
-}
-
-static LoadStmt *
-_readLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) msg)
-{
-  LoadStmt *node = makeNode(LoadStmt);
-  READ_STRING_FIELD(filename, filename, filename);
-  return node;
-}
-
-static CreateDomainStmt *
-_readCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) msg)
-{
-  CreateDomainStmt *node = makeNode(CreateDomainStmt);
-  READ_LIST_FIELD(domainname, domainname, domainname);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  READ_SPECIFIC_NODE_PTR_FIELD(CollateClause, collate_clause, coll_clause, collClause, collClause);
-  READ_LIST_FIELD(constraints, constraints, constraints);
-  return node;
-}
-
-static CreatedbStmt *
-_readCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) msg)
-{
-  CreatedbStmt *node = makeNode(CreatedbStmt);
-  READ_STRING_FIELD(dbname, dbname, dbname);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static DropdbStmt *
-_readDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) msg)
-{
-  DropdbStmt *node = makeNode(DropdbStmt);
-  READ_STRING_FIELD(dbname, dbname, dbname);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static VacuumStmt *
-_readVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) msg)
-{
-  VacuumStmt *node = makeNode(VacuumStmt);
-  READ_LIST_FIELD(options, options, options);
-  READ_LIST_FIELD(rels, rels, rels);
-  READ_BOOL_FIELD(is_vacuumcmd, is_vacuumcmd, is_vacuumcmd);
-  return node;
-}
-
-static ExplainStmt *
-_readExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) msg)
-{
-  ExplainStmt *node = makeNode(ExplainStmt);
-  READ_NODE_PTR_FIELD(query, query, query);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static CreateTableAsStmt *
-_readCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) msg)
-{
-  CreateTableAsStmt *node = makeNode(CreateTableAsStmt);
-  READ_NODE_PTR_FIELD(query, query, query);
-  READ_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_BOOL_FIELD(is_select_into, is_select_into, is_select_into);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  return node;
-}
-
-static CreateSeqStmt *
-_readCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) msg)
-{
-  CreateSeqStmt *node = makeNode(CreateSeqStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
-  READ_LIST_FIELD(options, options, options);
-  READ_UINT_FIELD(owner_id, ownerId, ownerId);
-  READ_BOOL_FIELD(for_identity, for_identity, for_identity);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  return node;
-}
-
-static AlterSeqStmt *
-_readAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) msg)
-{
-  AlterSeqStmt *node = makeNode(AlterSeqStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
-  READ_LIST_FIELD(options, options, options);
-  READ_BOOL_FIELD(for_identity, for_identity, for_identity);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static VariableSetStmt *
-_readVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) msg)
-{
-  VariableSetStmt *node = makeNode(VariableSetStmt);
-  READ_ENUM_FIELD(VariableSetKind, kind, kind, kind);
-  READ_STRING_FIELD(name, name, name);
-  READ_LIST_FIELD(args, args, args);
-  READ_BOOL_FIELD(is_local, is_local, is_local);
-  return node;
-}
-
-static VariableShowStmt *
-_readVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) msg)
-{
-  VariableShowStmt *node = makeNode(VariableShowStmt);
-  READ_STRING_FIELD(name, name, name);
-  return node;
-}
-
-static DiscardStmt *
-_readDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) msg)
-{
-  DiscardStmt *node = makeNode(DiscardStmt);
-  READ_ENUM_FIELD(DiscardMode, target, target, target);
-  return node;
-}
-
-static CreateTrigStmt *
-_readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg)
-{
-  CreateTrigStmt *node = makeNode(CreateTrigStmt);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
-  READ_STRING_FIELD(trigname, trigname, trigname);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_LIST_FIELD(funcname, funcname, funcname);
-  READ_LIST_FIELD(args, args, args);
-  READ_BOOL_FIELD(row, row, row);
-  READ_INT_FIELD(timing, timing, timing);
-  READ_INT_FIELD(events, events, events);
-  READ_LIST_FIELD(columns, columns, columns);
-  READ_NODE_PTR_FIELD(when_clause, whenClause, whenClause);
-  READ_LIST_FIELD(transition_rels, transitionRels, transitionRels);
-  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
-  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, constrrel, constrrel, constrrel);
-  return node;
-}
-
-static CreatePLangStmt *
-_readCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) msg)
-{
-  CreatePLangStmt *node = makeNode(CreatePLangStmt);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_STRING_FIELD(plname, plname, plname);
-  READ_LIST_FIELD(plhandler, plhandler, plhandler);
-  READ_LIST_FIELD(plinline, plinline, plinline);
-  READ_LIST_FIELD(plvalidator, plvalidator, plvalidator);
-  READ_BOOL_FIELD(pltrusted, pltrusted, pltrusted);
-  return node;
-}
-
-static CreateRoleStmt *
-_readCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) msg)
-{
-  CreateRoleStmt *node = makeNode(CreateRoleStmt);
-  READ_ENUM_FIELD(RoleStmtType, stmt_type, stmt_type, stmt_type);
-  READ_STRING_FIELD(role, role, role);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterRoleStmt *
-_readAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) msg)
-{
-  AlterRoleStmt *node = makeNode(AlterRoleStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
-  READ_LIST_FIELD(options, options, options);
-  READ_INT_FIELD(action, action, action);
-  return node;
-}
-
-static DropRoleStmt *
-_readDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) msg)
-{
-  DropRoleStmt *node = makeNode(DropRoleStmt);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static LockStmt *
-_readLockStmt(OUT_TYPE(LockStmt, LockStmt) msg)
-{
-  LockStmt *node = makeNode(LockStmt);
-  READ_LIST_FIELD(relations, relations, relations);
-  READ_INT_FIELD(mode, mode, mode);
-  READ_BOOL_FIELD(nowait, nowait, nowait);
-  return node;
-}
-
-static ConstraintsSetStmt *
-_readConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) msg)
-{
-  ConstraintsSetStmt *node = makeNode(ConstraintsSetStmt);
-  READ_LIST_FIELD(constraints, constraints, constraints);
-  READ_BOOL_FIELD(deferred, deferred, deferred);
-  return node;
-}
-
-static ReindexStmt *
-_readReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) msg)
-{
-  ReindexStmt *node = makeNode(ReindexStmt);
-  READ_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_STRING_FIELD(name, name, name);
-  READ_LIST_FIELD(params, params, params);
-  return node;
-}
-
-static CheckPointStmt *
-_readCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) msg)
-{
-  CheckPointStmt *node = makeNode(CheckPointStmt);
-  return node;
-}
-
-static CreateSchemaStmt *
-_readCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) msg)
-{
-  CreateSchemaStmt *node = makeNode(CreateSchemaStmt);
-  READ_STRING_FIELD(schemaname, schemaname, schemaname);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, authrole, authrole, authrole);
-  READ_LIST_FIELD(schema_elts, schemaElts, schemaElts);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  return node;
-}
-
-static AlterDatabaseStmt *
-_readAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) msg)
-{
-  AlterDatabaseStmt *node = makeNode(AlterDatabaseStmt);
-  READ_STRING_FIELD(dbname, dbname, dbname);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterDatabaseRefreshCollStmt *
-_readAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) msg)
-{
-  AlterDatabaseRefreshCollStmt *node = makeNode(AlterDatabaseRefreshCollStmt);
-  READ_STRING_FIELD(dbname, dbname, dbname);
-  return node;
-}
-
-static AlterDatabaseSetStmt *
-_readAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) msg)
-{
-  AlterDatabaseSetStmt *node = makeNode(AlterDatabaseSetStmt);
-  READ_STRING_FIELD(dbname, dbname, dbname);
-  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-  return node;
-}
-
-static AlterRoleSetStmt *
-_readAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) msg)
-{
-  AlterRoleSetStmt *node = makeNode(AlterRoleSetStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
-  READ_STRING_FIELD(database, database, database);
-  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-  return node;
-}
-
-static CreateConversionStmt *
-_readCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) msg)
-{
-  CreateConversionStmt *node = makeNode(CreateConversionStmt);
-  READ_LIST_FIELD(conversion_name, conversion_name, conversion_name);
-  READ_STRING_FIELD(for_encoding_name, for_encoding_name, for_encoding_name);
-  READ_STRING_FIELD(to_encoding_name, to_encoding_name, to_encoding_name);
-  READ_LIST_FIELD(func_name, func_name, func_name);
-  READ_BOOL_FIELD(def, def, def);
-  return node;
-}
-
-static CreateCastStmt *
-_readCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) msg)
-{
-  CreateCastStmt *node = makeNode(CreateCastStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, sourcetype, sourcetype, sourcetype);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, targettype, targettype, targettype);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
-  READ_ENUM_FIELD(CoercionContext, context, context, context);
-  READ_BOOL_FIELD(inout, inout, inout);
-  return node;
-}
-
-static CreateOpClassStmt *
-_readCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) msg)
-{
-  CreateOpClassStmt *node = makeNode(CreateOpClassStmt);
-  READ_LIST_FIELD(opclassname, opclassname, opclassname);
-  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  READ_STRING_FIELD(amname, amname, amname);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, datatype, datatype, datatype);
-  READ_LIST_FIELD(items, items, items);
-  READ_BOOL_FIELD(is_default, isDefault, isDefault);
-  return node;
-}
-
-static CreateOpFamilyStmt *
-_readCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) msg)
-{
-  CreateOpFamilyStmt *node = makeNode(CreateOpFamilyStmt);
-  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  READ_STRING_FIELD(amname, amname, amname);
-  return node;
-}
-
-static AlterOpFamilyStmt *
-_readAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) msg)
-{
-  AlterOpFamilyStmt *node = makeNode(AlterOpFamilyStmt);
-  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
-  READ_STRING_FIELD(amname, amname, amname);
-  READ_BOOL_FIELD(is_drop, isDrop, isDrop);
-  READ_LIST_FIELD(items, items, items);
-  return node;
-}
-
-static PrepareStmt *
-_readPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) msg)
-{
-  PrepareStmt *node = makeNode(PrepareStmt);
-  READ_STRING_FIELD(name, name, name);
-  READ_LIST_FIELD(argtypes, argtypes, argtypes);
-  READ_NODE_PTR_FIELD(query, query, query);
-  return node;
-}
-
-static ExecuteStmt *
-_readExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) msg)
-{
-  ExecuteStmt *node = makeNode(ExecuteStmt);
-  READ_STRING_FIELD(name, name, name);
-  READ_LIST_FIELD(params, params, params);
-  return node;
-}
-
-static DeallocateStmt *
-_readDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) msg)
-{
-  DeallocateStmt *node = makeNode(DeallocateStmt);
-  READ_STRING_FIELD(name, name, name);
-  return node;
-}
-
-static DeclareCursorStmt *
-_readDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) msg)
-{
-  DeclareCursorStmt *node = makeNode(DeclareCursorStmt);
-  READ_STRING_FIELD(portalname, portalname, portalname);
-  READ_INT_FIELD(options, options, options);
-  READ_NODE_PTR_FIELD(query, query, query);
-  return node;
-}
-
-static CreateTableSpaceStmt *
-_readCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) msg)
-{
-  CreateTableSpaceStmt *node = makeNode(CreateTableSpaceStmt);
-  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, owner, owner, owner);
-  READ_STRING_FIELD(location, location, location);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static DropTableSpaceStmt *
-_readDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) msg)
-{
-  DropTableSpaceStmt *node = makeNode(DropTableSpaceStmt);
-  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static AlterObjectDependsStmt *
-_readAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) msg)
-{
-  AlterObjectDependsStmt *node = makeNode(AlterObjectDependsStmt);
-  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_SPECIFIC_NODE_PTR_FIELD(String, string, extname, extname, extname);
-  READ_BOOL_FIELD(remove, remove, remove);
-  return node;
-}
-
-static AlterObjectSchemaStmt *
-_readAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) msg)
-{
-  AlterObjectSchemaStmt *node = makeNode(AlterObjectSchemaStmt);
-  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_STRING_FIELD(newschema, newschema, newschema);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static AlterOwnerStmt *
-_readAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) msg)
-{
-  AlterOwnerStmt *node = makeNode(AlterOwnerStmt);
-  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
-  return node;
-}
-
-static AlterOperatorStmt *
-_readAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) msg)
-{
-  AlterOperatorStmt *node = makeNode(AlterOperatorStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, opername, opername, opername);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterTypeStmt *
-_readAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) msg)
-{
-  AlterTypeStmt *node = makeNode(AlterTypeStmt);
-  READ_LIST_FIELD(type_name, typeName, typeName);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static DropOwnedStmt *
-_readDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) msg)
-{
-  DropOwnedStmt *node = makeNode(DropOwnedStmt);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  return node;
-}
-
-static ReassignOwnedStmt *
-_readReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) msg)
-{
-  ReassignOwnedStmt *node = makeNode(ReassignOwnedStmt);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newrole, newrole, newrole);
-  return node;
-}
-
-static CompositeTypeStmt *
-_readCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) msg)
-{
-  CompositeTypeStmt *node = makeNode(CompositeTypeStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, typevar, typevar, typevar);
-  READ_LIST_FIELD(coldeflist, coldeflist, coldeflist);
-  return node;
-}
-
-static CreateEnumStmt *
-_readCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) msg)
-{
-  CreateEnumStmt *node = makeNode(CreateEnumStmt);
-  READ_LIST_FIELD(type_name, typeName, typeName);
-  READ_LIST_FIELD(vals, vals, vals);
-  return node;
-}
-
-static CreateRangeStmt *
-_readCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) msg)
-{
-  CreateRangeStmt *node = makeNode(CreateRangeStmt);
-  READ_LIST_FIELD(type_name, typeName, typeName);
-  READ_LIST_FIELD(params, params, params);
-  return node;
-}
-
-static AlterEnumStmt *
-_readAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) msg)
-{
-  AlterEnumStmt *node = makeNode(AlterEnumStmt);
-  READ_LIST_FIELD(type_name, typeName, typeName);
-  READ_STRING_FIELD(old_val, oldVal, oldVal);
-  READ_STRING_FIELD(new_val, newVal, newVal);
-  READ_STRING_FIELD(new_val_neighbor, newValNeighbor, newValNeighbor);
-  READ_BOOL_FIELD(new_val_is_after, newValIsAfter, newValIsAfter);
-  READ_BOOL_FIELD(skip_if_new_val_exists, skipIfNewValExists, skipIfNewValExists);
-  return node;
-}
-
-static AlterTSDictionaryStmt *
-_readAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) msg)
-{
-  AlterTSDictionaryStmt *node = makeNode(AlterTSDictionaryStmt);
-  READ_LIST_FIELD(dictname, dictname, dictname);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterTSConfigurationStmt *
-_readAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) msg)
-{
-  AlterTSConfigurationStmt *node = makeNode(AlterTSConfigurationStmt);
-  READ_ENUM_FIELD(AlterTSConfigType, kind, kind, kind);
-  READ_LIST_FIELD(cfgname, cfgname, cfgname);
-  READ_LIST_FIELD(tokentype, tokentype, tokentype);
-  READ_LIST_FIELD(dicts, dicts, dicts);
-  READ_BOOL_FIELD(override, override, override);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static CreateFdwStmt *
-_readCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) msg)
-{
-  CreateFdwStmt *node = makeNode(CreateFdwStmt);
-  READ_STRING_FIELD(fdwname, fdwname, fdwname);
-  READ_LIST_FIELD(func_options, func_options, func_options);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterFdwStmt *
-_readAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) msg)
-{
-  AlterFdwStmt *node = makeNode(AlterFdwStmt);
-  READ_STRING_FIELD(fdwname, fdwname, fdwname);
-  READ_LIST_FIELD(func_options, func_options, func_options);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static CreateForeignServerStmt *
-_readCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) msg)
-{
-  CreateForeignServerStmt *node = makeNode(CreateForeignServerStmt);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_STRING_FIELD(servertype, servertype, servertype);
-  READ_STRING_FIELD(version, version, version);
-  READ_STRING_FIELD(fdwname, fdwname, fdwname);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterForeignServerStmt *
-_readAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) msg)
-{
-  AlterForeignServerStmt *node = makeNode(AlterForeignServerStmt);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_STRING_FIELD(version, version, version);
-  READ_LIST_FIELD(options, options, options);
-  READ_BOOL_FIELD(has_version, has_version, has_version);
-  return node;
-}
-
-static CreateUserMappingStmt *
-_readCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) msg)
-{
-  CreateUserMappingStmt *node = makeNode(CreateUserMappingStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterUserMappingStmt *
-_readAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) msg)
-{
-  AlterUserMappingStmt *node = makeNode(AlterUserMappingStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static DropUserMappingStmt *
-_readDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) msg)
-{
-  DropUserMappingStmt *node = makeNode(DropUserMappingStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static AlterTableSpaceOptionsStmt *
-_readAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) msg)
-{
-  AlterTableSpaceOptionsStmt *node = makeNode(AlterTableSpaceOptionsStmt);
-  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
-  READ_LIST_FIELD(options, options, options);
-  READ_BOOL_FIELD(is_reset, isReset, isReset);
-  return node;
-}
-
-static AlterTableMoveAllStmt *
-_readAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) msg)
-{
-  AlterTableMoveAllStmt *node = makeNode(AlterTableMoveAllStmt);
-  READ_STRING_FIELD(orig_tablespacename, orig_tablespacename, orig_tablespacename);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_STRING_FIELD(new_tablespacename, new_tablespacename, new_tablespacename);
-  READ_BOOL_FIELD(nowait, nowait, nowait);
-  return node;
-}
-
-static SecLabelStmt *
-_readSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) msg)
-{
-  SecLabelStmt *node = makeNode(SecLabelStmt);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_NODE_PTR_FIELD(object, object, object);
-  READ_STRING_FIELD(provider, provider, provider);
-  READ_STRING_FIELD(label, label, label);
-  return node;
-}
-
-static CreateForeignTableStmt *
-_readCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) msg)
-{
-  CreateForeignTableStmt *node = makeNode(CreateForeignTableStmt);
-  READ_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
-  READ_STRING_FIELD(servername, servername, servername);
-  READ_LIST_FIELD(options, options, options);
-  NodeSetTag(node, T_CreateForeignTableStmt);
-  return node;
-}
-
-static ImportForeignSchemaStmt *
-_readImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) msg)
-{
-  ImportForeignSchemaStmt *node = makeNode(ImportForeignSchemaStmt);
-  READ_STRING_FIELD(server_name, server_name, server_name);
-  READ_STRING_FIELD(remote_schema, remote_schema, remote_schema);
-  READ_STRING_FIELD(local_schema, local_schema, local_schema);
-  READ_ENUM_FIELD(ImportForeignSchemaType, list_type, list_type, list_type);
-  READ_LIST_FIELD(table_list, table_list, table_list);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static CreateExtensionStmt *
-_readCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) msg)
-{
-  CreateExtensionStmt *node = makeNode(CreateExtensionStmt);
-  READ_STRING_FIELD(extname, extname, extname);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterExtensionStmt *
-_readAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) msg)
-{
-  AlterExtensionStmt *node = makeNode(AlterExtensionStmt);
-  READ_STRING_FIELD(extname, extname, extname);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterExtensionContentsStmt *
-_readAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) msg)
-{
-  AlterExtensionContentsStmt *node = makeNode(AlterExtensionContentsStmt);
-  READ_STRING_FIELD(extname, extname, extname);
-  READ_INT_FIELD(action, action, action);
-  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
-  READ_NODE_PTR_FIELD(object, object, object);
-  return node;
-}
-
-static CreateEventTrigStmt *
-_readCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) msg)
-{
-  CreateEventTrigStmt *node = makeNode(CreateEventTrigStmt);
-  READ_STRING_FIELD(trigname, trigname, trigname);
-  READ_STRING_FIELD(eventname, eventname, eventname);
-  READ_LIST_FIELD(whenclause, whenclause, whenclause);
-  READ_LIST_FIELD(funcname, funcname, funcname);
-  return node;
-}
-
-static AlterEventTrigStmt *
-_readAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) msg)
-{
-  AlterEventTrigStmt *node = makeNode(AlterEventTrigStmt);
-  READ_STRING_FIELD(trigname, trigname, trigname);
-  READ_CHAR_FIELD(tgenabled, tgenabled, tgenabled);
-  return node;
-}
-
-static RefreshMatViewStmt *
-_readRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) msg)
-{
-  RefreshMatViewStmt *node = makeNode(RefreshMatViewStmt);
-  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
-  READ_BOOL_FIELD(skip_data, skipData, skipData);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  return node;
-}
-
-static ReplicaIdentityStmt *
-_readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg)
-{
-  ReplicaIdentityStmt *node = makeNode(ReplicaIdentityStmt);
-  READ_CHAR_FIELD(identity_type, identity_type, identity_type);
-  READ_STRING_FIELD(name, name, name);
-  return node;
-}
-
-static AlterSystemStmt *
-_readAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) msg)
-{
-  AlterSystemStmt *node = makeNode(AlterSystemStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
-  return node;
-}
-
-static CreatePolicyStmt *
-_readCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) msg)
-{
-  CreatePolicyStmt *node = makeNode(CreatePolicyStmt);
-  READ_STRING_FIELD(policy_name, policy_name, policy_name);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
-  READ_STRING_FIELD(cmd_name, cmd_name, cmd_name);
-  READ_BOOL_FIELD(permissive, permissive, permissive);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_NODE_PTR_FIELD(qual, qual, qual);
-  READ_NODE_PTR_FIELD(with_check, with_check, with_check);
-  return node;
-}
-
-static AlterPolicyStmt *
-_readAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) msg)
-{
-  AlterPolicyStmt *node = makeNode(AlterPolicyStmt);
-  READ_STRING_FIELD(policy_name, policy_name, policy_name);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
-  READ_LIST_FIELD(roles, roles, roles);
-  READ_NODE_PTR_FIELD(qual, qual, qual);
-  READ_NODE_PTR_FIELD(with_check, with_check, with_check);
-  return node;
-}
-
-static CreateTransformStmt *
-_readCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) msg)
-{
-  CreateTransformStmt *node = makeNode(CreateTransformStmt);
-  READ_BOOL_FIELD(replace, replace, replace);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, type_name, type_name);
-  READ_STRING_FIELD(lang, lang, lang);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, fromsql, fromsql, fromsql);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, tosql, tosql, tosql);
-  return node;
-}
-
-static CreateAmStmt *
-_readCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) msg)
-{
-  CreateAmStmt *node = makeNode(CreateAmStmt);
-  READ_STRING_FIELD(amname, amname, amname);
-  READ_LIST_FIELD(handler_name, handler_name, handler_name);
-  READ_CHAR_FIELD(amtype, amtype, amtype);
-  return node;
-}
-
-static CreatePublicationStmt *
-_readCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) msg)
-{
-  CreatePublicationStmt *node = makeNode(CreatePublicationStmt);
-  READ_STRING_FIELD(pubname, pubname, pubname);
-  READ_LIST_FIELD(options, options, options);
-  READ_LIST_FIELD(pubobjects, pubobjects, pubobjects);
-  READ_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
-  return node;
-}
-
-static AlterPublicationStmt *
-_readAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) msg)
-{
-  AlterPublicationStmt *node = makeNode(AlterPublicationStmt);
-  READ_STRING_FIELD(pubname, pubname, pubname);
-  READ_LIST_FIELD(options, options, options);
-  READ_LIST_FIELD(pubobjects, pubobjects, pubobjects);
-  READ_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
-  READ_ENUM_FIELD(AlterPublicationAction, action, action, action);
-  return node;
-}
-
-static CreateSubscriptionStmt *
-_readCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) msg)
-{
-  CreateSubscriptionStmt *node = makeNode(CreateSubscriptionStmt);
-  READ_STRING_FIELD(subname, subname, subname);
-  READ_STRING_FIELD(conninfo, conninfo, conninfo);
-  READ_LIST_FIELD(publication, publication, publication);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static AlterSubscriptionStmt *
-_readAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) msg)
-{
-  AlterSubscriptionStmt *node = makeNode(AlterSubscriptionStmt);
-  READ_ENUM_FIELD(AlterSubscriptionType, kind, kind, kind);
-  READ_STRING_FIELD(subname, subname, subname);
-  READ_STRING_FIELD(conninfo, conninfo, conninfo);
-  READ_LIST_FIELD(publication, publication, publication);
-  READ_LIST_FIELD(options, options, options);
-  return node;
-}
-
-static DropSubscriptionStmt *
-_readDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) msg)
-{
-  DropSubscriptionStmt *node = makeNode(DropSubscriptionStmt);
-  READ_STRING_FIELD(subname, subname, subname);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
-  return node;
-}
-
-static CreateStatsStmt *
-_readCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg)
-{
-  CreateStatsStmt *node = makeNode(CreateStatsStmt);
-  READ_LIST_FIELD(defnames, defnames, defnames);
-  READ_LIST_FIELD(stat_types, stat_types, stat_types);
-  READ_LIST_FIELD(exprs, exprs, exprs);
-  READ_LIST_FIELD(relations, relations, relations);
-  READ_STRING_FIELD(stxcomment, stxcomment, stxcomment);
-  READ_BOOL_FIELD(transformed, transformed, transformed);
-  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
-  return node;
-}
-
-static AlterCollationStmt *
-_readAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) msg)
-{
-  AlterCollationStmt *node = makeNode(AlterCollationStmt);
-  READ_LIST_FIELD(collname, collname, collname);
-  return node;
-}
-
-static CallStmt *
-_readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg)
-{
-  CallStmt *node = makeNode(CallStmt);
-  READ_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
-  READ_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
-  READ_LIST_FIELD(outargs, outargs, outargs);
-  return node;
-}
-
-static AlterStatsStmt *
-_readAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) msg)
-{
-  AlterStatsStmt *node = makeNode(AlterStatsStmt);
-  READ_LIST_FIELD(defnames, defnames, defnames);
-  READ_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
-  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
-  return node;
-}
-
-static A_Expr *
-_readAExpr(OUT_TYPE(A_Expr, AExpr) msg)
-{
-  A_Expr *node = makeNode(A_Expr);
-  READ_ENUM_FIELD(A_Expr_Kind, kind, kind, kind);
-  READ_LIST_FIELD(name, name, name);
-  READ_NODE_PTR_FIELD(lexpr, lexpr, lexpr);
-  READ_NODE_PTR_FIELD(rexpr, rexpr, rexpr);
+static TypeName *
+_readTypeName(OUT_TYPE(TypeName, TypeName) msg)
+{
+  TypeName *node = makeNode(TypeName);
+  READ_LIST_FIELD(names, names, names);
+  READ_UINT_FIELD(type_oid, typeOid, typeOid);
+  READ_BOOL_FIELD(setof, setof, setof);
+  READ_BOOL_FIELD(pct_type, pct_type, pct_type);
+  READ_LIST_FIELD(typmods, typmods, typmods);
+  READ_INT_FIELD(typemod, typemod, typemod);
+  READ_LIST_FIELD(array_bounds, arrayBounds, arrayBounds);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -2289,6 +1022,48 @@ _readParamRef(OUT_TYPE(ParamRef, ParamRef) msg)
 {
   ParamRef *node = makeNode(ParamRef);
   READ_INT_FIELD(number, number, number);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static A_Expr *
+_readAExpr(OUT_TYPE(A_Expr, AExpr) msg)
+{
+  A_Expr *node = makeNode(A_Expr);
+  READ_ENUM_FIELD(A_Expr_Kind, kind, kind, kind);
+  READ_LIST_FIELD(name, name, name);
+  READ_NODE_PTR_FIELD(lexpr, lexpr, lexpr);
+  READ_NODE_PTR_FIELD(rexpr, rexpr, rexpr);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static TypeCast *
+_readTypeCast(OUT_TYPE(TypeCast, TypeCast) msg)
+{
+  TypeCast *node = makeNode(TypeCast);
+  READ_NODE_PTR_FIELD(arg, arg, arg);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static CollateClause *
+_readCollateClause(OUT_TYPE(CollateClause, CollateClause) msg)
+{
+  CollateClause *node = makeNode(CollateClause);
+  READ_NODE_PTR_FIELD(arg, arg, arg);
+  READ_LIST_FIELD(collname, collname, collname);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static RoleSpec *
+_readRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) msg)
+{
+  RoleSpec *node = makeNode(RoleSpec);
+  READ_ENUM_FIELD(RoleSpecType, roletype, roletype, roletype);
+  READ_STRING_FIELD(rolename, rolename, rolename);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -2367,26 +1142,6 @@ _readMultiAssignRef(OUT_TYPE(MultiAssignRef, MultiAssignRef) msg)
   return node;
 }
 
-static TypeCast *
-_readTypeCast(OUT_TYPE(TypeCast, TypeCast) msg)
-{
-  TypeCast *node = makeNode(TypeCast);
-  READ_NODE_PTR_FIELD(arg, arg, arg);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  READ_INT_FIELD(location, location, location);
-  return node;
-}
-
-static CollateClause *
-_readCollateClause(OUT_TYPE(CollateClause, CollateClause) msg)
-{
-  CollateClause *node = makeNode(CollateClause);
-  READ_NODE_PTR_FIELD(arg, arg, arg);
-  READ_LIST_FIELD(collname, collname, collname);
-  READ_INT_FIELD(location, location, location);
-  return node;
-}
-
 static SortBy *
 _readSortBy(OUT_TYPE(SortBy, SortBy) msg)
 {
@@ -2437,18 +1192,6 @@ _readRangeFunction(OUT_TYPE(RangeFunction, RangeFunction) msg)
   return node;
 }
 
-static RangeTableSample *
-_readRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) msg)
-{
-  RangeTableSample *node = makeNode(RangeTableSample);
-  READ_NODE_PTR_FIELD(relation, relation, relation);
-  READ_LIST_FIELD(method, method, method);
-  READ_LIST_FIELD(args, args, args);
-  READ_NODE_PTR_FIELD(repeatable, repeatable, repeatable);
-  READ_INT_FIELD(location, location, location);
-  return node;
-}
-
 static RangeTableFunc *
 _readRangeTableFunc(OUT_TYPE(RangeTableFunc, RangeTableFunc) msg)
 {
@@ -2477,17 +1220,14 @@ _readRangeTableFuncCol(OUT_TYPE(RangeTableFuncCol, RangeTableFuncCol) msg)
   return node;
 }
 
-static TypeName *
-_readTypeName(OUT_TYPE(TypeName, TypeName) msg)
+static RangeTableSample *
+_readRangeTableSample(OUT_TYPE(RangeTableSample, RangeTableSample) msg)
 {
-  TypeName *node = makeNode(TypeName);
-  READ_LIST_FIELD(names, names, names);
-  READ_UINT_FIELD(type_oid, typeOid, typeOid);
-  READ_BOOL_FIELD(setof, setof, setof);
-  READ_BOOL_FIELD(pct_type, pct_type, pct_type);
-  READ_LIST_FIELD(typmods, typmods, typmods);
-  READ_INT_FIELD(typemod, typemod, typemod);
-  READ_LIST_FIELD(array_bounds, arrayBounds, arrayBounds);
+  RangeTableSample *node = makeNode(RangeTableSample);
+  READ_NODE_PTR_FIELD(relation, relation, relation);
+  READ_LIST_FIELD(method, method, method);
+  READ_LIST_FIELD(args, args, args);
+  READ_NODE_PTR_FIELD(repeatable, repeatable, repeatable);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -2504,6 +1244,7 @@ _readColumnDef(OUT_TYPE(ColumnDef, ColumnDef) msg)
   READ_BOOL_FIELD(is_not_null, is_not_null, is_not_null);
   READ_BOOL_FIELD(is_from_type, is_from_type, is_from_type);
   READ_CHAR_FIELD(storage, storage, storage);
+  READ_STRING_FIELD(storage_name, storage_name, storage_name);
   READ_NODE_PTR_FIELD(raw_default, raw_default, raw_default);
   READ_NODE_PTR_FIELD(cooked_default, cooked_default, cooked_default);
   READ_CHAR_FIELD(identity, identity, identity);
@@ -2514,6 +1255,16 @@ _readColumnDef(OUT_TYPE(ColumnDef, ColumnDef) msg)
   READ_LIST_FIELD(constraints, constraints, constraints);
   READ_LIST_FIELD(fdwoptions, fdwoptions, fdwoptions);
   READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static TableLikeClause *
+_readTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) msg)
+{
+  TableLikeClause *node = makeNode(TableLikeClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_UINT_FIELD(options, options, options);
+  READ_UINT_FIELD(relation_oid, relationOid, relationOid);
   return node;
 }
 
@@ -2532,52 +1283,6 @@ _readIndexElem(OUT_TYPE(IndexElem, IndexElem) msg)
   return node;
 }
 
-static StatsElem *
-_readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg)
-{
-  StatsElem *node = makeNode(StatsElem);
-  READ_STRING_FIELD(name, name, name);
-  READ_NODE_PTR_FIELD(expr, expr, expr);
-  return node;
-}
-
-static Constraint *
-_readConstraint(OUT_TYPE(Constraint, Constraint) msg)
-{
-  Constraint *node = makeNode(Constraint);
-  READ_ENUM_FIELD(ConstrType, contype, contype, contype);
-  READ_STRING_FIELD(conname, conname, conname);
-  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
-  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  READ_INT_FIELD(location, location, location);
-  READ_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
-  READ_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
-  READ_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
-  READ_CHAR_FIELD(generated_when, generated_when, generated_when);
-  READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
-  READ_LIST_FIELD(keys, keys, keys);
-  READ_LIST_FIELD(including, including, including);
-  READ_LIST_FIELD(exclusions, exclusions, exclusions);
-  READ_LIST_FIELD(options, options, options);
-  READ_STRING_FIELD(indexname, indexname, indexname);
-  READ_STRING_FIELD(indexspace, indexspace, indexspace);
-  READ_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
-  READ_STRING_FIELD(access_method, access_method, access_method);
-  READ_NODE_PTR_FIELD(where_clause, where_clause, where_clause);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, pktable, pktable, pktable);
-  READ_LIST_FIELD(fk_attrs, fk_attrs, fk_attrs);
-  READ_LIST_FIELD(pk_attrs, pk_attrs, pk_attrs);
-  READ_CHAR_FIELD(fk_matchtype, fk_matchtype, fk_matchtype);
-  READ_CHAR_FIELD(fk_upd_action, fk_upd_action, fk_upd_action);
-  READ_CHAR_FIELD(fk_del_action, fk_del_action, fk_del_action);
-  READ_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
-  READ_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
-  READ_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
-  READ_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
-  READ_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
-  return node;
-}
-
 static DefElem *
 _readDefElem(OUT_TYPE(DefElem, DefElem) msg)
 {
@@ -2590,6 +1295,85 @@ _readDefElem(OUT_TYPE(DefElem, DefElem) msg)
   return node;
 }
 
+static LockingClause *
+_readLockingClause(OUT_TYPE(LockingClause, LockingClause) msg)
+{
+  LockingClause *node = makeNode(LockingClause);
+  READ_LIST_FIELD(locked_rels, lockedRels, lockedRels);
+  READ_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
+  READ_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
+  return node;
+}
+
+static XmlSerialize *
+_readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg)
+{
+  XmlSerialize *node = makeNode(XmlSerialize);
+  READ_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_BOOL_FIELD(indent, indent, indent);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static PartitionElem *
+_readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg)
+{
+  PartitionElem *node = makeNode(PartitionElem);
+  READ_STRING_FIELD(name, name, name);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
+  READ_LIST_FIELD(collation, collation, collation);
+  READ_LIST_FIELD(opclass, opclass, opclass);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static PartitionSpec *
+_readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg)
+{
+  PartitionSpec *node = makeNode(PartitionSpec);
+  READ_ENUM_FIELD(PartitionStrategy, strategy, strategy, strategy);
+  READ_LIST_FIELD(part_params, partParams, partParams);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static PartitionBoundSpec *
+_readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg)
+{
+  PartitionBoundSpec *node = makeNode(PartitionBoundSpec);
+  READ_CHAR_FIELD(strategy, strategy, strategy);
+  READ_BOOL_FIELD(is_default, is_default, is_default);
+  READ_INT_FIELD(modulus, modulus, modulus);
+  READ_INT_FIELD(remainder, remainder, remainder);
+  READ_LIST_FIELD(listdatums, listdatums, listdatums);
+  READ_LIST_FIELD(lowerdatums, lowerdatums, lowerdatums);
+  READ_LIST_FIELD(upperdatums, upperdatums, upperdatums);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static PartitionRangeDatum *
+_readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg)
+{
+  PartitionRangeDatum *node = makeNode(PartitionRangeDatum);
+  READ_ENUM_FIELD(PartitionRangeDatumKind, kind, kind, kind);
+  READ_NODE_PTR_FIELD(value, value, value);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static PartitionCmd *
+_readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg)
+{
+  PartitionCmd *node = makeNode(PartitionCmd);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
+  READ_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
+  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
+  return node;
+}
+
 static RangeTblEntry *
 _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
 {
@@ -2599,6 +1383,7 @@ _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
   READ_CHAR_FIELD(relkind, relkind, relkind);
   READ_INT_FIELD(rellockmode, rellockmode, rellockmode);
   READ_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
+  READ_UINT_FIELD(perminfoindex, perminfoindex, perminfoindex);
   READ_SPECIFIC_NODE_PTR_FIELD(Query, query, subquery, subquery, subquery);
   READ_BOOL_FIELD(security_barrier, security_barrier, security_barrier);
   READ_ENUM_FIELD(JoinType, jointype, jointype, jointype);
@@ -2624,13 +1409,21 @@ _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
   READ_BOOL_FIELD(lateral, lateral, lateral);
   READ_BOOL_FIELD(inh, inh, inh);
   READ_BOOL_FIELD(in_from_cl, inFromCl, inFromCl);
-  READ_UINT_FIELD(required_perms, requiredPerms, requiredPerms);
+  READ_LIST_FIELD(security_quals, securityQuals, securityQuals);
+  return node;
+}
+
+static RTEPermissionInfo *
+_readRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) msg)
+{
+  RTEPermissionInfo *node = makeNode(RTEPermissionInfo);
+  READ_UINT_FIELD(relid, relid, relid);
+  READ_BOOL_FIELD(inh, inh, inh);
+  READ_LONG_FIELD(required_perms, requiredPerms, requiredPerms);
   READ_UINT_FIELD(check_as_user, checkAsUser, checkAsUser);
   READ_BITMAPSET_FIELD(selected_cols, selectedCols, selectedCols);
   READ_BITMAPSET_FIELD(inserted_cols, insertedCols, insertedCols);
   READ_BITMAPSET_FIELD(updated_cols, updatedCols, updatedCols);
-  READ_BITMAPSET_FIELD(extra_updated_cols, extraUpdatedCols, extraUpdatedCols);
-  READ_LIST_FIELD(security_quals, securityQuals, securityQuals);
   return node;
 }
 
@@ -2714,70 +1507,6 @@ _readWindowClause(OUT_TYPE(WindowClause, WindowClause) msg)
   return node;
 }
 
-static ObjectWithArgs *
-_readObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) msg)
-{
-  ObjectWithArgs *node = makeNode(ObjectWithArgs);
-  READ_LIST_FIELD(objname, objname, objname);
-  READ_LIST_FIELD(objargs, objargs, objargs);
-  READ_LIST_FIELD(objfuncargs, objfuncargs, objfuncargs);
-  READ_BOOL_FIELD(args_unspecified, args_unspecified, args_unspecified);
-  return node;
-}
-
-static AccessPriv *
-_readAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) msg)
-{
-  AccessPriv *node = makeNode(AccessPriv);
-  READ_STRING_FIELD(priv_name, priv_name, priv_name);
-  READ_LIST_FIELD(cols, cols, cols);
-  return node;
-}
-
-static CreateOpClassItem *
-_readCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) msg)
-{
-  CreateOpClassItem *node = makeNode(CreateOpClassItem);
-  READ_INT_FIELD(itemtype, itemtype, itemtype);
-  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, name, name, name);
-  READ_INT_FIELD(number, number, number);
-  READ_LIST_FIELD(order_family, order_family, order_family);
-  READ_LIST_FIELD(class_args, class_args, class_args);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, storedtype, storedtype, storedtype);
-  return node;
-}
-
-static TableLikeClause *
-_readTableLikeClause(OUT_TYPE(TableLikeClause, TableLikeClause) msg)
-{
-  TableLikeClause *node = makeNode(TableLikeClause);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_UINT_FIELD(options, options, options);
-  READ_UINT_FIELD(relation_oid, relationOid, relationOid);
-  return node;
-}
-
-static FunctionParameter *
-_readFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) msg)
-{
-  FunctionParameter *node = makeNode(FunctionParameter);
-  READ_STRING_FIELD(name, name, name);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
-  READ_ENUM_FIELD(FunctionParameterMode, mode, mode, mode);
-  READ_NODE_PTR_FIELD(defexpr, defexpr, defexpr);
-  return node;
-}
-
-static LockingClause *
-_readLockingClause(OUT_TYPE(LockingClause, LockingClause) msg)
-{
-  LockingClause *node = makeNode(LockingClause);
-  READ_LIST_FIELD(locked_rels, lockedRels, lockedRels);
-  READ_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
-  READ_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
-  return node;
-}
-
 static RowMarkClause *
 _readRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) msg)
 {
@@ -2786,17 +1515,6 @@ _readRowMarkClause(OUT_TYPE(RowMarkClause, RowMarkClause) msg)
   READ_ENUM_FIELD(LockClauseStrength, strength, strength, strength);
   READ_ENUM_FIELD(LockWaitPolicy, wait_policy, waitPolicy, waitPolicy);
   READ_BOOL_FIELD(pushed_down, pushedDown, pushedDown);
-  return node;
-}
-
-static XmlSerialize *
-_readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg)
-{
-  XmlSerialize *node = makeNode(XmlSerialize);
-  READ_ENUM_FIELD(XmlOptionType, xmloption, xmloption, xmloption);
-  READ_NODE_PTR_FIELD(expr, expr, expr);
-  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
-  READ_INT_FIELD(location, location, location);
   return node;
 }
 
@@ -2894,13 +1612,16 @@ _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg)
   return node;
 }
 
-static RoleSpec *
-_readRoleSpec(OUT_TYPE(RoleSpec, RoleSpec) msg)
+static MergeAction *
+_readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg)
 {
-  RoleSpec *node = makeNode(RoleSpec);
-  READ_ENUM_FIELD(RoleSpecType, roletype, roletype, roletype);
-  READ_STRING_FIELD(rolename, rolename, rolename);
-  READ_INT_FIELD(location, location, location);
+  MergeAction *node = makeNode(MergeAction);
+  READ_BOOL_FIELD(matched, matched, matched);
+  READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  READ_ENUM_FIELD(OverridingKind, override, override, override);
+  READ_NODE_PTR_FIELD(qual, qual, qual);
+  READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_LIST_FIELD(update_colnos, updateColnos, updateColnos);
   return node;
 }
 
@@ -2914,91 +1635,1001 @@ _readTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) msg)
   return node;
 }
 
-static PartitionElem *
-_readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg)
+static JsonOutput *
+_readJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) msg)
 {
-  PartitionElem *node = makeNode(PartitionElem);
+  JsonOutput *node = makeNode(JsonOutput);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+  return node;
+}
+
+static JsonKeyValue *
+_readJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) msg)
+{
+  JsonKeyValue *node = makeNode(JsonKeyValue);
+  READ_EXPR_PTR_FIELD(key, key, key);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, value, value, value);
+  return node;
+}
+
+static JsonObjectConstructor *
+_readJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) msg)
+{
+  JsonObjectConstructor *node = makeNode(JsonObjectConstructor);
+  READ_LIST_FIELD(exprs, exprs, exprs);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  READ_BOOL_FIELD(unique, unique, unique);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonArrayConstructor *
+_readJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) msg)
+{
+  JsonArrayConstructor *node = makeNode(JsonArrayConstructor);
+  READ_LIST_FIELD(exprs, exprs, exprs);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonArrayQueryConstructor *
+_readJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) msg)
+{
+  JsonArrayQueryConstructor *node = makeNode(JsonArrayQueryConstructor);
+  READ_NODE_PTR_FIELD(query, query, query);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonAggConstructor *
+_readJsonAggConstructor(OUT_TYPE(JsonAggConstructor, JsonAggConstructor) msg)
+{
+  JsonAggConstructor *node = makeNode(JsonAggConstructor);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_NODE_PTR_FIELD(agg_filter, agg_filter, agg_filter);
+  READ_LIST_FIELD(agg_order, agg_order, agg_order);
+  READ_SPECIFIC_NODE_PTR_FIELD(WindowDef, window_def, over, over, over);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonObjectAgg *
+_readJsonObjectAgg(OUT_TYPE(JsonObjectAgg, JsonObjectAgg) msg)
+{
+  JsonObjectAgg *node = makeNode(JsonObjectAgg);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonAggConstructor, json_agg_constructor, constructor, constructor, constructor);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonKeyValue, json_key_value, arg, arg, arg);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  READ_BOOL_FIELD(unique, unique, unique);
+  return node;
+}
+
+static JsonArrayAgg *
+_readJsonArrayAgg(OUT_TYPE(JsonArrayAgg, JsonArrayAgg) msg)
+{
+  JsonArrayAgg *node = makeNode(JsonArrayAgg);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonAggConstructor, json_agg_constructor, constructor, constructor, constructor);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, arg, arg, arg);
+  READ_BOOL_FIELD(absent_on_null, absent_on_null, absent_on_null);
+  return node;
+}
+
+static RawStmt *
+_readRawStmt(OUT_TYPE(RawStmt, RawStmt) msg)
+{
+  RawStmt *node = makeNode(RawStmt);
+  READ_NODE_PTR_FIELD(stmt, stmt, stmt);
+  READ_INT_FIELD(stmt_location, stmt_location, stmt_location);
+  READ_INT_FIELD(stmt_len, stmt_len, stmt_len);
+  return node;
+}
+
+static InsertStmt *
+_readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg)
+{
+  InsertStmt *node = makeNode(InsertStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(cols, cols, cols);
+  READ_NODE_PTR_FIELD(select_stmt, selectStmt, selectStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(OnConflictClause, on_conflict_clause, on_conflict_clause, onConflictClause, onConflictClause);
+  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  READ_ENUM_FIELD(OverridingKind, override, override, override);
+  return node;
+}
+
+static DeleteStmt *
+_readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg)
+{
+  DeleteStmt *node = makeNode(DeleteStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(using_clause, usingClause, usingClause);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  return node;
+}
+
+static UpdateStmt *
+_readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg)
+{
+  UpdateStmt *node = makeNode(UpdateStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  READ_LIST_FIELD(from_clause, fromClause, fromClause);
+  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  return node;
+}
+
+static MergeStmt *
+_readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg)
+{
+  MergeStmt *node = makeNode(MergeStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
+  READ_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
+  READ_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
+  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  return node;
+}
+
+static SelectStmt *
+_readSelectStmt(OUT_TYPE(SelectStmt, SelectStmt) msg)
+{
+  SelectStmt *node = makeNode(SelectStmt);
+  READ_LIST_FIELD(distinct_clause, distinctClause, distinctClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into_clause, intoClause, intoClause);
+  READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_LIST_FIELD(from_clause, fromClause, fromClause);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  READ_LIST_FIELD(group_clause, groupClause, groupClause);
+  READ_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
+  READ_NODE_PTR_FIELD(having_clause, havingClause, havingClause);
+  READ_LIST_FIELD(window_clause, windowClause, windowClause);
+  READ_LIST_FIELD(values_lists, valuesLists, valuesLists);
+  READ_LIST_FIELD(sort_clause, sortClause, sortClause);
+  READ_NODE_PTR_FIELD(limit_offset, limitOffset, limitOffset);
+  READ_NODE_PTR_FIELD(limit_count, limitCount, limitCount);
+  READ_ENUM_FIELD(LimitOption, limit_option, limitOption, limitOption);
+  READ_LIST_FIELD(locking_clause, lockingClause, lockingClause);
+  READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
+  READ_ENUM_FIELD(SetOperation, op, op, op);
+  READ_BOOL_FIELD(all, all, all);
+  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, larg, larg, larg);
+  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, rarg, rarg, rarg);
+  return node;
+}
+
+static SetOperationStmt *
+_readSetOperationStmt(OUT_TYPE(SetOperationStmt, SetOperationStmt) msg)
+{
+  SetOperationStmt *node = makeNode(SetOperationStmt);
+  READ_ENUM_FIELD(SetOperation, op, op, op);
+  READ_BOOL_FIELD(all, all, all);
+  READ_NODE_PTR_FIELD(larg, larg, larg);
+  READ_NODE_PTR_FIELD(rarg, rarg, rarg);
+  READ_LIST_FIELD(col_types, colTypes, colTypes);
+  READ_LIST_FIELD(col_typmods, colTypmods, colTypmods);
+  READ_LIST_FIELD(col_collations, colCollations, colCollations);
+  READ_LIST_FIELD(group_clauses, groupClauses, groupClauses);
+  return node;
+}
+
+static ReturnStmt *
+_readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg)
+{
+  ReturnStmt *node = makeNode(ReturnStmt);
+  READ_NODE_PTR_FIELD(returnval, returnval, returnval);
+  return node;
+}
+
+static PLAssignStmt *
+_readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg)
+{
+  PLAssignStmt *node = makeNode(PLAssignStmt);
   READ_STRING_FIELD(name, name, name);
-  READ_NODE_PTR_FIELD(expr, expr, expr);
-  READ_LIST_FIELD(collation, collation, collation);
-  READ_LIST_FIELD(opclass, opclass, opclass);
+  READ_LIST_FIELD(indirection, indirection, indirection);
+  READ_INT_FIELD(nnames, nnames, nnames);
+  READ_SPECIFIC_NODE_PTR_FIELD(SelectStmt, select_stmt, val, val, val);
   READ_INT_FIELD(location, location, location);
   return node;
 }
 
-static PartitionSpec *
-_readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg)
+static CreateSchemaStmt *
+_readCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) msg)
 {
-  PartitionSpec *node = makeNode(PartitionSpec);
-  READ_STRING_FIELD(strategy, strategy, strategy);
-  READ_LIST_FIELD(part_params, partParams, partParams);
-  READ_INT_FIELD(location, location, location);
+  CreateSchemaStmt *node = makeNode(CreateSchemaStmt);
+  READ_STRING_FIELD(schemaname, schemaname, schemaname);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, authrole, authrole, authrole);
+  READ_LIST_FIELD(schema_elts, schemaElts, schemaElts);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
   return node;
 }
 
-static PartitionBoundSpec *
-_readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg)
+static AlterTableStmt *
+_readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg)
 {
-  PartitionBoundSpec *node = makeNode(PartitionBoundSpec);
-  READ_CHAR_FIELD(strategy, strategy, strategy);
-  READ_BOOL_FIELD(is_default, is_default, is_default);
-  READ_INT_FIELD(modulus, modulus, modulus);
-  READ_INT_FIELD(remainder, remainder, remainder);
-  READ_LIST_FIELD(listdatums, listdatums, listdatums);
-  READ_LIST_FIELD(lowerdatums, lowerdatums, lowerdatums);
-  READ_LIST_FIELD(upperdatums, upperdatums, upperdatums);
-  READ_INT_FIELD(location, location, location);
+  AlterTableStmt *node = makeNode(AlterTableStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(cmds, cmds, cmds);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   return node;
 }
 
-static PartitionRangeDatum *
-_readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg)
+static ReplicaIdentityStmt *
+_readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg)
 {
-  PartitionRangeDatum *node = makeNode(PartitionRangeDatum);
-  READ_ENUM_FIELD(PartitionRangeDatumKind, kind, kind, kind);
-  READ_NODE_PTR_FIELD(value, value, value);
-  READ_INT_FIELD(location, location, location);
+  ReplicaIdentityStmt *node = makeNode(ReplicaIdentityStmt);
+  READ_CHAR_FIELD(identity_type, identity_type, identity_type);
+  READ_STRING_FIELD(name, name, name);
   return node;
 }
 
-static PartitionCmd *
-_readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg)
+static AlterTableCmd *
+_readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg)
 {
-  PartitionCmd *node = makeNode(PartitionCmd);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
-  READ_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, bound, bound, bound);
+  AlterTableCmd *node = makeNode(AlterTableCmd);
+  READ_ENUM_FIELD(AlterTableType, subtype, subtype, subtype);
+  READ_STRING_FIELD(name, name, name);
+  READ_INT_FIELD(num, num, num);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
+  READ_NODE_PTR_FIELD(def, def, def);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  READ_BOOL_FIELD(recurse, recurse, recurse);
+  return node;
+}
+
+static AlterCollationStmt *
+_readAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) msg)
+{
+  AlterCollationStmt *node = makeNode(AlterCollationStmt);
+  READ_LIST_FIELD(collname, collname, collname);
+  return node;
+}
+
+static AlterDomainStmt *
+_readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg)
+{
+  AlterDomainStmt *node = makeNode(AlterDomainStmt);
+  READ_CHAR_FIELD(subtype, subtype, subtype);
+  READ_LIST_FIELD(type_name, typeName, typeName);
+  READ_STRING_FIELD(name, name, name);
+  READ_NODE_PTR_FIELD(def, def, def);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static GrantStmt *
+_readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg)
+{
+  GrantStmt *node = makeNode(GrantStmt);
+  READ_BOOL_FIELD(is_grant, is_grant, is_grant);
+  READ_ENUM_FIELD(GrantTargetType, targtype, targtype, targtype);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_LIST_FIELD(objects, objects, objects);
+  READ_LIST_FIELD(privileges, privileges, privileges);
+  READ_LIST_FIELD(grantees, grantees, grantees);
+  READ_BOOL_FIELD(grant_option, grant_option, grant_option);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  return node;
+}
+
+static ObjectWithArgs *
+_readObjectWithArgs(OUT_TYPE(ObjectWithArgs, ObjectWithArgs) msg)
+{
+  ObjectWithArgs *node = makeNode(ObjectWithArgs);
+  READ_LIST_FIELD(objname, objname, objname);
+  READ_LIST_FIELD(objargs, objargs, objargs);
+  READ_LIST_FIELD(objfuncargs, objfuncargs, objfuncargs);
+  READ_BOOL_FIELD(args_unspecified, args_unspecified, args_unspecified);
+  return node;
+}
+
+static AccessPriv *
+_readAccessPriv(OUT_TYPE(AccessPriv, AccessPriv) msg)
+{
+  AccessPriv *node = makeNode(AccessPriv);
+  READ_STRING_FIELD(priv_name, priv_name, priv_name);
+  READ_LIST_FIELD(cols, cols, cols);
+  return node;
+}
+
+static GrantRoleStmt *
+_readGrantRoleStmt(OUT_TYPE(GrantRoleStmt, GrantRoleStmt) msg)
+{
+  GrantRoleStmt *node = makeNode(GrantRoleStmt);
+  READ_LIST_FIELD(granted_roles, granted_roles, granted_roles);
+  READ_LIST_FIELD(grantee_roles, grantee_roles, grantee_roles);
+  READ_BOOL_FIELD(is_grant, is_grant, is_grant);
+  READ_LIST_FIELD(opt, opt, opt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, grantor, grantor, grantor);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  return node;
+}
+
+static AlterDefaultPrivilegesStmt *
+_readAlterDefaultPrivilegesStmt(OUT_TYPE(AlterDefaultPrivilegesStmt, AlterDefaultPrivilegesStmt) msg)
+{
+  AlterDefaultPrivilegesStmt *node = makeNode(AlterDefaultPrivilegesStmt);
+  READ_LIST_FIELD(options, options, options);
+  READ_SPECIFIC_NODE_PTR_FIELD(GrantStmt, grant_stmt, action, action, action);
+  return node;
+}
+
+static CopyStmt *
+_readCopyStmt(OUT_TYPE(CopyStmt, CopyStmt) msg)
+{
+  CopyStmt *node = makeNode(CopyStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(query, query, query);
+  READ_LIST_FIELD(attlist, attlist, attlist);
+  READ_BOOL_FIELD(is_from, is_from, is_from);
+  READ_BOOL_FIELD(is_program, is_program, is_program);
+  READ_STRING_FIELD(filename, filename, filename);
+  READ_LIST_FIELD(options, options, options);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  return node;
+}
+
+static VariableSetStmt *
+_readVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) msg)
+{
+  VariableSetStmt *node = makeNode(VariableSetStmt);
+  READ_ENUM_FIELD(VariableSetKind, kind, kind, kind);
+  READ_STRING_FIELD(name, name, name);
+  READ_LIST_FIELD(args, args, args);
+  READ_BOOL_FIELD(is_local, is_local, is_local);
+  return node;
+}
+
+static VariableShowStmt *
+_readVariableShowStmt(OUT_TYPE(VariableShowStmt, VariableShowStmt) msg)
+{
+  VariableShowStmt *node = makeNode(VariableShowStmt);
+  READ_STRING_FIELD(name, name, name);
+  return node;
+}
+
+static CreateStmt *
+_readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg)
+{
+  CreateStmt *node = makeNode(CreateStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(table_elts, tableElts, tableElts);
+  READ_LIST_FIELD(inh_relations, inhRelations, inhRelations);
+  READ_SPECIFIC_NODE_PTR_FIELD(PartitionBoundSpec, partition_bound_spec, partbound, partbound, partbound);
+  READ_SPECIFIC_NODE_PTR_FIELD(PartitionSpec, partition_spec, partspec, partspec, partspec);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, of_typename, ofTypename, ofTypename);
+  READ_LIST_FIELD(constraints, constraints, constraints);
+  READ_LIST_FIELD(options, options, options);
+  READ_ENUM_FIELD(OnCommitAction, oncommit, oncommit, oncommit);
+  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  return node;
+}
+
+static Constraint *
+_readConstraint(OUT_TYPE(Constraint, Constraint) msg)
+{
+  Constraint *node = makeNode(Constraint);
+  READ_ENUM_FIELD(ConstrType, contype, contype, contype);
+  READ_STRING_FIELD(conname, conname, conname);
+  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
+  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  READ_INT_FIELD(location, location, location);
+  READ_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
+  READ_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
+  READ_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
+  READ_CHAR_FIELD(generated_when, generated_when, generated_when);
+  READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
+  READ_LIST_FIELD(keys, keys, keys);
+  READ_LIST_FIELD(including, including, including);
+  READ_LIST_FIELD(exclusions, exclusions, exclusions);
+  READ_LIST_FIELD(options, options, options);
+  READ_STRING_FIELD(indexname, indexname, indexname);
+  READ_STRING_FIELD(indexspace, indexspace, indexspace);
+  READ_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
+  READ_STRING_FIELD(access_method, access_method, access_method);
+  READ_NODE_PTR_FIELD(where_clause, where_clause, where_clause);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, pktable, pktable, pktable);
+  READ_LIST_FIELD(fk_attrs, fk_attrs, fk_attrs);
+  READ_LIST_FIELD(pk_attrs, pk_attrs, pk_attrs);
+  READ_CHAR_FIELD(fk_matchtype, fk_matchtype, fk_matchtype);
+  READ_CHAR_FIELD(fk_upd_action, fk_upd_action, fk_upd_action);
+  READ_CHAR_FIELD(fk_del_action, fk_del_action, fk_del_action);
+  READ_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
+  READ_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
+  READ_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
+  READ_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
+  READ_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
+  return node;
+}
+
+static CreateTableSpaceStmt *
+_readCreateTableSpaceStmt(OUT_TYPE(CreateTableSpaceStmt, CreateTableSpaceStmt) msg)
+{
+  CreateTableSpaceStmt *node = makeNode(CreateTableSpaceStmt);
+  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, owner, owner, owner);
+  READ_STRING_FIELD(location, location, location);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static DropTableSpaceStmt *
+_readDropTableSpaceStmt(OUT_TYPE(DropTableSpaceStmt, DropTableSpaceStmt) msg)
+{
+  DropTableSpaceStmt *node = makeNode(DropTableSpaceStmt);
+  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static AlterTableSpaceOptionsStmt *
+_readAlterTableSpaceOptionsStmt(OUT_TYPE(AlterTableSpaceOptionsStmt, AlterTableSpaceOptionsStmt) msg)
+{
+  AlterTableSpaceOptionsStmt *node = makeNode(AlterTableSpaceOptionsStmt);
+  READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
+  READ_LIST_FIELD(options, options, options);
+  READ_BOOL_FIELD(is_reset, isReset, isReset);
+  return node;
+}
+
+static AlterTableMoveAllStmt *
+_readAlterTableMoveAllStmt(OUT_TYPE(AlterTableMoveAllStmt, AlterTableMoveAllStmt) msg)
+{
+  AlterTableMoveAllStmt *node = makeNode(AlterTableMoveAllStmt);
+  READ_STRING_FIELD(orig_tablespacename, orig_tablespacename, orig_tablespacename);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_STRING_FIELD(new_tablespacename, new_tablespacename, new_tablespacename);
+  READ_BOOL_FIELD(nowait, nowait, nowait);
+  return node;
+}
+
+static CreateExtensionStmt *
+_readCreateExtensionStmt(OUT_TYPE(CreateExtensionStmt, CreateExtensionStmt) msg)
+{
+  CreateExtensionStmt *node = makeNode(CreateExtensionStmt);
+  READ_STRING_FIELD(extname, extname, extname);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterExtensionStmt *
+_readAlterExtensionStmt(OUT_TYPE(AlterExtensionStmt, AlterExtensionStmt) msg)
+{
+  AlterExtensionStmt *node = makeNode(AlterExtensionStmt);
+  READ_STRING_FIELD(extname, extname, extname);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterExtensionContentsStmt *
+_readAlterExtensionContentsStmt(OUT_TYPE(AlterExtensionContentsStmt, AlterExtensionContentsStmt) msg)
+{
+  AlterExtensionContentsStmt *node = makeNode(AlterExtensionContentsStmt);
+  READ_STRING_FIELD(extname, extname, extname);
+  READ_INT_FIELD(action, action, action);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_NODE_PTR_FIELD(object, object, object);
+  return node;
+}
+
+static CreateFdwStmt *
+_readCreateFdwStmt(OUT_TYPE(CreateFdwStmt, CreateFdwStmt) msg)
+{
+  CreateFdwStmt *node = makeNode(CreateFdwStmt);
+  READ_STRING_FIELD(fdwname, fdwname, fdwname);
+  READ_LIST_FIELD(func_options, func_options, func_options);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterFdwStmt *
+_readAlterFdwStmt(OUT_TYPE(AlterFdwStmt, AlterFdwStmt) msg)
+{
+  AlterFdwStmt *node = makeNode(AlterFdwStmt);
+  READ_STRING_FIELD(fdwname, fdwname, fdwname);
+  READ_LIST_FIELD(func_options, func_options, func_options);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static CreateForeignServerStmt *
+_readCreateForeignServerStmt(OUT_TYPE(CreateForeignServerStmt, CreateForeignServerStmt) msg)
+{
+  CreateForeignServerStmt *node = makeNode(CreateForeignServerStmt);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_STRING_FIELD(servertype, servertype, servertype);
+  READ_STRING_FIELD(version, version, version);
+  READ_STRING_FIELD(fdwname, fdwname, fdwname);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterForeignServerStmt *
+_readAlterForeignServerStmt(OUT_TYPE(AlterForeignServerStmt, AlterForeignServerStmt) msg)
+{
+  AlterForeignServerStmt *node = makeNode(AlterForeignServerStmt);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_STRING_FIELD(version, version, version);
+  READ_LIST_FIELD(options, options, options);
+  READ_BOOL_FIELD(has_version, has_version, has_version);
+  return node;
+}
+
+static CreateForeignTableStmt *
+_readCreateForeignTableStmt(OUT_TYPE(CreateForeignTableStmt, CreateForeignTableStmt) msg)
+{
+  CreateForeignTableStmt *node = makeNode(CreateForeignTableStmt);
+  READ_SPECIFIC_NODE_FIELD(CreateStmt, create_stmt, base_stmt, base, base);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_LIST_FIELD(options, options, options);
+  NodeSetTag(node, T_CreateForeignTableStmt);
+  return node;
+}
+
+static CreateUserMappingStmt *
+_readCreateUserMappingStmt(OUT_TYPE(CreateUserMappingStmt, CreateUserMappingStmt) msg)
+{
+  CreateUserMappingStmt *node = makeNode(CreateUserMappingStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterUserMappingStmt *
+_readAlterUserMappingStmt(OUT_TYPE(AlterUserMappingStmt, AlterUserMappingStmt) msg)
+{
+  AlterUserMappingStmt *node = makeNode(AlterUserMappingStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static DropUserMappingStmt *
+_readDropUserMappingStmt(OUT_TYPE(DropUserMappingStmt, DropUserMappingStmt) msg)
+{
+  DropUserMappingStmt *node = makeNode(DropUserMappingStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, user, user, user);
+  READ_STRING_FIELD(servername, servername, servername);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static ImportForeignSchemaStmt *
+_readImportForeignSchemaStmt(OUT_TYPE(ImportForeignSchemaStmt, ImportForeignSchemaStmt) msg)
+{
+  ImportForeignSchemaStmt *node = makeNode(ImportForeignSchemaStmt);
+  READ_STRING_FIELD(server_name, server_name, server_name);
+  READ_STRING_FIELD(remote_schema, remote_schema, remote_schema);
+  READ_STRING_FIELD(local_schema, local_schema, local_schema);
+  READ_ENUM_FIELD(ImportForeignSchemaType, list_type, list_type, list_type);
+  READ_LIST_FIELD(table_list, table_list, table_list);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static CreatePolicyStmt *
+_readCreatePolicyStmt(OUT_TYPE(CreatePolicyStmt, CreatePolicyStmt) msg)
+{
+  CreatePolicyStmt *node = makeNode(CreatePolicyStmt);
+  READ_STRING_FIELD(policy_name, policy_name, policy_name);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
+  READ_STRING_FIELD(cmd_name, cmd_name, cmd_name);
+  READ_BOOL_FIELD(permissive, permissive, permissive);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_NODE_PTR_FIELD(qual, qual, qual);
+  READ_NODE_PTR_FIELD(with_check, with_check, with_check);
+  return node;
+}
+
+static AlterPolicyStmt *
+_readAlterPolicyStmt(OUT_TYPE(AlterPolicyStmt, AlterPolicyStmt) msg)
+{
+  AlterPolicyStmt *node = makeNode(AlterPolicyStmt);
+  READ_STRING_FIELD(policy_name, policy_name, policy_name);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, table, table, table);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_NODE_PTR_FIELD(qual, qual, qual);
+  READ_NODE_PTR_FIELD(with_check, with_check, with_check);
+  return node;
+}
+
+static CreateAmStmt *
+_readCreateAmStmt(OUT_TYPE(CreateAmStmt, CreateAmStmt) msg)
+{
+  CreateAmStmt *node = makeNode(CreateAmStmt);
+  READ_STRING_FIELD(amname, amname, amname);
+  READ_LIST_FIELD(handler_name, handler_name, handler_name);
+  READ_CHAR_FIELD(amtype, amtype, amtype);
+  return node;
+}
+
+static CreateTrigStmt *
+_readCreateTrigStmt(OUT_TYPE(CreateTrigStmt, CreateTrigStmt) msg)
+{
+  CreateTrigStmt *node = makeNode(CreateTrigStmt);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
+  READ_STRING_FIELD(trigname, trigname, trigname);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_LIST_FIELD(funcname, funcname, funcname);
+  READ_LIST_FIELD(args, args, args);
+  READ_BOOL_FIELD(row, row, row);
+  READ_INT_FIELD(timing, timing, timing);
+  READ_INT_FIELD(events, events, events);
+  READ_LIST_FIELD(columns, columns, columns);
+  READ_NODE_PTR_FIELD(when_clause, whenClause, whenClause);
+  READ_LIST_FIELD(transition_rels, transitionRels, transitionRels);
+  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
+  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, constrrel, constrrel, constrrel);
+  return node;
+}
+
+static CreateEventTrigStmt *
+_readCreateEventTrigStmt(OUT_TYPE(CreateEventTrigStmt, CreateEventTrigStmt) msg)
+{
+  CreateEventTrigStmt *node = makeNode(CreateEventTrigStmt);
+  READ_STRING_FIELD(trigname, trigname, trigname);
+  READ_STRING_FIELD(eventname, eventname, eventname);
+  READ_LIST_FIELD(whenclause, whenclause, whenclause);
+  READ_LIST_FIELD(funcname, funcname, funcname);
+  return node;
+}
+
+static AlterEventTrigStmt *
+_readAlterEventTrigStmt(OUT_TYPE(AlterEventTrigStmt, AlterEventTrigStmt) msg)
+{
+  AlterEventTrigStmt *node = makeNode(AlterEventTrigStmt);
+  READ_STRING_FIELD(trigname, trigname, trigname);
+  READ_CHAR_FIELD(tgenabled, tgenabled, tgenabled);
+  return node;
+}
+
+static CreatePLangStmt *
+_readCreatePLangStmt(OUT_TYPE(CreatePLangStmt, CreatePLangStmt) msg)
+{
+  CreatePLangStmt *node = makeNode(CreatePLangStmt);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_STRING_FIELD(plname, plname, plname);
+  READ_LIST_FIELD(plhandler, plhandler, plhandler);
+  READ_LIST_FIELD(plinline, plinline, plinline);
+  READ_LIST_FIELD(plvalidator, plvalidator, plvalidator);
+  READ_BOOL_FIELD(pltrusted, pltrusted, pltrusted);
+  return node;
+}
+
+static CreateRoleStmt *
+_readCreateRoleStmt(OUT_TYPE(CreateRoleStmt, CreateRoleStmt) msg)
+{
+  CreateRoleStmt *node = makeNode(CreateRoleStmt);
+  READ_ENUM_FIELD(RoleStmtType, stmt_type, stmt_type, stmt_type);
+  READ_STRING_FIELD(role, role, role);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterRoleStmt *
+_readAlterRoleStmt(OUT_TYPE(AlterRoleStmt, AlterRoleStmt) msg)
+{
+  AlterRoleStmt *node = makeNode(AlterRoleStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
+  READ_LIST_FIELD(options, options, options);
+  READ_INT_FIELD(action, action, action);
+  return node;
+}
+
+static AlterRoleSetStmt *
+_readAlterRoleSetStmt(OUT_TYPE(AlterRoleSetStmt, AlterRoleSetStmt) msg)
+{
+  AlterRoleSetStmt *node = makeNode(AlterRoleSetStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, role, role, role);
+  READ_STRING_FIELD(database, database, database);
+  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+  return node;
+}
+
+static DropRoleStmt *
+_readDropRoleStmt(OUT_TYPE(DropRoleStmt, DropRoleStmt) msg)
+{
+  DropRoleStmt *node = makeNode(DropRoleStmt);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static CreateSeqStmt *
+_readCreateSeqStmt(OUT_TYPE(CreateSeqStmt, CreateSeqStmt) msg)
+{
+  CreateSeqStmt *node = makeNode(CreateSeqStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
+  READ_LIST_FIELD(options, options, options);
+  READ_UINT_FIELD(owner_id, ownerId, ownerId);
+  READ_BOOL_FIELD(for_identity, for_identity, for_identity);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  return node;
+}
+
+static AlterSeqStmt *
+_readAlterSeqStmt(OUT_TYPE(AlterSeqStmt, AlterSeqStmt) msg)
+{
+  AlterSeqStmt *node = makeNode(AlterSeqStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, sequence, sequence, sequence);
+  READ_LIST_FIELD(options, options, options);
+  READ_BOOL_FIELD(for_identity, for_identity, for_identity);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static DefineStmt *
+_readDefineStmt(OUT_TYPE(DefineStmt, DefineStmt) msg)
+{
+  DefineStmt *node = makeNode(DefineStmt);
+  READ_ENUM_FIELD(ObjectType, kind, kind, kind);
+  READ_BOOL_FIELD(oldstyle, oldstyle, oldstyle);
+  READ_LIST_FIELD(defnames, defnames, defnames);
+  READ_LIST_FIELD(args, args, args);
+  READ_LIST_FIELD(definition, definition, definition);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_BOOL_FIELD(replace, replace, replace);
+  return node;
+}
+
+static CreateDomainStmt *
+_readCreateDomainStmt(OUT_TYPE(CreateDomainStmt, CreateDomainStmt) msg)
+{
+  CreateDomainStmt *node = makeNode(CreateDomainStmt);
+  READ_LIST_FIELD(domainname, domainname, domainname);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_SPECIFIC_NODE_PTR_FIELD(CollateClause, collate_clause, coll_clause, collClause, collClause);
+  READ_LIST_FIELD(constraints, constraints, constraints);
+  return node;
+}
+
+static CreateOpClassStmt *
+_readCreateOpClassStmt(OUT_TYPE(CreateOpClassStmt, CreateOpClassStmt) msg)
+{
+  CreateOpClassStmt *node = makeNode(CreateOpClassStmt);
+  READ_LIST_FIELD(opclassname, opclassname, opclassname);
+  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  READ_STRING_FIELD(amname, amname, amname);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, datatype, datatype, datatype);
+  READ_LIST_FIELD(items, items, items);
+  READ_BOOL_FIELD(is_default, isDefault, isDefault);
+  return node;
+}
+
+static CreateOpClassItem *
+_readCreateOpClassItem(OUT_TYPE(CreateOpClassItem, CreateOpClassItem) msg)
+{
+  CreateOpClassItem *node = makeNode(CreateOpClassItem);
+  READ_INT_FIELD(itemtype, itemtype, itemtype);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, name, name, name);
+  READ_INT_FIELD(number, number, number);
+  READ_LIST_FIELD(order_family, order_family, order_family);
+  READ_LIST_FIELD(class_args, class_args, class_args);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, storedtype, storedtype, storedtype);
+  return node;
+}
+
+static CreateOpFamilyStmt *
+_readCreateOpFamilyStmt(OUT_TYPE(CreateOpFamilyStmt, CreateOpFamilyStmt) msg)
+{
+  CreateOpFamilyStmt *node = makeNode(CreateOpFamilyStmt);
+  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  READ_STRING_FIELD(amname, amname, amname);
+  return node;
+}
+
+static AlterOpFamilyStmt *
+_readAlterOpFamilyStmt(OUT_TYPE(AlterOpFamilyStmt, AlterOpFamilyStmt) msg)
+{
+  AlterOpFamilyStmt *node = makeNode(AlterOpFamilyStmt);
+  READ_LIST_FIELD(opfamilyname, opfamilyname, opfamilyname);
+  READ_STRING_FIELD(amname, amname, amname);
+  READ_BOOL_FIELD(is_drop, isDrop, isDrop);
+  READ_LIST_FIELD(items, items, items);
+  return node;
+}
+
+static DropStmt *
+_readDropStmt(OUT_TYPE(DropStmt, DropStmt) msg)
+{
+  DropStmt *node = makeNode(DropStmt);
+  READ_LIST_FIELD(objects, objects, objects);
+  READ_ENUM_FIELD(ObjectType, remove_type, removeType, removeType);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   READ_BOOL_FIELD(concurrent, concurrent, concurrent);
   return node;
 }
 
-static VacuumRelation *
-_readVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) msg)
+static TruncateStmt *
+_readTruncateStmt(OUT_TYPE(TruncateStmt, TruncateStmt) msg)
 {
-  VacuumRelation *node = makeNode(VacuumRelation);
-  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
-  READ_UINT_FIELD(oid, oid, oid);
-  READ_LIST_FIELD(va_cols, va_cols, va_cols);
+  TruncateStmt *node = makeNode(TruncateStmt);
+  READ_LIST_FIELD(relations, relations, relations);
+  READ_BOOL_FIELD(restart_seqs, restart_seqs, restart_seqs);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
   return node;
 }
 
-static PublicationObjSpec *
-_readPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) msg)
+static CommentStmt *
+_readCommentStmt(OUT_TYPE(CommentStmt, CommentStmt) msg)
 {
-  PublicationObjSpec *node = makeNode(PublicationObjSpec);
-  READ_ENUM_FIELD(PublicationObjSpecType, pubobjtype, pubobjtype, pubobjtype);
-  READ_STRING_FIELD(name, name, name);
-  READ_SPECIFIC_NODE_PTR_FIELD(PublicationTable, publication_table, pubtable, pubtable, pubtable);
-  READ_INT_FIELD(location, location, location);
+  CommentStmt *node = makeNode(CommentStmt);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_STRING_FIELD(comment, comment, comment);
   return node;
 }
 
-static PublicationTable *
-_readPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) msg)
+static SecLabelStmt *
+_readSecLabelStmt(OUT_TYPE(SecLabelStmt, SecLabelStmt) msg)
 {
-  PublicationTable *node = makeNode(PublicationTable);
+  SecLabelStmt *node = makeNode(SecLabelStmt);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_STRING_FIELD(provider, provider, provider);
+  READ_STRING_FIELD(label, label, label);
+  return node;
+}
+
+static DeclareCursorStmt *
+_readDeclareCursorStmt(OUT_TYPE(DeclareCursorStmt, DeclareCursorStmt) msg)
+{
+  DeclareCursorStmt *node = makeNode(DeclareCursorStmt);
+  READ_STRING_FIELD(portalname, portalname, portalname);
+  READ_INT_FIELD(options, options, options);
+  READ_NODE_PTR_FIELD(query, query, query);
+  return node;
+}
+
+static ClosePortalStmt *
+_readClosePortalStmt(OUT_TYPE(ClosePortalStmt, ClosePortalStmt) msg)
+{
+  ClosePortalStmt *node = makeNode(ClosePortalStmt);
+  READ_STRING_FIELD(portalname, portalname, portalname);
+  return node;
+}
+
+static FetchStmt *
+_readFetchStmt(OUT_TYPE(FetchStmt, FetchStmt) msg)
+{
+  FetchStmt *node = makeNode(FetchStmt);
+  READ_ENUM_FIELD(FetchDirection, direction, direction, direction);
+  READ_LONG_FIELD(how_many, howMany, howMany);
+  READ_STRING_FIELD(portalname, portalname, portalname);
+  READ_BOOL_FIELD(ismove, ismove, ismove);
+  return node;
+}
+
+static IndexStmt *
+_readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg)
+{
+  IndexStmt *node = makeNode(IndexStmt);
+  READ_STRING_FIELD(idxname, idxname, idxname);
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_STRING_FIELD(access_method, accessMethod, accessMethod);
+  READ_STRING_FIELD(table_space, tableSpace, tableSpace);
+  READ_LIST_FIELD(index_params, indexParams, indexParams);
+  READ_LIST_FIELD(index_including_params, indexIncludingParams, indexIncludingParams);
+  READ_LIST_FIELD(options, options, options);
   READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(columns, columns, columns);
+  READ_LIST_FIELD(exclude_op_names, excludeOpNames, excludeOpNames);
+  READ_STRING_FIELD(idxcomment, idxcomment, idxcomment);
+  READ_UINT_FIELD(index_oid, indexOid, indexOid);
+  READ_UINT_FIELD(old_number, oldNumber, oldNumber);
+  READ_UINT_FIELD(old_create_subid, oldCreateSubid, oldCreateSubid);
+  READ_UINT_FIELD(old_first_relfilelocator_subid, oldFirstRelfilelocatorSubid, oldFirstRelfilelocatorSubid);
+  READ_BOOL_FIELD(unique, unique, unique);
+  READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
+  READ_BOOL_FIELD(primary, primary, primary);
+  READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
+  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
+  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  READ_BOOL_FIELD(transformed, transformed, transformed);
+  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_BOOL_FIELD(reset_default_tblspc, reset_default_tblspc, reset_default_tblspc);
+  return node;
+}
+
+static CreateStatsStmt *
+_readCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg)
+{
+  CreateStatsStmt *node = makeNode(CreateStatsStmt);
+  READ_LIST_FIELD(defnames, defnames, defnames);
+  READ_LIST_FIELD(stat_types, stat_types, stat_types);
+  READ_LIST_FIELD(exprs, exprs, exprs);
+  READ_LIST_FIELD(relations, relations, relations);
+  READ_STRING_FIELD(stxcomment, stxcomment, stxcomment);
+  READ_BOOL_FIELD(transformed, transformed, transformed);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  return node;
+}
+
+static StatsElem *
+_readStatsElem(OUT_TYPE(StatsElem, StatsElem) msg)
+{
+  StatsElem *node = makeNode(StatsElem);
+  READ_STRING_FIELD(name, name, name);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
+  return node;
+}
+
+static AlterStatsStmt *
+_readAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) msg)
+{
+  AlterStatsStmt *node = makeNode(AlterStatsStmt);
+  READ_LIST_FIELD(defnames, defnames, defnames);
+  READ_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static CreateFunctionStmt *
+_readCreateFunctionStmt(OUT_TYPE(CreateFunctionStmt, CreateFunctionStmt) msg)
+{
+  CreateFunctionStmt *node = makeNode(CreateFunctionStmt);
+  READ_BOOL_FIELD(is_procedure, is_procedure, is_procedure);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_LIST_FIELD(funcname, funcname, funcname);
+  READ_LIST_FIELD(parameters, parameters, parameters);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, return_type, returnType, returnType);
+  READ_LIST_FIELD(options, options, options);
+  READ_NODE_PTR_FIELD(sql_body, sql_body, sql_body);
+  return node;
+}
+
+static FunctionParameter *
+_readFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) msg)
+{
+  FunctionParameter *node = makeNode(FunctionParameter);
+  READ_STRING_FIELD(name, name, name);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
+  READ_ENUM_FIELD(FunctionParameterMode, mode, mode, mode);
+  READ_NODE_PTR_FIELD(defexpr, defexpr, defexpr);
+  return node;
+}
+
+static AlterFunctionStmt *
+_readAlterFunctionStmt(OUT_TYPE(AlterFunctionStmt, AlterFunctionStmt) msg)
+{
+  AlterFunctionStmt *node = makeNode(AlterFunctionStmt);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
+  READ_LIST_FIELD(actions, actions, actions);
+  return node;
+}
+
+static DoStmt *
+_readDoStmt(OUT_TYPE(DoStmt, DoStmt) msg)
+{
+  DoStmt *node = makeNode(DoStmt);
+  READ_LIST_FIELD(args, args, args);
   return node;
 }
 
@@ -3013,11 +2644,541 @@ _readInlineCodeBlock(OUT_TYPE(InlineCodeBlock, InlineCodeBlock) msg)
   return node;
 }
 
+static CallStmt *
+_readCallStmt(OUT_TYPE(CallStmt, CallStmt) msg)
+{
+  CallStmt *node = makeNode(CallStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(FuncCall, func_call, funccall, funccall, funccall);
+  READ_SPECIFIC_NODE_PTR_FIELD(FuncExpr, func_expr, funcexpr, funcexpr, funcexpr);
+  READ_LIST_FIELD(outargs, outargs, outargs);
+  return node;
+}
+
 static CallContext *
 _readCallContext(OUT_TYPE(CallContext, CallContext) msg)
 {
   CallContext *node = makeNode(CallContext);
   READ_BOOL_FIELD(atomic, atomic, atomic);
+  return node;
+}
+
+static RenameStmt *
+_readRenameStmt(OUT_TYPE(RenameStmt, RenameStmt) msg)
+{
+  RenameStmt *node = makeNode(RenameStmt);
+  READ_ENUM_FIELD(ObjectType, rename_type, renameType, renameType);
+  READ_ENUM_FIELD(ObjectType, relation_type, relationType, relationType);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_STRING_FIELD(subname, subname, subname);
+  READ_STRING_FIELD(newname, newname, newname);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static AlterObjectDependsStmt *
+_readAlterObjectDependsStmt(OUT_TYPE(AlterObjectDependsStmt, AlterObjectDependsStmt) msg)
+{
+  AlterObjectDependsStmt *node = makeNode(AlterObjectDependsStmt);
+  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_SPECIFIC_NODE_PTR_FIELD(String, string, extname, extname, extname);
+  READ_BOOL_FIELD(remove, remove, remove);
+  return node;
+}
+
+static AlterObjectSchemaStmt *
+_readAlterObjectSchemaStmt(OUT_TYPE(AlterObjectSchemaStmt, AlterObjectSchemaStmt) msg)
+{
+  AlterObjectSchemaStmt *node = makeNode(AlterObjectSchemaStmt);
+  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_STRING_FIELD(newschema, newschema, newschema);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static AlterOwnerStmt *
+_readAlterOwnerStmt(OUT_TYPE(AlterOwnerStmt, AlterOwnerStmt) msg)
+{
+  AlterOwnerStmt *node = makeNode(AlterOwnerStmt);
+  READ_ENUM_FIELD(ObjectType, object_type, objectType, objectType);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(object, object, object);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newowner, newowner, newowner);
+  return node;
+}
+
+static AlterOperatorStmt *
+_readAlterOperatorStmt(OUT_TYPE(AlterOperatorStmt, AlterOperatorStmt) msg)
+{
+  AlterOperatorStmt *node = makeNode(AlterOperatorStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, opername, opername, opername);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterTypeStmt *
+_readAlterTypeStmt(OUT_TYPE(AlterTypeStmt, AlterTypeStmt) msg)
+{
+  AlterTypeStmt *node = makeNode(AlterTypeStmt);
+  READ_LIST_FIELD(type_name, typeName, typeName);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static RuleStmt *
+_readRuleStmt(OUT_TYPE(RuleStmt, RuleStmt) msg)
+{
+  RuleStmt *node = makeNode(RuleStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_STRING_FIELD(rulename, rulename, rulename);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  READ_ENUM_FIELD(CmdType, event, event, event);
+  READ_BOOL_FIELD(instead, instead, instead);
+  READ_LIST_FIELD(actions, actions, actions);
+  READ_BOOL_FIELD(replace, replace, replace);
+  return node;
+}
+
+static NotifyStmt *
+_readNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) msg)
+{
+  NotifyStmt *node = makeNode(NotifyStmt);
+  READ_STRING_FIELD(conditionname, conditionname, conditionname);
+  READ_STRING_FIELD(payload, payload, payload);
+  return node;
+}
+
+static ListenStmt *
+_readListenStmt(OUT_TYPE(ListenStmt, ListenStmt) msg)
+{
+  ListenStmt *node = makeNode(ListenStmt);
+  READ_STRING_FIELD(conditionname, conditionname, conditionname);
+  return node;
+}
+
+static UnlistenStmt *
+_readUnlistenStmt(OUT_TYPE(UnlistenStmt, UnlistenStmt) msg)
+{
+  UnlistenStmt *node = makeNode(UnlistenStmt);
+  READ_STRING_FIELD(conditionname, conditionname, conditionname);
+  return node;
+}
+
+static TransactionStmt *
+_readTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) msg)
+{
+  TransactionStmt *node = makeNode(TransactionStmt);
+  READ_ENUM_FIELD(TransactionStmtKind, kind, kind, kind);
+  READ_LIST_FIELD(options, options, options);
+  READ_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
+  READ_STRING_FIELD(gid, gid, gid);
+  READ_BOOL_FIELD(chain, chain, chain);
+  return node;
+}
+
+static CompositeTypeStmt *
+_readCompositeTypeStmt(OUT_TYPE(CompositeTypeStmt, CompositeTypeStmt) msg)
+{
+  CompositeTypeStmt *node = makeNode(CompositeTypeStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, typevar, typevar, typevar);
+  READ_LIST_FIELD(coldeflist, coldeflist, coldeflist);
+  return node;
+}
+
+static CreateEnumStmt *
+_readCreateEnumStmt(OUT_TYPE(CreateEnumStmt, CreateEnumStmt) msg)
+{
+  CreateEnumStmt *node = makeNode(CreateEnumStmt);
+  READ_LIST_FIELD(type_name, typeName, typeName);
+  READ_LIST_FIELD(vals, vals, vals);
+  return node;
+}
+
+static CreateRangeStmt *
+_readCreateRangeStmt(OUT_TYPE(CreateRangeStmt, CreateRangeStmt) msg)
+{
+  CreateRangeStmt *node = makeNode(CreateRangeStmt);
+  READ_LIST_FIELD(type_name, typeName, typeName);
+  READ_LIST_FIELD(params, params, params);
+  return node;
+}
+
+static AlterEnumStmt *
+_readAlterEnumStmt(OUT_TYPE(AlterEnumStmt, AlterEnumStmt) msg)
+{
+  AlterEnumStmt *node = makeNode(AlterEnumStmt);
+  READ_LIST_FIELD(type_name, typeName, typeName);
+  READ_STRING_FIELD(old_val, oldVal, oldVal);
+  READ_STRING_FIELD(new_val, newVal, newVal);
+  READ_STRING_FIELD(new_val_neighbor, newValNeighbor, newValNeighbor);
+  READ_BOOL_FIELD(new_val_is_after, newValIsAfter, newValIsAfter);
+  READ_BOOL_FIELD(skip_if_new_val_exists, skipIfNewValExists, skipIfNewValExists);
+  return node;
+}
+
+static ViewStmt *
+_readViewStmt(OUT_TYPE(ViewStmt, ViewStmt) msg)
+{
+  ViewStmt *node = makeNode(ViewStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, view, view, view);
+  READ_LIST_FIELD(aliases, aliases, aliases);
+  READ_NODE_PTR_FIELD(query, query, query);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_LIST_FIELD(options, options, options);
+  READ_ENUM_FIELD(ViewCheckOption, with_check_option, withCheckOption, withCheckOption);
+  return node;
+}
+
+static LoadStmt *
+_readLoadStmt(OUT_TYPE(LoadStmt, LoadStmt) msg)
+{
+  LoadStmt *node = makeNode(LoadStmt);
+  READ_STRING_FIELD(filename, filename, filename);
+  return node;
+}
+
+static CreatedbStmt *
+_readCreatedbStmt(OUT_TYPE(CreatedbStmt, CreatedbStmt) msg)
+{
+  CreatedbStmt *node = makeNode(CreatedbStmt);
+  READ_STRING_FIELD(dbname, dbname, dbname);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterDatabaseStmt *
+_readAlterDatabaseStmt(OUT_TYPE(AlterDatabaseStmt, AlterDatabaseStmt) msg)
+{
+  AlterDatabaseStmt *node = makeNode(AlterDatabaseStmt);
+  READ_STRING_FIELD(dbname, dbname, dbname);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterDatabaseRefreshCollStmt *
+_readAlterDatabaseRefreshCollStmt(OUT_TYPE(AlterDatabaseRefreshCollStmt, AlterDatabaseRefreshCollStmt) msg)
+{
+  AlterDatabaseRefreshCollStmt *node = makeNode(AlterDatabaseRefreshCollStmt);
+  READ_STRING_FIELD(dbname, dbname, dbname);
+  return node;
+}
+
+static AlterDatabaseSetStmt *
+_readAlterDatabaseSetStmt(OUT_TYPE(AlterDatabaseSetStmt, AlterDatabaseSetStmt) msg)
+{
+  AlterDatabaseSetStmt *node = makeNode(AlterDatabaseSetStmt);
+  READ_STRING_FIELD(dbname, dbname, dbname);
+  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+  return node;
+}
+
+static DropdbStmt *
+_readDropdbStmt(OUT_TYPE(DropdbStmt, DropdbStmt) msg)
+{
+  DropdbStmt *node = makeNode(DropdbStmt);
+  READ_STRING_FIELD(dbname, dbname, dbname);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterSystemStmt *
+_readAlterSystemStmt(OUT_TYPE(AlterSystemStmt, AlterSystemStmt) msg)
+{
+  AlterSystemStmt *node = makeNode(AlterSystemStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(VariableSetStmt, variable_set_stmt, setstmt, setstmt, setstmt);
+  return node;
+}
+
+static ClusterStmt *
+_readClusterStmt(OUT_TYPE(ClusterStmt, ClusterStmt) msg)
+{
+  ClusterStmt *node = makeNode(ClusterStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_STRING_FIELD(indexname, indexname, indexname);
+  READ_LIST_FIELD(params, params, params);
+  return node;
+}
+
+static VacuumStmt *
+_readVacuumStmt(OUT_TYPE(VacuumStmt, VacuumStmt) msg)
+{
+  VacuumStmt *node = makeNode(VacuumStmt);
+  READ_LIST_FIELD(options, options, options);
+  READ_LIST_FIELD(rels, rels, rels);
+  READ_BOOL_FIELD(is_vacuumcmd, is_vacuumcmd, is_vacuumcmd);
+  return node;
+}
+
+static VacuumRelation *
+_readVacuumRelation(OUT_TYPE(VacuumRelation, VacuumRelation) msg)
+{
+  VacuumRelation *node = makeNode(VacuumRelation);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_UINT_FIELD(oid, oid, oid);
+  READ_LIST_FIELD(va_cols, va_cols, va_cols);
+  return node;
+}
+
+static ExplainStmt *
+_readExplainStmt(OUT_TYPE(ExplainStmt, ExplainStmt) msg)
+{
+  ExplainStmt *node = makeNode(ExplainStmt);
+  READ_NODE_PTR_FIELD(query, query, query);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static CreateTableAsStmt *
+_readCreateTableAsStmt(OUT_TYPE(CreateTableAsStmt, CreateTableAsStmt) msg)
+{
+  CreateTableAsStmt *node = makeNode(CreateTableAsStmt);
+  READ_NODE_PTR_FIELD(query, query, query);
+  READ_SPECIFIC_NODE_PTR_FIELD(IntoClause, into_clause, into, into, into);
+  READ_ENUM_FIELD(ObjectType, objtype, objtype, objtype);
+  READ_BOOL_FIELD(is_select_into, is_select_into, is_select_into);
+  READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  return node;
+}
+
+static RefreshMatViewStmt *
+_readRefreshMatViewStmt(OUT_TYPE(RefreshMatViewStmt, RefreshMatViewStmt) msg)
+{
+  RefreshMatViewStmt *node = makeNode(RefreshMatViewStmt);
+  READ_BOOL_FIELD(concurrent, concurrent, concurrent);
+  READ_BOOL_FIELD(skip_data, skipData, skipData);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  return node;
+}
+
+static CheckPointStmt *
+_readCheckPointStmt(OUT_TYPE(CheckPointStmt, CheckPointStmt) msg)
+{
+  CheckPointStmt *node = makeNode(CheckPointStmt);
+  return node;
+}
+
+static DiscardStmt *
+_readDiscardStmt(OUT_TYPE(DiscardStmt, DiscardStmt) msg)
+{
+  DiscardStmt *node = makeNode(DiscardStmt);
+  READ_ENUM_FIELD(DiscardMode, target, target, target);
+  return node;
+}
+
+static LockStmt *
+_readLockStmt(OUT_TYPE(LockStmt, LockStmt) msg)
+{
+  LockStmt *node = makeNode(LockStmt);
+  READ_LIST_FIELD(relations, relations, relations);
+  READ_INT_FIELD(mode, mode, mode);
+  READ_BOOL_FIELD(nowait, nowait, nowait);
+  return node;
+}
+
+static ConstraintsSetStmt *
+_readConstraintsSetStmt(OUT_TYPE(ConstraintsSetStmt, ConstraintsSetStmt) msg)
+{
+  ConstraintsSetStmt *node = makeNode(ConstraintsSetStmt);
+  READ_LIST_FIELD(constraints, constraints, constraints);
+  READ_BOOL_FIELD(deferred, deferred, deferred);
+  return node;
+}
+
+static ReindexStmt *
+_readReindexStmt(OUT_TYPE(ReindexStmt, ReindexStmt) msg)
+{
+  ReindexStmt *node = makeNode(ReindexStmt);
+  READ_ENUM_FIELD(ReindexObjectType, kind, kind, kind);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_STRING_FIELD(name, name, name);
+  READ_LIST_FIELD(params, params, params);
+  return node;
+}
+
+static CreateConversionStmt *
+_readCreateConversionStmt(OUT_TYPE(CreateConversionStmt, CreateConversionStmt) msg)
+{
+  CreateConversionStmt *node = makeNode(CreateConversionStmt);
+  READ_LIST_FIELD(conversion_name, conversion_name, conversion_name);
+  READ_STRING_FIELD(for_encoding_name, for_encoding_name, for_encoding_name);
+  READ_STRING_FIELD(to_encoding_name, to_encoding_name, to_encoding_name);
+  READ_LIST_FIELD(func_name, func_name, func_name);
+  READ_BOOL_FIELD(def, def, def);
+  return node;
+}
+
+static CreateCastStmt *
+_readCreateCastStmt(OUT_TYPE(CreateCastStmt, CreateCastStmt) msg)
+{
+  CreateCastStmt *node = makeNode(CreateCastStmt);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, sourcetype, sourcetype, sourcetype);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, targettype, targettype, targettype);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, func, func, func);
+  READ_ENUM_FIELD(CoercionContext, context, context, context);
+  READ_BOOL_FIELD(inout, inout, inout);
+  return node;
+}
+
+static CreateTransformStmt *
+_readCreateTransformStmt(OUT_TYPE(CreateTransformStmt, CreateTransformStmt) msg)
+{
+  CreateTransformStmt *node = makeNode(CreateTransformStmt);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, type_name, type_name);
+  READ_STRING_FIELD(lang, lang, lang);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, fromsql, fromsql, fromsql);
+  READ_SPECIFIC_NODE_PTR_FIELD(ObjectWithArgs, object_with_args, tosql, tosql, tosql);
+  return node;
+}
+
+static PrepareStmt *
+_readPrepareStmt(OUT_TYPE(PrepareStmt, PrepareStmt) msg)
+{
+  PrepareStmt *node = makeNode(PrepareStmt);
+  READ_STRING_FIELD(name, name, name);
+  READ_LIST_FIELD(argtypes, argtypes, argtypes);
+  READ_NODE_PTR_FIELD(query, query, query);
+  return node;
+}
+
+static ExecuteStmt *
+_readExecuteStmt(OUT_TYPE(ExecuteStmt, ExecuteStmt) msg)
+{
+  ExecuteStmt *node = makeNode(ExecuteStmt);
+  READ_STRING_FIELD(name, name, name);
+  READ_LIST_FIELD(params, params, params);
+  return node;
+}
+
+static DeallocateStmt *
+_readDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) msg)
+{
+  DeallocateStmt *node = makeNode(DeallocateStmt);
+  READ_STRING_FIELD(name, name, name);
+  return node;
+}
+
+static DropOwnedStmt *
+_readDropOwnedStmt(OUT_TYPE(DropOwnedStmt, DropOwnedStmt) msg)
+{
+  DropOwnedStmt *node = makeNode(DropOwnedStmt);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
+  return node;
+}
+
+static ReassignOwnedStmt *
+_readReassignOwnedStmt(OUT_TYPE(ReassignOwnedStmt, ReassignOwnedStmt) msg)
+{
+  ReassignOwnedStmt *node = makeNode(ReassignOwnedStmt);
+  READ_LIST_FIELD(roles, roles, roles);
+  READ_SPECIFIC_NODE_PTR_FIELD(RoleSpec, role_spec, newrole, newrole, newrole);
+  return node;
+}
+
+static AlterTSDictionaryStmt *
+_readAlterTSDictionaryStmt(OUT_TYPE(AlterTSDictionaryStmt, AlterTSDictionaryStmt) msg)
+{
+  AlterTSDictionaryStmt *node = makeNode(AlterTSDictionaryStmt);
+  READ_LIST_FIELD(dictname, dictname, dictname);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterTSConfigurationStmt *
+_readAlterTSConfigurationStmt(OUT_TYPE(AlterTSConfigurationStmt, AlterTSConfigurationStmt) msg)
+{
+  AlterTSConfigurationStmt *node = makeNode(AlterTSConfigurationStmt);
+  READ_ENUM_FIELD(AlterTSConfigType, kind, kind, kind);
+  READ_LIST_FIELD(cfgname, cfgname, cfgname);
+  READ_LIST_FIELD(tokentype, tokentype, tokentype);
+  READ_LIST_FIELD(dicts, dicts, dicts);
+  READ_BOOL_FIELD(override, override, override);
+  READ_BOOL_FIELD(replace, replace, replace);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  return node;
+}
+
+static PublicationTable *
+_readPublicationTable(OUT_TYPE(PublicationTable, PublicationTable) msg)
+{
+  PublicationTable *node = makeNode(PublicationTable);
+  READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
+  READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
+  READ_LIST_FIELD(columns, columns, columns);
+  return node;
+}
+
+static PublicationObjSpec *
+_readPublicationObjSpec(OUT_TYPE(PublicationObjSpec, PublicationObjSpec) msg)
+{
+  PublicationObjSpec *node = makeNode(PublicationObjSpec);
+  READ_ENUM_FIELD(PublicationObjSpecType, pubobjtype, pubobjtype, pubobjtype);
+  READ_STRING_FIELD(name, name, name);
+  READ_SPECIFIC_NODE_PTR_FIELD(PublicationTable, publication_table, pubtable, pubtable, pubtable);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static CreatePublicationStmt *
+_readCreatePublicationStmt(OUT_TYPE(CreatePublicationStmt, CreatePublicationStmt) msg)
+{
+  CreatePublicationStmt *node = makeNode(CreatePublicationStmt);
+  READ_STRING_FIELD(pubname, pubname, pubname);
+  READ_LIST_FIELD(options, options, options);
+  READ_LIST_FIELD(pubobjects, pubobjects, pubobjects);
+  READ_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
+  return node;
+}
+
+static AlterPublicationStmt *
+_readAlterPublicationStmt(OUT_TYPE(AlterPublicationStmt, AlterPublicationStmt) msg)
+{
+  AlterPublicationStmt *node = makeNode(AlterPublicationStmt);
+  READ_STRING_FIELD(pubname, pubname, pubname);
+  READ_LIST_FIELD(options, options, options);
+  READ_LIST_FIELD(pubobjects, pubobjects, pubobjects);
+  READ_BOOL_FIELD(for_all_tables, for_all_tables, for_all_tables);
+  READ_ENUM_FIELD(AlterPublicationAction, action, action, action);
+  return node;
+}
+
+static CreateSubscriptionStmt *
+_readCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionStmt) msg)
+{
+  CreateSubscriptionStmt *node = makeNode(CreateSubscriptionStmt);
+  READ_STRING_FIELD(subname, subname, subname);
+  READ_STRING_FIELD(conninfo, conninfo, conninfo);
+  READ_LIST_FIELD(publication, publication, publication);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static AlterSubscriptionStmt *
+_readAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt) msg)
+{
+  AlterSubscriptionStmt *node = makeNode(AlterSubscriptionStmt);
+  READ_ENUM_FIELD(AlterSubscriptionType, kind, kind, kind);
+  READ_STRING_FIELD(subname, subname, subname);
+  READ_STRING_FIELD(conninfo, conninfo, conninfo);
+  READ_LIST_FIELD(publication, publication, publication);
+  READ_LIST_FIELD(options, options, options);
+  return node;
+}
+
+static DropSubscriptionStmt *
+_readDropSubscriptionStmt(OUT_TYPE(DropSubscriptionStmt, DropSubscriptionStmt) msg)
+{
+  DropSubscriptionStmt *node = makeNode(DropSubscriptionStmt);
+  READ_STRING_FIELD(subname, subname, subname);
+  READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
+  READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
   return node;
 }
 
