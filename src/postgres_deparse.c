@@ -4003,6 +4003,13 @@ static void deparseColumnDef(StringInfo str, ColumnDef *column_def)
 		appendStringInfoChar(str, ' ');
 	}
 
+	if (column_def->storage_name)
+	{
+		appendStringInfoString(str, "STORAGE ");
+		appendStringInfoString(str, column_def->storage_name);
+		appendStringInfoChar(str, ' ');
+	}
+
 	if (column_def->raw_default != NULL)
 	{
 		appendStringInfoString(str, "USING ");
