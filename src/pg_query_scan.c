@@ -1,7 +1,7 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
 
-#include "parser/gramparse.h"
+#include "gramparse.h"
 #include "lib/stringinfo.h"
 
 #include "protobuf/pg_query.pb-c.h"
