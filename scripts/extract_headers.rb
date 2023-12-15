@@ -96,7 +96,7 @@ class Extractor
   end
 
   def handle_struct(line)
-    if line[/^\s+(struct |const )?([A-z0-9]+)\s+(\*){0,2}([A-z_]+);\s*(\/\*.+)?/]
+    if line[/^\s+(struct |const )?([A-z0-9]+)\s+(\*){0,2}([A-z_]+)(?:\s+pg_node_attr\(\w+\))?;\s*(\/\*.+)?/]
       name = $4
       c_type = $2 + $3.to_s
       comment = $5
