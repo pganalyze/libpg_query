@@ -120,7 +120,10 @@ int run_tests_from_file(const char * filename) {
 		return EXIT_FAILURE;
 	}
 	fstat(fd, &sample_stat);
-	sample_buffer = mmap(0, sample_stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+
+	sample_buffer = malloc(sample_stat.st_size + 1);
+	read(fd, sample_buffer, sample_stat.st_size);
+	sample_buffer[sample_stat.st_size] = 0;
 
 	if (sample_buffer == (void *) -1)
 	{
@@ -162,7 +165,7 @@ int run_tests_from_file(const char * filename) {
 
 	pg_query_free_split_result(split_result);
 
-	munmap(sample_buffer, sample_stat.st_size);
+	free(sample_buffer);
 	close(fd);
 
 	return ret_code;
