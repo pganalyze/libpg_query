@@ -472,6 +472,28 @@ runner.blocklist('SPI_freeplan')
 runner.blocklist('get_ps_display')
 runner.blocklist('pq_beginmessage')
 
+# We have to mock this as it calls `hash_search`, which eventually makes
+# calls down to `pgstat_report_wait_start` and `pgstat_report_wait_end`.
+# These functions depend on the existence of a global variable
+# `my_wait_event_info`.
+#
+# The problem here is we can't reasonably compile the source file
+# `backend/utils/activity/wait_event.c` which provides this symbol, as it
+# initializes the value by-default to a reference to another global.
+# Normally this is fine, but we transform both of these globals so that they
+# are thread local via `__thread`, and it is not valid to initialize one thread
+# local with the address of another.
+#
+# Instead of tackling this directly, we just return `NULL` in the mock below,
+# observing that we do not need to support the registration of custom nodes.
+runner.mock('GetExtensibleNodeMethods', %(
+const ExtensibleNodeMethods *
+GetExtensibleNodeMethods(const char *extnodename, bool missing_ok)
+{
+	return NULL;
+}
+))
+
 # Mocks REQUIRED for basic operations (error handling, memory management)
 runner.mock('ProcessInterrupts', 'void ProcessInterrupts(void) {}') # Required by errfinish
 runner.mock('PqCommMethods', 'const PQcommMethods *PqCommMethods = NULL;') # Required by errfinish
