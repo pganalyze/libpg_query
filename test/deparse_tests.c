@@ -406,7 +406,8 @@ const char* tests[] = {
   "ALTER TABLE a DISABLE TRIGGER b",
   "ALTER TABLE a DISABLE TRIGGER ALL",
   "ALTER TABLE a DISABLE TRIGGER USER",
-  "CREATE INDEX myindex ON public.mytable USING btree (col1, (col2::varchar) varchar_pattern_ops)"
+  "CREATE INDEX myindex ON public.mytable USING btree (col1, (col2::varchar) varchar_pattern_ops)",
+  "SELECT * FROM CAST(1 AS text)"
 };
 
 size_t testsLength = __LINE__ - 4;
