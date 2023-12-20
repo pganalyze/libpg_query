@@ -29,6 +29,9 @@ const char* tests[] = {
   "NEW.author.first_name = upper(cleanString(NEW.author.first_name))",
   "5",
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"PLAssignStmt\":{\"name\":\"new\",\"indirection\":[{\"String\":{\"sval\":\"author\"}},{\"String\":{\"sval\":\"first_name\"}}],\"nnames\":3,\"val\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"FuncCall\":{\"funcname\":[{\"String\":{\"sval\":\"upper\"}}],\"args\":[{\"FuncCall\":{\"funcname\":[{\"String\":{\"sval\":\"cleanstring\"}}],\"args\":[{\"ColumnRef\":{\"fields\":[{\"String\":{\"sval\":\"new\"}},{\"String\":{\"sval\":\"author\"}},{\"String\":{\"sval\":\"first_name\"}}],\"location\":42}}],\"funcformat\":\"COERCE_EXPLICIT_CALL\",\"location\":30}}],\"funcformat\":\"COERCE_EXPLICIT_CALL\",\"location\":24}},\"location\":24}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}}]}",
+  "SELECT '\\''",
+  "96",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"'\"},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
 };
 
 size_t testsLength = __LINE__ - 4;

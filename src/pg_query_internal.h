@@ -14,7 +14,7 @@ typedef struct {
   PgQueryError* error;
 } PgQueryInternalParsetreeAndError;
 
-PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryParseMode mode);
+PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parser_options);
 
 void pg_query_free_error(PgQueryError *error);
 

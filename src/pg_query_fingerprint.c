@@ -326,7 +326,7 @@ uint64_t pg_query_fingerprint_node(const void *node)
 	return result;
 }
 
-PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, PgQueryParseMode mode, bool printTokens)
+PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, int parser_options, bool printTokens)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
@@ -334,7 +334,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, PgQue
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input, mode);
+	parsetree_and_error = pg_query_raw_parse(input, parser_options);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
@@ -389,9 +389,9 @@ PgQueryFingerprintResult pg_query_fingerprint(const char* input)
 	return pg_query_fingerprint_with_opts(input, PG_QUERY_PARSE_DEFAULT, false);
 }
 
-PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, PgQueryParseMode mode)
+PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options)
 {
-	return pg_query_fingerprint_with_opts(input, mode, false);
+	return pg_query_fingerprint_with_opts(input, parser_options, false);
 }
 
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result)

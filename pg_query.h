@@ -4,16 +4,6 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-typedef enum
-{
-	PG_QUERY_PARSE_DEFAULT = 0,
-	PG_QUERY_PARSE_TYPE_NAME,
-	PG_QUERY_PARSE_PLPGSQL_EXPR,
-	PG_QUERY_PARSE_PLPGSQL_ASSIGN1,
-	PG_QUERY_PARSE_PLPGSQL_ASSIGN2,
-	PG_QUERY_PARSE_PLPGSQL_ASSIGN3
-} PgQueryParseMode;
-
 typedef struct {
 	char* message; // exception message
 	char* funcname; // source function of exception (e.g. SearchSysCache)
@@ -80,6 +70,27 @@ typedef struct {
   PgQueryError* error;
 } PgQueryNormalizeResult;
 
+// Postgres parser options (parse mode and GUCs that affect parsing)
+
+typedef enum
+{
+	PG_QUERY_PARSE_DEFAULT = 0,
+	PG_QUERY_PARSE_TYPE_NAME,
+	PG_QUERY_PARSE_PLPGSQL_EXPR,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN1,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN2,
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN3
+} PgQueryParseMode;
+
+// We technically only need 3 bits to store parse mode, but
+// having 4 bits avoids API breaks if another one gets added.
+#define PG_QUERY_PARSE_MODE_BITS 4
+#define PG_QUERY_PARSE_MODE_BITMASK ((1 << PG_QUERY_PARSE_MODE_BITS) - 1)
+
+#define PG_QUERY_DISABLE_BACKSLASH_QUOTE 16 // backslash_quote = off (default is safe_encoding, which is effectively on)
+#define PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS 32 // standard_conforming_strings = off (default is on)
+#define PG_QUERY_DISABLE_ESCAPE_STRING_WARNING 64 // escape_string_warning = off (default is on)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,13 +98,13 @@ extern "C" {
 PgQueryNormalizeResult pg_query_normalize(const char* input);
 PgQueryScanResult pg_query_scan(const char* input);
 PgQueryParseResult pg_query_parse(const char* input);
-PgQueryParseResult pg_query_parse_opts(const char* input, PgQueryParseMode mode);
+PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input);
-PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, PgQueryParseMode mode);
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options);
 PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
-PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, PgQueryParseMode mode);
+PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options);
 
 // Use pg_query_split_with_scanner when you need to split statements that may
 // contain parse errors, otherwise pg_query_split_with_parser is recommended
