@@ -264,6 +264,7 @@ Products, tools and libraries built on pg_query:
 * [pg_materialize](https://github.com/aanari/pg-materialize)
 * [DuckDB](https://github.com/cwida/duckdb) ([details](https://github.com/cwida/duckdb/tree/master/third_party/libpg_query))
 * [pgspot](https://github.com/timescale/pgspot)
+* [Postgres Language Server](https://github.com/supabase/postgres_lsp)
 * and more
 
 Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/new/master) to add yours! :)
