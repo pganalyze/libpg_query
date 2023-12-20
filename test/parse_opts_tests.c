@@ -32,6 +32,9 @@ const char* tests[] = {
   "SELECT '\\''",
   "96",
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"'\"},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "v3.c1 := '\\''",
+  "100",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"PLAssignStmt\":{\"name\":\"v3\",\"indirection\":[{\"String\":{\"sval\":\"c1\"}}],\"nnames\":2,\"val\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"'\"},\"location\":9}},\"location\":9}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}}]}",
 };
 
 size_t testsLength = __LINE__ - 4;
