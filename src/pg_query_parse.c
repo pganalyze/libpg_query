@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryParseMode mode)
+PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parser_options)
 {
 	PgQueryInternalParsetreeAndError result = {0};
 	MemoryContext parse_context = CurrentMemoryContext;
@@ -43,7 +43,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryPa
 	PG_TRY();
 	{
 		RawParseMode rawParseMode = RAW_PARSE_DEFAULT;
-		switch (mode)
+		switch (parser_options & PG_QUERY_PARSE_MODE_BITMASK)
 		{
 			case PG_QUERY_PARSE_TYPE_NAME:
 				rawParseMode = RAW_PARSE_TYPE_NAME;
@@ -62,7 +62,19 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, PgQueryPa
 				break;
 		}
 
+		if ((parser_options & PG_QUERY_DISABLE_BACKSLASH_QUOTE) == PG_QUERY_DISABLE_BACKSLASH_QUOTE) {
+			backslash_quote = BACKSLASH_QUOTE_OFF;
+		} else {
+			backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
+		}
+		standard_conforming_strings = !((parser_options & PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS) == PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS);
+		escape_string_warning = !((parser_options & PG_QUERY_DISABLE_ESCAPE_STRING_WARNING) == PG_QUERY_DISABLE_ESCAPE_STRING_WARNING);
+
 		result.tree = raw_parser(input, rawParseMode);
+
+		backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
+		standard_conforming_strings = true;
+		escape_string_warning = true;
 
 #ifndef DEBUG
 		// Save stderr for result
@@ -108,7 +120,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 	return pg_query_parse_opts(input, PG_QUERY_PARSE_DEFAULT);
 }
 
-PgQueryParseResult pg_query_parse_opts(const char* input, PgQueryParseMode mode)
+PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
@@ -117,7 +129,7 @@ PgQueryParseResult pg_query_parse_opts(const char* input, PgQueryParseMode mode)
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input, mode);
+	parsetree_and_error = pg_query_raw_parse(input, parser_options);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
@@ -137,7 +149,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input)
 	return pg_query_parse_protobuf_opts(input, PG_QUERY_PARSE_DEFAULT);
 }
 
-PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, PgQueryParseMode mode)
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
@@ -145,7 +157,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, PgQue
 
 	ctx = pg_query_enter_memory_context();
 
-	parsetree_and_error = pg_query_raw_parse(input, mode);
+	parsetree_and_error = pg_query_raw_parse(input, parser_options);
 
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
