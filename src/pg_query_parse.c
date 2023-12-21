@@ -120,7 +120,7 @@ PgQueryParseResult pg_query_parse(const char* input)
 	return pg_query_parse_opts(input, PG_QUERY_PARSE_DEFAULT);
 }
 
-PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
+PgQueryParseResult pg_query_parse_opts_internal(const char* input, int parser_options)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
@@ -144,12 +144,48 @@ PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
 	return result;
 }
 
+PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
+{
+	if ((parser_options & PG_QUERY_PARSE_ALL) == PG_QUERY_PARSE_ALL) {
+		parser_options = (parser_options & ~PG_QUERY_PARSE_ALL) | PG_QUERY_PARSE_DEFAULT;
+		PgQueryParseResult result = pg_query_parse_opts_internal(input, parser_options);
+		if (result.error) {
+			pg_query_free_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_DEFAULT) | PG_QUERY_PARSE_TYPE_NAME;
+			result = pg_query_parse_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_TYPE_NAME) | PG_QUERY_PARSE_PLPGSQL_EXPR;
+			result = pg_query_parse_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_EXPR) | PG_QUERY_PARSE_PLPGSQL_ASSIGN1;
+			result = pg_query_parse_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN1) | PG_QUERY_PARSE_PLPGSQL_ASSIGN2;
+			result = pg_query_parse_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN2) | PG_QUERY_PARSE_PLPGSQL_ASSIGN3;
+			result = pg_query_parse_opts_internal(input, parser_options);
+		}
+		return result;
+	} else {
+		return pg_query_parse_opts_internal(input, parser_options);
+	}
+}
+
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input)
 {
 	return pg_query_parse_protobuf_opts(input, PG_QUERY_PARSE_DEFAULT);
 }
 
-PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options)
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts_internal(const char* input, int parser_options)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
@@ -167,6 +203,42 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 	pg_query_exit_memory_context(ctx);
 
 	return result;
+}
+
+PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options)
+{
+	if ((parser_options & PG_QUERY_PARSE_ALL) == PG_QUERY_PARSE_ALL) {
+		parser_options = (parser_options & ~PG_QUERY_PARSE_ALL) | PG_QUERY_PARSE_DEFAULT;
+		PgQueryProtobufParseResult result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		if (result.error) {
+			pg_query_free_protobuf_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_DEFAULT) | PG_QUERY_PARSE_TYPE_NAME;
+			result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_protobuf_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_TYPE_NAME) | PG_QUERY_PARSE_PLPGSQL_EXPR;
+			result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_protobuf_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_EXPR) | PG_QUERY_PARSE_PLPGSQL_ASSIGN1;
+			result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_protobuf_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN1) | PG_QUERY_PARSE_PLPGSQL_ASSIGN2;
+			result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_protobuf_parse_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN2) | PG_QUERY_PARSE_PLPGSQL_ASSIGN3;
+			result = pg_query_parse_protobuf_opts_internal(input, parser_options);
+		}
+		return result;
+	} else {
+		return pg_query_parse_protobuf_opts_internal(input, parser_options);
+	}
 }
 
 void pg_query_free_parse_result(PgQueryParseResult result)

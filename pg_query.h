@@ -79,7 +79,8 @@ typedef enum
 	PG_QUERY_PARSE_PLPGSQL_EXPR,
 	PG_QUERY_PARSE_PLPGSQL_ASSIGN1,
 	PG_QUERY_PARSE_PLPGSQL_ASSIGN2,
-	PG_QUERY_PARSE_PLPGSQL_ASSIGN3
+	PG_QUERY_PARSE_PLPGSQL_ASSIGN3,
+	PG_QUERY_PARSE_ALL
 } PgQueryParseMode;
 
 // We technically only need 3 bits to store parse mode, but
@@ -96,6 +97,7 @@ extern "C" {
 #endif
 
 PgQueryNormalizeResult pg_query_normalize(const char* input);
+PgQueryNormalizeResult pg_query_normalize_opts(const char* input, int parser_options);
 PgQueryScanResult pg_query_scan(const char* input);
 PgQueryParseResult pg_query_parse(const char* input);
 PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);
