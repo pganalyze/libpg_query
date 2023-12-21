@@ -2,6 +2,19 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 15-4.2.4   2023-12-20
+
+* Add Token `ASCII_36` [#211](https://github.com/pganalyze/libpg_query/pull/211), [#219](https://github.com/pganalyze/libpg_query/pull/219)
+* Fix failing type cast in WebAssembly builds [#223](https://github.com/pganalyze/libpg_query/pull/223)
+* Deparser:
+  - Fix some `BooleanTest` cases [#206](https://github.com/pganalyze/libpg_query/issues/206)
+  - Fix `ALTER TABLE ... ENABLE TRIGGER ALL` [#222](https://github.com/pganalyze/libpg_query/pull/222)
+  - Add parens around type casts in `IndexElem` [#214](https://github.com/pganalyze/libpg_query/pull/214)
+  - Treat type casts in `func_expr_windowless` as functions [#214](https://github.com/pganalyze/libpg_query/pull/214)
+* Support passing parse mode and additional parse options [#216](https://github.com/pganalyze/libpg_query/pull/216)
+  - Add additional parse modes to support parsing PL/pgSQL
+  - Flags to disable various string warnings
+
 ## 15-4.2.3   2023-07-07
 
 * Fix builds when compiling with `glibc >=  2.38` [#203](https://github.com/pganalyze/libpg_query/pull/203)
