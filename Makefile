@@ -86,7 +86,7 @@ ifeq ($(USE_PROTOBUF_CPP),1)
 	else
 		override CXXFLAGS += -O3 -g
 	endif
-	override TEST_LDFLAGS += `pkg-config --libs protobuf` -lstdc++
+	override TEST_LDFLAGS += `pkg-config --libs protobuf` -lstdc++ -lm
 
 	# Don't use regular Protobuf-C or JSON implementation (instead implement the same methods using the C++ library)
 	SRC_FILES := $(filter-out src/pg_query_outfuncs_json.c src/pg_query_outfuncs_protobuf.c, $(SRC_FILES))
