@@ -8,7 +8,7 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 16.1
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PROTOC_VERSION = 3.14.0
+PROTOC_VERSION = 25.1
 
 VERSION = 4.2.3
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
@@ -80,7 +80,7 @@ CC ?= cc
 # Experimental use of Protobuf C++ library, primarily used to validate JSON output matches Protobuf JSON mapping
 CXX_SRC_FILES := src/pg_query_outfuncs_protobuf_cpp.cc protobuf/pg_query.pb.cc
 ifeq ($(USE_PROTOBUF_CPP),1)
-	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++11 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
+	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++17 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
 	ifeq ($(DEBUG),1)
 		override CXXFLAGS += -O0 -g
 	else
