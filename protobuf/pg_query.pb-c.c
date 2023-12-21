@@ -11640,7 +11640,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alias),
     &pg_query__alias__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11652,7 +11652,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_var),
     &pg_query__range_var__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11664,7 +11664,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, table_func),
     &pg_query__table_func__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11676,7 +11676,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, into_clause),
     &pg_query__into_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11688,7 +11688,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, var),
     &pg_query__var__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11700,7 +11700,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, param),
     &pg_query__param__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11712,7 +11712,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, aggref),
     &pg_query__aggref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11724,7 +11724,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, grouping_func),
     &pg_query__grouping_func__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11736,7 +11736,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, window_func),
     &pg_query__window_func__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11748,7 +11748,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, subscripting_ref),
     &pg_query__subscripting_ref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11760,7 +11760,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, func_expr),
     &pg_query__func_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11772,7 +11772,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, named_arg_expr),
     &pg_query__named_arg_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11784,7 +11784,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, op_expr),
     &pg_query__op_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11796,7 +11796,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, distinct_expr),
     &pg_query__distinct_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11808,7 +11808,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, null_if_expr),
     &pg_query__null_if_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11820,7 +11820,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, scalar_array_op_expr),
     &pg_query__scalar_array_op_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11832,7 +11832,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, bool_expr),
     &pg_query__bool_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11844,7 +11844,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sub_link),
     &pg_query__sub_link__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11856,7 +11856,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sub_plan),
     &pg_query__sub_plan__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11868,7 +11868,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alternative_sub_plan),
     &pg_query__alternative_sub_plan__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11880,7 +11880,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, field_select),
     &pg_query__field_select__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11892,7 +11892,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, field_store),
     &pg_query__field_store__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11904,7 +11904,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, relabel_type),
     &pg_query__relabel_type__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11916,7 +11916,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, coerce_via_io),
     &pg_query__coerce_via_io__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11928,7 +11928,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, array_coerce_expr),
     &pg_query__array_coerce_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11940,7 +11940,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, convert_rowtype_expr),
     &pg_query__convert_rowtype_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11952,7 +11952,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, collate_expr),
     &pg_query__collate_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11964,7 +11964,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, case_expr),
     &pg_query__case_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11976,7 +11976,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, case_when),
     &pg_query__case_when__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -11988,7 +11988,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, case_test_expr),
     &pg_query__case_test_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12000,7 +12000,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, array_expr),
     &pg_query__array_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12012,7 +12012,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, row_expr),
     &pg_query__row_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12024,7 +12024,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, row_compare_expr),
     &pg_query__row_compare_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12036,7 +12036,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, coalesce_expr),
     &pg_query__coalesce_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12048,7 +12048,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, min_max_expr),
     &pg_query__min_max_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12060,7 +12060,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sqlvalue_function),
     &pg_query__sqlvalue_function__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12072,7 +12072,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, xml_expr),
     &pg_query__xml_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12084,7 +12084,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_format),
     &pg_query__json_format__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12096,7 +12096,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_returning),
     &pg_query__json_returning__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12108,7 +12108,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_value_expr),
     &pg_query__json_value_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12120,7 +12120,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_constructor_expr),
     &pg_query__json_constructor_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12132,7 +12132,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_is_predicate),
     &pg_query__json_is_predicate__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12144,7 +12144,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, null_test),
     &pg_query__null_test__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12156,7 +12156,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, boolean_test),
     &pg_query__boolean_test__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12168,7 +12168,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, coerce_to_domain),
     &pg_query__coerce_to_domain__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12180,7 +12180,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, coerce_to_domain_value),
     &pg_query__coerce_to_domain_value__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12192,7 +12192,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, set_to_default),
     &pg_query__set_to_default__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12204,7 +12204,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, current_of_expr),
     &pg_query__current_of_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12216,7 +12216,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, next_value_expr),
     &pg_query__next_value_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12228,7 +12228,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, inference_elem),
     &pg_query__inference_elem__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12240,7 +12240,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, target_entry),
     &pg_query__target_entry__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12252,7 +12252,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_tbl_ref),
     &pg_query__range_tbl_ref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12264,7 +12264,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, join_expr),
     &pg_query__join_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12276,7 +12276,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, from_expr),
     &pg_query__from_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12288,7 +12288,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, on_conflict_expr),
     &pg_query__on_conflict_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12300,7 +12300,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, query),
     &pg_query__query__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12312,7 +12312,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, type_name),
     &pg_query__type_name__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12324,7 +12324,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, column_ref),
     &pg_query__column_ref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12336,7 +12336,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, param_ref),
     &pg_query__param_ref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12348,7 +12348,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_expr),
     &pg_query__a__expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12360,7 +12360,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, type_cast),
     &pg_query__type_cast__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12372,7 +12372,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, collate_clause),
     &pg_query__collate_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12384,7 +12384,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, role_spec),
     &pg_query__role_spec__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12396,7 +12396,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, func_call),
     &pg_query__func_call__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12408,7 +12408,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_star),
     &pg_query__a__star__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12420,7 +12420,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_indices),
     &pg_query__a__indices__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12432,7 +12432,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_indirection),
     &pg_query__a__indirection__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12444,7 +12444,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_array_expr),
     &pg_query__a__array_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12456,7 +12456,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, res_target),
     &pg_query__res_target__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12468,7 +12468,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, multi_assign_ref),
     &pg_query__multi_assign_ref__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12480,7 +12480,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sort_by),
     &pg_query__sort_by__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12492,7 +12492,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, window_def),
     &pg_query__window_def__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12504,7 +12504,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_subselect),
     &pg_query__range_subselect__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12516,7 +12516,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_function),
     &pg_query__range_function__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12528,7 +12528,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_table_func),
     &pg_query__range_table_func__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12540,7 +12540,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_table_func_col),
     &pg_query__range_table_func_col__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12552,7 +12552,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_table_sample),
     &pg_query__range_table_sample__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12564,7 +12564,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, column_def),
     &pg_query__column_def__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12576,7 +12576,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, table_like_clause),
     &pg_query__table_like_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12588,7 +12588,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, index_elem),
     &pg_query__index_elem__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12600,7 +12600,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, def_elem),
     &pg_query__def_elem__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12612,7 +12612,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, locking_clause),
     &pg_query__locking_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12624,7 +12624,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, xml_serialize),
     &pg_query__xml_serialize__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12636,7 +12636,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, partition_elem),
     &pg_query__partition_elem__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12648,7 +12648,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, partition_spec),
     &pg_query__partition_spec__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12660,7 +12660,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, partition_bound_spec),
     &pg_query__partition_bound_spec__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12672,7 +12672,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, partition_range_datum),
     &pg_query__partition_range_datum__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12684,7 +12684,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, partition_cmd),
     &pg_query__partition_cmd__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12696,7 +12696,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_tbl_entry),
     &pg_query__range_tbl_entry__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12708,7 +12708,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, rtepermission_info),
     &pg_query__rtepermission_info__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12720,7 +12720,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, range_tbl_function),
     &pg_query__range_tbl_function__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12732,7 +12732,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, table_sample_clause),
     &pg_query__table_sample_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12744,7 +12744,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, with_check_option),
     &pg_query__with_check_option__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12756,7 +12756,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sort_group_clause),
     &pg_query__sort_group_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12768,7 +12768,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, grouping_set),
     &pg_query__grouping_set__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12780,7 +12780,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, window_clause),
     &pg_query__window_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12792,7 +12792,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, row_mark_clause),
     &pg_query__row_mark_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12804,7 +12804,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, with_clause),
     &pg_query__with_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12816,7 +12816,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, infer_clause),
     &pg_query__infer_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12828,7 +12828,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, on_conflict_clause),
     &pg_query__on_conflict_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12840,7 +12840,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, ctesearch_clause),
     &pg_query__ctesearch_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12852,7 +12852,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, ctecycle_clause),
     &pg_query__ctecycle_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12864,7 +12864,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, common_table_expr),
     &pg_query__common_table_expr__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12876,7 +12876,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, merge_when_clause),
     &pg_query__merge_when_clause__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12888,7 +12888,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, merge_action),
     &pg_query__merge_action__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12900,7 +12900,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, trigger_transition),
     &pg_query__trigger_transition__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12912,7 +12912,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_output),
     &pg_query__json_output__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12924,7 +12924,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_key_value),
     &pg_query__json_key_value__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12936,7 +12936,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_object_constructor),
     &pg_query__json_object_constructor__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12948,7 +12948,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_array_constructor),
     &pg_query__json_array_constructor__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12960,7 +12960,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_array_query_constructor),
     &pg_query__json_array_query_constructor__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12972,7 +12972,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_agg_constructor),
     &pg_query__json_agg_constructor__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12984,7 +12984,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_object_agg),
     &pg_query__json_object_agg__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -12996,7 +12996,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, json_array_agg),
     &pg_query__json_array_agg__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13008,7 +13008,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, raw_stmt),
     &pg_query__raw_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13020,7 +13020,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, insert_stmt),
     &pg_query__insert_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13032,7 +13032,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, delete_stmt),
     &pg_query__delete_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13044,7 +13044,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, update_stmt),
     &pg_query__update_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13056,7 +13056,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, merge_stmt),
     &pg_query__merge_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13068,7 +13068,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, select_stmt),
     &pg_query__select_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13080,7 +13080,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, set_operation_stmt),
     &pg_query__set_operation_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13092,7 +13092,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, return_stmt),
     &pg_query__return_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13104,7 +13104,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, plassign_stmt),
     &pg_query__plassign_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13116,7 +13116,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_schema_stmt),
     &pg_query__create_schema_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13128,7 +13128,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_table_stmt),
     &pg_query__alter_table_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13140,7 +13140,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, replica_identity_stmt),
     &pg_query__replica_identity_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13152,7 +13152,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_table_cmd),
     &pg_query__alter_table_cmd__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13164,7 +13164,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_collation_stmt),
     &pg_query__alter_collation_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13176,7 +13176,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_domain_stmt),
     &pg_query__alter_domain_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13188,7 +13188,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, grant_stmt),
     &pg_query__grant_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13200,7 +13200,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, object_with_args),
     &pg_query__object_with_args__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13212,7 +13212,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, access_priv),
     &pg_query__access_priv__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13224,7 +13224,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, grant_role_stmt),
     &pg_query__grant_role_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13236,7 +13236,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_default_privileges_stmt),
     &pg_query__alter_default_privileges_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13248,7 +13248,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, copy_stmt),
     &pg_query__copy_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13260,7 +13260,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, variable_set_stmt),
     &pg_query__variable_set_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13272,7 +13272,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, variable_show_stmt),
     &pg_query__variable_show_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13284,7 +13284,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_stmt),
     &pg_query__create_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13296,7 +13296,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, constraint),
     &pg_query__constraint__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13308,7 +13308,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_table_space_stmt),
     &pg_query__create_table_space_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13320,7 +13320,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_table_space_stmt),
     &pg_query__drop_table_space_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13332,7 +13332,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_table_space_options_stmt),
     &pg_query__alter_table_space_options_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13344,7 +13344,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_table_move_all_stmt),
     &pg_query__alter_table_move_all_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13356,7 +13356,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_extension_stmt),
     &pg_query__create_extension_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13368,7 +13368,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_extension_stmt),
     &pg_query__alter_extension_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13380,7 +13380,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_extension_contents_stmt),
     &pg_query__alter_extension_contents_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13392,7 +13392,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_fdw_stmt),
     &pg_query__create_fdw_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13404,7 +13404,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_fdw_stmt),
     &pg_query__alter_fdw_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13416,7 +13416,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_foreign_server_stmt),
     &pg_query__create_foreign_server_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13428,7 +13428,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_foreign_server_stmt),
     &pg_query__alter_foreign_server_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13440,7 +13440,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_foreign_table_stmt),
     &pg_query__create_foreign_table_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13452,7 +13452,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_user_mapping_stmt),
     &pg_query__create_user_mapping_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13464,7 +13464,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_user_mapping_stmt),
     &pg_query__alter_user_mapping_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13476,7 +13476,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_user_mapping_stmt),
     &pg_query__drop_user_mapping_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13488,7 +13488,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, import_foreign_schema_stmt),
     &pg_query__import_foreign_schema_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13500,7 +13500,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_policy_stmt),
     &pg_query__create_policy_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13512,7 +13512,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_policy_stmt),
     &pg_query__alter_policy_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13524,7 +13524,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_am_stmt),
     &pg_query__create_am_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13536,7 +13536,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_trig_stmt),
     &pg_query__create_trig_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13548,7 +13548,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_event_trig_stmt),
     &pg_query__create_event_trig_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13560,7 +13560,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_event_trig_stmt),
     &pg_query__alter_event_trig_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13572,7 +13572,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_plang_stmt),
     &pg_query__create_plang_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13584,7 +13584,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_role_stmt),
     &pg_query__create_role_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13596,7 +13596,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_role_stmt),
     &pg_query__alter_role_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13608,7 +13608,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_role_set_stmt),
     &pg_query__alter_role_set_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13620,7 +13620,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_role_stmt),
     &pg_query__drop_role_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13632,7 +13632,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_seq_stmt),
     &pg_query__create_seq_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13644,7 +13644,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_seq_stmt),
     &pg_query__alter_seq_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13656,7 +13656,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, define_stmt),
     &pg_query__define_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13668,7 +13668,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_domain_stmt),
     &pg_query__create_domain_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13680,7 +13680,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_op_class_stmt),
     &pg_query__create_op_class_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13692,7 +13692,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_op_class_item),
     &pg_query__create_op_class_item__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13704,7 +13704,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_op_family_stmt),
     &pg_query__create_op_family_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13716,7 +13716,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_op_family_stmt),
     &pg_query__alter_op_family_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13728,7 +13728,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_stmt),
     &pg_query__drop_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13740,7 +13740,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, truncate_stmt),
     &pg_query__truncate_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13752,7 +13752,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, comment_stmt),
     &pg_query__comment_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13764,7 +13764,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, sec_label_stmt),
     &pg_query__sec_label_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13776,7 +13776,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, declare_cursor_stmt),
     &pg_query__declare_cursor_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13788,7 +13788,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, close_portal_stmt),
     &pg_query__close_portal_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13800,7 +13800,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, fetch_stmt),
     &pg_query__fetch_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13812,7 +13812,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, index_stmt),
     &pg_query__index_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13824,7 +13824,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_stats_stmt),
     &pg_query__create_stats_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13836,7 +13836,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, stats_elem),
     &pg_query__stats_elem__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13848,7 +13848,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_stats_stmt),
     &pg_query__alter_stats_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13860,7 +13860,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_function_stmt),
     &pg_query__create_function_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13872,7 +13872,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, function_parameter),
     &pg_query__function_parameter__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13884,7 +13884,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_function_stmt),
     &pg_query__alter_function_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13896,7 +13896,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, do_stmt),
     &pg_query__do_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13908,7 +13908,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, inline_code_block),
     &pg_query__inline_code_block__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13920,7 +13920,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, call_stmt),
     &pg_query__call_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13932,7 +13932,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, call_context),
     &pg_query__call_context__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13944,7 +13944,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, rename_stmt),
     &pg_query__rename_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13956,7 +13956,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_object_depends_stmt),
     &pg_query__alter_object_depends_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13968,7 +13968,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_object_schema_stmt),
     &pg_query__alter_object_schema_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13980,7 +13980,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_owner_stmt),
     &pg_query__alter_owner_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -13992,7 +13992,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_operator_stmt),
     &pg_query__alter_operator_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14004,7 +14004,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_type_stmt),
     &pg_query__alter_type_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14016,7 +14016,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, rule_stmt),
     &pg_query__rule_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14028,7 +14028,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, notify_stmt),
     &pg_query__notify_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14040,7 +14040,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, listen_stmt),
     &pg_query__listen_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14052,7 +14052,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, unlisten_stmt),
     &pg_query__unlisten_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14064,7 +14064,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, transaction_stmt),
     &pg_query__transaction_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14076,7 +14076,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, composite_type_stmt),
     &pg_query__composite_type_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14088,7 +14088,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_enum_stmt),
     &pg_query__create_enum_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14100,7 +14100,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_range_stmt),
     &pg_query__create_range_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14112,7 +14112,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_enum_stmt),
     &pg_query__alter_enum_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14124,7 +14124,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, view_stmt),
     &pg_query__view_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14136,7 +14136,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, load_stmt),
     &pg_query__load_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14148,7 +14148,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, createdb_stmt),
     &pg_query__createdb_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14160,7 +14160,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_database_stmt),
     &pg_query__alter_database_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14172,7 +14172,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_database_refresh_coll_stmt),
     &pg_query__alter_database_refresh_coll_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14184,7 +14184,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_database_set_stmt),
     &pg_query__alter_database_set_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14196,7 +14196,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, dropdb_stmt),
     &pg_query__dropdb_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14208,7 +14208,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_system_stmt),
     &pg_query__alter_system_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14220,7 +14220,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, cluster_stmt),
     &pg_query__cluster_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14232,7 +14232,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, vacuum_stmt),
     &pg_query__vacuum_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14244,7 +14244,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, vacuum_relation),
     &pg_query__vacuum_relation__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14256,7 +14256,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, explain_stmt),
     &pg_query__explain_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14268,7 +14268,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_table_as_stmt),
     &pg_query__create_table_as_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14280,7 +14280,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, refresh_mat_view_stmt),
     &pg_query__refresh_mat_view_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14292,7 +14292,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, check_point_stmt),
     &pg_query__check_point_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14304,7 +14304,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, discard_stmt),
     &pg_query__discard_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14316,7 +14316,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, lock_stmt),
     &pg_query__lock_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14328,7 +14328,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, constraints_set_stmt),
     &pg_query__constraints_set_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14340,7 +14340,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, reindex_stmt),
     &pg_query__reindex_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14352,7 +14352,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_conversion_stmt),
     &pg_query__create_conversion_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14364,7 +14364,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_cast_stmt),
     &pg_query__create_cast_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14376,7 +14376,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_transform_stmt),
     &pg_query__create_transform_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14388,7 +14388,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, prepare_stmt),
     &pg_query__prepare_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14400,7 +14400,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, execute_stmt),
     &pg_query__execute_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14412,7 +14412,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, deallocate_stmt),
     &pg_query__deallocate_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14424,7 +14424,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_owned_stmt),
     &pg_query__drop_owned_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14436,7 +14436,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, reassign_owned_stmt),
     &pg_query__reassign_owned_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14448,7 +14448,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_tsdictionary_stmt),
     &pg_query__alter_tsdictionary_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14460,7 +14460,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_tsconfiguration_stmt),
     &pg_query__alter_tsconfiguration_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14472,7 +14472,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, publication_table),
     &pg_query__publication_table__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14484,7 +14484,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, publication_obj_spec),
     &pg_query__publication_obj_spec__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14496,7 +14496,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_publication_stmt),
     &pg_query__create_publication_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14508,7 +14508,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_publication_stmt),
     &pg_query__alter_publication_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14520,7 +14520,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, create_subscription_stmt),
     &pg_query__create_subscription_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14532,7 +14532,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, alter_subscription_stmt),
     &pg_query__alter_subscription_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14544,7 +14544,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, drop_subscription_stmt),
     &pg_query__drop_subscription_stmt__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14556,7 +14556,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, integer),
     &pg_query__integer__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14568,7 +14568,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, float_),
     &pg_query__float__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14580,7 +14580,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, boolean),
     &pg_query__boolean__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14592,7 +14592,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, string),
     &pg_query__string__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14604,7 +14604,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, bit_string),
     &pg_query__bit_string__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14616,7 +14616,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, list),
     &pg_query__list__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14628,7 +14628,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, int_list),
     &pg_query__int_list__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14640,7 +14640,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, oid_list),
     &pg_query__oid_list__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -14652,7 +14652,7 @@ static const ProtobufCFieldDescriptor pg_query__node__field_descriptors[252] =
     offsetof(PgQuery__Node, a_const),
     &pg_query__a__const__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
@@ -15245,7 +15245,7 @@ static const ProtobufCFieldDescriptor pg_query__a__const__field_descriptors[7] =
     offsetof(PgQuery__AConst, ival),
     &pg_query__integer__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15257,7 +15257,7 @@ static const ProtobufCFieldDescriptor pg_query__a__const__field_descriptors[7] =
     offsetof(PgQuery__AConst, fval),
     &pg_query__float__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15269,7 +15269,7 @@ static const ProtobufCFieldDescriptor pg_query__a__const__field_descriptors[7] =
     offsetof(PgQuery__AConst, boolval),
     &pg_query__boolean__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15281,7 +15281,7 @@ static const ProtobufCFieldDescriptor pg_query__a__const__field_descriptors[7] =
     offsetof(PgQuery__AConst, sval),
     &pg_query__string__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15293,7 +15293,7 @@ static const ProtobufCFieldDescriptor pg_query__a__const__field_descriptors[7] =
     offsetof(PgQuery__AConst, bsval),
     &pg_query__bit_string__descriptor,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15649,7 +15649,7 @@ static const ProtobufCFieldDescriptor pg_query__table_func__field_descriptors[13
     offsetof(PgQuery__TableFunc, notnulls),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -15924,7 +15924,7 @@ static const ProtobufCFieldDescriptor pg_query__var__field_descriptors[9] =
     offsetof(PgQuery__Var, varnullingrels),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -25272,7 +25272,7 @@ static const ProtobufCFieldDescriptor pg_query__rtepermission_info__field_descri
     offsetof(PgQuery__RTEPermissionInfo, selected_cols),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -25284,7 +25284,7 @@ static const ProtobufCFieldDescriptor pg_query__rtepermission_info__field_descri
     offsetof(PgQuery__RTEPermissionInfo, inserted_cols),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
   {
@@ -25296,7 +25296,7 @@ static const ProtobufCFieldDescriptor pg_query__rtepermission_info__field_descri
     offsetof(PgQuery__RTEPermissionInfo, updated_cols),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
@@ -25412,7 +25412,7 @@ static const ProtobufCFieldDescriptor pg_query__range_tbl_function__field_descri
     offsetof(PgQuery__RangeTblFunction, funcparams),
     NULL,
     NULL,
-    0 | PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
+    PROTOBUF_C_FIELD_FLAG_PACKED,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
 };
