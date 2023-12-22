@@ -73,7 +73,7 @@ VALGRIND_MEMCHECK = valgrind --leak-check=full --gen-suppressions=all \
   --suppressions=test/valgrind.supp --time-stamp=yes \
   --error-markers=VALGRINDERROR-BEGIN,VALGRINDERROR-END \
   --log-file=test/valgrind.log --trace-children=yes --show-leak-kinds=all \
-  --error-exitcode=1 --errors-for-leak-kinds=all
+  --error-exitcode=1 --errors-for-leak-kinds=all --num-callers=50
 
 CC ?= cc
 
