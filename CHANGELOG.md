@@ -2,6 +2,20 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 16-5.0.0   2023-12-22
+
+* Update to Postgres 16.1
+* Drop support for arbitrary trailing junk on integer literals
+  - Support for parsing junk after parameters, e.g. `$1OR` is retained
+* Deparser:
+  - Fix deparsing of `SYSTEM_USER`
+  - Add support for deparsing `STORAGE` mode
+  - Add support for deparsing `REVOKE ... CASCADE`
+  - Rework a_expr/b_expr/c_expr deparsing to match gram.y structure
+  - Add support for deparsing `COMPRESSION` option for columns
+  - Add support for deparsing `NULLS NOT DISTINCT` in unique constraints
+  - Add support for deparsing new SQL/JSON functionality
+
 ## 15-4.2.4   2023-12-20
 
 * Scanner: Add token `ASCII_36` ("$") to support queries like "SELECT $identifier" [#211](https://github.com/pganalyze/libpg_query/pull/211), [#219](https://github.com/pganalyze/libpg_query/pull/219)
