@@ -190,6 +190,12 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call);
 static void deparseMinMaxExpr(StringInfo str, MinMaxExpr *min_max_expr);
 static void deparseXmlExpr(StringInfo str, XmlExpr* xml_expr);
 static void deparseXmlSerialize(StringInfo str, XmlSerialize *xml_serialize);
+static void deparseJsonIsPredicate(StringInfo str, JsonIsPredicate *json_is_predicate);
+static void deparseJsonObjectAgg(StringInfo str, JsonObjectAgg *json_object_agg);
+static void deparseJsonArrayAgg(StringInfo str, JsonArrayAgg *json_array_agg);
+static void deparseJsonObjectConstructor(StringInfo str, JsonObjectConstructor *json_object_constructor);
+static void deparseJsonArrayConstructor(StringInfo str, JsonArrayConstructor *json_array_constructor);
+static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConstructor *json_array_query_constructor);
 static void deparseConstraint(StringInfo str, Constraint *constraint);
 static void deparseSchemaStmt(StringInfo str, Node *node);
 static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt);
@@ -269,25 +275,19 @@ static void deparseFuncExpr(StringInfo str, Node *node)
 			deparseXmlSerialize(str, castNode(XmlSerialize, node));
 			break;
 		case T_JsonObjectAgg:
-			elog(ERROR, "deparse: JsonObjectAgg is not yet supported"); // TODO
+			deparseJsonObjectAgg(str, castNode(JsonObjectAgg, node));
 			break;
 		case T_JsonArrayAgg:
-			elog(ERROR, "deparse: JsonArrayAgg is not yet supported"); // TODO
-			break;
-		case T_JsonAggConstructor:
-			elog(ERROR, "deparse: JsonAggConstructor is not yet supported"); // TODO
+			deparseJsonArrayAgg(str, castNode(JsonArrayAgg, node));
 			break;
 		case T_JsonObjectConstructor:
-			elog(ERROR, "deparse: JsonObjectConstructor is not yet supported"); // TODO
+			deparseJsonObjectConstructor(str, castNode(JsonObjectConstructor, node));
 			break;
 		case T_JsonArrayConstructor:
-			elog(ERROR, "deparse: JsonArrayConstructor is not yet supported"); // TODO
+			deparseJsonArrayConstructor(str, castNode(JsonArrayConstructor, node));
 			break;
 		case T_JsonArrayQueryConstructor:
-			elog(ERROR, "deparse: JsonArrayQueryConstructor is not yet supported"); // TODO
-			break;
-		case T_JsonValueExpr:
-			elog(ERROR, "deparse: JsonValueExpr is not yet supported"); // TODO
+			deparseJsonArrayQueryConstructor(str, castNode(JsonArrayQueryConstructor, node));
 			break;
 		default:
 			elog(ERROR, "deparse: unpermitted node type in func_expr: %d",
@@ -335,7 +335,7 @@ static void deparseExpr(StringInfo str, Node *node)
 			deparseBooleanTest(str, castNode(BooleanTest, node));
 			break;
 		case T_JsonIsPredicate:
-			elog(ERROR, "deparse: JsonIsPredicate is not yet supported"); // TODO
+			deparseJsonIsPredicate(str, castNode(JsonIsPredicate, node));
 			break;
 		case T_SetToDefault:
 			deparseSetToDefault(str, castNode(SetToDefault, node));
@@ -348,11 +348,9 @@ static void deparseExpr(StringInfo str, Node *node)
 		case T_XmlSerialize:
 		case T_JsonObjectAgg:
 		case T_JsonArrayAgg:
-		case T_JsonAggConstructor:
 		case T_JsonObjectConstructor:
 		case T_JsonArrayConstructor:
 		case T_JsonArrayQueryConstructor:
-		case T_JsonValueExpr:
 			deparseFuncExpr(str, node);
 			break;
 		default:
@@ -431,11 +429,9 @@ static void deparseCExpr(StringInfo str, Node *node)
 		case T_XmlSerialize:
 		case T_JsonObjectAgg:
 		case T_JsonArrayAgg:
-		case T_JsonAggConstructor:
 		case T_JsonObjectConstructor:
 		case T_JsonArrayConstructor:
 		case T_JsonArrayQueryConstructor:
-		case T_JsonValueExpr:
 			deparseFuncExpr(str, node);
 			break;
 		default:
@@ -1774,7 +1770,7 @@ static void deparseNameList(StringInfo str, List *l)
 	}
 }
 
-// "opt_sort_clause" in gram.y
+// "opt_sort_clause" and "json_array_aggregate_order_by_clause_opt" in gram.y
 //
 // Note this method adds a trailing space if a value is output
 static void deparseOptSortClause(StringInfo str, List *l)
@@ -10279,6 +10275,235 @@ static void deparseXmlSerialize(StringInfo str, XmlSerialize *xml_serialize)
 	}
 
 	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonFormat(StringInfo str, JsonFormat *json_format)
+{
+	if (json_format == NULL || json_format->format_type == JS_FORMAT_DEFAULT)
+		return;
+
+	appendStringInfoString(str, "FORMAT JSON ");
+
+	switch (json_format->encoding)
+	{
+		case JS_ENC_UTF8:
+			appendStringInfoString(str, "ENCODING utf8 ");
+			break;
+		case JS_ENC_UTF16:
+			appendStringInfoString(str, "ENCODING utf16 ");
+			break;
+		case JS_ENC_UTF32:
+			appendStringInfoString(str, "ENCODING utf32 ");
+			break;
+		case JS_ENC_DEFAULT:
+			// no encoding specified
+			break;
+	}
+}
+
+static void deparseJsonIsPredicate(StringInfo str, JsonIsPredicate *j)
+{
+	deparseExpr(str, j->expr);
+	appendStringInfoChar(str, ' ');
+
+	deparseJsonFormat(str, castNode(JsonFormat, j->format));
+
+	appendStringInfoString(str, "IS ");
+
+	switch (j->item_type)
+	{
+		case JS_TYPE_ANY:
+			appendStringInfoString(str, "JSON ");
+			break;
+		case JS_TYPE_ARRAY:
+			appendStringInfoString(str, "JSON ARRAY ");
+			break;
+		case JS_TYPE_OBJECT:
+			appendStringInfoString(str, "JSON OBJECT ");
+			break;
+		case JS_TYPE_SCALAR:
+			appendStringInfoString(str, "JSON SCALAR ");
+			break;
+	}
+
+	if (j->unique_keys)
+		appendStringInfoString(str, "WITH UNIQUE ");
+
+	removeTrailingSpace(str);
+}
+
+// "json_value_expr" in gram.y
+static void deparseJsonValueExpr(StringInfo str, JsonValueExpr *json_value_expr)
+{
+	deparseExpr(str, (Node *) json_value_expr->raw_expr);
+	appendStringInfoChar(str, ' ');
+	deparseJsonFormat(str, json_value_expr->format);
+}
+
+// "json_value_expr_list" in gram.y
+static void deparseJsonValueExprList(StringInfo str, List *exprs)
+{
+	ListCell *lc;
+	foreach(lc, exprs)
+	{
+		deparseJsonValueExpr(str, lfirst(lc));
+		removeTrailingSpace(str);
+		if (lnext(exprs, lc))
+			appendStringInfoString(str, ", ");
+	}
+	appendStringInfoChar(str, ' ');
+}
+
+// "json_name_and_value" in gram.y
+static void deparseJsonKeyValue(StringInfo str, JsonKeyValue *json_key_value)
+{
+	deparseExpr(str, (Node *) json_key_value->key);
+	appendStringInfoString(str, ": ");
+	deparseJsonValueExpr(str, json_key_value->value);
+}
+
+// "json_name_and_value_list" in gram.y
+static void deparseJsonKeyValueList(StringInfo str, List *exprs)
+{
+	ListCell *lc;
+	foreach(lc, exprs)
+	{
+		deparseJsonKeyValue(str, lfirst(lc));
+		removeTrailingSpace(str);
+		if (lnext(exprs, lc))
+			appendStringInfoString(str, ", ");
+	}
+	appendStringInfoChar(str, ' ');
+}
+
+static void deparseJsonOutput(StringInfo str, JsonOutput *json_output)
+{
+	if (json_output == NULL)
+		return;
+
+	Assert(json_output->returning != NULL);
+
+	appendStringInfoString(str, "RETURNING ");
+	deparseTypeName(str, json_output->typeName);
+	appendStringInfoChar(str, ' ');
+	deparseJsonFormat(str, json_output->returning->format);
+}
+
+static void deparseJsonObjectAgg(StringInfo str, JsonObjectAgg *json_object_agg)
+{
+	Assert(json_object_agg->constructor != NULL);
+
+	appendStringInfoString(str, "JSON_OBJECTAGG(");
+	deparseJsonKeyValue(str, json_object_agg->arg);
+
+	if (json_object_agg->absent_on_null)
+		appendStringInfoString(str, "ABSENT ON NULL ");
+
+	if (json_object_agg->unique)
+		appendStringInfoString(str, "WITH UNIQUE ");
+
+	deparseJsonOutput(str, json_object_agg->constructor->output);
+
+	removeTrailingSpace(str);
+	appendStringInfoString(str, ") ");
+
+	if (json_object_agg->constructor->agg_filter)
+	{
+		appendStringInfoString(str, "FILTER (WHERE ");
+		deparseExpr(str, json_object_agg->constructor->agg_filter);
+		appendStringInfoString(str, ") ");
+	}
+
+	if (json_object_agg->constructor->over)
+	{
+		struct WindowDef *over = json_object_agg->constructor->over;
+		appendStringInfoString(str, "OVER ");
+		if (over->name)
+			appendStringInfoString(str, over->name);
+		else
+			deparseWindowDef(str, over);
+	}
+
+	removeTrailingSpace(str);
+}
+
+static void deparseJsonArrayAgg(StringInfo str, JsonArrayAgg *json_array_agg)
+{
+	Assert(json_array_agg->constructor != NULL);
+
+	appendStringInfoString(str, "JSON_ARRAYAGG(");
+	deparseJsonValueExpr(str, json_array_agg->arg);
+	deparseOptSortClause(str, json_array_agg->constructor->agg_order);
+
+	if (!json_array_agg->absent_on_null)
+		appendStringInfoString(str, "NULL ON NULL ");
+
+	deparseJsonOutput(str, json_array_agg->constructor->output);
+
+	removeTrailingSpace(str);
+	appendStringInfoString(str, ") ");
+
+	if (json_array_agg->constructor->agg_filter)
+	{
+		appendStringInfoString(str, "FILTER (WHERE ");
+		deparseExpr(str, json_array_agg->constructor->agg_filter);
+		appendStringInfoString(str, ") ");
+	}
+
+	if (json_array_agg->constructor->over)
+	{
+		struct WindowDef *over = json_array_agg->constructor->over;
+		appendStringInfoString(str, "OVER ");
+		if (over->name)
+			appendStringInfoString(str, over->name);
+		else
+			deparseWindowDef(str, over);
+	}
+
+	removeTrailingSpace(str);
+}
+
+static void deparseJsonObjectConstructor(StringInfo str, JsonObjectConstructor *json_object_constructor)
+{
+	appendStringInfoString(str, "JSON_OBJECT(");
+	deparseJsonKeyValueList(str, json_object_constructor->exprs);
+
+	if (json_object_constructor->absent_on_null)
+		appendStringInfoString(str, "ABSENT ON NULL ");
+
+	if (json_object_constructor->unique)
+		appendStringInfoString(str, "WITH UNIQUE ");
+
+	deparseJsonOutput(str, json_object_constructor->output);
+
+	removeTrailingSpace(str);
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonArrayConstructor(StringInfo str, JsonArrayConstructor *json_array_constructor)
+{
+	appendStringInfoString(str, "JSON_ARRAY(");
+	deparseJsonValueExprList(str, json_array_constructor->exprs);
+
+	if (!json_array_constructor->absent_on_null)
+		appendStringInfoString(str, "NULL ON NULL ");
+
+	deparseJsonOutput(str, json_array_constructor->output);
+
+	removeTrailingSpace(str);
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConstructor *json_array_query_constructor)
+{
+	appendStringInfoString(str, "JSON_ARRAY(");
+
+	deparseSelectStmt(str, castNode(SelectStmt, json_array_query_constructor->query));
+	deparseJsonFormat(str, json_array_query_constructor->format);
+	deparseJsonOutput(str, json_array_query_constructor->output);
+
+	removeTrailingSpace(str);
+	appendStringInfoChar(str, ')');
 }
 
 static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func)
