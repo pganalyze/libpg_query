@@ -196,7 +196,6 @@ static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt);
 static void deparseTriggerTransition(StringInfo str, TriggerTransition *trigger_transition);
 static void deparseCreateOpClassItem(StringInfo str, CreateOpClassItem *create_op_class_item);
 static void deparseAConst(StringInfo str, A_Const *a_const);
-static void deparseCurrentOfExpr(StringInfo str, CurrentOfExpr *current_of_expr);
 static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func);
 
 static void deparsePreparableStmt(StringInfo str, Node *node);
@@ -246,69 +245,13 @@ static void deparseAnyNameSkipLast(StringInfo str, List *parts)
 	}
 }
 
-// "a_expr" / "b_expr" in gram.y
-static void deparseExpr(StringInfo str, Node *node)
+// "func_expr" in gram.y
+static void deparseFuncExpr(StringInfo str, Node *node)
 {
-	if (node == NULL)
-		return;
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
 			deparseFuncCall(str, castNode(FuncCall, node));
-			break;
-		case T_XmlExpr:
-			deparseXmlExpr(str, castNode(XmlExpr, node));
-			break;
-		case T_TypeCast:
-			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
-			break;
-		case T_A_Const:
-			deparseAConst(str, castNode(A_Const, node));
-			break;
-		case T_ColumnRef:
-			deparseColumnRef(str, castNode(ColumnRef, node));
-			break;
-		case T_A_Expr:
-			deparseAExpr(str, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_NONE);
-			break;
-		case T_CaseExpr:
-			deparseCaseExpr(str, castNode(CaseExpr, node));
-			break;
-		case T_A_ArrayExpr:
-			deparseAArrayExpr(str, castNode(A_ArrayExpr, node));
-			break;
-		case T_NullTest:
-			deparseNullTest(str, castNode(NullTest, node));
-			break;
-		case T_XmlSerialize:
-			deparseXmlSerialize(str, castNode(XmlSerialize, node));
-			break;
-		case T_ParamRef:
-			deparseParamRef(str, castNode(ParamRef, node));
-			break;
-		case T_BoolExpr:
-			deparseBoolExpr(str, castNode(BoolExpr, node));
-			break;
-		case T_SubLink:
-			deparseSubLink(str, castNode(SubLink, node));
-			break;
-		case T_RowExpr:
-			deparseRowExpr(str, castNode(RowExpr, node));
-			break;
-		case T_CoalesceExpr:
-			deparseCoalesceExpr(str, castNode(CoalesceExpr, node));
-			break;
-		case T_SetToDefault:
-			deparseSetToDefault(str, castNode(SetToDefault, node));
-			break;
-		case T_A_Indirection:
-			deparseAIndirection(str, castNode(A_Indirection, node));
-			break;
-		case T_CollateClause:
-			deparseCollateClause(str, castNode(CollateClause, node));
-			break;
-		case T_CurrentOfExpr:
-			deparseCurrentOfExpr(str, castNode(CurrentOfExpr, node));
 			break;
 		case T_SQLValueFunction:
 			deparseSQLValueFunction(str, castNode(SQLValueFunction, node));
@@ -316,17 +259,136 @@ static void deparseExpr(StringInfo str, Node *node)
 		case T_MinMaxExpr:
 			deparseMinMaxExpr(str, castNode(MinMaxExpr, node));
 			break;
-		case T_BooleanTest:
-			deparseBooleanTest(str, castNode(BooleanTest, node));
+		case T_CoalesceExpr:
+			deparseCoalesceExpr(str, castNode(CoalesceExpr, node));
 			break;
-		case T_GroupingFunc:
-			deparseGroupingFunc(str, castNode(GroupingFunc, node));
+		case T_XmlExpr:
+			deparseXmlExpr(str, castNode(XmlExpr, node));
+			break;
+		case T_XmlSerialize:
+			deparseXmlSerialize(str, castNode(XmlSerialize, node));
+			break;
+		case T_JsonObjectAgg:
+			elog(ERROR, "deparse: JsonObjectAgg is not yet supported"); // TODO
+			break;
+		case T_JsonArrayAgg:
+			elog(ERROR, "deparse: JsonArrayAgg is not yet supported"); // TODO
+			break;
+		case T_JsonAggConstructor:
+			elog(ERROR, "deparse: JsonAggConstructor is not yet supported"); // TODO
+			break;
+		case T_JsonObjectConstructor:
+			elog(ERROR, "deparse: JsonObjectConstructor is not yet supported"); // TODO
+			break;
+		case T_JsonArrayConstructor:
+			elog(ERROR, "deparse: JsonArrayConstructor is not yet supported"); // TODO
+			break;
+		case T_JsonArrayQueryConstructor:
+			elog(ERROR, "deparse: JsonArrayQueryConstructor is not yet supported"); // TODO
+			break;
+		case T_JsonValueExpr:
+			elog(ERROR, "deparse: JsonValueExpr is not yet supported"); // TODO
 			break;
 		default:
-			elog(ERROR, "deparse: unpermitted node type in a_expr/b_expr: %d",
+			elog(ERROR, "deparse: unpermitted node type in func_expr: %d",
 				 (int) nodeTag(node));
 			break;
 	}
+}
+
+static void deparseCExpr(StringInfo str, Node *node);
+
+// "a_expr" in gram.y
+static void deparseExpr(StringInfo str, Node *node)
+{
+	if (node == NULL)
+		return;
+	switch (nodeTag(node))
+	{
+		case T_ColumnRef:
+		case T_A_Const:
+		case T_ParamRef:
+		case T_A_Indirection:
+		case T_CaseExpr:
+		case T_SubLink:
+		case T_A_ArrayExpr:
+		case T_RowExpr:
+		case T_GroupingFunc:
+			deparseCExpr(str, node);
+			break;
+		case T_TypeCast:
+			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
+			break;
+		case T_CollateClause:
+			deparseCollateClause(str, castNode(CollateClause, node));
+			break;
+		case T_A_Expr:
+			deparseAExpr(str, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_NONE);
+			break;
+		case T_BoolExpr:
+			deparseBoolExpr(str, castNode(BoolExpr, node));
+			break;
+		case T_NullTest:
+			deparseNullTest(str, castNode(NullTest, node));
+			break;
+		case T_BooleanTest:
+			deparseBooleanTest(str, castNode(BooleanTest, node));
+			break;
+		case T_JsonIsPredicate:
+			elog(ERROR, "deparse: JsonIsPredicate is not yet supported"); // TODO
+			break;
+		case T_SetToDefault:
+			deparseSetToDefault(str, castNode(SetToDefault, node));
+			break;
+		case T_FuncCall:
+		case T_SQLValueFunction:
+		case T_MinMaxExpr:
+		case T_CoalesceExpr:
+		case T_XmlExpr:
+		case T_XmlSerialize:
+		case T_JsonObjectAgg:
+		case T_JsonArrayAgg:
+		case T_JsonAggConstructor:
+		case T_JsonObjectConstructor:
+		case T_JsonArrayConstructor:
+		case T_JsonArrayQueryConstructor:
+		case T_JsonValueExpr:
+			deparseFuncExpr(str, node);
+			break;
+		default:
+			// Note that this is also the fallthrough for deparseBExpr and deparseCExpr
+			elog(ERROR, "deparse: unpermitted node type in a_expr/b_expr/c_expr: %d",
+				 (int) nodeTag(node));
+			break;
+	}
+}
+
+// "b_expr" in gram.y
+static void deparseBExpr(StringInfo str, Node *node)
+{
+	if (IsA(node, XmlExpr)) {
+		deparseXmlExpr(str, castNode(XmlExpr, node));
+		return;
+	}
+
+	if (IsA(node, A_Expr)) {
+		A_Expr *a_expr = castNode(A_Expr, node);
+		// Other kinds are handled by "c_expr", with parens added around them
+		if (a_expr->kind == AEXPR_OP || a_expr->kind == AEXPR_DISTINCT || a_expr->kind == AEXPR_NOT_DISTINCT) {
+			deparseAExpr(str, a_expr, DEPARSE_NODE_CONTEXT_NONE);
+			return;
+		}
+	}
+
+	if (IsA(node, BoolExpr)) {
+		BoolExpr *bool_expr = castNode(BoolExpr, node);
+		if (bool_expr->boolop == NOT_EXPR) {
+			deparseBoolExpr(str, bool_expr);
+			return;
+		}
+	}
+
+	deparseCExpr(str, node);
 }
 
 // "c_expr" in gram.y
@@ -340,14 +402,6 @@ static void deparseCExpr(StringInfo str, Node *node)
 		case T_A_Const:
 			deparseAConst(str, castNode(A_Const, node));
 			break;
-		case T_TypeCast:
-			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
-			break;
-		case T_A_Expr:
-			appendStringInfoChar(str, '(');
-			deparseAExpr(str, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_NONE);
-			appendStringInfoChar(str, ')');
-			break;
 		case T_ParamRef:
 			deparseParamRef(str, castNode(ParamRef, node));
 			break;
@@ -356,9 +410,6 @@ static void deparseCExpr(StringInfo str, Node *node)
 			break;
 		case T_CaseExpr:
 			deparseCaseExpr(str, castNode(CaseExpr, node));
-			break;
-		case T_FuncCall:
-			deparseFuncCall(str, castNode(FuncCall, node));
 			break;
 		case T_SubLink:
 			deparseSubLink(str, castNode(SubLink, node));
@@ -372,9 +423,25 @@ static void deparseCExpr(StringInfo str, Node *node)
 		case T_GroupingFunc:
 			deparseGroupingFunc(str, castNode(GroupingFunc, node));
 			break;
+		case T_FuncCall:
+		case T_SQLValueFunction:
+		case T_MinMaxExpr:
+		case T_CoalesceExpr:
+		case T_XmlExpr:
+		case T_XmlSerialize:
+		case T_JsonObjectAgg:
+		case T_JsonArrayAgg:
+		case T_JsonAggConstructor:
+		case T_JsonObjectConstructor:
+		case T_JsonArrayConstructor:
+		case T_JsonArrayQueryConstructor:
+		case T_JsonValueExpr:
+			deparseFuncExpr(str, node);
+			break;
 		default:
-			elog(ERROR, "deparse: unpermitted node type in c_expr: %d",
-				 (int) nodeTag(node));
+			appendStringInfoChar(str, '(');
+			deparseExpr(str, node);
+			appendStringInfoChar(str, ')');
 			break;
 	}
 }
@@ -1635,6 +1702,27 @@ static void deparseWhereClause(StringInfo str, Node *node)
 	}
 }
 
+// "where_or_current_clause" in gram.y
+//
+// Note this method adds a trailing space if a value is output
+static void deparseWhereOrCurrentClause(StringInfo str, Node *node)
+{
+	if (node == NULL)
+		return;
+
+	appendStringInfoString(str, "WHERE ");
+
+	if (IsA(node, CurrentOfExpr)) {
+		CurrentOfExpr *current_of_expr = castNode(CurrentOfExpr, node);
+		appendStringInfoString(str, "CURRENT OF ");
+		appendStringInfoString(str, quote_identifier(current_of_expr->cursor_name));
+	} else {
+		deparseExpr(str, node);
+	}
+
+	appendStringInfoChar(str, ' ');
+}
+
 // "group_by_list" in gram.y
 static void deparseGroupByList(StringInfo str, List *l)
 {
@@ -2467,9 +2555,9 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		 * Note that the first and second arguments are switched in this format
 		 */
 		appendStringInfoString(str, "POSITION(");
-		deparseExpr(str, lsecond(func_call->args));
+		deparseBExpr(str, lsecond(func_call->args));
 		appendStringInfoString(str, " IN ");
-		deparseExpr(str, linitial(func_call->args));
+		deparseBExpr(str, linitial(func_call->args));
 		appendStringInfoChar(str, ')');
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
@@ -4036,6 +4124,13 @@ static void deparseColumnDef(StringInfo str, ColumnDef *column_def)
 		appendStringInfoChar(str, ' ');
 	}
 
+	if (column_def->compression != NULL)
+	{
+		appendStringInfoString(str, "COMPRESSION ");
+		appendStringInfoString(str, column_def->compression);
+		appendStringInfoChar(str, ' ');
+	}
+
 	if (column_def->fdwoptions != NULL)
 	{
 		deparseCreateGenericOptions(str, column_def->fdwoptions);
@@ -4210,7 +4305,7 @@ static void deparseUpdateStmt(StringInfo str, UpdateStmt *update_stmt)
 	}
 
 	deparseFromClause(str, update_stmt->fromClause);
-	deparseWhereClause(str, update_stmt->whereClause);
+	deparseWhereOrCurrentClause(str, update_stmt->whereClause);
 
 	if (list_length(update_stmt->returningList) > 0)
 	{
@@ -4324,7 +4419,7 @@ static void deparseDeleteStmt(StringInfo str, DeleteStmt *delete_stmt)
 		appendStringInfoChar(str, ' ');
 	}
 
-	deparseWhereClause(str, delete_stmt->whereClause);
+	deparseWhereOrCurrentClause(str, delete_stmt->whereClause);
 
 	if (list_length(delete_stmt->returningList) > 0)
 	{
@@ -4539,6 +4634,8 @@ static void deparseTableLikeClause(StringInfo str, TableLikeClause *table_like_c
 	{
 		if (table_like_clause->options & CREATE_TABLE_LIKE_COMMENTS)
 			appendStringInfoString(str, "INCLUDING COMMENTS ");
+		if (table_like_clause->options & CREATE_TABLE_LIKE_COMPRESSION)
+			appendStringInfoString(str, "INCLUDING COMPRESSION ");
 		if (table_like_clause->options & CREATE_TABLE_LIKE_CONSTRAINTS)
 			appendStringInfoString(str, "INCLUDING CONSTRAINTS ");
 		if (table_like_clause->options & CREATE_TABLE_LIKE_DEFAULTS)
@@ -4646,7 +4743,7 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 			break;
 		case CONSTR_DEFAULT:
 			appendStringInfoString(str, "DEFAULT ");
-			deparseExpr(str, constraint->raw_expr);
+			deparseBExpr(str, constraint->raw_expr);
 			break;
 		case CONSTR_IDENTITY:
 			appendStringInfoString(str, "GENERATED ");
@@ -4680,6 +4777,8 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 			break;
 		case CONSTR_UNIQUE:
 			appendStringInfoString(str, "UNIQUE ");
+			if (constraint->nulls_not_distinct)
+				appendStringInfoString(str, "NULLS NOT DISTINCT ");
 			break;
 		case CONSTR_EXCLUSION:
 			appendStringInfoString(str, "EXCLUDE ");
@@ -9868,12 +9967,6 @@ static void deparseClosePortalStmt(StringInfo str, ClosePortalStmt *close_portal
 	{
 		appendStringInfoString(str, "ALL");
 	}
-}
-
-static void deparseCurrentOfExpr(StringInfo str, CurrentOfExpr *current_of_expr)
-{
-	appendStringInfoString(str, "CURRENT OF ");
-	appendStringInfoString(str, quote_identifier(current_of_expr->cursor_name));
 }
 
 static void deparseCreateTrigStmt(StringInfo str, CreateTrigStmt *create_trig_stmt)
