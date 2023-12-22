@@ -11,6 +11,10 @@ All versions are tagged by the major Postgres version, plus an individual semver
   - Fix deparsing of `SYSTEM_USER`
   - Add support for deparsing `STORAGE` mode
   - Add support for deparsing `REVOKE ... CASCADE`
+  - Rework a_expr/b_expr/c_expr deparsing to match gram.y structure
+  - Add support for deparsing `COMPRESSION` option for columns
+  - Add support for deparsing `NULLS NOT DISTINCT` in unique constraints
+  - Add support for deparsing new SQL/JSON functionality
 
 ## 15-4.2.4   2023-12-20
 
