@@ -1,7 +1,43 @@
 {
    google_protobuf_cpp_unclean_shutdown
    Memcheck:Leak
-   match-leak-kinds: reachable
+   match-leak-kinds: reachable,possible
    ...
    fun:*google*protobuf*
+}
+
+{
+   google_protobuf_cpp_unclean_shutdown_abseil
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   fun:*absl*
+}
+
+{
+   abseil_deadlock_check_uninit_cond
+   Memcheck:Cond
+   ...
+   fun:*UnwindImpl*
+   ...
+   fun:*absl*GetStackTrace*
+   ...
+   fun:*absl*DeadlockCheck*
+   ...
+   fun:*absl*Mutex*Lock*
+   ...
+}
+
+{
+   abseil_deadlock_check_value8
+   Memcheck:Value8
+   ...
+   fun:*UnwindImpl*
+   ...
+   fun:*absl*GetStackTrace*
+   ...
+   fun:*absl*DeadlockCheck*
+   ...
+   fun:*absl*Mutex*Lock*
+   ...
 }
