@@ -344,7 +344,7 @@ const char* regressFilenames[] = {
 	"select_views.sql",
 	"sequence.sql",
 	"spgist.sql",
-	//"sqljson.sql",
+	"sqljson.sql",
 	"stats.sql",
 	"stats_ext.sql",
 	"strings.sql",
