@@ -155,6 +155,16 @@ class Generator
 
   EOL
 
+  FINGERPRINT_UINT64 = <<-EOL
+  if (node->%<name>s != 0) {
+    char buffer[50];
+    sprintf(buffer, UINT64_FORMAT, node->%<name>s);
+    _fingerprintString(ctx, "%<name>s");
+    _fingerprintString(ctx, buffer);
+  }
+
+  EOL
+
   FINGERPRINT_FLOAT = <<-EOL
   if (node->%<name>s != 0) {
     char buffer[50];
@@ -258,7 +268,8 @@ class Generator
     ['RawStmt', 'stmt_location'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber']
-  LONG_INT_TYPES = ['long', 'uint64', 'AclMode']
+  LONG_INT_TYPES = ['long']
+  UINT64_TYPES = ['uint64', 'AclMode']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
   FLOAT_TYPES = ['Cost', 'double', 'Cardinality']
 
@@ -317,6 +328,8 @@ class Generator
               fingerprint_def += format(FINGERPRINT_INT, name: name)
             when *LONG_INT_TYPES
               fingerprint_def += format(FINGERPRINT_LONG_INT, name: name)
+            when *UINT64_TYPES
+              fingerprint_def += format(FINGERPRINT_UINT64, name: name)
             when *INT_ARRAY_TYPES
               fingerprint_def += format(FINGERPRINT_INT_ARRAY, name: name)
             when *FLOAT_TYPES

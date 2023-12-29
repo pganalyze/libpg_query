@@ -5894,7 +5894,7 @@ _fingerprintRTEPermissionInfo(FingerprintContext *ctx, const RTEPermissionInfo *
 
   if (node->requiredPerms != 0) {
     char buffer[50];
-    sprintf(buffer, "%ld", node->requiredPerms);
+    sprintf(buffer, UINT64_FORMAT, node->requiredPerms);
     _fingerprintString(ctx, "requiredPerms");
     _fingerprintString(ctx, buffer);
   }

@@ -1419,7 +1419,7 @@ _readRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) msg)
   RTEPermissionInfo *node = makeNode(RTEPermissionInfo);
   READ_UINT_FIELD(relid, relid, relid);
   READ_BOOL_FIELD(inh, inh, inh);
-  READ_LONG_FIELD(required_perms, requiredPerms, requiredPerms);
+  READ_UINT64_FIELD(required_perms, requiredPerms, requiredPerms);
   READ_UINT_FIELD(check_as_user, checkAsUser, checkAsUser);
   READ_BITMAPSET_FIELD(selected_cols, selectedCols, selectedCols);
   READ_BITMAPSET_FIELD(inserted_cols, insertedCols, insertedCols);

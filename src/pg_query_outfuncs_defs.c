@@ -1240,7 +1240,7 @@ _outRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) out, const 
 {
   WRITE_UINT_FIELD(relid, relid, relid);
   WRITE_BOOL_FIELD(inh, inh, inh);
-  WRITE_LONG_FIELD(required_perms, requiredPerms, requiredPerms);
+  WRITE_UINT64_FIELD(required_perms, requiredPerms, requiredPerms);
   WRITE_UINT_FIELD(check_as_user, checkAsUser, checkAsUser);
   WRITE_BITMAPSET_FIELD(selected_cols, selectedCols, selectedCols);
   WRITE_BITMAPSET_FIELD(inserted_cols, insertedCols, insertedCols);
