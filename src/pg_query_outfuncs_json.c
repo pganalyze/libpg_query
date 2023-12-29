@@ -36,6 +36,12 @@
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%u,", node->fldname); \
 	}
 
+/* Write an unsigned integer field */
+#define WRITE_UINT64_FIELD(outname, outname_json, fldname) \
+	if (node->fldname != 0) { \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":" UINT64_FORMAT ",", node->fldname); \
+	}
+
 /* Write a long-integer field */
 #define WRITE_LONG_FIELD(outname, outname_json, fldname) \
 	if (node->fldname != 0) { \

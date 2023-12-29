@@ -74,7 +74,7 @@ class Generator
             @readmethods[node_type] += format("  READ_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  bool %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['long', 'AclMode'].include?(type)
+          elsif ['long'].include?(type)
             @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
@@ -88,6 +88,11 @@ class Generator
             @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            protobuf_field_count += 1
+          elsif ['uint64', 'AclMode'].include?(type)
+            @outmethods[node_type] += format("  WRITE_UINT64_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_UINT64_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @protobuf_messages[node_type] += format("  uint64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type == 'char*'
             @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)

@@ -23,6 +23,7 @@
 
 #define WRITE_INT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
 #define WRITE_UINT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_UINT64_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
 #define WRITE_LONG_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
 #define WRITE_FLOAT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
 #define WRITE_BOOL_FIELD(outname, outname_json, fldname) out->outname = node->fldname;

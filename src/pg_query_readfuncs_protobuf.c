@@ -14,6 +14,7 @@
 
 #define READ_INT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
 #define READ_UINT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_UINT64_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
 #define READ_LONG_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
 #define READ_FLOAT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
 #define READ_BOOL_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;

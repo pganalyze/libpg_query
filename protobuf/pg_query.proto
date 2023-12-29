@@ -1272,7 +1272,7 @@ message RTEPermissionInfo
 {
   uint32 relid = 1 [json_name="relid"];
   bool inh = 2 [json_name="inh"];
-  int64 required_perms = 3 [json_name="requiredPerms"];
+  uint64 required_perms = 3 [json_name="requiredPerms"];
   uint32 check_as_user = 4 [json_name="checkAsUser"];
   repeated uint64 selected_cols = 5 [json_name="selectedCols"];
   repeated uint64 inserted_cols = 6 [json_name="insertedCols"];
