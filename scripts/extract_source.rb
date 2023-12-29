@@ -586,6 +586,12 @@ runner.deep_resolve('MemoryContextAllocExtended')
 # Other required functions
 runner.deep_resolve('pg_printf')
 
+# Retain these functions for optional 32-bit support
+# (see BITS_PER_BITMAPWORD checks in bitmapset.c)
+runner.deep_resolve('pg_leftmost_one_pos32')
+runner.deep_resolve('pg_rightmost_one_pos32')
+runner.deep_resolve('pg_popcount32')
+
 runner.write_out
 
 #puts runner.unresolved.inspect

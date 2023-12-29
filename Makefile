@@ -153,6 +153,28 @@ $(PGDIR):
 	echo "#if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))" >> $(PGDIR)/src/include/pg_config.h
 	echo "#define HAVE_STRCHRNUL" >> $(PGDIR)/src/include/pg_config.h
 	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
+	# Optionally support 32-bit
+	echo "#if defined(_WIN32) || __SIZEOF_POINTER__ == 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef ALIGNOF_DOUBLE" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define ALIGNOF_DOUBLE 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef ALIGNOF_LONG" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define ALIGNOF_LONG 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define ALIGNOF_LONG_LONG_INT 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef ALIGNOF_PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef HAVE_LONG_INT_64" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define HAVE_LONG_LONG_INT_64 1" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef INT64_MODIFIER" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define INT64_MODIFIER \"ll\"" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef PG_INT64_TYPE" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define PG_INT64_TYPE long long int" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef SIZEOF_LONG" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define SIZEOF_LONG 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef SIZEOF_SIZE_T" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define SIZEOF_SIZE_T 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#undef SIZEOF_VOID_P" >> $(PGDIR)/src/include/pg_config.h
+	echo "#define SIZEOF_VOID_P 4" >> $(PGDIR)/src/include/pg_config.h
+	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
