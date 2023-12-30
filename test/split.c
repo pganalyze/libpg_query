@@ -1,5 +1,3 @@
-// Ensure we have asprintf's definition on glibc-based platforms to avoid compiler warnings
-#define _GNU_SOURCE
 #include <stdio.h>
 
 #include <pg_query.h>
@@ -30,11 +28,11 @@ int main()
 		char *buf = strdup("");
 		for (int i = 0; i < result.n_stmts; i++)
 		{
-			char *newbuf;
-			int nbytes = asprintf(&newbuf, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
-			if (nbytes == -1)
+			char *newbuf = malloc(100);
+			int nbytes = snprintf(newbuf, 100, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
+			if (nbytes < 0 || nbytes >= 100)
 			{
-				printf("FAILED TO ALLOCATE MEMORY\n");
+				printf("Failed to run snprintf\n");
 				return EXIT_FAILURE;
 			}
 			free(buf);
@@ -71,11 +69,11 @@ int main()
 		buf = strdup("");
 		for (int i = 0; i < result.n_stmts; i++)
 		{
-			char *newbuf;
-			int nbytes = asprintf(&newbuf, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
-			if (nbytes == -1)
+			char *newbuf = malloc(100);
+			int nbytes = snprintf(newbuf, 100, "%sloc=%d,len=%d;", buf, result.stmts[i]->stmt_location, result.stmts[i]->stmt_len);
+			if (nbytes < 0 || nbytes >= 100)
 			{
-				printf("FAILED TO ALLOCATE MEMORY\n");
+				printf("Failed to run snprintf\n");
 				return EXIT_FAILURE;
 			}
 			free(buf);
