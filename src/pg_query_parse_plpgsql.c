@@ -1,4 +1,3 @@
-#define _GNU_SOURCE // Necessary to get asprintf (which is a GNU extension)
 #include <stdio.h>
 
 #include "pg_query.h"
@@ -486,14 +485,17 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 		if (func_and_error.func != NULL) {
 			char *func_json;
 			char *new_out;
+			size_t new_out_len;
 
 			func_json = plpgsqlToJSON(func_and_error.func);
 			plpgsql_free_function_memory(func_and_error.func);
 
-			int err = asprintf(&new_out, "%s%s,\n", result.plpgsql_funcs, func_json);
-			if (err == -1) {
+			new_out_len = strlen(result.plpgsql_funcs) + strlen(func_json) + 3;
+			new_out = malloc(new_out_len);
+			int n = snprintf(new_out, new_out_len, "%s%s,\n", result.plpgsql_funcs, func_json);
+			if (n < 0 || n >= new_out_len) {
 				PgQueryError* error = malloc(sizeof(PgQueryError));
-				error->message = strdup("Failed to output PL/pgSQL functions due to asprintf failure");
+				error->message = strdup("Failed to output PL/pgSQL functions due to snprintf failure");
 				result.error = error;
 			} else {
 				free(result.plpgsql_funcs);

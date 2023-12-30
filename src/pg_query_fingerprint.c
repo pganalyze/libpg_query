@@ -1,5 +1,3 @@
-// Ensure we have asprintf's definition on glibc-based platforms to avoid compiler warnings
-#define _GNU_SOURCE
 #include <stdio.h>
 
 #include "pg_query.h"
@@ -369,12 +367,13 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, int p
 		_fingerprintFreeContext(&ctx);
 
 		XXH64_canonicalFromHash(&chash, result.fingerprint);
-		int err = asprintf(&result.fingerprint_str, "%02x%02x%02x%02x%02x%02x%02x%02x",
+		result.fingerprint_str = malloc(17 * sizeof(char));
+		int n = snprintf(result.fingerprint_str, 17, "%02x%02x%02x%02x%02x%02x%02x%02x",
 						   chash.digest[0], chash.digest[1], chash.digest[2], chash.digest[3],
 						   chash.digest[4], chash.digest[5], chash.digest[6], chash.digest[7]);
-		if (err == -1) {
+		if (n < 0 || n >= 17) {
 			PgQueryError* error = malloc(sizeof(PgQueryError));
-			error->message = strdup("Failed to output fingerprint string due to asprintf failure");
+			error->message = strdup("Failed to output fingerprint string due to snprintf failure");
 			result.error = error;
 		}
 	}

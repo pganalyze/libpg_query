@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -127,7 +126,7 @@ int run_tests_from_file(const char * filename) {
 
 	if (sample_buffer == (void *) -1)
 	{
-		printf("Could not mmap samples file\n");
+		printf("Could not read samples file\n");
 		close(fd);
 		return EXIT_FAILURE;
 	}
@@ -146,7 +145,7 @@ int run_tests_from_file(const char * filename) {
 	{
 		printf("\nERROR splitting file \"%s\"\n  error: %s\n", filename, split_result.error->message);
 		pg_query_free_split_result(split_result);
-		munmap(sample_buffer, sample_stat.st_size);
+		free(sample_buffer);
 		close(fd);
 		return EXIT_FAILURE;
 	}
@@ -155,8 +154,13 @@ int run_tests_from_file(const char * filename) {
 
 	for (int i = 0; i < split_result.n_stmts; ++i)
 	{
-		char *query = strndup(sample_buffer_p + split_result.stmts[i]->stmt_location, split_result.stmts[i]->stmt_len);
-		int test_ret_code = run_test(query, false);
+		int test_ret_code;
+		char *query = malloc(split_result.stmts[i]->stmt_len + 1);
+
+		memcpy(query, sample_buffer_p + split_result.stmts[i]->stmt_location, split_result.stmts[i]->stmt_len);
+		query[split_result.stmts[i]->stmt_len] = 0;
+
+		test_ret_code = run_test(query, false);
 		if (test_ret_code != EXIT_SUCCESS)
 			ret_code = test_ret_code;
 

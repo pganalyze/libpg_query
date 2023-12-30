@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -27,15 +26,18 @@ int main() {
     }
 
 	fstat(fd, &sample_stat);
-	sample_buffer = mmap(0, sample_stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+
+	sample_buffer = malloc(sample_stat.st_size + 1);
+	read(fd, sample_buffer, sample_stat.st_size);
+	sample_buffer[sample_stat.st_size] = 0;
 
 	if (sample_buffer != (void *) - 1)
 	{
 		result = pg_query_parse_plpgsql(sample_buffer);
-		munmap(sample_buffer, sample_stat.st_size);
+		free(sample_buffer);
 		close(fd);
 	} else {
-		printf("Could not mmap samples file\n");
+		printf("Could not read samples file\n");
 		close(fd);
 		return EXIT_FAILURE;
 	}
