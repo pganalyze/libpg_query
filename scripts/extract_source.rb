@@ -363,7 +363,7 @@ class Runner
   end
 
   def special_include_file?(filename)
-    filename[/\/(reg(c|e)_[\w_]+|guc-file|qsort_tuple|repl_scanner|levenshtein|bootscanner|like_match)\.c$/] || filename[/\/[\w_]+_impl.h$/]
+    filename[/\/(reg(c|e)_[\w_]+|guc-file|qsort_tuple|repl_scanner|levenshtein|bootscanner|like_match)\.c$/] || filename[/\/[\w_]+\.funcs.c$/] || filename[/\/[\w_]+_impl.h$/]
   end
 
   def write_out
@@ -427,20 +427,15 @@ class Runner
       end
       all_thread_local_variables += file_thread_local_variables
 
-      if special_include_file?(filename)
-        out_name = File.basename(filename)
-      else
+      unless special_include_file?(filename)
         out_name = filename.gsub(%r{^#{@basepath}}, '').gsub('/', '_')
+        File.write(@out_path + out_name, str)
       end
-
-      File.write(@out_path + out_name, str)
     end
 
     #return
 
     @include_files_to_output.each do |include_file|
-      next if special_include_file?(include_file)
-
       if include_file.start_with?(@basepath + 'src/include')
         out_file = @out_path + include_file.gsub(%r{^#{@basepath}src/}, '')
       else
