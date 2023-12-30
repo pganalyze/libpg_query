@@ -30,10 +30,9 @@ else
 endif
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
-NOT_OBJ_FILES := src/pg_query_enum_defs.o src/pg_query_fingerprint_defs.o src/pg_query_fingerprint_conds.o src/pg_query_outfuncs_defs.o src/pg_query_outfuncs_conds.o src/pg_query_readfuncs_defs.o src/pg_query_readfuncs_conds.o src/postgres/guc-file.o src/postgres/scan.o src/pg_query_json_helper.o $(patsubst %.c,%.o,$(wildcard src/postgres/src_backend_nodes_*.funcs.c))
-OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o))
+OBJ_FILES := $(SRC_FILES:.c=.o)
 
-override CFLAGS += -g -I. -I./vendor -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+override CFLAGS += -g -I. -I./vendor -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
@@ -80,7 +79,7 @@ CC ?= cc
 # Experimental use of Protobuf C++ library, primarily used to validate JSON output matches Protobuf JSON mapping
 CXX_SRC_FILES := src/pg_query_outfuncs_protobuf_cpp.cc protobuf/pg_query.pb.cc
 ifeq ($(USE_PROTOBUF_CPP),1)
-	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/postgres/include -DHAVE_PTHREAD -std=c++17 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
+	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/include -I./src/postgres/include -DHAVE_PTHREAD -std=c++17 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
 	ifeq ($(DEBUG),1)
 		override CXXFLAGS += -O0 -g
 	else
@@ -90,7 +89,7 @@ ifeq ($(USE_PROTOBUF_CPP),1)
 
 	# Don't use regular Protobuf-C or JSON implementation (instead implement the same methods using the C++ library)
 	SRC_FILES := $(filter-out src/pg_query_outfuncs_json.c src/pg_query_outfuncs_protobuf.c, $(SRC_FILES))
-	OBJ_FILES := $(filter-out $(NOT_OBJ_FILES), $(SRC_FILES:.c=.o)) $(CXX_SRC_FILES:.cc=.o)
+	OBJ_FILES := $(SRC_FILES:.c=.o) $(CXX_SRC_FILES:.cc=.o)
 else
 	# Make sure we always clean C++ object files
 	CLEANOBJS += $(CXX_SRC_FILES:.cc=.o)
@@ -142,7 +141,6 @@ extract_source: $(PGDIR)
 	cp $(PGDIR)/src/include/port/atomics/arch-x86.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
-	touch ./src/postgres/guc-file.c
 	# Copy version information so its easily accessible
 	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
 	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
