@@ -542,6 +542,20 @@ make_return_stmt(int location)
 }
 )) # We're always working with fn_rettype = VOIDOID, due to our use of plpgsql_compile_inline
 
+# Mocks REQUIRED for Windows support
+runner.mock('write_stderr', %(
+void
+write_stderr(const char *fmt,...)
+{
+	va_list	ap;
+	va_start(ap, fmt);
+	vfprintf(stderr, fmt, ap);
+	fflush(stderr);
+	va_end(ap);
+}
+)) # Avoid pulling in write_console/write_eventlog, and instead always output to stderr (like on POSIX)
+runner.mock('should_output_to_client', 'static inline bool should_output_to_client(int elevel) { return false; }') # Avoid pulling in postmaster.c, which has a bunch of Windows-specific code hidden behind a define
+
 ## ---
 
 # SQL Parsing

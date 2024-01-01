@@ -1,7 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - log_min_messages
- * - client_min_messages
  * - backtrace_functions
  * - check_function_bodies
  *--------------------------------------------------------------------
@@ -285,7 +284,6 @@ __thread bool		check_function_bodies = true;
 
 __thread int			log_min_messages = WARNING;
 
-__thread int			client_min_messages = NOTICE;
 
 
 

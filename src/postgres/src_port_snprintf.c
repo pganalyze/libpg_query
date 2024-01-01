@@ -1,11 +1,11 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - pg_vfprintf
+ * - pg_vsnprintf
  * - dopr
  * - pg_snprintf
- * - pg_vsnprintf
  * - strchrnul
  * - dostr
+ * - flushbuffer
  * - find_arguments
  * - fmtint
  * - adjust_sign
@@ -18,8 +18,8 @@
  * - fmtptr
  * - fmtfloat
  * - dopr_outch
- * - flushbuffer
  * - pg_fprintf
+ * - pg_vfprintf
  * - pg_sprintf
  * - pg_vsprintf
  * - pg_printf
