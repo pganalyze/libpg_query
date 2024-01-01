@@ -437,7 +437,11 @@ class Runner
     #return
 
     additional_includes = Dir.glob(@basepath + 'src/include/storage/dsm_impl.h') +
-      Dir.glob(@basepath + 'src/include/port/atomics/**/*.h')
+      Dir.glob(@basepath + 'src/include/port/atomics/**/*.h') +
+      Dir.glob(@basepath + 'src/include/port/win32/**/*.h') +
+      Dir.glob(@basepath + 'src/include/port/win32_msvc/**/*.h') +
+      Dir.glob(@basepath + 'src/include/port/win32.h') +
+      Dir.glob(@basepath + 'src/include/port/win32_port.h')
 
     (@include_files_to_output + additional_includes).each do |include_file|
       if include_file.start_with?(@basepath + 'src/include')
