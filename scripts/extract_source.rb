@@ -215,14 +215,26 @@ class Runner
 
   def analyze_file(file)
     index = FFI::Clang::Index.new(true, true)
-    translation_unit = index.parse_translation_unit(file, [
+    flags = [
       '-I', @basepath + 'src/include',
       '-I', '/usr/local/opt/openssl/include',
       '-I', `xcrun --sdk macosx --show-sdk-path`.strip + '/usr/include',
       '-DDLSUFFIX=".bundle"',
       '-g',
-      '-DUSE_ASSERT_CHECKING'
-    ])
+      '-ferror-limit=0',
+      '-DUSE_ASSERT_CHECKING',
+      # EXEC_BACKEND is used on Windows, and can always be safely set during code analysis
+      '-DEXEC_BACKEND',
+    ]
+
+    # For certain files, use WIN32 define - we can't always do this since it pulls unnecessary code in other cases
+    if file == @basepath + 'src/backend/utils/error/elog.c' || file == @basepath + 'src/backend/utils/mb/mbutils.c'
+      flags << '-DWIN32'
+      flags << '-D__CYGWIN__' # Avoid pulling in win32_port.h (which includes a bunch of system headers we don't actually have)
+    end
+
+    translation_unit = index.parse_translation_unit(file, flags)
+
     cursor = translation_unit.cursor
 
     func_cursor = nil
@@ -608,6 +620,16 @@ runner.deep_resolve('pg_printf')
 runner.deep_resolve('pg_leftmost_one_pos32')
 runner.deep_resolve('pg_rightmost_one_pos32')
 runner.deep_resolve('pg_popcount32')
+
+# Required for Windows support
+runner.deep_resolve('newNodeMacroHolder')
+runner.deep_resolve('pg_leftmost_one_pos')
+runner.deep_resolve('pg_rightmost_one_pos')
+runner.deep_resolve('pg_number_of_ones')
+runner.deep_resolve('GetMessageEncoding')
+runner.deep_resolve('pg_signal_queue')
+runner.deep_resolve('pg_signal_mask')
+runner.deep_resolve('pgwin32_dispatch_queued_signals')
 
 runner.write_out
 

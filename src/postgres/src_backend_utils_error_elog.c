@@ -26,6 +26,7 @@
  * - emit_log_hook
  * - send_message_to_server_log
  * - send_message_to_frontend
+ * - pgwin32_dispatch_queued_signals
  * - set_stack_entry_location
  * - matches_backtrace_functions
  * - backtrace_symbol_list
@@ -44,6 +45,9 @@
  * - errcontext_msg
  * - CopyErrorData
  * - FlushErrorState
+ * - pg_signal_queue
+ * - pg_signal_mask
+ * - pgwin32_dispatch_queued_signals
  *--------------------------------------------------------------------
  */
 
@@ -1740,108 +1744,12 @@ pg_re_throw(void)
  * interfaces (e.g. CreateFileA()) expect string arguments in this encoding.
  * Every process in a given system will find the same value at all times.
  */
-static int
-GetACPEncoding(void)
-{
-	static int	encoding = -2;
 
-	if (encoding == -2)
-		encoding = pg_codepage_to_encoding(GetACP());
-
-	return encoding;
-}
 
 /*
  * Write a message line to the windows event log
  */
-static void
-write_eventlog(int level, const char *line, int len)
-{
-	WCHAR	   *utf16;
-	int			eventlevel = EVENTLOG_ERROR_TYPE;
-	static HANDLE evtHandle = INVALID_HANDLE_VALUE;
 
-	if (evtHandle == INVALID_HANDLE_VALUE)
-	{
-		evtHandle = RegisterEventSource(NULL,
-										event_source ? event_source : DEFAULT_EVENT_SOURCE);
-		if (evtHandle == NULL)
-		{
-			evtHandle = INVALID_HANDLE_VALUE;
-			return;
-		}
-	}
-
-	switch (level)
-	{
-		case DEBUG5:
-		case DEBUG4:
-		case DEBUG3:
-		case DEBUG2:
-		case DEBUG1:
-		case LOG:
-		case LOG_SERVER_ONLY:
-		case INFO:
-		case NOTICE:
-			eventlevel = EVENTLOG_INFORMATION_TYPE;
-			break;
-		case WARNING:
-		case WARNING_CLIENT_ONLY:
-			eventlevel = EVENTLOG_WARNING_TYPE;
-			break;
-		case ERROR:
-		case FATAL:
-		case PANIC:
-		default:
-			eventlevel = EVENTLOG_ERROR_TYPE;
-			break;
-	}
-
-	/*
-	 * If message character encoding matches the encoding expected by
-	 * ReportEventA(), call it to avoid the hazards of conversion.  Otherwise,
-	 * try to convert the message to UTF16 and write it with ReportEventW().
-	 * Fall back on ReportEventA() if conversion failed.
-	 *
-	 * Since we palloc the structure required for conversion, also fall
-	 * through to writing unconverted if we have not yet set up
-	 * CurrentMemoryContext.
-	 *
-	 * Also verify that we are not on our way into error recursion trouble due
-	 * to error messages thrown deep inside pgwin32_message_to_UTF16().
-	 */
-	if (!in_error_recursion_trouble() &&
-		CurrentMemoryContext != NULL &&
-		GetMessageEncoding() != GetACPEncoding())
-	{
-		utf16 = pgwin32_message_to_UTF16(line, len, NULL);
-		if (utf16)
-		{
-			ReportEventW(evtHandle,
-						 eventlevel,
-						 0,
-						 0,		/* All events are Id 0 */
-						 NULL,
-						 1,
-						 0,
-						 (LPCWSTR *) &utf16,
-						 NULL);
-			/* XXX Try ReportEventA() when ReportEventW() fails? */
-
-			pfree(utf16);
-			return;
-		}
-	}
-	ReportEventA(evtHandle,
-				 eventlevel,
-				 0,
-				 0,				/* All events are Id 0 */
-				 NULL,
-				 1,
-				 0,
-				 &line,
-				 NULL);
-}
 #endif							/* WIN32 */
 
 #ifdef WIN32
@@ -2026,3 +1934,10 @@ write_stderr(const char *fmt,...)
  * hard-to-explain kluge.
  */
 
+#ifdef WIN32
+__thread volatile int pg_signal_queue;
+
+__thread int pg_signal_mask;
+
+void pgwin32_dispatch_queued_signals(void) {}
+#endif

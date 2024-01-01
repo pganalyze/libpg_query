@@ -161,7 +161,7 @@ typedef struct Node
  *	Fortunately, this macro isn't recursive so we just define
  *	a global variable for this purpose.
  */
-extern PGDLLIMPORT Node *newNodeMacroHolder;
+extern PGDLLIMPORT __thread Node *newNodeMacroHolder;
 
 #define newNode(size, tag) \
 ( \

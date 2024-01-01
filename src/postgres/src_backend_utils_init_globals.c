@@ -91,7 +91,7 @@ __thread volatile uint32 CritSectionCount = 0;
  /* full path to lib directory */
 
 #ifdef EXEC_BACKEND
-char		postgres_exec_path[MAXPGPATH];	/* full path to backend */
+	/* full path to backend */
 
 /* note: currently this is not valid in backend processes */
 #endif
