@@ -436,7 +436,10 @@ class Runner
 
     #return
 
-    @include_files_to_output.each do |include_file|
+    additional_includes = Dir.glob(@basepath + 'src/include/storage/dsm_impl.h') +
+      Dir.glob(@basepath + 'src/include/port/atomics/**/*.h')
+
+    (@include_files_to_output + additional_includes).each do |include_file|
       if include_file.start_with?(@basepath + 'src/include')
         out_file = @out_path + include_file.gsub(%r{^#{@basepath}src/}, '')
       else

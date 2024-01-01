@@ -138,10 +138,6 @@ extract_source: $(PGDIR)
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
 	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
-	cp $(PGDIR)/src/include/storage/dsm_impl.h ./src/postgres/include/storage
-	cp $(PGDIR)/src/include/port/atomics/arch-x86.h ./src/postgres/include/port/atomics
-	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
-	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
 	# Adjust version string to ignore differences in build environments
 	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
