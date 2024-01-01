@@ -5,15 +5,20 @@
 #include <utils/memutils.h>
 #include <utils/memdebug.h>
 
+#ifdef HAVE_PTHREAD
 #include <pthread.h>
+#endif
+
 #include <signal.h>
 
 const char* progname = "pg_query";
 
 __thread sig_atomic_t pg_query_initialized = 0;
 
+#ifdef HAVE_PTHREAD
 static pthread_key_t pg_query_thread_exit_key;
 static void pg_query_thread_exit(void *key);
+#endif
 
 void pg_query_init(void)
 {
@@ -23,8 +28,10 @@ void pg_query_init(void)
 	MemoryContextInit();
 	SetDatabaseEncoding(PG_UTF8);
 
+#ifdef HAVE_PTHREAD
 	pthread_key_create(&pg_query_thread_exit_key, pg_query_thread_exit);
 	pthread_setspecific(pg_query_thread_exit_key, TopMemoryContext);
+#endif
 }
 
 void pg_query_free_top_memory_context(MemoryContext context)
@@ -55,11 +62,13 @@ void pg_query_free_top_memory_context(MemoryContext context)
 	ErrorContext = NULL;
 }
 
+#ifdef HAVE_PTHREAD
 static void pg_query_thread_exit(void *key)
 {
 	MemoryContext context = (MemoryContext) key;
 	pg_query_free_top_memory_context(context);
 }
+#endif
 
 void pg_query_exit(void)
 {
