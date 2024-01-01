@@ -764,7 +764,7 @@ extern PGDLLIMPORT PgStat_Counter pgStatActiveTime;
 extern PGDLLIMPORT PgStat_Counter pgStatTransactionIdleTime;
 
 /* updated by the traffic cop and in errfinish() */
-extern PGDLLIMPORT __thread  SessionEndType pgStatSessionEndCause;
+extern PGDLLIMPORT __thread SessionEndType pgStatSessionEndCause;
 
 
 /*

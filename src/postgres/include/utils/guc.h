@@ -249,21 +249,21 @@ extern PGDLLIMPORT bool log_executor_stats;
 extern PGDLLIMPORT bool log_statement_stats;
 extern PGDLLIMPORT bool log_btree_build_stats;
 
-extern PGDLLIMPORT __thread  bool check_function_bodies;
+extern PGDLLIMPORT __thread bool check_function_bodies;
 extern PGDLLIMPORT bool session_auth_is_superuser;
 
 extern PGDLLIMPORT bool log_duration;
 extern PGDLLIMPORT int log_parameter_max_length;
 extern PGDLLIMPORT int log_parameter_max_length_on_error;
 extern PGDLLIMPORT int log_min_error_statement;
-extern PGDLLIMPORT __thread  int log_min_messages;
-extern PGDLLIMPORT __thread  int client_min_messages;
+extern PGDLLIMPORT __thread int log_min_messages;
+extern PGDLLIMPORT __thread int client_min_messages;
 extern PGDLLIMPORT int log_min_duration_sample;
 extern PGDLLIMPORT int log_min_duration_statement;
 extern PGDLLIMPORT int log_temp_files;
 extern PGDLLIMPORT double log_statement_sample_rate;
 extern PGDLLIMPORT double log_xact_sample_rate;
-extern PGDLLIMPORT __thread  char *backtrace_functions;
+extern PGDLLIMPORT __thread char *backtrace_functions;
 
 extern PGDLLIMPORT int temp_file_limit;
 
