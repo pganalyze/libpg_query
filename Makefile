@@ -127,54 +127,11 @@ $(PGDIR):
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
-	# This causes compatibility problems on some Linux distros, with "xlocale.h" not being available
-	echo "#undef HAVE_LOCALE_T" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef LOCALE_T_IN_XLOCALE" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef WCSTOMBS_L_IN_XLOCALE" >> $(PGDIR)/src/include/pg_config.h
-	# Support 32-bit systems without reconfiguring
-	echo "#undef PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
-	# Support gcc earlier than 4.6.0 without reconfiguring
-	echo "#undef HAVE__STATIC_ASSERT" >> $(PGDIR)/src/include/pg_config.h
 	# Avoid problems with static asserts
 	echo "#undef StaticAssertDecl" >> $(PGDIR)/src/include/c.h
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
-	# Avoid dependency on execinfo (requires extra library on musl-libc based systems)
-	echo "#undef HAVE_EXECINFO_H" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef HAVE_BACKTRACE_SYMBOLS" >> $(PGDIR)/src/include/pg_config.h
-	# Avoid dependency on hardware popcount instructions (POPQNTQ) on x86
-	echo "#undef HAVE_X86_64_POPCNTQ" >> $(PGDIR)/src/include/pg_config.h
-	# Avoid dependency on cpuid.h (only supported on x86 systems)
-	echo "#undef HAVE__GET_CPUID" >> $(PGDIR)/src/include/pg_config.h
-	# Avoid CRC extension usage to ensure we are not architecture-dependent
-	echo "#undef USE_ARMV8_CRC32C" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK" >> $(PGDIR)/src/include/pg_config.h
-	# Ensure we don't fail on systems that have strchrnul support (FreeBSD and NetBSD)
-	echo "#include <stdlib.h>" >>  $(PGDIR)/src/include/pg_config.h
-	echo "#if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define HAVE_STRCHRNUL" >> $(PGDIR)/src/include/pg_config.h
-	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
-	# Optionally support 32-bit
-	echo "#if defined(_WIN32) || __SIZEOF_POINTER__ == 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef ALIGNOF_DOUBLE" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define ALIGNOF_DOUBLE 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef ALIGNOF_LONG" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define ALIGNOF_LONG 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define ALIGNOF_LONG_LONG_INT 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef ALIGNOF_PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef HAVE_LONG_INT_64" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define HAVE_LONG_LONG_INT_64 1" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef INT64_MODIFIER" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define INT64_MODIFIER \"ll\"" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef PG_INT128_TYPE" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef PG_INT64_TYPE" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define PG_INT64_TYPE long long int" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef SIZEOF_LONG" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define SIZEOF_LONG 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef SIZEOF_SIZE_T" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define SIZEOF_SIZE_T 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#undef SIZEOF_VOID_P" >> $(PGDIR)/src/include/pg_config.h
-	echo "#define SIZEOF_VOID_P 4" >> $(PGDIR)/src/include/pg_config.h
-	echo "#endif" >> $(PGDIR)/src/include/pg_config.h
+	# Add pg_config.h overrides
+	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
