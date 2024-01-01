@@ -50,3 +50,100 @@
 #undef SIZEOF_VOID_P
 #define SIZEOF_VOID_P 4
 #endif
+
+/* Windows */
+#if defined(_WIN32) || defined(_WIN64)
+#undef HAVE_COPYFILE
+#undef HAVE_COPYFILE_H
+#undef HAVE_DECL_F_FULLFSYNC
+#define HAVE_DECL_F_FULLFSYNC 0
+#undef HAVE_DECL_PREADV
+#define HAVE_DECL_PREADV 0
+#undef HAVE_DECL_PWRITEV
+#define HAVE_DECL_PWRITEV 0
+#undef HAVE_DECL_STRLCAT
+#define HAVE_DECL_STRLCAT 0
+#undef HAVE_DECL_STRLCPY
+#define HAVE_DECL_STRLCPY 0
+#undef HAVE_GETIFADDRS
+#undef HAVE_GETPEEREID
+#undef HAVE_IFADDRS_H
+#undef HAVE_INET_ATON
+#undef HAVE_INT_OPTRESET
+#undef HAVE_KQUEUE
+#undef HAVE_LANGINFO_H
+#undef HAVE_MEMSET_S
+#undef HAVE_MKDTEMP
+#undef HAVE_PTHREAD
+#undef HAVE_PTHREAD_BARRIER_WAIT
+#undef HAVE_PTHREAD_IS_THREADED_NP
+#undef HAVE_PTHREAD_PRIO_INHERIT
+#undef HAVE_STRERROR_R
+#undef HAVE_STRLCAT
+#undef HAVE_STRLCPY
+#undef HAVE_STRSIGNAL
+#undef HAVE_STRUCT_SOCKADDR_SA_LEN
+#undef HAVE_STRUCT_TM_TM_ZONE
+#undef HAVE_SYSLOG
+#undef HAVE_SYS_EVENT_H
+#undef HAVE_SYS_UCRED_H
+#undef HAVE_TERMIOS_H
+#undef HAVE_UNION_SEMUN
+#undef HAVE_USELOCALE
+#define HAVE__CONFIGTHREADLOCALE 1
+#undef STRERROR_R_INT
+#undef USE_SYSV_SEMAPHORES
+#undef USE_SYSV_SHARED_MEMORY
+#define USE_WIN32_SEMAPHORES 1
+#define USE_WIN32_SHARED_MEMORY 1
+#undef PG_PRINTF_ATTRIBUTE
+#if defined(__clang__)
+#define PG_PRINTF_ATTRIBUTE printf
+#elif defined(__MINGW32__) || defined(__MINGW64__) || defined(__MSYS__) || defined(__CYGWIN__)
+#define PG_PRINTF_ATTRIBUTE gnu_printf
+#endif
+#if defined(__MINGW32__) || defined(__MINGW64__) || defined(__MSYS__) || defined(__CYGWIN__)
+#undef HAVE_MBSTOWCS_L
+#undef HAVE_WCSTOMBS_L
+#define HAVE_CRTDEFS_H 1
+#define HAVE_PTHREAD_BARRIER_WAIT 1
+#endif
+#endif
+
+/* Microsoft Visual Studio Compiler */
+#ifdef _MSC_VER
+#undef HAVE_COMPUTED_GOTO
+#undef HAVE_GCC__ATOMIC_INT32_CAS
+#undef HAVE_GCC__ATOMIC_INT64_CAS
+#undef HAVE_GCC__SYNC_CHAR_TAS
+#undef HAVE_GCC__SYNC_INT32_CAS
+#undef HAVE_GCC__SYNC_INT32_TAS
+#undef HAVE_GCC__SYNC_INT64_CAS
+#undef HAVE_GETOPT
+#undef HAVE_GETOPT_H
+#undef HAVE_GETOPT_LONG
+#undef HAVE_INTTYPES_H
+#undef HAVE_INT_OPTERR
+#undef HAVE_LIBM
+#undef HAVE_STRINGS_H
+#undef HAVE_STRUCT_OPTION
+#undef HAVE_TYPEOF
+#undef HAVE_VISIBILITY_ATTRIBUTE
+#undef HAVE__BOOL
+#undef HAVE__BUILTIN_BSWAP16
+#undef HAVE__BUILTIN_BSWAP32
+#undef HAVE__BUILTIN_BSWAP64
+#undef HAVE__BUILTIN_CLZ
+#undef HAVE__BUILTIN_CONSTANT_P
+#undef HAVE__BUILTIN_CTZ
+#undef HAVE__BUILTIN_FRAME_ADDRESS
+#undef HAVE__BUILTIN_OP_OVERFLOW
+#undef HAVE__BUILTIN_POPCOUNT
+#undef HAVE__BUILTIN_TYPES_COMPATIBLE_P
+#undef HAVE__BUILTIN_UNREACHABLE
+#ifndef __cplusplus
+#define inline __inline
+#endif
+#undef restrict
+#define __thread __declspec( thread )
+#endif
