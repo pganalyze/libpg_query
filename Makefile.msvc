@@ -1,0 +1,108 @@
+# Makefile for "nmake", part of Microsoft Visual Studio Compiler (MSVC) on Windows
+
+TARGET = pg_query
+ARLIB = $(TARGET).lib
+
+SRC_FILES = src/*.c src/postgres/*.c vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
+
+CFLAGS = -I. -I./vendor -I./src/postgres/include -I./src/include -I./src/postgres/include/port/win32 -I./src/postgres/include/port/win32_msvc
+
+RM = del
+
+all: examples test build
+
+build: $(ARLIB)
+
+clean:
+	$(RM) *.obj
+	$(RM) pg_query.lib
+
+.PHONY: all clean build build_shared extract_source examples test install
+
+$(ARLIB): clean $(SRC_FILES)
+	$(CC) $(CFLAGS) /c $(SRC_FILES)
+    lib /OUT:pg_query.lib *.obj
+
+EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
+examples: $(EXAMPLES)
+	.\examples\simple
+	.\examples\scan
+	.\examples\normalize
+	.\examples\simple_error
+	.\examples\normalize_error
+	.\examples\simple_plpgsql
+
+examples/simple: examples/simple.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/simple.c $(ARLIB)
+
+examples/scan: examples/scan.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/scan.c $(ARLIB)
+
+examples/normalize: examples/normalize.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/normalize.c $(ARLIB)
+
+examples/simple_error: examples/simple_error.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/simple_error.c $(ARLIB)
+
+examples/normalize_error: examples/normalize_error.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/normalize_error.c $(ARLIB)
+
+examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
+
+TESTS = test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split
+test: $(TESTS)
+	.\test\deparse
+	.\test\fingerprint
+	.\test\fingerprint_opts
+	.\test\normalize
+	.\test\parse
+	.\test\parse_opts
+	.\test\parse_protobuf
+	.\test\parse_protobuf_opts
+	.\test\scan
+	.\test\split
+
+# Doesn't work because of C2026: string too big, trailing characters truncated
+#test/complex: test/complex.c $(ARLIB)
+# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+#	$(CC) $(CFLAGS) -o $@ -Isrc/ test/complex.c $(ARLIB)
+
+# Doesn't work since this requires pthreads
+#test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
+#	$(CC) $(CFLAGS) -o $@ test/concurrency.c $(ARLIB)
+
+test/deparse: test/deparse.c test/deparse_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/deparse.c $(ARLIB)
+
+test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
+# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(CFLAGS) -o $@ -Isrc/ test/fingerprint.c $(ARLIB)
+
+test/fingerprint_opts: test/fingerprint_opts.c test/fingerprint_opts_tests.c $(ARLIB)
+# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	$(CC) $(CFLAGS) -o $@ -Isrc/ test/fingerprint_opts.c $(ARLIB)
+
+test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/normalize.c $(ARLIB)
+
+test/parse: test/parse.c test/parse_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse.c $(ARLIB)
+
+test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_opts.c $(ARLIB)
+
+test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB)
+
+test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB)
+
+test/parse_protobuf_opts: test/parse_protobuf_opts.c test/parse_opts_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_protobuf_opts.c $(ARLIB)
+
+test/scan: test/scan.c test/scan_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/scan.c $(ARLIB)
+
+test/split: test/split.c test/split_tests.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/split.c $(ARLIB)
