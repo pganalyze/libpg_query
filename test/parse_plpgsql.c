@@ -8,7 +8,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <libgen.h>
 #include <assert.h>
 
 int main() {

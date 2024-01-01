@@ -153,7 +153,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
-	PgQueryProtobufParseResult result = {};
+	PgQueryProtobufParseResult result = {0};
 
 	ctx = pg_query_enter_memory_context();
 

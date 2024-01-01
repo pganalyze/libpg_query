@@ -166,7 +166,7 @@ PgQuerySplitResult pg_query_split_with_parser(const char* input)
 {
 	MemoryContext ctx = NULL;
 	PgQueryInternalParsetreeAndError parsetree_and_error;
-	PgQuerySplitResult result = {};
+	PgQuerySplitResult result = {0};
 
 	ctx = pg_query_enter_memory_context();
 
