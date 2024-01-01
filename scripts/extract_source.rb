@@ -104,6 +104,7 @@ class Runner
       @basepath + 'src/port/win32security.c', # Win32 only
       @basepath + 'src/port/gettimeofday.c', # Win32 only
       @basepath + 'src/port/strlcpy.c', # Not needed and conflicts with available function
+      @basepath + 'src/port/strnlen.c', # Not needed and conflicts with available function
       @basepath + 'src/port/strlcat.c', # Not needed and conflicts with available function
       @basepath + 'src/port/unsetenv.c', # Not needed and conflicts with available function
       @basepath + 'src/port/getaddrinfo.c', # Not needed and conflicts with available function
