@@ -103,7 +103,6 @@ class Runner
       @basepath + 'src/port/win32env.c', # Win32 only
       @basepath + 'src/port/win32security.c', # Win32 only
       @basepath + 'src/port/gettimeofday.c', # Win32 only
-      @basepath + 'src/port/strlcpy.c', # Not needed and conflicts with available function
       @basepath + 'src/port/strnlen.c', # Not needed and conflicts with available function
       @basepath + 'src/port/strlcat.c', # Not needed and conflicts with available function
       @basepath + 'src/port/unsetenv.c', # Not needed and conflicts with available function
@@ -231,6 +230,13 @@ class Runner
     if file == @basepath + 'src/backend/utils/error/elog.c' || file == @basepath + 'src/backend/utils/mb/mbutils.c'
       flags << '-DWIN32'
       flags << '-D__CYGWIN__' # Avoid pulling in win32_port.h (which includes a bunch of system headers we don't actually have)
+    end
+
+    # To override built-ins, we must avoid pulling in any system headers, so pretend we already defined c.h
+    if file == @basepath + 'src/port/strlcpy.c'
+      flags << '-DC_H'
+      flags << '-DHAVE_DECL_STRLCPY=0'
+      flags << '-Dsize_t=unsigned'
     end
 
     translation_unit = index.parse_translation_unit(file, flags)
@@ -627,6 +633,7 @@ runner.deep_resolve('pg_leftmost_one_pos')
 runner.deep_resolve('pg_rightmost_one_pos')
 runner.deep_resolve('pg_number_of_ones')
 runner.deep_resolve('GetMessageEncoding')
+runner.deep_resolve('strlcpy')
 runner.deep_resolve('pg_signal_queue')
 runner.deep_resolve('pg_signal_mask')
 runner.deep_resolve('pgwin32_dispatch_queued_signals')

@@ -136,6 +136,9 @@ $(PGDIR):
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
 	# Add pg_config.h overrides
 	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
+	# Only define strlcpy when needed
+	sed -i "" '$(shell echo 's/\#include "c.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/')' $(PGDIR)/src/port/strlcpy.c
+	echo "#endif // HAVE_DECL_STRLCPY == 0" >> $(PGDIR)/src/port/strlcpy.c
 	# Define symbols needed by elog.c that are commonly defined by win32/signal.c
 	echo "#ifdef WIN32" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "volatile int pg_signal_queue;" >> $(PGDIR)/src/backend/utils/error/elog.c
