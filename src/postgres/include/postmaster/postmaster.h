@@ -22,7 +22,7 @@ extern PGDLLIMPORT int Unix_socket_permissions;
 extern PGDLLIMPORT char *Unix_socket_group;
 extern PGDLLIMPORT char *Unix_socket_directories;
 extern PGDLLIMPORT char *ListenAddresses;
-extern PGDLLIMPORT __thread bool ClientAuthInProgress;
+extern PGDLLIMPORT bool ClientAuthInProgress;
 extern PGDLLIMPORT int PreAuthDelay;
 extern PGDLLIMPORT int AuthenticationTimeout;
 extern PGDLLIMPORT bool Log_connections;

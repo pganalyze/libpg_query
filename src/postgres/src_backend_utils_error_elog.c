@@ -4,7 +4,6 @@
  * - errstart
  * - PG_exception_stack
  * - write_stderr
- * - err_gettext
  * - in_error_recursion_trouble
  * - error_context_stack
  * - errordata_stack_depth
@@ -302,24 +301,8 @@ should_output_to_server(int elevel)
 /*
  * should_output_to_client --- should message of given elevel go to the client?
  */
-static inline bool
-should_output_to_client(int elevel)
-{
-	if (whereToSendOutput == DestRemote && elevel != LOG_SERVER_ONLY)
-	{
-		/*
-		 * client_min_messages is honored only after we complete the
-		 * authentication handshake.  This is required both for security
-		 * reasons and because many clients can't handle NOTICE messages
-		 * during authentication.
-		 */
-		if (ClientAuthInProgress)
-			return (elevel >= ERROR);
-		else
-			return (elevel >= client_min_messages || elevel == INFO);
-	}
-	return false;
-}
+static inline bool should_output_to_client(int elevel) { return false; }
+
 
 
 /*
@@ -352,18 +335,9 @@ in_error_recursion_trouble(void)
  * message, since there's a significant probability that that's exactly
  * what's causing the recursion.
  */
-static inline const char *
-err_gettext(const char *str)
-{
 #ifdef ENABLE_NLS
-	if (in_error_recursion_trouble())
-		return str;
-	else
-		return gettext(str);
 #else
-	return str;
 #endif
-}
 
 /*
  * errstart_cold
@@ -2012,42 +1986,18 @@ static void send_message_to_frontend(ErrorData *edata) {}
  * not available). Used before ereport/elog can be used
  * safely (memory context, GUC load etc)
  */
+
 void
 write_stderr(const char *fmt,...)
 {
-	va_list		ap;
-
-#ifdef WIN32
-	char		errbuf[2048];	/* Arbitrary size? */
-#endif
-
-	fmt = _(fmt);
-
+	va_list	ap;
 	va_start(ap, fmt);
-#ifndef WIN32
-	/* On Unix, we just fprintf to stderr */
 	vfprintf(stderr, fmt, ap);
 	fflush(stderr);
-#else
-	vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
-
-	/*
-	 * On Win32, we print to stderr if running on a console, or write to
-	 * eventlog if running as a service
-	 */
-	if (pgwin32_is_service())	/* Running as a service */
-	{
-		write_eventlog(ERROR, errbuf, strlen(errbuf));
-	}
-	else
-	{
-		/* Not running as service, write to stderr */
-		write_console(errbuf, strlen(errbuf));
-		fflush(stderr);
-	}
-#endif
 	va_end(ap);
 }
+
+
 
 
 /*
