@@ -444,7 +444,7 @@ class Runner
 
       code = File.read(include_file)
       all_thread_local_variables.each do |variable|
-        code.gsub!(/(PGDLLIMPORT|extern)\s+(const|volatile)?\s*(\w+)\s+(\*{0,2})#{variable}(\[\])?;/, "\\1 __thread \\2 \\3 \\4#{variable}\\5;")
+        code.gsub!(/(extern\s+)(PGDLLIMPORT\s+)?(const\s+)?(volatile\s+)?(\w+)\s+(\*{0,2})#{variable}(\[\])?;/, "\\1\\2__thread \\3\\4\\5 \\6#{variable}\\7;")
       end
 
       FileUtils.mkdir_p File.dirname(out_file)

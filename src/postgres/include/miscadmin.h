@@ -167,7 +167,7 @@ extern PGDLLIMPORT bool IsUnderPostmaster;
 extern PGDLLIMPORT bool IsBackgroundWorker;
 extern PGDLLIMPORT bool IsBinaryUpgrade;
 
-extern PGDLLIMPORT __thread  bool ExitOnAnyError;
+extern PGDLLIMPORT __thread bool ExitOnAnyError;
 
 extern PGDLLIMPORT char *DataDir;
 extern PGDLLIMPORT int data_directory_mode;
