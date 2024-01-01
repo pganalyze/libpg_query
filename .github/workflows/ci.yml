@@ -71,3 +71,40 @@ jobs:
       run: make $FLAGS
       env:
         FLAGS: ${{ format('{0} {1} {2}', steps.make_flags.outputs.proto_flags, steps.make_flags.outputs.compiler_flags, steps.make_flags.outputs.debug_flags) }}
+  build_windows_msvc:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
+    steps:
+    - name: Configure MSVC developer console
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Build and run tests
+      run: nmake /F Makefile.msvc
+  build_windows_msys2:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sys: [mingw64, mingw32, ucrt64, clang64]
+    steps:
+    - name: Set up MSYS2 and compiler
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{matrix.sys}}
+        pacboy: >-
+          toolchain:p
+        install: >-
+          make
+          diffutils
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Build and run tests
+      shell: msys2 {0}
+      run: |
+        make
