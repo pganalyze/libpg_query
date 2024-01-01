@@ -35,6 +35,10 @@ OBJ_FILES := $(SRC_FILES:.c=.o)
 
 override CFLAGS += -g -I. -I./vendor -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
+ifeq ($(OS),Windows_NT)
+override CFLAGS += -I./src/postgres/include/port/win32
+endif
+
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
 override TEST_CFLAGS += -g -I. -I./vendor -Wall
