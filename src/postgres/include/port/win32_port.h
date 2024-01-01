@@ -478,8 +478,8 @@ extern char *pgwin32_setlocale(int category, const char *locale);
 
 
 /* In backend/port/win32/signal.c */
-extern PGDLLIMPORT volatile int pg_signal_queue;
-extern PGDLLIMPORT int pg_signal_mask;
+extern PGDLLIMPORT __thread volatile int pg_signal_queue;
+extern PGDLLIMPORT __thread int pg_signal_mask;
 extern PGDLLIMPORT HANDLE pgwin32_signal_event;
 extern PGDLLIMPORT HANDLE pgwin32_initial_signal_pipe;
 

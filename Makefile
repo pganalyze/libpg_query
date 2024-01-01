@@ -136,6 +136,12 @@ $(PGDIR):
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
 	# Add pg_config.h overrides
 	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
+	# Define symbols needed by elog.c that are commonly defined by win32/signal.c
+	echo "#ifdef WIN32" >> $(PGDIR)/src/backend/utils/error/elog.c
+	echo "volatile int pg_signal_queue;" >> $(PGDIR)/src/backend/utils/error/elog.c
+	echo "int pg_signal_mask;" >> $(PGDIR)/src/backend/utils/error/elog.c
+	echo "void pgwin32_dispatch_queued_signals(void) {}" >> $(PGDIR)/src/backend/utils/error/elog.c
+	echo "#endif" >> $(PGDIR)/src/backend/utils/error/elog.c
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
