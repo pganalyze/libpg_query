@@ -151,6 +151,17 @@ extract_source: $(PGDIR)
 	mkdir ./src/postgres
 	mkdir ./src/postgres/include
 	LIBCLANG=/Library/Developer/CommandLineTools/usr/lib/libclang.dylib ruby ./scripts/extract_source.rb $(PGDIR)/ ./src/postgres/
+	# Override OS-specific pg_config_os.h to only load Win32 logic (the primary port logic that matters for libpg_query), if needed
+	echo "#if defined(_WIN32) || defined(_WIN64)" > ./src/postgres/include/pg_config_os.h
+	echo "#include \"port/win32.h\"" >> ./src/postgres/include/pg_config_os.h
+	# Don't mark anything as visible based on how Postgres defines it
+	echo "#undef PGDLLIMPORT" >> ./src/postgres/include/pg_config_os.h
+	echo "#undef PGDLLEXPORT" >> ./src/postgres/include/pg_config_os.h
+	# Avoid getting incorrect sigsetjmp overrides
+	echo "#ifdef __clang__" >> ./src/postgres/include/pg_config_os.h
+	echo "#undef __MINGW64__" >> ./src/postgres/include/pg_config_os.h
+	echo "#endif /* __clang__ */" >> ./src/postgres/include/pg_config_os.h
+	echo "#endif" >> ./src/postgres/include/pg_config_os.h
 	# Adjust version string to ignore differences in build environments
 	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
