@@ -8,6 +8,7 @@ PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
 PG_VERSION = 16.1
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
+PG_VERSION_NUM = 160001
 PROTOC_VERSION = 25.1
 
 VERSION = 5.0.0
@@ -141,10 +142,12 @@ extract_source: $(PGDIR)
 	cp $(PGDIR)/src/include/port/atomics/arch-x86.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-arm.h ./src/postgres/include/port/atomics
 	cp $(PGDIR)/src/include/port/atomics/arch-ppc.h ./src/postgres/include/port/atomics
+	# Adjust version string to ignore differences in build environments
+	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/'`grep "\#define PG_MAJORVERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/'`grep "\#define PG_VERSION " ./src/postgres/include/pg_config.h`'/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/'`grep "\#define PG_VERSION_NUM " ./src/postgres/include/pg_config.h`'/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/')' pg_query.h
+	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/')' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/

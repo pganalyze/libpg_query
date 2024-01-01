@@ -650,7 +650,7 @@
 #define PG_VERSION_NUM 160001
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 16.1 on aarch64-apple-darwin21.6.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.102), 64-bit"
+#define PG_VERSION_STR "PostgreSQL 16.1 (libpg_query)"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
