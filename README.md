@@ -21,6 +21,12 @@ Due to compiling parts of PostgreSQL, running `make` will take a bit. Expect up 
 
 For a production build, its best to use a specific git tag (see CHANGELOG).
 
+When compiling on Windows with Visual Studio, instead use `nmake` with the `Makefile.msvc`:
+
+```sh
+nmake /F Makefile.msvc
+```
+
 
 ## Usage: Parsing a query
 
