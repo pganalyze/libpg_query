@@ -2,6 +2,24 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 16-5.1.0   2024-01-08
+
+* Add support for compiling on Windows
+  - In order to build on Windows when using MSVC, use the new "Makefile.msvc"
+    with nmake, or directly compile all .c files in the src folder into a library
+  - If compiling directly, add src/postgres/include/port/win32 to the include path,
+    and when using MSVC also add src/postgres/include/port/win32_msvc
+* Add support for compiling on 32-bit systems
+  - The relevant code is enabled at compile time by checking the pointer
+    size (__SIZEOF_POINTER__ == 4)
+* Move internal headers and included .c files to src/include folder
+  - This avoids having any .c files in the top-level src/ folder that can't
+    be directly compiled, and thus lets us simplify the logic for defining
+    which source units are to be compiled.
+* Remove strnlen fallback implementation
+* Avoid use of mmap, asprintf and strndup to improve portability
+* Improve compatibility with non-POSIX systems and C89 compilers
+
 ## 16-5.0.0   2023-12-22
 
 * Update to Postgres 16.1
