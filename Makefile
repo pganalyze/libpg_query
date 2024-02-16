@@ -62,7 +62,8 @@ CLEANLIBS = $(ARLIB)
 CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2)
 
-AR = ar rs
+AR ?= ar
+AR := $(AR) rs
 INSTALL = install
 LN_S = ln -s
 RM = rm -f
