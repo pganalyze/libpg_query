@@ -46,7 +46,7 @@ const char* const tests[] = {
     "\"xy\" = IDENT, NO_KEYWORD\n"
     ", = ASCII_44, NO_KEYWORD\n"
     "abc = IDENT, NO_KEYWORD\n",
-  "SELECT '/*not a comment*/', E'\\134', B'10', X'12', -Infinity, U&\"d!0061t!+000061\" UESCAPE '!'",
+  "SELECT '/*not a comment*/', E'\\134', B'10', X'12', -Infinity, U&\"d!0061t!+000061\" UESCAPE '!', U&'d!0061t!+000061' UESCAPE '!'",
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "'/*not a comment*/' = SCONST, NO_KEYWORD\n"
     ", = ASCII_44, NO_KEYWORD\n"
@@ -59,7 +59,11 @@ const char* const tests[] = {
     "- = ASCII_45, NO_KEYWORD\n"
     "Infinity = IDENT, NO_KEYWORD\n"
     ", = ASCII_44, NO_KEYWORD\n"
-    "U = UIDENT, NO_KEYWORD\n"
+    "U&\"d!0061t!+000061\" = UIDENT, NO_KEYWORD\n"
+    "UESCAPE = UESCAPE, UNRESERVED_KEYWORD\n"
+    "'!' = SCONST, NO_KEYWORD\n"
+    ", = ASCII_44, NO_KEYWORD\n"
+    "U&'d!0061t!+000061' = USCONST, NO_KEYWORD\n"
     "UESCAPE = UESCAPE, UNRESERVED_KEYWORD\n"
     "'!' = SCONST, NO_KEYWORD\n",
   "SELECT 'a'/*;*/'b'; SELECT ';';",

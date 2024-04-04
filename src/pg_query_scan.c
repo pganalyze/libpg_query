@@ -93,7 +93,7 @@ PgQueryScanResult pg_query_scan(const char* input)
       output_tokens[i] = malloc(sizeof(PgQuery__ScanToken));
       pg_query__scan_token__init(output_tokens[i]);
       output_tokens[i]->start = yylloc;
-      if (tok == SCONST || tok == BCONST || tok == XCONST || tok == IDENT || tok == C_COMMENT) {
+      if (tok == SCONST || tok == USCONST || tok == BCONST || tok == XCONST || tok == IDENT || tok == UIDENT || tok == C_COMMENT) {
         output_tokens[i]->end = yyextra.yyllocend;
       } else {
         output_tokens[i]->end = yylloc + ((struct yyguts_t*) yyscanner)->yyleng_r;
