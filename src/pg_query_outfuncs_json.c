@@ -203,7 +203,7 @@ _outOidList(StringInfo out, const List *node)
 static void
 _outInteger(StringInfo out, const Integer *node)
 {
-		appendStringInfo(out, "\"ival\":%d", node->ival);
+	appendStringInfo(out, "\"ival\":%d", node->ival);
 }
 
 static void
@@ -241,27 +241,19 @@ _outAConst(StringInfo out, const A_Const *node)
 	} else {
 		switch (node->val.node.type) {
 			case T_Integer:
-				appendStringInfoString(out, "\"ival\":{");
 				_outInteger(out, &node->val.ival);
-				appendStringInfoChar(out, '}');
 				break;
 			case T_Float:
-				appendStringInfoString(out, "\"fval\":{");
 				_outFloat(out, &node->val.fval);
-				appendStringInfoChar(out, '}');
 				break;
 			case T_Boolean:
 				appendStringInfo(out, "\"boolval\":{%s}", node->val.boolval.boolval ? "\"boolval\":true" : "");
 				break;
 			case T_String:
-				appendStringInfoString(out, "\"sval\":{");
 				_outString(out, &node->val.sval);
-				appendStringInfoChar(out, '}');
 				break;
 			case T_BitString:
-				appendStringInfoString(out, "\"bsval\":{");
 				_outBitString(out, &node->val.bsval);
-				appendStringInfoChar(out, '}');
 				break;
 
 			// Unreachable, A_Const cannot contain any other nodes.
