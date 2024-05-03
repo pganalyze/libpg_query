@@ -219,7 +219,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	foreach(lc, stmt->parameters)
 	{
 		FunctionParameter *param = lfirst_node(FunctionParameter, lc);
-		if (param->name != NULL)
+// 		if (param->name != NULL)
 		{
 			char buf[32];
 			PLpgSQL_type *argdtype;
