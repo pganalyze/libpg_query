@@ -4,7 +4,7 @@ C library for accessing the PostgreSQL parser outside of the server.
 
 This library uses the actual PostgreSQL server source to parse SQL queries and return the internal PostgreSQL parse tree.
 
-Note that this is mostly intended as a base library for [pg_query](https://github.com/pganalyze/pg_query) (Ruby), [pg_query.go](https://github.com/pganalyze/pg_query_go) (Go), [pgsql-parser](https://github.com/pyramation/pgsql-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
+Note that this is mostly intended as a base library for [pg_query](https://github.com/pganalyze/pg_query) (Ruby), [pg_query.go](https://github.com/pganalyze/pg_query_go) (Go), [pgsql-parser](https://github.com/launchql/pgsql-parser) (Node), [psqlparse](https://github.com/alculquicondor/psqlparse) (Python) and [pglast](https://pypi.org/project/pglast/) (Python 3).
 
 You can find further background to why a query's parse tree is useful here: https://pganalyze.com/blog/parse-postgresql-queries-in-ruby.html
 
@@ -254,7 +254,7 @@ pg_query wrappers in other languages:
 
 * Ruby: [pg_query](https://github.com/pganalyze/pg_query)
 * Go: [pg_query_go](https://github.com/pganalyze/pg_query_go)
-* Javascript (Node): [pgsql-parser](https://github.com/pyramation/pgsql-parser)
+* Javascript (Node): [pgsql-parser](https://github.com/launchql/pgsql-parser)
 * Javascript (Browser): [pg-query-emscripten](https://github.com/pganalyze/pg-query-emscripten)
 * Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
