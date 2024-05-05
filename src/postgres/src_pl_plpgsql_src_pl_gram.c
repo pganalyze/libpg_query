@@ -6090,7 +6090,19 @@ plpgsql_sql_error_callback(void *arg)
  * This is handled the same as in check_sql_expr(), and we likewise
  * expect that the given string is a copy from the source text.
  */
-static PLpgSQL_type * parse_datatype(const char *string, int location) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup(string); typ->ttype = strcmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR; return typ; }
+static PLpgSQL_type * parse_datatype(const char *string, int location)
+{
+  PLpgSQL_type *typ;
+
+  typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+  typ->typname = pstrdup(string);
+  typ->ttype = strcmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
+
+  if (strcmp(string, "refcursor") == 0 || strcmp(string, "cursor") == 0)
+    typ->typoid = REFCURSOROID;
+
+  return typ;
+}
 
 
 /*
