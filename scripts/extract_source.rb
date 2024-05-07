@@ -525,7 +525,7 @@ runner.mock('send_message_to_frontend', 'static void send_message_to_frontend(Er
 # Mocks REQUIRED for PL/pgSQL parsing
 runner.mock('format_type_be', 'char * format_type_be(Oid type_oid) { return pstrdup("-"); }')
 runner.mock('build_row_from_class', 'static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }')
-runner.mock('plpgsql_build_datatype', 'PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }')
+runner.mock('plpgsql_build_datatype', 'PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = origtypname != NULL ? pstrdup(strVal(llast(origtypname->names))) : pstrdup("UNKNOWN"); typ->typoid = typeOid; typ->collation = collation; typ->atttypmod = typmod; typ->origtypname = origtypname; typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }')
 runner.mock('parse_datatype', %(
 static PLpgSQL_type * parse_datatype(const char *string, int location) {
 
