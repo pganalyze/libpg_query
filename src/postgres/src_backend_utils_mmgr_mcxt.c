@@ -1471,6 +1471,19 @@ pstrdup(const char *in)
  *		Like pstrdup(), but append null byte to a
  *		not-necessarily-null-terminated input string.
  */
+char *
+pnstrdup(const char *in, Size len)
+{
+	char	   *out;
+
+	len = strnlen(in, len);
+
+	out = palloc(len + 1);
+	memcpy(out, in, len);
+	out[len] = '\0';
+
+	return out;
+}
 
 
 /*

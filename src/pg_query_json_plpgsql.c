@@ -715,6 +715,7 @@ dump_type(StringInfo out, PLpgSQL_type *node)
 	WRITE_NODE_TYPE("PLpgSQL_type");
 
 	WRITE_STRING_FIELD(typname, typname, typname);
+	WRITE_STRING_FIELD(collation, collation, collation_name);
 }
 
 static void

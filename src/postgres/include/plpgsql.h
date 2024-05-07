@@ -204,6 +204,7 @@ typedef struct PLpgSQL_type
 	bool		typbyval;
 	char		typtype;
 	Oid			collation;		/* from pg_type, but can be overridden */
+	char		*collation_name;
 	bool		typisarray;		/* is "true" array, or domain over one */
 	int32		atttypmod;		/* typmod (taken from someplace else) */
 	/* Remaining fields are used only for named composite types (not RECORD) */

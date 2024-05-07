@@ -2587,6 +2587,7 @@ yyreduce:
 												format_type_be((yyvsp[(3) - (6)].dtype)->typoid)),
 										 parser_errposition((yylsp[(4) - (6)]))));
 							(yyvsp[(3) - (6)].dtype)->collation = (yyvsp[(4) - (6)].oid);
+							(yyvsp[(3) - (6)].dtype)->collation_name = (yyvsp[(4) - (6)].varname.name);
 						}
 
 						var = plpgsql_build_variable((yyvsp[(1) - (6)].varname).name, (yyvsp[(1) - (6)].varname).lineno,
@@ -2895,6 +2896,7 @@ yyreduce:
     {
 						(yyval.oid) = get_collation_oid(list_make1(makeString((yyvsp[(2) - (2)].word).ident)),
 											   false);
+						yyval.varname.name = (yyvsp[(2) - (2)].word).ident;
 					;}
     break;
 
@@ -6090,16 +6092,31 @@ plpgsql_sql_error_callback(void *arg)
  * This is handled the same as in check_sql_expr(), and we likewise
  * expect that the given string is a copy from the source text.
  */
-static PLpgSQL_type * parse_datatype(const char *string, int location)
-{
+static PLpgSQL_type * parse_datatype(const char *string, int location) {
+
   PLpgSQL_type *typ;
+	size_t len = strlen(string);
+
+	while (len > 0 && scanner_isspace(string[len - 1])) --len;
+	char *string_up = pnstrdup(string, len);
+	for (int i = 0; i < len; i++)
+	{
+			string_up[i] = toupper(string[i]);
+	}
 
   typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
-  typ->typname = pstrdup(string);
-  typ->ttype = strcmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
+  typ->typname = pnstrdup(string, len);
+  typ->ttype = strcmp(string_up, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
 
-  if (strcmp(string, "refcursor") == 0 || strcmp(string, "cursor") == 0)
+  if (strcmp(string_up, "REFCURSOR") == 0 || strcmp(string_up, "CURSOR") == 0)
+  {
     typ->typoid = REFCURSOROID;
+  }
+	else if (strcmp(string_up, "TEXT") == 0)
+  {
+    typ->typoid = TEXTOID;
+    typ->collation = get_collation_oid(NULL, false);
+  }
 
   return typ;
 }
