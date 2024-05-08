@@ -575,3 +575,14 @@ END LOOP;
 END
 $$
   LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION trgfn()
+ RETURNS trigger AS $$
+DECLARE
+ prior ALIAS FOR old;
+ updated ALIAS FOR new;
+BEGIN
+ RETURN;
+END;
+$$
+  LANGUAGE plpgsql;

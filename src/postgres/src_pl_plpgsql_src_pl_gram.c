@@ -2612,6 +2612,21 @@ yyreduce:
   case 25:
 #line 530 "pl_gram.y"
     {
+						// nsitem->itemno is the associated PLpgSQL_datum's dno , so set aliasfor to associated var/rec refname
+						if (plpgsql_Datums[(yyvsp[(4) - (5)].nsitem)->itemno]->dtype == PLPGSQL_DTYPE_REC)
+						{
+							PLpgSQL_rec *rec = plpgsql_Datums[(yyvsp[(4) - (5)].nsitem)->itemno];
+							PLpgSQL_rec *alias = plpgsql_build_record((yyvsp[(1) - (5)].varname).name, (yyvsp[(1) - (5)].varname).lineno, NULL, RECORDOID, false);
+							alias->aliasfor = rec->refname;
+						}
+						else if (plpgsql_Datums[(yyvsp[(4) - (5)].nsitem)->itemno]->dtype == PLPGSQL_DTYPE_VAR)
+						{
+							PLpgSQL_var	*var = plpgsql_Datums[(yyvsp[(4) - (5)].nsitem)->itemno];
+							PLpgSQL_variable *alias = plpgsql_build_variable((yyvsp[(1) - (5)].varname).name, (yyvsp[(1) - (5)].varname).lineno,
+														 var->datatype, false);
+							alias->aliasfor = var->refname;
+						}
+
 						plpgsql_ns_additem((yyvsp[(4) - (5)].nsitem)->itemtype,
 										   (yyvsp[(4) - (5)].nsitem)->itemno, (yyvsp[(1) - (5)].varname).name);
 					;}

@@ -679,6 +679,7 @@ dump_var(StringInfo out, PLpgSQL_var *node)
 	WRITE_NODE_TYPE("PLpgSQL_var");
 
 	WRITE_STRING_FIELD(refname, refname, refname);
+	WRITE_STRING_FIELD(aliasfor, aliasfor, aliasfor);
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 	WRITE_OBJ_FIELD(datatype, dump_type);
 	WRITE_BOOL_FIELD(isconst, isconst, isconst);
@@ -753,6 +754,7 @@ dump_record(StringInfo out, PLpgSQL_rec *node) {
 	WRITE_NODE_TYPE("PLpgSQL_rec");
 
 	WRITE_STRING_FIELD(refname, refname, refname);
+	WRITE_STRING_FIELD(aliasfor, aliasfor, aliasfor);
 	WRITE_INT_FIELD(dno, dno, dno);
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 }

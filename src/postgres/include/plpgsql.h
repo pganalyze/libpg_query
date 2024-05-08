@@ -290,6 +290,7 @@ typedef struct PLpgSQL_variable
 	PLpgSQL_datum_type dtype;
 	int			dno;
 	char	   *refname;
+	char	   *aliasfor;
 	int			lineno;
 	bool		isconst;
 	bool		notnull;
@@ -312,6 +313,7 @@ typedef struct PLpgSQL_var
 	PLpgSQL_datum_type dtype;
 	int			dno;
 	char	   *refname;
+	char	   *aliasfor;
 	int			lineno;
 	bool		isconst;
 	bool		notnull;
@@ -392,6 +394,7 @@ typedef struct PLpgSQL_rec
 	PLpgSQL_datum_type dtype;
 	int			dno;
 	char	   *refname;
+	char	   *aliasfor;
 	int			lineno;
 	bool		isconst;
 	bool		notnull;

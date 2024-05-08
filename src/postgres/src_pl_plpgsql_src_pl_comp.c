@@ -751,6 +751,7 @@ plpgsql_build_variable(const char *refname, int lineno, PLpgSQL_type *dtype,
 				var = palloc0(sizeof(PLpgSQL_var));
 				var->dtype = PLPGSQL_DTYPE_VAR;
 				var->refname = pstrdup(refname);
+				var->aliasfor = NULL;
 				var->lineno = lineno;
 				var->datatype = dtype;
 				/* other fields are left as 0, might be changed by caller */
@@ -808,6 +809,7 @@ plpgsql_build_record(const char *refname, int lineno,
 	rec = palloc0(sizeof(PLpgSQL_rec));
 	rec->dtype = PLPGSQL_DTYPE_REC;
 	rec->refname = pstrdup(refname);
+	rec->aliasfor = NULL;
 	rec->lineno = lineno;
 	/* other fields are left as 0, might be changed by caller */
 	rec->datatype = dtype;
