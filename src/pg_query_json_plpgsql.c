@@ -516,7 +516,7 @@ dump_return_next(StringInfo out, PLpgSQL_stmt_return_next *node)
 
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 	WRITE_EXPR_FIELD(expr);
-	//WRITE_INT_FIELD(retvarno);
+	WRITE_INT_FIELD(retvarno, retvarno, retvarno);
 }
 
 static void
