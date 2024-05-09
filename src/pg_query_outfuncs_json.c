@@ -203,7 +203,9 @@ _outOidList(StringInfo out, const List *node)
 static void
 _outInteger(StringInfo out, const Integer *node)
 {
-	if (node->ival > 0)
+	/* Don't output anything if the value is the default (0), to match
+	 * protobuf's behavior. */
+	if (node->ival != 0)
 		appendStringInfo(out, "\"ival\":%d", node->ival);
 }
 
