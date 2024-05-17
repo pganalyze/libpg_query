@@ -256,7 +256,8 @@ pg_query wrappers in other languages:
 * Go: [pg_query_go](https://github.com/pganalyze/pg_query_go)
 * Javascript (Node): [pgsql-parser](https://github.com/pyramation/pgsql-parser)
 * Javascript (Browser): [pg-query-emscripten](https://github.com/pganalyze/pg-query-emscripten)
-* Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast)
+* Python: [psqlparse](https://github.com/alculquicondor/psqlparse), [pglast](https://github.com/lelit/pglast),
+[psqlparse2](https://github.com/dani-maarouf/psqlparse2)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
 * Rust: [pg_query.rs](https://github.com/pganalyze/pg_query.rs)
 
