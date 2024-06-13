@@ -715,7 +715,7 @@ PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
  *					So word must be a table name.
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
+PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return plpgsql_build_datatype(RECORDOID, -1, InvalidOid, makeTypeName(ident)); }
 
 
 /* ----------
@@ -723,7 +723,7 @@ PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
  *			So word must be a namespace qualified table name.
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }
+PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return plpgsql_build_datatype(RECORDOID, -1, InvalidOid, makeTypeNameFromNameList(idents)); }
 
 
 /*
@@ -881,7 +881,7 @@ plpgsql_build_recfield(PLpgSQL_rec *rec, const char *fldname)
  * It can be NULL if the type could not be a composite type, or if it was
  * identified by OID to begin with (e.g., it's a function argument type).
  */
-PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = origtypname != NULL ? pstrdup(strVal(llast(origtypname->names))) : pstrdup("UNKNOWN"); typ->typoid = typeOid; typ->collation = collation; typ->atttypmod = typmod; typ->origtypname = origtypname; typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
+PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = origtypname != NULL ? pstrdup(strVal(llast(origtypname->names))) : pstrdup("UNKNOWN"); typ->typoid = typeOid; typ->collation = collation; typ->atttypmod = typmod; typ->origtypname = origtypname; typ->ttype = typeOid == RECORDOID ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR; return typ; }
 
 
 /*

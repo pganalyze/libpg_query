@@ -558,9 +558,9 @@ static PLpgSQL_type * parse_datatype(const char *string, int location) {
 ))
 runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return -1; }')
 runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
-runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }')
+runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return plpgsql_build_datatype(RECORDOID, -1, InvalidOid, makeTypeName(ident)); }')
 runner.mock('plpgsql_parse_cwordtype', 'PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }')
-runner.mock('plpgsql_parse_cwordrowtype', 'PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }')
+runner.mock('plpgsql_parse_cwordrowtype', 'PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return plpgsql_build_datatype(RECORDOID, -1, InvalidOid, makeTypeNameFromNameList(idents)); }')
 runner.mock('function_parse_error_transpose', 'bool function_parse_error_transpose(const char *prosrc) { return false; }')
 runner.mock('free_expr', "static void free_expr(PLpgSQL_expr *expr) {}") # This would free a cached plan, which does not apply to us
 runner.mock('make_return_stmt', %(
