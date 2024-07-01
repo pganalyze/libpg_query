@@ -1,0 +1,47 @@
+--- /Users/taolongxiang/CLionProjects/postgres/src/include/nodes/parsenodes.h	2024-07-01 18:59:34
++++ ./temp/parsenodes.h	2024-07-01 18:57:57
+@@ -868,6 +868,22 @@
+ 	PARTITION_STRATEGY_HASH = 'h'
+ } PartitionStrategy;
+
++typedef struct PartitionBy
++{
++    NodeTag                type;
++    char                strategy;       /* partition strategy */
++    char                *colname;       /* name of partition by column*/
++    AttrNumber            colattr;        /* attrnumber of partition by column */
++    int16                intervaltype;   /* interval type */
++    Oid                    partdatatype;   /* data type of partition by column */
++    Node                *startvalue;    /* start value of interval */
++    Node                *step;          /* expr of interval value */
++    int                 interval;       /* int of interval value */
++    int                    nPartitions;    /* number of partitions to be created */
++} PartitionBy;
++
++#define PARTITION_STRATEGY_INTERVAL    'i'
++
+ /*
+  * PartitionSpec - parse-time representation of a partition key specification
+  *
+@@ -878,6 +894,7 @@
+ 	NodeTag		type;
+ 	PartitionStrategy strategy;
+ 	List	   *partParams;		/* List of PartitionElems */
++    PartitionBy *interval;      /* used for interval partition */
+ 	int			location;		/* token location, or -1 if unknown */
+ } PartitionSpec;
+
+@@ -2483,6 +2500,13 @@
+ 	char	   *tablespacename; /* table space to use, or NULL */
+ 	char	   *accessMethod;	/* table access method */
+ 	bool		if_not_exists;	/* just do nothing if it already exists? */
++    ObjectType relkind;        /* kind of relation to create */
++    bool islocal;        /* create only on the current node */
++    DistributeBy *distributeby;     /* distribution to use, or NULL */
++    PGXCSubCluster *subcluster;        /* subcluster of table */
++    bool        interval_child;     /* is interval partition child? */
++    int            interval_child_idx; /* interval partition child's index */
++    Oid            interval_parentId;  /* interval partition parent's oid */
+ } CreateStmt;
+
+ /* ----------

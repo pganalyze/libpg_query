@@ -1,0 +1,506 @@
+--- /Users/taolongxiang/CLionProjects/libpg_query/tmp/postgres/src/backend/parser/gram.y	2024-07-01 17:36:26
++++ ./temp/gram.y	2024-07-01 13:39:09
+@@ -269,9 +269,12 @@
+ 	struct ImportQual *importqual;
+ 	InsertStmt *istmt;
+ 	VariableSetStmt *vsetstmt;
++	DistributeBy   *distby;
++	PGXCSubCluster *subclus;
+ 	PartitionElem *partelem;
+ 	PartitionSpec *partspec;
+ 	PartitionBoundSpec *partboundspec;
++	PartitionBy *partby;
+ 	RoleSpec   *rolespec;
+ 	PublicationObjSpec *publicationobjectspec;
+ 	struct SelectLimit *selectlimit;
+@@ -334,6 +337,11 @@
+ %type <node>	alter_column_default opclass_item opclass_drop alter_using
+ %type <ival>	add_drop opt_asc_desc opt_nulls_order
+
++%type <distby>	OptDistributeBy OptDistributeByInternal
++%type <subclus> OptSubCluster OptSubClusterInternal
++
++%type <list>   OptDistKey
++
+ %type <node>	alter_table_cmd alter_type_cmd opt_collate_clause
+ 	   replica_identity partition_cmd index_partition_cmd
+ %type <list>	alter_table_cmds alter_type_cmds
+@@ -343,6 +351,7 @@
+ %type <list>	createdb_opt_list createdb_opt_items copy_opt_list
+ 				transaction_mode_list
+ 				create_extension_opt_list alter_extension_opt_list
++				pgxcnode_list pgxcnodes
+ %type <defelt>	createdb_opt_item copy_opt_item
+ 				transaction_mode_item
+ 				create_extension_opt_item alter_extension_opt_item
+@@ -391,6 +400,7 @@
+ 				access_method_clause attr_name
+ 				table_access_method_clause name cursor_name file_name
+ 				cluster_index_specification
++				pgxcnode_name pgxcgroup_name
+
+ %type <list>	func_name handler_name qual_Op qual_all_Op subquery_Op
+ 				opt_inline_handler opt_validator validator_clause
+@@ -637,16 +647,22 @@
+ 				opt_frame_clause frame_extent frame_bound
+ %type <ival>	opt_window_exclusion_clause
+ %type <str>		opt_existing_window_name
++
++%type <str>		OptDistributeType DistributeStyle
++
+ %type <boolean> opt_if_not_exists
+ %type <boolean> opt_unique_null_treatment
+ %type <ival>	generated_when override_kind
+ %type <partspec>	PartitionSpec OptPartitionSpec
++%type <str>			part_strategy
+ %type <partelem>	part_elem
+ %type <list>		part_params
+ %type <partboundspec> PartitionBoundSpec
+ %type <list>		hash_partbound
+ %type <defelt>		hash_partbound_elem
+
++%type <partby>     interval_expr
++
+ %type <node>	json_format_clause_opt
+ 				json_value_expr
+ 				json_output_clause_opt
+@@ -706,7 +722,7 @@
+
+ 	DATA_P DATABASE DAY_P DEALLOCATE DEC DECIMAL_P DECLARE DEFAULT DEFAULTS
+ 	DEFERRABLE DEFERRED DEFINER DELETE_P DELIMITER DELIMITERS DEPENDS DEPTH DESC
+-	DETACH DICTIONARY DISABLE_P DISCARD DISTINCT DO DOCUMENT_P DOMAIN_P
++	DETACH DICTIONARY DISABLE_P DISCARD DISTINCT DISTKEY DISTRIBUTE DISTRIBUTED DISTSTYLE DO DOCUMENT_P DOMAIN_P
+ 	DOUBLE_P DROP
+
+ 	EACH ELSE ENABLE_P ENCODING ENCRYPTED END_P ENUM_P ESCAPE EVENT EXCEPT
+@@ -736,7 +752,7 @@
+ 	MAPPING MATCH MATCHED MATERIALIZED MAXVALUE MERGE METHOD
+ 	MINUTE_P MINVALUE MODE MONTH_P MOVE
+
+-	NAME_P NAMES NATIONAL NATURAL NCHAR NEW NEXT NFC NFD NFKC NFKD NO NONE
++	NAME_P NAMES NATIONAL NATURAL NCHAR NEW NEXT NFC NFD NFKC NFKD NO NODE NONE
+ 	NORMALIZE NORMALIZED
+ 	NOT NOTHING NOTIFY NOTNULL NOWAIT NULL_P NULLIF
+ 	NULLS_P NUMERIC
+@@ -745,14 +761,14 @@
+ 	ORDER ORDINALITY OTHERS OUT_P OUTER_P
+ 	OVER OVERLAPS OVERLAY OVERRIDING OWNED OWNER
+
+-	PARALLEL PARAMETER PARSER PARTIAL PARTITION PASSING PASSWORD
++	PARALLEL PARAMETER PARSER PARTIAL PARTITION PARTITIONS PASSING PASSWORD
+ 	PLACING PLANS POLICY
+ 	POSITION PRECEDING PRECISION PRESERVE PREPARE PREPARED PRIMARY
+ 	PRIOR PRIVILEGES PROCEDURAL PROCEDURE PROCEDURES PROGRAM PUBLICATION
+
+ 	QUOTE
+
+-	RANGE READ REAL REASSIGN RECHECK RECURSIVE REF_P REFERENCES REFERENCING
++	RANDOMLY RANGE READ REAL REASSIGN RECHECK RECURSIVE REF_P REFERENCES REFERENCING
+ 	REFRESH REINDEX RELATIVE_P RELEASE RENAME REPEATABLE REPLACE REPLICA
+ 	RESET RESTART RESTRICT RETURN RETURNING RETURNS REVOKE RIGHT ROLE ROLLBACK ROLLUP
+ 	ROUTINE ROUTINES ROW ROWS RULE
+@@ -761,7 +777,7 @@
+ 	SEQUENCE SEQUENCES
+ 	SERIALIZABLE SERVER SESSION SESSION_USER SET SETS SETOF SHARE SHOW
+ 	SIMILAR SIMPLE SKIP SMALLINT SNAPSHOT SOME SQL_P STABLE STANDALONE_P
+-	START STATEMENT STATISTICS STDIN STDOUT STORAGE STORED STRICT_P STRIP_P
++	START STATEMENT STATISTICS STDIN STDOUT STEP STORAGE STORED STRICT_P STRIP_P
+ 	SUBSCRIPTION SUBSTRING SUPPORT SYMMETRIC SYSID SYSTEM_P SYSTEM_USER
+
+ 	TABLE TABLES TABLESAMPLE TABLESPACE TEMP TEMPLATE TEMPORARY TEXT_P THEN
+@@ -3552,7 +3568,7 @@
+
+ CreateStmt:	CREATE OptTemp TABLE qualified_name '(' OptTableElementList ')'
+ 			OptInherit OptPartitionSpec table_access_method_clause OptWith
+-			OnCommitOption OptTableSpace
++			OnCommitOption OptTableSpace OptDistributeBy OptSubCluster
+ 				{
+ 					CreateStmt *n = makeNode(CreateStmt);
+
+@@ -3568,11 +3584,20 @@
+ 					n->oncommit = $12;
+ 					n->tablespacename = $13;
+ 					n->if_not_exists = false;
++				    if ($2 == RELPERSISTENCE_LOCAL_TEMP)
++					{
++						$4->relpersistence = RELPERSISTENCE_TEMP;
++						n->islocal = true;
++					}
++					n->relkind = RELKIND_RELATION;
++					n->distributeby = $14;
++					n->subcluster = $15;
++
+ 					$$ = (Node *) n;
+ 				}
+ 		| CREATE OptTemp TABLE IF_P NOT EXISTS qualified_name '('
+ 			OptTableElementList ')' OptInherit OptPartitionSpec table_access_method_clause
+-			OptWith OnCommitOption OptTableSpace
++			OptWith OnCommitOption OptTableSpace OptDistributeBy OptSubCluster
+ 				{
+ 					CreateStmt *n = makeNode(CreateStmt);
+
+@@ -3588,11 +3613,26 @@
+ 					n->oncommit = $15;
+ 					n->tablespacename = $16;
+ 					n->if_not_exists = true;
++
++                    if ($2 == RELPERSISTENCE_LOCAL_TEMP)
++					{
++						$7->relpersistence = RELPERSISTENCE_TEMP;
++						n->islocal = true;
++					}
++					n->relkind = RELKIND_RELATION;
++					n->distributeby = $17;
++					n->subcluster = $18;
++					if (n->inhRelations != NULL && n->distributeby != NULL)
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("CREATE TABLE cannot contains both an INHERITS and a DISTRIBUTE BY clause"),
++								 parser_errposition(exprLocation((Node *) n->distributeby))));
++
+ 					$$ = (Node *) n;
+ 				}
+ 		| CREATE OptTemp TABLE qualified_name OF any_name
+ 			OptTypedTableElementList OptPartitionSpec table_access_method_clause
+-			OptWith OnCommitOption OptTableSpace
++			OptWith OnCommitOption OptTableSpace OptDistributeBy OptSubCluster
+ 				{
+ 					CreateStmt *n = makeNode(CreateStmt);
+
+@@ -3609,11 +3649,26 @@
+ 					n->oncommit = $11;
+ 					n->tablespacename = $12;
+ 					n->if_not_exists = false;
++
++					if ($2 == RELPERSISTENCE_LOCAL_TEMP)
++                    {
++                    	$4->relpersistence = RELPERSISTENCE_TEMP;
++                    	n->islocal = true;
++                    }
++                    n->relkind = RELKIND_RELATION;
++                    n->distributeby = $13;
++                    n->subcluster = $14;
++					if (n->inhRelations != NULL && n->distributeby != NULL)
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("CREATE TABLE cannot contains both an INHERITS and a DISTRIBUTE BY clause"),
++								 parser_errposition(exprLocation((Node *) n->distributeby))));
++
+ 					$$ = (Node *) n;
+ 				}
+ 		| CREATE OptTemp TABLE IF_P NOT EXISTS qualified_name OF any_name
+ 			OptTypedTableElementList OptPartitionSpec table_access_method_clause
+-			OptWith OnCommitOption OptTableSpace
++			OptWith OnCommitOption OptTableSpace OptDistributeBy OptSubCluster
+ 				{
+ 					CreateStmt *n = makeNode(CreateStmt);
+
+@@ -3630,6 +3685,21 @@
+ 					n->oncommit = $14;
+ 					n->tablespacename = $15;
+ 					n->if_not_exists = true;
++
++                    if ($2 == RELPERSISTENCE_LOCAL_TEMP)
++					{
++						$7->relpersistence = RELPERSISTENCE_TEMP;
++						n->islocal = true;
++					}
++					n->relkind = RELKIND_RELATION;
++					n->distributeby = $16;
++					n->subcluster = $17;
++					if (n->inhRelations != NULL && n->distributeby != NULL)
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("CREATE TABLE cannot contains both an INHERITS and a DISTRIBUTE BY clause"),
++								 parser_errposition(exprLocation((Node *) n->distributeby))));
++
+ 					$$ = (Node *) n;
+ 				}
+ 		| CREATE OptTemp TABLE qualified_name PARTITION OF qualified_name
+@@ -4425,18 +4495,42 @@
+ 			| /*EMPTY*/			{ $$ = NULL; }
+ 		;
+
+-PartitionSpec: PARTITION BY ColId '(' part_params ')'
++PartitionSpec: PARTITION BY part_strategy '(' part_params ')' interval_expr
+ 				{
+ 					PartitionSpec *n = makeNode(PartitionSpec);
+
+ 					n->strategy = parsePartitionStrategy($3);
+ 					n->partParams = $5;
+ 					n->location = @1;
++
++                    n->interval = $7;
+
+ 					$$ = n;
+ 				}
+ 		;
++
++interval_expr:  BEGIN_P '(' AexprConst ')' STEP '(' AexprConst ')' PARTITIONS '(' Iconst ')'
++				{
++					PartitionBy *n = makeNode(PartitionBy);
+
++					n->strategy = PARTITION_STRATEGY_INTERVAL;
++					n->intervaltype = 0;
++					n->colname = NULL;
++					n->partdatatype = InvalidOid;
++					n->startvalue = $3;
++					n->step = $7;
++					n->interval = 0;
++					n->nPartitions = $11;
++
++					$$ = n;
++				}
++                |/*EMPTY*/					{ $$ = NULL; }
++		;
++
++part_strategy:	IDENT					{ $$ = $1; }
++				| unreserved_keyword	{ $$ = pstrdup($1); }
++		;
++
+ part_params:	part_elem						{ $$ = list_make1($1); }
+ 			| part_params ',' part_elem			{ $$ = lappend($1, $3); }
+ 		;
+@@ -4496,8 +4590,156 @@
+
+ OptTableSpace:   TABLESPACE name					{ $$ = $2; }
+ 			| /*EMPTY*/								{ $$ = NULL; }
++		;
++
++OptDistributeBy: OptDistributeByInternal			{ $$ = $1; }
++			| /* EMPTY */							{ $$ = NULL; }
++		;
++
++OptDistributeByInternal:  DISTRIBUTE BY OptDistributeType '(' name_list ')'
++				{
++					DistributeBy *n = makeNode(DistributeBy);
++					if (strcmp($3, "modulo") == 0)
++						n->disttype = DISTTYPE_MODULO;
++					else if (strcmp($3, "hash") == 0)
++						n->disttype = DISTTYPE_HASH;
++/*_PGPAL BEGIN*/
++					else if (strcmp($3, "shard") == 0)
++						n->disttype = DISTTYPE_SHARD;
++/*_PGPAL END*/
++					else
++                        ereport(ERROR,
++                                (errcode(ERRCODE_SYNTAX_ERROR),
++                                 errmsg("unrecognized distribution option \"%s\"", $3)));
++					n->colname = $5;
++					$$ = n;
++				}
++			| DISTRIBUTE BY OptDistributeType
++				{
++					DistributeBy *n = makeNode(DistributeBy);
++					if (strcmp($3, "replication") == 0)
++                        n->disttype = DISTTYPE_REPLICATION;
++					else if (strcmp($3, "roundrobin") == 0)
++						n->disttype = DISTTYPE_ROUNDROBIN;
++                    else
++                        ereport(ERROR,
++                                (errcode(ERRCODE_SYNTAX_ERROR),
++                                 errmsg("unrecognized distribution option \"%s\"", $3)));
++					n->colname = NULL;
++					$$ = n;
++				}
++			| DISTRIBUTED BY '(' name_list ')'
++				{
++					DistributeBy *n = makeNode(DistributeBy);
++					n->disttype = DISTTYPE_HASH;
++					n->colname = $4;
++					$$ = n;
++				}
++			| DISTRIBUTED RANDOMLY
++				{
++					DistributeBy *n = makeNode(DistributeBy);
++					n->disttype = DISTTYPE_ROUNDROBIN;
++					n->colname = NULL;
++					$$ = n;
++				}
++			| DISTSTYLE DistributeStyle OptDistKey
++				{
++					DistributeBy *n = makeNode(DistributeBy);
++					if (strcmp($2, "even") == 0)
++						n->disttype = DISTTYPE_ROUNDROBIN;
++					else if (strcmp($2, "key") == 0)
++						n->disttype = DISTTYPE_HASH;
++					else if (strcmp($2, "all") == 0)
++						n->disttype = DISTTYPE_REPLICATION;
++					else
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("unrecognized distribution style \"%s\"", $2)));
++					if ((n->disttype == DISTTYPE_ROUNDROBIN ||
++						 n->disttype == DISTTYPE_REPLICATION) &&
++						($3 != NULL))
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("distribution key cannot be specified for distribution style \"%s\"", $2)));
++
++					if ((n->disttype == DISTTYPE_HASH) && ($3 == NULL))
++						ereport(ERROR,
++								(errcode(ERRCODE_SYNTAX_ERROR),
++								 errmsg("distribution key must be specified for distribution style \"%s\"", $2)));
++
++					n->colname = $3;
++					$$ = n;
++				}
++		;
++
++/*
++ * For the distribution type, we use IDENT to limit the impact of keywords
++ * related to distribution on other commands and to allow extensibility for
++ * new distributions.
++ */
++OptDistributeType: IDENT							{ $$ = $1; }
++		;
++
++DistributeStyle: ALL								{ $$ = strdup("all"); }
++			| KEY									{ $$ = strdup("key"); }
++			| IDENT
++				{
++					if (strcmp($1, "even") != 0)
++                        ereport(ERROR,
++                                (errcode(ERRCODE_SYNTAX_ERROR),
++                                 errmsg("unrecognized distribution style \"%s\"", $1)));
++					$$ = $1;
++				}
++		;
++
++OptDistKey: DISTKEY '(' name_list ')'					{ $$ = $3; }
++			| /* EMPTY */							{ $$ = NULL; }
++		;
++
++OptSubCluster: OptSubClusterInternal				{ $$ = $1; }
++			| /* EMPTY */							{ $$ = NULL; }
++		;
++
++OptSubClusterInternal:
++            TO NODE pgxcnodes
++            	{
++            		PGXCSubCluster *n = makeNode(PGXCSubCluster);
++            		n->clustertype = SUBCLUSTER_NODE;
++            		n->members = $3;
++                    $$ = n;
++                }
++			| TO GROUP_P pgxcgroup_name
++            	{
++            		PGXCSubCluster *n = makeNode(PGXCSubCluster);
++            		n->clustertype = SUBCLUSTER_GROUP;
++            		n->members = list_make1(makeString($3));
++            		$$ = n;
++            	}
++            | TO GROUP_P pgxcgroup_name pgxcgroup_name
++            	{
++            		PGXCSubCluster *n = makeNode(PGXCSubCluster);
++            		n->clustertype = SUBCLUSTER_GROUP;
++            		n->members = list_make1(makeString($3));
++            		n->members = lappend(n->members, makeString($4));
++            		$$ = n;
++            	}
+ 		;
+
++pgxcnode_name:
++			ColId							{ $$ = $1; };
++
++pgxcgroup_name:
++			ColId							{ $$ = $1; };
++
++pgxcnodes:
++			'(' pgxcnode_list ')'			{ $$ = $2; }
++		;
++
++pgxcnode_list:
++			pgxcnode_list ',' pgxcnode_name		{ $$ = lappend($1, makeString($3)); }
++			| pgxcnode_name						{ $$ = list_make1(makeString($1)); }
++		;
++
+ OptConsTableSpace:   USING INDEX TABLESPACE name	{ $$ = $4; }
+ 			| /*EMPTY*/								{ $$ = NULL; }
+ 		;
+@@ -17116,6 +17358,10 @@
+ 			| DICTIONARY
+ 			| DISABLE_P
+ 			| DISCARD
++			| DISTKEY
++			| DISTRIBUTE
++			| DISTRIBUTED
++			| DISTSTYLE
+ 			| DOCUMENT_P
+ 			| DOMAIN_P
+ 			| DOUBLE_P
+@@ -17211,6 +17457,7 @@
+ 			| NFKC
+ 			| NFKD
+ 			| NO
++			| NODE
+ 			| NORMALIZED
+ 			| NOTHING
+ 			| NOTIFY
+@@ -17235,6 +17482,7 @@
+ 			| PARSER
+ 			| PARTIAL
+ 			| PARTITION
++			| PARTITIONS
+ 			| PASSING
+ 			| PASSWORD
+ 			| PLANS
+@@ -17251,6 +17499,7 @@
+ 			| PROGRAM
+ 			| PUBLICATION
+ 			| QUOTE
++			| RANDOMLY
+ 			| RANGE
+ 			| READ
+ 			| REASSIGN
+@@ -17307,6 +17556,7 @@
+ 			| STATISTICS
+ 			| STDIN
+ 			| STDOUT
++			| STEP
+ 			| STORAGE
+ 			| STORED
+ 			| STRICT_P
+@@ -17670,6 +17920,10 @@
+ 			| DISABLE_P
+ 			| DISCARD
+ 			| DISTINCT
++			| DISTKEY
++			| DISTRIBUTE
++			| DISTRIBUTED
++			| DISTSTYLE
+ 			| DO
+ 			| DOCUMENT_P
+ 			| DOMAIN_P
+@@ -17797,6 +18051,7 @@
+ 			| NFKC
+ 			| NFKD
+ 			| NO
++			| NODE
+ 			| NONE
+ 			| NORMALIZE
+ 			| NORMALIZED
+@@ -17831,6 +18086,7 @@
+ 			| PARSER
+ 			| PARTIAL
+ 			| PARTITION
++			| PARTITIONS
+ 			| PASSING
+ 			| PASSWORD
+ 			| PLACING
+@@ -17850,6 +18106,7 @@
+ 			| PROGRAM
+ 			| PUBLICATION
+ 			| QUOTE
++			| RANDOMLY
+ 			| RANGE
+ 			| READ
+ 			| REAL
+@@ -17915,6 +18172,7 @@
+ 			| STATISTICS
+ 			| STDIN
+ 			| STDOUT
++		    | STEP
+ 			| STORAGE
+ 			| STORED
+ 			| STRICT_P

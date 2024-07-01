@@ -1,0 +1,11 @@
+--- /Users/taolongxiang/CLionProjects/libpg_query/tmp/postgres/src/backend/nodes/gen_node_support.pl	2023-11-07 06:04:27
++++ ./temp/gen_node_support.pl	2024-06-27 16:46:21
+@@ -107,7 +107,7 @@
+ # ABI stability during development.
+ 
+ my $last_nodetag = 'WindowObjectData';
+-my $last_nodetag_no = 454;
++my $last_nodetag_no = 457;
+ 
+ # output file names
+ my @output_files;

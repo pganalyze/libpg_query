@@ -1,0 +1,11 @@
+--- /Users/taolongxiang/CLionProjects/libpg_query/tmp/postgres/src/include/catalog/pg_class.h	2023-11-07 06:04:27
++++ ./temp/pg_class.h	2024-06-27 16:52:08
+@@ -141,6 +141,8 @@
+ #endif
+ } FormData_pg_class;
+ 
++#define RELPERSISTENCE_LOCAL_TEMP    'l'    /* local temp table */
++
+ /* Size of fixed part of pg_class tuples, not counting var-length fields */
+ #define CLASS_TUPLE_SIZE \
+ 	 (offsetof(FormData_pg_class,relminmxid) + sizeof(TransactionId))

@@ -125,12 +125,22 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_allow_param_junk.patch
+
+	cd $(PGDIR); patch ./src/include/parser/kwlist.h < $(root_dir)/patches/kwlist.patch
+	cd $(PGDIR); patch ./src/backend/parser/gram.y < $(root_dir)/patches/parser_TBase.patch
+	cd $(PGDIR); patch ./src/include/nodes/parsenodes.h < $(root_dir)/patches/parsenodes.patch
+	cd $(PGDIR); patch ./src/include/nodes/primnodes.h < $(root_dir)/patches/primnodes.patch
+	cd $(PGDIR); patch ./src/backend/nodes/gen_node_support.pl < $(root_dir)/patches/gen_node_support.patch
+	cd $(PGDIR); patch ./src/include/catalog/pg_class.h < $(root_dir)/patches/pg_class.patch
+	cd $(PGDIR); patch ./src/include/partitioning/partdefs.h < $(root_dir)/patches/partdefs.patch
+
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
+	cd $(PGDIR)/src/common;  make kwlist_d.h
 	# Avoid problems with static asserts
 	echo "#undef StaticAssertDecl" >> $(PGDIR)/src/include/c.h
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
@@ -172,6 +182,9 @@ extract_source: $(PGDIR)
 	rm -f ./test/sql/postgres_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
 
+	./scripts/extract_headers.rb ./tmp/postgres
+	./scripts/generate_fingerprint_outfuncs.rb
+	./scripts/generate_protobuf_and_funcs.rb
 .c.o:
 	@$(ECHO) compiling $(<)
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<

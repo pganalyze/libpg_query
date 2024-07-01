@@ -1,0 +1,11 @@
+--- /Users/taolongxiang/CLionProjects/libpg_query/tmp/postgres/src/include/partitioning/partdefs.h	2023-11-07 06:04:27
++++ ./temp/partdefs.h	2024-06-27 16:14:29
+@@ -17,6 +17,8 @@
+ 
+ typedef struct PartitionKeyData *PartitionKey;
+ 
++typedef struct PartitionSpec PartitionSpec;
++
+ typedef struct PartitionBoundSpec PartitionBoundSpec;
+ 
+ typedef struct PartitionDescData *PartitionDesc;
