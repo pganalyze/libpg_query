@@ -728,6 +728,24 @@ _equalFromExpr(const FromExpr *a, const FromExpr *b)
 }
 
 static bool
+_equalDistributeBy(const DistributeBy *a, const DistributeBy *b)
+{
+	COMPARE_SCALAR_FIELD(disttype);
+	COMPARE_NODE_FIELD(colname);
+
+	return true;
+}
+
+static bool
+_equalPGXCSubCluster(const PGXCSubCluster *a, const PGXCSubCluster *b)
+{
+	COMPARE_SCALAR_FIELD(clustertype);
+	COMPARE_NODE_FIELD(members);
+
+	return true;
+}
+
+static bool
 _equalOnConflictExpr(const OnConflictExpr *a, const OnConflictExpr *b)
 {
 	COMPARE_SCALAR_FIELD(action);
@@ -1126,10 +1144,27 @@ _equalPartitionElem(const PartitionElem *a, const PartitionElem *b)
 }
 
 static bool
+_equalPartitionBy(const PartitionBy *a, const PartitionBy *b)
+{
+	COMPARE_SCALAR_FIELD(strategy);
+	COMPARE_STRING_FIELD(colname);
+	COMPARE_SCALAR_FIELD(colattr);
+	COMPARE_SCALAR_FIELD(intervaltype);
+	COMPARE_SCALAR_FIELD(partdatatype);
+	COMPARE_NODE_FIELD(startvalue);
+	COMPARE_NODE_FIELD(step);
+	COMPARE_SCALAR_FIELD(interval);
+	COMPARE_SCALAR_FIELD(nPartitions);
+
+	return true;
+}
+
+static bool
 _equalPartitionSpec(const PartitionSpec *a, const PartitionSpec *b)
 {
 	COMPARE_SCALAR_FIELD(strategy);
 	COMPARE_NODE_FIELD(partParams);
+	COMPARE_NODE_FIELD(interval);
 	COMPARE_LOCATION_FIELD(location);
 
 	return true;
@@ -1814,6 +1849,13 @@ _equalCreateStmt(const CreateStmt *a, const CreateStmt *b)
 	COMPARE_STRING_FIELD(tablespacename);
 	COMPARE_STRING_FIELD(accessMethod);
 	COMPARE_SCALAR_FIELD(if_not_exists);
+	COMPARE_SCALAR_FIELD(relkind);
+	COMPARE_SCALAR_FIELD(islocal);
+	COMPARE_NODE_FIELD(distributeby);
+	COMPARE_NODE_FIELD(subcluster);
+	COMPARE_SCALAR_FIELD(interval_child);
+	COMPARE_SCALAR_FIELD(interval_child_idx);
+	COMPARE_SCALAR_FIELD(interval_parentId);
 
 	return true;
 }
@@ -1986,6 +2028,13 @@ _equalCreateForeignTableStmt(const CreateForeignTableStmt *a, const CreateForeig
 	COMPARE_STRING_FIELD(base.tablespacename);
 	COMPARE_STRING_FIELD(base.accessMethod);
 	COMPARE_SCALAR_FIELD(base.if_not_exists);
+	COMPARE_SCALAR_FIELD(base.relkind);
+	COMPARE_SCALAR_FIELD(base.islocal);
+	COMPARE_NODE_FIELD(base.distributeby);
+	COMPARE_NODE_FIELD(base.subcluster);
+	COMPARE_SCALAR_FIELD(base.interval_child);
+	COMPARE_SCALAR_FIELD(base.interval_child_idx);
+	COMPARE_SCALAR_FIELD(base.interval_parentId);
 	COMPARE_STRING_FIELD(servername);
 	COMPARE_NODE_FIELD(options);
 

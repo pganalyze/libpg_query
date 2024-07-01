@@ -180,6 +180,12 @@
 		case T_FromExpr:
 			retval = _copyFromExpr(from);
 			break;
+		case T_DistributeBy:
+			retval = _copyDistributeBy(from);
+			break;
+		case T_PGXCSubCluster:
+			retval = _copyPGXCSubCluster(from);
+			break;
 		case T_OnConflictExpr:
 			retval = _copyOnConflictExpr(from);
 			break;
@@ -272,6 +278,9 @@
 			break;
 		case T_PartitionElem:
 			retval = _copyPartitionElem(from);
+			break;
+		case T_PartitionBy:
+			retval = _copyPartitionBy(from);
 			break;
 		case T_PartitionSpec:
 			retval = _copyPartitionSpec(from);

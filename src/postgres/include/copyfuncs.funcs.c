@@ -842,6 +842,28 @@ _copyFromExpr(const FromExpr *from)
 	return newnode;
 }
 
+static DistributeBy *
+_copyDistributeBy(const DistributeBy *from)
+{
+	DistributeBy *newnode = makeNode(DistributeBy);
+
+	COPY_SCALAR_FIELD(disttype);
+	COPY_NODE_FIELD(colname);
+
+	return newnode;
+}
+
+static PGXCSubCluster *
+_copyPGXCSubCluster(const PGXCSubCluster *from)
+{
+	PGXCSubCluster *newnode = makeNode(PGXCSubCluster);
+
+	COPY_SCALAR_FIELD(clustertype);
+	COPY_NODE_FIELD(members);
+
+	return newnode;
+}
+
 static OnConflictExpr *
 _copyOnConflictExpr(const OnConflictExpr *from)
 {
@@ -1302,6 +1324,24 @@ _copyPartitionElem(const PartitionElem *from)
 	return newnode;
 }
 
+static PartitionBy *
+_copyPartitionBy(const PartitionBy *from)
+{
+	PartitionBy *newnode = makeNode(PartitionBy);
+
+	COPY_SCALAR_FIELD(strategy);
+	COPY_STRING_FIELD(colname);
+	COPY_SCALAR_FIELD(colattr);
+	COPY_SCALAR_FIELD(intervaltype);
+	COPY_SCALAR_FIELD(partdatatype);
+	COPY_NODE_FIELD(startvalue);
+	COPY_NODE_FIELD(step);
+	COPY_SCALAR_FIELD(interval);
+	COPY_SCALAR_FIELD(nPartitions);
+
+	return newnode;
+}
+
 static PartitionSpec *
 _copyPartitionSpec(const PartitionSpec *from)
 {
@@ -1309,6 +1349,7 @@ _copyPartitionSpec(const PartitionSpec *from)
 
 	COPY_SCALAR_FIELD(strategy);
 	COPY_NODE_FIELD(partParams);
+	COPY_NODE_FIELD(interval);
 	COPY_LOCATION_FIELD(location);
 
 	return newnode;
@@ -2099,6 +2140,13 @@ _copyCreateStmt(const CreateStmt *from)
 	COPY_STRING_FIELD(tablespacename);
 	COPY_STRING_FIELD(accessMethod);
 	COPY_SCALAR_FIELD(if_not_exists);
+	COPY_SCALAR_FIELD(relkind);
+	COPY_SCALAR_FIELD(islocal);
+	COPY_NODE_FIELD(distributeby);
+	COPY_NODE_FIELD(subcluster);
+	COPY_SCALAR_FIELD(interval_child);
+	COPY_SCALAR_FIELD(interval_child_idx);
+	COPY_SCALAR_FIELD(interval_parentId);
 
 	return newnode;
 }
@@ -2297,6 +2345,13 @@ _copyCreateForeignTableStmt(const CreateForeignTableStmt *from)
 	COPY_STRING_FIELD(base.tablespacename);
 	COPY_STRING_FIELD(base.accessMethod);
 	COPY_SCALAR_FIELD(base.if_not_exists);
+	COPY_SCALAR_FIELD(base.relkind);
+	COPY_SCALAR_FIELD(base.islocal);
+	COPY_NODE_FIELD(base.distributeby);
+	COPY_NODE_FIELD(base.subcluster);
+	COPY_SCALAR_FIELD(base.interval_child);
+	COPY_SCALAR_FIELD(base.interval_child_idx);
+	COPY_SCALAR_FIELD(base.interval_parentId);
 	COPY_STRING_FIELD(servername);
 	COPY_NODE_FIELD(options);
 

@@ -54,6 +54,8 @@ static TargetEntry * _readTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) msg);
 static RangeTblRef * _readRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) msg);
 static JoinExpr * _readJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) msg);
 static FromExpr * _readFromExpr(OUT_TYPE(FromExpr, FromExpr) msg);
+static DistributeBy * _readDistributeBy(OUT_TYPE(DistributeBy, DistributeBy) msg);
+static PGXCSubCluster * _readPGXCSubCluster(OUT_TYPE(PGXCSubCluster, PGXCSubCluster) msg);
 static OnConflictExpr * _readOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) msg);
 static Query * _readQuery(OUT_TYPE(Query, Query) msg);
 static TypeName * _readTypeName(OUT_TYPE(TypeName, TypeName) msg);
@@ -84,6 +86,7 @@ static DefElem * _readDefElem(OUT_TYPE(DefElem, DefElem) msg);
 static LockingClause * _readLockingClause(OUT_TYPE(LockingClause, LockingClause) msg);
 static XmlSerialize * _readXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) msg);
 static PartitionElem * _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg);
+static PartitionBy * _readPartitionBy(OUT_TYPE(PartitionBy, PartitionBy) msg);
 static PartitionSpec * _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg);
 static PartitionBoundSpec * _readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg);
 static PartitionRangeDatum * _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg);
@@ -930,6 +933,24 @@ _readFromExpr(OUT_TYPE(FromExpr, FromExpr) msg)
   return node;
 }
 
+static DistributeBy *
+_readDistributeBy(OUT_TYPE(DistributeBy, DistributeBy) msg)
+{
+  DistributeBy *node = makeNode(DistributeBy);
+  READ_ENUM_FIELD(DistributionType, disttype, disttype, disttype);
+  READ_LIST_FIELD(colname, colname, colname);
+  return node;
+}
+
+static PGXCSubCluster *
+_readPGXCSubCluster(OUT_TYPE(PGXCSubCluster, PGXCSubCluster) msg)
+{
+  PGXCSubCluster *node = makeNode(PGXCSubCluster);
+  READ_ENUM_FIELD(PGXCSubClusterType, clustertype, clustertype, clustertype);
+  READ_LIST_FIELD(members, members, members);
+  return node;
+}
+
 static OnConflictExpr *
 _readOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) msg)
 {
@@ -1329,12 +1350,29 @@ _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) msg)
   return node;
 }
 
+static PartitionBy *
+_readPartitionBy(OUT_TYPE(PartitionBy, PartitionBy) msg)
+{
+  PartitionBy *node = makeNode(PartitionBy);
+  READ_CHAR_FIELD(strategy, strategy, strategy);
+  READ_STRING_FIELD(colname, colname, colname);
+  READ_INT_FIELD(colattr, colattr, colattr);
+  READ_INT_FIELD(intervaltype, intervaltype, intervaltype);
+  READ_UINT_FIELD(partdatatype, partdatatype, partdatatype);
+  READ_NODE_PTR_FIELD(startvalue, startvalue, startvalue);
+  READ_NODE_PTR_FIELD(step, step, step);
+  READ_INT_FIELD(interval, interval, interval);
+  READ_INT_FIELD(n_partitions, nPartitions, nPartitions);
+  return node;
+}
+
 static PartitionSpec *
 _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg)
 {
   PartitionSpec *node = makeNode(PartitionSpec);
   READ_ENUM_FIELD(PartitionStrategy, strategy, strategy, strategy);
   READ_LIST_FIELD(part_params, partParams, partParams);
+  READ_SPECIFIC_NODE_PTR_FIELD(PartitionBy, partition_by, interval, interval, interval);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -2019,6 +2057,13 @@ _readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg)
   READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
   READ_STRING_FIELD(access_method, accessMethod, accessMethod);
   READ_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  READ_ENUM_FIELD(ObjectType, relkind, relkind, relkind);
+  READ_BOOL_FIELD(islocal, islocal, islocal);
+  READ_SPECIFIC_NODE_PTR_FIELD(DistributeBy, distribute_by, distributeby, distributeby, distributeby);
+  READ_SPECIFIC_NODE_PTR_FIELD(PGXCSubCluster, pgxcsub_cluster, subcluster, subcluster, subcluster);
+  READ_BOOL_FIELD(interval_child, interval_child, interval_child);
+  READ_INT_FIELD(interval_child_idx, interval_child_idx, interval_child_idx);
+  READ_UINT_FIELD(interval_parent_id, interval_parentId, interval_parentId);
   return node;
 }
 

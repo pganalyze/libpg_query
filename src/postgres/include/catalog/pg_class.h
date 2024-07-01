@@ -141,6 +141,8 @@ CATALOG(pg_class,1259,RelationRelationId) BKI_BOOTSTRAP BKI_ROWTYPE_OID(83,Relat
 #endif
 } FormData_pg_class;
 
+#define RELPERSISTENCE_LOCAL_TEMP    'l'    /* local temp table */
+
 /* Size of fixed part of pg_class tuples, not counting var-length fields */
 #define CLASS_TUPLE_SIZE \
 	 (offsetof(FormData_pg_class,relminmxid) + sizeof(TransactionId))

@@ -54,6 +54,8 @@
   READ_COND(RangeTblRef, RangeTblRef, range_tbl_ref, RANGE_TBL_REF, RangeTblRef, range_tbl_ref);
   READ_COND(JoinExpr, JoinExpr, join_expr, JOIN_EXPR, JoinExpr, join_expr);
   READ_COND(FromExpr, FromExpr, from_expr, FROM_EXPR, FromExpr, from_expr);
+  READ_COND(DistributeBy, DistributeBy, distribute_by, DISTRIBUTE_BY, DistributeBy, distribute_by);
+  READ_COND(PGXCSubCluster, PGXCSubCluster, pgxcsub_cluster, PGXCSUB_CLUSTER, PGXCSubCluster, pgxcsub_cluster);
   READ_COND(OnConflictExpr, OnConflictExpr, on_conflict_expr, ON_CONFLICT_EXPR, OnConflictExpr, on_conflict_expr);
   READ_COND(Query, Query, query, QUERY, Query, query);
   READ_COND(TypeName, TypeName, type_name, TYPE_NAME, TypeName, type_name);
@@ -84,6 +86,7 @@
   READ_COND(LockingClause, LockingClause, locking_clause, LOCKING_CLAUSE, LockingClause, locking_clause);
   READ_COND(XmlSerialize, XmlSerialize, xml_serialize, XML_SERIALIZE, XmlSerialize, xml_serialize);
   READ_COND(PartitionElem, PartitionElem, partition_elem, PARTITION_ELEM, PartitionElem, partition_elem);
+  READ_COND(PartitionBy, PartitionBy, partition_by, PARTITION_BY, PartitionBy, partition_by);
   READ_COND(PartitionSpec, PartitionSpec, partition_spec, PARTITION_SPEC, PartitionSpec, partition_spec);
   READ_COND(PartitionBoundSpec, PartitionBoundSpec, partition_bound_spec, PARTITION_BOUND_SPEC, PartitionBoundSpec, partition_bound_spec);
   READ_COND(PartitionRangeDatum, PartitionRangeDatum, partition_range_datum, PARTITION_RANGE_DATUM, PartitionRangeDatum, partition_range_datum);

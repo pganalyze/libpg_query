@@ -189,6 +189,12 @@ case T_JoinExpr:
 case T_FromExpr:
   OUT_NODE(FromExpr, FromExpr, from_expr, FROM_EXPR, FromExpr, from_expr);
   break;
+case T_DistributeBy:
+  OUT_NODE(DistributeBy, DistributeBy, distribute_by, DISTRIBUTE_BY, DistributeBy, distribute_by);
+  break;
+case T_PGXCSubCluster:
+  OUT_NODE(PGXCSubCluster, PGXCSubCluster, pgxcsub_cluster, PGXCSUB_CLUSTER, PGXCSubCluster, pgxcsub_cluster);
+  break;
 case T_OnConflictExpr:
   OUT_NODE(OnConflictExpr, OnConflictExpr, on_conflict_expr, ON_CONFLICT_EXPR, OnConflictExpr, on_conflict_expr);
   break;
@@ -278,6 +284,9 @@ case T_XmlSerialize:
   break;
 case T_PartitionElem:
   OUT_NODE(PartitionElem, PartitionElem, partition_elem, PARTITION_ELEM, PartitionElem, partition_elem);
+  break;
+case T_PartitionBy:
+  OUT_NODE(PartitionBy, PartitionBy, partition_by, PARTITION_BY, PartitionBy, partition_by);
   break;
 case T_PartitionSpec:
   OUT_NODE(PartitionSpec, PartitionSpec, partition_spec, PARTITION_SPEC, PartitionSpec, partition_spec);

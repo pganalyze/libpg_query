@@ -1345,6 +1345,61 @@
       ],
       "comment": "/*\n * PartitionElem - parse-time representation of a single partition key\n *\n * expr can be either a raw expression tree or a parse-analyzed expression.\n * We don't store these on-disk, though.\n */\n"
     },
+    "PartitionBy": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "strategy",
+          "c_type": "char",
+          "comment": "/* partition strategy */"
+        },
+        {
+          "name": "colname",
+          "c_type": "char*",
+          "comment": "/* name of partition by column*/"
+        },
+        {
+          "name": "colattr",
+          "c_type": "AttrNumber",
+          "comment": "/* attrnumber of partition by column */"
+        },
+        {
+          "name": "intervaltype",
+          "c_type": "int16",
+          "comment": "/* interval type */"
+        },
+        {
+          "name": "partdatatype",
+          "c_type": "Oid",
+          "comment": "/* data type of partition by column */"
+        },
+        {
+          "name": "startvalue",
+          "c_type": "Node*",
+          "comment": "/* start value of interval */"
+        },
+        {
+          "name": "step",
+          "c_type": "Node*",
+          "comment": "/* expr of interval value */"
+        },
+        {
+          "name": "interval",
+          "c_type": "int",
+          "comment": "/* int of interval value */"
+        },
+        {
+          "name": "nPartitions",
+          "c_type": "int",
+          "comment": "/* number of partitions to be created */"
+        }
+      ],
+      "comment": null
+    },
     "PartitionSpec": {
       "fields": [
         {
@@ -1361,6 +1416,11 @@
           "name": "partParams",
           "c_type": "List*",
           "comment": "/* List of PartitionElems */"
+        },
+        {
+          "name": "interval",
+          "c_type": "PartitionBy*",
+          "comment": "/* used for interval partition */"
         },
         {
           "name": "location",
@@ -3732,6 +3792,41 @@
           "name": "if_not_exists",
           "c_type": "bool",
           "comment": "/* just do nothing if it already exists? */"
+        },
+        {
+          "name": "relkind",
+          "c_type": "ObjectType",
+          "comment": "/* kind of relation to create */"
+        },
+        {
+          "name": "islocal",
+          "c_type": "bool",
+          "comment": "/* create only on the current node */"
+        },
+        {
+          "name": "distributeby",
+          "c_type": "DistributeBy*",
+          "comment": "/* distribution to use, or NULL */"
+        },
+        {
+          "name": "subcluster",
+          "c_type": "PGXCSubCluster*",
+          "comment": "/* subcluster of table */"
+        },
+        {
+          "name": "interval_child",
+          "c_type": "bool",
+          "comment": "/* is interval partition child? */"
+        },
+        {
+          "name": "interval_child_idx",
+          "c_type": "int",
+          "comment": "/* interval partition child's index */"
+        },
+        {
+          "name": "interval_parentId",
+          "c_type": "Oid",
+          "comment": "/* interval partition parent's oid */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Table Statement\n *\n * NOTE: in the raw gram.y output, ColumnDef and Constraint nodes are\n * intermixed in tableElts, and constraints is NIL.  After parse analysis,\n * tableElts contains just ColumnDefs, and constraints contains just\n * Constraint nodes (in fact, only CONSTR_CHECK nodes, in the present\n * implementation).\n * ----------------------\n */\n"
@@ -9892,6 +9987,46 @@
         }
       ],
       "comment": "/*----------\n * FromExpr - represents a FROM ... WHERE ... construct\n *\n * This is both more flexible than a JoinExpr (it can have any number of\n * children, including zero) and less so --- we don't need to deal with\n * aliases and so on.  The output column set is implicitly just the union\n * of the outputs of the children.\n *----------\n */\n"
+    },
+    "DistributeBy": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "disttype",
+          "c_type": "DistributionType",
+          "comment": "/* Distribution type */"
+        },
+        {
+          "name": "colname",
+          "c_type": "List*",
+          "comment": null
+        }
+      ],
+      "comment": "/*----------\n * DistributeBy - represents a DISTRIBUTE BY clause in a CREATE TABLE statement\n *\n *----------\n */\n"
+    },
+    "PGXCSubCluster": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "clustertype",
+          "c_type": "PGXCSubClusterType",
+          "comment": "/* Subcluster type */"
+        },
+        {
+          "name": "members",
+          "c_type": "List*",
+          "comment": "/* List of nodes or groups */"
+        }
+      ],
+      "comment": "/*----------\n * PGXCSubCluster - Subcluster on which a table can be created\n *\n *----------\n */\n"
     },
     "OnConflictExpr": {
       "fields": [

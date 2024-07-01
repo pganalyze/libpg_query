@@ -17,6 +17,8 @@ typedef struct PartitionBoundInfoData *PartitionBoundInfo;
 
 typedef struct PartitionKeyData *PartitionKey;
 
+typedef struct PartitionSpec PartitionSpec;
+
 typedef struct PartitionBoundSpec PartitionBoundSpec;
 
 typedef struct PartitionDescData *PartitionDesc;

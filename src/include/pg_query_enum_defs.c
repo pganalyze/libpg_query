@@ -777,6 +777,30 @@ _enumToStringBoolTestType(BoolTestType value) {
 }
 
 static const char*
+_enumToStringDistributionType(DistributionType value) {
+  switch(value) {
+    case DISTTYPE_REPLICATION: return "DISTTYPE_REPLICATION";
+    case DISTTYPE_HASH: return "DISTTYPE_HASH";
+    case DISTTYPE_ROUNDROBIN: return "DISTTYPE_ROUNDROBIN";
+    case DISTTYPE_MODULO: return "DISTTYPE_MODULO";
+    case DISTTYPE_SHARD: return "DISTTYPE_SHARD";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
+_enumToStringPGXCSubClusterType(PGXCSubClusterType value) {
+  switch(value) {
+    case SUBCLUSTER_NONE: return "SUBCLUSTER_NONE";
+    case SUBCLUSTER_NODE: return "SUBCLUSTER_NODE";
+    case SUBCLUSTER_GROUP: return "SUBCLUSTER_GROUP";
+  }
+  Assert(false);
+  return NULL;
+}
+
+static const char*
 _enumToStringCmdType(CmdType value) {
   switch(value) {
     case CMD_UNKNOWN: return "CMD_UNKNOWN";
@@ -1681,6 +1705,30 @@ _enumToIntBoolTestType(BoolTestType value) {
     case IS_NOT_FALSE: return 4;
     case IS_UNKNOWN: return 5;
     case IS_NOT_UNKNOWN: return 6;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntDistributionType(DistributionType value) {
+  switch(value) {
+    case DISTTYPE_REPLICATION: return 1;
+    case DISTTYPE_HASH: return 2;
+    case DISTTYPE_ROUNDROBIN: return 3;
+    case DISTTYPE_MODULO: return 4;
+    case DISTTYPE_SHARD: return 5;
+  }
+  Assert(false);
+  return -1;
+}
+
+static int
+_enumToIntPGXCSubClusterType(PGXCSubClusterType value) {
+  switch(value) {
+    case SUBCLUSTER_NONE: return 1;
+    case SUBCLUSTER_NODE: return 2;
+    case SUBCLUSTER_GROUP: return 3;
   }
   Assert(false);
   return -1;
@@ -2594,6 +2642,30 @@ _intToEnumBoolTestType(int value) {
   }
   Assert(false);
   return IS_TRUE;
+}
+
+static DistributionType
+_intToEnumDistributionType(int value) {
+  switch(value) {
+    case 1: return DISTTYPE_REPLICATION;
+    case 2: return DISTTYPE_HASH;
+    case 3: return DISTTYPE_ROUNDROBIN;
+    case 4: return DISTTYPE_MODULO;
+    case 5: return DISTTYPE_SHARD;
+  }
+  Assert(false);
+  return DISTTYPE_REPLICATION;
+}
+
+static PGXCSubClusterType
+_intToEnumPGXCSubClusterType(int value) {
+  switch(value) {
+    case 1: return SUBCLUSTER_NONE;
+    case 2: return SUBCLUSTER_NODE;
+    case 3: return SUBCLUSTER_GROUP;
+  }
+  Assert(false);
+  return SUBCLUSTER_NONE;
 }
 
 static CmdType

@@ -2011,6 +2011,53 @@ typedef struct FromExpr
 	Node	   *quals;			/* qualifiers on join, if any */
 } FromExpr;
 
+
+/*----------
+ * DistributionType - how to distribute the data
+ *
+ *----------
+ */
+typedef enum DistributionType
+{
+    DISTTYPE_REPLICATION,            /* Replicated */
+    DISTTYPE_HASH,                /* Hash partitioned */
+    DISTTYPE_ROUNDROBIN,            /* Round Robin */
+    DISTTYPE_MODULO,                /* Modulo partitioned */
+    DISTTYPE_SHARD
+} DistributionType;
+
+/*----------
+ * DistributeBy - represents a DISTRIBUTE BY clause in a CREATE TABLE statement
+ *
+ *----------
+ */
+typedef struct DistributeBy
+{
+    NodeTag        type;
+    DistributionType disttype;        /* Distribution type */
+    List        *colname;
+} DistributeBy;
+
+typedef enum PGXCSubClusterType
+{
+    SUBCLUSTER_NONE,
+    SUBCLUSTER_NODE,
+    SUBCLUSTER_GROUP
+} PGXCSubClusterType;
+
+/*----------
+ * PGXCSubCluster - Subcluster on which a table can be created
+ *
+ *----------
+ */
+typedef struct PGXCSubCluster
+{
+    NodeTag                type;
+    PGXCSubClusterType    clustertype;    /* Subcluster type */
+    List                *members;        /* List of nodes or groups */
+} PGXCSubCluster;
+
+
 /*----------
  * OnConflictExpr - represents an ON CONFLICT DO ... expression
  *

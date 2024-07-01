@@ -180,6 +180,12 @@
 		case T_FromExpr:
 			retval = _equalFromExpr(a, b);
 			break;
+		case T_DistributeBy:
+			retval = _equalDistributeBy(a, b);
+			break;
+		case T_PGXCSubCluster:
+			retval = _equalPGXCSubCluster(a, b);
+			break;
 		case T_OnConflictExpr:
 			retval = _equalOnConflictExpr(a, b);
 			break;
@@ -272,6 +278,9 @@
 			break;
 		case T_PartitionElem:
 			retval = _equalPartitionElem(a, b);
+			break;
+		case T_PartitionBy:
+			retval = _equalPartitionBy(a, b);
 			break;
 		case T_PartitionSpec:
 			retval = _equalPartitionSpec(a, b);

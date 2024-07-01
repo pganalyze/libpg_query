@@ -208,6 +208,14 @@ case T_FromExpr:
   _fingerprintString(ctx, "FromExpr");
   _fingerprintFromExpr(ctx, obj, parent, field_name, depth);
   break;
+case T_DistributeBy:
+  _fingerprintString(ctx, "DistributeBy");
+  _fingerprintDistributeBy(ctx, obj, parent, field_name, depth);
+  break;
+case T_PGXCSubCluster:
+  _fingerprintString(ctx, "PGXCSubCluster");
+  _fingerprintPGXCSubCluster(ctx, obj, parent, field_name, depth);
+  break;
 case T_OnConflictExpr:
   _fingerprintString(ctx, "OnConflictExpr");
   _fingerprintOnConflictExpr(ctx, obj, parent, field_name, depth);
@@ -329,6 +337,10 @@ case T_XmlSerialize:
 case T_PartitionElem:
   _fingerprintString(ctx, "PartitionElem");
   _fingerprintPartitionElem(ctx, obj, parent, field_name, depth);
+  break;
+case T_PartitionBy:
+  _fingerprintString(ctx, "PartitionBy");
+  _fingerprintPartitionBy(ctx, obj, parent, field_name, depth);
   break;
 case T_PartitionSpec:
   _fingerprintString(ctx, "PartitionSpec");

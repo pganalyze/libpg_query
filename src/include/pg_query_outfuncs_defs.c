@@ -54,6 +54,8 @@ static void _outTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) out_node, const T
 static void _outRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) out_node, const RangeTblRef *node);
 static void _outJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) out_node, const JoinExpr *node);
 static void _outFromExpr(OUT_TYPE(FromExpr, FromExpr) out_node, const FromExpr *node);
+static void _outDistributeBy(OUT_TYPE(DistributeBy, DistributeBy) out_node, const DistributeBy *node);
+static void _outPGXCSubCluster(OUT_TYPE(PGXCSubCluster, PGXCSubCluster) out_node, const PGXCSubCluster *node);
 static void _outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out_node, const OnConflictExpr *node);
 static void _outQuery(OUT_TYPE(Query, Query) out_node, const Query *node);
 static void _outTypeName(OUT_TYPE(TypeName, TypeName) out_node, const TypeName *node);
@@ -84,6 +86,7 @@ static void _outDefElem(OUT_TYPE(DefElem, DefElem) out_node, const DefElem *node
 static void _outLockingClause(OUT_TYPE(LockingClause, LockingClause) out_node, const LockingClause *node);
 static void _outXmlSerialize(OUT_TYPE(XmlSerialize, XmlSerialize) out_node, const XmlSerialize *node);
 static void _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out_node, const PartitionElem *node);
+static void _outPartitionBy(OUT_TYPE(PartitionBy, PartitionBy) out_node, const PartitionBy *node);
 static void _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out_node, const PartitionSpec *node);
 static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
 static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
@@ -823,6 +826,20 @@ _outFromExpr(OUT_TYPE(FromExpr, FromExpr) out, const FromExpr *node)
 }
 
 static void
+_outDistributeBy(OUT_TYPE(DistributeBy, DistributeBy) out, const DistributeBy *node)
+{
+  WRITE_ENUM_FIELD(DistributionType, disttype, disttype, disttype);
+  WRITE_LIST_FIELD(colname, colname, colname);
+}
+
+static void
+_outPGXCSubCluster(OUT_TYPE(PGXCSubCluster, PGXCSubCluster) out, const PGXCSubCluster *node)
+{
+  WRITE_ENUM_FIELD(PGXCSubClusterType, clustertype, clustertype, clustertype);
+  WRITE_LIST_FIELD(members, members, members);
+}
+
+static void
 _outOnConflictExpr(OUT_TYPE(OnConflictExpr, OnConflictExpr) out, const OnConflictExpr *node)
 {
   WRITE_ENUM_FIELD(OnConflictAction, action, action, action);
@@ -1162,10 +1179,25 @@ _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out, const PartitionEle
 }
 
 static void
+_outPartitionBy(OUT_TYPE(PartitionBy, PartitionBy) out, const PartitionBy *node)
+{
+  WRITE_CHAR_FIELD(strategy, strategy, strategy);
+  WRITE_STRING_FIELD(colname, colname, colname);
+  WRITE_INT_FIELD(colattr, colattr, colattr);
+  WRITE_INT_FIELD(intervaltype, intervaltype, intervaltype);
+  WRITE_UINT_FIELD(partdatatype, partdatatype, partdatatype);
+  WRITE_NODE_PTR_FIELD(startvalue, startvalue, startvalue);
+  WRITE_NODE_PTR_FIELD(step, step, step);
+  WRITE_INT_FIELD(interval, interval, interval);
+  WRITE_INT_FIELD(n_partitions, nPartitions, nPartitions);
+}
+
+static void
 _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out, const PartitionSpec *node)
 {
   WRITE_ENUM_FIELD(PartitionStrategy, strategy, strategy, strategy);
   WRITE_LIST_FIELD(part_params, partParams, partParams);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PartitionBy, partition_by, interval, interval, interval);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -1744,6 +1776,13 @@ _outCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) out, const CreateStmt *node)
   WRITE_STRING_FIELD(tablespacename, tablespacename, tablespacename);
   WRITE_STRING_FIELD(access_method, accessMethod, accessMethod);
   WRITE_BOOL_FIELD(if_not_exists, if_not_exists, if_not_exists);
+  WRITE_ENUM_FIELD(ObjectType, relkind, relkind, relkind);
+  WRITE_BOOL_FIELD(islocal, islocal, islocal);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(DistributeBy, distribute_by, distributeby, distributeby, distributeby);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(PGXCSubCluster, pgxcsub_cluster, subcluster, subcluster, subcluster);
+  WRITE_BOOL_FIELD(interval_child, interval_child, interval_child);
+  WRITE_INT_FIELD(interval_child_idx, interval_child_idx, interval_child_idx);
+  WRITE_UINT_FIELD(interval_parent_id, interval_parentId, interval_parentId);
 }
 
 static void
