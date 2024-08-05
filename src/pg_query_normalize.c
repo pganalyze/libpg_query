@@ -48,6 +48,9 @@ typedef struct pgssConstLocations
 	int *param_refs;
 	int param_refs_buf_size;
 	int param_refs_count;
+
+	/* should all statements be normalized, or only utility statements? */
+        bool normalize_utility_only;
 } pgssConstLocations;
 
 /*
@@ -428,6 +431,8 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			return false;
 		case T_SelectStmt:
 			{
+				if (jstate->normalize_utility_only) return false;
+
 				SelectStmt *stmt = (SelectStmt *) node;
 				ListCell *lc;
 				List *fp_and_param_refs_list = NIL;
@@ -540,6 +545,24 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 
 				return false;
 			}
+		case T_InsertStmt:
+			{
+				if (jstate->normalize_utility_only) return false;
+
+				return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+			}
+		case T_UpdateStmt:
+			{
+				if (jstate->normalize_utility_only) return false;
+
+				return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+			}
+		case T_DeleteStmt:
+			{
+				if (jstate->normalize_utility_only) return false;
+
+				return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+			}
 		default:
 			{
 				PG_TRY();
@@ -558,7 +581,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	return false;
 }
 
-PgQueryNormalizeResult pg_query_normalize(const char* input)
+PgQueryNormalizeResult pg_query_normalize_ext(const char* input, bool normalize_utility_only)
 {
 	MemoryContext ctx = NULL;
 	PgQueryNormalizeResult result = {0};
@@ -588,6 +611,7 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		jstate.param_refs = NULL;
 		jstate.param_refs_buf_size = 0;
 		jstate.param_refs_count = 0;
+		jstate.normalize_utility_only = normalize_utility_only;
 
 		/* Walk tree and record const locations */
 		const_record_walker((Node *) tree, &jstate);
@@ -619,6 +643,11 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 	pg_query_exit_memory_context(ctx);
 
 	return result;
+}
+
+PgQueryNormalizeResult pg_query_normalize(const char* input)
+{
+	return pg_query_normalize_ext(input, false);
 }
 
 void pg_query_free_normalize_result(PgQueryNormalizeResult result)
