@@ -5,14 +5,14 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "normalize_tests.c"
+#include "normalize_utility_tests.c"
 
 int main() {
   size_t i;
   bool ret_code = 0;
 
   for (i = 0; i < testsLength; i += 2) {
-    PgQueryNormalizeResult result = pg_query_normalize(tests[i]);
+    PgQueryNormalizeResult result = pg_query_normalize_utility(tests[i]);
 
     if (result.error) {
       ret_code = -1;

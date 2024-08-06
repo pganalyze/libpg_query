@@ -96,6 +96,7 @@ extern "C" {
 #endif
 
 PgQueryNormalizeResult pg_query_normalize(const char* input);
+PgQueryNormalizeResult pg_query_normalize_utility(const char* input);
 PgQueryScanResult pg_query_scan(const char* input);
 PgQueryParseResult pg_query_parse(const char* input);
 PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);

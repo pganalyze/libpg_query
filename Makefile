@@ -230,7 +230,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -239,6 +239,7 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/normalize_utility || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
@@ -255,6 +256,7 @@ else
 	test/fingerprint
 	test/fingerprint_opts
 	test/normalize
+	test/normalize_utility
 	test/parse
 	test/parse_opts
 	test/parse_protobuf
@@ -286,6 +288,9 @@ test/fingerprint_opts: test/fingerprint_opts.c test/fingerprint_opts_tests.c $(A
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/normalize.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/normalize_utility: test/normalize_utility.c test/normalize_utility_tests.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/normalize_utility.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse: test/parse.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse.c $(ARLIB) $(TEST_LDFLAGS)
