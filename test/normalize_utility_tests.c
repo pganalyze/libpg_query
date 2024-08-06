@@ -1,9 +1,10 @@
-// NOTE: make sure to keep this in sync with normalize_utility_tests.c
+// This contains all the same tests as normalize_tests.c, but only expecting that
+// utility statments are normalized.
 const char* tests[] = {
   "SELECT 1",
-  "SELECT $1",
+  "SELECT 1",
   "SELECT $1, 1",
-  "SELECT $1, $2",
+  "SELECT $1, 1",
   "CREATE ROLE postgres PASSWORD 'xyz'",
   "CREATE ROLE postgres PASSWORD $1",
   "CREATE ROLE postgres ENCRYPTED PASSWORD 'xyz'",
@@ -13,19 +14,19 @@ const char* tests[] = {
   "ALTER ROLE postgres LOGIN SUPERUSER ENCRYPTED PASSWORD 'xyz'",
   "ALTER ROLE postgres LOGIN SUPERUSER ENCRYPTED PASSWORD $1",
   "SELECT a, SUM(b) FROM tbl WHERE c = 'foo' GROUP BY 1, 'bar' ORDER BY 1, 'cafe'",
-  "SELECT a, SUM(b) FROM tbl WHERE c = $1 GROUP BY 1, $2 ORDER BY 1, $3",
+  "SELECT a, SUM(b) FROM tbl WHERE c = 'foo' GROUP BY 1, 'bar' ORDER BY 1, 'cafe'",
   "select date_trunc($1, created_at at time zone $2), count(*) from users group by date_trunc('day', created_at at time zone 'US/Pacific')",
-  "select date_trunc($1, created_at at time zone $2), count(*) from users group by date_trunc($1, created_at at time zone $2)",
+  "select date_trunc($1, created_at at time zone $2), count(*) from users group by date_trunc('day', created_at at time zone 'US/Pacific')",
   "select count(1), date_trunc('day', created_at at time zone 'US/Pacific'), 'something', 'somethingelse' from users group by date_trunc('day', created_at at time zone 'US/Pacific'), date_trunc('day', created_at), 'foobar', 'abcdef'",
-  "select count($1), date_trunc($2, created_at at time zone $3), $4, $5 from users group by date_trunc($2, created_at at time zone $3), date_trunc($6, created_at), $4, $5",
+  "select count(1), date_trunc('day', created_at at time zone 'US/Pacific'), 'something', 'somethingelse' from users group by date_trunc('day', created_at at time zone 'US/Pacific'), date_trunc('day', created_at), 'foobar', 'abcdef'",
   "SELECT CAST('abc' as varchar(50))",
-  "SELECT CAST($1 as varchar(50))",
+  "SELECT CAST('abc' as varchar(50))",
   "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $func_12345$ BEGIN INSERT INTO \"mytable\" (\"mycolumn\") VALUES ('myvalue') RETURNING * INTO response; EXCEPTION WHEN unique_violation THEN GET STACKED DIAGNOSTICS sequelize_caught_exception = PG_EXCEPTION_DETAIL; END $func_12345$ LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
-  "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $1 LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
+  "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $func_12345$ BEGIN INSERT INTO \"mytable\" (\"mycolumn\") VALUES ('myvalue') RETURNING * INTO response; EXCEPTION WHEN unique_violation THEN GET STACKED DIAGNOSTICS sequelize_caught_exception = PG_EXCEPTION_DETAIL; END $func_12345$ LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
   "CREATE PROCEDURE insert_data(a integer, b integer) LANGUAGE SQL AS $$ INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); $$",
-  "CREATE PROCEDURE insert_data(a integer, b integer) LANGUAGE SQL AS $1",
+  "CREATE PROCEDURE insert_data(a integer, b integer) LANGUAGE SQL AS $$ INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); $$",
   "DO $$DECLARE r record; BEGIN FOR r IN SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'VIEW' AND table_schema = 'public' LOOP EXECUTE 'GRANT ALL ON ' || quote_ident(r.table_schema) || '.' || quote_ident(r.table_name) || ' TO webuser'; END LOOP; END$$",
-  "DO $1",
+  "DO $$DECLARE r record; BEGIN FOR r IN SELECT table_schema, table_name FROM information_schema.tables WHERE table_type = 'VIEW' AND table_schema = 'public' LOOP EXECUTE 'GRANT ALL ON ' || quote_ident(r.table_schema) || '.' || quote_ident(r.table_name) || ' TO webuser'; END LOOP; END$$",
   "CREATE SUBSCRIPTION mysub CONNECTION 'host=192.168.1.50 port=5432 user=foo dbname=foodb' PUBLICATION mypublication, insert_only",
   "CREATE SUBSCRIPTION mysub CONNECTION $1 PUBLICATION mypublication, insert_only",
   "ALTER SUBSCRIPTION mysub SET PUBLICATION insert_only",
@@ -37,17 +38,17 @@ const char* tests[] = {
   "ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password 'public')",
   "ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password $1)",
   "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
-  "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, $1) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
+  "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
-  "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = $1",
+  "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
   "FETCH 1000 FROM cursor_a",
   "FETCH 1000 FROM cursor_a",
   "CLOSE cursor_a",
   "CLOSE cursor_a",
   "SELECT 1; ALTER USER a WITH PASSWORD 'b'",
-  "SELECT $1; ALTER USER a WITH PASSWORD $2",
+  "SELECT 1; ALTER USER a WITH PASSWORD $1",
 };
 
-size_t testsLength = __LINE__ - 7;
+size_t testsLength = __LINE__ - 8;
