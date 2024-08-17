@@ -226,7 +226,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 			PLpgSQL_variable *argvariable;
 			PLpgSQL_nsitem_type argitemtype;
 			snprintf(buf, sizeof(buf), "$%d", foreach_current_index(lc) + 1);
-			argdtype = plpgsql_build_datatype(UNKNOWNOID, -1, InvalidOid, NULL);
+			argdtype = plpgsql_build_datatype(UNKNOWNOID, -1, InvalidOid, param->argType);
 			argvariable = plpgsql_build_variable(param->name ? param->name : buf, 0, argdtype, false);
 			argitemtype = argvariable->dtype == PLPGSQL_DTYPE_VAR ? PLPGSQL_NSTYPE_VAR : PLPGSQL_NSTYPE_REC;
 			plpgsql_ns_additem(argitemtype, argvariable->dno, buf);
