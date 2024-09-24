@@ -573,19 +573,30 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
 }
 ))
 runner.mock('parse_datatype', %(
+#include "catalog/pg_collation_d.h"
 static PLpgSQL_type * parse_datatype(const char *string, int location) {
 	PLpgSQL_type *typ;
+
+	/* Ignore trailing spaces */
+	size_t len = strlen(string);
+	while (len > 0 && scanner_isspace(string[len - 1])) --len;
+
 	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
 	typ->typname = pstrdup(string);
-	typ->ttype = pg_strcasecmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
-	if (pg_strcasecmp(string, "REFCURSOR") == 0 || pg_strcasecmp(string, "CURSOR") == 0)
+	typ->ttype = pg_strncasecmp(string, "RECORD", len) == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
+	if (pg_strncasecmp(string, "REFCURSOR", len) == 0 || pg_strncasecmp(string, "CURSOR", len) == 0)
 	{
 		typ->typoid = REFCURSOROID;
+	}
+	else if (pg_strncasecmp(string, "TEXT", len) == 0)
+	{
+		typ->typoid = TEXTOID;
+		typ->collation = DEFAULT_COLLATION_OID;
 	}
 	return typ;
 }
 ))
-runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return -1; }')
+runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OID; }')
 runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
 runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }')
 runner.mock('plpgsql_parse_cwordtype', 'PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }')
@@ -679,6 +690,7 @@ runner.deep_resolve('MemoryContextAllocExtended')
 
 # Other required functions
 runner.deep_resolve('pg_printf')
+runner.deep_resolve('pg_strncasecmp')
 
 # Retain these functions for optional 32-bit support
 # (see BITS_PER_BITMAPWORD checks in bitmapset.c)

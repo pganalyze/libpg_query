@@ -905,7 +905,7 @@ NameListToString(List *names)
  * Note that this will only find collations that work with the current
  * database's encoding.
  */
-Oid get_collation_oid(List *name, bool missing_ok) { return -1; }
+Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OID; }
 
 
 /*
