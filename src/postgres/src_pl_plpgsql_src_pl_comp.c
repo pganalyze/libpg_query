@@ -898,6 +898,8 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
 		} else if (list_length(origtypname->names) == 2) {
 			ns = linitial_node(String, origtypname->names)->sval;
 			ident = lsecond_node(String, origtypname->names)->sval;
+			if (strcmp(ns, "pg_catalog") != 0)
+				typ->ttype = PLPGSQL_TTYPE_REC;
 		}
 	} else {
 		typ->typoid = typeOid;
