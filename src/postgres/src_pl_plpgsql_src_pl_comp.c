@@ -879,6 +879,7 @@ plpgsql_build_recfield(PLpgSQL_rec *rec, const char *fldname)
  * It can be NULL if the type could not be a composite type, or if it was
  * identified by OID to begin with (e.g., it's a function argument type).
  */
+
 PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname)
 {
 	PLpgSQL_type *typ;
@@ -922,6 +923,8 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
 	}
 	return typ;
 }
+
+
 
 /*
  * Utility subroutine to make a PLpgSQL_type struct given a pg_type entry

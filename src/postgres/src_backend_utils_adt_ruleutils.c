@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - quote_identifier
  * - quote_all_identifiers
+ * - quote_qualified_identifier
  *--------------------------------------------------------------------
  */
 
