@@ -565,3 +565,28 @@ BEGIN
     RETURN subtotal * 0.06;
 END;
 $$ LANGUAGE plpgsql;
+
+-- RETURN NEXT; with no expression https://www.postgresql.org/docs/16/plpgsql-control-structures.html#PLPGSQL-STATEMENTS-RETURNING-RETURN-NEXT
+CREATE OR REPLACE FUNCTION public.test_pl(s integer, e integer)
+  RETURNS TABLE(id INTEGER) AS $$
+BEGIN
+  id := s;
+LOOP
+  EXIT WHEN id>e;
+  RETURN NEXT;
+  id := id + 1;
+END LOOP;
+END
+$$
+  LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION trgfn()
+ RETURNS trigger AS $$
+DECLARE
+ prior ALIAS FOR old;
+ updated ALIAS FOR new;
+BEGIN
+ RETURN;
+END;
+$$
+  LANGUAGE plpgsql;
