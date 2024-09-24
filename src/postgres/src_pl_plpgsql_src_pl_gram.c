@@ -6096,6 +6096,10 @@ static PLpgSQL_type * parse_datatype(const char *string, int location) {
 	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
 	typ->typname = pstrdup(string);
 	typ->ttype = pg_strcasecmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
+	if (pg_strcasecmp(string, "REFCURSOR") == 0 || pg_strcasecmp(string, "CURSOR") == 0)
+	{
+		typ->typoid = REFCURSOROID;
+	}
 	return typ;
 }
 

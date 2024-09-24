@@ -590,3 +590,13 @@ BEGIN
 END;
 $$
   LANGUAGE plpgsql;
+
+-- Example from https://www.postgresql.org/docs/16/plpgsql-cursors.html
+CREATE FUNCTION reffunc2() RETURNS refcursor AS '
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT col FROM test;
+    RETURN ref;
+END;
+' LANGUAGE plpgsql;
