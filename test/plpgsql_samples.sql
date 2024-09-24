@@ -545,3 +545,14 @@ CREATE FUNCTION test_cursor() RETURNS void AS $$
   END
 $$ language plpgsql;
 
+CREATE FUNCTION public.dz_sumfunc(
+    IN  p_in  INTEGER
+    ,OUT p_out public.dz_sumthing
+)
+AS $BODY$
+DECLARE
+BEGIN
+    p_out.sumattribute := p_in;
+END;
+$BODY$
+LANGUAGE plpgsql;
