@@ -533,3 +533,15 @@ BEGIN
         EXECUTE 'GRANT ALL ON ' || quote_ident(r.table_schema) || '.' || quote_ident(r.table_name) || ' TO webuser';
     END LOOP;
 END$$;
+
+CREATE FUNCTION test_cursor() RETURNS void AS $$
+  DECLARE
+    i INT;
+    c CURSOR FOR SELECT generate_series(1,10);
+  BEGIN
+    FOR i IN c LOOP
+      RAISE NOTICE 'i is %',i;
+    END LOOP;
+  END
+$$ language plpgsql;
+

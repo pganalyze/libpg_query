@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - quote_identifier
  * - quote_all_identifiers
+ * - quote_qualified_identifier
  *--------------------------------------------------------------------
  */
 
@@ -1718,7 +1719,18 @@ quote_identifier(const char *ident)
  * Return a name of the form qualifier.ident, or just ident if qualifier
  * is NULL, quoting each component if necessary.  The result is palloc'd.
  */
+char *
+quote_qualified_identifier(const char *qualifier,
+						   const char *ident)
+{
+	StringInfoData buf;
 
+	initStringInfo(&buf);
+	if (qualifier)
+		appendStringInfo(&buf, "%s.", quote_identifier(qualifier));
+	appendStringInfoString(&buf, quote_identifier(ident));
+	return buf.data;
+}
 
 /*
  * get_relation_name

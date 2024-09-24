@@ -879,7 +879,51 @@ plpgsql_build_recfield(PLpgSQL_rec *rec, const char *fldname)
  * It can be NULL if the type could not be a composite type, or if it was
  * identified by OID to begin with (e.g., it's a function argument type).
  */
-PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ; }
+
+PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname)
+{
+	PLpgSQL_type *typ;
+	char *ident = NULL, *ns = NULL;
+	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+
+	typ->ttype = PLPGSQL_TTYPE_SCALAR;
+	typ->atttypmod = typmod;
+	typ->collation = collation;
+
+	if (origtypname) {
+		typ->typoid = origtypname->typeOid;
+
+		if (list_length(origtypname->names) == 1) {
+			ident = linitial_node(String, origtypname->names)->sval;
+		} else if (list_length(origtypname->names) == 2) {
+			ns = linitial_node(String, origtypname->names)->sval;
+			ident = lsecond_node(String, origtypname->names)->sval;
+		}
+	} else {
+		typ->typoid = typeOid;
+		ns = "pg_catalog";
+		switch(typeOid)
+		{
+			case BOOLOID:
+				ident = "boolean";
+				break;
+			case INT4OID:
+				ident = "integer";
+				break;
+			case TEXTOID:
+				ident = "text";
+				break;
+			case REFCURSOROID:
+				ident = "refcursor";
+				break;
+		}
+	}
+	if (ident) {
+		typ->typname = quote_qualified_identifier(ns, ident);
+	}
+	return typ;
+}
+
 
 
 /*
