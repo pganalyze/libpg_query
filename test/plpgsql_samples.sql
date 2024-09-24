@@ -600,3 +600,13 @@ BEGIN
     RETURN ref;
 END;
 ' LANGUAGE plpgsql;
+
+-- Example from https://www.postgresql.org/docs/16/plpgsql-declarations.html#PLPGSQL-DECLARATION-COLLATION
+CREATE FUNCTION less_than(a text, b text) RETURNS boolean AS $$
+DECLARE
+    local_a text COLLATE "en_US" := a;
+    local_b text := b;
+BEGIN
+    RETURN local_a < local_b;
+END;
+$$ LANGUAGE plpgsql;
