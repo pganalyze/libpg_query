@@ -1,12 +1,12 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - debug_query_string
- * - whereToSendOutput
- * - ProcessInterrupts
- * - check_stack_depth
  * - stack_is_too_deep
  * - stack_base_ptr
  * - max_stack_depth_bytes
+ * - whereToSendOutput
+ * - ProcessInterrupts
+ * - check_stack_depth
  * - max_stack_depth
  *--------------------------------------------------------------------
  */
@@ -16,7 +16,7 @@
  * postgres.c
  *	  POSTGRES C Backend Interface
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -49,6 +49,7 @@
 #include "access/xact.h"
 #include "catalog/pg_type.h"
 #include "commands/async.h"
+#include "commands/event_trigger.h"
 #include "commands/prepare.h"
 #include "common/pg_prng.h"
 #include "jit/jit.h"
@@ -84,12 +85,14 @@
 #include "tcop/tcopprot.h"
 #include "tcop/utility.h"
 #include "utils/guc_hooks.h"
+#include "utils/injection_point.h"
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
 #include "utils/ps_status.h"
 #include "utils/snapmgr.h"
 #include "utils/timeout.h"
 #include "utils/timestamp.h"
+#include "utils/varlena.h"
 
 /* ----------------
  *		global variables
@@ -115,6 +118,9 @@ __thread int			max_stack_depth = 100;
 
 
 /* Time between checks that the client is still connected. */
+
+
+/* flags for non-system relation kinds to restrict use */
 
 
 /* ----------------
@@ -182,7 +188,6 @@ static __thread char *stack_base_ptr = NULL;
 
 
 
-
 /* reused buffer to pass to SendRowDescriptionMessage() */
 
 
@@ -200,7 +205,6 @@ static bool check_log_statement(List *stmt_list);
 static int	errdetail_execute(List *raw_parsetree_list);
 static int	errdetail_params(ParamListInfo params);
 static int	errdetail_abort(void);
-static int	errdetail_recovery_conflict(void);
 static void bind_param_error_callback(void *arg);
 static void start_xact_command(void);
 static void finish_xact_command(void);
@@ -556,10 +560,18 @@ valgrind_report_error_query(const char *query)
 
 
 /*
- * RecoveryConflictInterrupt: out-of-line portion of recovery conflict
- * handling following receipt of SIGUSR1. Designed to be similar to die()
- * and StatementCancelHandler(). Called only by a normal user backend
- * that begins a transaction during recovery.
+ * Tell the next CHECK_FOR_INTERRUPTS() to check for a particular type of
+ * recovery conflict.  Runs in a SIGUSR1 handler.
+ */
+
+
+/*
+ * Check one individual conflict reason.
+ */
+
+
+/*
+ * Check each possible recovery conflict reason.
  */
 
 
@@ -685,6 +697,18 @@ stack_is_too_deep(void)
  * GUC check_hook for log_statement_stats
  */
 
+
+/* GUC assign hook for transaction_timeout */
+
+
+/*
+ * GUC check_hook for restrict_nonsystem_relation_kind
+ */
+
+
+/*
+ * GUC assign_hook for restrict_nonsystem_relation_kind
+ */
 
 
 /*

@@ -992,6 +992,27 @@ WHEN MATCHED THEN
 	UPDATE SET dnotes = dnotes || ' notes added by merge8 '
 WHEN NOT MATCHED THEN
 	INSERT VALUES (13, 44, 1, 'regress_rls_bob', 'new manga');
+SELECT * FROM document WHERE did = 13;
+
+-- but not OK if RETURNING is used
+MERGE INTO document d
+USING (SELECT 14 as sdid) s
+ON did = s.sdid
+WHEN MATCHED THEN
+	UPDATE SET dnotes = dnotes || ' notes added by merge9 '
+WHEN NOT MATCHED THEN
+	INSERT VALUES (14, 44, 1, 'regress_rls_bob', 'new manga')
+RETURNING *;
+
+-- but OK if new row is visible
+MERGE INTO document d
+USING (SELECT 14 as sdid) s
+ON did = s.sdid
+WHEN MATCHED THEN
+	UPDATE SET dnotes = dnotes || ' notes added by merge10 '
+WHEN NOT MATCHED THEN
+	INSERT VALUES (14, 11, 1, 'regress_rls_bob', 'new novel')
+RETURNING *;
 
 RESET SESSION AUTHORIZATION;
 -- drop the restrictive SELECT policy so that we can look at the
@@ -1704,6 +1725,25 @@ DELETE FROM current_check WHERE CURRENT OF current_check_cursor RETURNING *;
 SELECT * FROM current_check;
 
 COMMIT;
+
+-- Check that RLS filters that are tidquals don't override WHERE CURRENT OF
+BEGIN;
+CREATE TABLE current_check_2 (a int, b text);
+INSERT INTO current_check_2 VALUES (1, 'Apple');
+ALTER TABLE current_check_2 ENABLE ROW LEVEL SECURITY;
+ALTER TABLE current_check_2 FORCE ROW LEVEL SECURITY;
+-- policy must accept ctid = (InvalidBlockNumber,0) since updates check it
+-- before assigning a ctid to the new row
+CREATE POLICY p1 ON current_check_2 AS PERMISSIVE
+  USING (ctid IN ('(0,1)', '(0,2)', '(4294967295,0)'));
+SELECT ctid, * FROM current_check_2;
+DECLARE current_check_cursor CURSOR FOR SELECT * FROM current_check_2;
+FETCH FROM current_check_cursor;
+EXPLAIN (COSTS OFF)
+UPDATE current_check_2 SET b = 'Manzana' WHERE CURRENT OF current_check_cursor;
+UPDATE current_check_2 SET b = 'Manzana' WHERE CURRENT OF current_check_cursor;
+SELECT ctid, * FROM current_check_2;
+ROLLBACK;
 
 --
 -- check pg_stats view filtering

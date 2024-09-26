@@ -16,7 +16,7 @@
  * and implementing search-path-controlled searches.
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -31,6 +31,7 @@
 #include "access/xact.h"
 #include "access/xlog.h"
 #include "catalog/dependency.h"
+#include "catalog/namespace.h"
 #include "catalog/objectaccess.h"
 #include "catalog/pg_authid.h"
 #include "catalog/pg_collation.h"
@@ -48,14 +49,14 @@
 #include "catalog/pg_ts_template.h"
 #include "catalog/pg_type.h"
 #include "commands/dbcommands.h"
+#include "common/hashfn_unstable.h"
 #include "funcapi.h"
 #include "mb/pg_wchar.h"
 #include "miscadmin.h"
 #include "nodes/makefuncs.h"
-#include "parser/parse_func.h"
 #include "storage/ipc.h"
 #include "storage/lmgr.h"
-#include "storage/sinvaladt.h"
+#include "storage/procarray.h"
 #include "utils/acl.h"
 #include "utils/builtins.h"
 #include "utils/catcache.h"
@@ -74,9 +75,7 @@
  * may be included:
  *
  * 1. If a TEMP table namespace has been initialized in this session, it
- * is implicitly searched first.  (The only time this doesn't happen is
- * when we are obeying an override search path spec that says not to use the
- * temp namespace, or the temp namespace is included in the explicit list.)
+ * is implicitly searched first.
  *
  * 2. The system catalog namespace is always searched.  If the system
  * namespace is present in the explicit path then it will be searched in
@@ -115,19 +114,16 @@
  * namespace (if it exists), preceded by the user's personal namespace
  * (if one exists).
  *
- * We support a stack of "override" search path settings for use within
- * specific sections of backend code.  namespace_search_path is ignored
- * whenever the override stack is nonempty.  activeSearchPath is always
- * the actually active path; it points either to the search list of the
- * topmost stack entry, or to baseSearchPath which is the list derived
- * from namespace_search_path.
+ * activeSearchPath is always the actually active path; it points to
+ * baseSearchPath which is the list derived from namespace_search_path.
  *
- * If baseSearchPathValid is false, then baseSearchPath (and other
- * derived variables) need to be recomputed from namespace_search_path.
- * We mark it invalid upon an assignment to namespace_search_path or receipt
- * of a syscache invalidation event for pg_namespace.  The recomputation
- * is done during the next non-overridden lookup attempt.  Note that an
- * override spec is never subject to recomputation.
+ * If baseSearchPathValid is false, then baseSearchPath (and other derived
+ * variables) need to be recomputed from namespace_search_path, or retrieved
+ * from the search path cache if there haven't been any syscache
+ * invalidations.  We mark it invalid upon an assignment to
+ * namespace_search_path or receipt of a syscache invalidation event for
+ * pg_namespace or pg_authid.  The recomputation is done during the next
+ * lookup attempt.
  *
  * Any namespaces mentioned in namespace_search_path that are not readable
  * by the current user ID are simply left out of baseSearchPath; so
@@ -168,16 +164,31 @@
 /* The above four values are valid only if baseSearchPathValid */
 
 
-/* Override requests are remembered in a stack of OverrideStackEntry structs */
+/*
+ * Storage for search path cache.  Clear searchPathCacheValid as a simple
+ * way to invalidate *all* the cache entries, not just the active one.
+ */
 
-typedef struct
+
+
+typedef struct SearchPathCacheKey
 {
-	List	   *searchPath;		/* the desired search path */
-	Oid			creationNamespace;	/* the desired creation namespace */
-	int			nestLevel;		/* subtransaction nesting level */
-} OverrideStackEntry;
+	const char *searchPath;
+	Oid			roleid;
+} SearchPathCacheKey;
 
+typedef struct SearchPathCacheEntry
+{
+	SearchPathCacheKey key;
+	List	   *oidlist;		/* namespace OIDs that pass ACL checks */
+	List	   *finalPath;		/* cached final computed search path */
+	Oid			firstNS;		/* first explicitly-listed namespace */
+	bool		temp_missing;
+	bool		forceRecompute; /* force recompute of finalPath */
 
+	/* needed for simplehash */
+	char		status;
+} SearchPathCacheEntry;
 
 /*
  * myTempNamespace is InvalidOid until and unless a TEMP namespace is set up
@@ -208,15 +219,87 @@ typedef struct
 
 
 /* Local functions */
+static bool RelationIsVisibleExt(Oid relid, bool *is_missing);
+static bool TypeIsVisibleExt(Oid typid, bool *is_missing);
+static bool FunctionIsVisibleExt(Oid funcid, bool *is_missing);
+static bool OperatorIsVisibleExt(Oid oprid, bool *is_missing);
+static bool OpclassIsVisibleExt(Oid opcid, bool *is_missing);
+static bool OpfamilyIsVisibleExt(Oid opfid, bool *is_missing);
+static bool CollationIsVisibleExt(Oid collid, bool *is_missing);
+static bool ConversionIsVisibleExt(Oid conid, bool *is_missing);
+static bool StatisticsObjIsVisibleExt(Oid stxid, bool *is_missing);
+static bool TSParserIsVisibleExt(Oid prsId, bool *is_missing);
+static bool TSDictionaryIsVisibleExt(Oid dictId, bool *is_missing);
+static bool TSTemplateIsVisibleExt(Oid tmplId, bool *is_missing);
+static bool TSConfigIsVisibleExt(Oid cfgid, bool *is_missing);
 static void recomputeNamespacePath(void);
 static void AccessTempTableNamespace(bool force);
 static void InitTempTableNamespace(void);
 static void RemoveTempRelations(Oid tempNamespaceId);
 static void RemoveTempRelationsCallback(int code, Datum arg);
-static void NamespaceCallback(Datum arg, int cacheid, uint32 hashvalue);
+static void InvalidationCallback(Datum arg, int cacheid, uint32 hashvalue);
 static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 						   bool include_out_arguments, int pronargs,
 						   int **argnumbers);
+
+/*
+ * Recomputing the namespace path can be costly when done frequently, such as
+ * when a function has search_path set in proconfig. Add a search path cache
+ * that can be used by recomputeNamespacePath().
+ *
+ * The cache is also used to remember already-validated strings in
+ * check_search_path() to avoid the need to call SplitIdentifierString()
+ * repeatedly.
+ *
+ * The search path cache is based on a wrapper around a simplehash hash table
+ * (nsphash, defined below). The spcache wrapper deals with OOM while trying
+ * to initialize a key, optimizes repeated lookups of the same key, and also
+ * offers a more convenient API.
+ */
+
+
+
+
+
+#define SH_PREFIX		nsphash
+#define SH_ELEMENT_TYPE	SearchPathCacheEntry
+#define SH_KEY_TYPE		SearchPathCacheKey
+#define SH_KEY			key
+#define SH_HASH_KEY(tb, key)   	spcachekey_hash(key)
+#define SH_EQUAL(tb, a, b)		spcachekey_equal(a, b)
+#define SH_SCOPE		static inline
+#define SH_DECLARE
+// #define SH_DEFINE
+#include "lib/simplehash.h"
+
+/*
+ * We only expect a small number of unique search_path strings to be used. If
+ * this cache grows to an unreasonable size, reset it to avoid steady-state
+ * memory growth. Most likely, only a few of those entries will benefit from
+ * the cache, and the cache will be quickly repopulated with such entries.
+ */
+#define SPCACHE_RESET_THRESHOLD		256
+
+
+
+
+/*
+ * Create or reset search_path cache as necessary.
+ */
+
+
+/*
+ * Look up entry in search path cache without inserting. Returns NULL if not
+ * present.
+ */
+
+
+/*
+ * Look up or insert entry in search path cache.
+ *
+ * Initialize key safely, so that OOM does not leave an entry without a valid
+ * key. Caller must ensure that non-key contents are properly initialized.
+ */
 
 
 /*
@@ -305,6 +388,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  */
 
 
+/*
+ * RelationIsVisibleExt
+ *		As above, but if the relation isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
 
 /*
  * TypenameGetTypid
@@ -326,6 +417,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether a type (identified by OID) is visible in the
  *		current search path.  Visible means "would be found by searching
  *		for the unqualified type name".
+ */
+
+
+/*
+ * TypeIsVisibleExt
+ *		As above, but if the type isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
  */
 
 
@@ -435,6 +534,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  */
 
 
+/*
+ * FunctionIsVisibleExt
+ *		As above, but if the function isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
 
 /*
  * OpernameGetOprid
@@ -477,6 +584,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  */
 
 
+/*
+ * OperatorIsVisibleExt
+ *		As above, but if the operator isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
 
 /*
  * OpclassnameGetOpcid
@@ -497,6 +612,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 
 /*
+ * OpclassIsVisibleExt
+ *		As above, but if the opclass isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
+/*
  * OpfamilynameGetOpfid
  *		Try to resolve an unqualified index opfamily name.
  *		Returns OID if opfamily found in search path, else InvalidOid.
@@ -511,6 +634,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether an opfamily (identified by OID) is visible in the
  *		current search path.  Visible means "would be found by searching
  *		for the unqualified opfamily name".
+ */
+
+
+/*
+ * OpfamilyIsVisibleExt
+ *		As above, but if the opfamily isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
  */
 
 
@@ -542,6 +673,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  */
 
 
+/*
+ * CollationIsVisibleExt
+ *		As above, but if the collation isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
 
 /*
  * ConversionGetConid
@@ -561,6 +700,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 
 /*
+ * ConversionIsVisibleExt
+ *		As above, but if the conversion isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
+/*
  * get_statistics_object_oid - find a statistics object by possibly qualified name
  *
  * If not found, returns InvalidOid if missing_ok, else throws error
@@ -572,6 +719,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether a statistics object (identified by OID) is visible in
  *		the current search path.  Visible means "would be found by searching
  *		for the unqualified statistics object name".
+ */
+
+
+/*
+ * StatisticsObjIsVisibleExt
+ *		As above, but if the statistics object isn't found and is_missing is
+ *		not NULL, then set *is_missing = true and return false instead of
+ *		throwing an error.  (Caller must initialize *is_missing = false.)
  */
 
 
@@ -591,6 +746,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 
 /*
+ * TSParserIsVisibleExt
+ *		As above, but if the parser isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
+/*
  * get_ts_dict_oid - find a TS dictionary by possibly qualified name
  *
  * If not found, returns InvalidOid if missing_ok, else throws error
@@ -602,6 +765,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether a dictionary (identified by OID) is visible in the
  *		current search path.  Visible means "would be found by searching
  *		for the unqualified dictionary name".
+ */
+
+
+/*
+ * TSDictionaryIsVisibleExt
+ *		As above, but if the dictionary isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
  */
 
 
@@ -621,6 +792,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
 
 
 /*
+ * TSTemplateIsVisibleExt
+ *		As above, but if the template isn't found and is_missing is not NULL,
+ *		then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
+ */
+
+
+/*
  * get_ts_config_oid - find a TS config by possibly qualified name
  *
  * If not found, returns InvalidOid if missing_ok, else throws error
@@ -632,6 +811,14 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  *		Determine whether a text search configuration (identified by OID)
  *		is visible in the current search path.  Visible means "would be found
  *		by searching for the unqualified text search configuration name".
+ */
+
+
+/*
+ * TSConfigIsVisibleExt
+ *		As above, but if the configuration isn't found and is_missing is not
+ *		NULL, then set *is_missing = true and return false instead of throwing
+ *		an error.  (Caller must initialize *is_missing = false.)
  */
 
 
@@ -726,7 +913,7 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  * but we also allow A_Star for the convenience of ColumnRef processing.
  */
 char *
-NameListToString(List *names)
+NameListToString(const List *names)
 {
 	StringInfoData string;
 	ListCell   *l;
@@ -806,10 +993,10 @@ NameListToString(List *names)
 
 
 /*
- * GetTempNamespaceBackendId - if the given namespace is a temporary-table
- * namespace (either my own, or another backend's), return the BackendId
+ * GetTempNamespaceProcNumber - if the given namespace is a temporary-table
+ * namespace (either my own, or another backend's), return the proc number
  * that owns it.  Temporary-toast-table namespaces are included, too.
- * If it isn't a temp namespace, return InvalidBackendId.
+ * If it isn't a temp namespace, return INVALID_PROC_NUMBER.
  */
 
 
@@ -841,8 +1028,7 @@ NameListToString(List *names)
 
 
 /*
- * GetOverrideSearchPath - fetch current search path definition in form
- * used by PushOverrideSearchPath.
+ * GetSearchPathMatcher - fetch current search path definition.
  *
  * The result structure is allocated in the specified memory context
  * (which might or might not be equal to CurrentMemoryContext); but any
@@ -851,52 +1037,20 @@ NameListToString(List *names)
 
 
 /*
- * CopyOverrideSearchPath - copy the specified OverrideSearchPath.
+ * CopySearchPathMatcher - copy the specified SearchPathMatcher.
  *
  * The result structure is allocated in CurrentMemoryContext.
  */
 
 
 /*
- * OverrideSearchPathMatchesCurrent - does path match current setting?
+ * SearchPathMatchesCurrentEnvironment - does path match current environment?
  *
  * This is tested over and over in some common code paths, and in the typical
  * scenario where the active search path seldom changes, it'll always succeed.
  * We make that case fast by keeping a generation counter that is advanced
  * whenever the active search path changes.
  */
-
-
-/*
- * PushOverrideSearchPath - temporarily override the search path
- *
- * Do not use this function; almost any usage introduces a security
- * vulnerability.  It exists for the benefit of legacy code running in
- * non-security-sensitive environments.
- *
- * We allow nested overrides, hence the push/pop terminology.  The GUC
- * search_path variable is ignored while an override is active.
- *
- * It's possible that newpath->useTemp is set but there is no longer any
- * active temp namespace, if the path was saved during a transaction that
- * created a temp namespace and was later rolled back.  In that case we just
- * ignore useTemp.  A plausible alternative would be to create a new temp
- * namespace, but for existing callers that's not necessary because an empty
- * temp namespace wouldn't affect their results anyway.
- *
- * It's also worth noting that other schemas listed in newpath might not
- * exist anymore either.  We don't worry about this because OIDs that match
- * no existing namespace will simply not produce any hits during searches.
- */
-
-
-/*
- * PopOverrideSearchPath - undo a previous PushOverrideSearchPath
- *
- * Any push during a (sub)transaction will be popped automatically at abort.
- * But it's caller error if a push isn't popped in normal control flow.
- */
-
 
 
 /*
@@ -915,6 +1069,29 @@ Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OI
 
 /*
  * FindDefaultConversionProc - find default encoding conversion proc
+ */
+
+
+/*
+ * Look up namespace IDs and perform ACL checks. Return newly-allocated list.
+ */
+
+
+/*
+ * Remove duplicates, run namespace search hooks, and prepend
+ * implicitly-searched namespaces. Return newly-allocated list.
+ *
+ * If an object_access_hook is present, this must always be recalculated. It
+ * may seem that duplicate elimination is not dependent on the result of the
+ * hook, but if a hook returns different results on different calls for the
+ * same namespace ID, then it could affect the order in which that namespace
+ * appears in the final list.
+ */
+
+
+/*
+ * Retrieve search path information from the cache; or if not there, fill
+ * it. The returned entry is valid only until the next call to this function.
  */
 
 
@@ -993,7 +1170,7 @@ Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OI
 
 
 /*
- * NamespaceCallback
+ * InvalidationCallback
  *		Syscache inval callback function
  */
 
@@ -1032,9 +1209,7 @@ Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OI
  * condition errors when a query that's scanning a catalog using an MVCC
  * snapshot uses one of these functions.  The underlying IsVisible functions
  * always use an up-to-date snapshot and so might see the object as already
- * gone when it's still visible to the transaction snapshot.  (There is no race
- * condition in the current coding because we don't accept sinval messages
- * between the SearchSysCacheExists test and the subsequent lookup.)
+ * gone when it's still visible to the transaction snapshot.
  */
 
 

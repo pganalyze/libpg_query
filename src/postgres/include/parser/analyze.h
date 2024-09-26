@@ -4,7 +4,7 @@
  *		parse analysis for optimizable statements
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/parser/analyze.h
@@ -44,6 +44,8 @@ extern List *transformInsertRow(ParseState *pstate, List *exprlist,
 								bool strip_indirection);
 extern List *transformUpdateTargetList(ParseState *pstate,
 									   List *origTlist);
+extern List *transformReturningList(ParseState *pstate, List *returningList,
+									ParseExprKind exprKind);
 extern Query *transformTopLevelStmt(ParseState *pstate, RawStmt *parseTree);
 extern Query *transformStmt(ParseState *pstate, Node *parseTree);
 

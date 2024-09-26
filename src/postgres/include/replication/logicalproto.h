@@ -3,7 +3,7 @@
  * logicalproto.h
  *		logical replication protocol
  *
- * Copyright (c) 2015-2023, PostgreSQL Global Development Group
+ * Copyright (c) 2015-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *		src/include/replication/logicalproto.h
@@ -74,7 +74,7 @@ typedef enum LogicalRepMsgType
 	LOGICAL_REP_MSG_STREAM_STOP = 'E',
 	LOGICAL_REP_MSG_STREAM_COMMIT = 'c',
 	LOGICAL_REP_MSG_STREAM_ABORT = 'A',
-	LOGICAL_REP_MSG_STREAM_PREPARE = 'p'
+	LOGICAL_REP_MSG_STREAM_PREPARE = 'p',
 } LogicalRepMsgType;
 
 /*

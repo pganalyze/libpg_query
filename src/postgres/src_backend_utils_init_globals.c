@@ -13,7 +13,7 @@
  * globals.c
  *	  global variable declarations
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -32,7 +32,7 @@
 #include "libpq/libpq-be.h"
 #include "libpq/pqcomm.h"
 #include "miscadmin.h"
-#include "storage/backendid.h"
+#include "storage/procnumber.h"
 
 
 
@@ -48,11 +48,13 @@ __thread volatile sig_atomic_t InterruptPending = false;
 
 
 
+
 __thread volatile uint32 InterruptHoldoffCount = 0;
 
 __thread volatile uint32 QueryCancelHoldoffCount = 0;
 
 __thread volatile uint32 CritSectionCount = 0;
+
 
 
 
@@ -104,6 +106,8 @@ __thread volatile uint32 CritSectionCount = 0;
 
 
 
+
+
 /*
  * DatabasePath is the path (relative to DataDir) of my database's
  * primary directory, ie, its directory in the default tablespace.
@@ -123,7 +127,6 @@ __thread volatile uint32 CritSectionCount = 0;
  *
  * These are initialized for the bootstrap/standalone case.
  */
-
 
 
 
@@ -168,4 +171,13 @@ __thread bool		ExitOnAnyError = false;
 
 
 	/* working state for vacuum */
+
+
+/* configurable SLRU buffer sizes */
+
+
+
+
+
+
 

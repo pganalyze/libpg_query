@@ -3,7 +3,7 @@
  * copyfuncs.switch.c
  *    Generated node infrastructure code
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -44,6 +44,12 @@
 			break;
 		case T_WindowFunc:
 			retval = _copyWindowFunc(from);
+			break;
+		case T_WindowFuncRunCondition:
+			retval = _copyWindowFuncRunCondition(from);
+			break;
+		case T_MergeSupportFunc:
+			retval = _copyMergeSupportFunc(from);
 			break;
 		case T_SubscriptingRef:
 			retval = _copySubscriptingRef(from);
@@ -144,11 +150,29 @@
 		case T_JsonIsPredicate:
 			retval = _copyJsonIsPredicate(from);
 			break;
+		case T_JsonBehavior:
+			retval = _copyJsonBehavior(from);
+			break;
+		case T_JsonExpr:
+			retval = _copyJsonExpr(from);
+			break;
+		case T_JsonTablePath:
+			retval = _copyJsonTablePath(from);
+			break;
+		case T_JsonTablePathScan:
+			retval = _copyJsonTablePathScan(from);
+			break;
+		case T_JsonTableSiblingJoin:
+			retval = _copyJsonTableSiblingJoin(from);
+			break;
 		case T_NullTest:
 			retval = _copyNullTest(from);
 			break;
 		case T_BooleanTest:
 			retval = _copyBooleanTest(from);
+			break;
+		case T_MergeAction:
+			retval = _copyMergeAction(from);
 			break;
 		case T_CoerceToDomain:
 			retval = _copyCoerceToDomain(from);
@@ -282,6 +306,9 @@
 		case T_PartitionRangeDatum:
 			retval = _copyPartitionRangeDatum(from);
 			break;
+		case T_SinglePartitionSpec:
+			retval = _copySinglePartitionSpec(from);
+			break;
 		case T_PartitionCmd:
 			retval = _copyPartitionCmd(from);
 			break;
@@ -333,17 +360,38 @@
 		case T_MergeWhenClause:
 			retval = _copyMergeWhenClause(from);
 			break;
-		case T_MergeAction:
-			retval = _copyMergeAction(from);
-			break;
 		case T_TriggerTransition:
 			retval = _copyTriggerTransition(from);
 			break;
 		case T_JsonOutput:
 			retval = _copyJsonOutput(from);
 			break;
+		case T_JsonArgument:
+			retval = _copyJsonArgument(from);
+			break;
+		case T_JsonFuncExpr:
+			retval = _copyJsonFuncExpr(from);
+			break;
+		case T_JsonTablePathSpec:
+			retval = _copyJsonTablePathSpec(from);
+			break;
+		case T_JsonTable:
+			retval = _copyJsonTable(from);
+			break;
+		case T_JsonTableColumn:
+			retval = _copyJsonTableColumn(from);
+			break;
 		case T_JsonKeyValue:
 			retval = _copyJsonKeyValue(from);
+			break;
+		case T_JsonParseExpr:
+			retval = _copyJsonParseExpr(from);
+			break;
+		case T_JsonScalarExpr:
+			retval = _copyJsonScalarExpr(from);
+			break;
+		case T_JsonSerializeExpr:
+			retval = _copyJsonSerializeExpr(from);
 			break;
 		case T_JsonObjectConstructor:
 			retval = _copyJsonObjectConstructor(from);
@@ -746,6 +794,9 @@
 			break;
 		case T_PathKey:
 			retval = _copyPathKey(from);
+			break;
+		case T_GroupByOrdering:
+			retval = _copyGroupByOrdering(from);
 			break;
 		case T_RestrictInfo:
 			retval = _copyRestrictInfo(from);

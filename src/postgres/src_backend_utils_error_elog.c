@@ -24,12 +24,14 @@
  * - pg_re_throw
  * - EmitErrorReport
  * - emit_log_hook
+ * - saved_timeval_set
+ * - formatted_log_time
  * - send_message_to_server_log
  * - send_message_to_frontend
  * - pgwin32_dispatch_queued_signals
  * - set_stack_entry_location
  * - matches_backtrace_functions
- * - backtrace_symbol_list
+ * - backtrace_function_list
  * - set_backtrace
  * - FreeErrorDataContents
  * - geterrcode
@@ -96,7 +98,7 @@
  * overflow.)
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -119,13 +121,12 @@
 #include <execinfo.h>
 #endif
 
-#include "access/transam.h"
 #include "access/xact.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "mb/pg_wchar.h"
-#include "nodes/miscnodes.h"
 #include "miscadmin.h"
+#include "nodes/miscnodes.h"
 #include "pgstat.h"
 #include "postmaster/bgworker.h"
 #include "postmaster/postmaster.h"
@@ -171,8 +172,8 @@ __thread emit_log_hook_type emit_log_hook = NULL;
 
 
 
-/* Processed form of backtrace_symbols GUC */
-static __thread char *backtrace_symbol_list;
+/* Processed form of backtrace_functions GUC */
+static __thread char *backtrace_function_list;
 
 
 #ifdef HAVE_SYSLOG
@@ -215,13 +216,15 @@ static __thread int	recursion_depth = 0;
 
 /*
  * Saved timeval and buffers for formatted timestamps that might be used by
- * both log_line_prefix and csv logs.
+ * log_line_prefix, csv logs and JSON logs.
  */
 
+static __thread bool saved_timeval_set = false;
 
 
 #define FORMATTED_TS_LEN 128
 
+static __thread char formatted_log_time[FORMATTED_TS_LEN];
 
 
 
@@ -855,13 +858,13 @@ matches_backtrace_functions(const char *funcname)
 {
 	const char *p;
 
-	if (!backtrace_symbol_list || funcname == NULL || funcname[0] == '\0')
+	if (!backtrace_function_list || funcname == NULL || funcname[0] == '\0')
 		return false;
 
-	p = backtrace_symbol_list;
+	p = backtrace_function_list;
 	for (;;)
 	{
-		if (*p == '\0')			/* end of backtrace_symbol_list */
+		if (*p == '\0')			/* end of backtrace_function_list */
 			break;
 
 		if (strcmp(funcname, p) == 0)
@@ -902,8 +905,6 @@ errcode(int sqlerrcode)
  * when this is used.
  */
 #ifdef EROFS
-#endif
-#if defined(ENOTEMPTY) && (ENOTEMPTY != EEXIST) /* same code on AIX */
 #endif
 
 /*
@@ -1366,6 +1367,14 @@ geterrcode(void)
 }
 
 /*
+ * geterrlevel --- return the currently set error level
+ *
+ * This is only intended for use in error callback subroutines, since there
+ * is no other place outside elog.c where the concept is meaningful.
+ */
+
+
+/*
  * geterrposition --- return the currently set error position (0 if none)
  *
  * This is only intended for use in error callback subroutines, since there
@@ -1444,6 +1453,14 @@ EmitErrorReport(void)
 	oldcontext = MemoryContextSwitchTo(edata->assoc_context);
 
 	/*
+	 * Reset the formatted timestamp fields before emitting any logs.  This
+	 * includes all the log destinations and emit_log_hook, as the latter
+	 * could use log_line_prefix or the formatted timestamps.
+	 */
+	saved_timeval_set = false;
+	formatted_log_time[0] = '\0';
+
+	/*
 	 * Call hook before sending message to log.  The hook function is allowed
 	 * to turn off edata->output_to_server, so we must recheck that afterward.
 	 * Making any other change in the content of edata is not considered
@@ -1502,7 +1519,21 @@ CopyErrorData(void)
 	newedata = (ErrorData *) palloc(sizeof(ErrorData));
 	memcpy(newedata, edata, sizeof(ErrorData));
 
-	/* Make copies of separately-allocated fields */
+	/*
+	 * Make copies of separately-allocated strings.  Note that we copy even
+	 * theoretically-constant strings such as filename.  This is because those
+	 * could point into JIT-created code segments that might get unloaded at
+	 * transaction cleanup.  In some cases we need the copied ErrorData to
+	 * survive transaction boundaries, so we'd better copy those strings too.
+	 */
+	if (newedata->filename)
+		newedata->filename = pstrdup(newedata->filename);
+	if (newedata->funcname)
+		newedata->funcname = pstrdup(newedata->funcname);
+	if (newedata->domain)
+		newedata->domain = pstrdup(newedata->domain);
+	if (newedata->context_domain)
+		newedata->context_domain = pstrdup(newedata->context_domain);
 	if (newedata->message)
 		newedata->message = pstrdup(newedata->message);
 	if (newedata->detail)
@@ -1515,6 +1546,8 @@ CopyErrorData(void)
 		newedata->context = pstrdup(newedata->context);
 	if (newedata->backtrace)
 		newedata->backtrace = pstrdup(newedata->backtrace);
+	if (newedata->message_id)
+		newedata->message_id = pstrdup(newedata->message_id);
 	if (newedata->schema_name)
 		newedata->schema_name = pstrdup(newedata->schema_name);
 	if (newedata->table_name)
@@ -1596,7 +1629,7 @@ FlushErrorState(void)
 	errordata_stack_depth = -1;
 	recursion_depth = 0;
 	/* Delete all data in ErrorContext */
-	MemoryContextResetAndDeleteChildren(ErrorContext);
+	MemoryContextReset(ErrorContext);
 }
 
 /*
@@ -1905,34 +1938,6 @@ write_stderr(const char *fmt,...)
 	va_end(ap);
 }
 
-
-
-
-/*
- * Write a message to STDERR using only async-signal-safe functions.  This can
- * be used to safely emit a message from a signal handler.
- *
- * TODO: It is likely possible to safely do a limited amount of string
- * interpolation (e.g., %s and %d), but that is not presently supported.
- */
-
-
-
-/*
- * Adjust the level of a recovery-related message per trace_recovery_messages.
- *
- * The argument is the default log level of the message, eg, DEBUG2.  (This
- * should only be applied to DEBUGn log messages, otherwise it's a no-op.)
- * If the level is >= trace_recovery_messages, we return LOG, causing the
- * message to be logged unconditionally (for most settings of
- * log_min_messages).  Otherwise, we return the argument unchanged.
- * The message will then be shown based on the setting of log_min_messages.
- *
- * Intention is to keep this for at least the whole of the 9.0 production
- * release, so we can more easily diagnose production problems in the field.
- * It should go away eventually, though, because it's an ugly and
- * hard-to-explain kluge.
- */
 
 #ifdef WIN32
 __thread volatile int pg_signal_queue;

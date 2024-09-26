@@ -13,7 +13,6 @@
  * - new_head_cell
  * - list_make3_impl
  * - list_make4_impl
- * - list_delete_cell
  * - list_delete_nth_cell
  * - list_free
  * - list_free_private
@@ -31,7 +30,7 @@
  * See comments in pg_list.h.
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -42,6 +41,7 @@
  */
 #include "postgres.h"
 
+#include "common/int.h"
 #include "nodes/pg_list.h"
 #include "port/pg_bitutils.h"
 #include "utils/memdebug.h"
@@ -635,11 +635,7 @@ list_delete_nth_cell(List *list, int n)
  * Note that this takes time proportional to the distance to the end of the
  * list, since the following entries must be moved.
  */
-List *
-list_delete_cell(List *list, ListCell *cell)
-{
-	return list_delete_nth_cell(list, cell - list->elements);
-}
+
 
 /*
  * Delete the first cell in list that matches datum, if any.

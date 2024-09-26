@@ -1,6 +1,7 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - bms_copy
+ * - bms_is_valid_set
  * - bms_equal
  * - bms_free
  * - bms_next_member
@@ -15,11 +16,31 @@
  *
  * A bitmap set can represent any set of nonnegative integers, although
  * it is mainly intended for sets where the maximum value is not large,
- * say at most a few hundred.  By convention, we always represent the
- * empty set by a NULL pointer.
+ * say at most a few hundred.  By convention, we always represent a set with
+ * the minimum possible number of words, i.e, there are never any trailing
+ * zero words.  Enforcing this requires that an empty set is represented as
+ * NULL.  Because an empty Bitmapset is represented as NULL, a non-NULL
+ * Bitmapset always has at least 1 Bitmapword.  We can exploit this fact to
+ * speed up various loops over the Bitmapset's words array by using "do while"
+ * loops instead of "for" loops.  This means the code does not waste time
+ * checking the loop condition before the first iteration.  For Bitmapsets
+ * containing only a single word (likely the majority of them) this halves the
+ * number of loop condition checks.
  *
+ * Callers must ensure that the set returned by functions in this file which
+ * adjust the members of an existing set is assigned to all pointers pointing
+ * to that existing set.  No guarantees are made that we'll ever modify the
+ * existing set in-place and return it.
  *
- * Copyright (c) 2003-2023, PostgreSQL Global Development Group
+ * To help find bugs caused by callers failing to record the return value of
+ * the function which manipulates an existing set, we support building with
+ * REALLOCATE_BITMAPSETS.  This results in the set being reallocated each time
+ * the set is altered and the existing being pfreed.  This is useful as if any
+ * references still exist to the old set, we're more likely to notice as
+ * any users of the old set will be accessing pfree'd memory.  This option is
+ * only intended to be used for debugging.
+ *
+ * Copyright (c) 2003-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/nodes/bitmapset.c
@@ -61,21 +82,49 @@
 
 #define HAS_MULTIPLE_ONES(x)	((bitmapword) RIGHTMOST_ONE(x) != (x))
 
-/* Select appropriate bit-twiddling functions for bitmap word size */
-#if BITS_PER_BITMAPWORD == 32
-#define bmw_leftmost_one_pos(w)		pg_leftmost_one_pos32(w)
-#define bmw_rightmost_one_pos(w)	pg_rightmost_one_pos32(w)
-#define bmw_popcount(w)				pg_popcount32(w)
-#elif BITS_PER_BITMAPWORD == 64
-#define bmw_leftmost_one_pos(w)		pg_leftmost_one_pos64(w)
-#define bmw_rightmost_one_pos(w)	pg_rightmost_one_pos64(w)
-#define bmw_popcount(w)				pg_popcount64(w)
-#else
-#error "invalid BITS_PER_BITMAPWORD"
+#ifdef USE_ASSERT_CHECKING
+/*
+ * bms_is_valid_set - for cassert builds to check for valid sets
+ */
+static bool
+bms_is_valid_set(const Bitmapset *a)
+{
+	/* NULL is the correct representation of an empty set */
+	if (a == NULL)
+		return true;
+
+	/* check the node tag is set correctly.  pfree'd pointer, maybe? */
+	if (!IsA(a, Bitmapset))
+		return false;
+
+	/* trailing zero words are not allowed */
+	if (a->words[a->nwords - 1] == 0)
+		return false;
+
+	return true;
+}
 #endif
 
-static bool bms_is_empty_internal(const Bitmapset *a);
+#ifdef REALLOCATE_BITMAPSETS
+/*
+ * bms_copy_and_free
+ *		Only required in REALLOCATE_BITMAPSETS builds.  Provide a simple way
+ *		to return a freshly allocated set and pfree the original.
+ *
+ * Note: callers which accept multiple sets must be careful when calling this
+ * function to clone one parameter as other parameters may point to the same
+ * set.  A good option is to call this just before returning the resulting
+ * set.
+ */
+static Bitmapset *
+bms_copy_and_free(Bitmapset *a)
+{
+	Bitmapset  *c = bms_copy(a);
 
+	bms_free(a);
+	return c;
+}
+#endif
 
 /*
  * bms_copy - make a palloc'd copy of a bitmapset
@@ -86,8 +135,11 @@ bms_copy(const Bitmapset *a)
 	Bitmapset  *result;
 	size_t		size;
 
+	Assert(bms_is_valid_set(a));
+
 	if (a == NULL)
 		return NULL;
+
 	size = BITMAPSET_SIZE(a->nwords);
 	result = (Bitmapset *) palloc(size);
 	memcpy(result, a, size);
@@ -95,19 +147,15 @@ bms_copy(const Bitmapset *a)
 }
 
 /*
- * bms_equal - are two bitmapsets equal?
- *
- * This is logical not physical equality; in particular, a NULL pointer will
- * be reported as equal to a palloc'd value containing no members.
+ * bms_equal - are two bitmapsets equal? or both NULL?
  */
 bool
 bms_equal(const Bitmapset *a, const Bitmapset *b)
 {
-	const Bitmapset *shorter;
-	const Bitmapset *longer;
-	int			shortlen;
-	int			longlen;
 	int			i;
+
+	Assert(bms_is_valid_set(a));
+	Assert(bms_is_valid_set(b));
 
 	/* Handle cases where either input is NULL */
 	if (a == NULL)
@@ -118,30 +166,19 @@ bms_equal(const Bitmapset *a, const Bitmapset *b)
 	}
 	else if (b == NULL)
 		return false;
-	/* Identify shorter and longer input */
-	if (a->nwords <= b->nwords)
+
+	/* can't be equal if the word counts don't match */
+	if (a->nwords != b->nwords)
+		return false;
+
+	/* check each word matches */
+	i = 0;
+	do
 	{
-		shorter = a;
-		longer = b;
-	}
-	else
-	{
-		shorter = b;
-		longer = a;
-	}
-	/* And process */
-	shortlen = shorter->nwords;
-	for (i = 0; i < shortlen; i++)
-	{
-		if (shorter->words[i] != longer->words[i])
+		if (a->words[i] != b->words[i])
 			return false;
-	}
-	longlen = longer->nwords;
-	for (; i < longlen; i++)
-	{
-		if (longer->words[i] != 0)
-			return false;
-	}
+	} while (++i < a->nwords);
+
 	return true;
 }
 
@@ -174,23 +211,20 @@ bms_free(Bitmapset *a)
 
 
 /*
- * These operations all make a freshly palloc'd result,
- * leaving their inputs untouched
+ * bms_union - create and return a new set containing all members from both
+ * input sets.  Both inputs are left unmodified.
  */
 
 
 /*
- * bms_union - set union
+ * bms_intersect - create and return a new set containing members which both
+ * input sets have in common.  Both inputs are left unmodified.
  */
 
 
 /*
- * bms_intersect - set intersection
- */
-
-
-/*
- * bms_difference - set difference (ie, A without members of B)
+ * bms_difference - create and return a new set containing all the members of
+ * 'a' without the members of 'b'.
  */
 
 
@@ -266,17 +300,21 @@ bms_num_members(const Bitmapset *a)
 	int			nwords;
 	int			wordnum;
 
+	Assert(bms_is_valid_set(a));
+
 	if (a == NULL)
 		return 0;
+
 	nwords = a->nwords;
-	for (wordnum = 0; wordnum < nwords; wordnum++)
+	wordnum = 0;
+	do
 	{
 		bitmapword	w = a->words[wordnum];
 
 		/* No need to count the bits in a zero word */
 		if (w != 0)
 			result += bmw_popcount(w);
-	}
+	} while (++wordnum < nwords);
 	return result;
 }
 
@@ -287,46 +325,40 @@ bms_num_members(const Bitmapset *a)
  */
 
 
-/*
- * bms_is_empty_internal - is a set empty?
- *
- * This is now used only locally, to detect cases where a function has
- * computed an empty set that we must now get rid of.  Hence, we can
- * assume the input isn't NULL.
- */
-
-
-
-/*
- * These operations all "recycle" their non-const inputs, ie, either
- * return the modified input or pfree it if it can't hold the result.
- *
- * These should generally be used in the style
- *
- *		foo = bms_add_member(foo, x);
- */
-
 
 /*
  * bms_add_member - add a specified member to set
  *
- * Input set is modified or recycled!
+ * 'a' is recycled when possible.
  */
-
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
  * bms_del_member - remove a specified member from set
  *
  * No error if x is not currently a member of set
  *
- * Input set is modified in-place!
+ * 'a' is recycled when possible.
  */
-
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
- * bms_add_members - like bms_union, but left input is recycled
+ * bms_add_members - like bms_union, but left input is recycled when possible
  */
+#ifdef REALLOCATE_BITMAPSETS
+#endif
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
+/*
+ * bms_replace_members
+ *		Remove all existing members from 'a' and repopulate the set with members
+ *		from 'b', recycling 'a', when possible.
+ */
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
  * bms_add_range
@@ -336,22 +368,36 @@ bms_num_members(const Bitmapset *a)
  * using this function will be faster when the range is large as we work at
  * the bitmapword level rather than at bit level.
  */
-
-
-/*
- * bms_int_members - like bms_intersect, but left input is recycled
- */
-
+#ifdef REALLOCATE_BITMAPSETS
+#endif
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
- * bms_del_members - like bms_difference, but left input is recycled
+ * bms_int_members - like bms_intersect, but left input is recycled when
+ * possible
  */
-
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
- * bms_join - like bms_union, but *both* inputs are recycled
+ * bms_del_members - delete members in 'a' that are set in 'b'.  'a' is
+ * recycled when possible.
  */
+#ifdef REALLOCATE_BITMAPSETS
+#endif
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
+/*
+ * bms_join - like bms_union, but *either* input *may* be recycled
+ */
+#ifdef REALLOCATE_BITMAPSETS
+#endif
+#ifdef REALLOCATE_BITMAPSETS
+#endif
+#ifdef REALLOCATE_BITMAPSETS
+#endif
 
 /*
  * bms_next_member - find next member of a set
@@ -378,6 +424,8 @@ bms_next_member(const Bitmapset *a, int prevbit)
 	int			nwords;
 	int			wordnum;
 	bitmapword	mask;
+
+	Assert(bms_is_valid_set(a));
 
 	if (a == NULL)
 		return -2;
@@ -435,11 +483,6 @@ bms_next_member(const Bitmapset *a, int prevbit)
 
 /*
  * bms_hash_value - compute a hash key for a Bitmapset
- *
- * Note: we must ensure that any two bitmapsets that are bms_equal() will
- * hash to the same value; in practice this means that trailing all-zero
- * words must not affect the result.  Hence we strip those before applying
- * hash_any().
  */
 
 

@@ -10,7 +10,7 @@
  * numutils.c
  *	  utility functions for I/O of built-in numeric types.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -25,9 +25,8 @@
 #include <limits.h>
 #include <ctype.h>
 
-#include "common/int.h"
-#include "utils/builtins.h"
 #include "port/pg_bitutils.h"
+#include "utils/builtins.h"
 
 /*
  * A table of all two-digit numbers. This is used to speed up decimal digit
@@ -372,7 +371,7 @@ invalid_syntax:
  * so that caller can parse the rest.  Otherwise, it's an error if anything
  * but whitespace follows.
  *
- * typname is what is reported in error messges.
+ * typname is what is reported in error messages.
  *
  * If escontext points to an ErrorSaveContext node, that is filled instead
  * of throwing an error; the caller must check SOFT_ERROR_OCCURRED()
@@ -390,7 +389,7 @@ invalid_syntax:
  * so that caller can parse the rest.  Otherwise, it's an error if anything
  * but whitespace follows.
  *
- * typname is what is reported in error messges.
+ * typname is what is reported in error messages.
  *
  * If escontext points to an ErrorSaveContext node, that is filled instead
  * of throwing an error; the caller must check SOFT_ERROR_OCCURRED()

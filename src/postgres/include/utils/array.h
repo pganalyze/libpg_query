@@ -51,7 +51,7 @@
  * arrays holding the elements.
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/utils/array.h
@@ -455,7 +455,6 @@ extern void array_free_iterator(ArrayIterator iterator);
  */
 
 extern int	ArrayGetOffset(int n, const int *dim, const int *lb, const int *indx);
-extern int	ArrayGetOffset0(int n, const int *tup, const int *scale);
 extern int	ArrayGetNItems(int ndim, const int *dims);
 extern int	ArrayGetNItemsSafe(int ndim, const int *dims,
 							   struct Node *escontext);

@@ -133,7 +133,7 @@ void pg_query_exit(void);
 
 // Postgres version information
 #define PG_MAJORVERSION "17"
-#define PG_VERSION "17rc1"
+#define PG_VERSION "17.0"
 #define PG_VERSION_NUM 170000
 
 // Deprecated APIs below

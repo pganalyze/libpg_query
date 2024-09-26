@@ -3,7 +3,7 @@
  * pg_constraint_d.h
  *    Macro definitions for pg_constraint
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -58,6 +58,7 @@
 /* Valid values for contype */
 #define CONSTRAINT_CHECK			'c'
 #define CONSTRAINT_FOREIGN			'f'
+#define CONSTRAINT_NOTNULL			'n'
 #define CONSTRAINT_PRIMARY			'p'
 #define CONSTRAINT_UNIQUE			'u'
 #define CONSTRAINT_TRIGGER			't'

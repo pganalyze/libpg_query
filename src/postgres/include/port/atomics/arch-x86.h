@@ -7,7 +7,7 @@
  * support for xadd and cmpxchg. Given that the 386 isn't supported anywhere
  * anymore that's not much of a restriction luckily.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES:
@@ -206,6 +206,8 @@ pg_atomic_compare_exchange_u64_impl(volatile pg_atomic_uint64 *ptr,
 									uint64 *expected, uint64 newval)
 {
 	char	ret;
+
+	AssertPointerAlignment(expected, 8);
 
 	/*
 	 * Perform cmpxchg and use the zero flag which it implicitly sets when

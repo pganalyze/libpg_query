@@ -372,6 +372,15 @@ ALTER TABLE inhts RENAME d TO dd;
 
 DROP TABLE inhts;
 
+-- Test for adding a column to a parent table with complex inheritance
+CREATE TABLE inhta ();
+CREATE TABLE inhtb () INHERITS (inhta);
+CREATE TABLE inhtc () INHERITS (inhtb);
+CREATE TABLE inhtd () INHERITS (inhta, inhtb, inhtc);
+ALTER TABLE inhta ADD COLUMN i int;
+\d+ inhta
+DROP TABLE inhta, inhtb, inhtc, inhtd;
+
 -- Test for renaming in diamond inheritance
 CREATE TABLE inht2 (x int) INHERITS (inht1);
 CREATE TABLE inht3 (y int) INHERITS (inht1);
@@ -460,6 +469,45 @@ select conrelid::regclass::text as relname, conname, conislocal, coninhcount
 from pg_constraint where conname like 'inh\_check\_constraint%'
 order by 1, 2;
 
+drop table p1 cascade;
+
+--
+-- Test DROP behavior of multiply-defined CHECK constraints
+--
+create table p1(f1 int constraint f1_pos CHECK (f1 > 0));
+create table p1_c1 (f1 int constraint f1_pos CHECK (f1 > 0)) inherits (p1);
+alter table p1_c1 drop constraint f1_pos;
+alter table p1 drop constraint f1_pos;
+\d p1_c1
+drop table p1 cascade;
+
+create table p1(f1 int constraint f1_pos CHECK (f1 > 0));
+create table p2(f1 int constraint f1_pos CHECK (f1 > 0));
+create table p1p2_c1 (f1 int) inherits (p1, p2);
+create table p1p2_c2 (f1 int constraint f1_pos CHECK (f1 > 0)) inherits (p1, p2);
+alter table p2 drop constraint f1_pos;
+alter table p1 drop constraint f1_pos;
+\d p1p2_c*
+drop table p1, p2 cascade;
+
+create table p1(f1 int constraint f1_pos CHECK (f1 > 0));
+create table p1_c1() inherits (p1);
+create table p1_c2() inherits (p1);
+create table p1_c1c2() inherits (p1_c1, p1_c2);
+\d p1_c1c2
+alter table p1 drop constraint f1_pos;
+\d p1_c1c2
+drop table p1 cascade;
+
+create table p1(f1 int constraint f1_pos CHECK (f1 > 0));
+create table p1_c1() inherits (p1);
+create table p1_c2(constraint f1_pos CHECK (f1 > 0)) inherits (p1);
+create table p1_c1c2() inherits (p1_c1, p1_c2, p1);
+alter table p1_c2 drop constraint f1_pos;
+alter table p1 drop constraint f1_pos;
+alter table p1_c1c2 drop constraint f1_pos;
+alter table p1_c2 drop constraint f1_pos;
+\d p1_c1c2
 drop table p1 cascade;
 
 -- Test that a valid child can have not-valid parent, but not vice versa
@@ -573,6 +621,19 @@ where t1.b = t2.b and t2.c = t2.d
 order by t1.b limit 10;
 
 reset enable_nestloop;
+
+drop table matest0 cascade;
+
+-- Test a MergeAppend plan where one child requires a sort
+create table matest0(a int primary key);
+create table matest1() inherits (matest0);
+insert into matest0 select generate_series(1, 400);
+insert into matest1 select generate_series(1, 200);
+analyze matest0;
+analyze matest1;
+
+explain (costs off)
+select * from matest0 where a < 100 order by a;
 
 drop table matest0 cascade;
 
@@ -697,6 +758,27 @@ insert into cnullchild values(null);
 select * from cnullparent;
 select * from cnullparent where f1 = 2;
 drop table cnullparent cascade;
+
+--
+-- Mixed ownership inheritance tree
+--
+create role regress_alice;
+create role regress_bob;
+grant all on schema public to regress_alice, regress_bob;
+grant regress_alice to regress_bob;
+set session authorization regress_alice;
+create table inh_parent (a int not null);
+set session authorization regress_bob;
+create table inh_child () inherits (inh_parent);
+set session authorization regress_alice;
+-- alice can't do this: she doesn't own inh_child
+alter table inh_parent alter a drop not null;
+set session authorization regress_bob;
+alter table inh_parent alter a drop not null;
+reset session authorization;
+drop table inh_parent, inh_child;
+revoke all on schema public from regress_alice, regress_bob;
+drop role regress_alice, regress_bob;
 
 --
 -- Check use of temporary tables with inheritance trees

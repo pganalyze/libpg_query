@@ -397,7 +397,7 @@
  *
  * pl_gram.y			- Parser for the PL/pgSQL procedural language
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -460,7 +460,6 @@ static	PLpgSQL_expr	*read_sql_construct(int until,
 											RawParseMode parsemode,
 											bool isexpression,
 											bool valid_sql,
-											bool trim,
 											int *startloc,
 											int *endtoken);
 static	PLpgSQL_expr	*read_sql_expression(int until,
@@ -470,7 +469,8 @@ static	PLpgSQL_expr	*read_sql_expression2(int until, int until2,
 											  int *endtoken);
 static	PLpgSQL_expr	*read_sql_stmt(void);
 static	PLpgSQL_type	*read_datatype(int tok);
-static	PLpgSQL_stmt	*make_execsql_stmt(int firsttoken, int location);
+static	PLpgSQL_stmt	*make_execsql_stmt(int firsttoken, int location,
+										   PLword *word);
 static	PLpgSQL_stmt_fetch *read_fetch_direction(void);
 static	void			 complete_direction(PLpgSQL_stmt_fetch *fetch,
 											bool *check_FROM);
@@ -986,14 +986,14 @@ static const yytype_uint16 yyrline[] =
      397,   401,   406,   407,   410,   433,   441,   448,   457,   469,
      470,   473,   474,   478,   491,   529,   535,   534,   561,   564,
      568,   575,   581,   584,   615,   619,   625,   633,   634,   636,
-     651,   666,   694,   722,   753,   754,   759,   770,   771,   776,
-     781,   788,   789,   793,   795,   801,   802,   810,   811,   815,
-     816,   826,   828,   830,   832,   834,   836,   838,   840,   842,
-     844,   846,   848,   850,   852,   854,   856,   858,   860,   862,
-     864,   866,   868,   870,   872,   876,   912,   930,   951,   990,
-    1054,  1057,  1061,  1067,  1071,  1077,  1090,  1137,  1155,  1160,
-    1167,  1185,  1188,  1202,  1205,  1211,  1218,  1232,  1236,  1242,
-    1254,  1257,  1272,  1290,  1309,  1343,  1602,  1628,  1642,  1649,
+     651,   666,   694,   722,   753,   754,   759,   771,   772,   777,
+     782,   789,   790,   794,   796,   802,   803,   811,   812,   816,
+     817,   827,   829,   831,   833,   835,   837,   839,   841,   843,
+     845,   847,   849,   851,   853,   855,   857,   859,   861,   863,
+     865,   867,   869,   871,   873,   877,   913,   931,   952,   991,
+    1055,  1058,  1062,  1068,  1072,  1078,  1091,  1138,  1156,  1161,
+    1168,  1186,  1189,  1203,  1206,  1212,  1219,  1233,  1237,  1243,
+    1255,  1258,  1273,  1291,  1310,  1344,  1602,  1628,  1642,  1649,
     1688,  1691,  1697,  1750,  1754,  1760,  1786,  1931,  1955,  1973,
     1977,  1981,  1985,  1996,  2009,  2073,  2151,  2181,  2194,  2199,
     2213,  2220,  2234,  2249,  2250,  2251,  2255,  2277,  2282,  2290,
@@ -2877,8 +2877,9 @@ yyreduce:
 #line 759 "pl_gram.y"
     {
 						/*
-						 * If there's a lookahead token, read_datatype
-						 * should consume it.
+						 * If there's a lookahead token, read_datatype() will
+						 * consume it, and then we must tell bison to forget
+						 * it.
 						 */
 						(yyval.dtype) = read_datatype(yychar);
 						yyclearin;
@@ -2886,12 +2887,12 @@ yyreduce:
     break;
 
   case 47:
-#line 770 "pl_gram.y"
+#line 771 "pl_gram.y"
     { (yyval.oid) = InvalidOid; ;}
     break;
 
   case 48:
-#line 772 "pl_gram.y"
+#line 773 "pl_gram.y"
     {
 						(yyval.oid) = get_collation_oid(list_make1(makeString((yyvsp[(2) - (2)].word).ident)),
 											   false);
@@ -2899,7 +2900,7 @@ yyreduce:
     break;
 
   case 49:
-#line 777 "pl_gram.y"
+#line 778 "pl_gram.y"
     {
 						(yyval.oid) = get_collation_oid(list_make1(makeString(pstrdup((yyvsp[(2) - (2)].keyword)))),
 											   false);
@@ -2907,41 +2908,41 @@ yyreduce:
     break;
 
   case 50:
-#line 782 "pl_gram.y"
+#line 783 "pl_gram.y"
     {
 						(yyval.oid) = get_collation_oid((yyvsp[(2) - (2)].cword).idents, false);
 					;}
     break;
 
   case 51:
-#line 788 "pl_gram.y"
+#line 789 "pl_gram.y"
     { (yyval.boolean) = false; ;}
     break;
 
   case 52:
-#line 790 "pl_gram.y"
+#line 791 "pl_gram.y"
     { (yyval.boolean) = true; ;}
     break;
 
   case 53:
-#line 794 "pl_gram.y"
+#line 795 "pl_gram.y"
     { (yyval.expr) = NULL; ;}
     break;
 
   case 54:
-#line 796 "pl_gram.y"
+#line 797 "pl_gram.y"
     {
 						(yyval.expr) = read_sql_expression(';', ";");
 					;}
     break;
 
   case 59:
-#line 815 "pl_gram.y"
+#line 816 "pl_gram.y"
     { (yyval.list) = NIL; ;}
     break;
 
   case 60:
-#line 817 "pl_gram.y"
+#line 818 "pl_gram.y"
     {
 						/* don't bother linking null statements into list */
 						if ((yyvsp[(2) - (2)].stmt) == NULL)
@@ -2952,127 +2953,127 @@ yyreduce:
     break;
 
   case 61:
-#line 827 "pl_gram.y"
+#line 828 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (2)].stmt); ;}
     break;
 
   case 62:
-#line 829 "pl_gram.y"
+#line 830 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 63:
-#line 831 "pl_gram.y"
+#line 832 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 64:
-#line 833 "pl_gram.y"
+#line 834 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 65:
-#line 835 "pl_gram.y"
+#line 836 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 66:
-#line 837 "pl_gram.y"
+#line 838 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 67:
-#line 839 "pl_gram.y"
+#line 840 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 68:
-#line 841 "pl_gram.y"
+#line 842 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 69:
-#line 843 "pl_gram.y"
+#line 844 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 70:
-#line 845 "pl_gram.y"
+#line 846 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 71:
-#line 847 "pl_gram.y"
+#line 848 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 72:
-#line 849 "pl_gram.y"
+#line 850 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 73:
-#line 851 "pl_gram.y"
+#line 852 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 74:
-#line 853 "pl_gram.y"
+#line 854 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 75:
-#line 855 "pl_gram.y"
+#line 856 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 76:
-#line 857 "pl_gram.y"
+#line 858 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 77:
-#line 859 "pl_gram.y"
+#line 860 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 78:
-#line 861 "pl_gram.y"
+#line 862 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 79:
-#line 863 "pl_gram.y"
+#line 864 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 80:
-#line 865 "pl_gram.y"
+#line 866 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 81:
-#line 867 "pl_gram.y"
+#line 868 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 82:
-#line 869 "pl_gram.y"
+#line 870 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 83:
-#line 871 "pl_gram.y"
+#line 872 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 84:
-#line 873 "pl_gram.y"
+#line 874 "pl_gram.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); ;}
     break;
 
   case 85:
-#line 877 "pl_gram.y"
+#line 878 "pl_gram.y"
     {
 						PLpgSQL_stmt_perform *new;
 						int			startloc;
@@ -3093,7 +3094,7 @@ yyreduce:
 						 */
 						new->expr = read_sql_construct(';', 0, 0, ";",
 													   RAW_PARSE_DEFAULT,
-													   false, false, true,
+													   false, false,
 													   &startloc, NULL);
 						/* overwrite "perform" ... */
 						memcpy(new->expr->query, " SELECT", 7);
@@ -3109,7 +3110,7 @@ yyreduce:
     break;
 
   case 86:
-#line 913 "pl_gram.y"
+#line 914 "pl_gram.y"
     {
 						PLpgSQL_stmt_call *new;
 
@@ -3130,7 +3131,7 @@ yyreduce:
     break;
 
   case 87:
-#line 931 "pl_gram.y"
+#line 932 "pl_gram.y"
     {
 						/* use the same structures as for CALL, for simplicity */
 						PLpgSQL_stmt_call *new;
@@ -3152,7 +3153,7 @@ yyreduce:
     break;
 
   case 88:
-#line 952 "pl_gram.y"
+#line 953 "pl_gram.y"
     {
 						PLpgSQL_stmt_assign *new;
 						RawParseMode pmode;
@@ -3184,7 +3185,7 @@ yyreduce:
 						plpgsql_push_back_token(T_DATUM);
 						new->expr = read_sql_construct(';', 0, 0, ";",
 													   pmode,
-													   false, true, true,
+													   false, true,
 													   NULL, NULL);
 
 						(yyval.stmt) = (PLpgSQL_stmt *) new;
@@ -3192,7 +3193,7 @@ yyreduce:
     break;
 
   case 89:
-#line 991 "pl_gram.y"
+#line 992 "pl_gram.y"
     {
 						PLpgSQL_stmt_getdiag *new;
 						ListCell	   *lc;
@@ -3256,42 +3257,42 @@ yyreduce:
     break;
 
   case 90:
-#line 1054 "pl_gram.y"
+#line 1055 "pl_gram.y"
     {
 						(yyval.boolean) = false;
 					;}
     break;
 
   case 91:
-#line 1058 "pl_gram.y"
+#line 1059 "pl_gram.y"
     {
 						(yyval.boolean) = false;
 					;}
     break;
 
   case 92:
-#line 1062 "pl_gram.y"
+#line 1063 "pl_gram.y"
     {
 						(yyval.boolean) = true;
 					;}
     break;
 
   case 93:
-#line 1068 "pl_gram.y"
+#line 1069 "pl_gram.y"
     {
 						(yyval.list) = lappend((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].diagitem));
 					;}
     break;
 
   case 94:
-#line 1072 "pl_gram.y"
+#line 1073 "pl_gram.y"
     {
 						(yyval.list) = list_make1((yyvsp[(1) - (1)].diagitem));
 					;}
     break;
 
   case 95:
-#line 1078 "pl_gram.y"
+#line 1079 "pl_gram.y"
     {
 						PLpgSQL_diag_item *new;
 
@@ -3304,7 +3305,7 @@ yyreduce:
     break;
 
   case 96:
-#line 1090 "pl_gram.y"
+#line 1091 "pl_gram.y"
     {
 						int			tok = yylex();
 
@@ -3353,7 +3354,7 @@ yyreduce:
     break;
 
   case 97:
-#line 1138 "pl_gram.y"
+#line 1139 "pl_gram.y"
     {
 						/*
 						 * In principle we should support a getdiag_target
@@ -3374,7 +3375,7 @@ yyreduce:
     break;
 
   case 98:
-#line 1156 "pl_gram.y"
+#line 1157 "pl_gram.y"
     {
 						/* just to give a better message than "syntax error" */
 						word_is_not_variable(&((yyvsp[(1) - (1)].word)), (yylsp[(1) - (1)]));
@@ -3382,7 +3383,7 @@ yyreduce:
     break;
 
   case 99:
-#line 1161 "pl_gram.y"
+#line 1162 "pl_gram.y"
     {
 						/* just to give a better message than "syntax error" */
 						cword_is_not_variable(&((yyvsp[(1) - (1)].cword)), (yylsp[(1) - (1)]));
@@ -3390,7 +3391,7 @@ yyreduce:
     break;
 
   case 100:
-#line 1168 "pl_gram.y"
+#line 1169 "pl_gram.y"
     {
 						PLpgSQL_stmt_if *new;
 
@@ -3408,14 +3409,14 @@ yyreduce:
     break;
 
   case 101:
-#line 1185 "pl_gram.y"
+#line 1186 "pl_gram.y"
     {
 						(yyval.list) = NIL;
 					;}
     break;
 
   case 102:
-#line 1189 "pl_gram.y"
+#line 1190 "pl_gram.y"
     {
 						PLpgSQL_if_elsif *new;
 
@@ -3429,28 +3430,28 @@ yyreduce:
     break;
 
   case 103:
-#line 1202 "pl_gram.y"
+#line 1203 "pl_gram.y"
     {
 						(yyval.list) = NIL;
 					;}
     break;
 
   case 104:
-#line 1206 "pl_gram.y"
+#line 1207 "pl_gram.y"
     {
 						(yyval.list) = (yyvsp[(2) - (2)].list);
 					;}
     break;
 
   case 105:
-#line 1212 "pl_gram.y"
+#line 1213 "pl_gram.y"
     {
 						(yyval.stmt) = make_case((yylsp[(1) - (7)]), (yyvsp[(2) - (7)].expr), (yyvsp[(3) - (7)].list), (yyvsp[(4) - (7)].list));
 					;}
     break;
 
   case 106:
-#line 1218 "pl_gram.y"
+#line 1219 "pl_gram.y"
     {
 						PLpgSQL_expr *expr = NULL;
 						int			tok = yylex();
@@ -3466,21 +3467,21 @@ yyreduce:
     break;
 
   case 107:
-#line 1233 "pl_gram.y"
+#line 1234 "pl_gram.y"
     {
 						(yyval.list) = lappend((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].casewhen));
 					;}
     break;
 
   case 108:
-#line 1237 "pl_gram.y"
+#line 1238 "pl_gram.y"
     {
 						(yyval.list) = list_make1((yyvsp[(1) - (1)].casewhen));
 					;}
     break;
 
   case 109:
-#line 1243 "pl_gram.y"
+#line 1244 "pl_gram.y"
     {
 						PLpgSQL_case_when *new = palloc(sizeof(PLpgSQL_case_when));
 
@@ -3492,14 +3493,14 @@ yyreduce:
     break;
 
   case 110:
-#line 1254 "pl_gram.y"
+#line 1255 "pl_gram.y"
     {
 						(yyval.list) = NIL;
 					;}
     break;
 
   case 111:
-#line 1258 "pl_gram.y"
+#line 1259 "pl_gram.y"
     {
 						/*
 						 * proc_sect could return an empty list, but we
@@ -3515,7 +3516,7 @@ yyreduce:
     break;
 
   case 112:
-#line 1273 "pl_gram.y"
+#line 1274 "pl_gram.y"
     {
 						PLpgSQL_stmt_loop *new;
 
@@ -3534,7 +3535,7 @@ yyreduce:
     break;
 
   case 113:
-#line 1291 "pl_gram.y"
+#line 1292 "pl_gram.y"
     {
 						PLpgSQL_stmt_while *new;
 
@@ -3554,7 +3555,7 @@ yyreduce:
     break;
 
   case 114:
-#line 1310 "pl_gram.y"
+#line 1311 "pl_gram.y"
     {
 						/* This runs after we've scanned the loop body */
 						if ((yyvsp[(3) - (4)].stmt)->cmd_type == PLPGSQL_STMT_FORI)
@@ -3589,7 +3590,7 @@ yyreduce:
     break;
 
   case 115:
-#line 1344 "pl_gram.y"
+#line 1345 "pl_gram.y"
     {
 						int			tok = yylex();
 						int			tokloc = yylloc;
@@ -3722,7 +3723,6 @@ yyreduce:
 													   RAW_PARSE_DEFAULT,
 													   true,
 													   false,
-													   true,
 													   &expr1loc,
 													   &tok);
 
@@ -4128,7 +4128,7 @@ yyreduce:
 									expr = read_sql_construct(',', ';', K_USING,
 															  ", or ; or USING",
 															  RAW_PARSE_PLPGSQL_EXPR,
-															  true, true, true,
+															  true, true,
 															  NULL, &tok);
 									new->params = lappend(new->params, expr);
 								}
@@ -4215,21 +4215,21 @@ yyreduce:
   case 129:
 #line 1974 "pl_gram.y"
     {
-						(yyval.stmt) = make_execsql_stmt(K_IMPORT, (yylsp[(1) - (1)]));
+						(yyval.stmt) = make_execsql_stmt(K_IMPORT, (yylsp[(1) - (1)]), NULL);
 					;}
     break;
 
   case 130:
 #line 1978 "pl_gram.y"
     {
-						(yyval.stmt) = make_execsql_stmt(K_INSERT, (yylsp[(1) - (1)]));
+						(yyval.stmt) = make_execsql_stmt(K_INSERT, (yylsp[(1) - (1)]), NULL);
 					;}
     break;
 
   case 131:
 #line 1982 "pl_gram.y"
     {
-						(yyval.stmt) = make_execsql_stmt(K_MERGE, (yylsp[(1) - (1)]));
+						(yyval.stmt) = make_execsql_stmt(K_MERGE, (yylsp[(1) - (1)]), NULL);
 					;}
     break;
 
@@ -4243,7 +4243,7 @@ yyreduce:
 						if (tok == '=' || tok == COLON_EQUALS ||
 							tok == '[' || tok == '.')
 							word_is_not_variable(&((yyvsp[(1) - (1)].word)), (yylsp[(1) - (1)]));
-						(yyval.stmt) = make_execsql_stmt(T_WORD, (yylsp[(1) - (1)]));
+						(yyval.stmt) = make_execsql_stmt(T_WORD, (yylsp[(1) - (1)]), &((yyvsp[(1) - (1)].word)));
 					;}
     break;
 
@@ -4257,7 +4257,7 @@ yyreduce:
 						if (tok == '=' || tok == COLON_EQUALS ||
 							tok == '[' || tok == '.')
 							cword_is_not_variable(&((yyvsp[(1) - (1)].cword)), (yylsp[(1) - (1)]));
-						(yyval.stmt) = make_execsql_stmt(T_CWORD, (yylsp[(1) - (1)]));
+						(yyval.stmt) = make_execsql_stmt(T_CWORD, (yylsp[(1) - (1)]), NULL);
 					;}
     break;
 
@@ -4271,7 +4271,7 @@ yyreduce:
 						expr = read_sql_construct(K_INTO, K_USING, ';',
 												  "INTO or USING or ;",
 												  RAW_PARSE_PLPGSQL_EXPR,
-												  true, true, true,
+												  true, true,
 												  NULL, &endtoken);
 
 						new = palloc(sizeof(PLpgSQL_stmt_dynexecute));
@@ -4310,7 +4310,7 @@ yyreduce:
 									expr = read_sql_construct(',', ';', K_INTO,
 															  ", or ; or INTO",
 															  RAW_PARSE_PLPGSQL_EXPR,
-															  true, true, true,
+															  true, true,
 															  NULL, &endtoken);
 									new->params = lappend(new->params, expr);
 								} while (endtoken == ',');
@@ -5095,7 +5095,7 @@ read_sql_expression(int until, const char *expected)
 {
 	return read_sql_construct(until, 0, 0, expected,
 							  RAW_PARSE_PLPGSQL_EXPR,
-							  true, true, true, NULL, NULL);
+							  true, true, NULL, NULL);
 }
 
 /* Convenience routine to read an expression with two possible terminators */
@@ -5105,7 +5105,7 @@ read_sql_expression2(int until, int until2, const char *expected,
 {
 	return read_sql_construct(until, until2, 0, expected,
 							  RAW_PARSE_PLPGSQL_EXPR,
-							  true, true, true, NULL, endtoken);
+							  true, true, NULL, endtoken);
 }
 
 /* Convenience routine to read a SQL statement that must end with ';' */
@@ -5114,7 +5114,7 @@ read_sql_stmt(void)
 {
 	return read_sql_construct(';', 0, 0, ";",
 							  RAW_PARSE_DEFAULT,
-							  false, true, true, NULL, NULL);
+							  false, true, NULL, NULL);
 }
 
 /*
@@ -5127,7 +5127,6 @@ read_sql_stmt(void)
  * parsemode:	raw_parser() mode to use
  * isexpression: whether to say we're reading an "expression" or a "statement"
  * valid_sql:   whether to check the syntax of the expr
- * trim:		trim trailing whitespace
  * startloc:	if not NULL, location of first token is stored at *startloc
  * endtoken:	if not NULL, ending token is stored at *endtoken
  *				(this is only interesting if until2 or until3 isn't zero)
@@ -5140,7 +5139,6 @@ read_sql_construct(int until,
 				   RawParseMode parsemode,
 				   bool isexpression,
 				   bool valid_sql,
-				   bool trim,
 				   int *startloc,
 				   int *endtoken)
 {
@@ -5148,6 +5146,7 @@ read_sql_construct(int until,
 	StringInfoData ds;
 	IdentifierLookup save_IdentifierLookup;
 	int			startlocation = -1;
+	int			endlocation = -1;
 	int			parenlevel = 0;
 	PLpgSQL_expr *expr;
 
@@ -5198,6 +5197,8 @@ read_sql_construct(int until,
 								expected),
 						 parser_errposition(yylloc)));
 		}
+		/* Remember end+1 location of last accepted token */
+		endlocation = yylloc + plpgsql_token_length();
 	}
 
 	plpgsql_IdentifierLookup = save_IdentifierLookup;
@@ -5208,7 +5209,7 @@ read_sql_construct(int until,
 		*endtoken = tok;
 
 	/* give helpful complaint about empty input */
-	if (startlocation >= yylloc)
+	if (startlocation >= endlocation)
 	{
 		if (isexpression)
 			yyerror("missing expression");
@@ -5216,14 +5217,14 @@ read_sql_construct(int until,
 			yyerror("missing SQL statement");
 	}
 
-	plpgsql_append_source_text(&ds, startlocation, yylloc);
-
-	/* trim any trailing whitespace, for neatness */
-	if (trim)
-	{
-		while (ds.len > 0 && scanner_isspace(ds.data[ds.len - 1]))
-			ds.data[--ds.len] = '\0';
-	}
+	/*
+	 * We save only the text from startlocation to endlocation-1.  This
+	 * suppresses the "until" token as well as any whitespace or comments
+	 * following the last accepted token.  (We used to strip such trailing
+	 * whitespace by hand, but that causes problems if there's a "-- comment"
+	 * in front of said whitespace.)
+	 */
+	plpgsql_append_source_text(&ds, startlocation, endlocation);
 
 	expr = palloc0(sizeof(PLpgSQL_expr));
 	expr->query = pstrdup(ds.data);
@@ -5240,13 +5241,17 @@ read_sql_construct(int until,
 	return expr;
 }
 
+/*
+ * Read a datatype declaration, consuming the current lookahead token if any.
+ * Returns a PLpgSQL_type struct.
+ */
 static PLpgSQL_type *
 read_datatype(int tok)
 {
 	StringInfoData ds;
 	char	   *type_name;
 	int			startlocation;
-	PLpgSQL_type *result;
+	PLpgSQL_type *result = NULL;
 	int			parenlevel = 0;
 
 	/* Should only be called while parsing DECLARE sections */
@@ -5256,11 +5261,12 @@ read_datatype(int tok)
 	if (tok == YYEMPTY)
 		tok = yylex();
 
+	/* The current token is the start of what we'll pass to parse_datatype */
 	startlocation = yylloc;
 
 	/*
-	 * If we have a simple or composite identifier, check for %TYPE
-	 * and %ROWTYPE constructs.
+	 * If we have a simple or composite identifier, check for %TYPE and
+	 * %ROWTYPE constructs.
 	 */
 	if (tok == T_WORD)
 	{
@@ -5272,18 +5278,10 @@ read_datatype(int tok)
 			tok = yylex();
 			if (tok_is_keyword(tok, &yylval,
 							   K_TYPE, "type"))
-			{
 				result = plpgsql_parse_wordtype(dtname);
-				if (result)
-					return result;
-			}
 			else if (tok_is_keyword(tok, &yylval,
 									K_ROWTYPE, "rowtype"))
-			{
 				result = plpgsql_parse_wordrowtype(dtname);
-				if (result)
-					return result;
-			}
 		}
 	}
 	else if (plpgsql_token_is_unreserved_keyword(tok))
@@ -5296,18 +5294,10 @@ read_datatype(int tok)
 			tok = yylex();
 			if (tok_is_keyword(tok, &yylval,
 							   K_TYPE, "type"))
-			{
 				result = plpgsql_parse_wordtype(dtname);
-				if (result)
-					return result;
-			}
 			else if (tok_is_keyword(tok, &yylval,
 									K_ROWTYPE, "rowtype"))
-			{
 				result = plpgsql_parse_wordrowtype(dtname);
-				if (result)
-					return result;
-			}
 		}
 	}
 	else if (tok == T_CWORD)
@@ -5320,21 +5310,56 @@ read_datatype(int tok)
 			tok = yylex();
 			if (tok_is_keyword(tok, &yylval,
 							   K_TYPE, "type"))
-			{
 				result = plpgsql_parse_cwordtype(dtnames);
-				if (result)
-					return result;
-			}
 			else if (tok_is_keyword(tok, &yylval,
 									K_ROWTYPE, "rowtype"))
-			{
 				result = plpgsql_parse_cwordrowtype(dtnames);
-				if (result)
-					return result;
-			}
 		}
 	}
 
+	/*
+	 * If we recognized a %TYPE or %ROWTYPE construct, see if it is followed
+	 * by array decoration: [ ARRAY ] [ '[' [ iconst ] ']' [ ... ] ]
+	 *
+	 * Like the core parser, we ignore the specific numbers and sizes of
+	 * dimensions; arrays of different dimensionality are still the same type
+	 * in Postgres.
+	 */
+	if (result)
+	{
+		bool		is_array = false;
+
+		tok = yylex();
+		if (tok_is_keyword(tok, &yylval,
+						   K_ARRAY, "array"))
+		{
+			is_array = true;
+			tok = yylex();
+		}
+		while (tok == '[')
+		{
+			is_array = true;
+			tok = yylex();
+			if (tok == ICONST)
+				tok = yylex();
+			if (tok != ']')
+				yyerror("syntax error, expected \"]\"");
+			tok = yylex();
+		}
+		plpgsql_push_back_token(tok);
+
+		if (is_array)
+			result = plpgsql_build_datatype_arrayof(result);
+
+		return result;
+	}
+
+	/*
+	 * Not %TYPE or %ROWTYPE, so scan to the end of the datatype declaration,
+	 * which could include typmod or array decoration.  We are not very picky
+	 * here, instead relying on parse_datatype to complain about garbage.  But
+	 * we must count parens to handle typmods within cursor_arg correctly.
+	 */
 	while (tok != ';')
 	{
 		if (tok == 0)
@@ -5376,8 +5401,13 @@ read_datatype(int tok)
 	return result;
 }
 
+/*
+ * Read a generic SQL statement.  We have already read its first token;
+ * firsttoken is that token's code and location its starting location.
+ * If firsttoken == T_WORD, pass its yylval value as "word", else pass NULL.
+ */
 static PLpgSQL_stmt *
-make_execsql_stmt(int firsttoken, int location)
+make_execsql_stmt(int firsttoken, int location, PLword *word)
 {
 	StringInfoData ds;
 	IdentifierLookup save_IdentifierLookup;
@@ -5390,8 +5420,15 @@ make_execsql_stmt(int firsttoken, int location)
 	bool		have_strict = false;
 	int			into_start_loc = -1;
 	int			into_end_loc = -1;
+	int			paren_depth = 0;
+	int			begin_depth = 0;
+	bool		in_routine_definition = false;
+	int			token_count = 0;
+	char		tokens[4];		/* records the first few tokens */
 
 	initStringInfo(&ds);
+
+	memset(tokens, 0, sizeof(tokens));
 
 	/* special lookup mode for identifiers within the SQL text */
 	save_IdentifierLookup = plpgsql_IdentifierLookup;
@@ -5400,6 +5437,12 @@ make_execsql_stmt(int firsttoken, int location)
 	/*
 	 * Scan to the end of the SQL command.  Identify any INTO-variables
 	 * clause lurking within it, and parse that via read_into_target().
+	 *
+	 * The end of the statement is defined by a semicolon ... except that
+	 * semicolons within parentheses or BEGIN/END blocks don't terminate a
+	 * statement.  We follow psql's lead in not recognizing BEGIN/END except
+	 * after CREATE [OR REPLACE] {FUNCTION|PROCEDURE}.  END can also appear
+	 * within a CASE construct, so we treat CASE/END like BEGIN/END.
 	 *
 	 * Because INTO is sometimes used in the main SQL grammar, we have to be
 	 * careful not to take any such usage of INTO as a PL/pgSQL INTO clause.
@@ -5426,13 +5469,50 @@ make_execsql_stmt(int firsttoken, int location)
 	 * break this logic again ... beware!
 	 */
 	tok = firsttoken;
+	if (tok == T_WORD && strcmp(word->ident, "create") == 0)
+		tokens[token_count] = 'c';
+	token_count++;
+
 	for (;;)
 	{
 		prev_tok = tok;
 		tok = yylex();
 		if (have_into && into_end_loc < 0)
 			into_end_loc = yylloc;		/* token after the INTO part */
-		if (tok == ';')
+		/* Detect CREATE [OR REPLACE] {FUNCTION|PROCEDURE} */
+		if (tokens[0] == 'c' && token_count < sizeof(tokens))
+		{
+			if (tok == K_OR)
+				tokens[token_count] = 'o';
+			else if (tok == T_WORD &&
+					 strcmp(yylval.word.ident, "replace") == 0)
+				tokens[token_count] = 'r';
+			else if (tok == T_WORD &&
+					 strcmp(yylval.word.ident, "function") == 0)
+				tokens[token_count] = 'f';
+			else if (tok == T_WORD &&
+					 strcmp(yylval.word.ident, "procedure") == 0)
+				tokens[token_count] = 'f';	/* treat same as "function" */
+			if (tokens[1] == 'f' ||
+				(tokens[1] == 'o' && tokens[2] == 'r' && tokens[3] == 'f'))
+				in_routine_definition = true;
+			token_count++;
+		}
+		/* Track paren nesting (needed for CREATE RULE syntax) */
+		if (tok == '(')
+			paren_depth++;
+		else if (tok == ')' && paren_depth > 0)
+			paren_depth--;
+		/* We need track BEGIN/END nesting only in a routine definition */
+		if (in_routine_definition && paren_depth == 0)
+		{
+			if (tok == K_BEGIN || tok == K_CASE)
+				begin_depth++;
+			else if (tok == K_END && begin_depth > 0)
+				begin_depth--;
+		}
+		/* Command-ending semicolon? */
+		if (tok == ';' && paren_depth == 0 && begin_depth == 0)
 			break;
 		if (tok == 0)
 			yyerror("unexpected end of function definition");
@@ -5596,11 +5676,11 @@ read_fetch_direction(void)
 	{
 		/*
 		 * Assume it's a count expression with no preceding keyword.
-		 * Note: we allow this syntax because core SQL does, but we don't
-		 * document it because of the ambiguity with the omitted-direction
-		 * case.  For instance, "MOVE n IN c" will fail if n is a variable.
-		 * Perhaps this can be improved someday, but it's hardly worth a
-		 * lot of work.
+		 * Note: we allow this syntax because core SQL does, but it's
+		 * ambiguous with the case of an omitted direction clause; for
+		 * instance, "MOVE n IN c" will fail if n is a variable, because the
+		 * preceding else-arm will trigger.  Perhaps this can be improved
+		 * someday, but it hardly seems worth a lot of work.
 		 */
 		plpgsql_push_back_token(tok);
 		fetch->expr = read_sql_expression2(K_FROM, K_IN,
@@ -6252,16 +6332,12 @@ read_cursor_args(PLpgSQL_var *cursor, int until)
 		 * Read the value expression. To provide the user with meaningful
 		 * parse error positions, we check the syntax immediately, instead of
 		 * checking the final expression that may have the arguments
-		 * reordered. Trailing whitespace must not be trimmed, because
-		 * otherwise input of the form (param -- comment\n, param) would be
-		 * translated into a form where the second parameter is commented
-		 * out.
+		 * reordered.
 		 */
 		item = read_sql_construct(',', ')', 0,
 								  ",\" or \")",
 								  RAW_PARSE_PLPGSQL_EXPR,
 								  true, true,
-								  false, /* do not trim */
 								  NULL, &endtoken);
 
 		argv[argpos] = item->query;

@@ -3,7 +3,7 @@
  * pg_class_d.h
  *    Macro definitions for pg_class
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -119,7 +119,9 @@
 /*
  * Relation kinds with a table access method (rd_tableam).  Although sequences
  * use the heap table AM, they are enough of a special case in most uses that
- * they are not included here.
+ * they are not included here.  Likewise, partitioned tables can have an access
+ * method defined so that their partitions can inherit it, but they do not set
+ * rd_tableam; hence, this is handled specially outside of this macro.
  */
 #define RELKIND_HAS_TABLE_AM(relkind) \
 	((relkind) == RELKIND_RELATION || \

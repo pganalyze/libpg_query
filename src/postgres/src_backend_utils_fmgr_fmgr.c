@@ -9,7 +9,7 @@
  * fmgr.c
  *	  The Postgres function manager.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -210,7 +210,9 @@ struct fmgr_security_definer_cache
 {
 	FmgrInfo	flinfo;			/* lookup info for target function */
 	Oid			userid;			/* userid to set, or InvalidOid */
-	ArrayType  *proconfig;		/* GUC values to set, or NULL */
+	List	   *configNames;	/* GUC names to set, or NIL */
+	List	   *configHandles;	/* GUC handles to set, or NIL */
+	List	   *configValues;	/* GUC values to set, or NIL */
 	Datum		arg;			/* passthrough argument for plugin modules */
 };
 

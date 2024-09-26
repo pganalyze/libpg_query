@@ -1,6 +1,7 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - makeDefElem
+ * - makeStringConst
  * - makeTypeNameFromNameList
  * - makeDefElemExtended
  * - makeRangeVar
@@ -8,13 +9,14 @@
  * - makeAlias
  * - makeSimpleA_Expr
  * - makeGroupingSet
+ * - makeJsonTablePathSpec
+ * - makeJsonFormat
  * - makeTypeName
  * - makeFuncCall
  * - makeA_Expr
- * - makeJsonFormat
  * - makeJsonIsPredicate
+ * - makeJsonBehavior
  * - makeJsonValueExpr
- * - makeJsonEncoding
  * - makeJsonKeyValue
  * - makeBoolExpr
  *--------------------------------------------------------------------
@@ -26,7 +28,7 @@
  *	  creator functions for various nodes. The functions here are for the
  *	  most frequently created nodes.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -41,7 +43,6 @@
 #include "catalog/pg_type.h"
 #include "nodes/makefuncs.h"
 #include "nodes/nodeFuncs.h"
-#include "utils/errcodes.h"
 #include "utils/lsyscache.h"
 
 
@@ -269,6 +270,22 @@ makeTypeNameFromNameList(List *names)
 
 
 /*
+ * makeStringConst -
+ * 	build a A_Const node of type T_String for given string
+ */
+Node *
+makeStringConst(char *str, int location)
+{
+	A_Const    *n = makeNode(A_Const);
+
+	n->val.sval.type = T_String;
+	n->val.sval.sval = str;
+	n->location = location;
+
+	return (Node *) n;
+}
+
+/*
  * makeDefElem -
  *	build a DefElem node
  *
@@ -457,24 +474,19 @@ makeJsonValueExpr(Expr *raw_expr, Expr *formatted_expr,
 }
 
 /*
- * makeJsonEncoding -
- *	  converts JSON encoding name to enum JsonEncoding
+ * makeJsonBehavior -
+ *	  creates a JsonBehavior node
  */
-JsonEncoding
-makeJsonEncoding(char *name)
+JsonBehavior *
+makeJsonBehavior(JsonBehaviorType btype, Node *expr, int location)
 {
-	if (!pg_strcasecmp(name, "utf8"))
-		return JS_ENC_UTF8;
-	if (!pg_strcasecmp(name, "utf16"))
-		return JS_ENC_UTF16;
-	if (!pg_strcasecmp(name, "utf32"))
-		return JS_ENC_UTF32;
+	JsonBehavior *behavior = makeNode(JsonBehavior);
 
-	ereport(ERROR,
-			errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-			errmsg("unrecognized JSON encoding: %s", name));
+	behavior->btype = btype;
+	behavior->expr = expr;
+	behavior->location = location;
 
-	return JS_ENC_DEFAULT;
+	return behavior;
 }
 
 /*
@@ -510,3 +522,30 @@ makeJsonIsPredicate(Node *expr, JsonFormat *format, JsonValueType item_type,
 
 	return (Node *) n;
 }
+
+/*
+ * makeJsonTablePathSpec -
+ *		Make JsonTablePathSpec node from given path string and name (if any)
+ */
+JsonTablePathSpec *
+makeJsonTablePathSpec(char *string, char *name, int string_location,
+					  int name_location)
+{
+	JsonTablePathSpec *pathspec = makeNode(JsonTablePathSpec);
+
+	Assert(string != NULL);
+	pathspec->string = makeStringConst(string, string_location);
+	if (name != NULL)
+		pathspec->name = pstrdup(name);
+
+	pathspec->name_location = name_location;
+	pathspec->location = string_location;
+
+	return pathspec;
+}
+
+/*
+ * makeJsonTablePath -
+ *		Make JsonTablePath node for given path string and name
+ */
+

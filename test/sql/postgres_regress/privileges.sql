@@ -1177,7 +1177,7 @@ SET SESSION AUTHORIZATION regress_sro_user;
 CREATE FUNCTION unwanted_grant() RETURNS void LANGUAGE sql AS
 	'GRANT regress_priv_group2 TO regress_sro_user';
 CREATE FUNCTION mv_action() RETURNS bool LANGUAGE sql AS
-	'DECLARE c CURSOR WITH HOLD FOR SELECT unwanted_grant(); SELECT true';
+	'DECLARE c CURSOR WITH HOLD FOR SELECT public.unwanted_grant(); SELECT true';
 -- REFRESH of this MV will queue a GRANT at end of transaction
 CREATE MATERIALIZED VIEW sro_mv AS SELECT mv_action() WITH NO DATA;
 REFRESH MATERIALIZED VIEW sro_mv;
@@ -1188,12 +1188,12 @@ SET SESSION AUTHORIZATION regress_sro_user;
 -- INSERT to this table will queue a GRANT at end of transaction
 CREATE TABLE sro_trojan_table ();
 CREATE FUNCTION sro_trojan() RETURNS trigger LANGUAGE plpgsql AS
-	'BEGIN PERFORM unwanted_grant(); RETURN NULL; END';
+	'BEGIN PERFORM public.unwanted_grant(); RETURN NULL; END';
 CREATE CONSTRAINT TRIGGER t AFTER INSERT ON sro_trojan_table
     INITIALLY DEFERRED FOR EACH ROW EXECUTE PROCEDURE sro_trojan();
 -- Now, REFRESH will issue such an INSERT, queueing the GRANT
 CREATE OR REPLACE FUNCTION mv_action() RETURNS bool LANGUAGE sql AS
-	'INSERT INTO sro_trojan_table DEFAULT VALUES; SELECT true';
+	'INSERT INTO public.sro_trojan_table DEFAULT VALUES; SELECT true';
 REFRESH MATERIALIZED VIEW sro_mv;
 \c -
 REFRESH MATERIALIZED VIEW sro_mv;
@@ -1204,7 +1204,7 @@ SET SESSION AUTHORIZATION regress_sro_user;
 CREATE FUNCTION unwanted_grant_nofail(int) RETURNS int
 	IMMUTABLE LANGUAGE plpgsql AS $$
 BEGIN
-	PERFORM unwanted_grant();
+	PERFORM public.unwanted_grant();
 	RAISE WARNING 'owned';
 	RETURN 1;
 EXCEPTION WHEN OTHERS THEN
@@ -1793,6 +1793,21 @@ COMMIT;
 \c
 REVOKE TRUNCATE ON lock_table FROM regress_locktable_user;
 
+-- LOCK TABLE and MAINTAIN permission
+GRANT MAINTAIN ON lock_table TO regress_locktable_user;
+SET SESSION AUTHORIZATION regress_locktable_user;
+BEGIN;
+LOCK TABLE lock_table IN ACCESS SHARE MODE; -- should pass
+ROLLBACK;
+BEGIN;
+LOCK TABLE lock_table IN ROW EXCLUSIVE MODE; -- should pass
+COMMIT;
+BEGIN;
+LOCK TABLE lock_table IN ACCESS EXCLUSIVE MODE; -- should pass
+COMMIT;
+\c
+REVOKE MAINTAIN ON lock_table FROM regress_locktable_user;
+
 -- clean up
 DROP TABLE lock_table;
 DROP USER regress_locktable_user;
@@ -1876,3 +1891,55 @@ DROP SCHEMA regress_roleoption;
 DROP ROLE regress_roleoption_protagonist;
 DROP ROLE regress_roleoption_donor;
 DROP ROLE regress_roleoption_recipient;
+
+-- MAINTAIN
+CREATE ROLE regress_no_maintain;
+CREATE ROLE regress_maintain;
+CREATE ROLE regress_maintain_all IN ROLE pg_maintain;
+CREATE TABLE maintain_test (a INT);
+CREATE INDEX ON maintain_test (a);
+GRANT MAINTAIN ON maintain_test TO regress_maintain;
+CREATE MATERIALIZED VIEW refresh_test AS SELECT 1;
+GRANT MAINTAIN ON refresh_test TO regress_maintain;
+CREATE SCHEMA reindex_test;
+
+-- negative tests; should fail
+SET ROLE regress_no_maintain;
+VACUUM maintain_test;
+ANALYZE maintain_test;
+VACUUM (ANALYZE) maintain_test;
+CLUSTER maintain_test USING maintain_test_a_idx;
+REFRESH MATERIALIZED VIEW refresh_test;
+REINDEX TABLE maintain_test;
+REINDEX INDEX maintain_test_a_idx;
+REINDEX SCHEMA reindex_test;
+RESET ROLE;
+
+SET ROLE regress_maintain;
+VACUUM maintain_test;
+ANALYZE maintain_test;
+VACUUM (ANALYZE) maintain_test;
+CLUSTER maintain_test USING maintain_test_a_idx;
+REFRESH MATERIALIZED VIEW refresh_test;
+REINDEX TABLE maintain_test;
+REINDEX INDEX maintain_test_a_idx;
+REINDEX SCHEMA reindex_test;
+RESET ROLE;
+
+SET ROLE regress_maintain_all;
+VACUUM maintain_test;
+ANALYZE maintain_test;
+VACUUM (ANALYZE) maintain_test;
+CLUSTER maintain_test USING maintain_test_a_idx;
+REFRESH MATERIALIZED VIEW refresh_test;
+REINDEX TABLE maintain_test;
+REINDEX INDEX maintain_test_a_idx;
+REINDEX SCHEMA reindex_test;
+RESET ROLE;
+
+DROP TABLE maintain_test;
+DROP MATERIALIZED VIEW refresh_test;
+DROP SCHEMA reindex_test;
+DROP ROLE regress_no_maintain;
+DROP ROLE regress_maintain;
+DROP ROLE regress_maintain_all;

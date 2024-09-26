@@ -27,6 +27,7 @@
  * - plpgsql_parse_wordrowtype
  * - plpgsql_parse_cwordtype
  * - plpgsql_parse_cwordrowtype
+ * - plpgsql_build_datatype_arrayof
  * - plpgsql_parse_result
  * - plpgsql_finish_datums
  * - plpgsql_compile_error_callback
@@ -39,7 +40,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -693,10 +694,10 @@ plpgsql_parse_tripword(char *word1, char *word2, char *word3,
 
 
 /* ----------
- * plpgsql_parse_wordtype	The scanner found word%TYPE. word can be
- *				a variable name or a basetype.
+ * plpgsql_parse_wordtype	The scanner found word%TYPE. word should be
+ *				a pre-existing variable name.
  *
- * Returns datatype struct, or NULL if no match found for word.
+ * Returns datatype struct.  Throws error if no match found for word.
  * ----------
  */
 PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
@@ -705,6 +706,10 @@ PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
 
 /* ----------
  * plpgsql_parse_cwordtype		Same lookup for compositeword%TYPE
+ *
+ * Here, we allow either a block-qualified variable name, or a reference
+ * to a column of some table.  (If we must throw error, we assume that the
+ * latter case was intended.)
  * ----------
  */
 PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
@@ -932,6 +937,12 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
  * Utility subroutine to make a PLpgSQL_type struct given a pg_type entry
  * and additional details (see comments for plpgsql_build_datatype).
  */
+
+
+/*
+ * Build an array type for the element type specified as argument.
+ */
+PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ;  }
 
 
 /*

@@ -5,7 +5,7 @@
  *
  * See src/backend/utils/misc/README for design notes.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  *
  *	  src/include/utils/guc_tables.h
  *
@@ -26,7 +26,7 @@ enum config_type
 	PGC_INT,
 	PGC_REAL,
 	PGC_STRING,
-	PGC_ENUM
+	PGC_ENUM,
 };
 
 union config_var_val
@@ -72,6 +72,7 @@ enum config_group
 	WAL_RECOVERY,
 	WAL_ARCHIVE_RECOVERY,
 	WAL_RECOVERY_TARGET,
+	WAL_SUMMARIZATION,
 	REPLICATION_SENDING,
 	REPLICATION_PRIMARY,
 	REPLICATION_STANDBY,
@@ -93,11 +94,11 @@ enum config_group
 	CLIENT_CONN_OTHER,
 	LOCK_MANAGEMENT,
 	COMPAT_OPTIONS_PREVIOUS,
-	COMPAT_OPTIONS_CLIENT,
+	COMPAT_OPTIONS_OTHER,
 	ERROR_HANDLING_OPTIONS,
 	PRESET_OPTIONS,
 	CUSTOM_OPTIONS,
-	DEVELOPER_OPTIONS
+	DEVELOPER_OPTIONS,
 };
 
 /*
@@ -110,7 +111,7 @@ typedef enum
 	GUC_SAVE,					/* entry caused by function SET option */
 	GUC_SET,					/* entry caused by plain SET command */
 	GUC_LOCAL,					/* entry caused by SET LOCAL command */
-	GUC_SET_LOCAL				/* entry caused by SET then SET LOCAL */
+	GUC_SET_LOCAL,				/* entry caused by SET then SET LOCAL */
 } GucStackState;
 
 typedef struct guc_stack
