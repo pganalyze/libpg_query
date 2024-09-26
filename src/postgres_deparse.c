@@ -201,6 +201,15 @@ static void deparseJsonOutput(StringInfo str, JsonOutput *json_output);
 static void deparseJsonParseExpr(StringInfo str, JsonParseExpr *json_parse_expr);
 static void deparseJsonScalarExpr(StringInfo str, JsonScalarExpr *json_scalar_expr);
 static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_serialize_expr);
+static void deparseJsonTable(StringInfo str, JsonTable *json_table);
+static void deparseJsonTableColumn(StringInfo str, JsonTableColumn *json_table_column);
+static void deparseJsonTableColumns(StringInfo str, List *json_table_columns);
+static void deparseJsonTablePathSpec(StringInfo str, JsonTablePathSpec *json_table_path_spec);
+static void deparseJsonBehavior(StringInfo str, JsonBehavior *json_behavior);
+static void deparseJsonFuncExpr(StringInfo str, JsonFuncExpr *json_func_expr);
+static void deparseJsonQuotesClauseOpt(StringInfo str, JsonQuotes quotes);
+static void deparseJsonOnErrorClauseOpt(StringInfo str, JsonBehavior *behavior);
+static void deparseJsonOnEmptyClauseOpt(StringInfo str, JsonBehavior *behavior);
 static void deparseConstraint(StringInfo str, Constraint *constraint);
 static void deparseSchemaStmt(StringInfo str, Node *node);
 static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt);
@@ -356,6 +365,9 @@ static void deparseExpr(StringInfo str, Node *node)
 			break;
 		case T_JsonSerializeExpr:
 			deparseJsonSerializeExpr(str, castNode(JsonSerializeExpr, node));
+			break;
+		case T_JsonFuncExpr:
+			deparseJsonFuncExpr(str, castNode(JsonFuncExpr, node));
 			break;
 		case T_FuncCall:
 		case T_SQLValueFunction:
@@ -1670,6 +1682,9 @@ static void deparseTableRef(StringInfo str, Node *node)
 			break;
 		case T_JoinExpr:
 			deparseJoinExpr(str, castNode(JoinExpr, node));
+			break;
+		case T_JsonTable:
+			deparseJsonTable(str, castNode(JsonTable, node));
 			break;
 		default:
 			Assert(false);
@@ -4034,7 +4049,8 @@ static void deparseAIndirection(StringInfo str, A_Indirection *a_indirection)
 		IsA(a_indirection->arg, A_Expr) ||
 		IsA(a_indirection->arg, TypeCast) ||
 		IsA(a_indirection->arg, RowExpr) ||
-		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices));
+		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices)) ||
+		IsA(a_indirection->arg, JsonFuncExpr);
 
 	if (need_parens)
 		appendStringInfoChar(str, '(');
@@ -10612,6 +10628,270 @@ static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_ser
 		deparseJsonOutput(str, json_serialize_expr->output);
 
 	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonQuotesClauseOpt(StringInfo str, JsonQuotes quotes)
+{
+	switch (quotes)
+	{
+		case JS_QUOTES_UNSPEC:
+			break;
+		case JS_QUOTES_KEEP:
+			appendStringInfoString(str, " KEEP QUOTES");
+			break;
+		case JS_QUOTES_OMIT:
+			appendStringInfoString(str, " OMIT QUOTES");
+			break;
+	}
+}
+
+static void deparseJsonOnErrorClauseOpt(StringInfo str, JsonBehavior *behavior)
+{
+	if (!behavior)
+		return;
+
+	appendStringInfoChar(str, ' ');
+	deparseJsonBehavior(str, behavior);
+	appendStringInfoString(str, " ON ERROR");
+}
+
+static void deparseJsonOnEmptyClauseOpt(StringInfo str, JsonBehavior *behavior)
+{
+	if (behavior)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseJsonBehavior(str, behavior);
+		appendStringInfoString(str, " ON EMPTY");
+	}
+}
+
+static void deparseJsonFuncExpr(StringInfo str, JsonFuncExpr *json_func_expr)
+{
+	switch (json_func_expr->op)
+	{
+		case JSON_EXISTS_OP:
+			appendStringInfoString(str, "JSON_EXISTS(");
+			break;
+		case JSON_QUERY_OP:
+			appendStringInfoString(str, "JSON_QUERY(");
+			break;
+		case JSON_VALUE_OP:
+			appendStringInfoString(str, "JSON_VALUE(");
+			break;
+		case JSON_TABLE_OP:
+			appendStringInfoString(str, "JSON_TABLE(");
+			break;
+	}
+
+	deparseJsonValueExpr(str, json_func_expr->context_item);
+	appendStringInfoString(str, ", ");
+	deparseExpr(str, json_func_expr->pathspec);
+
+	if (json_func_expr->passing)
+		appendStringInfoString(str, " PASSING ");
+
+	ListCell *lc = NULL;
+	foreach (lc, json_func_expr->passing)
+	{
+		JsonArgument *json_argument = castNode(JsonArgument, lfirst(lc));
+		deparseJsonValueExpr(str, json_argument->val);
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_argument->name);
+
+		if (lnext(json_func_expr->passing, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	if (json_func_expr->output)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseJsonOutput(str, json_func_expr->output);
+	}
+
+	switch (json_func_expr->wrapper)
+	{
+		case JSW_UNSPEC:
+			break;
+		case JSW_NONE:
+			appendStringInfoString(str, " WITHOUT WRAPPER");
+			break;
+		case JSW_CONDITIONAL:
+			appendStringInfoString(str, " WITH CONDITIONAL WRAPPER");
+			break;
+		case JSW_UNCONDITIONAL:
+			appendStringInfoString(str, " WITH UNCONDITIONAL WRAPPER");
+			break;
+	}
+
+	deparseJsonQuotesClauseOpt(str, json_func_expr->quotes);
+	deparseJsonOnEmptyClauseOpt(str, json_func_expr->on_empty);
+	deparseJsonOnErrorClauseOpt(str, json_func_expr->on_error);
+
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonTablePathSpec(StringInfo str, JsonTablePathSpec *json_table_path_spec)
+{
+	deparseStringLiteral(str, castNode(A_Const, json_table_path_spec->string)->val.sval.sval);
+
+	if (json_table_path_spec->name)
+	{
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_table_path_spec->name);
+	}
+}
+
+static void deparseJsonBehavior(StringInfo str, JsonBehavior *json_behavior)
+{
+	switch (json_behavior->btype)
+	{
+		case JSON_BEHAVIOR_NULL:
+			appendStringInfoString(str, "NULL");
+			break;
+		case JSON_BEHAVIOR_ERROR:
+			appendStringInfoString(str, "ERROR");
+			break;
+		case JSON_BEHAVIOR_EMPTY:
+			appendStringInfoString(str, "EMPTY");
+			break;
+		case JSON_BEHAVIOR_TRUE:
+			appendStringInfoString(str, "TRUE");
+			break;
+		case JSON_BEHAVIOR_FALSE:
+			appendStringInfoString(str, "FALSE");
+			break;
+		case JSON_BEHAVIOR_EMPTY_ARRAY:
+			appendStringInfoString(str, "EMPTY ARRAY");
+			break;
+		case JSON_BEHAVIOR_EMPTY_OBJECT:
+			appendStringInfoString(str, "EMPTY OBJECT");
+			break;
+		case JSON_BEHAVIOR_DEFAULT:
+			appendStringInfoString(str, "DEFAULT ");
+			deparseExpr(str, (Node*) json_behavior->expr);
+			break;
+		case JSON_BEHAVIOR_UNKNOWN:
+			appendStringInfoString(str, "UNKNOWN");
+			break;
+	}
+}
+
+static void deparseJsonTableColumn(StringInfo str, JsonTableColumn *json_table_column)
+{
+	if (json_table_column->coltype == JTC_NESTED)
+	{
+		appendStringInfoString(str, "NESTED PATH ");
+		deparseJsonTablePathSpec(str, json_table_column->pathspec);
+		deparseJsonTableColumns(str, json_table_column->columns);
+		return;
+	}
+
+	deparseColLabel(str, json_table_column->name);
+	appendStringInfoChar(str, ' ');
+
+	switch (json_table_column->coltype)
+	{
+		case JTC_FOR_ORDINALITY:
+			appendStringInfoString(str, " FOR ORDINALITY");
+			break;
+		case JTC_EXISTS:
+		case JTC_FORMATTED:
+		case JTC_REGULAR:
+			deparseTypeName(str, json_table_column->typeName);
+
+			if (json_table_column->coltype == JTC_EXISTS)
+				appendStringInfoString(str, " EXISTS ");
+			else
+				appendStringInfoChar(str, ' ');
+
+			if (json_table_column->format)
+				deparseJsonFormat(str, json_table_column->format);
+
+			if (json_table_column->pathspec)
+			{
+				appendStringInfoString(str, "PATH ");
+				deparseJsonTablePathSpec(str, json_table_column->pathspec);
+			}
+			break;
+		case JTC_NESTED:
+			Assert(false);
+	}
+
+	switch (json_table_column->wrapper)
+	{
+		case JSW_UNSPEC:
+			break;
+		case JSW_NONE:
+			if (json_table_column->coltype == JTC_REGULAR || json_table_column->coltype == JTC_FORMATTED)
+				appendStringInfoString(str, " WITHOUT WRAPPER");
+			break;
+		case JSW_CONDITIONAL:
+			appendStringInfoString(str, " WITH CONDITIONAL WRAPPER");
+			break;
+		case JSW_UNCONDITIONAL:
+			appendStringInfoString(str, " WITH UNCONDITIONAL WRAPPER");
+			break;
+	}
+
+	deparseJsonQuotesClauseOpt(str, json_table_column->quotes);
+	deparseJsonOnEmptyClauseOpt(str, json_table_column->on_empty);
+	deparseJsonOnErrorClauseOpt(str, json_table_column->on_error);
+}
+
+static void deparseJsonTableColumns(StringInfo str, List *json_table_columns)
+{
+	appendStringInfoString(str, " COLUMNS (");
+
+	ListCell *lc = NULL;
+	foreach(lc, json_table_columns)
+	{
+		deparseJsonTableColumn(str, castNode(JsonTableColumn, lfirst(lc)));
+
+		if (lnext(json_table_columns, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonTable(StringInfo str, JsonTable *json_table)
+{
+	appendStringInfoString(str, "JSON_TABLE(");
+
+	deparseJsonValueExpr(str, json_table->context_item);
+	appendStringInfoString(str, ", ");
+	deparseJsonTablePathSpec(str, json_table->pathspec);
+
+	if (json_table->passing)
+		appendStringInfoString(str, " PASSING ");
+
+	ListCell *lc = NULL;
+	foreach (lc, json_table->passing)
+	{
+		JsonArgument *json_argument = castNode(JsonArgument, lfirst(lc));
+		deparseJsonValueExpr(str, json_argument->val);
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_argument->name);
+
+		if (lnext(json_table->passing, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	deparseJsonTableColumns(str, json_table->columns);
+
+	if (json_table->on_error)
+	{
+		deparseJsonBehavior(str, json_table->on_error);
+		appendStringInfoString(str, " ON ERROR");
+	}
+
+	appendStringInfoChar(str, ')');
+
+	if (json_table->alias)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseAlias(str, json_table->alias);
+	}
 }
 
 static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func)
