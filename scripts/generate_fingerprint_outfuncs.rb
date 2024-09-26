@@ -266,8 +266,9 @@ class Generator
     ['ClosePortalStmt', 'portalname'] => :skip,
     ['RawStmt', 'stmt_len'] => :skip,
     ['RawStmt', 'stmt_location'] => :skip,
+    ['JsonTablePath', 'value'] => :skip,
   }
-  INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber']
+  INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber', 'ParseLoc']
   LONG_INT_TYPES = ['long']
   UINT64_TYPES = ['uint64', 'AclMode']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
@@ -305,9 +306,9 @@ class Generator
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY_ARRAY, name: name)
             # when '[]Node'
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY, name: name)
-            when 'Node'
+            when 'Node', 'JsonTablePlan'
               fingerprint_def += format(FINGERPRINT_NODE, name: name)
-            when 'Node*', 'Expr*'
+            when 'Node*', 'Expr*', 'JsonTablePlan*'
               fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
             when 'List*'
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
