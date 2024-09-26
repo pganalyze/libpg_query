@@ -1,6 +1,7 @@
 /* This causes compatibility problems on some Linux distros, with "xlocale.h" not being available */
-#undef HAVE_LOCALE_T
+#ifndef __APPLE__
 #undef LOCALE_T_IN_XLOCALE
+#endif
 #undef WCSTOMBS_L_IN_XLOCALE
 
 /* Support gcc earlier than 4.6.0 and MSVC */
