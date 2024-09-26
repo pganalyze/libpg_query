@@ -1,0 +1,23 @@
+commit f664bdae4be383875bf3bfb0b6919d527942a146
+Author: msepga <msepga2@gmail.com>
+Date:   Mon Sep 23 12:52:44 2024 -0400
+
+    Avoid generating hash table functions for namespace catalog
+    
+    If the helper `spcachekey_hash` and `spcachekey_equal` static functions
+    are not included in the source, this fails to build. We instead just
+    avoid generating the hashtable function implementations entirely.
+
+diff --git a/src/backend/catalog/namespace.c b/src/backend/catalog/namespace.c
+index 43b707699d..41bed2c9fd 100644
+--- a/src/backend/catalog/namespace.c
++++ b/src/backend/catalog/namespace.c
+@@ -285,7 +285,7 @@ spcachekey_equal(SearchPathCacheKey a, SearchPathCacheKey b)
+ #define SH_EQUAL(tb, a, b)		spcachekey_equal(a, b)
+ #define SH_SCOPE		static inline
+ #define SH_DECLARE
+-#define SH_DEFINE
++// #define SH_DEFINE
+ #include "lib/simplehash.h"
+ 
+ /*
