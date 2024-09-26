@@ -196,6 +196,11 @@ static void deparseJsonArrayAgg(StringInfo str, JsonArrayAgg *json_array_agg);
 static void deparseJsonObjectConstructor(StringInfo str, JsonObjectConstructor *json_object_constructor);
 static void deparseJsonArrayConstructor(StringInfo str, JsonArrayConstructor *json_array_constructor);
 static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConstructor *json_array_query_constructor);
+static void deparseJsonValueExpr(StringInfo str, JsonValueExpr *json_value_expr);
+static void deparseJsonOutput(StringInfo str, JsonOutput *json_output);
+static void deparseJsonParseExpr(StringInfo str, JsonParseExpr *json_parse_expr);
+static void deparseJsonScalarExpr(StringInfo str, JsonScalarExpr *json_scalar_expr);
+static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_serialize_expr);
 static void deparseConstraint(StringInfo str, Constraint *constraint);
 static void deparseSchemaStmt(StringInfo str, Node *node);
 static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt);
@@ -342,6 +347,15 @@ static void deparseExpr(StringInfo str, Node *node)
 			break;
 		case T_MergeSupportFunc:
 			appendStringInfoString(str, "merge_action() ");
+			break;
+		case T_JsonParseExpr:
+			deparseJsonParseExpr(str, castNode(JsonParseExpr, node));
+			break;
+		case T_JsonScalarExpr:
+			deparseJsonScalarExpr(str, castNode(JsonScalarExpr, node));
+			break;
+		case T_JsonSerializeExpr:
+			deparseJsonSerializeExpr(str, castNode(JsonSerializeExpr, node));
 			break;
 		case T_FuncCall:
 		case T_SQLValueFunction:
@@ -10558,6 +10572,37 @@ static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConst
 
 	removeTrailingSpace(str);
 	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonParseExpr(StringInfo str, JsonParseExpr *json_parse_expr)
+{
+	appendStringInfoString(str, "JSON(");
+
+	deparseJsonValueExpr(str, json_parse_expr->expr);
+
+	if (json_parse_expr->unique_keys)
+		appendStringInfoString(str, " WITH UNIQUE KEYS");
+
+	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonScalarExpr(StringInfo str, JsonScalarExpr *json_scalar_expr)
+{
+	appendStringInfoString(str, "JSON_SCALAR(");
+	deparseExpr(str, (Node*) json_scalar_expr->expr);
+	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_serialize_expr)
+{
+	appendStringInfoString(str, "JSON_SERIALIZE(");
+
+	deparseJsonValueExpr(str, json_serialize_expr->expr);
+
+	if (json_serialize_expr->output)
+		deparseJsonOutput(str, json_serialize_expr->output);
+
+	appendStringInfoString(str, ")");
 }
 
 static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func)
