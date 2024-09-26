@@ -4863,9 +4863,18 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 
 	if (list_length(constraint->keys) > 0)
 	{
-		appendStringInfoChar(str, '(');
-		deparseColumnList(str, constraint->keys);
-		appendStringInfoString(str, ") ");
+		bool valueOnly = false;
+
+		if (list_length(constraint->keys) == 1) {
+			Node* firstKey = constraint->keys->elements[0].ptr_value;
+			valueOnly = IsA(firstKey, String) && !strcmp("value", ((String*)firstKey)->sval);
+		}
+
+		if (!valueOnly) {
+			appendStringInfoChar(str, '(');
+			deparseColumnList(str, constraint->keys);
+			appendStringInfoString(str, ") ");
+		}
 	}
 
 	if (list_length(constraint->fk_attrs) > 0)
