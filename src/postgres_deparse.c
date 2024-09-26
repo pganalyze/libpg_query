@@ -9588,7 +9588,10 @@ static void deparseAlterStatsStmt(StringInfo str, AlterStatsStmt *alter_stats_st
 	deparseAnyName(str, alter_stats_stmt->defnames);
 	appendStringInfoChar(str, ' ');
 
-	appendStringInfo(str, "SET STATISTICS %d", alter_stats_stmt->stxstattarget);
+	if (alter_stats_stmt->stxstattarget)
+		appendStringInfo(str, "SET STATISTICS %d", castNode(Integer, alter_stats_stmt->stxstattarget)->ival);
+	else
+		appendStringInfo(str, "SET STATISTICS DEFAULT");
 }
 
 static void deparseAlterTSDictionaryStmt(StringInfo str, AlterTSDictionaryStmt *alter_ts_dictionary_stmt)
