@@ -37,6 +37,14 @@ case T_WindowFunc:
   _fingerprintString(ctx, "WindowFunc");
   _fingerprintWindowFunc(ctx, obj, parent, field_name, depth);
   break;
+case T_WindowFuncRunCondition:
+  _fingerprintString(ctx, "WindowFuncRunCondition");
+  _fingerprintWindowFuncRunCondition(ctx, obj, parent, field_name, depth);
+  break;
+case T_MergeSupportFunc:
+  _fingerprintString(ctx, "MergeSupportFunc");
+  _fingerprintMergeSupportFunc(ctx, obj, parent, field_name, depth);
+  break;
 case T_SubscriptingRef:
   _fingerprintString(ctx, "SubscriptingRef");
   _fingerprintSubscriptingRef(ctx, obj, parent, field_name, depth);
@@ -161,6 +169,26 @@ case T_JsonIsPredicate:
   _fingerprintString(ctx, "JsonIsPredicate");
   _fingerprintJsonIsPredicate(ctx, obj, parent, field_name, depth);
   break;
+case T_JsonBehavior:
+  _fingerprintString(ctx, "JsonBehavior");
+  _fingerprintJsonBehavior(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonExpr:
+  _fingerprintString(ctx, "JsonExpr");
+  _fingerprintJsonExpr(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTablePath:
+  _fingerprintString(ctx, "JsonTablePath");
+  _fingerprintJsonTablePath(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTablePathScan:
+  _fingerprintString(ctx, "JsonTablePathScan");
+  _fingerprintJsonTablePathScan(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTableSiblingJoin:
+  _fingerprintString(ctx, "JsonTableSiblingJoin");
+  _fingerprintJsonTableSiblingJoin(ctx, obj, parent, field_name, depth);
+  break;
 case T_NullTest:
   _fingerprintString(ctx, "NullTest");
   _fingerprintNullTest(ctx, obj, parent, field_name, depth);
@@ -168,6 +196,10 @@ case T_NullTest:
 case T_BooleanTest:
   _fingerprintString(ctx, "BooleanTest");
   _fingerprintBooleanTest(ctx, obj, parent, field_name, depth);
+  break;
+case T_MergeAction:
+  _fingerprintString(ctx, "MergeAction");
+  _fingerprintMergeAction(ctx, obj, parent, field_name, depth);
   break;
 case T_CoerceToDomain:
   _fingerprintString(ctx, "CoerceToDomain");
@@ -342,6 +374,10 @@ case T_PartitionRangeDatum:
   _fingerprintString(ctx, "PartitionRangeDatum");
   _fingerprintPartitionRangeDatum(ctx, obj, parent, field_name, depth);
   break;
+case T_SinglePartitionSpec:
+  _fingerprintString(ctx, "SinglePartitionSpec");
+  _fingerprintSinglePartitionSpec(ctx, obj, parent, field_name, depth);
+  break;
 case T_PartitionCmd:
   _fingerprintString(ctx, "PartitionCmd");
   _fingerprintPartitionCmd(ctx, obj, parent, field_name, depth);
@@ -410,10 +446,6 @@ case T_MergeWhenClause:
   _fingerprintString(ctx, "MergeWhenClause");
   _fingerprintMergeWhenClause(ctx, obj, parent, field_name, depth);
   break;
-case T_MergeAction:
-  _fingerprintString(ctx, "MergeAction");
-  _fingerprintMergeAction(ctx, obj, parent, field_name, depth);
-  break;
 case T_TriggerTransition:
   _fingerprintString(ctx, "TriggerTransition");
   _fingerprintTriggerTransition(ctx, obj, parent, field_name, depth);
@@ -422,9 +454,41 @@ case T_JsonOutput:
   _fingerprintString(ctx, "JsonOutput");
   _fingerprintJsonOutput(ctx, obj, parent, field_name, depth);
   break;
+case T_JsonArgument:
+  _fingerprintString(ctx, "JsonArgument");
+  _fingerprintJsonArgument(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonFuncExpr:
+  _fingerprintString(ctx, "JsonFuncExpr");
+  _fingerprintJsonFuncExpr(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTablePathSpec:
+  _fingerprintString(ctx, "JsonTablePathSpec");
+  _fingerprintJsonTablePathSpec(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTable:
+  _fingerprintString(ctx, "JsonTable");
+  _fingerprintJsonTable(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonTableColumn:
+  _fingerprintString(ctx, "JsonTableColumn");
+  _fingerprintJsonTableColumn(ctx, obj, parent, field_name, depth);
+  break;
 case T_JsonKeyValue:
   _fingerprintString(ctx, "JsonKeyValue");
   _fingerprintJsonKeyValue(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonParseExpr:
+  _fingerprintString(ctx, "JsonParseExpr");
+  _fingerprintJsonParseExpr(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonScalarExpr:
+  _fingerprintString(ctx, "JsonScalarExpr");
+  _fingerprintJsonScalarExpr(ctx, obj, parent, field_name, depth);
+  break;
+case T_JsonSerializeExpr:
+  _fingerprintString(ctx, "JsonSerializeExpr");
+  _fingerprintJsonSerializeExpr(ctx, obj, parent, field_name, depth);
   break;
 case T_JsonObjectConstructor:
   _fingerprintString(ctx, "JsonObjectConstructor");
