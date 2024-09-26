@@ -54,6 +54,12 @@ case T_GroupingFunc:
 case T_WindowFunc:
   OUT_NODE(WindowFunc, WindowFunc, window_func, WINDOW_FUNC, WindowFunc, window_func);
   break;
+case T_WindowFuncRunCondition:
+  OUT_NODE(WindowFuncRunCondition, WindowFuncRunCondition, window_func_run_condition, WINDOW_FUNC_RUN_CONDITION, WindowFuncRunCondition, window_func_run_condition);
+  break;
+case T_MergeSupportFunc:
+  OUT_NODE(MergeSupportFunc, MergeSupportFunc, merge_support_func, MERGE_SUPPORT_FUNC, MergeSupportFunc, merge_support_func);
+  break;
 case T_SubscriptingRef:
   OUT_NODE(SubscriptingRef, SubscriptingRef, subscripting_ref, SUBSCRIPTING_REF, SubscriptingRef, subscripting_ref);
   break;
@@ -153,11 +159,29 @@ case T_JsonConstructorExpr:
 case T_JsonIsPredicate:
   OUT_NODE(JsonIsPredicate, JsonIsPredicate, json_is_predicate, JSON_IS_PREDICATE, JsonIsPredicate, json_is_predicate);
   break;
+case T_JsonBehavior:
+  OUT_NODE(JsonBehavior, JsonBehavior, json_behavior, JSON_BEHAVIOR, JsonBehavior, json_behavior);
+  break;
+case T_JsonExpr:
+  OUT_NODE(JsonExpr, JsonExpr, json_expr, JSON_EXPR, JsonExpr, json_expr);
+  break;
+case T_JsonTablePath:
+  OUT_NODE(JsonTablePath, JsonTablePath, json_table_path, JSON_TABLE_PATH, JsonTablePath, json_table_path);
+  break;
+case T_JsonTablePathScan:
+  OUT_NODE(JsonTablePathScan, JsonTablePathScan, json_table_path_scan, JSON_TABLE_PATH_SCAN, JsonTablePathScan, json_table_path_scan);
+  break;
+case T_JsonTableSiblingJoin:
+  OUT_NODE(JsonTableSiblingJoin, JsonTableSiblingJoin, json_table_sibling_join, JSON_TABLE_SIBLING_JOIN, JsonTableSiblingJoin, json_table_sibling_join);
+  break;
 case T_NullTest:
   OUT_NODE(NullTest, NullTest, null_test, NULL_TEST, NullTest, null_test);
   break;
 case T_BooleanTest:
   OUT_NODE(BooleanTest, BooleanTest, boolean_test, BOOLEAN_TEST, BooleanTest, boolean_test);
+  break;
+case T_MergeAction:
+  OUT_NODE(MergeAction, MergeAction, merge_action, MERGE_ACTION, MergeAction, merge_action);
   break;
 case T_CoerceToDomain:
   OUT_NODE(CoerceToDomain, CoerceToDomain, coerce_to_domain, COERCE_TO_DOMAIN, CoerceToDomain, coerce_to_domain);
@@ -288,6 +312,9 @@ case T_PartitionBoundSpec:
 case T_PartitionRangeDatum:
   OUT_NODE(PartitionRangeDatum, PartitionRangeDatum, partition_range_datum, PARTITION_RANGE_DATUM, PartitionRangeDatum, partition_range_datum);
   break;
+case T_SinglePartitionSpec:
+  OUT_NODE(SinglePartitionSpec, SinglePartitionSpec, single_partition_spec, SINGLE_PARTITION_SPEC, SinglePartitionSpec, single_partition_spec);
+  break;
 case T_PartitionCmd:
   OUT_NODE(PartitionCmd, PartitionCmd, partition_cmd, PARTITION_CMD, PartitionCmd, partition_cmd);
   break;
@@ -339,17 +366,38 @@ case T_CommonTableExpr:
 case T_MergeWhenClause:
   OUT_NODE(MergeWhenClause, MergeWhenClause, merge_when_clause, MERGE_WHEN_CLAUSE, MergeWhenClause, merge_when_clause);
   break;
-case T_MergeAction:
-  OUT_NODE(MergeAction, MergeAction, merge_action, MERGE_ACTION, MergeAction, merge_action);
-  break;
 case T_TriggerTransition:
   OUT_NODE(TriggerTransition, TriggerTransition, trigger_transition, TRIGGER_TRANSITION, TriggerTransition, trigger_transition);
   break;
 case T_JsonOutput:
   OUT_NODE(JsonOutput, JsonOutput, json_output, JSON_OUTPUT, JsonOutput, json_output);
   break;
+case T_JsonArgument:
+  OUT_NODE(JsonArgument, JsonArgument, json_argument, JSON_ARGUMENT, JsonArgument, json_argument);
+  break;
+case T_JsonFuncExpr:
+  OUT_NODE(JsonFuncExpr, JsonFuncExpr, json_func_expr, JSON_FUNC_EXPR, JsonFuncExpr, json_func_expr);
+  break;
+case T_JsonTablePathSpec:
+  OUT_NODE(JsonTablePathSpec, JsonTablePathSpec, json_table_path_spec, JSON_TABLE_PATH_SPEC, JsonTablePathSpec, json_table_path_spec);
+  break;
+case T_JsonTable:
+  OUT_NODE(JsonTable, JsonTable, json_table, JSON_TABLE, JsonTable, json_table);
+  break;
+case T_JsonTableColumn:
+  OUT_NODE(JsonTableColumn, JsonTableColumn, json_table_column, JSON_TABLE_COLUMN, JsonTableColumn, json_table_column);
+  break;
 case T_JsonKeyValue:
   OUT_NODE(JsonKeyValue, JsonKeyValue, json_key_value, JSON_KEY_VALUE, JsonKeyValue, json_key_value);
+  break;
+case T_JsonParseExpr:
+  OUT_NODE(JsonParseExpr, JsonParseExpr, json_parse_expr, JSON_PARSE_EXPR, JsonParseExpr, json_parse_expr);
+  break;
+case T_JsonScalarExpr:
+  OUT_NODE(JsonScalarExpr, JsonScalarExpr, json_scalar_expr, JSON_SCALAR_EXPR, JsonScalarExpr, json_scalar_expr);
+  break;
+case T_JsonSerializeExpr:
+  OUT_NODE(JsonSerializeExpr, JsonSerializeExpr, json_serialize_expr, JSON_SERIALIZE_EXPR, JsonSerializeExpr, json_serialize_expr);
   break;
 case T_JsonObjectConstructor:
   OUT_NODE(JsonObjectConstructor, JsonObjectConstructor, json_object_constructor, JSON_OBJECT_CONSTRUCTOR, JsonObjectConstructor, json_object_constructor);

@@ -9,6 +9,8 @@ static void _outParam(OUT_TYPE(Param, Param) out_node, const Param *node);
 static void _outAggref(OUT_TYPE(Aggref, Aggref) out_node, const Aggref *node);
 static void _outGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) out_node, const GroupingFunc *node);
 static void _outWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) out_node, const WindowFunc *node);
+static void _outWindowFuncRunCondition(OUT_TYPE(WindowFuncRunCondition, WindowFuncRunCondition) out_node, const WindowFuncRunCondition *node);
+static void _outMergeSupportFunc(OUT_TYPE(MergeSupportFunc, MergeSupportFunc) out_node, const MergeSupportFunc *node);
 static void _outSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) out_node, const SubscriptingRef *node);
 static void _outFuncExpr(OUT_TYPE(FuncExpr, FuncExpr) out_node, const FuncExpr *node);
 static void _outNamedArgExpr(OUT_TYPE(NamedArgExpr, NamedArgExpr) out_node, const NamedArgExpr *node);
@@ -42,8 +44,14 @@ static void _outJsonReturning(OUT_TYPE(JsonReturning, JsonReturning) out_node, c
 static void _outJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) out_node, const JsonValueExpr *node);
 static void _outJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) out_node, const JsonConstructorExpr *node);
 static void _outJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) out_node, const JsonIsPredicate *node);
+static void _outJsonBehavior(OUT_TYPE(JsonBehavior, JsonBehavior) out_node, const JsonBehavior *node);
+static void _outJsonExpr(OUT_TYPE(JsonExpr, JsonExpr) out_node, const JsonExpr *node);
+static void _outJsonTablePath(OUT_TYPE(JsonTablePath, JsonTablePath) out_node, const JsonTablePath *node);
+static void _outJsonTablePathScan(OUT_TYPE(JsonTablePathScan, JsonTablePathScan) out_node, const JsonTablePathScan *node);
+static void _outJsonTableSiblingJoin(OUT_TYPE(JsonTableSiblingJoin, JsonTableSiblingJoin) out_node, const JsonTableSiblingJoin *node);
 static void _outNullTest(OUT_TYPE(NullTest, NullTest) out_node, const NullTest *node);
 static void _outBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) out_node, const BooleanTest *node);
+static void _outMergeAction(OUT_TYPE(MergeAction, MergeAction) out_node, const MergeAction *node);
 static void _outCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) out_node, const CoerceToDomain *node);
 static void _outCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue, CoerceToDomainValue) out_node, const CoerceToDomainValue *node);
 static void _outSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) out_node, const SetToDefault *node);
@@ -87,6 +95,7 @@ static void _outPartitionElem(OUT_TYPE(PartitionElem, PartitionElem) out_node, c
 static void _outPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) out_node, const PartitionSpec *node);
 static void _outPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) out_node, const PartitionBoundSpec *node);
 static void _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out_node, const PartitionRangeDatum *node);
+static void _outSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) out_node, const SinglePartitionSpec *node);
 static void _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out_node, const PartitionCmd *node);
 static void _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out_node, const RangeTblEntry *node);
 static void _outRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) out_node, const RTEPermissionInfo *node);
@@ -104,10 +113,17 @@ static void _outCTESearchClause(OUT_TYPE(CTESearchClause, CTESearchClause) out_n
 static void _outCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) out_node, const CTECycleClause *node);
 static void _outCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) out_node, const CommonTableExpr *node);
 static void _outMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) out_node, const MergeWhenClause *node);
-static void _outMergeAction(OUT_TYPE(MergeAction, MergeAction) out_node, const MergeAction *node);
 static void _outTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) out_node, const TriggerTransition *node);
 static void _outJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) out_node, const JsonOutput *node);
+static void _outJsonArgument(OUT_TYPE(JsonArgument, JsonArgument) out_node, const JsonArgument *node);
+static void _outJsonFuncExpr(OUT_TYPE(JsonFuncExpr, JsonFuncExpr) out_node, const JsonFuncExpr *node);
+static void _outJsonTablePathSpec(OUT_TYPE(JsonTablePathSpec, JsonTablePathSpec) out_node, const JsonTablePathSpec *node);
+static void _outJsonTable(OUT_TYPE(JsonTable, JsonTable) out_node, const JsonTable *node);
+static void _outJsonTableColumn(OUT_TYPE(JsonTableColumn, JsonTableColumn) out_node, const JsonTableColumn *node);
 static void _outJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) out_node, const JsonKeyValue *node);
+static void _outJsonParseExpr(OUT_TYPE(JsonParseExpr, JsonParseExpr) out_node, const JsonParseExpr *node);
+static void _outJsonScalarExpr(OUT_TYPE(JsonScalarExpr, JsonScalarExpr) out_node, const JsonScalarExpr *node);
+static void _outJsonSerializeExpr(OUT_TYPE(JsonSerializeExpr, JsonSerializeExpr) out_node, const JsonSerializeExpr *node);
 static void _outJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) out_node, const JsonObjectConstructor *node);
 static void _outJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) out_node, const JsonArrayConstructor *node);
 static void _outJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) out_node, const JsonArrayQueryConstructor *node);
@@ -267,6 +283,7 @@ _outRangeVar(OUT_TYPE(RangeVar, RangeVar) out, const RangeVar *node)
 static void
 _outTableFunc(OUT_TYPE(TableFunc, TableFunc) out, const TableFunc *node)
 {
+  WRITE_ENUM_FIELD(TableFuncType, functype, functype, functype);
   WRITE_LIST_FIELD(ns_uris, ns_uris, ns_uris);
   WRITE_LIST_FIELD(ns_names, ns_names, ns_names);
   WRITE_NODE_PTR_FIELD(docexpr, docexpr, docexpr);
@@ -277,7 +294,10 @@ _outTableFunc(OUT_TYPE(TableFunc, TableFunc) out, const TableFunc *node)
   WRITE_LIST_FIELD(colcollations, colcollations, colcollations);
   WRITE_LIST_FIELD(colexprs, colexprs, colexprs);
   WRITE_LIST_FIELD(coldefexprs, coldefexprs, coldefexprs);
+  WRITE_LIST_FIELD(colvalexprs, colvalexprs, colvalexprs);
+  WRITE_LIST_FIELD(passingvalexprs, passingvalexprs, passingvalexprs);
   WRITE_BITMAPSET_FIELD(notnulls, notnulls, notnulls);
+  WRITE_NODE_PTR_FIELD(plan, plan, plan);
   WRITE_INT_FIELD(ordinalitycol, ordinalitycol, ordinalitycol);
   WRITE_INT_FIELD(location, location, location);
 }
@@ -360,9 +380,27 @@ _outWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) out, const WindowFunc *node)
   WRITE_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   WRITE_LIST_FIELD(args, args, args);
   WRITE_NODE_PTR_FIELD(aggfilter, aggfilter, aggfilter);
+  WRITE_LIST_FIELD(run_condition, runCondition, runCondition);
   WRITE_UINT_FIELD(winref, winref, winref);
   WRITE_BOOL_FIELD(winstar, winstar, winstar);
   WRITE_BOOL_FIELD(winagg, winagg, winagg);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outWindowFuncRunCondition(OUT_TYPE(WindowFuncRunCondition, WindowFuncRunCondition) out, const WindowFuncRunCondition *node)
+{
+  WRITE_UINT_FIELD(opno, opno, opno);
+  WRITE_UINT_FIELD(inputcollid, inputcollid, inputcollid);
+  WRITE_BOOL_FIELD(wfunc_left, wfunc_left, wfunc_left);
+  WRITE_NODE_PTR_FIELD(arg, arg, arg);
+}
+
+static void
+_outMergeSupportFunc(OUT_TYPE(MergeSupportFunc, MergeSupportFunc) out, const MergeSupportFunc *node)
+{
+  WRITE_UINT_FIELD(msftype, msftype, msftype);
+  WRITE_UINT_FIELD(msfcollid, msfcollid, msfcollid);
   WRITE_INT_FIELD(location, location, location);
 }
 
@@ -715,6 +753,59 @@ _outJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) out, const JsonIs
 }
 
 static void
+_outJsonBehavior(OUT_TYPE(JsonBehavior, JsonBehavior) out, const JsonBehavior *node)
+{
+  WRITE_ENUM_FIELD(JsonBehaviorType, btype, btype, btype);
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+  WRITE_BOOL_FIELD(coerce, coerce, coerce);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonExpr(OUT_TYPE(JsonExpr, JsonExpr) out, const JsonExpr *node)
+{
+  WRITE_ENUM_FIELD(JsonExprOp, op, op, op);
+  WRITE_STRING_FIELD(column_name, column_name, column_name);
+  WRITE_NODE_PTR_FIELD(formatted_expr, formatted_expr, formatted_expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  WRITE_NODE_PTR_FIELD(path_spec, path_spec, path_spec);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+  WRITE_LIST_FIELD(passing_names, passing_names, passing_names);
+  WRITE_LIST_FIELD(passing_values, passing_values, passing_values);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  WRITE_BOOL_FIELD(use_io_coercion, use_io_coercion, use_io_coercion);
+  WRITE_BOOL_FIELD(use_json_coercion, use_json_coercion, use_json_coercion);
+  WRITE_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  WRITE_BOOL_FIELD(omit_quotes, omit_quotes, omit_quotes);
+  WRITE_UINT_FIELD(collation, collation, collation);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonTablePath(OUT_TYPE(JsonTablePath, JsonTablePath) out, const JsonTablePath *node)
+{
+  WRITE_STRING_FIELD(name, name, name);
+}
+
+static void
+_outJsonTablePathScan(OUT_TYPE(JsonTablePathScan, JsonTablePathScan) out, const JsonTablePathScan *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonTablePath, json_table_path, path, path, path);
+  WRITE_BOOL_FIELD(error_on_error, errorOnError, errorOnError);
+  WRITE_NODE_PTR_FIELD(child, child, child);
+  WRITE_INT_FIELD(col_min, colMin, colMin);
+  WRITE_INT_FIELD(col_max, colMax, colMax);
+}
+
+static void
+_outJsonTableSiblingJoin(OUT_TYPE(JsonTableSiblingJoin, JsonTableSiblingJoin) out, const JsonTableSiblingJoin *node)
+{
+  WRITE_NODE_PTR_FIELD(lplan, lplan, lplan);
+  WRITE_NODE_PTR_FIELD(rplan, rplan, rplan);
+}
+
+static void
 _outNullTest(OUT_TYPE(NullTest, NullTest) out, const NullTest *node)
 {
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
@@ -729,6 +820,17 @@ _outBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) out, const BooleanTest *node)
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_ENUM_FIELD(BoolTestType, booltesttype, booltesttype, booltesttype);
   WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outMergeAction(OUT_TYPE(MergeAction, MergeAction) out, const MergeAction *node)
+{
+  WRITE_ENUM_FIELD(MergeMatchKind, match_kind, matchKind, matchKind);
+  WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
+  WRITE_NODE_PTR_FIELD(qual, qual, qual);
+  WRITE_LIST_FIELD(target_list, targetList, targetList);
+  WRITE_LIST_FIELD(update_colnos, updateColnos, updateColnos);
 }
 
 static void
@@ -858,7 +960,8 @@ _outQuery(OUT_TYPE(Query, Query) out, const Query *node)
   WRITE_LIST_FIELD(rteperminfos, rteperminfos, rteperminfos);
   WRITE_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
   WRITE_LIST_FIELD(merge_action_list, mergeActionList, mergeActionList);
-  WRITE_BOOL_FIELD(merge_use_outer_join, mergeUseOuterJoin, mergeUseOuterJoin);
+  WRITE_INT_FIELD(merge_target_relation, mergeTargetRelation, mergeTargetRelation);
+  WRITE_NODE_PTR_FIELD(merge_join_condition, mergeJoinCondition, mergeJoinCondition);
   WRITE_LIST_FIELD(target_list, targetList, targetList);
   WRITE_ENUM_FIELD(OverridingKind, override, override, override);
   WRITE_SPECIFIC_NODE_PTR_FIELD(OnConflictExpr, on_conflict_expr, on_conflict, onConflict, onConflict);
@@ -1191,6 +1294,11 @@ _outPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) out, 
 }
 
 static void
+_outSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) out, const SinglePartitionSpec *node)
+{
+}
+
+static void
 _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out, const PartitionCmd *node)
 {
   WRITE_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, name, name, name);
@@ -1201,12 +1309,15 @@ _outPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) out, const PartitionCmd *n
 static void
 _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntry *node)
 {
+  WRITE_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(Alias, alias, eref, eref, eref);
   WRITE_ENUM_FIELD(RTEKind, rtekind, rtekind, rtekind);
   WRITE_UINT_FIELD(relid, relid, relid);
+  WRITE_BOOL_FIELD(inh, inh, inh);
   WRITE_CHAR_FIELD(relkind, relkind, relkind);
   WRITE_INT_FIELD(rellockmode, rellockmode, rellockmode);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
   WRITE_UINT_FIELD(perminfoindex, perminfoindex, perminfoindex);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
   WRITE_SPECIFIC_NODE_PTR_FIELD(Query, query, subquery, subquery, subquery);
   WRITE_BOOL_FIELD(security_barrier, security_barrier, security_barrier);
   WRITE_ENUM_FIELD(JoinType, jointype, jointype, jointype);
@@ -1227,10 +1338,7 @@ _outRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) out, const RangeTblEntr
   WRITE_LIST_FIELD(colcollations, colcollations, colcollations);
   WRITE_STRING_FIELD(enrname, enrname, enrname);
   WRITE_FLOAT_FIELD(enrtuples, enrtuples, enrtuples);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
-  WRITE_SPECIFIC_NODE_PTR_FIELD(Alias, alias, eref, eref, eref);
   WRITE_BOOL_FIELD(lateral, lateral, lateral);
-  WRITE_BOOL_FIELD(inh, inh, inh);
   WRITE_BOOL_FIELD(in_from_cl, inFromCl, inFromCl);
   WRITE_LIST_FIELD(security_quals, securityQuals, securityQuals);
 }
@@ -1305,7 +1413,6 @@ _outWindowClause(OUT_TYPE(WindowClause, WindowClause) out, const WindowClause *n
   WRITE_INT_FIELD(frame_options, frameOptions, frameOptions);
   WRITE_NODE_PTR_FIELD(start_offset, startOffset, startOffset);
   WRITE_NODE_PTR_FIELD(end_offset, endOffset, endOffset);
-  WRITE_LIST_FIELD(run_condition, runCondition, runCondition);
   WRITE_UINT_FIELD(start_in_range_func, startInRangeFunc, startInRangeFunc);
   WRITE_UINT_FIELD(end_in_range_func, endInRangeFunc, endInRangeFunc);
   WRITE_UINT_FIELD(in_range_coll, inRangeColl, inRangeColl);
@@ -1396,23 +1503,12 @@ _outCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) out, const Common
 static void
 _outMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) out, const MergeWhenClause *node)
 {
-  WRITE_BOOL_FIELD(matched, matched, matched);
+  WRITE_ENUM_FIELD(MergeMatchKind, match_kind, matchKind, matchKind);
   WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
   WRITE_ENUM_FIELD(OverridingKind, override, override, override);
   WRITE_NODE_PTR_FIELD(condition, condition, condition);
   WRITE_LIST_FIELD(target_list, targetList, targetList);
   WRITE_LIST_FIELD(values, values, values);
-}
-
-static void
-_outMergeAction(OUT_TYPE(MergeAction, MergeAction) out, const MergeAction *node)
-{
-  WRITE_BOOL_FIELD(matched, matched, matched);
-  WRITE_ENUM_FIELD(CmdType, command_type, commandType, commandType);
-  WRITE_ENUM_FIELD(OverridingKind, override, override, override);
-  WRITE_NODE_PTR_FIELD(qual, qual, qual);
-  WRITE_LIST_FIELD(target_list, targetList, targetList);
-  WRITE_LIST_FIELD(update_colnos, updateColnos, updateColnos);
 }
 
 static void
@@ -1431,10 +1527,96 @@ _outJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) out, const JsonOutput *node)
 }
 
 static void
+_outJsonArgument(OUT_TYPE(JsonArgument, JsonArgument) out, const JsonArgument *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, val, val, val);
+  WRITE_STRING_FIELD(name, name, name);
+}
+
+static void
+_outJsonFuncExpr(OUT_TYPE(JsonFuncExpr, JsonFuncExpr) out, const JsonFuncExpr *node)
+{
+  WRITE_ENUM_FIELD(JsonExprOp, op, op, op);
+  WRITE_STRING_FIELD(column_name, column_name, column_name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, context_item, context_item, context_item);
+  WRITE_NODE_PTR_FIELD(pathspec, pathspec, pathspec);
+  WRITE_LIST_FIELD(passing, passing, passing);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  WRITE_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  WRITE_ENUM_FIELD(JsonQuotes, quotes, quotes, quotes);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonTablePathSpec(OUT_TYPE(JsonTablePathSpec, JsonTablePathSpec) out, const JsonTablePathSpec *node)
+{
+  WRITE_NODE_PTR_FIELD(string, string, string);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_INT_FIELD(name_location, name_location, name_location);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonTable(OUT_TYPE(JsonTable, JsonTable) out, const JsonTable *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, context_item, context_item, context_item);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonTablePathSpec, json_table_path_spec, pathspec, pathspec, pathspec);
+  WRITE_LIST_FIELD(passing, passing, passing);
+  WRITE_LIST_FIELD(columns, columns, columns);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
+  WRITE_BOOL_FIELD(lateral, lateral, lateral);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonTableColumn(OUT_TYPE(JsonTableColumn, JsonTableColumn) out, const JsonTableColumn *node)
+{
+  WRITE_ENUM_FIELD(JsonTableColumnType, coltype, coltype, coltype);
+  WRITE_STRING_FIELD(name, name, name);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonTablePathSpec, json_table_path_spec, pathspec, pathspec, pathspec);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  WRITE_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  WRITE_ENUM_FIELD(JsonQuotes, quotes, quotes, quotes);
+  WRITE_LIST_FIELD(columns, columns, columns);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
 _outJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) out, const JsonKeyValue *node)
 {
   WRITE_NODE_PTR_FIELD(key, key, key);
   WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, value, value, value);
+}
+
+static void
+_outJsonParseExpr(OUT_TYPE(JsonParseExpr, JsonParseExpr) out, const JsonParseExpr *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, expr, expr, expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_BOOL_FIELD(unique_keys, unique_keys, unique_keys);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonScalarExpr(OUT_TYPE(JsonScalarExpr, JsonScalarExpr) out, const JsonScalarExpr *node)
+{
+  WRITE_NODE_PTR_FIELD(expr, expr, expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_INT_FIELD(location, location, location);
+}
+
+static void
+_outJsonSerializeExpr(OUT_TYPE(JsonSerializeExpr, JsonSerializeExpr) out, const JsonSerializeExpr *node)
+{
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, expr, expr, expr);
+  WRITE_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  WRITE_INT_FIELD(location, location, location);
 }
 
 static void
@@ -1541,6 +1723,7 @@ _outMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) out, const MergeStmt *node)
   WRITE_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
   WRITE_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
   WRITE_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
+  WRITE_LIST_FIELD(returning_list, returningList, returningList);
   WRITE_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
 }
 
@@ -1753,11 +1936,13 @@ _outConstraint(OUT_TYPE(Constraint, Constraint) out, const Constraint *node)
   WRITE_STRING_FIELD(conname, conname, conname);
   WRITE_BOOL_FIELD(deferrable, deferrable, deferrable);
   WRITE_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  WRITE_INT_FIELD(location, location, location);
+  WRITE_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
+  WRITE_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
   WRITE_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
   WRITE_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
   WRITE_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
   WRITE_CHAR_FIELD(generated_when, generated_when, generated_when);
+  WRITE_INT_FIELD(inhcount, inhcount, inhcount);
   WRITE_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
   WRITE_LIST_FIELD(keys, keys, keys);
   WRITE_LIST_FIELD(including, including, including);
@@ -1777,8 +1962,7 @@ _outConstraint(OUT_TYPE(Constraint, Constraint) out, const Constraint *node)
   WRITE_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
   WRITE_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
   WRITE_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
-  WRITE_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
-  WRITE_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
+  WRITE_INT_FIELD(location, location, location);
 }
 
 static void
@@ -2215,7 +2399,7 @@ static void
 _outAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) out, const AlterStatsStmt *node)
 {
   WRITE_LIST_FIELD(defnames, defnames, defnames);
-  WRITE_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
+  WRITE_NODE_PTR_FIELD(stxstattarget, stxstattarget, stxstattarget);
   WRITE_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
 }
 
@@ -2372,6 +2556,7 @@ _outTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) out, const Transa
   WRITE_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
   WRITE_STRING_FIELD(gid, gid, gid);
   WRITE_BOOL_FIELD(chain, chain, chain);
+  WRITE_INT_FIELD(location, location, location);
 }
 
 static void
@@ -2597,6 +2782,8 @@ static void
 _outDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) out, const DeallocateStmt *node)
 {
   WRITE_STRING_FIELD(name, name, name);
+  WRITE_BOOL_FIELD(isall, isall, isall);
+  WRITE_INT_FIELD(location, location, location);
 }
 
 static void
