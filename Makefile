@@ -125,6 +125,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_allow_param_junk.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/10_avoid_namespace_hashtab_impl_gen.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
