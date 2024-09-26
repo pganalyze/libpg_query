@@ -10,21 +10,23 @@
 
 #include "deparse_tests.c"
 
-// Removes the location values from the JSON parse tree string, replacing them with nothing
-// (we don't use any special replacement value to avoid increasing the string size)
-void remove_node_locations(char *parse_tree_json)
+void remove_numeric_key(char *parse_tree_json, char* key)
 {
 	char *tokstart;
 	char *p;
 	size_t remaining_len;
 
+	char search[100];
+
+	sprintf(search, "\"%s\":", key);
+
 	p = parse_tree_json;
-	while ((p = strstr(p, "\"location\":")) != NULL)
+	while ((p = strstr(p, search)) != NULL)
 	{
 		tokstart = p;
 		if (*(tokstart - 1) == ',')
 			tokstart--;
-		p += strlen("\"location\":");
+		p += strlen(search);
 		if (*p == '-')
 			p++;
 		while (*p >= '0' && *p <= '9')
@@ -34,6 +36,14 @@ void remove_node_locations(char *parse_tree_json)
 		p = tokstart;
 		*(p + remaining_len) = '\0';
 	}
+}
+
+// Removes the location values from the JSON parse tree string, replacing them with nothing
+// (we don't use any special replacement value to avoid increasing the string size)
+void remove_node_locations(char *parse_tree_json)
+{
+	remove_numeric_key(parse_tree_json, "location");
+	remove_numeric_key(parse_tree_json, "name_location");
 }
 
 int run_test(const char *query, bool compare_query_text) {
