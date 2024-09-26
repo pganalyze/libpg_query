@@ -1,17 +1,16 @@
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index 154defc6b8..26a54e1505 100644
+index 5c930dfda2..0e7b0d488f 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -420,7 +420,6 @@ numeric_junk	{numeric}{ident_start}
- real_junk		{real}{ident_start}
+@@ -421,7 +421,6 @@ real_junk		{real}{ident_start}
  
--param			\${decinteger}
-+param			\${decdigit}+
--param_junk		\${decinteger}{ident_start}
+ /* Positional parameters don't accept underscores. */
+ param			\${decdigit}+
+-param_junk		\${decdigit}+{ident_start}
  
  other			.
  
-@@ -1013,10 +1012,6 @@ other			.
+@@ -1014,10 +1013,6 @@ other			.
  					yylval->ival = atol(yytext + 1);
  					return PARAM;
  				}

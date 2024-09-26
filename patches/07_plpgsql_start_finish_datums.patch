@@ -8,7 +8,7 @@ Date:   Sun Jan 10 00:28:33 2021 -0800
     the already exported plpgsql_adddatum.
 
 diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
-index a341cde2c1..5265f405b2 100644
+index f1bce708d6..bc9ca26eca 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
 @@ -106,8 +106,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
@@ -20,7 +20,7 @@ index a341cde2c1..5265f405b2 100644
  static void compute_function_hashkey(FunctionCallInfo fcinfo,
  									 Form_pg_proc procStruct,
  									 PLpgSQL_func_hashkey *hashkey,
-@@ -2302,7 +2300,7 @@ plpgsql_parse_err_condition(char *condname)
+@@ -2292,7 +2290,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +29,7 @@ index a341cde2c1..5265f405b2 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2336,7 +2334,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2326,7 +2324,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -39,10 +39,10 @@ index a341cde2c1..5265f405b2 100644
  {
  	Size		copiable_size = 0;
 diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
-index 2b4bcd1dbe..cf048925b7 100644
+index 50c3b28472..418516edb9 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
-@@ -1260,6 +1260,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
+@@ -1261,6 +1261,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
  extern PGDLLEXPORT int plpgsql_recognize_err_condition(const char *condname,
  													   bool allow_sqlstate);
  extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
