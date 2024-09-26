@@ -8,10 +8,10 @@ Date:   Sun Jan 3 15:59:40 2021 -0800
     as this is made available by pg_query for uses such as syntax highlighting.
 
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index b2216a9eac..a62798cf98 100644
+index 3248fb5108..28fdd262b1 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -537,6 +537,7 @@ other			.
+@@ -538,6 +538,7 @@ other			.
  					{
  						/* If NCHAR isn't a keyword, just return "n" */
  						yylval->str = pstrdup("n");
@@ -19,7 +19,7 @@ index b2216a9eac..a62798cf98 100644
  						return IDENT;
  					}
  				}
-@@ -605,9 +606,11 @@ other			.
+@@ -606,9 +607,11 @@ other			.
  					{
  						case xb:
  							yylval->str = litbufdup(yyscanner);
@@ -31,7 +31,7 @@ index b2216a9eac..a62798cf98 100644
  							return XCONST;
  						case xq:
  						case xe:
-@@ -620,9 +623,11 @@ other			.
+@@ -621,9 +624,11 @@ other			.
  											   yyextra->literallen,
  											   false);
  							yylval->str = litbufdup(yyscanner);
@@ -43,7 +43,7 @@ index b2216a9eac..a62798cf98 100644
  							return USCONST;
  						default:
  							yyerror("unhandled previous state in xqs");
-@@ -760,6 +765,7 @@ other			.
+@@ -761,6 +766,7 @@ other			.
  						yyextra->dolqstart = NULL;
  						BEGIN(INITIAL);
  						yylval->str = litbufdup(yyscanner);
@@ -51,7 +51,7 @@ index b2216a9eac..a62798cf98 100644
  						return SCONST;
  					}
  					else
-@@ -805,6 +811,7 @@ other			.
+@@ -806,6 +812,7 @@ other			.
  					if (yyextra->literallen >= NAMEDATALEN)
  						truncate_identifier(ident, yyextra->literallen, true);
  					yylval->str = ident;
@@ -59,7 +59,7 @@ index b2216a9eac..a62798cf98 100644
  					return IDENT;
  				}
  <xui>{dquote}	{
-@@ -813,6 +820,7 @@ other			.
+@@ -814,6 +821,7 @@ other			.
  						yyerror("zero-length delimited identifier");
  					/* can't truncate till after we de-escape the ident */
  					yylval->str = litbufdup(yyscanner);
@@ -67,7 +67,7 @@ index b2216a9eac..a62798cf98 100644
  					return UIDENT;
  				}
  <xd,xui>{xddouble}	{
-@@ -832,6 +840,7 @@ other			.
+@@ -833,6 +841,7 @@ other			.
  					/* and treat it as {identifier} */
  					ident = downcase_truncate_identifier(yytext, yyleng, true);
  					yylval->str = ident;
@@ -75,7 +75,7 @@ index b2216a9eac..a62798cf98 100644
  					return IDENT;
  				}
  
-@@ -1096,6 +1105,7 @@ other			.
+@@ -1097,6 +1106,7 @@ other			.
  					 */
  					ident = downcase_truncate_identifier(yytext, yyleng, true);
  					yylval->str = ident;
@@ -84,7 +84,7 @@ index b2216a9eac..a62798cf98 100644
  				}
  
 diff --git a/src/include/parser/scanner.h b/src/include/parser/scanner.h
-index da013837cd..e2a73201c4 100644
+index d6293b1e87..59f492c6de 100644
 --- a/src/include/parser/scanner.h
 +++ b/src/include/parser/scanner.h
 @@ -113,6 +113,8 @@ typedef struct core_yy_extra_type

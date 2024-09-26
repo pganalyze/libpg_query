@@ -12,10 +12,10 @@ Date:   Sun Jan 3 16:01:44 2021 -0800
     this change, the lexer returns them as SQL_COMMENT/C_COMMENT tokens.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 164b9586c1..7dd5505cd1 100644
+index 452e17edf2..87e6e1c858 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -678,6 +678,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+@@ -695,6 +695,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -24,7 +24,7 @@ index 164b9586c1..7dd5505cd1 100644
  /*
   * If you want to make any keyword changes, update the keyword table in
 diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
-index e17c310cc1..9b2926878a 100644
+index 118488c3f3..551b37a09a 100644
 --- a/src/backend/parser/parser.c
 +++ b/src/backend/parser/parser.c
 @@ -156,6 +156,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
@@ -38,10 +38,10 @@ index e17c310cc1..9b2926878a 100644
  			return cur_token;
  	}
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index a62798cf98..154defc6b8 100644
+index 28fdd262b1..5c930dfda2 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -226,7 +226,7 @@ non_newline		[^\n\r]
+@@ -226,7 +226,7 @@ non_newline			[^\n\r]
  
  comment			("--"{non_newline}*)
  
@@ -55,13 +55,13 @@ index a62798cf98..154defc6b8 100644
   */
  
 -special_whitespace		({space}+|{comment}{newline})
--horiz_whitespace		({horiz_space}|{comment})
+-non_newline_whitespace	({non_newline_space}|{comment})
 +special_whitespace		({space}+)
-+horiz_whitespace		({horiz_space})
- whitespace_with_newline	({horiz_whitespace}*{newline}{special_whitespace}*)
++non_newline_whitespace	({non_newline_space})
+ whitespace_with_newline	({non_newline_whitespace}*{newline}{special_whitespace}*)
  
  quote			'
-@@ -443,6 +443,11 @@ other			.
+@@ -444,6 +444,11 @@ other			.
  					/* ignore */
  				}
  
@@ -73,7 +73,7 @@ index a62798cf98..154defc6b8 100644
  {xcstart}		{
  					/* Set location in case of syntax error in comment */
  					SET_YYLLOC();
-@@ -461,7 +466,11 @@ other			.
+@@ -462,7 +467,11 @@ other			.
  
  {xcstop}		{
  					if (yyextra->xcdepth <= 0)
@@ -86,7 +86,7 @@ index a62798cf98..154defc6b8 100644
  						(yyextra->xcdepth)--;
  				}
 diff --git a/src/interfaces/ecpg/preproc/parser.c b/src/interfaces/ecpg/preproc/parser.c
-index 38e7acb680..4814158aaf 100644
+index 9daeee3303..1c32d3ccce 100644
 --- a/src/interfaces/ecpg/preproc/parser.c
 +++ b/src/interfaces/ecpg/preproc/parser.c
 @@ -86,6 +86,9 @@ filtered_base_yylex(void)
@@ -100,7 +100,7 @@ index 38e7acb680..4814158aaf 100644
  			return cur_token;
  	}
 diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
-index 6a09bfdd67..fb1b519b27 100644
+index 97be9239e3..165b9b0a8c 100644
 --- a/src/pl/plpgsql/src/pl_gram.y
 +++ b/src/pl/plpgsql/src/pl_gram.y
 @@ -232,6 +232,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
@@ -112,10 +112,10 @@ index 6a09bfdd67..fb1b519b27 100644
  /*
   * Other tokens recognized by plpgsql's lexer interface layer (pl_scanner.c).
 diff --git a/src/pl/plpgsql/src/pl_scanner.c b/src/pl/plpgsql/src/pl_scanner.c
-index 4e98af2395..40a17caaf9 100644
+index 9407da51ef..51919febe5 100644
 --- a/src/pl/plpgsql/src/pl_scanner.c
 +++ b/src/pl/plpgsql/src/pl_scanner.c
-@@ -342,6 +342,11 @@ internal_yylex(TokenAuxData *auxdata)
+@@ -359,6 +359,11 @@ internal_yylex(TokenAuxData *auxdata)
  		{
  			auxdata->lval.str = pstrdup(yytext);
  		}
