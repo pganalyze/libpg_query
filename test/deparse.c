@@ -199,6 +199,7 @@ const char* regressFilenames[] = {
 	"collate.icu.utf8.sql",
 	"collate.linux.utf8.sql",
 	"collate.sql",
+	"collate.utf8.sql",
 	"collate.windows.win1252.sql",
 	"combocid.sql",
 	"comments.sql",
@@ -225,6 +226,7 @@ const char* regressFilenames[] = {
 	"create_table_like.sql",
 	"create_type.sql",
 	"create_view.sql",
+	"database.sql",
 	"date.sql",
 	"dbsize.sql",
 	"delete.sql",
@@ -236,6 +238,7 @@ const char* regressFilenames[] = {
 	"equivclass.sql",
 	"errors.sql",
 	"event_trigger.sql",
+	"event_trigger_login.sql",
 	"explain.sql",
 	"expressions.sql",
 	"fast_default.sql",
@@ -317,6 +320,7 @@ const char* regressFilenames[] = {
 	"polymorphism.sql",
 	"portals.sql",
 	"portals_p2.sql",
+	"predicate.sql",
 	"prepare.sql",
 	"prepared_xacts.sql",
 	"privileges.sql",
@@ -349,6 +353,8 @@ const char* regressFilenames[] = {
 	"sequence.sql",
 	"spgist.sql",
 	"sqljson.sql",
+	"sqljson_jsontable.sql",
+	"sqljson_queryfuncs.sql",
 	"stats.sql",
 	"stats_ext.sql",
 	"strings.sql",
@@ -391,7 +397,7 @@ const char* regressFilenames[] = {
 	"write_parallel.sql",
 	"xid.sql",
 	"xml.sql",
-	"xmlmap.sql"
+	"xmlmap.sql",
 };
 size_t regressFilenameCount = sizeof(regressFilenames) / sizeof(regressFilenames[0]);
 
