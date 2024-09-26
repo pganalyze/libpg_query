@@ -102,7 +102,11 @@ class Runner
       @basepath + 'src/port/win32error.c', # Win32 only
       @basepath + 'src/port/win32env.c', # Win32 only
       @basepath + 'src/port/win32security.c', # Win32 only
-      @basepath + 'src/port/gettimeofday.c', # Win32 only
+      @basepath + 'src/port/win32gettimeofday.c', # Win32 only
+      @basepath + 'src/port/win32pwrite.c', # Win32 only
+      @basepath + 'src/port/win32pread.c', # Win32 only
+      @basepath + 'src/port/win32link.c', # Win32 only
+      @basepath + 'src/port/win32getrusage.c', # Win32 only
       @basepath + 'src/port/strnlen.c', # Not needed and conflicts with available function
       @basepath + 'src/port/strlcat.c', # Not needed and conflicts with available function
       @basepath + 'src/port/unsetenv.c', # Not needed and conflicts with available function
@@ -116,6 +120,8 @@ class Runner
       @basepath + 'src/backend/libpq/be-gssapi-common.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/backend/libpq/be-secure-gssapi.c', # Requires GSSAPI (which we don't want to require)
       @basepath + 'src/common/protocol_openssl.c', # Requires OpenSSL (which we don't want to require)
+      @basepath + 'contrib/pgcrypto/pgp-mpi-openssl.c', # Requires OpenSSL (which we don't want to require)
+      @basepath + 'contrib/pgcrypto/openssl.c', # Requires OpenSSL (which we don't want to require)
     ] -
     Dir.glob(@basepath + 'src/backend/port/dynloader/*.c') -
     Dir.glob(@basepath + 'src/backend/port/win32/*.c') -
