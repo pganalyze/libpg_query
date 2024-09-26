@@ -4332,19 +4332,25 @@ static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
 	deparseExpr(str, merge_stmt->joinCondition);
 	appendStringInfoChar(str, ' ');
 
-	ListCell *lc, *lc2;
+	ListCell *lc;
 	foreach (lc, merge_stmt->mergeWhenClauses)
 	{
 		MergeWhenClause *clause = castNode(MergeWhenClause, lfirst(lc));
 
 		appendStringInfoString(str, "WHEN ");
 
-		if (!clause->matched)
+		switch (clause->matchKind)
 		{
-			appendStringInfoString(str, "NOT ");
+			case MERGE_WHEN_MATCHED:
+				appendStringInfoString(str, "MATCHED ");
+				break;
+			case MERGE_WHEN_NOT_MATCHED_BY_SOURCE:
+				appendStringInfoString(str, "NOT MATCHED BY SOURCE ");
+				break;
+			case MERGE_WHEN_NOT_MATCHED_BY_TARGET:
+				appendStringInfoString(str, "NOT MATCHED ");
+				break;
 		}
-
-		appendStringInfoString(str, "MATCHED ");
 
 		if (clause->condition)
 		{
