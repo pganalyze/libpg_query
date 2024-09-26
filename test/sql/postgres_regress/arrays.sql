@@ -447,6 +447,8 @@ reset enable_bitmapscan;
 insert into arr_pk_tbl values(10, '[-2147483648:-2147483647]={1,2}');
 update arr_pk_tbl set f1[2147483647] = 42 where pk = 10;
 update arr_pk_tbl set f1[2147483646:2147483647] = array[4,2] where pk = 10;
+insert into arr_pk_tbl(pk, f1[0:2147483647]) values (2, '{}');
+insert into arr_pk_tbl(pk, f1[-2147483648:2147483647]) values (2, '{}');
 
 -- also exercise the expanded-array case
 do $$ declare a int[];
@@ -473,17 +475,45 @@ select 'foo' ilike all (array['F%', '%O']); -- t
 
 -- none of the following should be accepted
 select '{{1,{2}},{2,3}}'::text[];
-select '{{},{}}'::text[];
 select E'{{1,2},\\{2,3}}'::text[];
+select '{"a"b}'::text[];
+select '{a"b"}'::text[];
+select '{"a""b"}'::text[];
 select '{{"1 2" x},{3}}'::text[];
+select '{{"1 2"} x,{3}}'::text[];
 select '{}}'::text[];
 select '{ }}'::text[];
+select '}{'::text[];
+select '{foo{}}'::text[];
+select '{"foo"{}}'::text[];
+select '{foo,,bar}'::text[];
+select '{{1},{{2}}}'::text[];
+select '{{{1}},{2}}'::text[];
+select '{{},{{}}}'::text[];
+select '{{{}},{}}'::text[];
+select '{{1},{}}'::text[];
+select '{{},{1}}'::text[];
+select '[1:0]={}'::int[];
+select '[2147483646:2147483647]={1,2}'::int[];
+select '[1:-1]={}'::int[];
+select '[2]={1}'::int[];
+select '[1:]={1}'::int[];
+select '[:1]={1}'::int[];
 select array[];
+select '{{1,},{1},}'::text[];
+select '{{1,},{1}}'::text[];
+select '{{1,}}'::text[];
+select '{1,}'::text[];
+select '[21474836488:21474836489]={1,2}'::int[];
+select '[-2147483649:-2147483648]={1,2}'::int[];
 -- none of the above should be accepted
 
 -- all of the following should be accepted
 select '{}'::text[];
+select '{{},{}}'::text[];
 select '{{{1,2,3,4},{2,3,4,5}},{{3,4,5,6},{4,5,6,7}}}'::text[];
+select '{null,n\ull,"null"}'::text[];
+select '{ ab\c , "ab\"c" }'::text[];
 select '{0 second  ,0 second}'::interval[];
 select '{ { "," } , { 3 } }'::text[];
 select '  {   {  "  0 second  "   ,  0 second  }   }'::text[];
@@ -492,7 +522,10 @@ select '{
            @ 1 hour @ 42 minutes @ 20 seconds
          }'::interval[];
 select array[]::text[];
+select '[2]={1,7}'::int[];
 select '[0:1]={1.1,2.2}'::float8[];
+select '[2147483646:2147483646]={1}'::int[];
+select '[-2147483648:-2147483647]={1,2}'::int[];
 -- all of the above should be accepted
 
 -- tests for array aggregates

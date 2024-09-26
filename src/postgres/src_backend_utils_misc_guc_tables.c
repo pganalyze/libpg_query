@@ -18,7 +18,7 @@
  * their fields are intended to be constant, some fields change at runtime.
  *
  *
- * Copyright (c) 2000-2023, PostgreSQL Global Development Group
+ * Copyright (c) 2000-2024, PostgreSQL Global Development Group
  * Written by Peter Eisentraut <peter_e@gmx.net>.
  *
  * IDENTIFICATION
@@ -36,6 +36,7 @@
 
 #include "access/commit_ts.h"
 #include "access/gin.h"
+#include "access/slru.h"
 #include "access/toast_compression.h"
 #include "access/twophase.h"
 #include "access/xlog_internal.h"
@@ -45,10 +46,12 @@
 #include "catalog/namespace.h"
 #include "catalog/storage.h"
 #include "commands/async.h"
+#include "commands/event_trigger.h"
 #include "commands/tablespace.h"
 #include "commands/trigger.h"
 #include "commands/user.h"
 #include "commands/vacuum.h"
+#include "common/file_utils.h"
 #include "common/scram-common.h"
 #include "jit/jit.h"
 #include "libpq/auth.h"
@@ -69,9 +72,11 @@
 #include "postmaster/postmaster.h"
 #include "postmaster/startup.h"
 #include "postmaster/syslogger.h"
+#include "postmaster/walsummarizer.h"
 #include "postmaster/walwriter.h"
 #include "replication/logicallauncher.h"
 #include "replication/slot.h"
+#include "replication/slotsync.h"
 #include "replication/syncrep.h"
 #include "storage/bufmgr.h"
 #include "storage/large_object.h"
@@ -85,11 +90,11 @@
 #include "utils/float.h"
 #include "utils/guc_hooks.h"
 #include "utils/guc_tables.h"
+#include "utils/inval.h"
 #include "utils/memutils.h"
 #include "utils/pg_locale.h"
-#include "utils/portal.h"
+#include "utils/plancache.h"
 #include "utils/ps_status.h"
-#include "utils/inval.h"
 #include "utils/xml.h"
 
 /* This value is normally passed in from the Makefile */
@@ -99,6 +104,7 @@
 
 /* XXX these should appear in other modules' header files */
 extern bool Log_disconnections;
+extern bool Trace_connection_negotiation;
 extern int	CommitDelay;
 extern int	CommitSiblings;
 extern char *default_tablespace;
@@ -223,6 +229,8 @@ StaticAssertDecl(lengthof(xmloption_options) == (XMLOPTION_CONTENT + 2),
 
 
 
+
+
 StaticAssertDecl(lengthof(ssl_protocol_versions_info) == (PG_TLS1_3_VERSION + 2),
 				 "array length mismatch");
 
@@ -250,12 +258,13 @@ StaticAssertDecl(lengthof(ssl_protocol_versions_info) == (PG_TLS1_3_VERSION + 2)
 extern const struct config_enum_entry wal_level_options[];
 extern const struct config_enum_entry archive_mode_options[];
 extern const struct config_enum_entry recovery_target_action_options[];
-extern const struct config_enum_entry sync_method_options[];
+extern const struct config_enum_entry wal_sync_method_options[];
 extern const struct config_enum_entry dynamic_shared_memory_options[];
 
 /*
  * GUC option variables that are exported from this module
  */
+
 
 
 
@@ -283,7 +292,6 @@ __thread bool		check_function_bodies = true;
 
 
 __thread int			log_min_messages = WARNING;
-
 
 
 
@@ -328,11 +336,13 @@ __thread char	   *backtrace_functions;
 
 
 
+
 /*
  * These variables are all dummies that don't do anything, except in some
  * cases provide the value for SHOW to display.  The real state is elsewhere
  * and is kept in sync by assign_hooks.
  */
+
 
 
 
@@ -410,7 +420,7 @@ StaticAssertDecl(lengthof(GucSource_Names) == (PGC_S_SESSION + 1),
  */
 
 
-StaticAssertDecl(lengthof(config_group_names) == (DEVELOPER_OPTIONS + 2),
+StaticAssertDecl(lengthof(config_group_names) == (DEVELOPER_OPTIONS + 1),
 				 "array length mismatch");
 
 /*

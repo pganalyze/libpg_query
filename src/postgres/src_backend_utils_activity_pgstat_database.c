@@ -14,7 +14,7 @@
  * storage implementation and the details about individual types of
  * statistics.
  *
- * Copyright (c) 2001-2023, PostgreSQL Global Development Group
+ * Copyright (c) 2001-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/utils/activity/pgstat_database.c
@@ -23,9 +23,9 @@
 
 #include "postgres.h"
 
+#include "storage/procsignal.h"
 #include "utils/pgstat_internal.h"
 #include "utils/timestamp.h"
-#include "storage/procsignal.h"
 
 
 static bool pgstat_should_report_connstat(void);

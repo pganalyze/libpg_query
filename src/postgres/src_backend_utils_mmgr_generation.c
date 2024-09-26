@@ -1,14 +1,16 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - GenerationAlloc
+ * - GenerationAllocLarge
  * - GenerationBlockFreeBytes
- * - GenerationBlockIsEmpty
+ * - GenerationAllocChunkFromBlock
+ * - GenerationAllocFromNewBlock
  * - GenerationBlockInit
  * - GenerationFree
  * - GenerationBlockMarkEmpty
+ * - GenerationBlockFree
  * - GenerationRealloc
  * - GenerationReset
- * - GenerationBlockFree
  * - GenerationDelete
  * - GenerationGetChunkContext
  * - GenerationGetChunkSpace
@@ -26,7 +28,7 @@
  * Generation is a custom MemoryContext implementation designed for cases of
  * chunks with similar lifespan.
  *
- * Portions Copyright (c) 2017-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2017-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/utils/mmgr/generation.c
@@ -59,8 +61,8 @@
 #include "port/pg_bitutils.h"
 #include "utils/memdebug.h"
 #include "utils/memutils.h"
-#include "utils/memutils_memorychunk.h"
 #include "utils/memutils_internal.h"
+#include "utils/memutils_memorychunk.h"
 
 
 #define Generation_BLOCKHDRSZ	MAXALIGN(sizeof(GenerationBlock))
@@ -81,17 +83,14 @@ typedef struct GenerationContext
 	MemoryContextData header;	/* Standard memory-context fields */
 
 	/* Generational context parameters */
-	Size		initBlockSize;	/* initial block size */
-	Size		maxBlockSize;	/* maximum block size */
-	Size		nextBlockSize;	/* next block size to allocate */
-	Size		allocChunkLimit;	/* effective chunk size limit */
+	uint32		initBlockSize;	/* initial block size */
+	uint32		maxBlockSize;	/* maximum block size */
+	uint32		nextBlockSize;	/* next block size to allocate */
+	uint32		allocChunkLimit;	/* effective chunk size limit */
 
-	GenerationBlock *block;		/* current (most recently allocated) block, or
-								 * NULL if we've just freed the most recent
-								 * block */
-	GenerationBlock *freeblock; /* pointer to a block that's being recycled,
-								 * or NULL if there's no such block. */
-	GenerationBlock *keeper;	/* keep this block over resets */
+	GenerationBlock *block;		/* current (most recently allocated) block */
+	GenerationBlock *freeblock; /* pointer to an empty block that's being
+								 * recycled, or NULL if there's no such block. */
 	dlist_head	blocks;			/* list of blocks */
 } GenerationContext;
 
@@ -133,6 +132,12 @@ struct GenerationBlock
 	(PointerIsValid(block) && GenerationIsValid((block)->context))
 
 /*
+ * GenerationBlockIsEmpty
+ *		True iff block contains no chunks
+ */
+#define GenerationBlockIsEmpty(b) ((b)->nchunks == 0)
+
+/*
  * We always store external chunks on a dedicated block.  This makes fetching
  * the block from an external chunk easy since it's always the first and only
  * chunk on the block.
@@ -140,11 +145,18 @@ struct GenerationBlock
 #define ExternalChunkGetBlock(chunk) \
 	(GenerationBlock *) ((char *) chunk - Generation_BLOCKHDRSZ)
 
+/* Obtain the keeper block for a generation context */
+#define KeeperBlock(set) \
+	((GenerationBlock *) (((char *) set) + \
+	MAXALIGN(sizeof(GenerationContext))))
+
+/* Check if the block is the keeper block of the given generation context */
+#define IsKeeperBlock(set, block) ((block) == (KeeperBlock(set)))
+
 /* Inlined helper functions */
 static inline void GenerationBlockInit(GenerationContext *context,
 									   GenerationBlock *block,
 									   Size blksize);
-static inline bool GenerationBlockIsEmpty(GenerationBlock *block);
 static inline void GenerationBlockMarkEmpty(GenerationBlock *block);
 static inline Size GenerationBlockFreeBytes(GenerationBlock *block);
 static inline void GenerationBlockFree(GenerationContext *set,
@@ -172,8 +184,10 @@ static inline void GenerationBlockFree(GenerationContext *set,
  * GenerationReset
  *		Frees all memory which is allocated in the given set.
  *
- * The code simply frees all the blocks in the context - we don't keep any
- * keeper blocks or anything like that.
+ * The initial "keeper" block (which shares a malloc chunk with the context
+ * header) is not given back to the operating system though.  In this way, we
+ * don't thrash malloc() when a context is repeatedly reset after small
+ * allocations.
  */
 void
 GenerationReset(MemoryContext context)
@@ -199,14 +213,14 @@ GenerationReset(MemoryContext context)
 	{
 		GenerationBlock *block = dlist_container(GenerationBlock, node, miter.cur);
 
-		if (block == set->keeper)
+		if (IsKeeperBlock(set, block))
 			GenerationBlockMarkEmpty(block);
 		else
 			GenerationBlockFree(set, block);
 	}
 
 	/* set it so new allocations to make use of the keeper block */
-	set->block = set->keeper;
+	set->block = KeeperBlock(set);
 
 	/* Reset block size allocation sequence, too */
 	set->nextBlockSize = set->initBlockSize;
@@ -230,28 +244,23 @@ GenerationDelete(MemoryContext context)
 }
 
 /*
- * GenerationAlloc
- *		Returns pointer to allocated memory of given size or NULL if
- *		request could not be completed; memory is added to the set.
+ * Helper for GenerationAlloc() that allocates an entire block for the chunk.
  *
- * No request may exceed:
- *		MAXALIGN_DOWN(SIZE_MAX) - Generation_BLOCKHDRSZ - Generation_CHUNKHDRSZ
- * All callers use a much-lower limit.
- *
- * Note: when using valgrind, it doesn't matter how the returned allocation
- * is marked, as mcxt.c will set it to UNDEFINED.  In some paths we will
- * return space that is marked NOACCESS - GenerationRealloc has to beware!
+ * GenerationAlloc()'s comment explains why this is separate.
  */
-void *
-GenerationAlloc(MemoryContext context, Size size)
+pg_noinline
+static void *
+GenerationAllocLarge(MemoryContext context, Size size, int flags)
 {
 	GenerationContext *set = (GenerationContext *) context;
 	GenerationBlock *block;
 	MemoryChunk *chunk;
 	Size		chunk_size;
 	Size		required_size;
+	Size		blksize;
 
-	Assert(GenerationIsValid(set));
+	/* validate 'size' is within the limits for the given 'flags' */
+	MemoryContextCheckSize(context, size, flags);
 
 #ifdef MEMORY_CONTEXT_CHECKING
 	/* ensure there's always space for the sentinel byte */
@@ -260,140 +269,66 @@ GenerationAlloc(MemoryContext context, Size size)
 	chunk_size = MAXALIGN(size);
 #endif
 	required_size = chunk_size + Generation_CHUNKHDRSZ;
+	blksize = required_size + Generation_BLOCKHDRSZ;
 
-	/* is it an over-sized chunk? if yes, allocate special block */
-	if (chunk_size > set->allocChunkLimit)
-	{
-		Size		blksize = required_size + Generation_BLOCKHDRSZ;
+	block = (GenerationBlock *) malloc(blksize);
+	if (block == NULL)
+		return MemoryContextAllocationFailure(context, size, flags);
 
-		block = (GenerationBlock *) malloc(blksize);
-		if (block == NULL)
-			return NULL;
+	context->mem_allocated += blksize;
 
-		context->mem_allocated += blksize;
+	/* block with a single (used) chunk */
+	block->context = set;
+	block->blksize = blksize;
+	block->nchunks = 1;
+	block->nfree = 0;
 
-		/* block with a single (used) chunk */
-		block->context = set;
-		block->blksize = blksize;
-		block->nchunks = 1;
-		block->nfree = 0;
+	/* the block is completely full */
+	block->freeptr = block->endptr = ((char *) block) + blksize;
 
-		/* the block is completely full */
-		block->freeptr = block->endptr = ((char *) block) + blksize;
+	chunk = (MemoryChunk *) (((char *) block) + Generation_BLOCKHDRSZ);
 
-		chunk = (MemoryChunk *) (((char *) block) + Generation_BLOCKHDRSZ);
-
-		/* mark the MemoryChunk as externally managed */
-		MemoryChunkSetHdrMaskExternal(chunk, MCTX_GENERATION_ID);
+	/* mark the MemoryChunk as externally managed */
+	MemoryChunkSetHdrMaskExternal(chunk, MCTX_GENERATION_ID);
 
 #ifdef MEMORY_CONTEXT_CHECKING
-		chunk->requested_size = size;
-		/* set mark to catch clobber of "unused" space */
-		Assert(size < chunk_size);
-		set_sentinel(MemoryChunkGetPointer(chunk), size);
+	chunk->requested_size = size;
+	/* set mark to catch clobber of "unused" space */
+	Assert(size < chunk_size);
+	set_sentinel(MemoryChunkGetPointer(chunk), size);
 #endif
 #ifdef RANDOMIZE_ALLOCATED_MEMORY
-		/* fill the allocated space with junk */
-		randomize_mem((char *) MemoryChunkGetPointer(chunk), size);
+	/* fill the allocated space with junk */
+	randomize_mem((char *) MemoryChunkGetPointer(chunk), size);
 #endif
 
-		/* add the block to the list of allocated blocks */
-		dlist_push_head(&set->blocks, &block->node);
+	/* add the block to the list of allocated blocks */
+	dlist_push_head(&set->blocks, &block->node);
 
-		/* Ensure any padding bytes are marked NOACCESS. */
-		VALGRIND_MAKE_MEM_NOACCESS((char *) MemoryChunkGetPointer(chunk) + size,
-								   chunk_size - size);
+	/* Ensure any padding bytes are marked NOACCESS. */
+	VALGRIND_MAKE_MEM_NOACCESS((char *) MemoryChunkGetPointer(chunk) + size,
+							   chunk_size - size);
 
-		/* Disallow access to the chunk header. */
-		VALGRIND_MAKE_MEM_NOACCESS(chunk, Generation_CHUNKHDRSZ);
+	/* Disallow access to the chunk header. */
+	VALGRIND_MAKE_MEM_NOACCESS(chunk, Generation_CHUNKHDRSZ);
 
-		return MemoryChunkGetPointer(chunk);
-	}
+	return MemoryChunkGetPointer(chunk);
+}
 
-	/*
-	 * Not an oversized chunk.  We try to first make use of the current block,
-	 * but if there's not enough space in it, instead of allocating a new
-	 * block, we look to see if the freeblock is empty and has enough space.
-	 * If not, we'll also try the same using the keeper block.  The keeper
-	 * block may have become empty and we have no other way to reuse it again
-	 * if we don't try to use it explicitly here.
-	 *
-	 * We don't want to start filling the freeblock before the current block
-	 * is full, otherwise we may cause fragmentation in FIFO type workloads.
-	 * We only switch to using the freeblock or keeper block if those blocks
-	 * are completely empty.  If we didn't do that we could end up fragmenting
-	 * consecutive allocations over multiple blocks which would be a problem
-	 * that would compound over time.
-	 */
-	block = set->block;
+/*
+ * Small helper for allocating a new chunk from a chunk, to avoid duplicating
+ * the code between GenerationAlloc() and GenerationAllocFromNewBlock().
+ */
+static inline void *
+GenerationAllocChunkFromBlock(MemoryContext context, GenerationBlock *block,
+							  Size size, Size chunk_size)
+{
+	MemoryChunk *chunk = (MemoryChunk *) (block->freeptr);
 
-	if (block == NULL ||
-		GenerationBlockFreeBytes(block) < required_size)
-	{
-		Size		blksize;
-		GenerationBlock *freeblock = set->freeblock;
-
-		if (freeblock != NULL &&
-			GenerationBlockIsEmpty(freeblock) &&
-			GenerationBlockFreeBytes(freeblock) >= required_size)
-		{
-			block = freeblock;
-
-			/*
-			 * Zero out the freeblock as we'll set this to the current block
-			 * below
-			 */
-			set->freeblock = NULL;
-		}
-		else if (GenerationBlockIsEmpty(set->keeper) &&
-				 GenerationBlockFreeBytes(set->keeper) >= required_size)
-		{
-			block = set->keeper;
-		}
-		else
-		{
-			/*
-			 * The first such block has size initBlockSize, and we double the
-			 * space in each succeeding block, but not more than maxBlockSize.
-			 */
-			blksize = set->nextBlockSize;
-			set->nextBlockSize <<= 1;
-			if (set->nextBlockSize > set->maxBlockSize)
-				set->nextBlockSize = set->maxBlockSize;
-
-			/* we'll need a block hdr too, so add that to the required size */
-			required_size += Generation_BLOCKHDRSZ;
-
-			/* round the size up to the next power of 2 */
-			if (blksize < required_size)
-				blksize = pg_nextpower2_size_t(required_size);
-
-			block = (GenerationBlock *) malloc(blksize);
-
-			if (block == NULL)
-				return NULL;
-
-			context->mem_allocated += blksize;
-
-			/* initialize the new block */
-			GenerationBlockInit(set, block, blksize);
-
-			/* add it to the doubly-linked list of blocks */
-			dlist_push_head(&set->blocks, &block->node);
-
-			/* Zero out the freeblock in case it's become full */
-			set->freeblock = NULL;
-		}
-
-		/* and also use it as the current allocation block */
-		set->block = block;
-	}
-
-	/* we're supposed to have a block with enough free space now */
+	/* validate we've been given a block with enough free space */
 	Assert(block != NULL);
-	Assert((block->endptr - block->freeptr) >= Generation_CHUNKHDRSZ + chunk_size);
-
-	chunk = (MemoryChunk *) block->freeptr;
+	Assert((block->endptr - block->freeptr) >=
+		   Generation_CHUNKHDRSZ + chunk_size);
 
 	/* Prepare to initialize the chunk header. */
 	VALGRIND_MAKE_MEM_UNDEFINED(chunk, Generation_CHUNKHDRSZ);
@@ -426,6 +361,156 @@ GenerationAlloc(MemoryContext context, Size size)
 }
 
 /*
+ * Helper for GenerationAlloc() that allocates a new block and returns a chunk
+ * allocated from it.
+ *
+ * GenerationAlloc()'s comment explains why this is separate.
+ */
+pg_noinline
+static void *
+GenerationAllocFromNewBlock(MemoryContext context, Size size, int flags,
+							Size chunk_size)
+{
+	GenerationContext *set = (GenerationContext *) context;
+	GenerationBlock *block;
+	Size		blksize;
+	Size		required_size;
+
+	/*
+	 * The first such block has size initBlockSize, and we double the space in
+	 * each succeeding block, but not more than maxBlockSize.
+	 */
+	blksize = set->nextBlockSize;
+	set->nextBlockSize <<= 1;
+	if (set->nextBlockSize > set->maxBlockSize)
+		set->nextBlockSize = set->maxBlockSize;
+
+	/* we'll need space for the chunk, chunk hdr and block hdr */
+	required_size = chunk_size + Generation_CHUNKHDRSZ + Generation_BLOCKHDRSZ;
+
+	/* round the size up to the next power of 2 */
+	if (blksize < required_size)
+		blksize = pg_nextpower2_size_t(required_size);
+
+	block = (GenerationBlock *) malloc(blksize);
+
+	if (block == NULL)
+		return MemoryContextAllocationFailure(context, size, flags);
+
+	context->mem_allocated += blksize;
+
+	/* initialize the new block */
+	GenerationBlockInit(set, block, blksize);
+
+	/* add it to the doubly-linked list of blocks */
+	dlist_push_head(&set->blocks, &block->node);
+
+	/* make this the current block */
+	set->block = block;
+
+	return GenerationAllocChunkFromBlock(context, block, size, chunk_size);
+}
+
+/*
+ * GenerationAlloc
+ *		Returns a pointer to allocated memory of given size or raises an ERROR
+ *		on allocation failure, or returns NULL when flags contains
+ *		MCXT_ALLOC_NO_OOM.
+ *
+ * No request may exceed:
+ *		MAXALIGN_DOWN(SIZE_MAX) - Generation_BLOCKHDRSZ - Generation_CHUNKHDRSZ
+ * All callers use a much-lower limit.
+ *
+ * Note: when using valgrind, it doesn't matter how the returned allocation
+ * is marked, as mcxt.c will set it to UNDEFINED.  In some paths we will
+ * return space that is marked NOACCESS - GenerationRealloc has to beware!
+ *
+ * This function should only contain the most common code paths.  Everything
+ * else should be in pg_noinline helper functions, thus avoiding the overhead
+ * of creating a stack frame for the common cases.  Allocating memory is often
+ * a bottleneck in many workloads, so avoiding stack frame setup is
+ * worthwhile.  Helper functions should always directly return the newly
+ * allocated memory so that we can just return that address directly as a tail
+ * call.
+ */
+void *
+GenerationAlloc(MemoryContext context, Size size, int flags)
+{
+	GenerationContext *set = (GenerationContext *) context;
+	GenerationBlock *block;
+	Size		chunk_size;
+	Size		required_size;
+
+	Assert(GenerationIsValid(set));
+
+#ifdef MEMORY_CONTEXT_CHECKING
+	/* ensure there's always space for the sentinel byte */
+	chunk_size = MAXALIGN(size + 1);
+#else
+	chunk_size = MAXALIGN(size);
+#endif
+
+	/*
+	 * If requested size exceeds maximum for chunks we hand the request off to
+	 * GenerationAllocLarge().
+	 */
+	if (chunk_size > set->allocChunkLimit)
+		return GenerationAllocLarge(context, size, flags);
+
+	required_size = chunk_size + Generation_CHUNKHDRSZ;
+
+	/*
+	 * Not an oversized chunk.  We try to first make use of the current block,
+	 * but if there's not enough space in it, instead of allocating a new
+	 * block, we look to see if the empty freeblock has enough space.  We
+	 * don't try reusing the keeper block.  If it's become empty we'll reuse
+	 * that again only if the context is reset.
+	 *
+	 * We only try reusing the freeblock if we've no space for this allocation
+	 * on the current block.  When a freeblock exists, we'll switch to it once
+	 * the first time we can't fit an allocation in the current block.  We
+	 * avoid ping-ponging between the two as we need to be careful not to
+	 * fragment differently sized consecutive allocations between several
+	 * blocks.  Going between the two could cause fragmentation for FIFO
+	 * workloads, which generation is meant to be good at.
+	 */
+	block = set->block;
+
+	if (unlikely(GenerationBlockFreeBytes(block) < required_size))
+	{
+		GenerationBlock *freeblock = set->freeblock;
+
+		/* freeblock, if set, must be empty */
+		Assert(freeblock == NULL || GenerationBlockIsEmpty(freeblock));
+
+		/* check if we have a freeblock and if it's big enough */
+		if (freeblock != NULL &&
+			GenerationBlockFreeBytes(freeblock) >= required_size)
+		{
+			/* make the freeblock the current block */
+			set->freeblock = NULL;
+			set->block = freeblock;
+
+			return GenerationAllocChunkFromBlock(context,
+												 freeblock,
+												 size,
+												 chunk_size);
+		}
+		else
+		{
+			/*
+			 * No freeblock, or it's not big enough for this allocation.  Make
+			 * a new block.
+			 */
+			return GenerationAllocFromNewBlock(context, size, flags, chunk_size);
+		}
+	}
+
+	/* The current block has space, so just allocate chunk there. */
+	return GenerationAllocChunkFromBlock(context, block, size, chunk_size);
+}
+
+/*
  * GenerationBlockInit
  *		Initializes 'block' assuming 'blksize'.  Does not update the context's
  *		mem_allocated field.
@@ -445,16 +530,6 @@ GenerationBlockInit(GenerationContext *context, GenerationBlock *block,
 	/* Mark unallocated space NOACCESS. */
 	VALGRIND_MAKE_MEM_NOACCESS(block->freeptr,
 							   blksize - Generation_BLOCKHDRSZ);
-}
-
-/*
- * GenerationBlockIsEmpty
- *		Returns true iff 'block' contains no chunks
- */
-static inline bool
-GenerationBlockIsEmpty(GenerationBlock *block)
-{
-	return (block->nchunks == 0);
 }
 
 /*
@@ -499,7 +574,7 @@ static inline void
 GenerationBlockFree(GenerationContext *set, GenerationBlock *block)
 {
 	/* Make sure nobody tries to free the keeper block */
-	Assert(block != set->keeper);
+	Assert(!IsKeeperBlock(set, block));
 	/* We shouldn't be freeing the freeblock either */
 	Assert(block != set->freeblock);
 
@@ -517,8 +592,8 @@ GenerationBlockFree(GenerationContext *set, GenerationBlock *block)
 
 /*
  * GenerationFree
- *		Update number of chunks in the block, and if all chunks in the block
- *		are now free then discard the block.
+ *		Update number of chunks in the block, and consider freeing the block
+ *		if it's become empty.
  */
 void
 GenerationFree(void *pointer)
@@ -588,45 +663,41 @@ GenerationFree(void *pointer)
 
 	Assert(block->nchunks > 0);
 	Assert(block->nfree <= block->nchunks);
+	Assert(block != block->context->freeblock);
 
 	/* If there are still allocated chunks in the block, we're done. */
-	if (block->nfree < block->nchunks)
+	if (likely(block->nfree < block->nchunks))
 		return;
 
 	set = block->context;
 
-	/* Don't try to free the keeper block, just mark it empty */
-	if (block == set->keeper)
-	{
-		GenerationBlockMarkEmpty(block);
-		return;
-	}
-
-	/*
-	 * If there is no freeblock set or if this is the freeblock then instead
-	 * of freeing this memory, we keep it around so that new allocations have
-	 * the option of recycling it.
+	/*-----------------------
+	 * The block this allocation was on has now become completely empty of
+	 * chunks.  In the general case, we can now return the memory for this
+	 * block back to malloc.  However, there are cases where we don't want to
+	 * do that:
+	 *
+	 * 1)	If it's the keeper block.  This block was malloc'd in the same
+	 *		allocation as the context itself and can't be free'd without
+	 *		freeing the context.
+	 * 2)	If it's the current block.  We could free this, but doing so would
+	 *		leave us nothing to set the current block to, so we just mark the
+	 *		block as empty so new allocations can reuse it again.
+	 * 3)	If we have no "freeblock" set, then we save a single block for
+	 *		future allocations to avoid having to malloc a new block again.
+	 *		This is useful for FIFO workloads as it avoids continual
+	 *		free/malloc cycles.
 	 */
-	if (set->freeblock == NULL || set->freeblock == block)
+	if (IsKeeperBlock(set, block) || set->block == block)
+		GenerationBlockMarkEmpty(block);	/* case 1 and 2 */
+	else if (set->freeblock == NULL)
 	{
-		/* XXX should we only recycle maxBlockSize sized blocks? */
+		/* case 3 */
+		GenerationBlockMarkEmpty(block);
 		set->freeblock = block;
-		GenerationBlockMarkEmpty(block);
-		return;
 	}
-
-	/* Also make sure the block is not marked as the current block. */
-	if (set->block == block)
-		set->block = NULL;
-
-	/*
-	 * The block is empty, so let's get rid of it. First remove it from the
-	 * list of blocks, then return it to malloc().
-	 */
-	dlist_delete(&block->node);
-
-	set->header.mem_allocated -= block->blksize;
-	free(block);
+	else
+		GenerationBlockFree(set, block);	/* Otherwise, free it */
 }
 
 /*
@@ -636,7 +707,7 @@ GenerationFree(void *pointer)
  *		into the old chunk - in that case we just update chunk header.
  */
 void *
-GenerationRealloc(void *pointer, Size size)
+GenerationRealloc(void *pointer, Size size, int flags)
 {
 	MemoryChunk *chunk = PointerGetMemoryChunk(pointer);
 	GenerationContext *set;
@@ -685,8 +756,8 @@ GenerationRealloc(void *pointer, Size size)
 #endif
 
 	/*
-	 * Maybe the allocated area already is >= the new size.  (In particular,
-	 * we always fall out here if the requested size is a decrease.)
+	 * Maybe the allocated area already big enough.  (In particular, we always
+	 * fall out here if the requested size is a decrease.)
 	 *
 	 * This memory context does not use power-of-2 chunk sizing and instead
 	 * carves the chunks to be as small as possible, so most repalloc() calls
@@ -694,7 +765,12 @@ GenerationRealloc(void *pointer, Size size)
 	 *
 	 * XXX Perhaps we should annotate this condition with unlikely()?
 	 */
+#ifdef MEMORY_CONTEXT_CHECKING
+	/* With MEMORY_CONTEXT_CHECKING, we need an extra byte for the sentinel */
+	if (oldsize > size)
+#else
 	if (oldsize >= size)
+#endif
 	{
 #ifdef MEMORY_CONTEXT_CHECKING
 		Size		oldrequest = chunk->requested_size;
@@ -738,15 +814,15 @@ GenerationRealloc(void *pointer, Size size)
 		return pointer;
 	}
 
-	/* allocate new chunk */
-	newPointer = GenerationAlloc((MemoryContext) set, size);
+	/* allocate new chunk (this also checks size is valid) */
+	newPointer = GenerationAlloc((MemoryContext) set, size, flags);
 
 	/* leave immediately if request was not completed */
 	if (newPointer == NULL)
 	{
 		/* Disallow access to the chunk header. */
 		VALGRIND_MAKE_MEM_NOACCESS(chunk, Generation_CHUNKHDRSZ);
-		return NULL;
+		return MemoryContextAllocationFailure((MemoryContext) set, size, flags);
 	}
 
 	/*

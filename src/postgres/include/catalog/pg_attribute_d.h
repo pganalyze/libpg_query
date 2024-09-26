@@ -3,7 +3,7 @@
  * pg_attribute_d.h
  *    Macro definitions for pg_attribute
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -43,8 +43,8 @@
 #define Anum_pg_attribute_attisdropped 18
 #define Anum_pg_attribute_attislocal 19
 #define Anum_pg_attribute_attinhcount 20
-#define Anum_pg_attribute_attstattarget 21
-#define Anum_pg_attribute_attcollation 22
+#define Anum_pg_attribute_attcollation 21
+#define Anum_pg_attribute_attstattarget 22
 #define Anum_pg_attribute_attacl 23
 #define Anum_pg_attribute_attoptions 24
 #define Anum_pg_attribute_attfdwoptions 25
