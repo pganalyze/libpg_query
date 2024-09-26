@@ -596,6 +596,7 @@ static PLpgSQL_type * parse_datatype(const char *string, int location) {
 	return typ;
 }
 ))
+runner.mock('plpgsql_build_datatype_arrayof', 'PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ;  }')
 runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OID; }')
 runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
 runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }')
