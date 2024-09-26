@@ -6565,6 +6565,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 	{
 		appendStringInfoString(str, quote_identifier(alter_table_cmd->name));
 		appendStringInfoChar(str, ' ');
+	} else if (alter_table_cmd->subtype == AT_SetAccessMethod)
+	{
+		appendStringInfoString(str, " DEFAULT");
 	}
 
 	if (alter_table_cmd->num > 0)
