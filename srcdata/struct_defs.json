@@ -117,7 +117,7 @@
           "comment": null
         },
         {
-          "comment": "\t/* has INSERT/UPDATE/DELETE in WITH */\n"
+          "comment": "\t/* has INSERT/UPDATE/DELETE/MERGE in WITH */\n"
         },
         {
           "name": "hasModifyingCTE",
@@ -189,11 +189,25 @@
           "comment": "/* list of actions for MERGE (only) */"
         },
         {
-          "comment": "\t/* whether to use outer join */\n"
+          "comment": ""
         },
         {
-          "name": "mergeUseOuterJoin",
-          "c_type": "bool",
+          "comment": "\t/*\n\t * rtable index of target relation for MERGE to pull data. Initially, this\n\t * is the same as resultRelation, but after query rewriting, if the target\n\t * relation is a trigger-updatable view, this is the index of the expanded\n\t * view subquery, whereas resultRelation is the index of the target view.\n\t */\n"
+        },
+        {
+          "name": "mergeTargetRelation",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* join condition between source and target for MERGE */\n"
+        },
+        {
+          "name": "mergeJoinCondition",
+          "c_type": "Node*",
           "comment": null
         },
         {
@@ -351,7 +365,7 @@
         },
         {
           "name": "stmt_location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         },
         {
@@ -359,7 +373,7 @@
         },
         {
           "name": "stmt_len",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -409,7 +423,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -429,7 +443,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -449,7 +463,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -484,7 +498,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -509,7 +523,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -534,7 +548,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -559,7 +573,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -624,7 +638,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -699,7 +713,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -729,7 +743,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -789,7 +803,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* operator location, or -1 if none/unknown */"
         }
       ],
@@ -839,7 +853,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* parse location, or -1 if none/unknown */"
         }
       ],
@@ -949,11 +963,11 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
-      "comment": "/*\n * RangeTableFunc - raw form of \"table functions\" such as XMLTABLE\n */\n"
+      "comment": "/*\n * RangeTableFunc - raw form of \"table functions\" such as XMLTABLE\n *\n * Note: JSON_TABLE is also a \"table function\", but it uses JsonTable node,\n * not RangeTableFunc.\n */\n"
     },
     "RangeTableFuncCol": {
       "fields": [
@@ -994,7 +1008,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1029,7 +1043,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* method name location, or -1 if unknown */"
         }
       ],
@@ -1134,7 +1148,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* parse location, or -1 if none/unknown */"
         }
       ],
@@ -1244,7 +1258,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1304,7 +1318,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1339,7 +1353,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1364,7 +1378,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1438,7 +1452,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -1469,11 +1483,21 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": null
+    },
+    "SinglePartitionSpec": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * PartitionDesc - used in reverted ALTER TABLE SPLIT PARTITION command\n *\n * Kept as a stub for nodetag ABI compatibility.\n */\n"
     },
     "PartitionCmd": {
       "fields": [
@@ -1511,6 +1535,28 @@
           "comment": ""
         },
         {
+          "comment": "\t/*\n\t * Fields valid in all RTEs:\n\t *\n\t * put alias + eref first to make dump more legible\n\t */\n"
+        },
+        {
+          "comment": "\t/* user-written alias clause, if any */\n"
+        },
+        {
+          "name": "alias",
+          "c_type": "Alias*",
+          "comment": null
+        },
+        {
+          "comment": "\t/* expanded reference names */\n"
+        },
+        {
+          "name": "eref",
+          "c_type": "Alias*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
           "name": "rtekind",
           "c_type": "RTEKind",
           "comment": "/* see above */"
@@ -1519,37 +1565,54 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * XXX the fields applicable to only some rte kinds should be merged into\n\t * a union.  I didn't do this yet because the diffs would impact a lot of\n\t * code that is being actively worked on.  FIXME someday.\n\t */\n"
+          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t *\n\t * inh is true for relation references that should be expanded to include\n\t * inheritance children, if the rel has any.  In the parser, this will\n\t * only be true for RTE_RELATION entries.  The planner also uses this\n\t * field to mark RTE_SUBQUERY entries that contain UNION ALL queries that\n\t * it has flattened into pulled-up subqueries (creating a structure much\n\t * like the effects of inheritance).\n\t *\n\t * rellockmode is really LOCKMODE, but it's declared int to avoid having\n\t * to include lock-related headers here.  It must be RowExclusiveLock if\n\t * the RTE is an INSERT/UPDATE/DELETE/MERGE target, else RowShareLock if\n\t * the RTE is a SELECT FOR UPDATE/FOR SHARE target, else AccessShareLock.\n\t *\n\t * Note: in some cases, rule expansion may result in RTEs that are marked\n\t * with RowExclusiveLock even though they are not the target of the\n\t * current query; this happens if a DO ALSO rule simply scans the original\n\t * target table.  We leave such RTEs with their original lockmode so as to\n\t * avoid getting an additional, lesser lock.\n\t *\n\t * perminfoindex is 1-based index of the RTEPermissionInfo belonging to\n\t * this RTE in the containing struct's list of same; 0 if permissions need\n\t * not be checked for this RTE.\n\t *\n\t * As a special case, relid, relkind, rellockmode, and perminfoindex can\n\t * also be set (nonzero) in an RTE_SUBQUERY RTE.  This occurs when we\n\t * convert an RTE_RELATION RTE naming a view into an RTE_SUBQUERY\n\t * containing the view's query.  We still need to perform run-time locking\n\t * and permission checks on the view, even though it's not directly used\n\t * in the query anymore, and the most expedient way to do that is to\n\t * retain these fields from the old state of the RTE.\n\t *\n\t * As a special case, RTE_NAMEDTUPLESTORE can also set relid to indicate\n\t * that the tuple format of the tuplestore is the same as the referenced\n\t * relation.  This allows plans referencing AFTER trigger transition\n\t * tables to be invalidated if the underlying table is altered.\n\t */\n"
         },
         {
-          "comment": ""
-        },
-        {
-          "comment": "\t/*\n\t * Fields valid for a plain relation RTE (else zero):\n\t *\n\t * rellockmode is really LOCKMODE, but it's declared int to avoid having\n\t * to include lock-related headers here.  It must be RowExclusiveLock if\n\t * the RTE is an INSERT/UPDATE/DELETE/MERGE target, else RowShareLock if\n\t * the RTE is a SELECT FOR UPDATE/FOR SHARE target, else AccessShareLock.\n\t *\n\t * Note: in some cases, rule expansion may result in RTEs that are marked\n\t * with RowExclusiveLock even though they are not the target of the\n\t * current query; this happens if a DO ALSO rule simply scans the original\n\t * target table.  We leave such RTEs with their original lockmode so as to\n\t * avoid getting an additional, lesser lock.\n\t *\n\t * perminfoindex is 1-based index of the RTEPermissionInfo belonging to\n\t * this RTE in the containing struct's list of same; 0 if permissions need\n\t * not be checked for this RTE.\n\t *\n\t * As a special case, relid, relkind, rellockmode, and perminfoindex can\n\t * also be set (nonzero) in an RTE_SUBQUERY RTE.  This occurs when we\n\t * convert an RTE_RELATION RTE naming a view into an RTE_SUBQUERY\n\t * containing the view's query.  We still need to perform run-time locking\n\t * and permission checks on the view, even though it's not directly used\n\t * in the query anymore, and the most expedient way to do that is to\n\t * retain these fields from the old state of the RTE.\n\t *\n\t * As a special case, RTE_NAMEDTUPLESTORE can also set relid to indicate\n\t * that the tuple format of the tuplestore is the same as the referenced\n\t * relation.  This allows plans referencing AFTER trigger transition\n\t * tables to be invalidated if the underlying table is altered.\n\t */\n"
+          "comment": "\t/* OID of the relation */\n"
         },
         {
           "name": "relid",
           "c_type": "Oid",
-          "comment": "/* OID of the relation */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* inheritance requested? */\n"
+        },
+        {
+          "name": "inh",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": "\t/* relation kind (see pg_class.relkind) */\n"
         },
         {
           "name": "relkind",
           "c_type": "char",
-          "comment": "/* relation kind (see pg_class.relkind) */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* lock level that query requires on the rel */\n"
         },
         {
           "name": "rellockmode",
           "c_type": "int",
-          "comment": "/* lock level that query requires on the rel */"
+          "comment": null
         },
         {
-          "name": "tablesample",
-          "c_type": "TableSampleClause*",
-          "comment": "/* sampling info, or NULL */"
+          "comment": "\t/* index of RTEPermissionInfo entry, or 0 */\n"
         },
         {
           "name": "perminfoindex",
           "c_type": "Index",
+          "comment": null
+        },
+        {
+          "comment": "\t/* sampling info, or NULL */\n"
+        },
+        {
+          "name": "tablesample",
+          "c_type": "TableSampleClause*",
           "comment": null
         },
         {
@@ -1559,14 +1622,20 @@
           "comment": "\t/*\n\t * Fields valid for a subquery RTE (else NULL):\n\t */\n"
         },
         {
+          "comment": "\t/* the sub-query */\n"
+        },
+        {
           "name": "subquery",
           "c_type": "Query*",
-          "comment": "/* the sub-query */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* is from security_barrier view? */\n"
         },
         {
           "name": "security_barrier",
           "c_type": "bool",
-          "comment": "/* is from security_barrier view? */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1577,27 +1646,39 @@
         {
           "name": "jointype",
           "c_type": "JoinType",
-          "comment": "/* type of join */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* number of merged (JOIN USING) columns */\n"
         },
         {
           "name": "joinmergedcols",
           "c_type": "int",
-          "comment": "/* number of merged (JOIN USING) columns */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* list of alias-var expansions */\n"
         },
         {
           "name": "joinaliasvars",
           "c_type": "List*",
-          "comment": "/* list of alias-var expansions */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* left-side input column numbers */\n"
         },
         {
           "name": "joinleftcols",
           "c_type": "List*",
-          "comment": "/* left-side input column numbers */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* right-side input column numbers */\n"
         },
         {
           "name": "joinrightcols",
           "c_type": "List*",
-          "comment": "/* right-side input column numbers */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1617,14 +1698,20 @@
           "comment": "\t/*\n\t * Fields valid for a function RTE (else NIL/zero):\n\t *\n\t * When funcordinality is true, the eref->colnames list includes an alias\n\t * for the ordinality column.  The ordinality column is otherwise\n\t * implicit, and must be accounted for \"by hand\" in places such as\n\t * expandRTE().\n\t */\n"
         },
         {
+          "comment": "\t/* list of RangeTblFunction nodes */\n"
+        },
+        {
           "name": "functions",
           "c_type": "List*",
-          "comment": "/* list of RangeTblFunction nodes */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* is this called WITH ORDINALITY? */\n"
         },
         {
           "name": "funcordinality",
           "c_type": "bool",
-          "comment": "/* is this called WITH ORDINALITY? */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1644,9 +1731,12 @@
           "comment": "\t/*\n\t * Fields valid for a values RTE (else NIL):\n\t */\n"
         },
         {
+          "comment": "\t/* list of expression lists */\n"
+        },
+        {
           "name": "values_lists",
           "c_type": "List*",
-          "comment": "/* list of expression lists */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1655,19 +1745,28 @@
           "comment": "\t/*\n\t * Fields valid for a CTE RTE (else NULL/zero):\n\t */\n"
         },
         {
+          "comment": "\t/* name of the WITH list item */\n"
+        },
+        {
           "name": "ctename",
           "c_type": "char*",
-          "comment": "/* name of the WITH list item */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* number of query levels up */\n"
         },
         {
           "name": "ctelevelsup",
           "c_type": "Index",
-          "comment": "/* number of query levels up */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* is this a recursive self-reference? */\n"
         },
         {
           "name": "self_reference",
           "c_type": "bool",
-          "comment": "/* is this a recursive self-reference? */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1676,19 +1775,28 @@
           "comment": "\t/*\n\t * Fields valid for CTE, VALUES, ENR, and TableFunc RTEs (else NIL):\n\t *\n\t * We need these for CTE RTEs so that the types of self-referential\n\t * columns are well-defined.  For VALUES RTEs, storing these explicitly\n\t * saves having to re-determine the info by scanning the values_lists. For\n\t * ENRs, we store the types explicitly here (we could get the information\n\t * from the catalogs if 'relid' was supplied, but we'd still need these\n\t * for TupleDesc-based ENRs, so we might as well always store the type\n\t * info here).  For TableFuncs, these fields are redundant with data in\n\t * the TableFunc node, but keeping them here allows some code sharing with\n\t * the other cases.\n\t *\n\t * For ENRs only, we have to consider the possibility of dropped columns.\n\t * A dropped column is included in these lists, but it will have zeroes in\n\t * all three lists (as well as an empty-string entry in eref).  Testing\n\t * for zero coltype is the standard way to detect a dropped column.\n\t */\n"
         },
         {
+          "comment": "\t/* OID list of column type OIDs */\n"
+        },
+        {
           "name": "coltypes",
           "c_type": "List*",
-          "comment": "/* OID list of column type OIDs */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* integer list of column typmods */\n"
         },
         {
           "name": "coltypmods",
           "c_type": "List*",
-          "comment": "/* integer list of column typmods */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* OID list of column collation OIDs */\n"
         },
         {
           "name": "colcollations",
           "c_type": "List*",
-          "comment": "/* OID list of column collation OIDs */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1697,14 +1805,20 @@
           "comment": "\t/*\n\t * Fields valid for ENR RTEs (else NULL/zero):\n\t */\n"
         },
         {
+          "comment": "\t/* name of ephemeral named relation */\n"
+        },
+        {
           "name": "enrname",
           "c_type": "char*",
-          "comment": "/* name of ephemeral named relation */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* estimated or actual from caller */\n"
         },
         {
           "name": "enrtuples",
           "c_type": "Cardinality",
-          "comment": "/* estimated or actual from caller */"
+          "comment": null
         },
         {
           "comment": ""
@@ -1713,37 +1827,31 @@
           "comment": "\t/*\n\t * Fields valid in all RTEs:\n\t */\n"
         },
         {
-          "name": "alias",
-          "c_type": "Alias*",
-          "comment": "/* user-written alias clause, if any */"
-        },
-        {
-          "name": "eref",
-          "c_type": "Alias*",
-          "comment": "/* expanded reference names */"
+          "comment": "\t/* was LATERAL specified? */\n"
         },
         {
           "name": "lateral",
           "c_type": "bool",
-          "comment": "/* subquery, function, or values is LATERAL? */"
+          "comment": null
         },
         {
-          "name": "inh",
-          "c_type": "bool",
-          "comment": "/* inheritance requested? */"
+          "comment": "\t/* present in FROM clause? */\n"
         },
         {
           "name": "inFromCl",
           "c_type": "bool",
-          "comment": "/* present in FROM clause? */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* security barrier quals to apply, if any */\n"
         },
         {
           "name": "securityQuals",
           "c_type": "List*",
-          "comment": "/* security barrier quals to apply, if any */"
+          "comment": null
         }
       ],
-      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inh is true for relation references that should be expanded to include\n *\t  inheritance children, if the rel has any.  This *must* be false for\n *\t  RTEs other than RTE_RELATION entries.\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used during parsing (except in transformLockingClause,\n *\t  q.v.); the parser now uses a separate \"namespace\" data structure to\n *\t  control visibility.  But it is needed by ruleutils.c to determine\n *\t  whether RTEs should be shown in decompiled queries.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
+      "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used during parsing (except in transformLockingClause,\n *\t  q.v.); the parser now uses a separate \"namespace\" data structure to\n *\t  control visibility.  But it is needed by ruleutils.c to determine\n *\t  whether RTEs should be shown in decompiled queries.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
     },
     "RTEPermissionInfo": {
       "fields": [
@@ -1985,7 +2093,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -2043,14 +2151,6 @@
           "comment": "/* expression for ending bound, if any */"
         },
         {
-          "comment": "\t/* qual to help short-circuit execution */\n"
-        },
-        {
-          "name": "runCondition",
-          "c_type": "List*",
-          "comment": null
-        },
-        {
           "comment": "\t/* in_range function for startOffset */\n"
         },
         {
@@ -2104,7 +2204,7 @@
           "comment": null
         }
       ],
-      "comment": "/*\n * WindowClause -\n *\t\ttransformed representation of WINDOW and OVER clauses\n *\n * A parsed Query's windowClause list contains these structs.  \"name\" is set\n * if the clause originally came from WINDOW, and is NULL if it originally\n * was an OVER clause (but note that we collapse out duplicate OVERs).\n * partitionClause and orderClause are lists of SortGroupClause structs.\n * If we have RANGE with offset PRECEDING/FOLLOWING, the semantics of that are\n * specified by startInRangeFunc/inRangeColl/inRangeAsc/inRangeNullsFirst\n * for the start offset, or endInRangeFunc/inRange* for the end offset.\n * winref is an ID number referenced by WindowFunc nodes; it must be unique\n * among the members of a Query's windowClause list.\n * When refname isn't null, the partitionClause is always copied from there;\n * the orderClause might or might not be copied (see copiedOrder); the framing\n * options are never copied, per spec.\n *\n * The information relevant for the query jumbling is the partition clause\n * type and its bounds.\n */\n"
+      "comment": "/*\n * WindowClause -\n *\t\ttransformed representation of WINDOW and OVER clauses\n *\n * A parsed Query's windowClause list contains these structs.  \"name\" is set\n * if the clause originally came from WINDOW, and is NULL if it originally\n * was an OVER clause (but note that we collapse out duplicate OVERs).\n * partitionClause and orderClause are lists of SortGroupClause structs.\n * partitionClause is sanitized by the query planner to remove any columns or\n * expressions belonging to redundant PathKeys.\n * If we have RANGE with offset PRECEDING/FOLLOWING, the semantics of that are\n * specified by startInRangeFunc/inRangeColl/inRangeAsc/inRangeNullsFirst\n * for the start offset, or endInRangeFunc/inRange* for the end offset.\n * winref is an ID number referenced by WindowFunc nodes; it must be unique\n * among the members of a Query's windowClause list.\n * When refname isn't null, the partitionClause is always copied from there;\n * the orderClause might or might not be copied (see copiedOrder); the framing\n * options are never copied, per spec.\n *\n * The information relevant for the query jumbling is the partition clause\n * type and its bounds.\n */\n"
     },
     "RowMarkClause": {
       "fields": [
@@ -2155,7 +2255,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2185,7 +2285,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2220,7 +2320,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2250,7 +2350,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -2290,7 +2390,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         },
         {
@@ -2370,7 +2470,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         },
         {
@@ -2438,9 +2538,9 @@
           "comment": null
         },
         {
-          "name": "matched",
-          "c_type": "bool",
-          "comment": "/* true=MATCHED, false=NOT MATCHED */"
+          "name": "matchKind",
+          "c_type": "MergeMatchKind",
+          "comment": "/* MATCHED/NOT MATCHED BY SOURCE/TARGET */"
         },
         {
           "name": "commandType",
@@ -2472,52 +2572,6 @@
         }
       ],
       "comment": "/*\n * MergeWhenClause -\n *\t\traw parser representation of a WHEN clause in a MERGE statement\n *\n * This is transformed into MergeAction by parse analysis\n */\n"
-    },
-    "MergeAction": {
-      "fields": [
-        {
-          "name": "type",
-          "c_type": "NodeTag",
-          "comment": null
-        },
-        {
-          "name": "matched",
-          "c_type": "bool",
-          "comment": "/* true=MATCHED, false=NOT MATCHED */"
-        },
-        {
-          "name": "commandType",
-          "c_type": "CmdType",
-          "comment": "/* INSERT/UPDATE/DELETE/DO NOTHING */"
-        },
-        {
-          "comment": "\t/* OVERRIDING clause */\n"
-        },
-        {
-          "name": "override",
-          "c_type": "OverridingKind",
-          "comment": null
-        },
-        {
-          "name": "qual",
-          "c_type": "Node*",
-          "comment": "/* transformed WHEN conditions */"
-        },
-        {
-          "name": "targetList",
-          "c_type": "List*",
-          "comment": "/* the target list (of TargetEntry) */"
-        },
-        {
-          "comment": "\t/* target attribute numbers of an UPDATE */\n"
-        },
-        {
-          "name": "updateColnos",
-          "c_type": "List*",
-          "comment": null
-        }
-      ],
-      "comment": "/*\n * MergeAction -\n *\t\tTransformed representation of a WHEN clause in a MERGE statement\n */\n"
     },
     "TriggerTransition": {
       "fields": [
@@ -2564,6 +2618,239 @@
       ],
       "comment": "/*\n * JsonOutput -\n *\t\trepresentation of JSON output clause (RETURNING type [FORMAT format])\n */\n"
     },
+    "JsonArgument": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "val",
+          "c_type": "JsonValueExpr*",
+          "comment": "/* argument value expression */"
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": "/* argument name */"
+        }
+      ],
+      "comment": "/*\n * JsonArgument -\n *\t\trepresentation of argument from JSON PASSING clause\n */\n"
+    },
+    "JsonFuncExpr": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "op",
+          "c_type": "JsonExprOp",
+          "comment": "/* expression type */"
+        },
+        {
+          "name": "column_name",
+          "c_type": "char*",
+          "comment": "/* JSON_TABLE() column name or NULL if this is\n\t\t\t\t\t\t\t\t * not for a JSON_TABLE() */\n"
+        },
+        {
+          "name": "context_item",
+          "c_type": "JsonValueExpr*",
+          "comment": "/* context item expression */"
+        },
+        {
+          "name": "pathspec",
+          "c_type": "Node*",
+          "comment": "/* JSON path specification expression */"
+        },
+        {
+          "name": "passing",
+          "c_type": "List*",
+          "comment": "/* list of PASSING clause arguments, if any */"
+        },
+        {
+          "name": "output",
+          "c_type": "JsonOutput*",
+          "comment": "/* output clause, if specified */"
+        },
+        {
+          "name": "on_empty",
+          "c_type": "JsonBehavior*",
+          "comment": "/* ON EMPTY behavior */"
+        },
+        {
+          "name": "on_error",
+          "c_type": "JsonBehavior*",
+          "comment": "/* ON ERROR behavior */"
+        },
+        {
+          "name": "wrapper",
+          "c_type": "JsonWrapper",
+          "comment": "/* array wrapper behavior (JSON_QUERY only) */"
+        },
+        {
+          "name": "quotes",
+          "c_type": "JsonQuotes",
+          "comment": "/* omit or keep quotes? (JSON_QUERY only) */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonFuncExpr -\n *\t\tuntransformed representation of function expressions for\n *\t\tSQL/JSON query functions\n */\n"
+    },
+    "JsonTablePathSpec": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "string",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "name_location",
+          "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* location of 'string' */"
+        }
+      ],
+      "comment": "/*\n * JsonTablePathSpec\n *\t\tuntransformed specification of JSON path expression with an optional\n *\t\tname\n */\n"
+    },
+    "JsonTable": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "context_item",
+          "c_type": "JsonValueExpr*",
+          "comment": "/* context item expression */"
+        },
+        {
+          "name": "pathspec",
+          "c_type": "JsonTablePathSpec*",
+          "comment": "/* JSON path specification */"
+        },
+        {
+          "name": "passing",
+          "c_type": "List*",
+          "comment": "/* list of PASSING clause arguments, if any */"
+        },
+        {
+          "name": "columns",
+          "c_type": "List*",
+          "comment": "/* list of JsonTableColumn */"
+        },
+        {
+          "name": "on_error",
+          "c_type": "JsonBehavior*",
+          "comment": "/* ON ERROR behavior */"
+        },
+        {
+          "name": "alias",
+          "c_type": "Alias*",
+          "comment": "/* table alias in FROM clause */"
+        },
+        {
+          "name": "lateral",
+          "c_type": "bool",
+          "comment": "/* does it have LATERAL prefix? */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonTable -\n *\t\tuntransformed representation of JSON_TABLE\n */\n"
+    },
+    "JsonTableColumn": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "coltype",
+          "c_type": "JsonTableColumnType",
+          "comment": "/* column type */"
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": "/* column name */"
+        },
+        {
+          "name": "typeName",
+          "c_type": "TypeName*",
+          "comment": "/* column type name */"
+        },
+        {
+          "name": "pathspec",
+          "c_type": "JsonTablePathSpec*",
+          "comment": "/* JSON path specification */"
+        },
+        {
+          "name": "format",
+          "c_type": "JsonFormat*",
+          "comment": "/* JSON format clause, if specified */"
+        },
+        {
+          "name": "wrapper",
+          "c_type": "JsonWrapper",
+          "comment": "/* WRAPPER behavior for formatted columns */"
+        },
+        {
+          "name": "quotes",
+          "c_type": "JsonQuotes",
+          "comment": "/* omit or keep quotes on scalar strings? */"
+        },
+        {
+          "name": "columns",
+          "c_type": "List*",
+          "comment": "/* nested columns */"
+        },
+        {
+          "name": "on_empty",
+          "c_type": "JsonBehavior*",
+          "comment": "/* ON EMPTY behavior */"
+        },
+        {
+          "name": "on_error",
+          "c_type": "JsonBehavior*",
+          "comment": "/* ON ERROR behavior */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonTableColumn -\n *\t\tuntransformed representation of JSON_TABLE column\n */\n"
+    },
     "JsonKeyValue": {
       "fields": [
         {
@@ -2583,6 +2870,86 @@
         }
       ],
       "comment": "/*\n * JsonKeyValue -\n *\t\tuntransformed representation of JSON object key-value pair for\n *\t\tJSON_OBJECT() and JSON_OBJECTAGG()\n */\n"
+    },
+    "JsonParseExpr": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "expr",
+          "c_type": "JsonValueExpr*",
+          "comment": "/* string expression */"
+        },
+        {
+          "name": "output",
+          "c_type": "JsonOutput*",
+          "comment": "/* RETURNING clause, if specified */"
+        },
+        {
+          "name": "unique_keys",
+          "c_type": "bool",
+          "comment": "/* WITH UNIQUE KEYS? */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonParseExpr -\n *\t\tuntransformed representation of JSON()\n */\n"
+    },
+    "JsonScalarExpr": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "expr",
+          "c_type": "Expr*",
+          "comment": "/* scalar expression */"
+        },
+        {
+          "name": "output",
+          "c_type": "JsonOutput*",
+          "comment": "/* RETURNING clause, if specified */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonScalarExpr -\n *\t\tuntransformed representation of JSON_SCALAR()\n */\n"
+    },
+    "JsonSerializeExpr": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "expr",
+          "c_type": "JsonValueExpr*",
+          "comment": "/* json value expression */"
+        },
+        {
+          "name": "output",
+          "c_type": "JsonOutput*",
+          "comment": "/* RETURNING clause, if specified  */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonSerializeExpr -\n *\t\tuntransformed representation of JSON_SERIALIZE() function\n */\n"
     },
     "JsonObjectConstructor": {
       "fields": [
@@ -2613,7 +2980,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2643,7 +3010,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2678,7 +3045,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2713,7 +3080,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -2788,12 +3155,12 @@
         },
         {
           "name": "stmt_location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* start location, or -1 if unknown */"
         },
         {
           "name": "stmt_len",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* length in bytes; 0 means \"rest of string\" */"
         }
       ],
@@ -2945,6 +3312,11 @@
           "name": "mergeWhenClauses",
           "c_type": "List*",
           "comment": "/* list of MergeWhenClause(es) */"
+        },
+        {
+          "name": "returningList",
+          "c_type": "List*",
+          "comment": "/* list of expressions to return */"
         },
         {
           "name": "withClause",
@@ -3212,7 +3584,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* name's token location, or -1 if unknown */"
         }
       ],
@@ -3313,7 +3685,7 @@
         {
           "name": "name",
           "c_type": "char*",
-          "comment": "/* column, constraint, or trigger to act on,\n\t\t\t\t\t\t\t\t * or tablespace */\n"
+          "comment": "/* column, constraint, or trigger to act on,\n\t\t\t\t\t\t\t\t * or tablespace, access method */\n"
         },
         {
           "name": "num",
@@ -3749,12 +4121,6 @@
           "comment": "/* see above */"
         },
         {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Fields used for most/all constraint types: */\n"
-        },
-        {
           "name": "conname",
           "c_type": "char*",
           "comment": "/* Constraint name, or NULL if unnamed */"
@@ -3770,15 +4136,14 @@
           "comment": "/* INITIALLY DEFERRED? */"
         },
         {
-          "name": "location",
-          "c_type": "int",
-          "comment": "/* token location, or -1 if unknown */"
+          "name": "skip_validation",
+          "c_type": "bool",
+          "comment": "/* skip validation of existing rows? */"
         },
         {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Fields used for constraints with expressions (CHECK and DEFAULT): */\n"
+          "name": "initially_valid",
+          "c_type": "bool",
+          "comment": "/* mark the new constraint as valid? */"
         },
         {
           "name": "is_no_inherit",
@@ -3788,12 +4153,12 @@
         {
           "name": "raw_expr",
           "c_type": "Node*",
-          "comment": "/* expr, as untransformed parse tree */"
+          "comment": "/* CHECK or DEFAULT expression, as\n\t\t\t\t\t\t\t\t * untransformed parse tree */\n"
         },
         {
           "name": "cooked_expr",
           "c_type": "char*",
-          "comment": "/* expr, as nodeToString representation */"
+          "comment": "/* CHECK or DEFAULT expression, as\n\t\t\t\t\t\t\t\t * nodeToString representation */\n"
         },
         {
           "name": "generated_when",
@@ -3801,10 +4166,9 @@
           "comment": "/* ALWAYS or BY DEFAULT */"
         },
         {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Fields used for unique constraints (UNIQUE and PRIMARY KEY): */\n"
+          "name": "inhcount",
+          "c_type": "int",
+          "comment": "/* initial inheritance count to apply, for\n\t\t\t\t\t\t\t\t * \"raw\" NOT NULL constraints */\n"
         },
         {
           "name": "nulls_not_distinct",
@@ -3814,29 +4178,17 @@
         {
           "name": "keys",
           "c_type": "List*",
-          "comment": "/* String nodes naming referenced key\n\t\t\t\t\t\t\t\t * column(s) */\n"
+          "comment": "/* String nodes naming referenced key\n\t\t\t\t\t\t\t\t * column(s); for UNIQUE/PK/NOT NULL */\n"
         },
         {
           "name": "including",
           "c_type": "List*",
-          "comment": "/* String nodes naming referenced nonkey\n\t\t\t\t\t\t\t\t * column(s) */\n"
-        },
-        {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Fields used for EXCLUSION constraints: */\n"
+          "comment": "/* String nodes naming referenced nonkey\n\t\t\t\t\t\t\t\t * column(s); for UNIQUE/PK */\n"
         },
         {
           "name": "exclusions",
           "c_type": "List*",
-          "comment": "/* list of (IndexElem, operator name) pairs */"
-        },
-        {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Fields used for index constraints (UNIQUE, PRIMARY KEY, EXCLUSION): */\n"
+          "comment": "/* list of (IndexElem, operator name) pairs;\n\t\t\t\t\t\t\t\t * for exclusion constraints */\n"
         },
         {
           "name": "options",
@@ -3857,9 +4209,6 @@
           "name": "reset_default_tblspc",
           "c_type": "bool",
           "comment": "/* reset default_tablespace prior to\n\t\t\t\t\t\t\t\t\t\t * creating the index */\n"
-        },
-        {
-          "comment": "\t/* These could be, but currently are not, used for UNIQUE/PKEY: */\n"
         },
         {
           "name": "access_method",
@@ -3926,17 +4275,9 @@
           "comment": ""
         },
         {
-          "comment": "\t/* Fields used for constraints that allow a NOT VALID specification */\n"
-        },
-        {
-          "name": "skip_validation",
-          "c_type": "bool",
-          "comment": "/* skip validation of existing rows? */"
-        },
-        {
-          "name": "initially_valid",
-          "c_type": "bool",
-          "comment": "/* mark the new constraint as valid? */"
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": "/* Foreign key matchtype codes */\n"
@@ -5443,7 +5784,7 @@
         },
         {
           "name": "stxstattarget",
-          "c_type": "int",
+          "c_type": "Node*",
           "comment": "/* statistics target */"
         },
         {
@@ -5607,9 +5948,12 @@
           "comment": null
         },
         {
+          "comment": "\t/* from the parser */\n"
+        },
+        {
           "name": "funccall",
           "c_type": "FuncCall*",
-          "comment": "/* from the parser */"
+          "comment": null
         },
         {
           "comment": "\t/* transformed call, with only input args */\n"
@@ -5948,19 +6292,33 @@
           "comment": "/* for BEGIN/START commands */"
         },
         {
+          "comment": "\t/* for savepoint commands */\n"
+        },
+        {
           "name": "savepoint_name",
           "c_type": "char*",
-          "comment": "/* for savepoint commands */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* for two-phase-commit related commands */\n"
         },
         {
           "name": "gid",
           "c_type": "char*",
-          "comment": "/* for two-phase-commit related commands */"
+          "comment": null
         },
         {
           "name": "chain",
           "c_type": "bool",
           "comment": "/* AND CHAIN option */"
+        },
+        {
+          "comment": "\t/* token location, or -1 if unknown */\n"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\t\t{Begin|Commit|Rollback} Transaction Statement\n * ----------------------\n */\n"
@@ -6648,12 +7006,31 @@
           "comment": null
         },
         {
-          "name": "name",
-          "c_type": "char*",
-          "comment": "/* The name of the plan to remove */"
+          "comment": "\t/* The name of the plan to remove, NULL if DEALLOCATE ALL */\n"
         },
         {
-          "comment": "\t/* NULL means DEALLOCATE ALL */\n"
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * True if DEALLOCATE ALL.  This is redundant with \"name == NULL\", but we\n\t * make it a separate field so that exactly this condition (and not the\n\t * precise name) will be accounted for in query jumbling.\n\t */\n"
+        },
+        {
+          "name": "isall",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": "\t/* token location, or -1 if unknown */\n"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\t\tDEALLOCATE Statement\n * ----------------------\n */\n"
@@ -6818,7 +7195,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -7094,7 +7471,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7105,6 +7482,14 @@
         {
           "name": "type",
           "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": "\t/* XMLTABLE or JSON_TABLE */\n"
+        },
+        {
+          "name": "functype",
+          "c_type": "TableFuncType",
           "comment": null
         },
         {
@@ -7188,11 +7573,35 @@
           "comment": null
         },
         {
+          "comment": "\t/* JSON_TABLE: list of column value expressions */\n"
+        },
+        {
+          "name": "colvalexprs",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "comment": "\t/* JSON_TABLE: list of PASSING argument expressions */\n"
+        },
+        {
+          "name": "passingvalexprs",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
           "comment": "\t/* nullability flag for each output column */\n"
         },
         {
           "name": "notnulls",
           "c_type": "Bitmapset*",
+          "comment": null
+        },
+        {
+          "comment": "\t/* JSON_TABLE plan */\n"
+        },
+        {
+          "name": "plan",
+          "c_type": "Node*",
           "comment": null
         },
         {
@@ -7208,11 +7617,11 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
-      "comment": "/*\n * TableFunc - node for a table function, such as XMLTABLE.\n *\n * Entries in the ns_names list are either String nodes containing\n * literal namespace names, or NULL pointers to represent DEFAULT.\n */\n"
+      "comment": "/*\n * TableFunc - node for a table function, such as XMLTABLE and JSON_TABLE.\n *\n * Entries in the ns_names list are either String nodes containing\n * literal namespace names, or NULL pointers to represent DEFAULT.\n */\n"
     },
     "IntoClause": {
       "fields": [
@@ -7384,7 +7793,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7464,7 +7873,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7513,7 +7922,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7739,7 +8148,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7802,7 +8211,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -7864,6 +8273,14 @@
           "comment": null
         },
         {
+          "comment": "\t/* List of WindowFuncRunConditions to help short-circuit execution */\n"
+        },
+        {
+          "name": "runCondition",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
           "comment": "\t/* index of associated WindowClause */\n"
         },
         {
@@ -7892,11 +8309,96 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
       "comment": "/*\n * WindowFunc\n *\n * Collation information is irrelevant for the query jumbling, as is the\n * internal state information of the node like \"winstar\" and \"winagg\".\n */\n"
+    },
+    "WindowFuncRunCondition": {
+      "fields": [
+        {
+          "name": "xpr",
+          "c_type": "Expr",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* PG_OPERATOR OID of the operator */\n"
+        },
+        {
+          "name": "opno",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "comment": "\t/* OID of collation that operator should use */\n"
+        },
+        {
+          "name": "inputcollid",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * true of WindowFunc belongs on the left of the resulting OpExpr or false\n\t * if the WindowFunc is on the right.\n\t */\n"
+        },
+        {
+          "name": "wfunc_left",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * The Expr being compared to the WindowFunc to use in the OpExpr in the\n\t * WindowAgg's runCondition\n\t */\n"
+        },
+        {
+          "name": "arg",
+          "c_type": "Expr*",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * WindowFuncRunCondition\n *\n * Represents intermediate OpExprs which will be used by WindowAgg to\n * short-circuit execution.\n */\n"
+    },
+    "MergeSupportFunc": {
+      "fields": [
+        {
+          "name": "xpr",
+          "c_type": "Expr",
+          "comment": null
+        },
+        {
+          "comment": "\t/* type Oid of result */\n"
+        },
+        {
+          "name": "msftype",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "comment": "\t/* OID of collation, or InvalidOid if none */\n"
+        },
+        {
+          "name": "msfcollid",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "comment": "\t/* token location, or -1 if unknown */\n"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * MergeSupportFunc\n *\n * A MergeSupportFunc is a merge support function expression that can only\n * appear in the RETURNING list of a MERGE command.  It returns information\n * about the currently executing merge action.\n *\n * Currently, the only supported function is MERGE_ACTION(), which returns the\n * command executed (\"INSERT\", \"UPDATE\", or \"DELETE\").\n */\n"
     },
     "SubscriptingRef": {
       "fields": [
@@ -8062,7 +8564,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -8104,7 +8606,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -8200,7 +8702,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -8292,7 +8794,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -8317,7 +8819,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8363,7 +8865,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8630,7 +9132,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8674,7 +9176,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8728,7 +9230,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8764,7 +9266,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8789,7 +9291,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8835,7 +9337,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8860,7 +9362,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -8949,7 +9451,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9011,7 +9513,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -9114,7 +9616,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9172,7 +9674,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9208,7 +9710,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -9295,7 +9797,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9320,7 +9822,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -9374,7 +9876,7 @@
           "comment": "/* FORMAT clause, if specified */"
         }
       ],
-      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * The actual value is obtained by evaluating formatted_expr.  raw_expr is\n * only there for displaying the original user-written expression and is not\n * evaluated by ExecInterpExpr() and eval_const_exprs_mutator().\n */\n"
+      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * The actual value is obtained by evaluating formatted_expr.  raw_expr is\n * only there for displaying the original user-written expression and is not\n * evaluated by ExecInterpExpr() and eval_const_expressions_mutator().\n */\n"
     },
     "JsonConstructorExpr": {
       "fields": [
@@ -9420,7 +9922,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9455,11 +9957,321 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": "/*\n * JsonIsPredicate -\n *\t\trepresentation of IS JSON predicate\n */\n"
+    },
+    "JsonBehavior": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "btype",
+          "c_type": "JsonBehaviorType",
+          "comment": null
+        },
+        {
+          "name": "expr",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "name": "coerce",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * JsonBehavior\n *\t\tSpecifications for ON ERROR / ON EMPTY behaviors of SQL/JSON\n *\t\tquery functions specified by a JsonExpr\n *\n * 'expr' is the expression to emit when a given behavior (EMPTY or ERROR)\n * occurs on evaluating the SQL/JSON query function.  'coerce' is set to true\n * if 'expr' isn't already of the expected target type given by\n * JsonExpr.returning.\n */\n"
+    },
+    "JsonExpr": {
+      "fields": [
+        {
+          "name": "xpr",
+          "c_type": "Expr",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "op",
+          "c_type": "JsonExprOp",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "column_name",
+          "c_type": "char*",
+          "comment": "/* JSON_TABLE() column name or NULL if this is\n\t\t\t\t\t\t\t\t * not for a JSON_TABLE() */\n"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* jsonb-valued expression to query */\n"
+        },
+        {
+          "name": "formatted_expr",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Format of the above expression needed by ruleutils.c */\n"
+        },
+        {
+          "name": "format",
+          "c_type": "JsonFormat*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* jsonpath-valued expression containing the query pattern */\n"
+        },
+        {
+          "name": "path_spec",
+          "c_type": "Node*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Expected type/format of the output. */\n"
+        },
+        {
+          "name": "returning",
+          "c_type": "JsonReturning*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Information about the PASSING argument expressions */\n"
+        },
+        {
+          "name": "passing_names",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "name": "passing_values",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* User-specified or default ON EMPTY and ON ERROR behaviors */\n"
+        },
+        {
+          "name": "on_empty",
+          "c_type": "JsonBehavior*",
+          "comment": null
+        },
+        {
+          "name": "on_error",
+          "c_type": "JsonBehavior*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * Information about converting the result of jsonpath functions\n\t * JsonPathQuery() and JsonPathValue() to the RETURNING type.\n\t */\n"
+        },
+        {
+          "name": "use_io_coercion",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "name": "use_json_coercion",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* WRAPPER specification for JSON_QUERY */\n"
+        },
+        {
+          "name": "wrapper",
+          "c_type": "JsonWrapper",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* KEEP or OMIT QUOTES for singleton scalars returned by JSON_QUERY() */\n"
+        },
+        {
+          "name": "omit_quotes",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* JsonExpr's collation. */\n"
+        },
+        {
+          "name": "collation",
+          "c_type": "Oid",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Original JsonFuncExpr's location */\n"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * JsonExpr -\n *\t\tTransformed representation of JSON_VALUE(), JSON_QUERY(), and\n *\t\tJSON_EXISTS()\n */\n"
+    },
+    "JsonTablePath": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "value",
+          "c_type": "Const*",
+          "comment": null
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * JsonTablePath\n *\t\tA JSON path expression to be computed as part of evaluating\n *\t\ta JSON_TABLE plan node\n */\n"
+    },
+    "JsonTablePlan": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * JsonTablePlan -\n *\t\tAbstract class to represent different types of JSON_TABLE \"plans\".\n *\t\tA plan is used to generate a \"row pattern\" value by evaluating a JSON\n *\t\tpath expression against an input JSON document, which is then used for\n *\t\tpopulating JSON_TABLE() columns\n */\n"
+    },
+    "JsonTablePathScan": {
+      "fields": [
+        {
+          "name": "plan",
+          "c_type": "JsonTablePlan",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* JSON path to evaluate */\n"
+        },
+        {
+          "name": "path",
+          "c_type": "JsonTablePath*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * ERROR/EMPTY ON ERROR behavior; only significant in the plan for the\n\t * top-level path.\n\t */\n"
+        },
+        {
+          "name": "errorOnError",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/* Plan(s) for nested columns, if any. */\n"
+        },
+        {
+          "name": "child",
+          "c_type": "JsonTablePlan*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * 0-based index in TableFunc.colvalexprs of the 1st and the last column\n\t * covered by this plan.  Both are -1 if all columns are nested and thus\n\t * computed by the child plan(s).\n\t */\n"
+        },
+        {
+          "name": "colMin",
+          "c_type": "int",
+          "comment": null
+        },
+        {
+          "name": "colMax",
+          "c_type": "int",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * JSON_TABLE plan to evaluate a JSON path expression and NESTED paths, if\n * any.\n */\n"
+    },
+    "JsonTableSiblingJoin": {
+      "fields": [
+        {
+          "name": "plan",
+          "c_type": "JsonTablePlan",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "name": "lplan",
+          "c_type": "JsonTablePlan*",
+          "comment": null
+        },
+        {
+          "name": "rplan",
+          "c_type": "JsonTablePlan*",
+          "comment": null
+        }
+      ],
+      "comment": "/*\n * JsonTableSiblingJoin -\n *\t\tPlan to join rows of sibling NESTED COLUMNS clauses in the same parent\n *\t\tCOLUMNS clause\n */\n"
     },
     "NullTest": {
       "fields": [
@@ -9488,7 +10300,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -9513,11 +10325,57 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": "/*\n * BooleanTest\n *\n * BooleanTest represents the operation of determining whether a boolean\n * is TRUE, FALSE, or UNKNOWN (ie, NULL).  All six meaningful combinations\n * are supported.  Note that a NULL input does *not* cause a NULL result.\n * The appropriate test is performed and returned as a boolean Datum.\n */\n"
+    },
+    "MergeAction": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "matchKind",
+          "c_type": "MergeMatchKind",
+          "comment": "/* MATCHED/NOT MATCHED BY SOURCE/TARGET */"
+        },
+        {
+          "name": "commandType",
+          "c_type": "CmdType",
+          "comment": "/* INSERT/UPDATE/DELETE/DO NOTHING */"
+        },
+        {
+          "comment": "\t/* OVERRIDING clause */\n"
+        },
+        {
+          "name": "override",
+          "c_type": "OverridingKind",
+          "comment": null
+        },
+        {
+          "name": "qual",
+          "c_type": "Node*",
+          "comment": "/* transformed WHEN conditions */"
+        },
+        {
+          "name": "targetList",
+          "c_type": "List*",
+          "comment": "/* the target list (of TargetEntry) */"
+        },
+        {
+          "comment": "\t/* target attribute numbers of an UPDATE */\n"
+        },
+        {
+          "name": "updateColnos",
+          "c_type": "List*",
+          "comment": null
+        }
+      ],
+      "comment": null
     },
     "CoerceToDomain": {
       "fields": [
@@ -9562,7 +10420,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
         }
       ],
@@ -9604,7 +10462,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -9646,7 +10504,7 @@
         },
         {
           "name": "location",
-          "c_type": "int",
+          "c_type": "ParseLoc",
           "comment": null
         }
       ],
@@ -10106,12 +10964,12 @@
     "VacAttrStats": {
       "fields": [
         {
-          "comment": "\t/*\n\t * These fields are set up by the main ANALYZE code before invoking the\n\t * type-specific typanalyze function.\n\t *\n\t * Note: do not assume that the data being analyzed has the same datatype\n\t * shown in attr, ie do not trust attr->atttypid, attlen, etc.  This is\n\t * because some index opclasses store a different type than the underlying\n\t * column/expression.  Instead use attrtypid, attrtypmod, and attrtype for\n\t * information about the datatype being fed to the typanalyze function.\n\t * Likewise, use attrcollid not attr->attcollation.\n\t */\n"
+          "comment": "\t/*\n\t * These fields are set up by the main ANALYZE code before invoking the\n\t * type-specific typanalyze function.  They don't necessarily match what\n\t * is in pg_attribute, because some index opclasses store a different type\n\t * than the underlying column/expression.  Therefore, use these fields for\n\t * information about the datatype being fed to the typanalyze function.\n\t */\n"
         },
         {
-          "name": "attr",
-          "c_type": "Form_pg_attribute",
-          "comment": "/* copy of pg_attribute row for column */"
+          "name": "attstattarget",
+          "c_type": "int",
+          "comment": "/* -1 to use default */"
         },
         {
           "name": "attrtypid",
@@ -10333,6 +11191,11 @@
           "comment": "/* Truncate empty pages at the end */"
         },
         {
+          "name": "toast_parent",
+          "c_type": "Oid",
+          "comment": "/* for privilege checks when recursing */"
+        },
+        {
           "comment": ""
         },
         {
@@ -10396,31 +11259,20 @@
       ],
       "comment": "/*\n * VacuumCutoffs is immutable state that describes the cutoffs used by VACUUM.\n * Established at the beginning of each VACUUM operation.\n */\n"
     },
-    "VacDeadItems": {
+    "VacDeadItemsInfo": {
       "fields": [
         {
-          "name": "max_items",
-          "c_type": "int",
-          "comment": "/* # slots allocated in array */"
+          "name": "max_bytes",
+          "c_type": "size_t",
+          "comment": "/* the maximum bytes TidStore can use */"
         },
         {
           "name": "num_items",
-          "c_type": "int",
+          "c_type": "int64",
           "comment": "/* current # of entries */"
-        },
-        {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Sorted array of TIDs to delete from indexes */\n"
-        },
-        {
-          "name": "items[FLEXIBLE_ARRAY_MEMBER]",
-          "c_type": "ItemPointerData",
-          "comment": null
         }
       ],
-      "comment": "/*\n * VacDeadItems stores TIDs whose index tuples are deleted by index vacuuming.\n */\n"
+      "comment": "/*\n * VacDeadItemsInfo stores supplemental information for dead tuple TID\n * storage (i.e. TidStore).\n */\n"
     }
   },
   "storage/block": {
