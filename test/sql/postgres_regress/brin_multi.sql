@@ -422,17 +422,182 @@ EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE a = 1;
 -- Ensure brin index is not used when values are not correlated
 EXPLAIN (COSTS OFF) SELECT * FROM brin_test_multi WHERE b = 1;
 
+
+-- do some inequality tests
+CREATE TABLE brin_test_multi_1 (a INT, b BIGINT) WITH (fillfactor=10);
+INSERT INTO brin_test_multi_1
+SELECT i/5 + mod(911 * i + 483, 25),
+       i/10 + mod(751 * i + 221, 41)
+  FROM generate_series(1,1000) s(i);
+
+CREATE INDEX brin_test_multi_1_idx_1 ON brin_test_multi_1 USING brin (a int4_minmax_multi_ops) WITH (pages_per_range=5);
+CREATE INDEX brin_test_multi_1_idx_2 ON brin_test_multi_1 USING brin (b int8_minmax_multi_ops) WITH (pages_per_range=5);
+
+SET enable_seqscan=off;
+
+-- int: less than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25;
+
+-- int: greater than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63;
+
+-- int: equals
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177;
+
+-- bigint: less than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150;
+
+-- bigint: greater than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201;
+
+-- bigint: equals
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103;
+
+-- now do the same, but insert the rows with the indexes already created
+-- so that we don't use the "build callback" and instead use the regular
+-- approach of adding rows into existing ranges
+TRUNCATE brin_test_multi_1;
+
+INSERT INTO brin_test_multi_1
+SELECT i/5 + mod(911 * i + 483, 25),
+       i/10 + mod(751 * i + 221, 41)
+  FROM generate_series(1,1000) s(i);
+
+-- int: less than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 37;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a < 113;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 177;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a <= 25;
+
+-- int: greater than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 120;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 180;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a > 71;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a >= 63;
+
+-- int: equals
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 207;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE a = 177;
+
+-- bigint: less than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 73;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 47;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b < 199;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b <= 150;
+
+-- bigint: greater than
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 93;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 37;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b >= 215;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b > 201;
+
+-- bigint: equals
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 88;
+
+SELECT COUNT(*) FROM brin_test_multi_1 WHERE b = 103;
+
+
+DROP TABLE brin_test_multi_1;
+RESET enable_seqscan;
+
+
+-- do some inequality tests for varlena data types
+CREATE TABLE brin_test_multi_2 (a UUID) WITH (fillfactor=10);
+INSERT INTO brin_test_multi_2
+SELECT v::uuid FROM (SELECT row_number() OVER (ORDER BY v) c, v FROM (SELECT fipshash((i/13)::text) AS v FROM generate_series(1,1000) s(i)) foo) bar ORDER BY c + 25 * random();
+
+CREATE INDEX brin_test_multi_2_idx ON brin_test_multi_2 USING brin (a uuid_minmax_multi_ops) WITH (pages_per_range=5);
+
+SET enable_seqscan=off;
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6';
+
+
+-- now do the same, but insert the rows with the indexes already created
+-- so that we don't use the "build callback" and instead use the regular
+-- approach of adding rows into existing ranges
+
+TRUNCATE brin_test_multi_2;
+INSERT INTO brin_test_multi_2
+SELECT v::uuid FROM (SELECT row_number() OVER (ORDER BY v) c, v FROM (SELECT fipshash((i/13)::text) AS v FROM generate_series(1,1000) s(i)) foo) bar ORDER BY c + 25 * random();
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a < '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a > '3d914f93-48c9-cc0f-f8a7-9716700b9fcd';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a <= 'f369cb89-fc62-7e66-8987-007d121ed1ea';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a >= 'aea92132-c4cb-eb26-3e6a-c2bf6c183b5d';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '5feceb66-ffc8-6f38-d952-786c6d696c79';
+
+SELECT COUNT(*) FROM brin_test_multi_2 WHERE a = '86e50149-6586-6131-2a9e-0b35558d84f6';
+
+DROP TABLE brin_test_multi_2;
+RESET enable_seqscan;
+
 -- test overflows during CREATE INDEX with extreme timestamp values
 CREATE TABLE brin_timestamp_test(a TIMESTAMPTZ);
 
 SET datestyle TO iso;
 
--- values close to timetamp minimum
+-- values close to timestamp minimum
 INSERT INTO brin_timestamp_test
 SELECT '4713-01-01 00:00:01 BC'::timestamptz + (i || ' seconds')::interval
   FROM generate_series(1,30) s(i);
 
--- values close to timetamp maximum
+-- values close to timestamp maximum
 INSERT INTO brin_timestamp_test
 SELECT '294276-12-01 00:00:01'::timestamptz + (i || ' seconds')::interval
   FROM generate_series(1,30) s(i);
@@ -506,6 +671,25 @@ CREATE TABLE brin_interval_test(a INTERVAL);
 INSERT INTO brin_interval_test SELECT (i || ' years')::interval FROM generate_series(-178000000, -177999980) s(i);
 
 INSERT INTO brin_interval_test SELECT (i || ' years')::interval FROM generate_series( 177999980,  178000000) s(i);
+
+CREATE INDEX ON brin_interval_test USING brin (a interval_minmax_multi_ops) WITH (pages_per_range=1);
+
+SET enable_seqscan = off;
+
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
+SELECT * FROM brin_interval_test WHERE a = '-30 years'::interval;
+
+EXPLAIN (ANALYZE, TIMING OFF, COSTS OFF, SUMMARY OFF)
+SELECT * FROM brin_interval_test WHERE a = '30 years'::interval;
+
+DROP TABLE brin_interval_test;
+RESET enable_seqscan;
+
+-- test handling of infinite interval values
+CREATE TABLE brin_interval_test(a INTERVAL);
+
+INSERT INTO brin_interval_test VALUES ('-infinity'), ('infinity');
+INSERT INTO brin_interval_test SELECT (i || ' days')::interval FROM generate_series(100, 140) s(i);
 
 CREATE INDEX ON brin_interval_test USING brin (a interval_minmax_multi_ops) WITH (pages_per_range=1);
 

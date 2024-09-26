@@ -2,8 +2,11 @@
  * Symbols referenced in this file:
  * - SlabAlloc
  * - SlabBlocklistIndex
+ * - SlabAllocInvalidSize
+ * - SlabAllocFromNewBlock
  * - SlabGetNextFreeChunk
  * - SlabFindNextBlockListIndex
+ * - SlabAllocSetupNewChunk
  * - SlabFree
  * - SlabRealloc
  * - SlabReset
@@ -26,7 +29,7 @@
  * with minimal memory wastage and fragmentation.
  *
  *
- * Portions Copyright (c) 2017-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2017-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *	  src/backend/utils/mmgr/slab.c
@@ -89,8 +92,8 @@
 #include "lib/ilist.h"
 #include "utils/memdebug.h"
 #include "utils/memutils.h"
-#include "utils/memutils_memorychunk.h"
 #include "utils/memutils_internal.h"
+#include "utils/memutils_memorychunk.h"
 
 #define Slab_BLOCKHDRSZ	MAXALIGN(sizeof(SlabBlock))
 
@@ -122,9 +125,9 @@ typedef struct SlabContext
 {
 	MemoryContextData header;	/* Standard memory-context fields */
 	/* Allocation parameters for this context: */
-	Size		chunkSize;		/* the requested (non-aligned) chunk size */
-	Size		fullChunkSize;	/* chunk size with chunk header and alignment */
-	Size		blockSize;		/* the size to make each block of chunks */
+	uint32		chunkSize;		/* the requested (non-aligned) chunk size */
+	uint32		fullChunkSize;	/* chunk size with chunk header and alignment */
+	uint32		blockSize;		/* the size to make each block of chunks */
 	int32		chunksPerBlock; /* number of chunks that fit in 1 block */
 	int32		curBlocklistIndex;	/* index into the blocklist[] element
 									 * containing the fullest, blocks */
@@ -332,7 +335,9 @@ SlabGetNextFreeChunk(SlabContext *slab, SlabBlock *block)
  * blockSize: allocation block size
  * chunkSize: allocation chunk size
  *
- * The MAXALIGN(chunkSize) may not exceed MEMORYCHUNK_MAX_VALUE
+ * The Slab_CHUNKHDRSZ + MAXALIGN(chunkSize + 1) may not exceed
+ * MEMORYCHUNK_MAX_VALUE.
+ * 'blockSize' may not exceed MEMORYCHUNK_MAX_BLOCKOFFSET.
  */
 #ifdef MEMORY_CONTEXT_CHECKING
 #else
@@ -411,12 +416,143 @@ SlabDelete(MemoryContext context)
 }
 
 /*
+ * Small helper for allocating a new chunk from a chunk, to avoid duplicating
+ * the code between SlabAlloc() and SlabAllocFromNewBlock().
+ */
+static inline void *
+SlabAllocSetupNewChunk(MemoryContext context, SlabBlock *block,
+					   MemoryChunk *chunk, Size size)
+{
+	SlabContext *slab = (SlabContext *) context;
+
+	/*
+	 * Check that the chunk pointer is actually somewhere on the block and is
+	 * aligned as expected.
+	 */
+	Assert(chunk >= SlabBlockGetChunk(slab, block, 0));
+	Assert(chunk <= SlabBlockGetChunk(slab, block, slab->chunksPerBlock - 1));
+	Assert(SlabChunkMod(slab, block, chunk) == 0);
+
+	/* Prepare to initialize the chunk header. */
+	VALGRIND_MAKE_MEM_UNDEFINED(chunk, Slab_CHUNKHDRSZ);
+
+	MemoryChunkSetHdrMask(chunk, block, MAXALIGN(slab->chunkSize), MCTX_SLAB_ID);
+
+#ifdef MEMORY_CONTEXT_CHECKING
+	/* slab mark to catch clobber of "unused" space */
+	Assert(slab->chunkSize < (slab->fullChunkSize - Slab_CHUNKHDRSZ));
+	set_sentinel(MemoryChunkGetPointer(chunk), size);
+	VALGRIND_MAKE_MEM_NOACCESS(((char *) chunk) + Slab_CHUNKHDRSZ +
+							   slab->chunkSize,
+							   slab->fullChunkSize -
+							   (slab->chunkSize + Slab_CHUNKHDRSZ));
+#endif
+
+#ifdef RANDOMIZE_ALLOCATED_MEMORY
+	/* fill the allocated space with junk */
+	randomize_mem((char *) MemoryChunkGetPointer(chunk), size);
+#endif
+
+	/* Disallow access to the chunk header. */
+	VALGRIND_MAKE_MEM_NOACCESS(chunk, Slab_CHUNKHDRSZ);
+
+	return MemoryChunkGetPointer(chunk);
+}
+
+pg_noinline
+static void *
+SlabAllocFromNewBlock(MemoryContext context, Size size, int flags)
+{
+	SlabContext *slab = (SlabContext *) context;
+	SlabBlock  *block;
+	MemoryChunk *chunk;
+	dlist_head *blocklist;
+	int			blocklist_idx;
+
+	/* to save allocating a new one, first check the empty blocks list */
+	if (dclist_count(&slab->emptyblocks) > 0)
+	{
+		dlist_node *node = dclist_pop_head_node(&slab->emptyblocks);
+
+		block = dlist_container(SlabBlock, node, node);
+
+		/*
+		 * SlabFree() should have left this block in a valid state with all
+		 * chunks free.  Ensure that's the case.
+		 */
+		Assert(block->nfree == slab->chunksPerBlock);
+
+		/* fetch the next chunk from this block */
+		chunk = SlabGetNextFreeChunk(slab, block);
+	}
+	else
+	{
+		block = (SlabBlock *) malloc(slab->blockSize);
+
+		if (unlikely(block == NULL))
+			return MemoryContextAllocationFailure(context, size, flags);
+
+		block->slab = slab;
+		context->mem_allocated += slab->blockSize;
+
+		/* use the first chunk in the new block */
+		chunk = SlabBlockGetChunk(slab, block, 0);
+
+		block->nfree = slab->chunksPerBlock - 1;
+		block->unused = SlabBlockGetChunk(slab, block, 1);
+		block->freehead = NULL;
+		block->nunused = slab->chunksPerBlock - 1;
+	}
+
+	/* find the blocklist element for storing blocks with 1 used chunk */
+	blocklist_idx = SlabBlocklistIndex(slab, block->nfree);
+	blocklist = &slab->blocklist[blocklist_idx];
+
+	/* this better be empty.  We just added a block thinking it was */
+	Assert(dlist_is_empty(blocklist));
+
+	dlist_push_head(blocklist, &block->node);
+
+	slab->curBlocklistIndex = blocklist_idx;
+
+	return SlabAllocSetupNewChunk(context, block, chunk, size);
+}
+
+/*
+ * SlabAllocInvalidSize
+ *		Handle raising an ERROR for an invalid size request.  We don't do this
+ *		in slab alloc as calling the elog functions would force the compiler
+ *		to setup the stack frame in SlabAlloc.  For performance reasons, we
+ *		want to avoid that.
+ */
+pg_noinline
+static void
+pg_attribute_noreturn()
+SlabAllocInvalidSize(MemoryContext context, Size size)
+{
+	SlabContext *slab = (SlabContext *) context;
+
+	elog(ERROR, "unexpected alloc chunk size %zu (expected %u)", size,
+		 slab->chunkSize);
+}
+
+/*
  * SlabAlloc
- *		Returns a pointer to allocated memory of given size or NULL if
- *		request could not be completed; memory is added to the slab.
+ *		Returns a pointer to a newly allocated memory chunk or raises an ERROR
+ *		on allocation failure, or returns NULL when flags contains
+ *		MCXT_ALLOC_NO_OOM.  'size' must be the same size as was specified
+ *		during SlabContextCreate().
+ *
+ * This function should only contain the most common code paths.  Everything
+ * else should be in pg_noinline helper functions, thus avoiding the overhead
+ * of creating a stack frame for the common cases.  Allocating memory is often
+ * a bottleneck in many workloads, so avoiding stack frame setup is
+ * worthwhile.  Helper functions should always directly return the newly
+ * allocated memory so that we can just return that address directly as a tail
+ * call.
  */
 void *
-SlabAlloc(MemoryContext context, Size size)
+SlabAlloc(MemoryContext context, Size size, int flags)
 {
 	SlabContext *slab = (SlabContext *) context;
 	SlabBlock  *block;
@@ -428,68 +564,21 @@ SlabAlloc(MemoryContext context, Size size)
 	Assert(slab->curBlocklistIndex >= 0);
 	Assert(slab->curBlocklistIndex <= SlabBlocklistIndex(slab, slab->chunksPerBlock));
 
-	/* make sure we only allow correct request size */
-	if (unlikely(size != slab->chunkSize))
-		elog(ERROR, "unexpected alloc chunk size %zu (expected %zu)",
-			 size, slab->chunkSize);
-
 	/*
-	 * Handle the case when there are no partially filled blocks available.
-	 * SlabFree() will have updated the curBlocklistIndex setting it to zero
-	 * to indicate that it has freed the final block.  Also later in
-	 * SlabAlloc() we will set the curBlocklistIndex to zero if we end up
-	 * filling the final block.
+	 * Make sure we only allow correct request size.  This doubles as the
+	 * MemoryContextCheckSize check.
 	 */
+	if (unlikely(size != slab->chunkSize))
+		SlabAllocInvalidSize(context, size);
+
 	if (unlikely(slab->curBlocklistIndex == 0))
 	{
-		dlist_head *blocklist;
-		int			blocklist_idx;
-
-		/* to save allocating a new one, first check the empty blocks list */
-		if (dclist_count(&slab->emptyblocks) > 0)
-		{
-			dlist_node *node = dclist_pop_head_node(&slab->emptyblocks);
-
-			block = dlist_container(SlabBlock, node, node);
-
-			/*
-			 * SlabFree() should have left this block in a valid state with
-			 * all chunks free.  Ensure that's the case.
-			 */
-			Assert(block->nfree == slab->chunksPerBlock);
-
-			/* fetch the next chunk from this block */
-			chunk = SlabGetNextFreeChunk(slab, block);
-		}
-		else
-		{
-			block = (SlabBlock *) malloc(slab->blockSize);
-
-			if (unlikely(block == NULL))
-				return NULL;
-
-			block->slab = slab;
-			context->mem_allocated += slab->blockSize;
-
-			/* use the first chunk in the new block */
-			chunk = SlabBlockGetChunk(slab, block, 0);
-
-			block->nfree = slab->chunksPerBlock - 1;
-			block->unused = SlabBlockGetChunk(slab, block, 1);
-			block->freehead = NULL;
-			block->nunused = slab->chunksPerBlock - 1;
-		}
-
-		/* find the blocklist element for storing blocks with 1 used chunk */
-		blocklist_idx = SlabBlocklistIndex(slab, block->nfree);
-		blocklist = &slab->blocklist[blocklist_idx];
-
-		/* this better be empty.  We just added a block thinking it was */
-		Assert(dlist_is_empty(blocklist));
-
-		dlist_push_head(blocklist, &block->node);
-
-		slab->curBlocklistIndex = blocklist_idx;
+		/*
+		 * Handle the case when there are no partially filled blocks
+		 * available.  This happens either when the last allocation took the
+		 * last chunk in the block, or when SlabFree() free'd the final block.
+		 */
+		return SlabAllocFromNewBlock(context, size, flags);
 	}
 	else
 	{
@@ -526,38 +615,7 @@ SlabAlloc(MemoryContext context, Size size)
 		}
 	}
 
-	/*
-	 * Check that the chunk pointer is actually somewhere on the block and is
-	 * aligned as expected.
-	 */
-	Assert(chunk >= SlabBlockGetChunk(slab, block, 0));
-	Assert(chunk <= SlabBlockGetChunk(slab, block, slab->chunksPerBlock - 1));
-	Assert(SlabChunkMod(slab, block, chunk) == 0);
-
-	/* Prepare to initialize the chunk header. */
-	VALGRIND_MAKE_MEM_UNDEFINED(chunk, Slab_CHUNKHDRSZ);
-
-	MemoryChunkSetHdrMask(chunk, block, MAXALIGN(slab->chunkSize),
-						  MCTX_SLAB_ID);
-#ifdef MEMORY_CONTEXT_CHECKING
-	/* slab mark to catch clobber of "unused" space */
-	Assert(slab->chunkSize < (slab->fullChunkSize - Slab_CHUNKHDRSZ));
-	set_sentinel(MemoryChunkGetPointer(chunk), size);
-	VALGRIND_MAKE_MEM_NOACCESS(((char *) chunk) +
-							   Slab_CHUNKHDRSZ + slab->chunkSize,
-							   slab->fullChunkSize -
-							   (slab->chunkSize + Slab_CHUNKHDRSZ));
-#endif
-
-#ifdef RANDOMIZE_ALLOCATED_MEMORY
-	/* fill the allocated space with junk */
-	randomize_mem((char *) MemoryChunkGetPointer(chunk), size);
-#endif
-
-	/* Disallow access to the chunk header. */
-	VALGRIND_MAKE_MEM_NOACCESS(chunk, Slab_CHUNKHDRSZ);
-
-	return MemoryChunkGetPointer(chunk);
+	return SlabAllocSetupNewChunk(context, block, chunk, size);
 }
 
 /*
@@ -690,7 +748,7 @@ SlabFree(void *pointer)
  * realloc is usually used to enlarge the chunk.
  */
 void *
-SlabRealloc(void *pointer, Size size)
+SlabRealloc(void *pointer, Size size, int flags)
 {
 	MemoryChunk *chunk = PointerGetMemoryChunk(pointer);
 	SlabBlock  *block;

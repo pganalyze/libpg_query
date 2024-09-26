@@ -4,7 +4,7 @@
  *	  definitions for query plan nodes
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * src/include/nodes/plannodes.h
@@ -20,7 +20,6 @@
 #include "lib/stringinfo.h"
 #include "nodes/bitmapset.h"
 #include "nodes/lockoptions.h"
-#include "nodes/parsenodes.h"
 #include "nodes/primnodes.h"
 
 
@@ -54,9 +53,9 @@ typedef struct PlannedStmt
 
 	uint64		queryId;		/* query identifier (copied from Query) */
 
-	bool		hasReturning;	/* is it insert|update|delete RETURNING? */
+	bool		hasReturning;	/* is it insert|update|delete|merge RETURNING? */
 
-	bool		hasModifyingCTE;	/* has insert|update|delete in WITH? */
+	bool		hasModifyingCTE;	/* has insert|update|delete|merge in WITH? */
 
 	bool		canSetTag;		/* do I set the command result tag? */
 
@@ -96,8 +95,8 @@ typedef struct PlannedStmt
 	Node	   *utilityStmt;	/* non-null if this is utility stmt */
 
 	/* statement location in source string (copied from Query) */
-	int			stmt_location;	/* start location, or -1 if unknown */
-	int			stmt_len;		/* length in bytes; 0 means "rest of string" */
+	ParseLoc	stmt_location;	/* start location, or -1 if unknown */
+	ParseLoc	stmt_len;		/* length in bytes; 0 means "rest of string" */
 } PlannedStmt;
 
 /* macro for fetching the Plan associated with a SubPlan node */
@@ -252,6 +251,8 @@ typedef struct ModifyTable
 	List	   *exclRelTlist;	/* tlist of the EXCLUDED pseudo relation */
 	List	   *mergeActionLists;	/* per-target-table lists of actions for
 									 * MERGE */
+	List	   *mergeJoinConditions;	/* per-target-table join conditions
+										 * for MERGE */
 } ModifyTable;
 
 struct PartitionPruneInfo;		/* forward reference to struct below */
@@ -591,7 +592,7 @@ typedef enum SubqueryScanStatus
 {
 	SUBQUERY_SCAN_UNKNOWN,
 	SUBQUERY_SCAN_TRIVIAL,
-	SUBQUERY_SCAN_NONTRIVIAL
+	SUBQUERY_SCAN_NONTRIVIAL,
 } SubqueryScanStatus;
 
 typedef struct SubqueryScan
@@ -1330,7 +1331,7 @@ typedef enum RowMarkType
 	ROW_MARK_SHARE,				/* obtain shared tuple lock */
 	ROW_MARK_KEYSHARE,			/* obtain keyshare tuple lock */
 	ROW_MARK_REFERENCE,			/* just fetch the TID, don't lock it */
-	ROW_MARK_COPY				/* physically copy the row value */
+	ROW_MARK_COPY,				/* physically copy the row value */
 } RowMarkType;
 
 #define RowMarkRequiresRowShareLock(marktype)  ((marktype) <= ROW_MARK_KEYSHARE)
@@ -1542,7 +1543,7 @@ typedef struct PartitionPruneStepOp
 typedef enum PartitionPruneCombineOp
 {
 	PARTPRUNE_COMBINE_UNION,
-	PARTPRUNE_COMBINE_INTERSECT
+	PARTPRUNE_COMBINE_INTERSECT,
 } PartitionPruneCombineOp;
 
 typedef struct PartitionPruneStepCombine
@@ -1586,7 +1587,7 @@ typedef enum MonotonicFunction
 	MONOTONICFUNC_NONE = 0,
 	MONOTONICFUNC_INCREASING = (1 << 0),
 	MONOTONICFUNC_DECREASING = (1 << 1),
-	MONOTONICFUNC_BOTH = MONOTONICFUNC_INCREASING | MONOTONICFUNC_DECREASING
+	MONOTONICFUNC_BOTH = MONOTONICFUNC_INCREASING | MONOTONICFUNC_DECREASING,
 } MonotonicFunction;
 
 #endif							/* PLANNODES_H */

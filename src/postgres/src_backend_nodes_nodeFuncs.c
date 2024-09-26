@@ -11,7 +11,7 @@
  * nodeFuncs.c
  *		Various general-purpose manipulations of Node trees
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -26,7 +26,6 @@
 #include "catalog/pg_type.h"
 #include "miscadmin.h"
 #include "nodes/execnodes.h"
-#include "nodes/makefuncs.h"
 #include "nodes/nodeFuncs.h"
 #include "nodes/pathnodes.h"
 #include "utils/builtins.h"
@@ -221,6 +220,9 @@ exprLocation(const Node *expr)
 			/* function name should always be the first thing */
 			loc = ((const WindowFunc *) expr)->location;
 			break;
+		case T_MergeSupportFunc:
+			loc = ((const MergeSupportFunc *) expr)->location;
+			break;
 		case T_SubscriptingRef:
 			/* just use container argument's location */
 			loc = exprLocation((Node *) ((const SubscriptingRef *) expr)->refexpr);
@@ -385,6 +387,18 @@ exprLocation(const Node *expr)
 			break;
 		case T_JsonIsPredicate:
 			loc = ((const JsonIsPredicate *) expr)->location;
+			break;
+		case T_JsonExpr:
+			{
+				const JsonExpr *jsexpr = (const JsonExpr *) expr;
+
+				/* consider both function name and leftmost arg */
+				loc = leftmostLoc(jsexpr->location,
+								  exprLocation(jsexpr->formatted_expr));
+			}
+			break;
+		case T_JsonBehavior:
+			loc = exprLocation(((JsonBehavior *) expr)->expr);
 			break;
 		case T_NullTest:
 			{
@@ -955,6 +969,7 @@ raw_expression_tree_walker_impl(Node *node,
 		case T_ParamRef:
 		case T_A_Const:
 		case T_A_Star:
+		case T_MergeSupportFunc:
 			/* primitive node types with no subnodes */
 			break;
 		case T_Alias:
@@ -1027,6 +1042,36 @@ raw_expression_tree_walker_impl(Node *node,
 					return true;
 			}
 			break;
+		case T_JsonParseExpr:
+			{
+				JsonParseExpr *jpe = (JsonParseExpr *) node;
+
+				if (WALK(jpe->expr))
+					return true;
+				if (WALK(jpe->output))
+					return true;
+			}
+			break;
+		case T_JsonScalarExpr:
+			{
+				JsonScalarExpr *jse = (JsonScalarExpr *) node;
+
+				if (WALK(jse->expr))
+					return true;
+				if (WALK(jse->output))
+					return true;
+			}
+			break;
+		case T_JsonSerializeExpr:
+			{
+				JsonSerializeExpr *jse = (JsonSerializeExpr *) node;
+
+				if (WALK(jse->expr))
+					return true;
+				if (WALK(jse->output))
+					return true;
+			}
+			break;
 		case T_JsonConstructorExpr:
 			{
 				JsonConstructorExpr *ctor = (JsonConstructorExpr *) node;
@@ -1043,6 +1088,66 @@ raw_expression_tree_walker_impl(Node *node,
 			break;
 		case T_JsonIsPredicate:
 			return WALK(((JsonIsPredicate *) node)->expr);
+		case T_JsonArgument:
+			return WALK(((JsonArgument *) node)->val);
+		case T_JsonFuncExpr:
+			{
+				JsonFuncExpr *jfe = (JsonFuncExpr *) node;
+
+				if (WALK(jfe->context_item))
+					return true;
+				if (WALK(jfe->pathspec))
+					return true;
+				if (WALK(jfe->passing))
+					return true;
+				if (WALK(jfe->output))
+					return true;
+				if (WALK(jfe->on_empty))
+					return true;
+				if (WALK(jfe->on_error))
+					return true;
+			}
+			break;
+		case T_JsonBehavior:
+			{
+				JsonBehavior *jb = (JsonBehavior *) node;
+
+				if (WALK(jb->expr))
+					return true;
+			}
+			break;
+		case T_JsonTable:
+			{
+				JsonTable  *jt = (JsonTable *) node;
+
+				if (WALK(jt->context_item))
+					return true;
+				if (WALK(jt->pathspec))
+					return true;
+				if (WALK(jt->passing))
+					return true;
+				if (WALK(jt->columns))
+					return true;
+				if (WALK(jt->on_error))
+					return true;
+			}
+			break;
+		case T_JsonTableColumn:
+			{
+				JsonTableColumn *jtc = (JsonTableColumn *) node;
+
+				if (WALK(jtc->typeName))
+					return true;
+				if (WALK(jtc->on_empty))
+					return true;
+				if (WALK(jtc->on_error))
+					return true;
+				if (WALK(jtc->columns))
+					return true;
+			}
+			break;
+		case T_JsonTablePathSpec:
+			return WALK(((JsonTablePathSpec *) node)->string);
 		case T_NullTest:
 			return WALK(((NullTest *) node)->arg);
 		case T_BooleanTest:
@@ -1144,6 +1249,8 @@ raw_expression_tree_walker_impl(Node *node,
 				if (WALK(stmt->joinCondition))
 					return true;
 				if (WALK(stmt->mergeWhenClauses))
+					return true;
+				if (WALK(stmt->returningList))
 					return true;
 				if (WALK(stmt->withClause))
 					return true;

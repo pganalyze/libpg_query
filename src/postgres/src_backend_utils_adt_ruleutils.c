@@ -12,7 +12,7 @@
  *	  Functions to convert stored expressions/querytrees back to
  *	  source text
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -30,7 +30,6 @@
 #include "access/amapi.h"
 #include "access/htup_details.h"
 #include "access/relation.h"
-#include "access/sysattr.h"
 #include "access/table.h"
 #include "catalog/pg_aggregate.h"
 #include "catalog/pg_am.h"
@@ -59,7 +58,6 @@
 #include "optimizer/optimizer.h"
 #include "parser/parse_agg.h"
 #include "parser/parse_func.h"
-#include "parser/parse_node.h"
 #include "parser/parse_oper.h"
 #include "parser/parse_relation.h"
 #include "parser/parser.h"
@@ -123,14 +121,16 @@ typedef struct
 {
 	StringInfo	buf;			/* output buffer to append to */
 	List	   *namespaces;		/* List of deparse_namespace nodes */
+	TupleDesc	resultDesc;		/* if top level of a view, the view's tupdesc */
+	List	   *targetList;		/* Current query level's SELECT targetlist */
 	List	   *windowClause;	/* Current query level's WINDOW clause */
-	List	   *windowTList;	/* targetlist for resolving WINDOW clause */
 	int			prettyFlags;	/* enabling of pretty-print functions */
 	int			wrapColumn;		/* max line length, or -1 for no limit */
 	int			indentLevel;	/* current indent level for pretty-print */
 	bool		varprefix;		/* true to print prefixes on Vars */
-	ParseExprKind special_exprkind; /* set only for exprkinds needing special
-									 * handling */
+	bool		colNamesVisible;	/* do we care about output column names? */
+	bool		inGroupBy;		/* deparsing GROUP BY clause? */
+	bool		varInOrderBy;	/* deparsing simple Var in ORDER BY? */
 	Bitmapset  *appendparents;	/* if not null, map child Vars of these relids
 								 * back to the parent rel */
 } deparse_context;
@@ -361,8 +361,7 @@ static char *pg_get_partkeydef_worker(Oid relid, int prettyFlags,
 									  bool attrsOnly, bool missing_ok);
 static char *pg_get_constraintdef_worker(Oid constraintId, bool fullCommand,
 										 int prettyFlags, bool missing_ok);
-static text *pg_get_expr_worker(text *expr, Oid relid, const char *relname,
-								int prettyFlags);
+static text *pg_get_expr_worker(text *expr, Oid relid, int prettyFlags);
 static int	print_function_arguments(StringInfo buf, HeapTuple proctup,
 									 bool print_table_args, bool print_defaults);
 static void print_function_rettype(StringInfo buf, HeapTuple proctup);
@@ -409,27 +408,19 @@ static void get_query_def(Query *query, StringInfo buf, List *parentnamespace,
 						  int prettyFlags, int wrapColumn, int startIndent);
 static void get_values_def(List *values_lists, deparse_context *context);
 static void get_with_clause(Query *query, deparse_context *context);
-static void get_select_query_def(Query *query, deparse_context *context,
-								 TupleDesc resultDesc, bool colNamesVisible);
-static void get_insert_query_def(Query *query, deparse_context *context,
-								 bool colNamesVisible);
-static void get_update_query_def(Query *query, deparse_context *context,
-								 bool colNamesVisible);
+static void get_select_query_def(Query *query, deparse_context *context);
+static void get_insert_query_def(Query *query, deparse_context *context);
+static void get_update_query_def(Query *query, deparse_context *context);
 static void get_update_query_targetlist_def(Query *query, List *targetList,
 											deparse_context *context,
 											RangeTblEntry *rte);
-static void get_delete_query_def(Query *query, deparse_context *context,
-								 bool colNamesVisible);
-static void get_merge_query_def(Query *query, deparse_context *context,
-								bool colNamesVisible);
+static void get_delete_query_def(Query *query, deparse_context *context);
+static void get_merge_query_def(Query *query, deparse_context *context);
 static void get_utility_query_def(Query *query, deparse_context *context);
-static void get_basic_select_query(Query *query, deparse_context *context,
-								   TupleDesc resultDesc, bool colNamesVisible);
-static void get_target_list(List *targetList, deparse_context *context,
-							TupleDesc resultDesc, bool colNamesVisible);
+static void get_basic_select_query(Query *query, deparse_context *context);
+static void get_target_list(List *targetList, deparse_context *context);
 static void get_setop_query(Node *setOp, Query *query,
-							deparse_context *context,
-							TupleDesc resultDesc, bool colNamesVisible);
+							deparse_context *context);
 static Node *get_rule_sortgroupclause(Index ref, List *tlist,
 									  bool force_colno,
 									  deparse_context *context);
@@ -448,6 +439,10 @@ static void resolve_special_varno(Node *node, deparse_context *context,
 								  rsv_callback callback, void *callback_arg);
 static Node *find_param_referent(Param *param, deparse_context *context,
 								 deparse_namespace **dpns_p, ListCell **ancestor_cell_p);
+static SubPlan *find_param_generator(Param *param, deparse_context *context,
+									 int *column_p);
+static SubPlan *find_param_generator_initplan(Param *param, Plan *plan,
+											  int *column_p);
 static void get_parameter(Param *param, deparse_context *context);
 static const char *get_simple_binary_op_name(OpExpr *expr);
 static bool isSimpleNode(Node *node, Node *parentNode, int prettyFlags);
@@ -485,6 +480,8 @@ static void get_const_expr(Const *constval, deparse_context *context,
 						   int showtype);
 static void get_const_collation(Const *constval, deparse_context *context);
 static void get_json_format(JsonFormat *format, StringInfo buf);
+static void get_json_returning(JsonReturning *returning, StringInfo buf,
+							   bool json_format_by_default);
 static void get_json_constructor(JsonConstructorExpr *ctor,
 								 deparse_context *context, bool showimplicit);
 static void get_json_constructor_options(JsonConstructorExpr *ctor,
@@ -520,13 +517,22 @@ static char *generate_qualified_relation_name(Oid relid);
 static char *generate_function_name(Oid funcid, int nargs,
 									List *argnames, Oid *argtypes,
 									bool has_variadic, bool *use_variadic_p,
-									ParseExprKind special_exprkind);
+									bool inGroupBy);
 static char *generate_operator_name(Oid operid, Oid arg1, Oid arg2);
 static void add_cast_to(StringInfo buf, Oid typid);
 static char *generate_qualified_type_name(Oid typid);
 static text *string_to_text(char *str);
 static char *flatten_reloptions(Oid relid);
 static void get_reloptions(StringInfo buf, Datum reloptions);
+static void get_json_path_spec(Node *path_spec, deparse_context *context,
+							   bool showimplicit);
+static void get_json_table_columns(TableFunc *tf, JsonTablePathScan *scan,
+								   deparse_context *context,
+								   bool showimplicit);
+static void get_json_table_nested_columns(TableFunc *tf, JsonTablePlan *plan,
+										  deparse_context *context,
+										  bool showimplicit,
+										  bool needcomma);
 
 #define only_marker(rte)  ((rte)->inh ? "" : "ONLY ")
 
@@ -727,6 +733,11 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  * the one specified by the second parameter.  This is sufficient for
  * partial indexes, column default expressions, etc.  We also support
  * Var-free expressions, for which the OID can be InvalidOid.
+ *
+ * If the OID is nonzero but not actually valid, don't throw an error,
+ * just return NULL.  This is a bit questionable, but it's what we've
+ * done historically, and it can help avoid unwanted failures when
+ * examining catalog entries for just-deleted relations.
  *
  * We expect this function to work, or throw a reasonably clean error,
  * for any node tree that can appear in a catalog pg_node_tree column.
@@ -1170,9 +1181,7 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 /* ----------
  * get_target_list			- Parse back a SELECT target list
  *
- * This is also used for RETURNING lists in INSERT/UPDATE/DELETE.
- *
- * resultDesc and colNamesVisible are as for get_query_def()
+ * This is also used for RETURNING lists in INSERT/UPDATE/DELETE/MERGE.
  * ----------
  */
 
@@ -1317,6 +1326,20 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 
 /*
+ * Try to find a subplan/initplan that emits the value for a PARAM_EXEC Param.
+ *
+ * If successful, return the generating subplan/initplan and set *column_p
+ * to the subplan's 0-based output column number.
+ * Otherwise, return NULL.
+ */
+
+
+/*
+ * Subroutine for find_param_generator: search one Plan node's initplans
+ */
+
+
+/*
  * Display a Param appropriately.
  */
 
@@ -1367,6 +1390,15 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  * added.
  */
 
+
+
+
+/*
+ * get_json_expr_options
+ *
+ * Parse back common options for JSON_QUERY, JSON_VALUE, JSON_EXISTS and
+ * JSON_TABLE columns.
+ */
 
 
 /* ----------
@@ -1507,6 +1539,11 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
 
 
 /*
+ * get_json_path_spec		- Parse back a JSON path specification
+ */
+
+
+/*
  * get_json_format			- Parse back a JsonFormat node
  */
 
@@ -1542,6 +1579,28 @@ static void get_reloptions(StringInfo buf, Datum reloptions);
  * ----------
  */
 
+
+
+/* ----------
+ * get_xmltable			- Parse back a XMLTABLE function
+ * ----------
+ */
+
+
+/*
+ * get_json_table_nested_columns - Parse back nested JSON_TABLE columns
+ */
+
+
+/*
+ * get_json_table_columns - Parse back JSON_TABLE columns
+ */
+
+
+/* ----------
+ * get_json_table			- Parse back a JSON_TABLE function
+ * ----------
+ */
 
 
 /* ----------
@@ -1773,6 +1832,8 @@ quote_qualified_identifier(const char *qualifier,
  * and *use_variadic_p will be set to indicate whether to print VARIADIC in
  * the output.  For non-FuncExpr cases, has_variadic should be false and
  * use_variadic_p can be NULL.
+ *
+ * inGroupBy must be true if we're deparsing a GROUP BY clause.
  *
  * The result includes all necessary quoting and schema-prefixing.
  */

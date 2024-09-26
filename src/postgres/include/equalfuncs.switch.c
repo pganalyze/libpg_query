@@ -3,7 +3,7 @@
  * equalfuncs.switch.c
  *    Generated node infrastructure code
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -44,6 +44,12 @@
 			break;
 		case T_WindowFunc:
 			retval = _equalWindowFunc(a, b);
+			break;
+		case T_WindowFuncRunCondition:
+			retval = _equalWindowFuncRunCondition(a, b);
+			break;
+		case T_MergeSupportFunc:
+			retval = _equalMergeSupportFunc(a, b);
 			break;
 		case T_SubscriptingRef:
 			retval = _equalSubscriptingRef(a, b);
@@ -144,11 +150,29 @@
 		case T_JsonIsPredicate:
 			retval = _equalJsonIsPredicate(a, b);
 			break;
+		case T_JsonBehavior:
+			retval = _equalJsonBehavior(a, b);
+			break;
+		case T_JsonExpr:
+			retval = _equalJsonExpr(a, b);
+			break;
+		case T_JsonTablePath:
+			retval = _equalJsonTablePath(a, b);
+			break;
+		case T_JsonTablePathScan:
+			retval = _equalJsonTablePathScan(a, b);
+			break;
+		case T_JsonTableSiblingJoin:
+			retval = _equalJsonTableSiblingJoin(a, b);
+			break;
 		case T_NullTest:
 			retval = _equalNullTest(a, b);
 			break;
 		case T_BooleanTest:
 			retval = _equalBooleanTest(a, b);
+			break;
+		case T_MergeAction:
+			retval = _equalMergeAction(a, b);
 			break;
 		case T_CoerceToDomain:
 			retval = _equalCoerceToDomain(a, b);
@@ -282,6 +306,9 @@
 		case T_PartitionRangeDatum:
 			retval = _equalPartitionRangeDatum(a, b);
 			break;
+		case T_SinglePartitionSpec:
+			retval = _equalSinglePartitionSpec(a, b);
+			break;
 		case T_PartitionCmd:
 			retval = _equalPartitionCmd(a, b);
 			break;
@@ -333,17 +360,38 @@
 		case T_MergeWhenClause:
 			retval = _equalMergeWhenClause(a, b);
 			break;
-		case T_MergeAction:
-			retval = _equalMergeAction(a, b);
-			break;
 		case T_TriggerTransition:
 			retval = _equalTriggerTransition(a, b);
 			break;
 		case T_JsonOutput:
 			retval = _equalJsonOutput(a, b);
 			break;
+		case T_JsonArgument:
+			retval = _equalJsonArgument(a, b);
+			break;
+		case T_JsonFuncExpr:
+			retval = _equalJsonFuncExpr(a, b);
+			break;
+		case T_JsonTablePathSpec:
+			retval = _equalJsonTablePathSpec(a, b);
+			break;
+		case T_JsonTable:
+			retval = _equalJsonTable(a, b);
+			break;
+		case T_JsonTableColumn:
+			retval = _equalJsonTableColumn(a, b);
+			break;
 		case T_JsonKeyValue:
 			retval = _equalJsonKeyValue(a, b);
+			break;
+		case T_JsonParseExpr:
+			retval = _equalJsonParseExpr(a, b);
+			break;
+		case T_JsonScalarExpr:
+			retval = _equalJsonScalarExpr(a, b);
+			break;
+		case T_JsonSerializeExpr:
+			retval = _equalJsonSerializeExpr(a, b);
 			break;
 		case T_JsonObjectConstructor:
 			retval = _equalJsonObjectConstructor(a, b);
@@ -746,6 +794,9 @@
 			break;
 		case T_PathKey:
 			retval = _equalPathKey(a, b);
+			break;
+		case T_GroupByOrdering:
+			retval = _equalGroupByOrdering(a, b);
 			break;
 		case T_RestrictInfo:
 			retval = _equalRestrictInfo(a, b);
