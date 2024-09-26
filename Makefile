@@ -6,9 +6,9 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 16.1
+PG_VERSION = 17.0
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 160001
+PG_VERSION_NUM = 170000
 PROTOC_VERSION = 25.1
 
 VERSION = 5.1.0
