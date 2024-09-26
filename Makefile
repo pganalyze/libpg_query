@@ -126,10 +126,11 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_allow_param_junk.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
-	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
+	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
+	cd $(PGDIR); make -C src/common kwlist_d.h
 	# Avoid problems with static asserts
 	echo "#undef StaticAssertDecl" >> $(PGDIR)/src/include/c.h
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h
