@@ -6551,6 +6551,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			options = "DROP IDENTITY";
 			trailing_missing_ok = true;
 			break;
+		case AT_SetExpression:
+			appendStringInfoString(str, "ALTER COLUMN ");
+			break;
 	}
 
 	if (alter_table_cmd->missing_ok && !trailing_missing_ok)
@@ -6654,6 +6657,11 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_ReplicaIdentity:
 			deparseReplicaIdentityStmt(str, castNode(ReplicaIdentityStmt, alter_table_cmd->def));
 			appendStringInfoChar(str, ' ');
+			break;
+		case AT_SetExpression:
+			appendStringInfoString(str, "SET EXPRESSION AS (");
+			deparseExpr(str, alter_table_cmd->def);
+			appendStringInfoChar(str, ')');
 			break;
 		default:
 			Assert(alter_table_cmd->def == NULL);
