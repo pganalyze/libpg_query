@@ -9,6 +9,8 @@ static Param * _readParam(OUT_TYPE(Param, Param) msg);
 static Aggref * _readAggref(OUT_TYPE(Aggref, Aggref) msg);
 static GroupingFunc * _readGroupingFunc(OUT_TYPE(GroupingFunc, GroupingFunc) msg);
 static WindowFunc * _readWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) msg);
+static WindowFuncRunCondition * _readWindowFuncRunCondition(OUT_TYPE(WindowFuncRunCondition, WindowFuncRunCondition) msg);
+static MergeSupportFunc * _readMergeSupportFunc(OUT_TYPE(MergeSupportFunc, MergeSupportFunc) msg);
 static SubscriptingRef * _readSubscriptingRef(OUT_TYPE(SubscriptingRef, SubscriptingRef) msg);
 static FuncExpr * _readFuncExpr(OUT_TYPE(FuncExpr, FuncExpr) msg);
 static NamedArgExpr * _readNamedArgExpr(OUT_TYPE(NamedArgExpr, NamedArgExpr) msg);
@@ -42,8 +44,14 @@ static JsonReturning * _readJsonReturning(OUT_TYPE(JsonReturning, JsonReturning)
 static JsonValueExpr * _readJsonValueExpr(OUT_TYPE(JsonValueExpr, JsonValueExpr) msg);
 static JsonConstructorExpr * _readJsonConstructorExpr(OUT_TYPE(JsonConstructorExpr, JsonConstructorExpr) msg);
 static JsonIsPredicate * _readJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) msg);
+static JsonBehavior * _readJsonBehavior(OUT_TYPE(JsonBehavior, JsonBehavior) msg);
+static JsonExpr * _readJsonExpr(OUT_TYPE(JsonExpr, JsonExpr) msg);
+static JsonTablePath * _readJsonTablePath(OUT_TYPE(JsonTablePath, JsonTablePath) msg);
+static JsonTablePathScan * _readJsonTablePathScan(OUT_TYPE(JsonTablePathScan, JsonTablePathScan) msg);
+static JsonTableSiblingJoin * _readJsonTableSiblingJoin(OUT_TYPE(JsonTableSiblingJoin, JsonTableSiblingJoin) msg);
 static NullTest * _readNullTest(OUT_TYPE(NullTest, NullTest) msg);
 static BooleanTest * _readBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) msg);
+static MergeAction * _readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg);
 static CoerceToDomain * _readCoerceToDomain(OUT_TYPE(CoerceToDomain, CoerceToDomain) msg);
 static CoerceToDomainValue * _readCoerceToDomainValue(OUT_TYPE(CoerceToDomainValue, CoerceToDomainValue) msg);
 static SetToDefault * _readSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) msg);
@@ -87,6 +95,7 @@ static PartitionElem * _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem)
 static PartitionSpec * _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg);
 static PartitionBoundSpec * _readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg);
 static PartitionRangeDatum * _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg);
+static SinglePartitionSpec * _readSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) msg);
 static PartitionCmd * _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg);
 static RangeTblEntry * _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg);
 static RTEPermissionInfo * _readRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) msg);
@@ -104,10 +113,17 @@ static CTESearchClause * _readCTESearchClause(OUT_TYPE(CTESearchClause, CTESearc
 static CTECycleClause * _readCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) msg);
 static CommonTableExpr * _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg);
 static MergeWhenClause * _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg);
-static MergeAction * _readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg);
 static TriggerTransition * _readTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) msg);
 static JsonOutput * _readJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) msg);
+static JsonArgument * _readJsonArgument(OUT_TYPE(JsonArgument, JsonArgument) msg);
+static JsonFuncExpr * _readJsonFuncExpr(OUT_TYPE(JsonFuncExpr, JsonFuncExpr) msg);
+static JsonTablePathSpec * _readJsonTablePathSpec(OUT_TYPE(JsonTablePathSpec, JsonTablePathSpec) msg);
+static JsonTable * _readJsonTable(OUT_TYPE(JsonTable, JsonTable) msg);
+static JsonTableColumn * _readJsonTableColumn(OUT_TYPE(JsonTableColumn, JsonTableColumn) msg);
 static JsonKeyValue * _readJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) msg);
+static JsonParseExpr * _readJsonParseExpr(OUT_TYPE(JsonParseExpr, JsonParseExpr) msg);
+static JsonScalarExpr * _readJsonScalarExpr(OUT_TYPE(JsonScalarExpr, JsonScalarExpr) msg);
+static JsonSerializeExpr * _readJsonSerializeExpr(OUT_TYPE(JsonSerializeExpr, JsonSerializeExpr) msg);
 static JsonObjectConstructor * _readJsonObjectConstructor(OUT_TYPE(JsonObjectConstructor, JsonObjectConstructor) msg);
 static JsonArrayConstructor * _readJsonArrayConstructor(OUT_TYPE(JsonArrayConstructor, JsonArrayConstructor) msg);
 static JsonArrayQueryConstructor * _readJsonArrayQueryConstructor(OUT_TYPE(JsonArrayQueryConstructor, JsonArrayQueryConstructor) msg);
@@ -272,6 +288,7 @@ static TableFunc *
 _readTableFunc(OUT_TYPE(TableFunc, TableFunc) msg)
 {
   TableFunc *node = makeNode(TableFunc);
+  READ_ENUM_FIELD(TableFuncType, functype, functype, functype);
   READ_LIST_FIELD(ns_uris, ns_uris, ns_uris);
   READ_LIST_FIELD(ns_names, ns_names, ns_names);
   READ_NODE_PTR_FIELD(docexpr, docexpr, docexpr);
@@ -282,7 +299,10 @@ _readTableFunc(OUT_TYPE(TableFunc, TableFunc) msg)
   READ_LIST_FIELD(colcollations, colcollations, colcollations);
   READ_LIST_FIELD(colexprs, colexprs, colexprs);
   READ_LIST_FIELD(coldefexprs, coldefexprs, coldefexprs);
+  READ_LIST_FIELD(colvalexprs, colvalexprs, colvalexprs);
+  READ_LIST_FIELD(passingvalexprs, passingvalexprs, passingvalexprs);
   READ_BITMAPSET_FIELD(notnulls, notnulls, notnulls);
+  READ_NODE_PTR_FIELD(plan, plan, plan);
   READ_INT_FIELD(ordinalitycol, ordinalitycol, ordinalitycol);
   READ_INT_FIELD(location, location, location);
   return node;
@@ -377,9 +397,31 @@ _readWindowFunc(OUT_TYPE(WindowFunc, WindowFunc) msg)
   READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
   READ_LIST_FIELD(args, args, args);
   READ_EXPR_PTR_FIELD(aggfilter, aggfilter, aggfilter);
+  READ_LIST_FIELD(run_condition, runCondition, runCondition);
   READ_UINT_FIELD(winref, winref, winref);
   READ_BOOL_FIELD(winstar, winstar, winstar);
   READ_BOOL_FIELD(winagg, winagg, winagg);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static WindowFuncRunCondition *
+_readWindowFuncRunCondition(OUT_TYPE(WindowFuncRunCondition, WindowFuncRunCondition) msg)
+{
+  WindowFuncRunCondition *node = makeNode(WindowFuncRunCondition);
+  READ_UINT_FIELD(opno, opno, opno);
+  READ_UINT_FIELD(inputcollid, inputcollid, inputcollid);
+  READ_BOOL_FIELD(wfunc_left, wfunc_left, wfunc_left);
+  READ_EXPR_PTR_FIELD(arg, arg, arg);
+  return node;
+}
+
+static MergeSupportFunc *
+_readMergeSupportFunc(OUT_TYPE(MergeSupportFunc, MergeSupportFunc) msg)
+{
+  MergeSupportFunc *node = makeNode(MergeSupportFunc);
+  READ_UINT_FIELD(msftype, msftype, msftype);
+  READ_UINT_FIELD(msfcollid, msfcollid, msfcollid);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -798,6 +840,69 @@ _readJsonIsPredicate(OUT_TYPE(JsonIsPredicate, JsonIsPredicate) msg)
   return node;
 }
 
+static JsonBehavior *
+_readJsonBehavior(OUT_TYPE(JsonBehavior, JsonBehavior) msg)
+{
+  JsonBehavior *node = makeNode(JsonBehavior);
+  READ_ENUM_FIELD(JsonBehaviorType, btype, btype, btype);
+  READ_NODE_PTR_FIELD(expr, expr, expr);
+  READ_BOOL_FIELD(coerce, coerce, coerce);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonExpr *
+_readJsonExpr(OUT_TYPE(JsonExpr, JsonExpr) msg)
+{
+  JsonExpr *node = makeNode(JsonExpr);
+  READ_ENUM_FIELD(JsonExprOp, op, op, op);
+  READ_STRING_FIELD(column_name, column_name, column_name);
+  READ_NODE_PTR_FIELD(formatted_expr, formatted_expr, formatted_expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  READ_NODE_PTR_FIELD(path_spec, path_spec, path_spec);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonReturning, json_returning, returning, returning, returning);
+  READ_LIST_FIELD(passing_names, passing_names, passing_names);
+  READ_LIST_FIELD(passing_values, passing_values, passing_values);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  READ_BOOL_FIELD(use_io_coercion, use_io_coercion, use_io_coercion);
+  READ_BOOL_FIELD(use_json_coercion, use_json_coercion, use_json_coercion);
+  READ_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  READ_BOOL_FIELD(omit_quotes, omit_quotes, omit_quotes);
+  READ_UINT_FIELD(collation, collation, collation);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonTablePath *
+_readJsonTablePath(OUT_TYPE(JsonTablePath, JsonTablePath) msg)
+{
+  JsonTablePath *node = makeNode(JsonTablePath);
+  READ_STRING_FIELD(name, name, name);
+  return node;
+}
+
+static JsonTablePathScan *
+_readJsonTablePathScan(OUT_TYPE(JsonTablePathScan, JsonTablePathScan) msg)
+{
+  JsonTablePathScan *node = makeNode(JsonTablePathScan);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonTablePath, json_table_path, path, path, path);
+  READ_BOOL_FIELD(error_on_error, errorOnError, errorOnError);
+  READ_EXPR_PTR_FIELD(child, child, child);
+  READ_INT_FIELD(col_min, colMin, colMin);
+  READ_INT_FIELD(col_max, colMax, colMax);
+  return node;
+}
+
+static JsonTableSiblingJoin *
+_readJsonTableSiblingJoin(OUT_TYPE(JsonTableSiblingJoin, JsonTableSiblingJoin) msg)
+{
+  JsonTableSiblingJoin *node = makeNode(JsonTableSiblingJoin);
+  READ_EXPR_PTR_FIELD(lplan, lplan, lplan);
+  READ_EXPR_PTR_FIELD(rplan, rplan, rplan);
+  return node;
+}
+
 static NullTest *
 _readNullTest(OUT_TYPE(NullTest, NullTest) msg)
 {
@@ -816,6 +921,19 @@ _readBooleanTest(OUT_TYPE(BooleanTest, BooleanTest) msg)
   READ_EXPR_PTR_FIELD(arg, arg, arg);
   READ_ENUM_FIELD(BoolTestType, booltesttype, booltesttype, booltesttype);
   READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static MergeAction *
+_readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg)
+{
+  MergeAction *node = makeNode(MergeAction);
+  READ_ENUM_FIELD(MergeMatchKind, match_kind, matchKind, matchKind);
+  READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
+  READ_ENUM_FIELD(OverridingKind, override, override, override);
+  READ_NODE_PTR_FIELD(qual, qual, qual);
+  READ_LIST_FIELD(target_list, targetList, targetList);
+  READ_LIST_FIELD(update_colnos, updateColnos, updateColnos);
   return node;
 }
 
@@ -969,7 +1087,8 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_LIST_FIELD(rteperminfos, rteperminfos, rteperminfos);
   READ_SPECIFIC_NODE_PTR_FIELD(FromExpr, from_expr, jointree, jointree, jointree);
   READ_LIST_FIELD(merge_action_list, mergeActionList, mergeActionList);
-  READ_BOOL_FIELD(merge_use_outer_join, mergeUseOuterJoin, mergeUseOuterJoin);
+  READ_INT_FIELD(merge_target_relation, mergeTargetRelation, mergeTargetRelation);
+  READ_NODE_PTR_FIELD(merge_join_condition, mergeJoinCondition, mergeJoinCondition);
   READ_LIST_FIELD(target_list, targetList, targetList);
   READ_ENUM_FIELD(OverridingKind, override, override, override);
   READ_SPECIFIC_NODE_PTR_FIELD(OnConflictExpr, on_conflict_expr, on_conflict, onConflict, onConflict);
@@ -1364,6 +1483,13 @@ _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg)
   return node;
 }
 
+static SinglePartitionSpec *
+_readSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) msg)
+{
+  SinglePartitionSpec *node = makeNode(SinglePartitionSpec);
+  return node;
+}
+
 static PartitionCmd *
 _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg)
 {
@@ -1378,12 +1504,15 @@ static RangeTblEntry *
 _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
 {
   RangeTblEntry *node = makeNode(RangeTblEntry);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, eref, eref, eref);
   READ_ENUM_FIELD(RTEKind, rtekind, rtekind, rtekind);
   READ_UINT_FIELD(relid, relid, relid);
+  READ_BOOL_FIELD(inh, inh, inh);
   READ_CHAR_FIELD(relkind, relkind, relkind);
   READ_INT_FIELD(rellockmode, rellockmode, rellockmode);
-  READ_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
   READ_UINT_FIELD(perminfoindex, perminfoindex, perminfoindex);
+  READ_SPECIFIC_NODE_PTR_FIELD(TableSampleClause, table_sample_clause, tablesample, tablesample, tablesample);
   READ_SPECIFIC_NODE_PTR_FIELD(Query, query, subquery, subquery, subquery);
   READ_BOOL_FIELD(security_barrier, security_barrier, security_barrier);
   READ_ENUM_FIELD(JoinType, jointype, jointype, jointype);
@@ -1404,10 +1533,7 @@ _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
   READ_LIST_FIELD(colcollations, colcollations, colcollations);
   READ_STRING_FIELD(enrname, enrname, enrname);
   READ_FLOAT_FIELD(enrtuples, enrtuples, enrtuples);
-  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
-  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, eref, eref, eref);
   READ_BOOL_FIELD(lateral, lateral, lateral);
-  READ_BOOL_FIELD(inh, inh, inh);
   READ_BOOL_FIELD(in_from_cl, inFromCl, inFromCl);
   READ_LIST_FIELD(security_quals, securityQuals, securityQuals);
   return node;
@@ -1496,7 +1622,6 @@ _readWindowClause(OUT_TYPE(WindowClause, WindowClause) msg)
   READ_INT_FIELD(frame_options, frameOptions, frameOptions);
   READ_NODE_PTR_FIELD(start_offset, startOffset, startOffset);
   READ_NODE_PTR_FIELD(end_offset, endOffset, endOffset);
-  READ_LIST_FIELD(run_condition, runCondition, runCondition);
   READ_UINT_FIELD(start_in_range_func, startInRangeFunc, startInRangeFunc);
   READ_UINT_FIELD(end_in_range_func, endInRangeFunc, endInRangeFunc);
   READ_UINT_FIELD(in_range_coll, inRangeColl, inRangeColl);
@@ -1603,25 +1728,12 @@ static MergeWhenClause *
 _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg)
 {
   MergeWhenClause *node = makeNode(MergeWhenClause);
-  READ_BOOL_FIELD(matched, matched, matched);
+  READ_ENUM_FIELD(MergeMatchKind, match_kind, matchKind, matchKind);
   READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
   READ_ENUM_FIELD(OverridingKind, override, override, override);
   READ_NODE_PTR_FIELD(condition, condition, condition);
   READ_LIST_FIELD(target_list, targetList, targetList);
   READ_LIST_FIELD(values, values, values);
-  return node;
-}
-
-static MergeAction *
-_readMergeAction(OUT_TYPE(MergeAction, MergeAction) msg)
-{
-  MergeAction *node = makeNode(MergeAction);
-  READ_BOOL_FIELD(matched, matched, matched);
-  READ_ENUM_FIELD(CmdType, command_type, commandType, commandType);
-  READ_ENUM_FIELD(OverridingKind, override, override, override);
-  READ_NODE_PTR_FIELD(qual, qual, qual);
-  READ_LIST_FIELD(target_list, targetList, targetList);
-  READ_LIST_FIELD(update_colnos, updateColnos, updateColnos);
   return node;
 }
 
@@ -1644,12 +1756,114 @@ _readJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) msg)
   return node;
 }
 
+static JsonArgument *
+_readJsonArgument(OUT_TYPE(JsonArgument, JsonArgument) msg)
+{
+  JsonArgument *node = makeNode(JsonArgument);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, val, val, val);
+  READ_STRING_FIELD(name, name, name);
+  return node;
+}
+
+static JsonFuncExpr *
+_readJsonFuncExpr(OUT_TYPE(JsonFuncExpr, JsonFuncExpr) msg)
+{
+  JsonFuncExpr *node = makeNode(JsonFuncExpr);
+  READ_ENUM_FIELD(JsonExprOp, op, op, op);
+  READ_STRING_FIELD(column_name, column_name, column_name);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, context_item, context_item, context_item);
+  READ_NODE_PTR_FIELD(pathspec, pathspec, pathspec);
+  READ_LIST_FIELD(passing, passing, passing);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  READ_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  READ_ENUM_FIELD(JsonQuotes, quotes, quotes, quotes);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonTablePathSpec *
+_readJsonTablePathSpec(OUT_TYPE(JsonTablePathSpec, JsonTablePathSpec) msg)
+{
+  JsonTablePathSpec *node = makeNode(JsonTablePathSpec);
+  READ_NODE_PTR_FIELD(string, string, string);
+  READ_STRING_FIELD(name, name, name);
+  READ_INT_FIELD(name_location, name_location, name_location);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonTable *
+_readJsonTable(OUT_TYPE(JsonTable, JsonTable) msg)
+{
+  JsonTable *node = makeNode(JsonTable);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, context_item, context_item, context_item);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonTablePathSpec, json_table_path_spec, pathspec, pathspec, pathspec);
+  READ_LIST_FIELD(passing, passing, passing);
+  READ_LIST_FIELD(columns, columns, columns);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  READ_SPECIFIC_NODE_PTR_FIELD(Alias, alias, alias, alias, alias);
+  READ_BOOL_FIELD(lateral, lateral, lateral);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonTableColumn *
+_readJsonTableColumn(OUT_TYPE(JsonTableColumn, JsonTableColumn) msg)
+{
+  JsonTableColumn *node = makeNode(JsonTableColumn);
+  READ_ENUM_FIELD(JsonTableColumnType, coltype, coltype, coltype);
+  READ_STRING_FIELD(name, name, name);
+  READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, type_name, typeName, typeName);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonTablePathSpec, json_table_path_spec, pathspec, pathspec, pathspec);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonFormat, json_format, format, format, format);
+  READ_ENUM_FIELD(JsonWrapper, wrapper, wrapper, wrapper);
+  READ_ENUM_FIELD(JsonQuotes, quotes, quotes, quotes);
+  READ_LIST_FIELD(columns, columns, columns);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_empty, on_empty, on_empty);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonBehavior, json_behavior, on_error, on_error, on_error);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
 static JsonKeyValue *
 _readJsonKeyValue(OUT_TYPE(JsonKeyValue, JsonKeyValue) msg)
 {
   JsonKeyValue *node = makeNode(JsonKeyValue);
   READ_EXPR_PTR_FIELD(key, key, key);
   READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, value, value, value);
+  return node;
+}
+
+static JsonParseExpr *
+_readJsonParseExpr(OUT_TYPE(JsonParseExpr, JsonParseExpr) msg)
+{
+  JsonParseExpr *node = makeNode(JsonParseExpr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, expr, expr, expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_BOOL_FIELD(unique_keys, unique_keys, unique_keys);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonScalarExpr *
+_readJsonScalarExpr(OUT_TYPE(JsonScalarExpr, JsonScalarExpr) msg)
+{
+  JsonScalarExpr *node = makeNode(JsonScalarExpr);
+  READ_EXPR_PTR_FIELD(expr, expr, expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static JsonSerializeExpr *
+_readJsonSerializeExpr(OUT_TYPE(JsonSerializeExpr, JsonSerializeExpr) msg)
+{
+  JsonSerializeExpr *node = makeNode(JsonSerializeExpr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonValueExpr, json_value_expr, expr, expr, expr);
+  READ_SPECIFIC_NODE_PTR_FIELD(JsonOutput, json_output, output, output, output);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
@@ -1778,6 +1992,7 @@ _readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg)
   READ_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
   READ_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
   READ_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
+  READ_LIST_FIELD(returning_list, returningList, returningList);
   READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
   return node;
 }
@@ -2030,11 +2245,13 @@ _readConstraint(OUT_TYPE(Constraint, Constraint) msg)
   READ_STRING_FIELD(conname, conname, conname);
   READ_BOOL_FIELD(deferrable, deferrable, deferrable);
   READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
-  READ_INT_FIELD(location, location, location);
+  READ_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
+  READ_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
   READ_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
   READ_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
   READ_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
   READ_CHAR_FIELD(generated_when, generated_when, generated_when);
+  READ_INT_FIELD(inhcount, inhcount, inhcount);
   READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
   READ_LIST_FIELD(keys, keys, keys);
   READ_LIST_FIELD(including, including, including);
@@ -2054,8 +2271,7 @@ _readConstraint(OUT_TYPE(Constraint, Constraint) msg)
   READ_LIST_FIELD(fk_del_set_cols, fk_del_set_cols, fk_del_set_cols);
   READ_LIST_FIELD(old_conpfeqop, old_conpfeqop, old_conpfeqop);
   READ_UINT_FIELD(old_pktable_oid, old_pktable_oid, old_pktable_oid);
-  READ_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
-  READ_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
@@ -2585,7 +2801,7 @@ _readAlterStatsStmt(OUT_TYPE(AlterStatsStmt, AlterStatsStmt) msg)
 {
   AlterStatsStmt *node = makeNode(AlterStatsStmt);
   READ_LIST_FIELD(defnames, defnames, defnames);
-  READ_INT_FIELD(stxstattarget, stxstattarget, stxstattarget);
+  READ_NODE_PTR_FIELD(stxstattarget, stxstattarget, stxstattarget);
   READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   return node;
 }
@@ -2778,6 +2994,7 @@ _readTransactionStmt(OUT_TYPE(TransactionStmt, TransactionStmt) msg)
   READ_STRING_FIELD(savepoint_name, savepoint_name, savepoint_name);
   READ_STRING_FIELD(gid, gid, gid);
   READ_BOOL_FIELD(chain, chain, chain);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
@@ -3061,6 +3278,8 @@ _readDeallocateStmt(OUT_TYPE(DeallocateStmt, DeallocateStmt) msg)
 {
   DeallocateStmt *node = makeNode(DeallocateStmt);
   READ_STRING_FIELD(name, name, name);
+  READ_BOOL_FIELD(isall, isall, isall);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
