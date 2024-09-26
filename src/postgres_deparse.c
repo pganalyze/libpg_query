@@ -7546,15 +7546,29 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 				}
 				else if (strcmp(def_elem->defname, "force_not_null") == 0)
 				{
-					appendStringInfoString(str, "FORCE_NOT_NULL (");
-					deparseColumnList(str, castNode(List, def_elem->arg));
-					appendStringInfoChar(str, ')');
+					appendStringInfoString(str, "FORCE_NOT_NULL ");
+
+					if (IsA(def_elem->arg, A_Star))
+						deparseAStar(str, castNode(A_Star, def_elem->arg));
+					else
+					{
+						appendStringInfoChar(str, '(');
+						deparseColumnList(str, castNode(List, def_elem->arg));
+						appendStringInfoChar(str, ')');
+					}
 				}
 				else if (strcmp(def_elem->defname, "force_null") == 0)
 				{
-					appendStringInfoString(str, "FORCE_NULL (");
-					deparseColumnList(str, castNode(List, def_elem->arg));
-					appendStringInfoChar(str, ')');
+					appendStringInfoString(str, "FORCE_NULL ");
+
+					if (IsA(def_elem->arg, A_Star))
+						deparseAStar(str, castNode(A_Star, def_elem->arg));
+					else
+					{
+						appendStringInfoChar(str, '(');
+						deparseColumnList(str, castNode(List, def_elem->arg));
+						appendStringInfoChar(str, ')');
+					}
 				}
 				else if (strcmp(def_elem->defname, "encoding") == 0)
 				{
