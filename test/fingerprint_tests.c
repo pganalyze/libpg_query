@@ -36,7 +36,7 @@ const char* tests[] = {
   "DEALLOCATE a123",
   "d8a65a814fbc5f95",
   "DEALLOCATE ALL",
-  "d8a65a814fbc5f95",
+  "2debfb8745df64a7",
   "EXPLAIN ANALYZE SELECT a",
   "82845c1b5c6102e5",
   "WITH a AS (SELECT * FROM x WHERE x.y = $1 AND x.z = 1) SELECT * FROM a",
@@ -148,7 +148,7 @@ const char* tests[] = {
   "4a6db94fbada8341",
 #endif
   "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
-  "3a5494404465d0f9",
+  "fe086f143f4c7ed9",
   "ALTER TABLE ALL IN TABLESPACE foo OWNED BY bar, quux SET TABLESPACE fred NOWAIT",
   "1bcfca993d29bc0f",
   "CREATE PUBLICATION foo FOR TABLES IN SCHEMA bar",
@@ -156,7 +156,7 @@ const char* tests[] = {
   "COPY vistest FROM stdin FREEZE CSV",
   "25de297c6377cb74",
   "MERGE INTO customer_account ca USING (VALUES (1, 42), (2, 99)) t(customer_id, transaction_value) ON t.customer_id = ca.customer_id WHEN MATCHED THEN UPDATE SET balance = balance + transaction_value + 1 WHEN NOT MATCHED THEN INSERT (customer_id, balance) VALUES (t.customer_id, t.transaction_value)",
-  "1cca3f304295181c",
+  "ff7d4d704926aae4",
 };
 
 const size_t testsLength = sizeof(tests)/sizeof(*tests)/2;
