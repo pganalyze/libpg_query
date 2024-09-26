@@ -4400,6 +4400,12 @@ static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
 		if (lfirst(lc) != llast(merge_stmt->mergeWhenClauses))
 			appendStringInfoChar(str, ' ');
 	}
+
+	if (merge_stmt->returningList)
+	{
+		appendStringInfoString(str, " RETURNING ");
+		deparseTargetList(str, merge_stmt->returningList);
+	}
 }
 
 static void deparseDeleteStmt(StringInfo str, DeleteStmt *delete_stmt)
