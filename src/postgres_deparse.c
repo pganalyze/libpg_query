@@ -340,6 +340,9 @@ static void deparseExpr(StringInfo str, Node *node)
 		case T_SetToDefault:
 			deparseSetToDefault(str, castNode(SetToDefault, node));
 			break;
+		case T_MergeSupportFunc:
+			appendStringInfoString(str, "merge_action() ");
+			break;
 		case T_FuncCall:
 		case T_SQLValueFunction:
 		case T_MinMaxExpr:
