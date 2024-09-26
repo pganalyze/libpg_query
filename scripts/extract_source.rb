@@ -669,6 +669,8 @@ runner.deep_resolve('AllocSetContextCreate')
 runner.deep_resolve('MemoryContextSwitchTo')
 runner.deep_resolve('CurrentMemoryContext')
 runner.deep_resolve('MemoryContextDelete')
+runner.deep_resolve('MemoryContextAllocZero')
+runner.deep_resolve('MemoryContextSizeFailure')
 runner.deep_resolve('AllocSetDeleteFreeList')
 runner.deep_resolve('palloc0')
 
