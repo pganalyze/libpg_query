@@ -2,6 +2,21 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 17-6.0.0   2024-09-27
+
+* Upgrade to Postgres 17
+* Deparser:
+  - Add support for deparsing `JSON_TABLE`, `JSON_QUERY`, `JSON_EXISTS`, `JSON_VALUE`
+  - Add support for deparsing `JSON`, `JSON_SCALAR`, `JSON_SERIALIZE`
+  - Add support for deparsing `COPY ... FORCE_NULL(*)`
+  - Add support for deparsing `ALTER COLUMN ... SET EXPRESSION AS`
+  - Add support for deparsing `SET STATISTICS DEFAULT`
+  - Add support for deparsing `SET ACCESS METHOD DEFAULT`
+  - Add support for deparsing `... AT LOCAL`
+  - Add support for deparsing `merge_action()`
+  - Add support for deparsing `MERGE ... RETURNING`
+  - Add support for deparsing `NOT MATCHED [ BY TARGET ]`
+
 ## 16-5.1.0   2024-01-08
 
 * Add support for compiling on Windows

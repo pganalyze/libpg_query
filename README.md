@@ -12,7 +12,7 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```sh
-git clone -b 16-latest git://github.com/pganalyze/libpg_query
+git clone -b 17-latest git://github.com/pganalyze/libpg_query
 cd libpg_query
 make
 ```
@@ -57,7 +57,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 160001,
+    "version": 170000,
     "stmts": [
         {
             "stmt": {
@@ -130,7 +130,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 160001, tokens: 7, size: 77
+  version: 170000, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -237,7 +237,8 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 
 | PostgreSQL Major Version | Branch     | Status              |
 |--------------------------|------------|---------------------|
-| 16                       | 16-latest  | Active development  |
+| 17                       | 17-latest  | Active development  |
+| 16                       | 16-latest  | Critical fixes only |
 | 15                       | 15-latest  | Critical fixes only |
 | 14                       | 14-latest  | Critical fixes only |
 | 13                       | 13-latest  | Critical fixes only |
@@ -291,4 +292,4 @@ Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>
-Copyright (c) 2016-2023, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
+Copyright (c) 2016-2024, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
