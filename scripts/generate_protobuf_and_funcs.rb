@@ -134,11 +134,13 @@ class Generator
             @readmethods[node_type] += format("  READ_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
+          # Abstract node types that require casting.
           elsif ['Expr*'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_EXPR_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_ABSTRACT_PTR_FIELD(%s, %s, %s, %s);\n", outname, outname_json, name, type)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
+          # Abstract types that have no read or out methods.
           elsif ['Expr'].include?(type)
             # FIXME
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)

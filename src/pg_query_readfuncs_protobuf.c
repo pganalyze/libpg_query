@@ -50,9 +50,9 @@
 		node->fldname = _readNode(msg->outname); \
 	}
 
-#define READ_EXPR_PTR_FIELD(outname, outname_json, fldname) \
+#define READ_ABSTRACT_PTR_FIELD(outname, outname_json, fldname, fldtype) \
 	if (msg->outname != NULL) { \
-		node->fldname = (Expr *) _readNode(msg->outname); \
+		node->fldname = (fldtype) _readNode(msg->outname); \
 	}
 
 #define READ_VALUE_FIELD(outname, outname_json, fldname) \
