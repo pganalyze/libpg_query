@@ -65,7 +65,7 @@ class Generator
     _fingerprintString(ctx, "%<name>s");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, &node->%<name>s, node, "%<name>s", depth + 1);
+    _fingerprintNode(ctx, %<cast>s&node->%<name>s, node, "%<name>s", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -85,7 +85,7 @@ class Generator
     _fingerprintString(ctx, "%<name>s");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
+    _fingerprintNode(ctx, %<cast>snode->%<name>s, node, "%<name>s", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -306,9 +306,9 @@ class Generator
             # when '[]Node'
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY, name: name)
             when 'Node'
-              fingerprint_def += format(FINGERPRINT_NODE, name: name)
+              fingerprint_def += format(FINGERPRINT_NODE, name: name, cast: '')
             when 'Node*', 'Expr*'
-              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
+              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name, cast: '')
             when 'List*'
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
             when 'CreateStmt'
