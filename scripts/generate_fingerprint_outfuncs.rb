@@ -65,7 +65,7 @@ class Generator
     _fingerprintString(ctx, "%<name>s");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, &node->%<name>s, node, "%<name>s", depth + 1);
+    _fingerprintNode(ctx, %<cast>s&node->%<name>s, node, "%<name>s", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -85,7 +85,7 @@ class Generator
     _fingerprintString(ctx, "%<name>s");
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
+    _fingerprintNode(ctx, %<cast>snode->%<name>s, node, "%<name>s", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -266,8 +266,11 @@ class Generator
     ['ClosePortalStmt', 'portalname'] => :skip,
     ['RawStmt', 'stmt_len'] => :skip,
     ['RawStmt', 'stmt_location'] => :skip,
+    ['JsonTablePath', 'value'] => :skip,
+    ['JsonTablePathSpec', 'name_location'] => :skip,
+    ['JsonTablePathSpec', 'location'] => :skip,
   }
-  INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber']
+  INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber', 'ParseLoc']
   LONG_INT_TYPES = ['long']
   UINT64_TYPES = ['uint64', 'AclMode']
   INT_ARRAY_TYPES = ['Bitmapset*', 'Bitmapset', 'Relids']
@@ -306,9 +309,13 @@ class Generator
             # when '[]Node'
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY, name: name)
             when 'Node'
-              fingerprint_def += format(FINGERPRINT_NODE, name: name)
+              fingerprint_def += format(FINGERPRINT_NODE, name: name, cast: '')
             when 'Node*', 'Expr*'
-              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
+              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name, cast: '')
+            when 'JsonTablePlan'
+              fingerprint_def += format(FINGERPRINT_NODE, name: name, cast: '(Node*)')
+            when 'JsonTablePlan*'
+              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name, cast: '(Node*)')
             when 'List*'
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
             when 'CreateStmt'

@@ -6,9 +6,9 @@ ARLIB = lib$(TARGET).a
 PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 
-PG_VERSION = 16.1
+PG_VERSION = 17.0
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 160001
+PG_VERSION_NUM = 170000
 PROTOC_VERSION = 25.1
 
 VERSION = 5.1.0
@@ -125,12 +125,13 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/07_plpgsql_start_finish_datums.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/08_avoid_zero_length_delimiter_in_regression_tests.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_allow_param_junk.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/10_avoid_namespace_hashtab_impl_gen.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
-	cd $(PGDIR); rm src/pl/plpgsql/src/pl_gram.h
-	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h
+	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
 	cd $(PGDIR); make -C src/backend generated-headers
 	cd $(PGDIR); make -C src/backend parser-recursive # Triggers copying of includes to where they belong, as well as generating gram.c/scan.c
+	cd $(PGDIR); make -C src/common kwlist_d.h
 	# Avoid problems with static asserts
 	echo "#undef StaticAssertDecl" >> $(PGDIR)/src/include/c.h
 	echo "#define StaticAssertDecl(condition, errmessage)" >> $(PGDIR)/src/include/c.h

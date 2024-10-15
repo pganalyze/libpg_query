@@ -26,6 +26,7 @@ class Generator
 
   TYPE_OVERRIDES = {
     ['Query', 'queryId'] => :skip, # we intentionally do not print the queryId field
+    ['JsonTablePath', 'value'] => :skip,
   }
   OUTNAME_OVERRIDES = {
     ['CreateForeignTableStmt', 'base'] => 'base_stmt',
@@ -79,7 +80,7 @@ class Generator
             @readmethods[node_type] += format("  READ_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['int', 'int16', 'int32', 'AttrNumber'].include?(type)
+          elsif ['int', 'int16', 'int32', 'AttrNumber', 'ParseLoc'].include?(type)
             @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @readmethods[node_type] += format("  READ_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
@@ -134,12 +135,14 @@ class Generator
             @readmethods[node_type] += format("  READ_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['Expr*'].include?(type)
+          # Abstract node types that require casting.
+          elsif ['Expr*', 'JsonTablePlan*'].include?(type)
             @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_EXPR_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_ABSTRACT_PTR_FIELD(%s, %s, %s, %s);\n", outname, outname_json, name, type)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif ['Expr'].include?(type)
+          # Abstract types that have no read or out methods.
+          elsif ['Expr', 'JsonTablePlan'].include?(type)
             # FIXME
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1

@@ -49,7 +49,7 @@ CLUSTER vaccluster;
 CREATE FUNCTION do_analyze() RETURNS VOID VOLATILE LANGUAGE SQL
 	AS 'ANALYZE pg_am';
 CREATE FUNCTION wrap_do_analyze(c INT) RETURNS INT IMMUTABLE LANGUAGE SQL
-	AS 'SELECT $1 FROM do_analyze()';
+	AS 'SELECT $1 FROM public.do_analyze()';
 CREATE INDEX ON vaccluster(wrap_do_analyze(i));
 INSERT INTO vaccluster VALUES (1), (2);
 ANALYZE vaccluster;
@@ -65,6 +65,35 @@ BEGIN;
 INSERT INTO vactst SELECT generate_series(301, 400);
 DELETE FROM vactst WHERE i % 5 <> 0; -- delete a few rows inside
 ANALYZE vactst;
+COMMIT;
+
+-- Test ANALYZE setting relhassubclass=f for non-partitioning inheritance
+BEGIN;
+CREATE TABLE past_inh_parent ();
+CREATE TABLE past_inh_child () INHERITS (past_inh_parent);
+INSERT INTO past_inh_child DEFAULT VALUES;
+INSERT INTO past_inh_child DEFAULT VALUES;
+ANALYZE past_inh_parent;
+SELECT reltuples, relhassubclass
+  FROM pg_class WHERE oid = 'past_inh_parent'::regclass;
+DROP TABLE past_inh_child;
+ANALYZE past_inh_parent;
+SELECT reltuples, relhassubclass
+  FROM pg_class WHERE oid = 'past_inh_parent'::regclass;
+COMMIT;
+
+-- Test ANALYZE setting relhassubclass=f for partitioning
+BEGIN;
+CREATE TABLE past_parted (i int) PARTITION BY LIST(i);
+CREATE TABLE past_part PARTITION OF past_parted FOR VALUES IN (1);
+INSERT INTO past_parted VALUES (1),(1);
+ANALYZE past_parted;
+DROP TABLE past_part;
+SELECT reltuples, relhassubclass
+  FROM pg_class WHERE oid = 'past_parted'::regclass;
+ANALYZE past_parted;
+SELECT reltuples, relhassubclass
+  FROM pg_class WHERE oid = 'past_parted'::regclass;
 COMMIT;
 
 VACUUM FULL pg_am;

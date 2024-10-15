@@ -168,6 +168,9 @@ SELECT xmlserialize(CONTENT  '<foo><bar></bar></foo>' AS text INDENT);
 -- 'no indent' = not using 'no indent'
 SELECT xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text) = xmlserialize(DOCUMENT '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
 SELECT xmlserialize(CONTENT  '<foo><bar><val x="y">42</val></bar></foo>' AS text) = xmlserialize(CONTENT '<foo><bar><val x="y">42</val></bar></foo>' AS text NO INDENT);
+-- indent xml strings containing blank nodes
+SELECT xmlserialize(DOCUMENT '<foo>   <bar></bar>    </foo>' AS text INDENT);
+SELECT xmlserialize(CONTENT  'text node<foo>    <bar></bar>   </foo>' AS text INDENT);
 
 SELECT xml '<foo>bar</foo>' IS DOCUMENT;
 SELECT xml '<foo>bar</foo><bar>foo</bar>' IS DOCUMENT;
@@ -505,7 +508,10 @@ SELECT  xmltable.*
 SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) WHERE "COUNTRY_NAME" = 'Japan';
 
 EXPLAIN (VERBOSE, COSTS OFF)
-SELECT xmltable.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) WHERE "COUNTRY_NAME" = 'Japan';
+SELECT f.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) AS f WHERE "COUNTRY_NAME" = 'Japan';
+
+EXPLAIN (VERBOSE, FORMAT JSON, COSTS OFF)
+SELECT f.* FROM xmldata, LATERAL xmltable('/ROWS/ROW[COUNTRY_NAME="Japan" or COUNTRY_NAME="India"]' PASSING data COLUMNS "COUNTRY_NAME" text, "REGION_ID" int) AS f WHERE "COUNTRY_NAME" = 'Japan';
 
 -- should to work with more data
 INSERT INTO xmldata VALUES('<ROWS>
@@ -660,3 +666,10 @@ SELECT * FROM XMLTABLE('*' PASSING '<e>pre<!--c1--><?pi arg?><![CDATA[&ent1]]><n
 \x
 
 SELECT * FROM XMLTABLE('.' PASSING XMLELEMENT(NAME a) columns a varchar(20) PATH '"<foo/>"', b xml PATH '"<foo/>"');
+
+SELECT xmltext(NULL);
+SELECT xmltext('');
+SELECT xmltext('  ');
+SELECT xmltext('foo `$_-+?=*^%!|/\()[]{}');
+SELECT xmltext('foo & <"bar">');
+SELECT xmltext('x'|| '<P>73</P>'::xml || .42 || true || 'j'::char);

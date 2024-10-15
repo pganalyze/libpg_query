@@ -8,6 +8,8 @@ static void _fingerprintParam(FingerprintContext *ctx, const Param *node, const 
 static void _fingerprintAggref(FingerprintContext *ctx, const Aggref *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintGroupingFunc(FingerprintContext *ctx, const GroupingFunc *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintWindowFuncRunCondition(FingerprintContext *ctx, const WindowFuncRunCondition *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintMergeSupportFunc(FingerprintContext *ctx, const MergeSupportFunc *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintSubscriptingRef(FingerprintContext *ctx, const SubscriptingRef *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintFuncExpr(FingerprintContext *ctx, const FuncExpr *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintNamedArgExpr(FingerprintContext *ctx, const NamedArgExpr *node, const void *parent, const char *field_name, unsigned int depth);
@@ -39,8 +41,14 @@ static void _fingerprintJsonReturning(FingerprintContext *ctx, const JsonReturni
 static void _fingerprintJsonValueExpr(FingerprintContext *ctx, const JsonValueExpr *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonConstructorExpr(FingerprintContext *ctx, const JsonConstructorExpr *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonIsPredicate(FingerprintContext *ctx, const JsonIsPredicate *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonBehavior(FingerprintContext *ctx, const JsonBehavior *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonExpr(FingerprintContext *ctx, const JsonExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTablePath(FingerprintContext *ctx, const JsonTablePath *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTablePathScan(FingerprintContext *ctx, const JsonTablePathScan *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTableSiblingJoin(FingerprintContext *ctx, const JsonTableSiblingJoin *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintMergeAction(FingerprintContext *ctx, const MergeAction *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintCoerceToDomain(FingerprintContext *ctx, const CoerceToDomain *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintCoerceToDomainValue(FingerprintContext *ctx, const CoerceToDomainValue *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintSetToDefault(FingerprintContext *ctx, const SetToDefault *node, const void *parent, const char *field_name, unsigned int depth);
@@ -84,6 +92,7 @@ static void _fingerprintPartitionElem(FingerprintContext *ctx, const PartitionEl
 static void _fingerprintPartitionSpec(FingerprintContext *ctx, const PartitionSpec *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintPartitionBoundSpec(FingerprintContext *ctx, const PartitionBoundSpec *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintPartitionRangeDatum(FingerprintContext *ctx, const PartitionRangeDatum *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintSinglePartitionSpec(FingerprintContext *ctx, const SinglePartitionSpec *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintPartitionCmd(FingerprintContext *ctx, const PartitionCmd *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintRangeTblEntry(FingerprintContext *ctx, const RangeTblEntry *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintRTEPermissionInfo(FingerprintContext *ctx, const RTEPermissionInfo *node, const void *parent, const char *field_name, unsigned int depth);
@@ -101,10 +110,17 @@ static void _fingerprintCTESearchClause(FingerprintContext *ctx, const CTESearch
 static void _fingerprintCTECycleClause(FingerprintContext *ctx, const CTECycleClause *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintCommonTableExpr(FingerprintContext *ctx, const CommonTableExpr *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintMergeWhenClause(FingerprintContext *ctx, const MergeWhenClause *node, const void *parent, const char *field_name, unsigned int depth);
-static void _fingerprintMergeAction(FingerprintContext *ctx, const MergeAction *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintTriggerTransition(FingerprintContext *ctx, const TriggerTransition *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonOutput(FingerprintContext *ctx, const JsonOutput *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonArgument(FingerprintContext *ctx, const JsonArgument *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonFuncExpr(FingerprintContext *ctx, const JsonFuncExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTablePathSpec(FingerprintContext *ctx, const JsonTablePathSpec *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTable(FingerprintContext *ctx, const JsonTable *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonTableColumn(FingerprintContext *ctx, const JsonTableColumn *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonKeyValue(FingerprintContext *ctx, const JsonKeyValue *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonParseExpr(FingerprintContext *ctx, const JsonParseExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonScalarExpr(FingerprintContext *ctx, const JsonScalarExpr *node, const void *parent, const char *field_name, unsigned int depth);
+static void _fingerprintJsonSerializeExpr(FingerprintContext *ctx, const JsonSerializeExpr *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonObjectConstructor(FingerprintContext *ctx, const JsonObjectConstructor *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonArrayConstructor(FingerprintContext *ctx, const JsonArrayConstructor *node, const void *parent, const char *field_name, unsigned int depth);
 static void _fingerprintJsonArrayQueryConstructor(FingerprintContext *ctx, const JsonArrayQueryConstructor *node, const void *parent, const char *field_name, unsigned int depth);
@@ -412,6 +428,22 @@ _fingerprintTableFunc(FingerprintContext *ctx, const TableFunc *node, const void
     }
     XXH3_freeState(prev);
   }
+  if (node->colvalexprs != NULL && node->colvalexprs->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "colvalexprs");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->colvalexprs, node, "colvalexprs", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->colvalexprs) == 1 && linitial(node->colvalexprs) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
   if (node->docexpr != NULL) {
     XXH3_state_t* prev = XXH3_createState();
     XXH64_hash_t hash;
@@ -427,6 +459,11 @@ _fingerprintTableFunc(FingerprintContext *ctx, const TableFunc *node, const void
         dlist_delete(dlist_tail_node(&ctx->tokens));
     }
     XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "functype");
+    _fingerprintString(ctx, _enumToStringTableFuncType(node->functype));
   }
 
   // Intentionally ignoring node->location for fingerprinting
@@ -483,6 +520,39 @@ _fingerprintTableFunc(FingerprintContext *ctx, const TableFunc *node, const void
     sprintf(buffer, "%d", node->ordinalitycol);
     _fingerprintString(ctx, "ordinalitycol");
     _fingerprintString(ctx, buffer);
+  }
+
+  if (node->passingvalexprs != NULL && node->passingvalexprs->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "passingvalexprs");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->passingvalexprs, node, "passingvalexprs", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->passingvalexprs) == 1 && linitial(node->passingvalexprs) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->plan != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "plan");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->plan, node, "plan", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
   }
 
   if (node->rowexpr != NULL) {
@@ -1009,6 +1079,22 @@ _fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const vo
 
   // Intentionally ignoring node->location for fingerprinting
 
+  if (node->runCondition != NULL && node->runCondition->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "runCondition");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->runCondition, node, "runCondition", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->runCondition) == 1 && linitial(node->runCondition) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
   if (node->winagg) {
     _fingerprintString(ctx, "winagg");
     _fingerprintString(ctx, "true");
@@ -1044,6 +1130,68 @@ _fingerprintWindowFunc(FingerprintContext *ctx, const WindowFunc *node, const vo
     char buffer[50];
     sprintf(buffer, "%d", node->wintype);
     _fingerprintString(ctx, "wintype");
+    _fingerprintString(ctx, buffer);
+  }
+
+}
+
+static void
+_fingerprintWindowFuncRunCondition(FingerprintContext *ctx, const WindowFuncRunCondition *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->arg != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "arg");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->arg, node, "arg", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->inputcollid != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->inputcollid);
+    _fingerprintString(ctx, "inputcollid");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->opno != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->opno);
+    _fingerprintString(ctx, "opno");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->wfunc_left) {
+    _fingerprintString(ctx, "wfunc_left");
+    _fingerprintString(ctx, "true");
+  }
+
+}
+
+static void
+_fingerprintMergeSupportFunc(FingerprintContext *ctx, const MergeSupportFunc *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->msfcollid != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->msfcollid);
+    _fingerprintString(ctx, "msfcollid");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->msftype != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->msftype);
+    _fingerprintString(ctx, "msftype");
     _fingerprintString(ctx, buffer);
   }
 
@@ -2743,6 +2891,361 @@ _fingerprintJsonIsPredicate(FingerprintContext *ctx, const JsonIsPredicate *node
 }
 
 static void
+_fingerprintJsonBehavior(FingerprintContext *ctx, const JsonBehavior *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (true) {
+    _fingerprintString(ctx, "btype");
+    _fingerprintString(ctx, _enumToStringJsonBehaviorType(node->btype));
+  }
+
+  if (node->coerce) {
+    _fingerprintString(ctx, "coerce");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (node->expr != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "expr");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->expr, node, "expr", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+}
+
+static void
+_fingerprintJsonExpr(FingerprintContext *ctx, const JsonExpr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->collation != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->collation);
+    _fingerprintString(ctx, "collation");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->column_name != NULL) {
+    _fingerprintString(ctx, "column_name");
+    _fingerprintString(ctx, node->column_name);
+  }
+
+  if (node->format != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "format");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonFormat(ctx, node->format, node, "format", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->formatted_expr != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "formatted_expr");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->formatted_expr, node, "formatted_expr", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->omit_quotes) {
+    _fingerprintString(ctx, "omit_quotes");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (node->on_empty != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_empty");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_empty, node, "on_empty", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->on_error != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_error");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_error, node, "on_error", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "op");
+    _fingerprintString(ctx, _enumToStringJsonExprOp(node->op));
+  }
+
+  if (node->passing_names != NULL && node->passing_names->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "passing_names");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->passing_names, node, "passing_names", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->passing_names) == 1 && linitial(node->passing_names) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->passing_values != NULL && node->passing_values->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "passing_values");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->passing_values, node, "passing_values", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->passing_values) == 1 && linitial(node->passing_values) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->path_spec != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "path_spec");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->path_spec, node, "path_spec", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->returning != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "returning");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonReturning(ctx, node->returning, node, "returning", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->use_io_coercion) {
+    _fingerprintString(ctx, "use_io_coercion");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (node->use_json_coercion) {
+    _fingerprintString(ctx, "use_json_coercion");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "wrapper");
+    _fingerprintString(ctx, _enumToStringJsonWrapper(node->wrapper));
+  }
+
+}
+
+static void
+_fingerprintJsonTablePath(FingerprintContext *ctx, const JsonTablePath *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->name != NULL) {
+    _fingerprintString(ctx, "name");
+    _fingerprintString(ctx, node->name);
+  }
+
+  // Intentionally ignoring node->value for fingerprinting
+
+}
+
+static void
+_fingerprintJsonTablePathScan(FingerprintContext *ctx, const JsonTablePathScan *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->child != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "child");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, (Node*)node->child, node, "child", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->colMax != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->colMax);
+    _fingerprintString(ctx, "colMax");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->colMin != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->colMin);
+    _fingerprintString(ctx, "colMin");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->errorOnError) {
+    _fingerprintString(ctx, "errorOnError");
+    _fingerprintString(ctx, "true");
+  }
+
+  if (node->path != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "path");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonTablePath(ctx, node->path, node, "path", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "plan");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, (Node*)&node->plan, node, "plan", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonTableSiblingJoin(FingerprintContext *ctx, const JsonTableSiblingJoin *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->lplan != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "lplan");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, (Node*)node->lplan, node, "lplan", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "plan");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, (Node*)&node->plan, node, "plan", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->rplan != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "rplan");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, (Node*)node->rplan, node, "rplan", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
 _fingerprintNullTest(FingerprintContext *ctx, const NullTest *node, const void *parent, const char *field_name, unsigned int depth)
 {
   if (node->arg != NULL) {
@@ -2803,6 +3306,75 @@ _fingerprintBooleanTest(FingerprintContext *ctx, const BooleanTest *node, const 
 
   // Intentionally ignoring node->location for fingerprinting
 
+}
+
+static void
+_fingerprintMergeAction(FingerprintContext *ctx, const MergeAction *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (true) {
+    _fingerprintString(ctx, "commandType");
+    _fingerprintString(ctx, _enumToStringCmdType(node->commandType));
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "matchKind");
+    _fingerprintString(ctx, _enumToStringMergeMatchKind(node->matchKind));
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "override");
+    _fingerprintString(ctx, _enumToStringOverridingKind(node->override));
+  }
+
+  if (node->qual != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "qual");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->qual, node, "qual", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->targetList != NULL && node->targetList->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "targetList");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->targetList, node, "targetList", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->targetList) == 1 && linitial(node->targetList) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->updateColnos != NULL && node->updateColnos->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "updateColnos");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->updateColnos, node, "updateColnos", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->updateColnos) == 1 && linitial(node->updateColnos) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
 }
 
 static void
@@ -3544,9 +4116,28 @@ _fingerprintQuery(FingerprintContext *ctx, const Query *node, const void *parent
     }
     XXH3_freeState(prev);
   }
-  if (node->mergeUseOuterJoin) {
-    _fingerprintString(ctx, "mergeUseOuterJoin");
-    _fingerprintString(ctx, "true");
+  if (node->mergeJoinCondition != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "mergeJoinCondition");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->mergeJoinCondition, node, "mergeJoinCondition", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->mergeTargetRelation != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->mergeTargetRelation);
+    _fingerprintString(ctx, "mergeTargetRelation");
+    _fingerprintString(ctx, buffer);
   }
 
   if (node->onConflict != NULL) {
@@ -5463,6 +6054,11 @@ _fingerprintPartitionRangeDatum(FingerprintContext *ctx, const PartitionRangeDat
 }
 
 static void
+_fingerprintSinglePartitionSpec(FingerprintContext *ctx, const SinglePartitionSpec *node, const void *parent, const char *field_name, unsigned int depth)
+{
+}
+
+static void
 _fingerprintPartitionCmd(FingerprintContext *ctx, const PartitionCmd *node, const void *parent, const char *field_name, unsigned int depth)
 {
   if (node->bound != NULL) {
@@ -6288,22 +6884,6 @@ _fingerprintWindowClause(FingerprintContext *ctx, const WindowClause *node, cons
     _fingerprintString(ctx, node->refname);
   }
 
-  if (node->runCondition != NULL && node->runCondition->length > 0) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "runCondition");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->runCondition, node, "runCondition", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->runCondition) == 1 && linitial(node->runCondition) == NIL)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
   if (node->startInRangeFunc != 0) {
     char buffer[50];
     sprintf(buffer, "%d", node->startInRangeFunc);
@@ -6812,9 +7392,9 @@ _fingerprintMergeWhenClause(FingerprintContext *ctx, const MergeWhenClause *node
     XXH3_freeState(prev);
   }
 
-  if (node->matched) {
-    _fingerprintString(ctx, "matched");
-    _fingerprintString(ctx, "true");
+  if (true) {
+    _fingerprintString(ctx, "matchKind");
+    _fingerprintString(ctx, _enumToStringMergeMatchKind(node->matchKind));
   }
 
   if (true) {
@@ -6848,75 +7428,6 @@ _fingerprintMergeWhenClause(FingerprintContext *ctx, const MergeWhenClause *node
     hash = XXH3_64bits_digest(ctx->xxh_state);
     _fingerprintNode(ctx, node->values, node, "values", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->values) == 1 && linitial(node->values) == NIL)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
-}
-
-static void
-_fingerprintMergeAction(FingerprintContext *ctx, const MergeAction *node, const void *parent, const char *field_name, unsigned int depth)
-{
-  if (true) {
-    _fingerprintString(ctx, "commandType");
-    _fingerprintString(ctx, _enumToStringCmdType(node->commandType));
-  }
-
-  if (node->matched) {
-    _fingerprintString(ctx, "matched");
-    _fingerprintString(ctx, "true");
-  }
-
-  if (true) {
-    _fingerprintString(ctx, "override");
-    _fingerprintString(ctx, _enumToStringOverridingKind(node->override));
-  }
-
-  if (node->qual != NULL) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "qual");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->qual, node, "qual", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
-
-  if (node->targetList != NULL && node->targetList->length > 0) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "targetList");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->targetList, node, "targetList", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->targetList) == 1 && linitial(node->targetList) == NIL)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
-  if (node->updateColnos != NULL && node->updateColnos->length > 0) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "updateColnos");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->updateColnos, node, "updateColnos", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->updateColnos) == 1 && linitial(node->updateColnos) == NIL)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
         dlist_delete(dlist_tail_node(&ctx->tokens));
@@ -6985,6 +7496,432 @@ _fingerprintJsonOutput(FingerprintContext *ctx, const JsonOutput *node, const vo
 }
 
 static void
+_fingerprintJsonArgument(FingerprintContext *ctx, const JsonArgument *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->name != NULL) {
+    _fingerprintString(ctx, "name");
+    _fingerprintString(ctx, node->name);
+  }
+
+  if (node->val != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "val");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonValueExpr(ctx, node->val, node, "val", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonFuncExpr(FingerprintContext *ctx, const JsonFuncExpr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->column_name != NULL) {
+    _fingerprintString(ctx, "column_name");
+    _fingerprintString(ctx, node->column_name);
+  }
+
+  if (node->context_item != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "context_item");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonValueExpr(ctx, node->context_item, node, "context_item", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->on_empty != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_empty");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_empty, node, "on_empty", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->on_error != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_error");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_error, node, "on_error", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "op");
+    _fingerprintString(ctx, _enumToStringJsonExprOp(node->op));
+  }
+
+  if (node->output != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "output");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonOutput(ctx, node->output, node, "output", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->passing != NULL && node->passing->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "passing");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->passing, node, "passing", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->passing) == 1 && linitial(node->passing) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->pathspec != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "pathspec");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->pathspec, node, "pathspec", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "quotes");
+    _fingerprintString(ctx, _enumToStringJsonQuotes(node->quotes));
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "wrapper");
+    _fingerprintString(ctx, _enumToStringJsonWrapper(node->wrapper));
+  }
+
+}
+
+static void
+_fingerprintJsonTablePathSpec(FingerprintContext *ctx, const JsonTablePathSpec *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->name != NULL) {
+    _fingerprintString(ctx, "name");
+    _fingerprintString(ctx, node->name);
+  }
+
+  // Intentionally ignoring node->name_location for fingerprinting
+
+  if (node->string != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "string");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->string, node, "string", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonTable(FingerprintContext *ctx, const JsonTable *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->alias != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "alias");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->columns != NULL && node->columns->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "columns");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->columns, node, "columns", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->columns) == 1 && linitial(node->columns) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->context_item != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "context_item");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonValueExpr(ctx, node->context_item, node, "context_item", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->lateral) {
+    _fingerprintString(ctx, "lateral");
+    _fingerprintString(ctx, "true");
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->on_error != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_error");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_error, node, "on_error", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->passing != NULL && node->passing->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "passing");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->passing, node, "passing", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->passing) == 1 && linitial(node->passing) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->pathspec != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "pathspec");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonTablePathSpec(ctx, node->pathspec, node, "pathspec", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonTableColumn(FingerprintContext *ctx, const JsonTableColumn *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (true) {
+    _fingerprintString(ctx, "coltype");
+    _fingerprintString(ctx, _enumToStringJsonTableColumnType(node->coltype));
+  }
+
+  if (node->columns != NULL && node->columns->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "columns");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->columns, node, "columns", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->columns) == 1 && linitial(node->columns) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+  if (node->format != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "format");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonFormat(ctx, node->format, node, "format", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->name != NULL) {
+    _fingerprintString(ctx, "name");
+    _fingerprintString(ctx, node->name);
+  }
+
+  if (node->on_empty != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_empty");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_empty, node, "on_empty", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->on_error != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "on_error");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonBehavior(ctx, node->on_error, node, "on_error", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->pathspec != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "pathspec");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonTablePathSpec(ctx, node->pathspec, node, "pathspec", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "quotes");
+    _fingerprintString(ctx, _enumToStringJsonQuotes(node->quotes));
+  }
+
+  if (node->typeName != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "typeName");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintTypeName(ctx, node->typeName, node, "typeName", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (true) {
+    _fingerprintString(ctx, "wrapper");
+    _fingerprintString(ctx, _enumToStringJsonWrapper(node->wrapper));
+  }
+
+}
+
+static void
 _fingerprintJsonKeyValue(FingerprintContext *ctx, const JsonKeyValue *node, const void *parent, const char *field_name, unsigned int depth)
 {
   if (node->key != NULL) {
@@ -7013,6 +7950,134 @@ _fingerprintJsonKeyValue(FingerprintContext *ctx, const JsonKeyValue *node, cons
 
     hash = XXH3_64bits_digest(ctx->xxh_state);
     _fingerprintJsonValueExpr(ctx, node->value, node, "value", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonParseExpr(FingerprintContext *ctx, const JsonParseExpr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->expr != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "expr");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonValueExpr(ctx, node->expr, node, "expr", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->output != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "output");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonOutput(ctx, node->output, node, "output", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  if (node->unique_keys) {
+    _fingerprintString(ctx, "unique_keys");
+    _fingerprintString(ctx, "true");
+  }
+
+}
+
+static void
+_fingerprintJsonScalarExpr(FingerprintContext *ctx, const JsonScalarExpr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->expr != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "expr");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->expr, node, "expr", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->output != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "output");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonOutput(ctx, node->output, node, "output", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+}
+
+static void
+_fingerprintJsonSerializeExpr(FingerprintContext *ctx, const JsonSerializeExpr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+  if (node->expr != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "expr");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonValueExpr(ctx, node->expr, node, "expr", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  if (node->output != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "output");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintJsonOutput(ctx, node->output, node, "output", depth + 1);
     if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
       XXH3_copyState(ctx->xxh_state, prev);
       if (ctx->write_tokens)
@@ -7729,6 +8794,22 @@ _fingerprintMergeStmt(FingerprintContext *ctx, const MergeStmt *node, const void
     XXH3_freeState(prev);
   }
 
+  if (node->returningList != NULL && node->returningList->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "returningList");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->returningList, node, "returningList", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->returningList) == 1 && linitial(node->returningList) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
   if (node->sourceRelation != NULL) {
     XXH3_state_t* prev = XXH3_createState();
     XXH64_hash_t hash;
@@ -9231,6 +10312,13 @@ _fingerprintConstraint(FingerprintContext *ctx, const Constraint *node, const vo
   if (node->indexspace != NULL) {
     _fingerprintString(ctx, "indexspace");
     _fingerprintString(ctx, node->indexspace);
+  }
+
+  if (node->inhcount != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->inhcount);
+    _fingerprintString(ctx, "inhcount");
+    _fingerprintString(ctx, buffer);
   }
 
   if (node->initdeferred) {
@@ -11652,11 +12740,21 @@ _fingerprintAlterStatsStmt(FingerprintContext *ctx, const AlterStatsStmt *node, 
     _fingerprintString(ctx, "true");
   }
 
-  if (node->stxstattarget != 0) {
-    char buffer[50];
-    sprintf(buffer, "%d", node->stxstattarget);
+  if (node->stxstattarget != NULL) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
+
+    XXH3_copyState(prev, ctx->xxh_state);
     _fingerprintString(ctx, "stxstattarget");
-    _fingerprintString(ctx, buffer);
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->stxstattarget, node, "stxstattarget", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
   }
 
 }
@@ -12360,6 +13458,8 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
     _fingerprintString(ctx, "kind");
     _fingerprintString(ctx, _enumToStringTransactionStmtKind(node->kind));
   }
+
+  // Intentionally ignoring node->location for fingerprinting
 
   // Intentionally ignoring node->options for fingerprinting
 
@@ -13384,6 +14484,13 @@ _fingerprintExecuteStmt(FingerprintContext *ctx, const ExecuteStmt *node, const 
 static void
 _fingerprintDeallocateStmt(FingerprintContext *ctx, const DeallocateStmt *node, const void *parent, const char *field_name, unsigned int depth)
 {
+  if (node->isall) {
+    _fingerprintString(ctx, "isall");
+    _fingerprintString(ctx, "true");
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
   // Intentionally ignoring node->name for fingerprinting
 
 }

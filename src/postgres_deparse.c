@@ -196,6 +196,20 @@ static void deparseJsonArrayAgg(StringInfo str, JsonArrayAgg *json_array_agg);
 static void deparseJsonObjectConstructor(StringInfo str, JsonObjectConstructor *json_object_constructor);
 static void deparseJsonArrayConstructor(StringInfo str, JsonArrayConstructor *json_array_constructor);
 static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConstructor *json_array_query_constructor);
+static void deparseJsonValueExpr(StringInfo str, JsonValueExpr *json_value_expr);
+static void deparseJsonOutput(StringInfo str, JsonOutput *json_output);
+static void deparseJsonParseExpr(StringInfo str, JsonParseExpr *json_parse_expr);
+static void deparseJsonScalarExpr(StringInfo str, JsonScalarExpr *json_scalar_expr);
+static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_serialize_expr);
+static void deparseJsonTable(StringInfo str, JsonTable *json_table);
+static void deparseJsonTableColumn(StringInfo str, JsonTableColumn *json_table_column);
+static void deparseJsonTableColumns(StringInfo str, List *json_table_columns);
+static void deparseJsonTablePathSpec(StringInfo str, JsonTablePathSpec *json_table_path_spec);
+static void deparseJsonBehavior(StringInfo str, JsonBehavior *json_behavior);
+static void deparseJsonFuncExpr(StringInfo str, JsonFuncExpr *json_func_expr);
+static void deparseJsonQuotesClauseOpt(StringInfo str, JsonQuotes quotes);
+static void deparseJsonOnErrorClauseOpt(StringInfo str, JsonBehavior *behavior);
+static void deparseJsonOnEmptyClauseOpt(StringInfo str, JsonBehavior *behavior);
 static void deparseConstraint(StringInfo str, Constraint *constraint);
 static void deparseSchemaStmt(StringInfo str, Node *node);
 static void deparseExecuteStmt(StringInfo str, ExecuteStmt *execute_stmt);
@@ -339,6 +353,21 @@ static void deparseExpr(StringInfo str, Node *node)
 			break;
 		case T_SetToDefault:
 			deparseSetToDefault(str, castNode(SetToDefault, node));
+			break;
+		case T_MergeSupportFunc:
+			appendStringInfoString(str, "merge_action() ");
+			break;
+		case T_JsonParseExpr:
+			deparseJsonParseExpr(str, castNode(JsonParseExpr, node));
+			break;
+		case T_JsonScalarExpr:
+			deparseJsonScalarExpr(str, castNode(JsonScalarExpr, node));
+			break;
+		case T_JsonSerializeExpr:
+			deparseJsonSerializeExpr(str, castNode(JsonSerializeExpr, node));
+			break;
+		case T_JsonFuncExpr:
+			deparseJsonFuncExpr(str, castNode(JsonFuncExpr, node));
 			break;
 		case T_FuncCall:
 		case T_SQLValueFunction:
@@ -1654,6 +1683,9 @@ static void deparseTableRef(StringInfo str, Node *node)
 		case T_JoinExpr:
 			deparseJoinExpr(str, castNode(JoinExpr, node));
 			break;
+		case T_JsonTable:
+			deparseJsonTable(str, castNode(JsonTable, node));
+			break;
 		default:
 			Assert(false);
 	}
@@ -2661,14 +2693,21 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		list_length(func_call->funcname) == 2 &&
 		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
 		strcmp(strVal(lsecond(func_call->funcname)), "timezone") == 0 &&
-		list_length(func_call->args) == 2)
+		list_length(func_call->args) > 0 &&
+		list_length(func_call->args) <= 2)
 	{
 		/*
 		 * "AT TIME ZONE" is a keyword on its own merit, and only accepts the
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
 		 * Note that the arguments are swapped in this case
 		 */
-		Expr* e = lsecond(func_call->args);
+		Expr* e;
+		bool isLocal = list_length(func_call->args) == 1;
+
+		if (isLocal)
+			e = linitial(func_call->args);
+		else
+			e = lsecond(func_call->args);
 
 		if (IsA(e, A_Expr)) {
 			appendStringInfoChar(str, '(');
@@ -2680,8 +2719,12 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 			appendStringInfoChar(str, ')');
 		}
 
-		appendStringInfoString(str, " AT TIME ZONE ");
-		deparseExpr(str, linitial(func_call->args));
+		if (isLocal)
+			appendStringInfoString(str, " AT LOCAL");
+		else {
+			appendStringInfoString(str, " AT TIME ZONE ");
+			deparseExpr(str, linitial(func_call->args));
+		}
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
 		list_length(func_call->funcname) == 2 &&
@@ -4006,7 +4049,8 @@ static void deparseAIndirection(StringInfo str, A_Indirection *a_indirection)
 		IsA(a_indirection->arg, A_Expr) ||
 		IsA(a_indirection->arg, TypeCast) ||
 		IsA(a_indirection->arg, RowExpr) ||
-		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices));
+		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices)) ||
+		IsA(a_indirection->arg, JsonFuncExpr);
 
 	if (need_parens)
 		appendStringInfoChar(str, '(');
@@ -4332,19 +4376,25 @@ static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
 	deparseExpr(str, merge_stmt->joinCondition);
 	appendStringInfoChar(str, ' ');
 
-	ListCell *lc, *lc2;
+	ListCell *lc;
 	foreach (lc, merge_stmt->mergeWhenClauses)
 	{
 		MergeWhenClause *clause = castNode(MergeWhenClause, lfirst(lc));
 
 		appendStringInfoString(str, "WHEN ");
 
-		if (!clause->matched)
+		switch (clause->matchKind)
 		{
-			appendStringInfoString(str, "NOT ");
+			case MERGE_WHEN_MATCHED:
+				appendStringInfoString(str, "MATCHED ");
+				break;
+			case MERGE_WHEN_NOT_MATCHED_BY_SOURCE:
+				appendStringInfoString(str, "NOT MATCHED BY SOURCE ");
+				break;
+			case MERGE_WHEN_NOT_MATCHED_BY_TARGET:
+				appendStringInfoString(str, "NOT MATCHED ");
+				break;
 		}
-
-		appendStringInfoString(str, "MATCHED ");
 
 		if (clause->condition)
 		{
@@ -4393,6 +4443,12 @@ static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
 
 		if (lfirst(lc) != llast(merge_stmt->mergeWhenClauses))
 			appendStringInfoChar(str, ' ');
+	}
+
+	if (merge_stmt->returningList)
+	{
+		appendStringInfoString(str, " RETURNING ");
+		deparseTargetList(str, merge_stmt->returningList);
 	}
 }
 
@@ -4823,9 +4879,18 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 
 	if (list_length(constraint->keys) > 0)
 	{
-		appendStringInfoChar(str, '(');
-		deparseColumnList(str, constraint->keys);
-		appendStringInfoString(str, ") ");
+		bool valueOnly = false;
+
+		if (list_length(constraint->keys) == 1) {
+			Node* firstKey = constraint->keys->elements[0].ptr_value;
+			valueOnly = IsA(firstKey, String) && !strcmp("value", ((String*)firstKey)->sval);
+		}
+
+		if (!valueOnly) {
+			appendStringInfoChar(str, '(');
+			deparseColumnList(str, constraint->keys);
+			appendStringInfoString(str, ") ");
+		}
 	}
 
 	if (list_length(constraint->fk_attrs) > 0)
@@ -6525,6 +6590,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 			options = "DROP IDENTITY";
 			trailing_missing_ok = true;
 			break;
+		case AT_SetExpression:
+			appendStringInfoString(str, "ALTER COLUMN ");
+			break;
 	}
 
 	if (alter_table_cmd->missing_ok && !trailing_missing_ok)
@@ -6539,6 +6607,9 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 	{
 		appendStringInfoString(str, quote_identifier(alter_table_cmd->name));
 		appendStringInfoChar(str, ' ');
+	} else if (alter_table_cmd->subtype == AT_SetAccessMethod)
+	{
+		appendStringInfoString(str, " DEFAULT");
 	}
 
 	if (alter_table_cmd->num > 0)
@@ -6625,6 +6696,11 @@ static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd,
 		case AT_ReplicaIdentity:
 			deparseReplicaIdentityStmt(str, castNode(ReplicaIdentityStmt, alter_table_cmd->def));
 			appendStringInfoChar(str, ' ');
+			break;
+		case AT_SetExpression:
+			appendStringInfoString(str, "SET EXPRESSION AS (");
+			deparseExpr(str, alter_table_cmd->def);
+			appendStringInfoChar(str, ')');
 			break;
 		default:
 			Assert(alter_table_cmd->def == NULL);
@@ -7509,15 +7585,29 @@ static void deparseCopyStmt(StringInfo str, CopyStmt *copy_stmt)
 				}
 				else if (strcmp(def_elem->defname, "force_not_null") == 0)
 				{
-					appendStringInfoString(str, "FORCE_NOT_NULL (");
-					deparseColumnList(str, castNode(List, def_elem->arg));
-					appendStringInfoChar(str, ')');
+					appendStringInfoString(str, "FORCE_NOT_NULL ");
+
+					if (IsA(def_elem->arg, A_Star))
+						deparseAStar(str, castNode(A_Star, def_elem->arg));
+					else
+					{
+						appendStringInfoChar(str, '(');
+						deparseColumnList(str, castNode(List, def_elem->arg));
+						appendStringInfoChar(str, ')');
+					}
 				}
 				else if (strcmp(def_elem->defname, "force_null") == 0)
 				{
-					appendStringInfoString(str, "FORCE_NULL (");
-					deparseColumnList(str, castNode(List, def_elem->arg));
-					appendStringInfoChar(str, ')');
+					appendStringInfoString(str, "FORCE_NULL ");
+
+					if (IsA(def_elem->arg, A_Star))
+						deparseAStar(str, castNode(A_Star, def_elem->arg));
+					else
+					{
+						appendStringInfoChar(str, '(');
+						deparseColumnList(str, castNode(List, def_elem->arg));
+						appendStringInfoChar(str, ')');
+					}
 				}
 				else if (strcmp(def_elem->defname, "encoding") == 0)
 				{
@@ -9559,7 +9649,10 @@ static void deparseAlterStatsStmt(StringInfo str, AlterStatsStmt *alter_stats_st
 	deparseAnyName(str, alter_stats_stmt->defnames);
 	appendStringInfoChar(str, ' ');
 
-	appendStringInfo(str, "SET STATISTICS %d", alter_stats_stmt->stxstattarget);
+	if (alter_stats_stmt->stxstattarget)
+		appendStringInfo(str, "SET STATISTICS %d", castNode(Integer, alter_stats_stmt->stxstattarget)->ival);
+	else
+		appendStringInfo(str, "SET STATISTICS DEFAULT");
 }
 
 static void deparseAlterTSDictionaryStmt(StringInfo str, AlterTSDictionaryStmt *alter_ts_dictionary_stmt)
@@ -10504,6 +10597,301 @@ static void deparseJsonArrayQueryConstructor(StringInfo str, JsonArrayQueryConst
 
 	removeTrailingSpace(str);
 	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonParseExpr(StringInfo str, JsonParseExpr *json_parse_expr)
+{
+	appendStringInfoString(str, "JSON(");
+
+	deparseJsonValueExpr(str, json_parse_expr->expr);
+
+	if (json_parse_expr->unique_keys)
+		appendStringInfoString(str, " WITH UNIQUE KEYS");
+
+	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonScalarExpr(StringInfo str, JsonScalarExpr *json_scalar_expr)
+{
+	appendStringInfoString(str, "JSON_SCALAR(");
+	deparseExpr(str, (Node*) json_scalar_expr->expr);
+	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonSerializeExpr(StringInfo str, JsonSerializeExpr *json_serialize_expr)
+{
+	appendStringInfoString(str, "JSON_SERIALIZE(");
+
+	deparseJsonValueExpr(str, json_serialize_expr->expr);
+
+	if (json_serialize_expr->output)
+		deparseJsonOutput(str, json_serialize_expr->output);
+
+	appendStringInfoString(str, ")");
+}
+
+static void deparseJsonQuotesClauseOpt(StringInfo str, JsonQuotes quotes)
+{
+	switch (quotes)
+	{
+		case JS_QUOTES_UNSPEC:
+			break;
+		case JS_QUOTES_KEEP:
+			appendStringInfoString(str, " KEEP QUOTES");
+			break;
+		case JS_QUOTES_OMIT:
+			appendStringInfoString(str, " OMIT QUOTES");
+			break;
+	}
+}
+
+static void deparseJsonOnErrorClauseOpt(StringInfo str, JsonBehavior *behavior)
+{
+	if (!behavior)
+		return;
+
+	appendStringInfoChar(str, ' ');
+	deparseJsonBehavior(str, behavior);
+	appendStringInfoString(str, " ON ERROR");
+}
+
+static void deparseJsonOnEmptyClauseOpt(StringInfo str, JsonBehavior *behavior)
+{
+	if (behavior)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseJsonBehavior(str, behavior);
+		appendStringInfoString(str, " ON EMPTY");
+	}
+}
+
+static void deparseJsonFuncExpr(StringInfo str, JsonFuncExpr *json_func_expr)
+{
+	switch (json_func_expr->op)
+	{
+		case JSON_EXISTS_OP:
+			appendStringInfoString(str, "JSON_EXISTS(");
+			break;
+		case JSON_QUERY_OP:
+			appendStringInfoString(str, "JSON_QUERY(");
+			break;
+		case JSON_VALUE_OP:
+			appendStringInfoString(str, "JSON_VALUE(");
+			break;
+		case JSON_TABLE_OP:
+			appendStringInfoString(str, "JSON_TABLE(");
+			break;
+	}
+
+	deparseJsonValueExpr(str, json_func_expr->context_item);
+	appendStringInfoString(str, ", ");
+	deparseExpr(str, json_func_expr->pathspec);
+
+	if (json_func_expr->passing)
+		appendStringInfoString(str, " PASSING ");
+
+	ListCell *lc = NULL;
+	foreach (lc, json_func_expr->passing)
+	{
+		JsonArgument *json_argument = castNode(JsonArgument, lfirst(lc));
+		deparseJsonValueExpr(str, json_argument->val);
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_argument->name);
+
+		if (lnext(json_func_expr->passing, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	if (json_func_expr->output)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseJsonOutput(str, json_func_expr->output);
+	}
+
+	switch (json_func_expr->wrapper)
+	{
+		case JSW_UNSPEC:
+			break;
+		case JSW_NONE:
+			appendStringInfoString(str, " WITHOUT WRAPPER");
+			break;
+		case JSW_CONDITIONAL:
+			appendStringInfoString(str, " WITH CONDITIONAL WRAPPER");
+			break;
+		case JSW_UNCONDITIONAL:
+			appendStringInfoString(str, " WITH UNCONDITIONAL WRAPPER");
+			break;
+	}
+
+	deparseJsonQuotesClauseOpt(str, json_func_expr->quotes);
+	deparseJsonOnEmptyClauseOpt(str, json_func_expr->on_empty);
+	deparseJsonOnErrorClauseOpt(str, json_func_expr->on_error);
+
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonTablePathSpec(StringInfo str, JsonTablePathSpec *json_table_path_spec)
+{
+	deparseStringLiteral(str, castNode(A_Const, json_table_path_spec->string)->val.sval.sval);
+
+	if (json_table_path_spec->name)
+	{
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_table_path_spec->name);
+	}
+}
+
+static void deparseJsonBehavior(StringInfo str, JsonBehavior *json_behavior)
+{
+	switch (json_behavior->btype)
+	{
+		case JSON_BEHAVIOR_NULL:
+			appendStringInfoString(str, "NULL");
+			break;
+		case JSON_BEHAVIOR_ERROR:
+			appendStringInfoString(str, "ERROR");
+			break;
+		case JSON_BEHAVIOR_EMPTY:
+			appendStringInfoString(str, "EMPTY");
+			break;
+		case JSON_BEHAVIOR_TRUE:
+			appendStringInfoString(str, "TRUE");
+			break;
+		case JSON_BEHAVIOR_FALSE:
+			appendStringInfoString(str, "FALSE");
+			break;
+		case JSON_BEHAVIOR_EMPTY_ARRAY:
+			appendStringInfoString(str, "EMPTY ARRAY");
+			break;
+		case JSON_BEHAVIOR_EMPTY_OBJECT:
+			appendStringInfoString(str, "EMPTY OBJECT");
+			break;
+		case JSON_BEHAVIOR_DEFAULT:
+			appendStringInfoString(str, "DEFAULT ");
+			deparseExpr(str, (Node*) json_behavior->expr);
+			break;
+		case JSON_BEHAVIOR_UNKNOWN:
+			appendStringInfoString(str, "UNKNOWN");
+			break;
+	}
+}
+
+static void deparseJsonTableColumn(StringInfo str, JsonTableColumn *json_table_column)
+{
+	if (json_table_column->coltype == JTC_NESTED)
+	{
+		appendStringInfoString(str, "NESTED PATH ");
+		deparseJsonTablePathSpec(str, json_table_column->pathspec);
+		deparseJsonTableColumns(str, json_table_column->columns);
+		return;
+	}
+
+	deparseColLabel(str, json_table_column->name);
+	appendStringInfoChar(str, ' ');
+
+	switch (json_table_column->coltype)
+	{
+		case JTC_FOR_ORDINALITY:
+			appendStringInfoString(str, " FOR ORDINALITY");
+			break;
+		case JTC_EXISTS:
+		case JTC_FORMATTED:
+		case JTC_REGULAR:
+			deparseTypeName(str, json_table_column->typeName);
+
+			if (json_table_column->coltype == JTC_EXISTS)
+				appendStringInfoString(str, " EXISTS ");
+			else
+				appendStringInfoChar(str, ' ');
+
+			if (json_table_column->format)
+				deparseJsonFormat(str, json_table_column->format);
+
+			if (json_table_column->pathspec)
+			{
+				appendStringInfoString(str, "PATH ");
+				deparseJsonTablePathSpec(str, json_table_column->pathspec);
+			}
+			break;
+		case JTC_NESTED:
+			Assert(false);
+	}
+
+	switch (json_table_column->wrapper)
+	{
+		case JSW_UNSPEC:
+			break;
+		case JSW_NONE:
+			if (json_table_column->coltype == JTC_REGULAR || json_table_column->coltype == JTC_FORMATTED)
+				appendStringInfoString(str, " WITHOUT WRAPPER");
+			break;
+		case JSW_CONDITIONAL:
+			appendStringInfoString(str, " WITH CONDITIONAL WRAPPER");
+			break;
+		case JSW_UNCONDITIONAL:
+			appendStringInfoString(str, " WITH UNCONDITIONAL WRAPPER");
+			break;
+	}
+
+	deparseJsonQuotesClauseOpt(str, json_table_column->quotes);
+	deparseJsonOnEmptyClauseOpt(str, json_table_column->on_empty);
+	deparseJsonOnErrorClauseOpt(str, json_table_column->on_error);
+}
+
+static void deparseJsonTableColumns(StringInfo str, List *json_table_columns)
+{
+	appendStringInfoString(str, " COLUMNS (");
+
+	ListCell *lc = NULL;
+	foreach(lc, json_table_columns)
+	{
+		deparseJsonTableColumn(str, castNode(JsonTableColumn, lfirst(lc)));
+
+		if (lnext(json_table_columns, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	appendStringInfoChar(str, ')');
+}
+
+static void deparseJsonTable(StringInfo str, JsonTable *json_table)
+{
+	appendStringInfoString(str, "JSON_TABLE(");
+
+	deparseJsonValueExpr(str, json_table->context_item);
+	appendStringInfoString(str, ", ");
+	deparseJsonTablePathSpec(str, json_table->pathspec);
+
+	if (json_table->passing)
+		appendStringInfoString(str, " PASSING ");
+
+	ListCell *lc = NULL;
+	foreach (lc, json_table->passing)
+	{
+		JsonArgument *json_argument = castNode(JsonArgument, lfirst(lc));
+		deparseJsonValueExpr(str, json_argument->val);
+		appendStringInfoString(str, " AS ");
+		deparseColLabel(str, json_argument->name);
+
+		if (lnext(json_table->passing, lc))
+			appendStringInfoString(str, ", ");
+	}
+
+	deparseJsonTableColumns(str, json_table->columns);
+
+	if (json_table->on_error)
+	{
+		deparseJsonBehavior(str, json_table->on_error);
+		appendStringInfoString(str, " ON ERROR");
+	}
+
+	appendStringInfoChar(str, ')');
+
+	if (json_table->alias)
+	{
+		appendStringInfoChar(str, ' ');
+		deparseAlias(str, json_table->alias);
+	}
 }
 
 static void deparseGroupingFunc(StringInfo str, GroupingFunc *grouping_func)

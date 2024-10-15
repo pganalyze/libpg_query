@@ -9,10 +9,10 @@ Date:   Sat Feb 20 04:38:04 2021 -0800
     at the scanner level in Postgres, and thus need to be removed.
 
 diff --git a/src/test/regress/expected/copy2.out b/src/test/regress/expected/copy2.out
-index faf1a4d1b0..fb428c11b6 100644
+index 61a19cdc4c..dea5308f64 100644
 --- a/src/test/regress/expected/copy2.out
 +++ b/src/test/regress/expected/copy2.out
-@@ -488,9 +488,9 @@ BEGIN;
+@@ -510,9 +510,9 @@ BEGIN;
  COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b), FORCE_NULL(c));
  COMMIT;
  SELECT b, c FROM forcetest WHERE a = 1;
@@ -25,7 +25,7 @@ index faf1a4d1b0..fb428c11b6 100644
  (1 row)
  
  -- should succeed, FORCE_NULL and FORCE_NOT_NULL can be both specified
-@@ -498,17 +498,17 @@ BEGIN;
+@@ -520,17 +520,17 @@ BEGIN;
  COPY forcetest (a, b, c, d) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(c,d), FORCE_NULL(c,d));
  COMMIT;
  SELECT c, d FROM forcetest WHERE a = 2;
@@ -49,10 +49,10 @@ index faf1a4d1b0..fb428c11b6 100644
  -- should fail with "not referenced by COPY" error
  BEGIN;
 diff --git a/src/test/regress/expected/create_am.out b/src/test/regress/expected/create_am.out
-index b50293d514..e1704ff9f4 100644
+index 35d4cf1d46..4a24834dab 100644
 --- a/src/test/regress/expected/create_am.out
 +++ b/src/test/regress/expected/create_am.out
-@@ -368,10 +368,8 @@ ORDER BY 3, 1, 2;
+@@ -537,10 +537,8 @@ ORDER BY 3, 1, 2;
  ROLLBACK;
  -- Third, check that we can neither create a table using a nonexistent
  -- AM, nor using an index AM
@@ -66,10 +66,10 @@ index b50293d514..e1704ff9f4 100644
  ERROR:  access method "i_do_not_exist_am" does not exist
  CREATE TABLE i_am_a_failure() USING "I do not exist AM";
 diff --git a/src/test/regress/sql/copy2.sql b/src/test/regress/sql/copy2.sql
-index d759635068..dce61becbd 100644
+index 8b14962194..9a5eaf3a6d 100644
 --- a/src/test/regress/sql/copy2.sql
 +++ b/src/test/regress/sql/copy2.sql
-@@ -319,21 +319,21 @@ CREATE TEMP TABLE forcetest (
+@@ -325,21 +325,21 @@ CREATE TEMP TABLE forcetest (
  -- should succeed with no effect ("b" remains an empty string, "c" remains NULL)
  BEGIN;
  COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL(b), FORCE_NULL(c));
@@ -94,11 +94,36 @@ index d759635068..dce61becbd 100644
  \.
  ROLLBACK;
  -- should fail with "not referenced by COPY" error
+@@ -353,21 +353,21 @@ ROLLBACK;
+ -- should succeed with no effect ("b" remains an empty string, "c" remains NULL)
+ BEGIN;
+ COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL *, FORCE_NULL *);
+-4,,""
++4,,"notempty"
+ \.
+ COMMIT;
+ SELECT b, c FROM forcetest WHERE a = 4;
+ -- should succeed with effect ("b" remains an empty string)
+ BEGIN;
+ COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NOT_NULL *);
+-5,,""
++5,,"notempty"
+ \.
+ COMMIT;
+ SELECT b, c FROM forcetest WHERE a = 5;
+ -- should succeed with effect ("c" remains NULL)
+ BEGIN;
+ COPY forcetest (a, b, c) FROM STDIN WITH (FORMAT csv, FORCE_NULL *);
+-6,"b",""
++6,"b","notempty"
+ \.
+ COMMIT;
+ SELECT b, c FROM forcetest WHERE a = 6;
 diff --git a/src/test/regress/sql/create_am.sql b/src/test/regress/sql/create_am.sql
-index 2785ffd8bb..784fef31a4 100644
+index 825aed325e..f305bf68ce 100644
 --- a/src/test/regress/sql/create_am.sql
 +++ b/src/test/regress/sql/create_am.sql
-@@ -248,7 +248,7 @@ ROLLBACK;
+@@ -343,7 +343,7 @@ ROLLBACK;
  
  -- Third, check that we can neither create a table using a nonexistent
  -- AM, nor using an index AM

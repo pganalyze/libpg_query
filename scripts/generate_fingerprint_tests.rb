@@ -12,16 +12,24 @@ class Generator
     test_lines = []
 
     @fingerprint_tests.each do |test_def|
-      test_lines << test_def['input']
-      test_lines << test_def['expectedHash']
+      if test_def['disableOnMsvc']
+        test_lines << '#ifndef _MSC_VER'
+      end
+
+      test_lines << format('  %s,', test_def['input'].inspect)
+      test_lines << format('  %s,', test_def['expectedHash'].inspect)
+
+      if test_def['disableOnMsvc']
+        test_lines << '#endif'
+      end
     end
 
     File.write './test/fingerprint_tests.c', <<-EOF
 const char* tests[] = {
-#{test_lines.map { |test_line| format('  %s,', test_line.inspect) }.join("\n")}
+#{test_lines.join("\n")}
 };
 
-size_t testsLength = __LINE__ - 4;
+const size_t testsLength = sizeof(tests)/sizeof(*tests)/2;
 EOF
   end
 end

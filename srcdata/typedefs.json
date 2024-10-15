@@ -15,9 +15,14 @@
     "comment": "/*\n * NullIfExpr - a NULLIF expression\n *\n * Like DistinctExpr, this is represented the same as an OpExpr referencing\n * the \"=\" operator for x and y.\n */\n"
   },
   {
+    "new_type_name": "ParseLoc",
+    "source_type": "int",
+    "comment": "/*\n * Typedef for parse location.  This is just an int, but this way\n * gen_node_support.pl knows which fields should get special treatment for\n * location values.\n *\n * -1 is used for unknown.\n */\n"
+  },
+  {
     "new_type_name": "Selectivity",
     "source_type": "double",
-    "comment": "/*\n * Typedefs for identifying qualifier selectivities and plan costs as such.\n * These are just plain \"double\"s, but declaring a variable as Selectivity\n * or Cost makes the intent more obvious.\n *\n * These could have gone into plannodes.h or some such, but many files\n * depend on them...\n */\n"
+    "comment": "/*\n * Typedefs for identifying qualifier selectivities, plan costs, and row\n * counts as such.  These are just plain \"double\"s, but declaring a variable\n * as Selectivity, Cost, or Cardinality makes the intent more obvious.\n *\n * These could have gone into plannodes.h or some such, but many files\n * depend on them...\n */\n"
   },
   {
     "new_type_name": "Cost",

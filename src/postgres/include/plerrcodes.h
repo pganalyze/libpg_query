@@ -434,6 +434,10 @@
 },
 
 {
+	"transaction_timeout", ERRCODE_TRANSACTION_TIMEOUT
+},
+
+{
 	"invalid_sql_statement_name", ERRCODE_INVALID_SQL_STATEMENT_NAME
 },
 
@@ -843,10 +847,6 @@
 
 {
 	"duplicate_file", ERRCODE_DUPLICATE_FILE
-},
-
-{
-	"snapshot_too_old", ERRCODE_SNAPSHOT_TOO_OLD
 },
 
 {

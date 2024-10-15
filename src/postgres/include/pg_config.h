@@ -52,10 +52,6 @@
 /* Define to 1 if you want National Language Support. (--enable-nls) */
 /* #undef ENABLE_NLS */
 
-/* Define to 1 to build client libraries as thread-safe code.
-   (--enable-thread-safety) */
-#define ENABLE_THREAD_SAFETY 1
-
 /* Define to 1 if you have the `append_history' function. */
 /* #undef HAVE_APPEND_HISTORY */
 
@@ -71,9 +67,6 @@
 /* Define to 1 if you have the `backtrace_symbols' function. */
 #define HAVE_BACKTRACE_SYMBOLS 1
 
-/* Define to 1 if you have the `BIO_get_data' function. */
-/* #undef HAVE_BIO_GET_DATA */
-
 /* Define to 1 if you have the `BIO_meth_new' function. */
 /* #undef HAVE_BIO_METH_NEW */
 
@@ -85,6 +78,9 @@
 
 /* Define to 1 if you have the <copyfile.h> header file. */
 #define HAVE_COPYFILE_H 1
+
+/* Define to 1 if you have the `copy_file_range' function. */
+/* #undef HAVE_COPY_FILE_RANGE */
 
 /* Define to 1 if you have the <crtdefs.h> header file. */
 /* #undef HAVE_CRTDEFS_H */
@@ -107,18 +103,6 @@
 /* Define to 1 if you have the declaration of
    `LLVMCreatePerfJITEventListener', and to 0 if you don't. */
 /* #undef HAVE_DECL_LLVMCREATEPERFJITEVENTLISTENER */
-
-/* Define to 1 if you have the declaration of `LLVMGetHostCPUFeatures', and to
-   0 if you don't. */
-/* #undef HAVE_DECL_LLVMGETHOSTCPUFEATURES */
-
-/* Define to 1 if you have the declaration of `LLVMGetHostCPUName', and to 0
-   if you don't. */
-/* #undef HAVE_DECL_LLVMGETHOSTCPUNAME */
-
-/* Define to 1 if you have the declaration of `LLVMOrcGetSymbolAddressIn', and
-   to 0 if you don't. */
-/* #undef HAVE_DECL_LLVMORCGETSYMBOLADDRESSIN */
 
 /* Define to 1 if you have the declaration of `posix_fadvise', and to 0 if you
    don't. */
@@ -299,9 +283,6 @@
 /* Define to 1 if you have the `zstd' library (-lzstd). */
 /* #undef HAVE_LIBZSTD */
 
-/* Define to 1 if the system has the type `locale_t'. */
-#define HAVE_LOCALE_T 1
-
 /* Define to 1 if `long int' works and is 64 bits. */
 #define HAVE_LONG_INT_64 1
 
@@ -403,6 +384,9 @@
 
 /* Define to 1 if you have the `SSL_CTX_set_cert_cb' function. */
 /* #undef HAVE_SSL_CTX_SET_CERT_CB */
+
+/* Define to 1 if you have the `SSL_CTX_set_num_tickets' function. */
+/* #undef HAVE_SSL_CTX_SET_NUM_TICKETS */
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #define HAVE_STDBOOL_H 1
@@ -530,11 +514,11 @@
 /* Define to 1 if you have the `X509_get_signature_info' function. */
 /* #undef HAVE_X509_GET_SIGNATURE_INFO */
 
-/* Define to 1 if you have the `X509_get_signature_nid' function. */
-/* #undef HAVE_X509_GET_SIGNATURE_NID */
-
 /* Define to 1 if the assembler supports X86_64's POPCNTQ instruction. */
 /* #undef HAVE_X86_64_POPCNTQ */
+
+/* Define to 1 if you have XSAVE intrinsics. */
+/* #undef HAVE_XSAVE_INTRINSICS */
 
 /* Define to 1 if the system has the type `_Bool'. */
 #define HAVE__BOOL 1
@@ -578,8 +562,14 @@
 /* Define to 1 if you have __cpuid. */
 /* #undef HAVE__CPUID */
 
+/* Define to 1 if you have __cpuidex. */
+/* #undef HAVE__CPUIDEX */
+
 /* Define to 1 if you have __get_cpuid. */
 /* #undef HAVE__GET_CPUID */
+
+/* Define to 1 if you have __get_cpuid_count. */
+/* #undef HAVE__GET_CPUID_COUNT */
 
 /* Define to 1 if your compiler understands _Static_assert. */
 #define HAVE__STATIC_ASSERT 1
@@ -607,7 +597,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 16.1"
+#define PACKAGE_STRING "PostgreSQL 17.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -616,7 +606,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "16.1"
+#define PACKAGE_VERSION "17.0"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -629,13 +619,13 @@
 #define PG_KRB_SRVNAM "postgres"
 
 /* PostgreSQL major version as a string */
-#define PG_MAJORVERSION "16"
+#define PG_MAJORVERSION "17"
 
 /* PostgreSQL major version number */
-#define PG_MAJORVERSION_NUM 16
+#define PG_MAJORVERSION_NUM 17
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 1
+#define PG_MINORVERSION_NUM 0
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -644,13 +634,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "16.1"
+#define PG_VERSION "17.0"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 160001
+#define PG_VERSION_NUM 170000
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 16.1 (libpg_query)"
+#define PG_VERSION_STR "PostgreSQL 17.0 (libpg_query)"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -703,6 +693,9 @@
 /* Define to 1 to build with assertion checks. (--enable-cassert) */
 /* #undef USE_ASSERT_CHECKING */
 
+/* Define to 1 to use AVX-512 popcount instructions with a runtime check. */
+/* #undef USE_AVX512_POPCNT_WITH_RUNTIME_CHECK */
+
 /* Define to 1 to build with Bonjour support. (--with-bonjour) */
 /* #undef USE_BONJOUR */
 
@@ -711,6 +704,9 @@
 
 /* Define to build with ICU support. (--with-icu) */
 /* #undef USE_ICU */
+
+/* Define to 1 to build with injection points. (--enable-injection-points) */
+/* #undef USE_INJECTION_POINTS */
 
 /* Define to 1 to build with LDAP support. (--with-ldap) */
 /* #undef USE_LDAP */
@@ -724,6 +720,9 @@
 
 /* Define to 1 to build with LLVM based JIT support. (--with-llvm) */
 /* #undef USE_LLVM */
+
+/* Define to 1 to use LoongArch CRCC instructions. */
+/* #undef USE_LOONGARCH_CRC32C */
 
 /* Define to 1 to build with LZ4 support. (--with-lz4) */
 /* #undef USE_LZ4 */
@@ -827,8 +826,9 @@
 /* Define to how the compiler spells `typeof'. */
 /* #undef typeof */
 /* This causes compatibility problems on some Linux distros, with "xlocale.h" not being available */
-#undef HAVE_LOCALE_T
+#ifndef __APPLE__
 #undef LOCALE_T_IN_XLOCALE
+#endif
 #undef WCSTOMBS_L_IN_XLOCALE
 
 /* Support gcc earlier than 4.6.0 and MSVC */
