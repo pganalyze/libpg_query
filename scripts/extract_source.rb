@@ -576,7 +576,44 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
 	return typ;
 }
 ))
-runner.mock('plpgsql_build_datatype_arrayof', 'PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup("UNKNOWN"); typ->ttype = PLPGSQL_TTYPE_SCALAR; return typ;  }')
+runner.mock('plpgsql_build_datatype_arrayof', %(
+PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype)
+{
+	if (dtype->typisarray)
+		return dtype;
+
+	PLpgSQL_type *array_type;
+	array_type = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+
+	array_type->ttype = PLPGSQL_TTYPE_REC;
+	array_type->atttypmod = dtype->atttypmod;
+	array_type->collation = dtype->collation;
+
+	array_type->typisarray = true;
+
+	switch(dtype->typoid)
+	{
+		case BOOLOID:
+			array_type->typoid = BOOLARRAYOID;
+			array_type->typname = pstrdup("boolean[]");
+			break;
+		case INT4OID:
+			array_type->typoid = INT4ARRAYOID;
+			array_type->typname = pstrdup("integer[]");
+			break;
+		case TEXTOID:
+			array_type->typoid = TEXTARRAYOID;
+			array_type->typname = pstrdup("text[]");
+			break;
+		default:
+			array_type->typname = pstrdup("UNKNOWN");
+			break;
+	}
+	array_type->typoid = dtype->typoid;
+
+	return array_type;
+}
+))
 runner.mock('parse_datatype', 'static PLpgSQL_type * parse_datatype(const char *string, int location) { PLpgSQL_type *typ; typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type)); typ->typname = pstrdup(string); typ->ttype = strcmp(string, "RECORD") == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR; return typ; }')
 runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return -1; }')
 runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
