@@ -3,6 +3,7 @@
 --
 
 create type two_int4s as (f1 int4, f2 int4);
+create type more_int4s as (f0 text, f1 int4, f2 int4);
 create type two_int8s as (q1 int8, q2 int8);
 create type nested_int8s as (c1 two_int8s, c2 two_int8s);
 
@@ -198,6 +199,46 @@ begin
   raise notice 'r1.nosuchfield = %', r1.nosuchfield;
 end$$;
 
+-- check %type with block-qualified variable names
+do $$
+<<blk>>
+declare
+  v int;
+  r two_int8s;
+  v1 v%type;
+  v2 blk.v%type;
+  r1 r%type;
+  r2 blk.r%type;
+begin
+  raise notice '%', pg_typeof(v1);
+  raise notice '%', pg_typeof(v2);
+  raise notice '%', pg_typeof(r1);
+  raise notice '%', pg_typeof(r2);
+end$$;
+
+-- check that type record can be passed through %type
+do $$
+declare r1 record;
+        r2 r1%type;
+begin
+  r2 := row(1,2);
+  raise notice 'r2 = %', r2;
+  r2 := row(3,4,5);
+  raise notice 'r2 = %', r2;
+end$$;
+
+-- arrays of record are not supported at the moment
+do $$
+declare r1 record[];
+begin
+end$$;
+
+do $$
+declare r1 record;
+        r2 r1%type[];
+begin
+end$$;
+
 -- check repeated assignments to composite fields
 create table some_table (id int, data text);
 
@@ -257,12 +298,22 @@ create function getf1(x record) returns int language plpgsql as
 $$ begin return x.f1; end $$;
 select getf1(1);
 select getf1(row(1,2));
+select getf1(row(1,2)::two_int4s);
+select getf1(row('foo',123,456)::more_int4s);
 -- the context stack is different when debug_discard_caches
 -- is set, so suppress context output
 \set SHOW_CONTEXT never
 select getf1(row(1,2)::two_int8s);
 \set SHOW_CONTEXT errors
 select getf1(row(1,2));
+
+-- this seemingly-equivalent case behaves a bit differently,
+-- because the core parser's handling of $N symbols is simplistic
+create function getf2(record) returns int language plpgsql as
+$$ begin return $1.f2; end $$;
+select getf2(row(1,2));  -- ideally would work, but does not
+select getf2(row(1,2)::two_int4s);
+select getf2(row('foo',123,456)::more_int4s);
 
 -- check behavior when assignment to FOR-loop variable requires coercion
 do $$

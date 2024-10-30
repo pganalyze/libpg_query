@@ -171,7 +171,9 @@ extract_source: $(PGDIR)
 	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/')' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
+	rm -f ./test/sql/plpgsql_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
+	cp $(PGDIR)/src/pl/plpgsql/src/sql/*.sql ./test/sql/plpgsql_regress/
 
 .c.o:
 	@$(ECHO) compiling $(<)
