@@ -2703,6 +2703,30 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		 */
 		Expr* e;
 		bool isLocal = list_length(func_call->args) == 1;
+		/* 
+		 * time values expressed `AT TIME ZONE` inside a DEFAULT value expression must be surrounded by parentheses
+		 * in order for the deparsed DEFAULT to be valid syntax.
+		 * The following is a simple lookback into the deparsed SQL, to see if is expression immediately follows
+		 * a DEFAULT declaration.
+		 */
+		bool isDefaultValue = false;
+
+		{
+			int end = str->len;
+			// Step back over trailing spaces
+			while (end > 0 && isspace((unsigned char) str->data[end - 1]))
+				end--;
+
+			// Now check if, just before these trailing spaces, we have "DEFAULT"
+			if (end >= 7 && strncmp(str->data + (end - 7), "DEFAULT", 7) == 0)
+			{
+				isDefaultValue = true;
+			}
+		}
+
+		if (isDefaultValue) {
+			appendStringInfoChar(str, '(');
+		}
 
 		if (isLocal)
 			e = linitial(func_call->args);
@@ -2724,6 +2748,9 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call)
 		else {
 			appendStringInfoString(str, " AT TIME ZONE ");
 			deparseExpr(str, linitial(func_call->args));
+		}
+		if (isDefaultValue) {
+			appendStringInfoChar(str, ')');
 		}
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
