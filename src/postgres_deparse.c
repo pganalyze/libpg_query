@@ -2723,6 +2723,11 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call, DeparseNodeCont
 		else
 			e = lsecond(func_call->args);
 
+		// If we're not inside an a_expr context, we must add wrapping parenthesis around the AT ... syntax
+		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
+			appendStringInfoChar(str, '(');
+		}
+
 		if (IsA(e, A_Expr)) {
 			appendStringInfoChar(str, '(');
 		}
@@ -2739,6 +2744,11 @@ static void deparseFuncCall(StringInfo str, FuncCall *func_call, DeparseNodeCont
 			appendStringInfoString(str, " AT TIME ZONE ");
 			deparseExpr(str, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 		}
+
+		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
+			appendStringInfoChar(str, ')');
+		}
+
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
 		list_length(func_call->funcname) == 2 &&

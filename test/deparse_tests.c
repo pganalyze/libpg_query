@@ -409,7 +409,11 @@ const char* tests[] = {
   "CREATE INDEX myindex ON public.mytable USING btree (col1, (col2::varchar) varchar_pattern_ops)",
   "SELECT * FROM CAST(1 AS text)",
   "DECLARE \"Foo1\" SCROLL CURSOR FOR SELECT * FROM tenk1 ORDER BY unique2",
-  "FETCH BACKWARD 23 \"Foo1\""
+  "FETCH BACKWARD 23 \"Foo1\"",
+  "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'))",
+  "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT (now() AT LOCAL))",
+  "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT '1 hour'::interval + (current_timestamp AT TIME ZONE 'UTC'))",
+  "CREATE TABLE my_table (created_at int NOT NULL DEFAULT 1 + 2)"
 };
 
 size_t testsLength = __LINE__ - 4;
