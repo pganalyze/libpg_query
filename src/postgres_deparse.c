@@ -332,7 +332,7 @@ static void deparseExpr(StringInfo str, Node *node, DeparseNodeContext context)
 			deparseCollateClause(str, castNode(CollateClause, node));
 			break;
 		case T_A_Expr:
-			deparseAExpr(str, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_NONE);
+			deparseAExpr(str, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_A_EXPR);
 			break;
 		case T_BoolExpr:
 			deparseBoolExpr(str, castNode(BoolExpr, node));
@@ -3057,10 +3057,6 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 	switch (a_expr->kind) {
 		case AEXPR_OP: /* normal operator */
 			{
-				bool need_outer_parens = context == DEPARSE_NODE_CONTEXT_A_EXPR;
-
-				if (need_outer_parens)
-					appendStringInfoChar(str, '(');
 				if (a_expr->lexpr != NULL)
 				{
 					if (need_lexpr_parens)
@@ -3080,9 +3076,6 @@ static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext cont
 					if (need_rexpr_parens)
 						appendStringInfoChar(str, ')');
 				}
-
-				if (need_outer_parens)
-					appendStringInfoChar(str, ')');
 			}
 			return;
 		case AEXPR_OP_ANY: /* scalar op ANY (array) */
