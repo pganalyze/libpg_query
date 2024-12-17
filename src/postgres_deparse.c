@@ -413,6 +413,24 @@ static void deparseBExpr(StringInfo str, Node *node)
 	deparseCExpr(str, node);
 }
 
+// "AexprConst" in gram.y
+static void deparseAexprConst(StringInfo str, Node *node)
+{
+	switch (nodeTag(node))
+	{
+		case T_A_Const:
+			deparseAConst(str, castNode(A_Const, node));
+			break;
+		case T_TypeCast:
+			deparseTypeCast(str, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
+			break;
+		default:
+			elog(ERROR, "deparse: unpermitted node type in AexprConst: %d",
+				 (int) nodeTag(node));
+			break;
+	}
+}
+
 // "c_expr" in gram.y
 static void deparseCExpr(StringInfo str, Node *node)
 {
@@ -3522,15 +3540,15 @@ static void deparseCTECycleClause(StringInfo str, CTECycleClause *cycle_clause)
 	if (cycle_clause->cycle_mark_value)
 	{
 		appendStringInfoString(str, " TO ");
-		deparseExpr(str, cycle_clause->cycle_mark_value);
+		deparseAexprConst(str, cycle_clause->cycle_mark_value);
 	}
-	
+
 	if (cycle_clause->cycle_mark_default)
 	{
 		appendStringInfoString(str, " DEFAULT ");
-		deparseExpr(str, cycle_clause->cycle_mark_default);
+		deparseAexprConst(str, cycle_clause->cycle_mark_default);
 	}
-	
+
 	appendStringInfoString(str, " USING ");
 	appendStringInfoString(str, quote_identifier(cycle_clause->cycle_path_column));
 }
