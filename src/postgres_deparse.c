@@ -3016,6 +3016,7 @@ static void deparseSubLink(StringInfo str, SubLink* sub_link)
 	}
 }
 
+// This handles "A_Expr" parse tree objects, which are a subset of the rules in "a_expr" (handled by deparseExpr)
 static void deparseAExpr(StringInfo str, A_Expr* a_expr, DeparseNodeContext context)
 {
 	ListCell *lc;
@@ -3290,6 +3291,7 @@ static void deparseCollateClause(StringInfo str, CollateClause* collate_clause)
 	deparseAnyName(str, collate_clause->collname);
 }
 
+// "sortby" in gram.y
 static void deparseSortBy(StringInfo str, SortBy* sort_by)
 {
 	deparseExpr(str, sort_by->node);
@@ -3409,6 +3411,7 @@ static void deparseWithClause(StringInfo str, WithClause *with_clause)
 	removeTrailingSpace(str);
 }
 
+// "joined_table" in gram.y
 static void deparseJoinExpr(StringInfo str, JoinExpr *join_expr)
 {
 	ListCell *lc;
@@ -3505,6 +3508,7 @@ static void deparseCTESearchClause(StringInfo str, CTESearchClause *search_claus
 	appendStringInfoString(str, quote_identifier(search_clause->search_seq_column));
 }
 
+// "opt_cycle_clause" in gram.y
 static void deparseCTECycleClause(StringInfo str, CTECycleClause *cycle_clause)
 {
 	appendStringInfoString(str, " CYCLE ");
@@ -3999,6 +4003,7 @@ static void deparseNullTest(StringInfo str, NullTest *null_test)
 	}
 }
 
+// "case_expr" in gram.y
 static void deparseCaseExpr(StringInfo str, CaseExpr *case_expr)
 {
 	ListCell *lc;
@@ -4027,6 +4032,7 @@ static void deparseCaseExpr(StringInfo str, CaseExpr *case_expr)
 	appendStringInfoString(str, "END");
 }
 
+// "when_clause" in gram.y
 static void deparseCaseWhen(StringInfo str, CaseWhen *case_when)
 {
 	appendStringInfoString(str, "WHEN ");
@@ -4129,6 +4135,7 @@ static void deparseBooleanTest(StringInfo str, BooleanTest *boolean_test)
 	}
 }
 
+// "columnDef" and "alter_table_cmd" in gram.y
 static void deparseColumnDef(StringInfo str, ColumnDef *column_def)
 {
 	ListCell *lc;
@@ -4351,6 +4358,7 @@ static void deparseUpdateStmt(StringInfo str, UpdateStmt *update_stmt)
 	removeTrailingSpace(str);
 }
 
+// "MergeStmt" in gram.y
 static void deparseMergeStmt(StringInfo str, MergeStmt *merge_stmt)
 {
 	if (merge_stmt->withClause != NULL)
@@ -4770,6 +4778,7 @@ static void deparseCreateExtensionStmt(StringInfo str, CreateExtensionStmt *crea
 	removeTrailingSpace(str);
 }
 
+// "ColConstraintElem" and "ConstraintElem" in gram.y
 static void deparseConstraint(StringInfo str, Constraint *constraint)
 {
 	ListCell *lc;
@@ -5022,6 +5031,7 @@ static void deparseConstraint(StringInfo str, Constraint *constraint)
 	removeTrailingSpace(str);
 }
 
+// "ReturnStmt" in gram.y
 static void deparseReturnStmt(StringInfo str, ReturnStmt *return_stmt)
 {
 	appendStringInfoString(str, "RETURN ");
@@ -5124,6 +5134,7 @@ static void deparseCreateFunctionStmt(StringInfo str, CreateFunctionStmt *create
 	removeTrailingSpace(str);
 }
 
+// "func_arg", "func_arg_with_default" and other places in gram.y
 static void deparseFunctionParameter(StringInfo str, FunctionParameter *function_parameter)
 {
 	switch (function_parameter->mode)
@@ -6347,6 +6358,7 @@ static void deparseAlterObjectSchemaStmt(StringInfo str, AlterObjectSchemaStmt *
 	appendStringInfoString(str, quote_identifier(alter_object_schema_stmt->newschema));
 }
 
+// "alter_table_cmd" in gram.y
 static void deparseAlterTableCmd(StringInfo str, AlterTableCmd *alter_table_cmd, DeparseNodeContext context)
 {
 	ListCell *lc = NULL;
@@ -6802,6 +6814,7 @@ static void deparseAlterTableSpaceOptionsStmt(StringInfo str, AlterTableSpaceOpt
 	deparseRelOptions(str, alter_table_space_options_stmt->options);
 }
 
+// "AlterDomainStmt" in gram.y
 static void deparseAlterDomainStmt(StringInfo str, AlterDomainStmt *alter_domain_stmt)
 {
 	appendStringInfoString(str, "ALTER DOMAIN ");
@@ -9040,6 +9053,7 @@ static void deparseReplicaIdentityStmt(StringInfo str, ReplicaIdentityStmt *repl
 	}
 }
 
+// "CreatePolicyStmt" in gram.y
 static void deparseCreatePolicyStmt(StringInfo str, CreatePolicyStmt *create_policy_stmt)
 {
 	ListCell *lc = NULL;
@@ -9085,6 +9099,7 @@ static void deparseCreatePolicyStmt(StringInfo str, CreatePolicyStmt *create_pol
 	}
 }
 
+// "AlterPolicyStmt" in gram.y
 static void deparseAlterPolicyStmt(StringInfo str, AlterPolicyStmt *alter_policy_stmt)
 {
 	appendStringInfoString(str, "ALTER POLICY ");
@@ -9197,6 +9212,7 @@ static void deparseCreateAmStmt(StringInfo str, CreateAmStmt *create_am_stmt)
 	deparseHandlerName(str, create_am_stmt->handler_name);
 }
 
+// "pub_obj_list" in gram.y
 static void deparsePublicationObjectList(StringInfo str, List *pubobjects) {
 	const ListCell *lc;
 	foreach(lc, pubobjects) {
@@ -9566,6 +9582,7 @@ static void deparseCommentStmt(StringInfo str, CommentStmt *comment_stmt)
 		appendStringInfoString(str, "NULL");
 }
 
+// "stats_param" in gram.y
 static void deparseStatsElem(StringInfo str, StatsElem *stats_elem)
 {
 	// only one of stats_elem->name or stats_elem->expr can be non-null
@@ -9722,6 +9739,7 @@ static void deparseVariableShowStmt(StringInfo str, VariableShowStmt *variable_s
 		appendStringInfoString(str, quote_identifier(variable_show_stmt->name));
 }
 
+// "tablesample_clause" in gram.y
 static void deparseRangeTableSample(StringInfo str, RangeTableSample *range_table_sample)
 {
 	deparseRangeVar(str, castNode(RangeVar, range_table_sample->relation), DEPARSE_NODE_CONTEXT_NONE);
@@ -10053,6 +10071,7 @@ static void deparseClosePortalStmt(StringInfo str, ClosePortalStmt *close_portal
 	}
 }
 
+// "CreateTrigStmt" in gram.y
 static void deparseCreateTrigStmt(StringInfo str, CreateTrigStmt *create_trig_stmt)
 {
 	ListCell *lc;
@@ -10264,6 +10283,7 @@ static void deparseXmlExpr(StringInfo str, XmlExpr* xml_expr)
 	}
 }
 
+// "xmltable_column_el" in gram.y
 static void deparseRangeTableFuncCol(StringInfo str, RangeTableFuncCol* range_table_func_col)
 {
 	appendStringInfoString(str, quote_identifier(range_table_func_col->colname));
@@ -10299,6 +10319,7 @@ static void deparseRangeTableFuncCol(StringInfo str, RangeTableFuncCol* range_ta
 	removeTrailingSpace(str);
 }
 
+// "table_ref" and "xmltable" in gram.y
 static void deparseRangeTableFunc(StringInfo str, RangeTableFunc* range_table_func)
 {
 	ListCell *lc;
@@ -10477,6 +10498,7 @@ static void deparseJsonOutput(StringInfo str, JsonOutput *json_output)
 	deparseJsonFormat(str, json_output->returning->format);
 }
 
+// "json_aggregate_func" and "func_expr" in gram.y
 static void deparseJsonObjectAgg(StringInfo str, JsonObjectAgg *json_object_agg)
 {
 	Assert(json_object_agg->constructor != NULL);
@@ -10515,6 +10537,7 @@ static void deparseJsonObjectAgg(StringInfo str, JsonObjectAgg *json_object_agg)
 	removeTrailingSpace(str);
 }
 
+// "json_aggregate_func" and "func_expr" in gram.y
 static void deparseJsonArrayAgg(StringInfo str, JsonArrayAgg *json_array_agg)
 {
 	Assert(json_array_agg->constructor != NULL);
@@ -10736,6 +10759,7 @@ static void deparseJsonTablePathSpec(StringInfo str, JsonTablePathSpec *json_tab
 	}
 }
 
+// "json_behavior" in gram.y
 static void deparseJsonBehavior(StringInfo str, JsonBehavior *json_behavior)
 {
 	switch (json_behavior->btype)
