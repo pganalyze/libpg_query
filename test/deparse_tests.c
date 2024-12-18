@@ -413,6 +413,7 @@ const char* tests[] = {
   "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'))",
   "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT (now() AT LOCAL))",
   "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT '1 hour'::interval + (current_timestamp AT TIME ZONE 'UTC'))",
+  "ALTER TABLE my_table ADD COLUMN created_at timestamptz NOT NULL DEFAULT '1 hour'::interval + (current_timestamp AT TIME ZONE 'UTC')",
   "CREATE TABLE my_table (created_at int NOT NULL DEFAULT 1 + 2)"
 };
 
