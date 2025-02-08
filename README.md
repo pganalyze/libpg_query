@@ -274,6 +274,7 @@ Products, tools and libraries built on pg_query:
 * [DuckDB](https://github.com/cwida/duckdb) ([details](https://github.com/cwida/duckdb/tree/master/third_party/libpg_query))
 * [pgspot](https://github.com/timescale/pgspot)
 * [Postgres Language Server](https://github.com/supabase/postgres_lsp)
+* [activerecord-pg-format-db-structure](https://github.com/ReifyAB/activerecord-pg-format-db-structure)
 * and more
 
 Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/new/master) to add yours! :)
