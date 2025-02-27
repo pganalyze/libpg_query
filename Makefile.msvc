@@ -50,7 +50,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split
+TESTS = test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary
 test: $(TESTS)
 	.\test\deparse
 	.\test\fingerprint
@@ -62,6 +62,7 @@ test: $(TESTS)
 	.\test\parse_protobuf_opts
 	.\test\scan
 	.\test\split
+	.\test\summary
 
 # Doesn't work because of C2026: string too big, trailing characters truncated
 #test/complex: test/complex.c $(ARLIB)
@@ -106,3 +107,6 @@ test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 
 test/split: test/split.c test/split_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/split.c $(ARLIB)
+
+test/summary: test/framework/main.c test/summary.c test/summary_tests.c test/summary_tests_list.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/framework/main.c test/summary.c $(ARLIB)

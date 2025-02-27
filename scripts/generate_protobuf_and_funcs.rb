@@ -441,6 +441,54 @@ enum Token {
   // Named tokens in scan.l
   #{@scan_protobuf_tokens.join("\n  ")}
 }
+
+
+// protobuf-c doesn't support optional fields, so any optional strings
+// are just an empty string if it should be the equivalent of None/nil.
+//
+// These fields have `// optional` at the end of the line.
+//
+// Upstream issue: https://github.com/protobuf-c/protobuf-c/issues/476
+message SummaryResult {
+  enum Context {
+    None = 0;
+    Select = 1;
+    DML = 2;
+    DDL = 3;
+    Call = 4;
+  }
+
+  message Table {
+    string name = 1;
+    string schema_name = 2;
+    string table_name = 3;
+    Context context = 4;
+  }
+  repeated Table tables = 1;
+
+  // The value here is the table name (i.e. schema.table or just table).
+  map<string, string> aliases = 2;
+
+  repeated string cte_names = 3;
+
+  message Function {
+    string name = 1;
+    string function_name = 2;
+    string schema_name = 3; // optional
+    Context context = 4;
+  }
+  repeated Function functions = 4;
+
+  message FilterColumn {
+    string schema_name = 1; // optional
+    string table_name = 2; // optional
+    string column = 3;
+  }
+  repeated FilterColumn filter_columns = 5;
+  repeated string statement_types = 6;
+  // UNIMPLEMENTED(truncated_query): string truncated_query = 7; /* optional, empty if truncation limit is -1 */
+
+}
 "
 
     File.write('./protobuf/pg_query.proto', protobuf)

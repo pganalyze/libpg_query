@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - NameListToString
  * - get_collation_oid
+ * - makeRangeVarFromNameList
  *--------------------------------------------------------------------
  */
 
@@ -900,7 +901,35 @@ static bool MatchNamedCall(HeapTuple proctup, int nargs, List *argnames,
  * makeRangeVarFromNameList
  *		Utility routine to convert a qualified-name list into RangeVar form.
  */
+RangeVar *
+makeRangeVarFromNameList(const List *names)
+{
+	RangeVar   *rel = makeRangeVar(NULL, NULL, -1);
 
+	switch (list_length(names))
+	{
+		case 1:
+			rel->relname = strVal(linitial(names));
+			break;
+		case 2:
+			rel->schemaname = strVal(linitial(names));
+			rel->relname = strVal(lsecond(names));
+			break;
+		case 3:
+			rel->catalogname = strVal(linitial(names));
+			rel->schemaname = strVal(lsecond(names));
+			rel->relname = strVal(lthird(names));
+			break;
+		default:
+			ereport(ERROR,
+					(errcode(ERRCODE_SYNTAX_ERROR),
+					 errmsg("improper relation name (too many dotted names): %s",
+							NameListToString(names))));
+			break;
+	}
+
+	return rel;
+}
 
 /*
  * NameListToString
