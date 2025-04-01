@@ -116,6 +116,10 @@
    don't. */
 #define HAVE_DECL_PWRITEV 1
 
+/* Define to 1 if you have the declaration of `strchrnul', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRCHRNUL
+
 /* Define to 1 if you have the declaration of `strlcat', and to 0 if you
    don't. */
 #define HAVE_DECL_STRLCAT 1
@@ -396,9 +400,6 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
-
-/* Define to 1 if you have the `strchrnul' function. */
-/* #undef HAVE_STRCHRNUL */
 
 /* Define to 1 if you have the `strerror_r' function. */
 #define HAVE_STRERROR_R 1
@@ -851,7 +852,9 @@
 /* Ensure we do not fail on systems that have strchrnul support (FreeBSD, NetBSD and newer glibc) */
 #include <stdlib.h>
 #if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))
-#define HAVE_STRCHRNUL
+#define HAVE_DECL_STRCHRNUL 1
+#else
+#define HAVE_DECL_STRCHRNUL 0
 #endif
 
 /* 32-bit */
