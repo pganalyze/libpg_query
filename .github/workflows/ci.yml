@@ -18,7 +18,7 @@ jobs:
     - name: Cache protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp'
       id: cache-protobuf
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: protobuf-25.1
         key: ${{ runner.os }}-protobuf-25.1
