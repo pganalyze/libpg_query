@@ -57,7 +57,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 170000,
+    "version": 170004,
     "stmts": [
         {
             "stmt": {
@@ -130,7 +130,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 170000, tokens: 7, size: 77
+  version: 170004, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -292,4 +292,4 @@ Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>
-Copyright (c) 2016-2024, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
+Copyright (c) 2016-2025, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>

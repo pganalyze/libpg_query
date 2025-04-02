@@ -2,6 +2,15 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 17-6.1.0   2025-04-02
+
+* Update to Postgres 17.4, and add recent patches scheduled for Postgres 17.5 (not yet released)
+  - Notably, this pulls in support for macOS 15.4 which defines strchrnul
+    in its standard library, fixing builds on up-to-date macOS versions.
+- Deparser improvements
+  - Add parenthesis around AT LOCAL / AT TIMEZONE if needed
+  - Correctness improvements related to expressions and function calls
+
 ## 17-6.0.0   2024-09-27
 
 * Upgrade to Postgres 17
