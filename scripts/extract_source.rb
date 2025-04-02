@@ -279,8 +279,8 @@ class Runner
             end_offset += 1 if cursor.kind == :cursor_variable # The ";" isn't counted correctly by clang
 
             if cursor.kind == :cursor_variable && (cursor.linkage == :external || cursor.linkage == :internal) &&
-              !cursor.type.const_qualified? && !cursor.type.array_element_type.const_qualified? &&
-              cursor.type.pointee.kind != :type_function_proto
+              !cursor.type.const_qualified? && !(cursor.type.is_a?(FFI::Clang::Types::Array) && cursor.type.element_type.const_qualified?) &&
+              !(cursor.type.is_a?(FFI::Clang::Types::Pointer) && cursor.type.pointee.kind == :type_function_proto)
               analysis.external_variables << cursor.spelling
             end
 
