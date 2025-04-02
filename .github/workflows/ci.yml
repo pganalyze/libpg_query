@@ -71,6 +71,13 @@ jobs:
       run: make $FLAGS
       env:
         FLAGS: ${{ format('{0} {1} {2}', steps.make_flags.outputs.proto_flags, steps.make_flags.outputs.compiler_flags, steps.make_flags.outputs.debug_flags) }}
+  build_macos:
+    runs-on: macos-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Build and run tests
+      run: make
   build_windows_msvc:
     runs-on: windows-latest
     strategy:
