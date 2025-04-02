@@ -3,7 +3,7 @@
  * - pg_vsnprintf
  * - dopr
  * - pg_snprintf
- * - strchrnul
+ * - pg_strchrnul
  * - dostr
  * - flushbuffer
  * - find_arguments
@@ -362,11 +362,18 @@ static void leading_pad(int zpad, int signvalue, int *padlen,
 static void trailing_pad(int padlen, PrintfTarget *target);
 
 /*
- * If strchrnul exists (it's a glibc-ism), it's a good bit faster than the
- * equivalent manual loop.  If it doesn't exist, provide a replacement.
+ * If strchrnul exists (it's a glibc-ism, but since adopted by some other
+ * platforms), it's a good bit faster than the equivalent manual loop.
+ * Use it if possible, and if it doesn't exist, use this replacement.
  *
  * Note: glibc declares this as returning "char *", but that would require
  * casting away const internally, so we don't follow that detail.
+ *
+ * Note: macOS has this too as of Sequoia 15.4, but it's hidden behind
+ * a deployment-target check that causes compile errors if the deployment
+ * target isn't high enough.  So !HAVE_DECL_STRCHRNUL may mean "yes it's
+ * declared, but it doesn't compile".  To avoid failing in that scenario,
+ * use a macro to avoid matching <string.h>'s name.
  */
 #if !HAVE_DECL_STRCHRNUL
 

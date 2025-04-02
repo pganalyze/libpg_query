@@ -1269,6 +1269,19 @@ MERGE INTO pa_target t
 SELECT * FROM pa_target ORDER BY tid;
 ROLLBACK;
 
+-- bug #18871: ExecInitPartitionInfo()'s handling of DO NOTHING actions
+BEGIN;
+TRUNCATE pa_target;
+MERGE INTO pa_target t
+  USING (VALUES (10, 100)) AS s(sid, delta)
+  ON t.tid = s.sid
+  WHEN NOT MATCHED THEN
+    INSERT VALUES (1, 10, 'inserted by merge')
+  WHEN MATCHED THEN
+    DO NOTHING;
+SELECT * FROM pa_target ORDER BY tid, val;
+ROLLBACK;
+
 DROP TABLE pa_target CASCADE;
 
 -- The target table is partitioned in the same way, but this time by attaching
@@ -1709,6 +1722,45 @@ SELECT * FROM new_measurement ORDER BY city_id, logdate;
 
 DROP TABLE measurement, new_measurement CASCADE;
 DROP FUNCTION measurement_insert_trigger();
+
+--
+-- test non-strict join clause
+--
+CREATE TABLE src (a int, b text);
+INSERT INTO src VALUES (1, 'src row');
+
+CREATE TABLE tgt (a int, b text);
+INSERT INTO tgt VALUES (NULL, 'tgt row');
+
+MERGE INTO tgt USING src ON tgt.a IS NOT DISTINCT FROM src.a
+  WHEN MATCHED THEN UPDATE SET a = src.a, b = src.b
+  WHEN NOT MATCHED BY SOURCE THEN DELETE
+  RETURNING merge_action(), src.*, tgt.*;
+
+SELECT * FROM tgt;
+
+DROP TABLE src, tgt;
+
+--
+-- test for bug #18634 (wrong varnullingrels error)
+--
+CREATE TABLE bug18634t (a int, b int, c text);
+INSERT INTO bug18634t VALUES(1, 10, 'tgt1'), (2, 20, 'tgt2');
+CREATE VIEW bug18634v AS
+  SELECT * FROM bug18634t WHERE EXISTS (SELECT 1 FROM bug18634t);
+
+CREATE TABLE bug18634s (a int, b int, c text);
+INSERT INTO bug18634s VALUES (1, 2, 'src1');
+
+MERGE INTO bug18634v t USING bug18634s s ON s.a = t.a
+  WHEN MATCHED THEN UPDATE SET b = s.b
+  WHEN NOT MATCHED BY SOURCE THEN DELETE
+  RETURNING merge_action(), s.c, t.*;
+
+SELECT * FROM bug18634t;
+
+DROP TABLE bug18634t CASCADE;
+DROP TABLE bug18634s;
 
 -- prepare
 

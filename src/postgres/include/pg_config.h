@@ -118,7 +118,7 @@
 
 /* Define to 1 if you have the declaration of `strchrnul', and to 0 if you
    don't. */
-#undef HAVE_DECL_STRCHRNUL
+#define HAVE_DECL_STRCHRNUL 0
 
 /* Define to 1 if you have the declaration of `strlcat', and to 0 if you
    don't. */
@@ -392,9 +392,6 @@
 /* Define to 1 if you have the `SSL_CTX_set_num_tickets' function. */
 /* #undef HAVE_SSL_CTX_SET_NUM_TICKETS */
 
-/* Define to 1 if stdbool.h conforms to C99. */
-#define HAVE_STDBOOL_H 1
-
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
@@ -521,9 +518,6 @@
 /* Define to 1 if you have XSAVE intrinsics. */
 /* #undef HAVE_XSAVE_INTRINSICS */
 
-/* Define to 1 if the system has the type `_Bool'. */
-#define HAVE__BOOL 1
-
 /* Define to 1 if your compiler understands __builtin_bswap16. */
 #define HAVE__BUILTIN_BSWAP16 1
 
@@ -579,7 +573,7 @@
 #define INT64_MODIFIER "l"
 
 /* Define to 1 if `locale_t' requires <xlocale.h>. */
-#define LOCALE_T_IN_XLOCALE 1
+/* #undef LOCALE_T_IN_XLOCALE */
 
 /* Define as the maximum alignment requirement of any C data type. */
 #define MAXIMUM_ALIGNOF 8
@@ -598,7 +592,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 17.0"
+#define PACKAGE_STRING "PostgreSQL 17.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -607,7 +601,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "17.0"
+#define PACKAGE_VERSION "17.4"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -626,7 +620,7 @@
 #define PG_MAJORVERSION_NUM 17
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 0
+#define PG_MINORVERSION_NUM 4
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -635,13 +629,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "17.0"
+#define PG_VERSION "17.4"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 170000
+#define PG_VERSION_NUM 170004
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 17.0 (libpg_query)"
+#define PG_VERSION_STR "PostgreSQL 17.4 (libpg_query)"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */
@@ -849,8 +843,14 @@
 #undef USE_ARMV8_CRC32C
 #undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK
 
-/* Ensure we do not fail on systems that have strchrnul support (FreeBSD, NetBSD and newer glibc) */
+/*
+ * Ensure we use built-in strchrnul on systems that have strchrnul support (FreeBSD, NetBSD and newer glibc)
+ *
+ * Note MacOS 15.4+ also has strchrnul implemented, but is complex to handle correctly, and the code works
+ * around the double define.
+ */
 #include <stdlib.h>
+#undef HAVE_DECL_STRCHRNUL
 #if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))
 #define HAVE_DECL_STRCHRNUL 1
 #else

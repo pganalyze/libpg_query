@@ -21,10 +21,18 @@
 #undef USE_ARMV8_CRC32C
 #undef USE_SSE42_CRC32C_WITH_RUNTIME_CHECK
 
-/* Ensure we do not fail on systems that have strchrnul support (FreeBSD, NetBSD and newer glibc) */
+/*
+ * Ensure we use built-in strchrnul on systems that have strchrnul support (FreeBSD, NetBSD and newer glibc)
+ *
+ * Note MacOS 15.4+ also has strchrnul implemented, but is complex to handle correctly, and the code works
+ * around the double define.
+ */
 #include <stdlib.h>
+#undef HAVE_DECL_STRCHRNUL
 #if defined(__FreeBSD__) || defined(__NetBSD__) || (defined(__GLIBC__) && ((__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2))
-#define HAVE_STRCHRNUL
+#define HAVE_DECL_STRCHRNUL 1
+#else
+#define HAVE_DECL_STRCHRNUL 0
 #endif
 
 /* 32-bit */
