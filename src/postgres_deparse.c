@@ -1524,6 +1524,8 @@ static void deparseAlterIdentityColumnOptionList(StringInfo str, List *l)
 		else if (strcmp(def_elem->defname, "generated") == 0)
 		{
 			appendStringInfoString(str, "SET GENERATED ");
+			if(def_elem->arg == NULL)
+				elog(ERROR, "missing argument for identity generation specification");
 			if (intVal(def_elem->arg) == ATTRIBUTE_IDENTITY_ALWAYS)
 				appendStringInfoString(str, "ALWAYS");
 			else if (intVal(def_elem->arg) == ATTRIBUTE_IDENTITY_BY_DEFAULT)
