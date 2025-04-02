@@ -1,6 +1,11 @@
-/* This causes compatibility problems on some Linux distros, with "xlocale.h" not being available */
-#ifndef __APPLE__
+/*
+ * Assume we don't have xlocale.h on non-MacOS, as not all Linux distros have "xlocale.h" available.
+ *
+ * Note this is required on older MacOS to avoid "unknown type name 'locale_t'"
+ */
 #undef LOCALE_T_IN_XLOCALE
+#ifdef __APPLE__
+#define LOCALE_T_IN_XLOCALE 1
 #endif
 #undef WCSTOMBS_L_IN_XLOCALE
 
