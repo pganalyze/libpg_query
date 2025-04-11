@@ -181,6 +181,7 @@ extract_source: $(PGDIR)
 	rm -f ./test/sql/plpgsql_regress/*.sql
 	cp $(PGDIR)/src/test/regress/sql/*.sql ./test/sql/postgres_regress/
 	cp $(PGDIR)/src/pl/plpgsql/src/sql/*.sql ./test/sql/plpgsql_regress/
+	cp $(PGDIR)/COPYRIGHT ./src/postgres/
 
 .c.o:
 	@$(ECHO) compiling $(<)
