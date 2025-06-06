@@ -406,6 +406,9 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 		case T_CopyStmt:
 			if (jstate->normalize_utility_only) return false;
 			return const_record_walker((Node *) ((CopyStmt *) node)->query, jstate);
+		case T_CallStmt:
+			if (jstate->normalize_utility_only) return false;
+			return const_record_walker((Node *) ((CallStmt *) node)->funccall, jstate);
 		case T_ExplainStmt:
 			return const_record_walker((Node *) ((ExplainStmt *) node)->query, jstate);
 		case T_CreateRoleStmt:

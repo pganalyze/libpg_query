@@ -21,6 +21,8 @@ const char* tests[] = {
   "select count(1), date_trunc('day', created_at at time zone 'US/Pacific'), 'something', 'somethingelse' from users group by date_trunc('day', created_at at time zone 'US/Pacific'), date_trunc('day', created_at), 'foobar', 'abcdef'",
   "SELECT CAST('abc' as varchar(50))",
   "SELECT CAST('abc' as varchar(50))",
+  "CALL fn(1)",
+  "CALL fn(1)",
   "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $func_12345$ BEGIN INSERT INTO \"mytable\" (\"mycolumn\") VALUES ('myvalue') RETURNING * INTO response; EXCEPTION WHEN unique_violation THEN GET STACKED DIAGNOSTICS sequelize_caught_exception = PG_EXCEPTION_DETAIL; END $func_12345$ LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
   "CREATE OR REPLACE FUNCTION pg_temp.testfunc(OUT response \"mytable\", OUT sequelize_caught_exception text) RETURNS RECORD AS $func_12345$ BEGIN INSERT INTO \"mytable\" (\"mycolumn\") VALUES ('myvalue') RETURNING * INTO response; EXCEPTION WHEN unique_violation THEN GET STACKED DIAGNOSTICS sequelize_caught_exception = PG_EXCEPTION_DETAIL; END $func_12345$ LANGUAGE plpgsql; SELECT (testfunc.response).\"mycolumn\", testfunc.sequelize_caught_exception FROM pg_temp.testfunc(); DROP FUNCTION IF EXISTS pg_temp.testfunc();",
   "CREATE PROCEDURE insert_data(a integer, b integer) LANGUAGE SQL AS $$ INSERT INTO tbl VALUES (a); INSERT INTO tbl VALUES (b); $$",
