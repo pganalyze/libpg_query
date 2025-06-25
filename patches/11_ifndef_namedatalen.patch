@@ -1,0 +1,14 @@
+diff --git a/src/include/pg_config_manual.h b/src/include/pg_config_manual.h
+index a1a93ad..c978d76 100644
+--- a/src/include/pg_config_manual.h
++++ b/src/include/pg_config_manual.h
+@@ -26,7 +26,9 @@
+  *
+  * Changing this requires an initdb.
+  */
++#ifndef NAMEDATALEN
+ #define NAMEDATALEN 64
++#endif
+
+ /*
+  * Maximum number of arguments to a function.
