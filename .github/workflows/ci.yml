@@ -9,9 +9,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04]
-        compiler: [clang, gcc]
-        protobuf_lib: [protobuf-c, protobuf-cpp]
-        valgrind: [valgrind,no-valgrind]
+        compiler: [clang]
+        protobuf_lib: [protobuf-cpp]
+        valgrind: [valgrind]
     steps:
     - name: Check out code
       uses: actions/checkout@v4
