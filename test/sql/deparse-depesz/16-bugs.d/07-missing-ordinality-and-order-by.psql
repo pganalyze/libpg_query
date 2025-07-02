@@ -1,0 +1,2 @@
+SELECT string_agg(E'\\U' || lpad(to_hex(ascii(unnest)), 8, '0'), '' ORDER BY ordinality)
+FROM unnest(regexp_split_to_array($1, '')) WITH ORDINALITY

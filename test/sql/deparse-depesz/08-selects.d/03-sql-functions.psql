@@ -1,0 +1,6 @@
+SELECT
+    current_catalog, current_role, current_schema, current_user, session_user,
+    user, current_date, current_time, current_timestamp, localtime,
+    localtimestamp, current_time(0), current_timestamp(0), localtime(0),
+    localtimestamp(0), current_time(2), current_timestamp(2), localtime(2),
+    localtimestamp(2)

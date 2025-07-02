@@ -1,0 +1,6 @@
+SELECT *
+FROM
+    (
+        SELECT a
+        FROM b
+    ) x

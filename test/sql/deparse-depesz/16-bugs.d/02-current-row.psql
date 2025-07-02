@@ -1,0 +1,11 @@
+SELECT
+    i,
+    sum(i) OVER (
+        ORDER BY i
+        ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING
+    ),
+    sum(i) OVER (
+        ORDER BY i
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    )
+FROM generate_series(1, 10) i

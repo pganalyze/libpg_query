@@ -1,0 +1,1 @@
+SELECT 1 NOT IN (2, 3, 4), 'a' NOT LIKE 'z'

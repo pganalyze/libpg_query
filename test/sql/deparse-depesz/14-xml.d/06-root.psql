@@ -1,0 +1,5 @@
+SELECT
+    xmlroot('<foo/>'::xml, version no value, standalone no value),
+    xmlroot('<foo/>'::xml, version '1.0', standalone yes),
+    xmlroot('<foo/>'::xml, version '1.0', standalone no),
+    xmlroot('<foo/>'::xml, version '1.0')

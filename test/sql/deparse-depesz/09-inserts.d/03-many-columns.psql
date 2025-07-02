@@ -1,0 +1,3 @@
+--- TODO: Limit how many items we put on one line
+INSERT INTO t (a, b, c, d, e, f, g, h, i)
+VALUES ('value for column a', 'value for column b', 'value for column c', 'value for column d', 'value for column e', 'value for column f', 'value for column g', 'value for column h', 'value for column i')

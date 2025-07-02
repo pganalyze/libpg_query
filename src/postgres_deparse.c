@@ -1,3 +1,5 @@
+#include "postgres_deparse.h"
+
 #include "postgres.h"
 #include "catalog/index.h"
 #include "catalog/pg_am.h"
@@ -16,86 +18,146 @@
 #include "utils/timestamp.h"
 #include "utils/xml.h"
 
+/*
+ * # Deparser overview
+ *
+ * The deparser works by walking the input parse tree and emitting into the
+ * currently active "part" as pointed to (indirectly) by the state struct.
+ *
+ * A lot of the structure of the deparser described below is meant to support
+ * the optional "pretty print" mode that can be enabled and configured through
+ * the deparser options, and inserts whitespace (newlines/spaces) as needed to
+ * make the output easier to read.
+ *
+ * ## Nesting levels
+ *
+ * Starting at the state struct we have a currently active "nesting level",
+ * which indicates the base indentation, as well as contains one or more part
+ * groups, each of which has one or more parts.
+ *
+ * Nesting levels are typically opened, or "increased", when processing a new
+ * statement contained within other statements, or for certain statement-like
+ * constructs (e.g. CASE clauses) that require custom indendation.
+ *
+ * Nesting levels are closed, or "decreased", when exiting such statements or
+ * statement-like constructs. During this operation all parts and subparts get
+ * flattened (turned into a simple list of parts), and are added to the parent
+ * nesting level.
+ *
+ * At the end of the tree walk the parts of the top most nesting level get
+ * emitted into the output string, formatted based on the deparse options.
+ *
+ * ## Part groups
+ *
+ * Part groups are usually started for each "major" keyword, which is chosen
+ * for how the output is intended to be laid out. For example, the "FROM"
+ * keyword in a SELECT statement is considered "major" and starts a new part
+ * group, vs the "JOIN" keyword is not, and as such both regular tables and
+ * JOIN clauses will be within one part group.
+ *
+ * ## Parts, indentation and merging
+ *
+ * The parts contained in part groups may be indented one additional level
+ * beyond the base indentation of the currently active nesting level, to help
+ * differentiate them from the major keywords. This can be turned off with
+ * DEPARSE_PART_NO_INDENT, for example as needed to format WITH clauses
+ * effectively.
+ *
+ * Parts may be merged with other parts within the same group, if the indent
+ * mode is set to DEPARSE_PART_INDENT_AND_MERGE. This is utilized to put
+ * certain items, for example the target list items in SELECT on one or more
+ * lines, breaking at separators as needed to respect the maximum line limit.
+ *
+ * ## Node context
+ *
+ * Node context is used when the same function in the deparser needs to behave
+ * differently depending on the parent node. For example, a SELECT statement
+ * needs wrapping parenthesis in certain situations where the parent statement
+ * uses a set operation (e.g. UNION).
+ *
+ * ## Comments
+ *
+ * Comments do not exist as nodes in a Postgres parse tree, and as such need to
+ * be passed in separately through the deparser options. They are placed in the
+ * output on a best effort basis, by matching against node locations. Comments
+ * will only be output at most once, but may not be output at all in certain
+ * cases, for example when the comment's specified match location is never
+ * reached by any of the nodes visited.
+ */
+
 typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_NONE,
 	// Parent node type (and sometimes field)
 	DEPARSE_NODE_CONTEXT_INSERT_RELATION,
+	DEPARSE_NODE_CONTEXT_INSERT_SELECT,
 	DEPARSE_NODE_CONTEXT_A_EXPR,
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
 	DEPARSE_NODE_CONTEXT_SET_STATEMENT,
 	DEPARSE_NODE_CONTEXT_FUNC_EXPR,
+	DEPARSE_NODE_CONTEXT_SELECT_SETOP,
+	DEPARSE_NODE_CONTEXT_SELECT_SORT_CLAUSE,
 	// Identifier vs constant context
 	DEPARSE_NODE_CONTEXT_IDENTIFIER,
 	DEPARSE_NODE_CONTEXT_CONSTANT
 } DeparseNodeContext;
 
-// Check whether the value is a reserved keyword, to determine escaping for output
-//
-// Note that since the parser lowercases all keywords, this does *not* match when the
-// value is not all-lowercase and a reserved keyword.
-static bool
-isReservedKeyword(const char *val)
+typedef enum DeparsePartIndentMode {
+	/* Don't indent parts at all, used in special cases (e.g. WITH clauses) */
+	DEPARSE_PART_NO_INDENT,
+
+	/* Indent parts but don't merge them (keep each on their own line) */
+	DEPARSE_PART_INDENT,
+
+	/* Indent parts and merge them together up to the max line length */
+	DEPARSE_PART_INDENT_AND_MERGE
+} DeparsePartIndentMode;
+
+// Each part is typically one line to be emitted in pretty print mode
+typedef struct DeparseStatePart
 {
-	int	kwnum = ScanKeywordLookup(val, &ScanKeywords);
-	bool all_lower_case = true;
-	const char *cp;
+	StringInfo str;
 
-	for (cp = val; *cp; cp++)
-	{
-		if (!(
-			(*cp >= 'a' && *cp <= 'z') ||
-			(*cp >= '0' && *cp <= '9') ||
-			(*cp == '_')))
-		{
-			all_lower_case = false;
-			break;
-		}
-	}
+	/* If this gets emitted as its own line, number of spaces to be added as indentation */
+	int indent;
 
-	return all_lower_case && kwnum >= 0 && ScanKeywordCategories[kwnum] == RESERVED_KEYWORD;
-}
+	/* Allow merging this part with adjacent parts that are marked as mergeable */
+	bool mergeable;
+} DeparseStatePart;
 
-// Returns whether the given value consists only of operator characters
-static bool
-isOp(const char *val)
+// A part group are typically all parts associated with a major keyword
+typedef struct DeparseStatePartGroup
 {
-	const char *cp;
+	const char *keyword;
+	List *parts;
+	DeparsePartIndentMode indent_mode;
+} DeparseStatePartGroup;
 
-	Assert(strlen(val) > 0);
+// Nesting levels may be statements, or complex parts of statements that should be indented (e.g. CASE)
+typedef struct DeparseStateNestingLevel
+{
+	/* List of DeparseStatePartGroup items */
+	List *part_groups;
 
-	for (cp = val; *cp; cp++)
-	{
-		if (!(
-			*cp == '~' ||
-			*cp == '!' ||
-			*cp == '@' ||
-			*cp == '#' ||
-			*cp == '^' ||
-			*cp == '&' ||
-			*cp == '|' ||
-			*cp == '`' ||
-			*cp == '?' ||
-			*cp == '+' ||
-			*cp == '-' ||
-			*cp == '*' ||
-			*cp == '/' ||
-			*cp == '%' ||
-			*cp == '<' ||
-			*cp == '>' ||
-			*cp == '='))
-			return false;
-	}
-
-	return true;
-}
+	/* Add this much indentation to every part */
+	int base_indent;
+} DeparseStateNestingLevel;
 
 typedef struct DeparseState
 {
-	StringInfo str;
+	DeparseStateNestingLevel *current;
+
+	/* List of DeparseStatePart items */
+	List *result_parts;
+
+	/* Deparse options originally passed in */
+	PostgresDeparseOpts opts;
+
+	/* Set of indexes of comments already placed in the output query */
+	Bitmapset *emitted_comments;
 } DeparseState;
 
-static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt);
+static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNodeContext context);
 static void deparseIntoClause(DeparseState *state, IntoClause *into_clause);
 static void deparseRangeVar(DeparseState *state, RangeVar *range_var, DeparseNodeContext context);
 static void deparseResTarget(DeparseState *state, ResTarget *res_target, DeparseNodeContext context);
@@ -183,9 +245,128 @@ static void deparseExplainableStmt(DeparseState *state, Node *node);
 static void deparseStmt(DeparseState *state, Node *node);
 static void deparseValue(DeparseState *state, union ValUnion *value, DeparseNodeContext context);
 
+static void
+removeTrailingSpaceFromStr(StringInfo str)
+{
+	if (str->len >= 1 && str->data[str->len - 1] == ' ') {
+		str->len -= 1;
+		str->data[str->len] = '\0';
+	}
+}
+
+// Check whether the value is a reserved keyword, to determine escaping for output
+//
+// Note that since the parser lowercases all keywords, this does *not* match when the
+// value is not all-lowercase and a reserved keyword.
+static bool
+isReservedKeyword(const char *val)
+{
+	int	kwnum = ScanKeywordLookup(val, &ScanKeywords);
+	bool all_lower_case = true;
+	const char *cp;
+
+	for (cp = val; *cp; cp++)
+	{
+		if (!(
+			(*cp >= 'a' && *cp <= 'z') ||
+			(*cp >= '0' && *cp <= '9') ||
+			(*cp == '_')))
+		{
+			all_lower_case = false;
+			break;
+		}
+	}
+
+	return all_lower_case && kwnum >= 0 && ScanKeywordCategories[kwnum] == RESERVED_KEYWORD;
+}
+
+// Returns whether the given value consists only of operator characters
+static bool
+isOp(const char *val)
+{
+	const char *cp;
+
+	Assert(strlen(val) > 0);
+
+	for (cp = val; *cp; cp++)
+	{
+		if (!(
+			*cp == '~' ||
+			*cp == '!' ||
+			*cp == '@' ||
+			*cp == '#' ||
+			*cp == '^' ||
+			*cp == '&' ||
+			*cp == '|' ||
+			*cp == '`' ||
+			*cp == '?' ||
+			*cp == '+' ||
+			*cp == '-' ||
+			*cp == '*' ||
+			*cp == '/' ||
+			*cp == '%' ||
+			*cp == '<' ||
+			*cp == '>' ||
+			*cp == '='))
+			return false;
+	}
+
+	return true;
+}
+
+static DeparseStatePart *
+makeDeparseStatePart(DeparseState *state, DeparseStateNestingLevel *level, DeparsePartIndentMode indent_mode)
+{
+	DeparseStatePart *part = palloc(sizeof(DeparseStatePart));
+	part->str = makeStringInfo();
+	part->indent = level->base_indent;
+	if (indent_mode != DEPARSE_PART_NO_INDENT)
+		part->indent += state->opts.indent_size;
+	part->mergeable = indent_mode == DEPARSE_PART_INDENT_AND_MERGE;
+	return part;
+}
+
+static void
+freeDeparseStatePart(DeparseStatePart *part)
+{
+	pfree(part->str->data);
+	pfree(part->str);
+	pfree(part);
+}
+
+// Returns current active part group, and initializes the first one (including an empty part) if needed
+static DeparseStatePartGroup *
+deparseGetCurrentPartGroup(DeparseState *state)
+{
+	DeparseStateNestingLevel *level = state->current;
+	if (level->part_groups)
+		return (DeparseStatePartGroup *) llast(level->part_groups);
+
+	DeparseStatePartGroup *part_group = palloc0(sizeof(DeparseStatePartGroup));
+	part_group->parts = lappend(part_group->parts, makeDeparseStatePart(state, level, part_group->indent_mode));
+	level->part_groups = lappend(level->part_groups, part_group);
+	return part_group;
+}
+
+static DeparseStatePart *
+deparseGetCurrentPart(DeparseState *state)
+{
+	DeparseStatePartGroup *part_group = deparseGetCurrentPartGroup(state);
+	return (DeparseStatePart *) llast(part_group->parts);
+}
+
+static void
+deparseMarkCurrentPartNonMergable(DeparseState *state)
+{
+	DeparseStatePart *part = deparseGetCurrentPart(state);
+	part->mergeable = false;
+}
+
 static StringInfo deparseGetCurrentStringInfo(DeparseState *state)
 {
-	return state->str;
+	DeparseStatePart *part = deparseGetCurrentPart(state);
+	Assert(part != NULL);
+	return part->str;
 }
 
 static void deparseAppendStringInfo(DeparseState *state, const char *fmt,...)
@@ -228,9 +409,254 @@ static void
 removeTrailingSpace(DeparseState *state)
 {
 	StringInfo str = deparseGetCurrentStringInfo(state);
-	if (str->len >= 1 && str->data[str->len - 1] == ' ') {
-		str->len -= 1;
-		str->data[str->len] = '\0';
+	removeTrailingSpaceFromStr(str);
+}
+
+static void
+deparseRemoveTrailingEmptyPart(DeparseState *state)
+{
+	DeparseStatePartGroup *part_group = deparseGetCurrentPartGroup(state);
+	DeparseStatePart *last_part = deparseGetCurrentPart(state);
+
+	if (last_part->str->len == 0)
+	{
+		freeDeparseStatePart(last_part);
+		part_group->parts = list_delete_last(part_group->parts);
+	}
+}
+
+static void
+deparseAppendPart(DeparseState *state, bool deduplicate)
+{
+	DeparseStatePartGroup *part_group = deparseGetCurrentPartGroup(state);
+
+	// Remove previous part if its empty and we deduplicate. We don't keep
+	// the existing part since it may have the wrong indent level or mode.
+	if (deduplicate)
+		deparseRemoveTrailingEmptyPart(state);
+
+	part_group->parts = lappend(part_group->parts, makeDeparseStatePart(state, state->current, part_group->indent_mode));
+}
+
+static void
+deparseAppendCommaAndPart(DeparseState *state)
+{
+	if (state->opts.commas_start_of_line)
+	{
+		deparseAppendPart(state, true);
+		deparseAppendStringInfoString(state, ", ");
+	}
+	else
+	{
+		deparseAppendStringInfoChar(state, ',');
+		deparseAppendPart(state, true);
+	}
+}
+
+static void
+deparseAppendPartGroup(DeparseState *state, const char *keyword, DeparsePartIndentMode indent_mode)
+{
+	DeparseStateNestingLevel *level = state->current;
+	DeparseStatePartGroup *part_group = palloc0(sizeof(DeparseStatePartGroup));
+
+	if (list_length(level->part_groups) > 0)
+		removeTrailingSpace(state);
+
+	part_group->keyword = keyword;
+	part_group->parts = lappend(part_group->parts, makeDeparseStatePart(state, state->current, indent_mode));
+	part_group->indent_mode = indent_mode;
+
+	level->part_groups = lappend(level->part_groups, part_group);
+}
+
+static void
+deparseAppendCommentsIfNeeded(DeparseState *state, ParseLoc location)
+{
+	for (int i = 0; i < state->opts.comment_count; i++)
+	{
+		if (bms_is_member(i, state->emitted_comments))
+			continue;
+
+		PostgresDeparseComment *comment = state->opts.comments[i];
+		if (comment->match_location > location)
+			continue;
+
+		// Emit one less leading newline if we already emitted one for formatting reasons
+		int newlines_before_comment = comment->newlines_before_comment;
+		if (state->opts.pretty_print && newlines_before_comment > 0 &&
+			deparseGetCurrentPartGroup(state)->keyword != NULL &&
+			deparseGetCurrentStringInfo(state)->len == 0)
+			newlines_before_comment -= 1;
+
+		for (int j = 0; j < newlines_before_comment; j++)
+		{
+			if (state->opts.pretty_print)
+				deparseAppendPart(state, false);
+			else
+				deparseAppendStringInfoChar(state, '\n');
+		}
+
+		deparseAppendStringInfoString(state, comment->str);
+
+		/* never merge comments with other parts */
+		deparseMarkCurrentPartNonMergable(state);
+
+		for (int j = 0; j < comment->newlines_after_comment; j++)
+		{
+			if (state->opts.pretty_print)
+				deparseAppendPart(state, false);
+			else
+				deparseAppendStringInfoChar(state, '\n');
+		}
+
+		state->emitted_comments = bms_add_member(state->emitted_comments, i);
+	}
+}
+
+static void
+deparseEmit(DeparseState *state, StringInfo str)
+{
+	ListCell *lc;
+
+	/* If the last part is empty, drop it, so we don't confuse the newline output */
+	DeparseStatePart *last_part = (DeparseStatePart *) llast(state->result_parts);
+	if (last_part && last_part->str->len == 0)
+	{
+		freeDeparseStatePart(last_part);
+		state->result_parts = list_delete_last(state->result_parts);
+	}
+
+	foreach (lc, state->result_parts)
+	{
+		DeparseStatePart *part = (DeparseStatePart *) lfirst(lc);
+		bool last_part = list_cell_number(state->result_parts, lc) == list_length(state->result_parts) - 1;
+
+		if (!state->opts.pretty_print && part->str->len > 0 && (part->str->data[0] == ')' || part->str->data[0] == ';'))
+			removeTrailingSpaceFromStr(str);
+
+		if (state->opts.pretty_print)
+		{
+			for (int i = 0; i < part->indent; i++)
+				appendStringInfoChar(str, ' ');
+		}
+
+		appendStringInfoString(str, part->str->data);
+		removeTrailingSpaceFromStr(str);
+
+		if (!last_part)
+		{
+			if (state->opts.pretty_print)
+				appendStringInfoChar(str, '\n');
+			else if (str->data[str->len - 1] != '(')
+				appendStringInfoChar(str, ' ');
+		}
+
+		freeDeparseStatePart(part);
+	}
+	list_free(state->result_parts);
+	state->result_parts = NIL;
+
+	if (state->opts.pretty_print && state->opts.trailing_newline)
+		appendStringInfoChar(str, '\n');
+}
+
+static DeparseStateNestingLevel *
+deparseStateIncreaseNestingLevel(DeparseState *state)
+{
+	DeparseStateNestingLevel *parent = state->current;
+	DeparseStateNestingLevel *level = palloc0(sizeof(DeparseStateNestingLevel));
+	if (parent)
+	{
+		DeparseStatePartGroup *part_group = deparseGetCurrentPartGroup(state);
+		level->base_indent = parent->base_indent + state->opts.indent_size;
+		if (part_group->indent_mode != DEPARSE_PART_NO_INDENT) /* Indent again if parts next to us are also indented */
+			level->base_indent += state->opts.indent_size;
+
+		/* Parts with nested elements don't get merged, even if otherwise permitted */
+		deparseMarkCurrentPartNonMergable(state);
+	}
+	state->current = level;
+	return parent;
+}
+
+static void
+deparseStateDecreaseNestingLevel(DeparseState *state, DeparseStateNestingLevel *parent_level)
+{
+	ListCell *lc;
+	ListCell *lc2;
+	DeparseStateNestingLevel *level = state->current;
+	Assert(level != NULL);
+
+	foreach (lc, level->part_groups)
+	{
+		DeparseStatePartGroup *part_group = (DeparseStatePartGroup *) lfirst(lc);
+
+		/* Merge parts */
+		if (part_group->indent_mode == DEPARSE_PART_INDENT_AND_MERGE && list_length(part_group->parts) > 1)
+		{
+			DeparseStatePart *target = (DeparseStatePart *) linitial(part_group->parts);
+			for_each_from (lc2, part_group->parts, 1)
+			{
+				DeparseStatePart *part = (DeparseStatePart *) lfirst(lc2);
+				removeTrailingSpaceFromStr(target->str);
+				if (target->mergeable && part->mergeable &&
+					target->indent + target->str->len + 1 + part->str->len <= state->opts.max_line_length)
+				{
+					if (target->str->len > 0 && target->str->data[target->str->len - 1] != '(')
+						appendStringInfoChar(target->str, ' ');
+					appendStringInfoString(target->str, part->str->data);
+					freeDeparseStatePart(part);
+					part_group->parts = foreach_delete_current(part_group->parts, lc2);
+				}
+				else
+				{
+					target = part;
+				}
+			}
+		}
+
+		if (part_group->keyword != NULL)
+		{
+			DeparseStatePart *target = makeDeparseStatePart(state, level, false);
+			appendStringInfoString(target->str, part_group->keyword);
+			part_group->parts = list_insert_nth(part_group->parts, 0, target);
+
+			if (list_length(part_group->parts) == 2 || part_group->indent_mode == DEPARSE_PART_NO_INDENT)
+			{
+				DeparseStatePart *part = (DeparseStatePart *) lsecond(part_group->parts);
+				if (part->str->len > 0)
+					appendStringInfo(target->str, " %s", part->str->data);
+				freeDeparseStatePart(part);
+				part_group->parts = list_delete_nth_cell(part_group->parts, 1);
+			}
+		}
+
+		if (parent_level)
+		{
+			DeparseStatePartGroup *parent_part_group = (DeparseStatePartGroup *) llast(parent_level->part_groups);
+			parent_part_group->parts = list_concat(parent_part_group->parts, part_group->parts);
+		}
+		else
+		{
+			// If its the top level, save as results instead
+			state->result_parts = list_concat(state->result_parts, part_group->parts);
+		}
+
+		list_free(part_group->parts);
+		pfree(part_group);
+	}
+	list_free(level->part_groups);
+	pfree(level);
+
+	state->current = parent_level;
+
+	if (parent_level)
+	{
+		/* Make sure parent statement writes that follow are on their own line */
+		deparseAppendPart(state, true);
+
+		/* Parts with nested elements don't get merged, even if otherwise permitted */
+		deparseMarkCurrentPartNonMergable(state);
 	}
 }
 
@@ -1653,7 +2079,7 @@ static void deparseTargetList(DeparseState *state, List *l)
 		}
 
 		if (lnext(l, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
 }
 
@@ -1762,7 +2188,7 @@ static void deparseFromList(DeparseState *state, List *l)
 	{
 		deparseTableRef(state, lfirst(lc));
 		if (lnext(l, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
 }
 
@@ -1773,7 +2199,7 @@ static void deparseFromClause(DeparseState *state, List *l)
 {
 	if (list_length(l) > 0)
 	{
-		deparseAppendStringInfoString(state, "FROM ");
+		deparseAppendPartGroup(state, "FROM", DEPARSE_PART_INDENT);
 		deparseFromList(state, l);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -1786,7 +2212,7 @@ static void deparseWhereClause(DeparseState *state, Node *node)
 {
 	if (node != NULL)
 	{
-		deparseAppendStringInfoString(state, "WHERE ");
+		deparseAppendPartGroup(state, "WHERE", DEPARSE_PART_INDENT);
 		deparseExpr(state, node, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -1800,7 +2226,7 @@ static void deparseWhereOrCurrentClause(DeparseState *state, Node *node)
 	if (node == NULL)
 		return;
 
-	deparseAppendStringInfoString(state, "WHERE ");
+	deparseAppendPartGroup(state, "WHERE", DEPARSE_PART_INDENT);
 
 	if (IsA(node, CurrentOfExpr)) {
 		CurrentOfExpr *current_of_expr = castNode(CurrentOfExpr, node);
@@ -1826,7 +2252,7 @@ static void deparseGroupByList(DeparseState *state, List *l)
 			deparseExpr(state, lfirst(lc), DEPARSE_NODE_CONTEXT_A_EXPR);
 
 		if (lnext(l, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
 }
 
@@ -1867,19 +2293,27 @@ static void deparseNameList(DeparseState *state, List *l)
 // "opt_sort_clause" and "json_array_aggregate_order_by_clause_opt" in gram.y
 //
 // Note this method adds a trailing space if a value is output
-static void deparseOptSortClause(DeparseState *state, List *l)
+static void deparseOptSortClause(DeparseState *state, List *l, DeparseNodeContext context)
 {
 	ListCell *lc = NULL;
 
 	if (list_length(l) > 0)
 	{
-		deparseAppendStringInfoString(state, "ORDER BY ");
+		if (context == DEPARSE_NODE_CONTEXT_SELECT_SORT_CLAUSE)
+			deparseAppendPartGroup(state, "ORDER BY", DEPARSE_PART_INDENT_AND_MERGE);
+		else
+			deparseAppendStringInfoString(state, "ORDER BY ");
 
 		foreach(lc, l)
 		{
 			deparseSortBy(state, castNode(SortBy, lfirst(lc)));
 			if (lnext(l, lc))
-				deparseAppendStringInfoString(state, ", ");
+			{
+				if (context == DEPARSE_NODE_CONTEXT_SELECT_SORT_CLAUSE)
+					deparseAppendCommaAndPart(state);
+				else
+					deparseAppendStringInfoString(state, ", ");
+			}
 		}
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -1919,7 +2353,7 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 		}
 
 		if (foreach_current_index(lc) != 0)
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 
 		ResTarget *res_target = castNode(ResTarget, lfirst(lc));
 		Assert(res_target->val != NULL);
@@ -2294,10 +2728,26 @@ static void deparseUtilityOptionList(DeparseState *state, List *options)
 	}
 }
 
-static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
+static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNodeContext context)
 {
 	const ListCell *lc = NULL;
 	const ListCell *lc2 = NULL;
+	bool need_parens = context == DEPARSE_NODE_CONTEXT_SELECT_SETOP && (
+		list_length(stmt->sortClause) > 0 ||
+		stmt->limitOffset != NULL ||
+		stmt->limitCount != NULL ||
+		list_length(stmt->lockingClause) > 0 ||
+		stmt->withClause != NULL ||
+		stmt->op != SETOP_NONE);
+	DeparseStateNestingLevel *parent_level = NULL;
+
+	if (need_parens)
+	{
+		deparseAppendPart(state, true);
+		deparseAppendStringInfoChar(state, '(');
+	}
+	if (need_parens || (context != DEPARSE_NODE_CONTEXT_SELECT_SETOP && context != DEPARSE_NODE_CONTEXT_INSERT_SELECT))
+		parent_level = deparseStateIncreaseNestingLevel(state);
 
 	if (stmt->withClause)
 	{
@@ -2310,7 +2760,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 			if (list_length(stmt->valuesLists) > 0)
 			{
 				const ListCell *lc;
-				deparseAppendStringInfoString(state, "VALUES ");
+				deparseAppendPartGroup(state, "VALUES", DEPARSE_PART_INDENT_AND_MERGE);
 
 				foreach(lc, stmt->valuesLists)
 				{
@@ -2318,18 +2768,19 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 					deparseExprList(state, lfirst(lc));
 					deparseAppendStringInfoChar(state, ')');
 					if (lnext(stmt->valuesLists, lc))
-						deparseAppendStringInfoString(state, ", ");
+						deparseAppendCommaAndPart(state);
 				}
 				deparseAppendStringInfoChar(state, ' ');
 				break;
 			}
 
-			deparseAppendStringInfoString(state, "SELECT ");
+			deparseAppendPartGroup(state, "SELECT", DEPARSE_PART_INDENT_AND_MERGE);
 
 			if (list_length(stmt->targetList) > 0)
 			{
 				if (stmt->distinctClause != NULL)
 				{
+					deparseMarkCurrentPartNonMergable(state);
 					deparseAppendStringInfoString(state, "DISTINCT ");
 
 					if (list_length(stmt->distinctClause) > 0 && linitial(stmt->distinctClause) != NULL)
@@ -2338,6 +2789,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 						deparseExprList(state, stmt->distinctClause);
 						deparseAppendStringInfoString(state, ") ");
 					}
+					deparseAppendPart(state, true);
 				}
 
 				deparseTargetList(state, stmt->targetList);
@@ -2346,7 +2798,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 
 			if (stmt->intoClause != NULL)
 			{
-				deparseAppendStringInfoString(state, "INTO ");
+				deparseAppendPartGroup(state, "INTO", DEPARSE_PART_INDENT);
 				deparseOptTemp(state, stmt->intoClause->rel->relpersistence);
 				deparseIntoClause(state, stmt->intoClause);
 				deparseAppendStringInfoChar(state, ' ');
@@ -2357,7 +2809,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 
 			if (list_length(stmt->groupClause) > 0)
 			{
-				deparseAppendStringInfoString(state, "GROUP BY ");
+				deparseAppendPartGroup(state, "GROUP BY", DEPARSE_PART_INDENT_AND_MERGE);
 				if (stmt->groupDistinct)
 					deparseAppendStringInfoString(state, "DISTINCT ");
 				deparseGroupByList(state, stmt->groupClause);
@@ -2366,14 +2818,14 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 
 			if (stmt->havingClause != NULL)
 			{
-				deparseAppendStringInfoString(state, "HAVING ");
+				deparseAppendPartGroup(state, "HAVING", DEPARSE_PART_INDENT);
 				deparseExpr(state, stmt->havingClause, DEPARSE_NODE_CONTEXT_A_EXPR);
 				deparseAppendStringInfoChar(state, ' ');
 			}
 
 			if (stmt->windowClause != NULL)
 			{
-				deparseAppendStringInfoString(state, "WINDOW ");
+				deparseAppendPartGroup(state, "WINDOW", DEPARSE_PART_INDENT);
 				foreach(lc, stmt->windowClause)
 				{
 					WindowDef *window_def = castNode(WindowDef, lfirst(lc));
@@ -2391,57 +2843,43 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 		case SETOP_INTERSECT:
 		case SETOP_EXCEPT:
 			{
-				bool need_larg_parens =
-					list_length(stmt->larg->sortClause) > 0 ||
-					stmt->larg->limitOffset != NULL ||
-					stmt->larg->limitCount != NULL ||
-					list_length(stmt->larg->lockingClause) > 0 ||
-					stmt->larg->withClause != NULL ||
-					stmt->larg->op != SETOP_NONE;
-				bool need_rarg_parens =
-					list_length(stmt->rarg->sortClause) > 0 ||
-					stmt->rarg->limitOffset != NULL ||
-					stmt->rarg->limitCount != NULL ||
-					list_length(stmt->rarg->lockingClause) > 0 ||
-					stmt->rarg->withClause != NULL ||
-					stmt->rarg->op != SETOP_NONE;
-				if (need_larg_parens)
-					deparseAppendStringInfoChar(state, '(');
-				deparseSelectStmt(state, stmt->larg);
-				if (need_larg_parens)
-					deparseAppendStringInfoChar(state, ')');
+				deparseSelectStmt(state, stmt->larg, DEPARSE_NODE_CONTEXT_SELECT_SETOP);
 				switch (stmt->op)
 				{
 					case SETOP_UNION:
-						deparseAppendStringInfoString(state, " UNION ");
+						if (stmt->all)
+							deparseAppendPartGroup(state, "UNION ALL", DEPARSE_PART_NO_INDENT);
+						else
+							deparseAppendPartGroup(state, "UNION", DEPARSE_PART_NO_INDENT);
 						break;
 					case SETOP_INTERSECT:
-						deparseAppendStringInfoString(state, " INTERSECT ");
+						if (stmt->all)
+							deparseAppendPartGroup(state, "INTERSECT ALL", DEPARSE_PART_NO_INDENT);
+						else
+							deparseAppendPartGroup(state, "INTERSECT", DEPARSE_PART_NO_INDENT);
 						break;
 					case SETOP_EXCEPT:
-						deparseAppendStringInfoString(state, " EXCEPT ");
+						if (stmt->all)
+							deparseAppendPartGroup(state, "EXCEPT ALL", DEPARSE_PART_NO_INDENT);
+						else
+							deparseAppendPartGroup(state, "EXCEPT", DEPARSE_PART_NO_INDENT);
 						break;
 					default:
 						Assert(false);
 				}
-				if (stmt->all)
-					deparseAppendStringInfoString(state, "ALL ");
-				if (need_rarg_parens)
-					deparseAppendStringInfoChar(state, '(');
-				deparseSelectStmt(state, stmt->rarg);
-				if (need_rarg_parens)
-					deparseAppendStringInfoChar(state, ')');
+				deparseAppendPart(state, true);
+				deparseSelectStmt(state, stmt->rarg, DEPARSE_NODE_CONTEXT_SELECT_SETOP);
 				deparseAppendStringInfoChar(state, ' ');
 			}
 			break;
 	}
 
-	deparseOptSortClause(state, stmt->sortClause);
+	deparseOptSortClause(state, stmt->sortClause, DEPARSE_NODE_CONTEXT_SELECT_SORT_CLAUSE);
 
 	if (stmt->limitCount != NULL)
 	{
 		if (stmt->limitOption == LIMIT_OPTION_COUNT)
-			deparseAppendStringInfoString(state, "LIMIT ");
+			deparseAppendPartGroup(state, "LIMIT", DEPARSE_PART_INDENT);
 		else if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
 			deparseAppendStringInfoString(state, "FETCH FIRST ");
 
@@ -2460,7 +2898,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 
 	if (stmt->limitOffset != NULL)
 	{
-		deparseAppendStringInfoString(state, "OFFSET ");
+		deparseAppendPartGroup(state, "OFFSET", DEPARSE_PART_INDENT);
 		deparseExpr(state, stmt->limitOffset, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -2477,6 +2915,12 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt)
 	}
 
 	removeTrailingSpace(state);
+
+	/* Note that parent_level can be NULL, so we repeat the full if condition here */
+	if (need_parens || (context != DEPARSE_NODE_CONTEXT_SELECT_SETOP && context != DEPARSE_NODE_CONTEXT_INSERT_SELECT))
+		deparseStateDecreaseNestingLevel(state, parent_level);
+	if (need_parens)
+		deparseAppendStringInfoChar(state, ')');
 }
 
 static void deparseIntoClause(DeparseState *state, IntoClause *into_clause)
@@ -2560,15 +3004,51 @@ static void deparseRangeVar(DeparseState *state, RangeVar *range_var, DeparseNod
 	removeTrailingSpace(state);
 }
 
-void deparseRawStmt(StringInfo str, RawStmt *raw_stmt)
+void deparseRawStmt(StringInfo str, struct RawStmt *raw_stmt)
+{
+	PostgresDeparseOpts opts;
+	MemSet(&opts, 0, sizeof(PostgresDeparseOpts)); // zero initialized means pretty print = false
+	deparseRawStmtOpts(str, raw_stmt, opts);
+}
+
+void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDeparseOpts opts)
 {
 	DeparseState *state = NULL;
 	if (raw_stmt->stmt == NULL)
 		elog(ERROR, "deparse error in deparseRawStmt: RawStmt with empty Stmt");
 
 	state = palloc0(sizeof(DeparseState));
-	state->str = str;
+	state->opts = opts;
+	if (state->opts.indent_size == 0)
+		state->opts.indent_size = 4;
+	if (state->opts.max_line_length == 0)
+		state->opts.max_line_length = 80;
+
+	/* Check for any comments at the start of the statement */
+	if (state->opts.comment_count > 0)
+	{
+		/*
+		 * Filter out comments that are placed before this statement starts, this
+		 * avoids emitting comments multiple times in multi-statement queries.
+		 */
+		for (int i = 0; i < state->opts.comment_count; i++)
+		{
+			if (state->opts.comments[i]->match_location < raw_stmt->stmt_location)
+				state->emitted_comments = bms_add_member(state->emitted_comments, i);
+		}
+
+		deparseStateIncreaseNestingLevel(state);
+		deparseAppendCommentsIfNeeded(state, raw_stmt->stmt_location);
+		deparseRemoveTrailingEmptyPart(state);
+		deparseStateDecreaseNestingLevel(state, NULL);
+	}
+
 	deparseStmt(state, raw_stmt->stmt);
+
+	deparseEmit(state, str);
+
+	bms_free(state->emitted_comments);
+	pfree(state);
 }
 
 static void deparseAlias(DeparseState *state, Alias *alias)
@@ -2587,6 +3067,7 @@ static void deparseAlias(DeparseState *state, Alias *alias)
 static void deparseAConst(DeparseState *state, A_Const *a_const)
 {
 	union ValUnion *val = a_const->isnull ? NULL : &a_const->val;
+	deparseAppendCommentsIfNeeded(state, a_const->location);
 	deparseValue(state, val, DEPARSE_NODE_CONTEXT_CONSTANT);
 }
 
@@ -2890,7 +3371,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 
 	if (func_call->agg_order != NULL && !func_call->agg_within_group)
 	{
-		deparseOptSortClause(state, func_call->agg_order);
+		deparseOptSortClause(state, func_call->agg_order, DEPARSE_NODE_CONTEXT_NONE);
 	}
 
 	removeTrailingSpace(state);
@@ -2899,7 +3380,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 	if (func_call->agg_order != NULL && func_call->agg_within_group)
 	{
 		deparseAppendStringInfoString(state, "WITHIN GROUP (");
-		deparseOptSortClause(state, func_call->agg_order);
+		deparseOptSortClause(state, func_call->agg_order, DEPARSE_NODE_CONTEXT_NONE);
 		removeTrailingSpace(state);
 		deparseAppendStringInfoString(state, ") ");
 	}
@@ -2926,10 +3407,21 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 static void deparseWindowDef(DeparseState *state, WindowDef* window_def)
 {
 	ListCell *lc;
+	DeparseStateNestingLevel *parent_level = NULL;
 
 	// The parent node is responsible for outputting window_def->name
 
+	// Special case completely empty window clauses and return early
+	if (!window_def->refname && list_length(window_def->partitionClause) == 0 &&
+		list_length(window_def->orderClause) == 0 &&
+		!(window_def->frameOptions & FRAMEOPTION_NONDEFAULT))
+	{
+		deparseAppendStringInfoString(state, "()");
+		return;
+	}
+
 	deparseAppendStringInfoChar(state, '(');
+	parent_level = deparseStateIncreaseNestingLevel(state);
 
 	if (window_def->refname != NULL)
 	{
@@ -2944,10 +3436,13 @@ static void deparseWindowDef(DeparseState *state, WindowDef* window_def)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseOptSortClause(state, window_def->orderClause);
+	removeTrailingSpace(state);
+	deparseAppendPart(state, true);
+	deparseOptSortClause(state, window_def->orderClause, DEPARSE_NODE_CONTEXT_NONE);
 
 	if (window_def->frameOptions & FRAMEOPTION_NONDEFAULT)
 	{
+		deparseAppendPartGroup(state, NULL, DEPARSE_PART_NO_INDENT);
 		if (window_def->frameOptions & FRAMEOPTION_RANGE)
 			deparseAppendStringInfoString(state, "RANGE ");
 		else if (window_def->frameOptions & FRAMEOPTION_ROWS)
@@ -3024,12 +3519,15 @@ static void deparseWindowDef(DeparseState *state, WindowDef* window_def)
 	}
 
 	removeTrailingSpace(state);
+	deparseStateDecreaseNestingLevel(state, parent_level);
 	deparseAppendStringInfoChar(state, ')');
 }
 
 static void deparseColumnRef(DeparseState *state, ColumnRef* column_ref)
 {
 	Assert(list_length(column_ref->fields) >= 1);
+
+	deparseAppendCommentsIfNeeded(state, column_ref->location);
 
 	if (IsA(linitial(column_ref->fields), A_Star))
 		deparseAStar(state, castNode(A_Star, linitial(column_ref->fields)));
@@ -3044,7 +3542,7 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 	switch (sub_link->subLinkType) {
 		case EXISTS_SUBLINK:
 			deparseAppendStringInfoString(state, "EXISTS (");
-			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect));
+			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ALL_SUBLINK:
@@ -3052,7 +3550,7 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, sub_link->operName);
 			deparseAppendStringInfoString(state, " ALL (");
-			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect));
+			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ANY_SUBLINK:
@@ -3068,7 +3566,7 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 				deparseAppendStringInfoString(state, " IN ");
 			}
 			deparseAppendStringInfoChar(state, '(');
-			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect));
+			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ROWCOMPARE_SUBLINK:
@@ -3077,7 +3575,7 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			return;
 		case EXPR_SUBLINK:
 			deparseAppendStringInfoString(state, "(");
-			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect));
+			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case MULTIEXPR_SUBLINK:
@@ -3086,7 +3584,7 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			return;
 		case ARRAY_SUBLINK:
 			deparseAppendStringInfoString(state, "ARRAY(");
-			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect));
+			deparseSelectStmt(state, castNode(SelectStmt, sub_link->subselect), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case CTE_SUBLINK: /* for SubPlans only */
@@ -3317,7 +3815,10 @@ static void deparseBoolExpr(DeparseState *state, BoolExpr *bool_expr)
 					deparseAppendStringInfoChar(state, ')');
 
 				if (lnext(bool_expr->args, lc))
-					deparseAppendStringInfoString(state, " AND ");
+				{
+					deparseAppendPart(state, true);
+					deparseAppendStringInfoString(state, "AND ");
+				}
 			}
 			return;
 		case OR_EXPR:
@@ -3480,10 +3981,10 @@ static void deparseWithClause(DeparseState *state, WithClause *with_clause)
 {
 	ListCell *lc;
 
-	deparseAppendStringInfoString(state, "WITH ");
+	deparseAppendPartGroup(state, "WITH", DEPARSE_PART_NO_INDENT);
 	if (with_clause->recursive)
 		deparseAppendStringInfoString(state, "RECURSIVE ");
-	
+
 	foreach(lc, with_clause->ctes) {
 		deparseCommonTableExpr(state, castNode(CommonTableExpr, lfirst(lc)));
 		if (lnext(with_clause->ctes, lc))
@@ -3504,8 +4005,7 @@ static void deparseJoinExpr(DeparseState *state, JoinExpr *join_expr)
 		deparseAppendStringInfoChar(state, '(');
 
 	deparseTableRef(state, join_expr->larg);
-
-	deparseAppendStringInfoChar(state, ' ');
+	deparseAppendPart(state, true);
 
 	if (join_expr->isNatural)
 		deparseAppendStringInfoString(state, "NATURAL ");
@@ -3534,7 +4034,7 @@ static void deparseJoinExpr(DeparseState *state, JoinExpr *join_expr)
 			Assert(false);
 			break;
 	}
-	
+
 	deparseAppendStringInfoString(state, "JOIN ");
 
 	if (need_rarg_parens)
@@ -3619,6 +4119,8 @@ static void deparseCTECycleClause(DeparseState *state, CTECycleClause *cycle_cla
 
 static void deparseCommonTableExpr(DeparseState *state, CommonTableExpr *cte)
 {
+	deparseAppendCommentsIfNeeded(state, cte->location);
+
 	deparseColId(state, cte->ctename);
 
 	if (list_length(cte->aliascolnames) > 0)
@@ -3657,7 +4159,7 @@ static void deparseRangeSubselect(DeparseState *state, RangeSubselect *range_sub
 		deparseAppendStringInfoString(state, "LATERAL ");
 
 	deparseAppendStringInfoChar(state, '(');
-	deparseSelectStmt(state, castNode(SelectStmt, range_subselect->subquery));
+	deparseSelectStmt(state, castNode(SelectStmt, range_subselect->subquery), DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ')');
 
 	if (range_subselect->alias != NULL)
@@ -4089,6 +4591,7 @@ static void deparseNullTest(DeparseState *state, NullTest *null_test)
 static void deparseCaseExpr(DeparseState *state, CaseExpr *case_expr)
 {
 	ListCell *lc;
+	DeparseStateNestingLevel *parent_level = NULL;
 
 	deparseAppendStringInfoString(state, "CASE ");
 
@@ -4098,18 +4601,21 @@ static void deparseCaseExpr(DeparseState *state, CaseExpr *case_expr)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
+	parent_level = deparseStateIncreaseNestingLevel(state);
+
 	foreach(lc, case_expr->args)
 	{
 		deparseCaseWhen(state, castNode(CaseWhen, lfirst(lc)));
-		deparseAppendStringInfoChar(state, ' ');
 	}
 
 	if (case_expr->defresult != NULL)
 	{
-		deparseAppendStringInfoString(state, "ELSE ");
+		deparseAppendPartGroup(state, "ELSE", DEPARSE_PART_INDENT);
 		deparseExpr(state, (Node *) case_expr->defresult, DEPARSE_NODE_CONTEXT_A_EXPR);
-		deparseAppendStringInfoChar(state, ' ');
 	}
+
+	deparseAppendStringInfoChar(state, ' ');
+	deparseStateDecreaseNestingLevel(state, parent_level);
 
 	deparseAppendStringInfoString(state, "END");
 }
@@ -4117,7 +4623,7 @@ static void deparseCaseExpr(DeparseState *state, CaseExpr *case_expr)
 // "when_clause" in gram.y
 static void deparseCaseWhen(DeparseState *state, CaseWhen *case_when)
 {
-	deparseAppendStringInfoString(state, "WHEN ");
+	deparseAppendPartGroup(state, "WHEN", DEPARSE_PART_INDENT);
 	deparseExpr(state, (Node *) case_when->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
 	deparseAppendStringInfoString(state, " THEN ");
 	deparseExpr(state, (Node *) case_when->result, DEPARSE_NODE_CONTEXT_A_EXPR);
@@ -4295,6 +4801,7 @@ static void deparseInsertStmt(DeparseState *state, InsertStmt *insert_stmt)
 {
 	ListCell *lc;
 	ListCell *lc2;
+	DeparseStateNestingLevel *parent_level = deparseStateIncreaseNestingLevel(state);
 
 	if (insert_stmt->withClause != NULL)
 	{
@@ -4302,7 +4809,7 @@ static void deparseInsertStmt(DeparseState *state, InsertStmt *insert_stmt)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseAppendStringInfoString(state, "INSERT INTO ");
+	deparseAppendPartGroup(state, "INSERT INTO", DEPARSE_PART_INDENT);
 	deparseRangeVar(state, insert_stmt->relation, DEPARSE_NODE_CONTEXT_INSERT_RELATION);
 	deparseAppendStringInfoChar(state, ' ');
 
@@ -4317,7 +4824,7 @@ static void deparseInsertStmt(DeparseState *state, InsertStmt *insert_stmt)
 
 	if (insert_stmt->selectStmt != NULL)
 	{
-		deparseSelectStmt(state, castNode(SelectStmt, insert_stmt->selectStmt));
+		deparseSelectStmt(state, castNode(SelectStmt, insert_stmt->selectStmt), DEPARSE_NODE_CONTEXT_INSERT_SELECT);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 	else
@@ -4333,11 +4840,12 @@ static void deparseInsertStmt(DeparseState *state, InsertStmt *insert_stmt)
 
 	if (list_length(insert_stmt->returningList) > 0)
 	{
-		deparseAppendStringInfoString(state, "RETURNING ");
+		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
 		deparseTargetList(state, insert_stmt->returningList);
 	}
 
 	removeTrailingSpace(state);
+	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
 static void deparseInferClause(DeparseState *state, InferClause *infer_clause)
@@ -4372,7 +4880,7 @@ static void deparseOnConflictClause(DeparseState *state, OnConflictClause *on_co
 {
 	ListCell *lc;
 
-	deparseAppendStringInfoString(state, "ON CONFLICT ");
+	deparseAppendPartGroup(state, "ON CONFLICT", DEPARSE_PART_INDENT);
 
 	if (on_conflict_clause->infer != NULL)
 	{
@@ -4395,7 +4903,7 @@ static void deparseOnConflictClause(DeparseState *state, OnConflictClause *on_co
 
 	if (list_length(on_conflict_clause->targetList) > 0)
 	{
-		deparseAppendStringInfoString(state, "SET ");
+		deparseAppendPartGroup(state, "SET", DEPARSE_PART_INDENT);
 		deparseSetClauseList(state, on_conflict_clause->targetList);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -4410,6 +4918,7 @@ static void deparseUpdateStmt(DeparseState *state, UpdateStmt *update_stmt)
 	ListCell* lc;
 	ListCell* lc2;
 	ListCell* lc3;
+	DeparseStateNestingLevel *parent_level = deparseStateIncreaseNestingLevel(state);
 
 	if (update_stmt->withClause != NULL)
 	{
@@ -4417,13 +4926,13 @@ static void deparseUpdateStmt(DeparseState *state, UpdateStmt *update_stmt)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseAppendStringInfoString(state, "UPDATE ");
+	deparseAppendPartGroup(state, "UPDATE", DEPARSE_PART_INDENT);
 	deparseRangeVar(state, update_stmt->relation, DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ' ');
 
 	if (list_length(update_stmt->targetList) > 0)
 	{
-		deparseAppendStringInfoString(state, "SET ");
+		deparseAppendPartGroup(state, "SET", DEPARSE_PART_INDENT);
 		deparseSetClauseList(state, update_stmt->targetList);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -4433,27 +4942,31 @@ static void deparseUpdateStmt(DeparseState *state, UpdateStmt *update_stmt)
 
 	if (list_length(update_stmt->returningList) > 0)
 	{
-		deparseAppendStringInfoString(state, "RETURNING ");
+		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
 		deparseTargetList(state, update_stmt->returningList);
 	}
 
 	removeTrailingSpace(state);
+	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
 // "MergeStmt" in gram.y
 static void deparseMergeStmt(DeparseState *state, MergeStmt *merge_stmt)
 {
+	DeparseStateNestingLevel *parent_level = deparseStateIncreaseNestingLevel(state);
+
 	if (merge_stmt->withClause != NULL)
 	{
 		deparseWithClause(state, merge_stmt->withClause);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseAppendStringInfoString(state, "MERGE INTO ");
+	deparseAppendPartGroup(state, "MERGE", DEPARSE_PART_INDENT);
+	deparseAppendStringInfoString(state, "INTO ");
 	deparseRangeVar(state, merge_stmt->relation, DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ' ');
 
-	deparseAppendStringInfoString(state, "USING ");
+	deparseAppendPartGroup(state, "USING", DEPARSE_PART_INDENT);
 	deparseTableRef(state, merge_stmt->sourceRelation);
 	deparseAppendStringInfoChar(state, ' ');
 
@@ -4532,26 +5045,31 @@ static void deparseMergeStmt(DeparseState *state, MergeStmt *merge_stmt)
 
 	if (merge_stmt->returningList)
 	{
-		deparseAppendStringInfoString(state, " RETURNING ");
+		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
 		deparseTargetList(state, merge_stmt->returningList);
 	}
+
+	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
 static void deparseDeleteStmt(DeparseState *state, DeleteStmt *delete_stmt)
 {
+	DeparseStateNestingLevel *parent_level = deparseStateIncreaseNestingLevel(state);
+
 	if (delete_stmt->withClause != NULL)
 	{
 		deparseWithClause(state, delete_stmt->withClause);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseAppendStringInfoString(state, "DELETE FROM ");
+	deparseAppendPartGroup(state, "DELETE", DEPARSE_PART_INDENT);
+	deparseAppendStringInfoString(state, "FROM ");
 	deparseRangeVar(state, delete_stmt->relation, DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ' ');
 
 	if (delete_stmt->usingClause != NULL)
 	{
-		deparseAppendStringInfoString(state, "USING ");
+		deparseAppendPartGroup(state, "USING", DEPARSE_PART_INDENT);
 		deparseFromList(state, delete_stmt->usingClause);
 		deparseAppendStringInfoChar(state, ' ');
 	}
@@ -4560,11 +5078,12 @@ static void deparseDeleteStmt(DeparseState *state, DeleteStmt *delete_stmt)
 
 	if (list_length(delete_stmt->returningList) > 0)
 	{
-		deparseAppendStringInfoString(state, "RETURNING ");
+		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
 		deparseTargetList(state, delete_stmt->returningList);
 	}
 
 	removeTrailingSpace(state);
+	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
 static void deparseLockingClause(DeparseState *state, LockingClause *locking_clause)
@@ -4578,16 +5097,16 @@ static void deparseLockingClause(DeparseState *state, LockingClause *locking_cla
 			Assert(false);
 			break;
 		case LCS_FORKEYSHARE:
-			deparseAppendStringInfoString(state, "FOR KEY SHARE ");
+			deparseAppendPartGroup(state, "FOR KEY SHARE", DEPARSE_PART_INDENT);
 			break;
 		case LCS_FORSHARE:
-			deparseAppendStringInfoString(state, "FOR SHARE ");
+			deparseAppendPartGroup(state, "FOR SHARE", DEPARSE_PART_INDENT);
 			break;
 		case LCS_FORNOKEYUPDATE:
-			deparseAppendStringInfoString(state, "FOR NO KEY UPDATE ");
+			deparseAppendPartGroup(state, "FOR NO KEY UPDATE", DEPARSE_PART_INDENT);
 			break;
 		case LCS_FORUPDATE:
-			deparseAppendStringInfoString(state, "FOR UPDATE ");
+			deparseAppendPartGroup(state, "FOR UPDATE", DEPARSE_PART_INDENT);
 			break;
 	}
 
@@ -5393,7 +5912,7 @@ static void deparsePartitionSpec(DeparseState *state, PartitionSpec *partition_s
 {
 	ListCell *lc;
 
-	deparseAppendStringInfoString(state, "PARTITION BY ");
+	deparseAppendPartGroup(state, "PARTITION BY", DEPARSE_PART_INDENT);
 
 	switch (partition_spec->strategy)
 	{
@@ -5408,7 +5927,7 @@ static void deparsePartitionSpec(DeparseState *state, PartitionSpec *partition_s
 			break;
 	}
 
-	deparseAppendStringInfoChar(state, '(');
+	deparseAppendStringInfoString(state, " (");
 	foreach(lc, partition_spec->partParams)
 	{
 		deparsePartitionElem(state, castNode(PartitionElem, lfirst(lc)));
@@ -5521,15 +6040,18 @@ static void deparseCreateStmt(DeparseState *state, CreateStmt *create_stmt, bool
 
 	if (list_length(create_stmt->tableElts) > 0)
 	{
+		DeparseStateNestingLevel *parent_level = NULL;
 		// In raw parse output tableElts contains both columns and constraints
 		// (and the constraints field is NIL)
 		deparseAppendStringInfoChar(state, '(');
+		parent_level = deparseStateIncreaseNestingLevel(state);
 		foreach(lc, create_stmt->tableElts)
 		{
 			deparseTableElement(state, lfirst(lc));
 			if (lnext(create_stmt->tableElts, lc))
-				deparseAppendStringInfoString(state, ", ");
+				deparseAppendCommaAndPart(state);
 		}
+		deparseStateDecreaseNestingLevel(state, parent_level);
 		deparseAppendStringInfoString(state, ") ");
 	}
 	else if (create_stmt->partbound == NULL && create_stmt->ofTypename == NULL)
@@ -5936,7 +6458,7 @@ static void deparseCreateTableAsStmt(DeparseState *state, CreateTableAsStmt *cre
 	if (IsA(create_table_as_stmt->query, ExecuteStmt))
 		deparseExecuteStmt(state, castNode(ExecuteStmt, create_table_as_stmt->query));
 	else
-		deparseSelectStmt(state, castNode(SelectStmt, create_table_as_stmt->query));
+		deparseSelectStmt(state, castNode(SelectStmt, create_table_as_stmt->query), DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ' ');
 
 	if (create_table_as_stmt->into->skipData)
@@ -5970,8 +6492,7 @@ static void deparseViewStmt(DeparseState *state, ViewStmt *view_stmt)
 	deparseOptWith(state, view_stmt->options);
 
 	deparseAppendStringInfoString(state, "AS ");
-	deparseSelectStmt(state, castNode(SelectStmt, view_stmt->query));
-	deparseAppendStringInfoChar(state, ' ');
+	deparseSelectStmt(state, castNode(SelectStmt, view_stmt->query), DEPARSE_NODE_CONTEXT_NONE);
 
 	switch (view_stmt->withCheckOption)
 	{
@@ -6865,6 +7386,7 @@ static void deparseAlterTableMoveAllStmt(DeparseState *state, AlterTableMoveAllS
 static void deparseAlterTableStmt(DeparseState *state, AlterTableStmt *alter_table_stmt)
 {
 	ListCell *lc;
+	DeparseStateNestingLevel *parent_level = NULL;
 
 	deparseAppendStringInfoString(state, "ALTER ");
 	DeparseNodeContext context = deparseAlterTableObjType(state, alter_table_stmt->objtype);
@@ -6875,12 +7397,14 @@ static void deparseAlterTableStmt(DeparseState *state, AlterTableStmt *alter_tab
 	deparseRangeVar(state, alter_table_stmt->relation, context);
 	deparseAppendStringInfoChar(state, ' ');
 
+	parent_level = deparseStateIncreaseNestingLevel(state);
 	foreach(lc, alter_table_stmt->cmds)
 	{
 		deparseAlterTableCmd(state, castNode(AlterTableCmd, lfirst(lc)), context);
 		if (lnext(alter_table_stmt->cmds, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
+	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
 static void deparseAlterTableSpaceOptionsStmt(DeparseState *state, AlterTableSpaceOptionsStmt *alter_table_space_options_stmt)
@@ -7486,9 +8010,9 @@ static void deparseExplainStmt(DeparseState *state, ExplainStmt *explain_stmt)
 	ListCell *lc = NULL;
 	char *defname = NULL;
 
-	deparseAppendStringInfoString(state, "EXPLAIN ");
+	deparseAppendPartGroup(state, "EXPLAIN", DEPARSE_PART_NO_INDENT);
 
-        deparseUtilityOptionList(state, explain_stmt->options);
+    deparseUtilityOptionList(state, explain_stmt->options);
 
 	deparseExplainableStmt(state, explain_stmt->query);
 }
@@ -7498,7 +8022,7 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 	ListCell *lc = NULL;
 	ListCell *lc2 = NULL;
 
-	deparseAppendStringInfoString(state, "COPY ");
+	deparseAppendPartGroup(state, "COPY", DEPARSE_PART_INDENT);
 
 	if (copy_stmt->relation != NULL)
 	{
@@ -7894,33 +8418,40 @@ static void deparseCompositeTypeStmt(DeparseState *state, CompositeTypeStmt *com
 {
 	ListCell *lc;
 	RangeVar *typevar;
+	DeparseStateNestingLevel *parent_level = NULL;
 
 	deparseAppendStringInfoString(state, "CREATE TYPE ");
 	deparseRangeVar(state, composite_type_stmt->typevar, DEPARSE_NODE_CONTEXT_CREATE_TYPE);
 
 	deparseAppendStringInfoString(state, " AS (");
+	parent_level = deparseStateIncreaseNestingLevel(state);
 	foreach(lc, composite_type_stmt->coldeflist)
 	{
 		deparseColumnDef(state, castNode(ColumnDef, lfirst(lc)));
 		if (lnext(composite_type_stmt->coldeflist, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
+	deparseStateDecreaseNestingLevel(state, parent_level);
 	deparseAppendStringInfoChar(state, ')');
 }
 
 static void deparseCreateEnumStmt(DeparseState *state, CreateEnumStmt *create_enum_stmt)
 {
 	ListCell *lc;
+	DeparseStateNestingLevel *parent_level = NULL;
+
 	deparseAppendStringInfoString(state, "CREATE TYPE ");
 
 	deparseAnyName(state, create_enum_stmt->typeName);
 	deparseAppendStringInfoString(state, " AS ENUM (");
+	parent_level = deparseStateIncreaseNestingLevel(state);
 	foreach(lc, create_enum_stmt->vals)
 	{
 		deparseStringLiteral(state, strVal(lfirst(lc)));
 		if (lnext(create_enum_stmt->vals, lc))
-			deparseAppendStringInfoString(state, ", ");
+			deparseAppendCommaAndPart(state);
 	}
+	deparseStateDecreaseNestingLevel(state, parent_level);
 	deparseAppendStringInfoChar(state, ')');
 }
 
@@ -8371,7 +8902,7 @@ static void deparseIndexStmt(DeparseState *state, IndexStmt *index_stmt)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	deparseAppendStringInfoString(state, "ON ");
+	deparseAppendPartGroup(state, "ON", DEPARSE_PART_INDENT);
 	deparseRangeVar(state, index_stmt->relation, DEPARSE_NODE_CONTEXT_NONE);
 	deparseAppendStringInfoChar(state, ' ');
 
@@ -8740,7 +9271,7 @@ static void deparseDeclareCursorStmt(DeparseState *state, DeclareCursorStmt *dec
 
 	deparseAppendStringInfoString(state, "FOR ");
 
-	deparseSelectStmt(state, castNode(SelectStmt, declare_cursor_stmt->query));
+	deparseSelectStmt(state, castNode(SelectStmt, declare_cursor_stmt->query), DEPARSE_NODE_CONTEXT_NONE);
 }
 
 static void deparseFetchStmt(DeparseState *state, FetchStmt *fetch_stmt)
@@ -10627,7 +11158,7 @@ static void deparseJsonArrayAgg(DeparseState *state, JsonArrayAgg *json_array_ag
 
 	deparseAppendStringInfoString(state, "JSON_ARRAYAGG(");
 	deparseJsonValueExpr(state, json_array_agg->arg);
-	deparseOptSortClause(state, json_array_agg->constructor->agg_order);
+	deparseOptSortClause(state, json_array_agg->constructor->agg_order, DEPARSE_NODE_CONTEXT_NONE);
 
 	if (!json_array_agg->absent_on_null)
 		deparseAppendStringInfoString(state, "NULL ON NULL ");
@@ -10692,7 +11223,7 @@ static void deparseJsonArrayQueryConstructor(DeparseState *state, JsonArrayQuery
 {
 	deparseAppendStringInfoString(state, "JSON_ARRAY(");
 
-	deparseSelectStmt(state, castNode(SelectStmt, json_array_query_constructor->query));
+	deparseSelectStmt(state, castNode(SelectStmt, json_array_query_constructor->query), DEPARSE_NODE_CONTEXT_NONE);
 	deparseJsonFormat(state, json_array_query_constructor->format);
 	deparseJsonOutput(state, json_array_query_constructor->output);
 
@@ -11079,7 +11610,7 @@ static void deparsePreparableStmt(DeparseState *state, Node *node)
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
-			deparseSelectStmt(state, castNode(SelectStmt, node));
+			deparseSelectStmt(state, castNode(SelectStmt, node), DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		case T_InsertStmt:
 			deparseInsertStmt(state, castNode(InsertStmt, node));
@@ -11104,7 +11635,7 @@ static void deparseRuleActionStmt(DeparseState *state, Node *node)
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
-			deparseSelectStmt(state, castNode(SelectStmt, node));
+			deparseSelectStmt(state, castNode(SelectStmt, node), DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		case T_InsertStmt:
 			deparseInsertStmt(state, castNode(InsertStmt, node));
@@ -11129,7 +11660,7 @@ static void deparseExplainableStmt(DeparseState *state, Node *node)
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
-			deparseSelectStmt(state, castNode(SelectStmt, node));
+			deparseSelectStmt(state, castNode(SelectStmt, node), DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		case T_InsertStmt:
 			deparseInsertStmt(state, castNode(InsertStmt, node));
@@ -11191,6 +11722,19 @@ static void deparseSchemaStmt(DeparseState *state, Node *node)
 // "stmt" in gram.y
 static void deparseStmt(DeparseState *state, Node *node)
 {
+	DeparseStateNestingLevel *parent_level = NULL;
+
+	// For statements that can be nested, push/pop is handled directly in the
+	// respective deparse...Stmt methods
+	bool skip_push_pop = IsA(node, SelectStmt) ||
+		IsA(node, InsertStmt) ||
+		IsA(node, UpdateStmt) ||
+		IsA(node, DeleteStmt) ||
+		IsA(node, MergeStmt);
+
+	if (!skip_push_pop)
+		parent_level = deparseStateIncreaseNestingLevel(state);
+
 	// Note the following grammar names are missing in the list, because they
 	// get mapped to other node types:
 	//
@@ -11515,7 +12059,7 @@ static void deparseStmt(DeparseState *state, Node *node)
 			deparseSecLabelStmt(state, castNode(SecLabelStmt, node));
 			break;
 		case T_SelectStmt:
-			deparseSelectStmt(state, castNode(SelectStmt, node));
+			deparseSelectStmt(state, castNode(SelectStmt, node), DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		case T_TransactionStmt:
 			deparseTransactionStmt(state, castNode(TransactionStmt, node));
@@ -11554,4 +12098,7 @@ static void deparseStmt(DeparseState *state, Node *node)
 		default:
 			elog(ERROR, "deparse: unsupported top-level node type: %u", nodeTag(node));
 	}
+
+	if (!skip_push_pop)
+		deparseStateDecreaseNestingLevel(state, parent_level);
 }

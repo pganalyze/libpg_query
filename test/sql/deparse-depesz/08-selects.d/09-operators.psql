@@ -1,0 +1,4 @@
+SELECT
+    a + 1 AS new_a, a = 123 AS bool_a, c && '{x,y,z}'::text[] AS including_c,
+    @ d AS abs_d
+FROM t

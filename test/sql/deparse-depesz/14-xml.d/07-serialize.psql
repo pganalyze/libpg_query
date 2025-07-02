@@ -1,0 +1,3 @@
+SELECT
+    xmlserialize(content 'good' AS char(10)),
+    xmlserialize(document 'bad' AS text)

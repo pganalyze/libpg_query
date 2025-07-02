@@ -1,0 +1,1 @@
+SELECT * FROM pg_class AS x TABLESAMPLE BERNOULLI ( 5 ) 

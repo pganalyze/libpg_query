@@ -1,0 +1,1 @@
+SELECT * FROM pg_class TABLESAMPLE SYSTEM ( 5 ) 

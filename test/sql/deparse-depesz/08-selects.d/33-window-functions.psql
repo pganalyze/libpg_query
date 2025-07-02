@@ -1,0 +1,13 @@
+SELECT
+    count(*) OVER (),
+    sum(a) OVER (
+        PARTITION BY b, c
+    ),
+    sum(a) OVER (
+        ORDER BY c
+    ),
+    sum(a) OVER (
+        PARTITION BY b, c
+        ORDER BY c DESC, a ASC
+    )
+FROM x

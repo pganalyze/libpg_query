@@ -1,0 +1,2 @@
+SELECT count(DISTINCT x), array_agg(DISTINCT id, ', ' ORDER BY id DESC)
+FROM z

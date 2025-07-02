@@ -1,0 +1,6 @@
+--- TODO: Should we split the IN list items here?
+SELECT a
+FROM b
+WHERE
+    c IN (1, 2, 3)
+    AND d IN ('something longer', 'something longer 2', 'something longer 3', 'something longer 4', 'something longer 5', '')

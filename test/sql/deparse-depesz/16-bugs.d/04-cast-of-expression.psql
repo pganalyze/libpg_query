@@ -1,0 +1,3 @@
+--- TODO: The operator spacing on "->>" here could be improved (it should have no spaces)
+SELECT (data ->> 'timestamp')::timestamptz, (1 = 1 OR 2 = 2)::int4
+FROM z

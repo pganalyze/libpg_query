@@ -1,0 +1,3 @@
+--- TODO: We should avoid the Push/Pop statement here
+EXPLAIN
+    SELECT 1

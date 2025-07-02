@@ -724,6 +724,11 @@ runner.deep_resolve('makeBitString')
 
 # Needed for deparse
 runner.deep_resolve('pg_toupper')
+runner.deep_resolve('makeStringInfo')
+runner.deep_resolve('list_delete_last')
+runner.deep_resolve('list_insert_nth')
+runner.deep_resolve('bms_add_member')
+runner.deep_resolve('bms_is_member')
 
 # Needed for normalize
 runner.deep_resolve('pg_qsort')

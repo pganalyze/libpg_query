@@ -1,0 +1,1 @@
+SELECT '<foo>bar</foo>'::xml IS DOCUMENT, NOT '<foo>bar</foo>'::xml IS DOCUMENT

@@ -1,0 +1,2 @@
+DELETE FROM a
+RETURNING b, c, d

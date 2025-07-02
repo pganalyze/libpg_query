@@ -1,0 +1,1 @@
+SELECT xmlelement(name element, xmlattributes(1 AS one, 'deuce' AS two), 'content')

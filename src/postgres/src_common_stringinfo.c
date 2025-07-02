@@ -9,6 +9,7 @@
  * - enlargeStringInfo
  * - appendStringInfo
  * - appendStringInfoSpaces
+ * - makeStringInfo
  *--------------------------------------------------------------------
  */
 
@@ -51,7 +52,17 @@
  *
  * Create an empty 'StringInfoData' & return a pointer to it.
  */
+StringInfo
+makeStringInfo(void)
+{
+	StringInfo	res;
 
+	res = (StringInfo) palloc(sizeof(StringInfoData));
+
+	initStringInfo(res);
+
+	return res;
+}
 
 /*
  * initStringInfo

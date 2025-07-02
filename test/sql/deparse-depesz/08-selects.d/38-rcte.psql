@@ -1,0 +1,9 @@
+WITH RECURSIVE x AS (
+    SELECT 1 AS i
+    UNION ALL
+    SELECT i + 1
+    FROM x
+    WHERE i < 5
+)
+SELECT *
+FROM x

@@ -1,0 +1,7 @@
+SELECT *
+FROM
+    pg_class c
+    JOIN pg_namespace n ON c.relnamespace = n.oid
+ORDER BY c.oid ASC
+LIMIT 5
+FOR SHARE OF c

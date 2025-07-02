@@ -1,0 +1,2 @@
+--- Note: This was modified to remove use of ? which is no longer supported by the parser as a parameter reference
+SELECT $1, $2::int4, $3 || 'z'

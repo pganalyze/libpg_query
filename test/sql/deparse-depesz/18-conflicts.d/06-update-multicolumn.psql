@@ -1,0 +1,4 @@
+INSERT INTO insertconflicttest
+VALUES (1, 'Apple'), (2, 'Orange')
+ON CONFLICT (key) DO UPDATE
+SET (fruit, key) = (excluded.fruit, excluded.key)

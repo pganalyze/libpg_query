@@ -1,0 +1,6 @@
+SELECT
+    now(), upper('abc'), larger('abcd', 'efghijklmnop'),
+    single('012345678901234567890123456789'),
+    single_long('01234567890123456789012345678901234567890123456789'),
+    nested(12, 13, other_function('fsajkh', 56, 67)), named_1(1, 2, a := 'b'),
+    named_2(b := '2', a := 'b', c := NULL)

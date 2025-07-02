@@ -1,0 +1,3 @@
+SELECT
+    xmlparse(document '<?xml version="1.0"?><book><title>Manual</title><chapter>...</chapter></book>'),
+    xmlparse(content 'abc<foo>bar</foo><bar>foo</bar>')

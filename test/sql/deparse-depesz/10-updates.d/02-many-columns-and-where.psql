@@ -1,0 +1,6 @@
+UPDATE t
+SET
+    a = 123,
+    b = 234,
+    c = 56
+WHERE d = 123

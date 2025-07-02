@@ -1,0 +1,5 @@
+SELECT *
+FROM t
+WHERE
+    (a, b) = (1, 2)
+    AND (c, d) = (long_table_column * other_long_column, '423543265666')

@@ -1,0 +1,4 @@
+SELECT
+    LEAST(a, b, c), GREATEST(d, e, f),
+    LEAST(long_column_name * other_long_name, 31242352524)
+FROM t

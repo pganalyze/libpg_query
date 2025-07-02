@@ -1,0 +1,12 @@
+WITH sub1 AS (
+    SELECT 1 AS x
+), sub2(a, b) AS (
+    SELECT 2, 3
+), sub3 AS MATERIALIZED (
+    SELECT 4 AS y
+)
+SELECT s1.*, s2.*, s3.*
+FROM
+    sub1 s1,
+    sub2 s2,
+    sub3 s3

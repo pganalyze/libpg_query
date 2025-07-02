@@ -1,0 +1,15 @@
+--- TODO: The parenthesis around the first UNION are likely unnecessary
+(
+    (
+        SELECT 1
+        UNION
+        SELECT 2
+    )
+    UNION
+    SELECT 3
+)
+EXCEPT ALL (
+    SELECT 4
+    INTERSECT
+    SELECT 5
+)

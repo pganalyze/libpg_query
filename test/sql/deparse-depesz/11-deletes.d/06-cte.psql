@@ -1,0 +1,6 @@
+WITH w AS (
+    SELECT 2 AS x
+)
+DELETE FROM t
+USING w
+WHERE w.x = t.a

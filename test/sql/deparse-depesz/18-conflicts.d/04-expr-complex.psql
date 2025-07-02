@@ -1,0 +1,3 @@
+INSERT INTO t (a, b, c)
+VALUES ('aa', 'bb', 'cc')
+ON CONFLICT (a COLLATE "C", b text_pattern_ops, c COLLATE "C" text_pattern_ops) DO NOTHING

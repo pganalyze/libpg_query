@@ -1,0 +1,37 @@
+SELECT
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        RANGE UNBOUNDED PRECEDING
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        GROUPS 2 PRECEDING EXCLUDE GROUP
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        ROWS CURRENT ROW EXCLUDE CURRENT ROW
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        RANGE UNBOUNDED PRECEDING EXCLUDE TIES
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        ROWS 10 PRECEDING
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        ROWS BETWEEN 1 PRECEDING AND 2 FOLLOWING
+    ),
+    sum(a) OVER (
+        PARTITION BY b
+        ORDER BY c
+        ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING
+    )
+FROM d

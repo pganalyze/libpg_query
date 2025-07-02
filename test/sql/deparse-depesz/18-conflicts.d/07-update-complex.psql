@@ -1,0 +1,18 @@
+INSERT INTO dropcol (key, drop1, keep1, drop2, keep2)
+VALUES (1, 2, '2', '2', 2)
+ON CONFLICT (key) DO UPDATE
+SET
+    drop1 = excluded.drop1,
+    keep1 = excluded.keep1,
+    drop2 = excluded.drop2,
+    keep2 = excluded.keep2
+WHERE
+    excluded.drop1 IS NOT NULL
+    AND excluded.keep1 IS NOT NULL
+    AND excluded.drop2 IS NOT NULL
+    AND excluded.keep2 IS NOT NULL
+    AND dropcol.drop1 IS NOT NULL
+    AND dropcol.keep1 IS NOT NULL
+    AND dropcol.drop2 IS NOT NULL
+    AND dropcol.keep2 IS NOT NULL
+RETURNING *
