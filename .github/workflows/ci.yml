@@ -21,7 +21,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: protobuf-25.1
-        key: ${{ runner.os }}-protobuf-25.1
+        key: ${{ runner.os }}-${{ matrix.compiler }}-protobuf-25.1
     - name: Build protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp' && steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
