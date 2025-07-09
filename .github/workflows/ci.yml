@@ -20,20 +20,19 @@ jobs:
       id: cache-protobuf
       uses: actions/cache@v4
       with:
-        path: protobuf-25.1
-        key: ${{ runner.os }}-${{ matrix.compiler }}-${{ matrix.valgrind }}-protobuf-25.1
+        path: protobuf-31.1
+        key: ${{ runner.os }}-${{ matrix.compiler }}-${{ matrix.valgrind }}-protobuf-31.1
     - name: Build protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp' && steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
-        git clone --depth 1 --branch v25.1 https://github.com/protocolbuffers/protobuf.git protobuf-25.1
-        cd protobuf-25.1
-        git submodule update --init --recursive
+        git clone --depth 1 --branch v31.1 https://github.com/protocolbuffers/protobuf.git protobuf-31.1
+        cd protobuf-31.1
         cmake .
         cmake --build . --parallel 10
     - name: Install protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp'
       run: |
-        cd protobuf-25.1
+        cd protobuf-31.1
         sudo make install
         sudo ldconfig
     - name: Install Valgrind
