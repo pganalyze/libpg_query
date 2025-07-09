@@ -43,7 +43,7 @@ endif
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
-override TEST_CFLAGS += -\#\#\# -g -I. -I./vendor -Wall
+override TEST_CFLAGS += -g -I. -I./vendor -Wall
 override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
