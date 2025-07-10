@@ -8,10 +8,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-24.04]
         compiler: [clang, gcc]
         protobuf_lib: [protobuf-c, protobuf-cpp]
         valgrind: [valgrind,no-valgrind]
+        exclude:
+          # this combination hits linking errors: see https://github.com/pganalyze/libpg_query/pull/289
+          - compiler: clang
+            protobuf_lib: protobuf-cpp
+            valgrind: valgrind
     steps:
     - name: Check out code
       uses: actions/checkout@v4
@@ -21,7 +26,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: protobuf-25.1
-        key: ${{ runner.os }}-protobuf-25.1
+        key: ${{ runner.os }}-${{ matrix.compiler }}-protobuf-25.1
     - name: Build protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp' && steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
