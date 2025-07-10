@@ -12,6 +12,11 @@ jobs:
         compiler: [clang, gcc]
         protobuf_lib: [protobuf-c, protobuf-cpp]
         valgrind: [valgrind,no-valgrind]
+        exclude:
+          # this combination hits linking errors: see https://github.com/pganalyze/libpg_query/pull/289
+          - compiler: clang
+            protobuf_lib: protobuf-cpp
+            valgrind: valgrind
     steps:
     - name: Check out code
       uses: actions/checkout@v4
