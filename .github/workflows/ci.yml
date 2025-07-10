@@ -21,13 +21,21 @@ jobs:
       uses: actions/cache@v4
       with:
         path: protobuf-31.1
-        key: ${{ runner.os }}-${{ matrix.compiler }}-${{ matrix.valgrind }}-protobuf-31.1
+        key: ${{ runner.os }}-${{ matrix.compiler }}-protobuf-31.1
     - name: Build protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp' && steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
         git clone --depth 1 --branch v31.1 https://github.com/protocolbuffers/protobuf.git protobuf-31.1
         cd protobuf-31.1
-        cmake .
+        if [ "$COMPILER" = clang ]
+        then
+          CC=clang CXX=clang cmake .
+        elif [ "$COMPILER" = gcc ]
+        then
+          CC=gcc CXX=g++ cmake .
+        else
+          cmake .
+        fi
         cmake --build . --parallel 10
     - name: Install protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp'
