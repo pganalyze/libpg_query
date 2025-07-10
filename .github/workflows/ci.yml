@@ -30,13 +30,15 @@ jobs:
         if [ "$COMPILER" = clang ]
         then
           CC=clang CXX=clang cmake .
+          CC=clang CXX=clang cmake --build . --parallel 10
         elif [ "$COMPILER" = gcc ]
         then
           CC=gcc CXX=g++ cmake .
+          CC=gcc CXX=g++ cmake --build . --parallel 10
         else
           cmake .
+          cmake --build . --parallel 10
         fi
-        cmake --build . --parallel 10
     - name: Install protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp'
       run: |
