@@ -1931,7 +1931,7 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 			for_each_cell(lc2, target_list, lc)
 			{
 				deparseSetTarget(state, castNode(ResTarget, lfirst(lc2)));
-				if (foreach_current_index(lc2) == r->ncolumns - 1) // Last element in this multi-assign
+				if ((foreach_current_index(lc2) - foreach_current_index(lc)) == r->ncolumns - 1) // Last element in this multi-assign
 					break;
 				else if (lnext(target_list, lc2))
 					deparseAppendStringInfoString(state, ", ");
