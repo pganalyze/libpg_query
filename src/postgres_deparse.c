@@ -10333,15 +10333,15 @@ static void deparseXmlExpr(DeparseState *state, XmlExpr* xml_expr, DeparseNodeCo
 			deparseExpr(state, linitial(xml_expr->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoString(state, ", version ");
 			if (castNode(A_Const, lsecond(xml_expr->args))->isnull)
-				deparseAppendStringInfoString(state, "NO VALUE");
+				deparseAppendStringInfoString(state, "no value");
 			else
 				deparseExpr(state, lsecond(xml_expr->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 			if (intVal(&castNode(A_Const, lthird(xml_expr->args))->val) == XML_STANDALONE_YES)
-				deparseAppendStringInfoString(state, ", STANDALONE YES");
+				deparseAppendStringInfoString(state, ", standalone yes");
 			else if (intVal(&castNode(A_Const, lthird(xml_expr->args))->val) == XML_STANDALONE_NO)
-				deparseAppendStringInfoString(state, ", STANDALONE NO");
+				deparseAppendStringInfoString(state, ", standalone no");
 			else if (intVal(&castNode(A_Const, lthird(xml_expr->args))->val) == XML_STANDALONE_NO_VALUE)
-				deparseAppendStringInfoString(state, ", STANDALONE NO VALUE");
+				deparseAppendStringInfoString(state, ", standalone no value");
 			deparseAppendStringInfoChar(state, ')');
 			break;
 		case IS_XMLSERIALIZE: /* XMLSERIALIZE(is_document, xmlval) */
