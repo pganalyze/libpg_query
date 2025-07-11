@@ -4595,6 +4595,7 @@ static void deparseLockingClause(DeparseState *state, LockingClause *locking_cla
 	{
 		deparseAppendStringInfoString(state, "OF ");
 		deparseQualifiedNameList(state, locking_clause->lockedRels);
+		deparseAppendStringInfoChar(state, ' ');
 	}
 
 	switch (locking_clause->waitPolicy)
