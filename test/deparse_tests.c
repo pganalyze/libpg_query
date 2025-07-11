@@ -88,7 +88,7 @@ const char* tests[] = {
   "SELECT * FROM crosstab('SELECT department, role, COUNT(id) FROM users GROUP BY department, role ORDER BY department, role', 'VALUES (''admin''::text), (''ordinary''::text)') ctab (department varchar, admin int, ordinary int)",
   "SELECT row_cols[0] AS dept, row_cols[1] AS sub, admin, ordinary FROM crosstab('SELECT ARRAY[department, sub] AS row_cols, role, COUNT(id) FROM users GROUP BY department, role ORDER BY department, role', 'VALUES (''admin''::text), (''ordinary''::text)') AS (row_cols varchar[], admin int, ordinary int)",
   "SELECT 1::int8",
-  "SELECT CAST(1 + 3 AS int8)",
+  "SELECT (1 + 3)::int8",
   "SELECT x::regclass",
   "SELECT table_field::bool, table_field::boolean FROM t",
   "SELECT true, false",

@@ -3096,14 +3096,23 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 	}
 }
 
+// Checks whether a node needs parens when used in a "b_expr" context (because the node is handled by the "a_expr" rule in gram.y)
+static bool
+needsParensAsBExpr(Node *node)
+{
+	if (node == NULL)
+		return false;
+	return IsA(node, BoolExpr) || IsA(node, BooleanTest) || IsA(node, NullTest) || IsA(node, A_Expr);
+}
+
 // This handles "A_Expr" parse tree objects, which are a subset of the rules in "a_expr" (handled by deparseExpr)
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context)
 {
 	ListCell *lc;
 	char *name;
 
-	bool need_lexpr_parens = a_expr->lexpr != NULL && (IsA(a_expr->lexpr, BoolExpr) || IsA(a_expr->lexpr, BooleanTest) || IsA(a_expr->lexpr, NullTest) || IsA(a_expr->lexpr, A_Expr));
-	bool need_rexpr_parens = a_expr->rexpr != NULL && (IsA(a_expr->rexpr, BoolExpr) || IsA(a_expr->rexpr, BooleanTest) || IsA(a_expr->rexpr, NullTest) || IsA(a_expr->rexpr, A_Expr));
+	bool need_lexpr_parens = needsParensAsBExpr(a_expr->lexpr);
+	bool need_rexpr_parens = needsParensAsBExpr(a_expr->rexpr);
 
 	switch (a_expr->kind) {
 		case AEXPR_OP: /* normal operator */
@@ -3761,11 +3770,11 @@ static void deparseRowExpr(DeparseState *state, RowExpr *row_expr)
 
 static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNodeContext context)
 {
-	bool need_parens = false;
+	bool need_parens = needsParensAsBExpr(type_cast->arg);
 
 	Assert(type_cast->typeName != NULL);
 
-	if (IsA(type_cast->arg, A_Expr) || context == DEPARSE_NODE_CONTEXT_FUNC_EXPR)
+	if (context == DEPARSE_NODE_CONTEXT_FUNC_EXPR)
 	{
 		deparseAppendStringInfoString(state, "CAST(");
 		deparseExpr(state, type_cast->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
