@@ -130,8 +130,8 @@ __thread SessionEndType pgStatSessionEndCause = DISCONNECT_NORMAL;
 /*
  * Flush out pending stats for the entry
  *
- * If nowait is true, this function returns false if lock could not
- * immediately acquired, otherwise true is returned.
+ * If nowait is true and the lock could not be immediately acquired, returns
+ * false without flushing the entry.  Otherwise returns true.
  */
 #define PGSTAT_ACCUM_DBCOUNT(item)		\
 	(sharedent)->stats.item += (pendingent)->item

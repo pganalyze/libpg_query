@@ -7,10 +7,9 @@ PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 PGDIRZIP = $(root_dir)/tmp/postgres.zip
 
-PG_VERSION = 17.4
+PG_VERSION = 17.5
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 170004
-PG_BRANCH = REL_17_STABLE
+PG_VERSION_NUM = 170005
 PROTOC_VERSION = 25.1
 
 VERSION = 6.1.0
@@ -116,14 +115,9 @@ clean:
 .PHONY: all clean build build_shared extract_source examples test install
 
 $(PGDIR):
-#	We temporarily build off REL_17_STABLE to pull in https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=6da2ba1d8a031984eb016fed6741bb2ac945f19d
-#   TODO: Go back to upstream tarball once 17.5 is released
-#	tar -xjf $(PGDIRBZ2)
-#	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
-#	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
-	curl -L -o $(PGDIRZIP) https://github.com/postgres/postgres/archive/refs/heads/$(PG_BRANCH).zip
-	unzip $(PGDIRZIP)
-	mv $(root_dir)/postgres-$(PG_BRANCH) $(PGDIR)
+	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
+	tar -xjf $(PGDIRBZ2)
+	mv $(root_dir)/postgresql-$(PG_VERSION) $(PGDIR)
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/01_parser_additional_param_ref_support.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/03_lexer_track_yyllocend.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/04_lexer_comments_as_tokens.patch
