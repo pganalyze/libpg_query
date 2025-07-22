@@ -391,7 +391,38 @@ PgQueryFingerprintResult pg_query_fingerprint(const char* input)
 
 PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options)
 {
-	return pg_query_fingerprint_with_opts(input, parser_options, false);
+	if ((parser_options & PG_QUERY_PARSE_ALL) == PG_QUERY_PARSE_ALL) {
+		parser_options = (parser_options & ~PG_QUERY_PARSE_ALL) | PG_QUERY_PARSE_DEFAULT;
+		PgQueryFingerprintResult result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		if (result.error) {
+			pg_query_free_fingerprint_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_DEFAULT) | PG_QUERY_PARSE_TYPE_NAME;
+			result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		}
+		if (result.error) {
+			pg_query_free_fingerprint_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_TYPE_NAME) | PG_QUERY_PARSE_PLPGSQL_EXPR;
+			result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		}
+		if (result.error) {
+			pg_query_free_fingerprint_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_EXPR) | PG_QUERY_PARSE_PLPGSQL_ASSIGN1;
+			result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		}
+		if (result.error) {
+			pg_query_free_fingerprint_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN1) | PG_QUERY_PARSE_PLPGSQL_ASSIGN2;
+			result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		}
+		if (result.error) {
+			pg_query_free_fingerprint_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN2) | PG_QUERY_PARSE_PLPGSQL_ASSIGN3;
+			result = pg_query_fingerprint_with_opts(input, parser_options, false);
+		}
+		return result;
+	} else {
+		return pg_query_fingerprint_with_opts(input, parser_options, false);
+	}
 }
 
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result)

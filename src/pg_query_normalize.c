@@ -558,7 +558,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	return false;
 }
 
-PgQueryNormalizeResult pg_query_normalize(const char* input)
+PgQueryNormalizeResult pg_query_normalize_opts_internal(const char* input, int parser_options)
 {
 	MemoryContext ctx = NULL;
 	PgQueryNormalizeResult result = {0};
@@ -571,8 +571,40 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 		pgssConstLocations jstate;
 		int query_len;
 
+		RawParseMode rawParseMode = RAW_PARSE_DEFAULT;
+		switch (parser_options & PG_QUERY_PARSE_MODE_BITMASK)
+		{
+			case PG_QUERY_PARSE_TYPE_NAME:
+				rawParseMode = RAW_PARSE_TYPE_NAME;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_EXPR:
+				rawParseMode = RAW_PARSE_PLPGSQL_EXPR;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN1:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN1;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN2:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN2;
+				break;
+			case PG_QUERY_PARSE_PLPGSQL_ASSIGN3:
+				rawParseMode = RAW_PARSE_PLPGSQL_ASSIGN3;
+				break;
+		}
+
+		if ((parser_options & PG_QUERY_DISABLE_BACKSLASH_QUOTE) == PG_QUERY_DISABLE_BACKSLASH_QUOTE) {
+			backslash_quote = BACKSLASH_QUOTE_OFF;
+		} else {
+			backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
+		}
+		standard_conforming_strings = !((parser_options & PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS) == PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS);
+		escape_string_warning = !((parser_options & PG_QUERY_DISABLE_ESCAPE_STRING_WARNING) == PG_QUERY_DISABLE_ESCAPE_STRING_WARNING);
+
 		/* Parse query */
-		tree = raw_parser(input, RAW_PARSE_DEFAULT);
+		tree = raw_parser(input, rawParseMode);
+
+		backslash_quote = BACKSLASH_QUOTE_SAFE_ENCODING;
+		standard_conforming_strings = true;
+		escape_string_warning = true;
 
 		query_len = (int) strlen(input);
 
@@ -619,6 +651,47 @@ PgQueryNormalizeResult pg_query_normalize(const char* input)
 	pg_query_exit_memory_context(ctx);
 
 	return result;
+}
+
+PgQueryNormalizeResult pg_query_normalize_opts(const char* input, int parser_options)
+{
+	if ((parser_options & PG_QUERY_PARSE_ALL) == PG_QUERY_PARSE_ALL) {
+		parser_options = (parser_options & ~PG_QUERY_PARSE_ALL) | PG_QUERY_PARSE_DEFAULT;
+		PgQueryNormalizeResult result = pg_query_normalize_opts_internal(input, parser_options);
+		if (result.error) {
+			pg_query_free_normalize_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_DEFAULT) | PG_QUERY_PARSE_TYPE_NAME;
+			result = pg_query_normalize_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_normalize_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_TYPE_NAME) | PG_QUERY_PARSE_PLPGSQL_EXPR;
+			result = pg_query_normalize_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_normalize_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_EXPR) | PG_QUERY_PARSE_PLPGSQL_ASSIGN1;
+			result = pg_query_normalize_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_normalize_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN1) | PG_QUERY_PARSE_PLPGSQL_ASSIGN2;
+			result = pg_query_normalize_opts_internal(input, parser_options);
+		}
+		if (result.error) {
+			pg_query_free_normalize_result(result);
+			parser_options = (parser_options & ~PG_QUERY_PARSE_PLPGSQL_ASSIGN2) | PG_QUERY_PARSE_PLPGSQL_ASSIGN3;
+			result = pg_query_normalize_opts_internal(input, parser_options);
+		}
+		return result;
+	} else {
+		return pg_query_normalize_opts_internal(input, parser_options);
+	}
+}
+
+PgQueryNormalizeResult pg_query_normalize(const char* input)
+{
+	return pg_query_normalize_opts(input, PG_QUERY_PARSE_DEFAULT);
 }
 
 void pg_query_free_normalize_result(PgQueryNormalizeResult result)
