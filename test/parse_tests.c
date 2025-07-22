@@ -69,6 +69,12 @@ const char* tests[] = {
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"name\":\"abc\",\"val\":{\"A_Const\":{\"ival\":{\"ival\":123},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
   "SELECT 123 AS abc where 456=$1OR 10=11",
   "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"name\":\"abc\",\"val\":{\"A_Const\":{\"ival\":{\"ival\":123},\"location\":7}},\"location\":7}}],\"whereClause\":{\"BoolExpr\":{\"boolop\":\"OR_EXPR\",\"args\":[{\"A_Expr\":{\"kind\":\"AEXPR_OP\",\"name\":[{\"String\":{\"sval\":\"=\"}}],\"lexpr\":{\"A_Const\":{\"ival\":{\"ival\":456},\"location\":24}},\"rexpr\":{\"ParamRef\":{\"number\":1,\"location\":28}},\"location\":27}},{\"A_Expr\":{\"kind\":\"AEXPR_OP\",\"name\":[{\"String\":{\"sval\":\"=\"}}],\"lexpr\":{\"A_Const\":{\"ival\":{\"ival\":10},\"location\":33}},\"rexpr\":{\"A_Const\":{\"ival\":{\"ival\":11},\"location\":36}},\"location\":35}}],\"location\":30}},\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT 0",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"ival\":{},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT -1",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"ival\":{\"ival\":-1},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT (-12345)::money",
+  "{\"version\":150001,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"TypeCast\":{\"arg\":{\"A_Const\":{\"ival\":{\"ival\":-12345},\"location\":8}},\"typeName\":{\"names\":[{\"String\":{\"sval\":\"money\"}}],\"typemod\":-1,\"location\":17},\"location\":15}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
 };
 
 size_t testsLength = __LINE__ - 4;

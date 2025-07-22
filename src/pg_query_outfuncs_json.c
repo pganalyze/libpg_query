@@ -197,7 +197,7 @@ _outOidList(StringInfo out, const List *node)
 static void
 _outInteger(StringInfo out, const Integer *node)
 {
-	if (node->ival > 0)
+	if (node->ival != 0)
 		appendStringInfo(out, "\"ival\":%d", node->ival);
 }
 
