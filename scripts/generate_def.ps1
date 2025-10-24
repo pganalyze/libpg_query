@@ -1,3 +1,5 @@
+#!/usr/bin/env pwsh
+
 $functions = Get-Content pg_query.h | ForEach-Object {
     if ($_ -cmatch '\b(pg_query_\w+)\s*\(') {
         $fn = $matches[1]
