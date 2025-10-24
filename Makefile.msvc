@@ -21,9 +21,9 @@ build_shared: $(SOLIB)
 
 clean:
 	if exist *.obj $(RM) *.obj
-	if exist libpg_query.lib $(RM) pg_query.lib
-	if exist libpg_query.dll $(RM) pg_query.dll
-        if exist libpg_query.exp $(RM) pg_query.exp
+	if exist $(ARLIB) $(RM) $(ARLIB)
+	if exist $(SOLIB) $(RM) $(SOLIB)
+	if exist $(DEF) $(RM) $(DEF)
 
 create_def:
 	$(PWSH_EXE) $(GENERATE_DEF_SCRIPT)
