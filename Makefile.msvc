@@ -3,7 +3,7 @@
 TARGET = pg_query
 ARLIB = $(TARGET).lib
 SOLIB = lib$(TARGET).dll
-DEF = $(TARGET).def
+DEF = lib$(TARGET).def
 PWSH_EXE = pwsh.exe
 GENERATE_DEF_SCRIPT = scripts/generate_def.ps1
 

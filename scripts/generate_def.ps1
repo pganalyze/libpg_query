@@ -10,9 +10,9 @@ $functions = Get-Content pg_query.h | ForEach-Object {
 }
 
 $output = @(
-    "LIBRARY pg_query"
+    "LIBRARY libpg_query"
     "EXPORTS"
 ) + $functions
 
-$output | Set-Content pg_query.def
+$output | Set-Content libpg_query.def
 
