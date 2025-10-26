@@ -7259,7 +7259,10 @@ static void deparseAlterTableCmd(DeparseState *state, AlterTableCmd *alter_table
 			}
 			break;
 		case AT_SetStatistics:
-			deparseSignedIconst(state, alter_table_cmd->def);
+			if (alter_table_cmd->def != NULL)
+				deparseSignedIconst(state, alter_table_cmd->def);
+			else
+				deparseAppendStringInfoString(state, "DEFAULT");
 			deparseAppendStringInfoChar(state, ' ');
 			break;
 		case AT_SetOptions:
