@@ -261,6 +261,7 @@ pg_query wrappers in other languages:
 [psqlparse2](https://github.com/dani-maarouf/psqlparse2)
 * OCaml: [pg_query-ocaml](https://github.com/roddyyaga/pg_query-ocaml)
 * Rust: [pg_query.rs](https://github.com/pganalyze/pg_query.rs)
+* .NET: [Npgquery](https://github.com/JaredMSFT/Npgquery)
 
 Products, tools and libraries built on pg_query:
 
