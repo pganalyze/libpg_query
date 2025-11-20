@@ -43,6 +43,7 @@
 &it_parses_multi_line_functions,
 &it_parses_table_functions,
 &it_finds_called_functions,
+&it_finds_functions_invoked_with_CALL,
 &it_finds_dropped_functions,
 &it_finds_renamed_functions,
 &it_finds_nested_tables_in_SELECT,

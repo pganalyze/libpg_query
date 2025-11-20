@@ -418,6 +418,16 @@ void it_finds_called_functions(TestState* test_state) {
 	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("SelectStmt"));
 }
 
+void it_finds_functions_invoked_with_CALL(TestState* test_state) {
+	TEST_INIT();
+	Summary result = summary("CALL testfunc(1);", 0, -1);
+	TEST_ASSERT_LIST_LENGTH(result.tables, 0);
+	TEST_SUMMARY_ASSERT_FUNCTIONS(result.functions, ((char*[]){"testfunc", NULL}));
+	TEST_SUMMARY_ASSERT_FUNCTIONS_WITH_CTX(result.functions, CONTEXT_DDL, ((char*[]){NULL}));
+	TEST_SUMMARY_ASSERT_FUNCTIONS_WITH_CTX(result.functions, CONTEXT_CALL, ((char*[]){"testfunc", NULL}));
+	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("CallStmt"));
+}
+
 void it_finds_dropped_functions(TestState* test_state) {
 	TEST_INIT();
 	Summary result = summary("DROP FUNCTION IF EXISTS testfunc(x integer);", 0, -1);
