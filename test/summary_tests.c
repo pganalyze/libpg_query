@@ -208,7 +208,7 @@ void it_parses_MERGE(TestState* test_state) {
 	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"my_table", NULL}));
 	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"g.other_table", "my_table", "p", NULL}));
 	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("cte"));
-	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("MergeStmt"));
+	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make2("MergeStmt", "SelectStmt"));
 }
 
 void it_parses_EXPLAIN(TestState* test_state) {
