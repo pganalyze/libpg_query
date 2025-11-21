@@ -204,6 +204,14 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 				break;
 			}
 
+		case T_MergeStmt:
+			{
+				MergeStmt *stmt = castNode(MergeStmt, node);
+
+				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
+				break;
+			}
+
 		case T_DeleteStmt:
 			{
 				DeleteStmt *stmt = castNode(DeleteStmt, node);
