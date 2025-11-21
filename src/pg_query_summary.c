@@ -140,6 +140,14 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 				break;
 			}
 
+        case T_CallStmt:
+            {
+                CallStmt *stmt = castNode(CallStmt, node);
+
+                if (stmt->funccall)
+                    return pg_query_summary_walk_impl((Node *) stmt->funccall, state);
+            }
+
 		case T_SelectStmt:
 			{
 				/*
