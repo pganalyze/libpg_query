@@ -19,6 +19,7 @@
 &it_parses_COMMIT,
 &it_parses_CHECKPOINT,
 &it_parses_VACUUM,
+&it_parses_MERGE,
 &it_parses_EXPLAIN,
 &it_parses_SELECT_INTO,
 &it_parses_LOCK,

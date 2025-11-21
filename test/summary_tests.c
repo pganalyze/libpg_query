@@ -197,6 +197,20 @@ void it_parses_VACUUM(TestState* test_state) {
 	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("VacuumStmt"));
 }
 
+void it_parses_MERGE(TestState* test_state) {
+	TEST_INIT();
+	Summary result = summary(
+		"WITH cte AS (SELECT * FROM g.other_table CROSS JOIN p) MERGE INTO my_table USING cte ON (id=oid) WHEN MATCHED THEN UPDATE SET a=b WHEN NOT MATCHED THEN INSERT (id, a) VALUES (oid, b);",
+		0,
+		-1
+	);
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"g.other_table", "p", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"my_table", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"g.other_table", "my_table", "p", NULL}));
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("cte"));
+	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("MergeStmt"));
+}
+
 void it_parses_EXPLAIN(TestState* test_state) {
 	TEST_INIT();
 	Summary result = summary("EXPLAIN DELETE FROM test", 0, -1);
