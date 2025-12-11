@@ -50,11 +50,12 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/deparse test/fingerprint test/fingerprint_opts test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
 test: $(TESTS)
 	.\test\deparse
 	.\test\fingerprint
 	.\test\fingerprint_opts
+	.\test\is_utility_stmt
 	.\test\normalize
 	.\test\parse
 	.\test\parse_opts
@@ -84,6 +85,9 @@ test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 test/fingerprint_opts: test/fingerprint_opts.c test/fingerprint_opts_tests.c $(ARLIB)
 # We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
 	$(CC) $(CFLAGS) -o $@ -Isrc/ test/fingerprint_opts.c $(ARLIB)
+
+test/is_utility_stmt: test/framework/main.c test/is_utility_stmt.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/framework/main.c test/is_utility_stmt.c $(ARLIB)
 
 test/normalize: test/normalize.c test/normalize_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/normalize.c $(ARLIB)

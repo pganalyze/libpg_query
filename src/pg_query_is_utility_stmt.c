@@ -1,0 +1,58 @@
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+
+#include "pg_query.h"
+#include "pg_query_internal.h"
+#include <nodes/nodes.h>
+#include <nodes/nodeFuncs.h>
+
+static
+bool
+is_utility_stmt_actual(RawStmt *raw_stmt)
+{
+	switch (nodeTag(raw_stmt->stmt)) {
+		case T_SelectStmt:
+		case T_InsertStmt:
+		case T_UpdateStmt:
+		case T_DeleteStmt:
+		case T_MergeStmt:
+			return false;
+
+		default:
+			return true;
+	}
+}
+
+PgQueryIsUtilityResult
+pg_query_is_utility_stmt(const char *query)
+{
+	PgQueryIsUtilityResult result = {0};
+	MemoryContext ctx = pg_query_enter_memory_context();
+
+	PgQueryInternalParsetreeAndError parsetree_and_error = pg_query_raw_parse(query, 0);
+
+	size_t length = list_length(parsetree_and_error.tree);
+	result.length = 0;
+	result.items = malloc(sizeof(bool) * length);
+
+	ListCell *lc;
+	foreach(lc, parsetree_and_error.tree) {
+		RawStmt *raw_stmt = lfirst_node(RawStmt, lc);
+		result.items[result.length] = is_utility_stmt_actual(raw_stmt);
+		result.length++;
+	}
+
+	if (parsetree_and_error.stderr_buffer)
+		free(parsetree_and_error.stderr_buffer);
+
+	pg_query_exit_memory_context(ctx);
+
+	return result;
+}
+
+void
+pg_query_free_is_utility_result(PgQueryIsUtilityResult result)
+{
+	free(result.items);
+}

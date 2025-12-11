@@ -1,6 +1,7 @@
 #ifndef PG_QUERY_H
 #define PG_QUERY_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>
 
@@ -14,6 +15,11 @@ typedef struct {
 	int cursorpos; // char in query at which exception occurred
 	char* context; // additional context (optional, can be NULL)
 } PgQueryError;
+
+typedef struct {
+	int length;
+	bool *items;
+} PgQueryIsUtilityResult;
 
 typedef struct {
   size_t len;
@@ -137,6 +143,7 @@ PgQueryDeparseCommentsResult pg_query_deparse_comments_for_query(const char *que
 
 PgQuerySummaryParseResult pg_query_summary(const char* input, int parser_options, int truncate_limit);
 
+void pg_query_free_is_utility_result(PgQueryIsUtilityResult result);
 void pg_query_free_normalize_result(PgQueryNormalizeResult result);
 void pg_query_free_scan_result(PgQueryScanResult result);
 void pg_query_free_parse_result(PgQueryParseResult result);
