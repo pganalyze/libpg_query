@@ -12,7 +12,7 @@ PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 170007
 PROTOC_VERSION = 25.1
 
-VERSION = 6.1.0
+VERSION = 6.2.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
