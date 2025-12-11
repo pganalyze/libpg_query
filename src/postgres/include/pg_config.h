@@ -104,6 +104,10 @@
    `LLVMCreatePerfJITEventListener', and to 0 if you don't. */
 /* #undef HAVE_DECL_LLVMCREATEPERFJITEVENTLISTENER */
 
+/* Define to 1 if you have the declaration of `memset_s', and to 0 if you
+   don't. */
+#define HAVE_DECL_MEMSET_S 1
+
 /* Define to 1 if you have the declaration of `posix_fadvise', and to 0 if you
    don't. */
 #define HAVE_DECL_POSIX_FADVISE 0
@@ -301,9 +305,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
-
-/* Define to 1 if you have the `memset_s' function. */
-#define HAVE_MEMSET_S 1
 
 /* Define to 1 if you have the `mkdtemp' function. */
 #define HAVE_MKDTEMP 1
@@ -592,7 +593,7 @@
 #define PACKAGE_NAME "PostgreSQL"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "PostgreSQL 17.5"
+#define PACKAGE_STRING "PostgreSQL 17.7"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "postgresql"
@@ -601,7 +602,7 @@
 #define PACKAGE_URL "https://www.postgresql.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "17.5"
+#define PACKAGE_VERSION "17.7"
 
 /* Define to the name of a signed 128-bit integer type. */
 #define PG_INT128_TYPE __int128
@@ -620,7 +621,7 @@
 #define PG_MAJORVERSION_NUM 17
 
 /* PostgreSQL minor version number */
-#define PG_MINORVERSION_NUM 5
+#define PG_MINORVERSION_NUM 7
 
 /* Define to best printf format archetype, usually gnu_printf if available. */
 #define PG_PRINTF_ATTRIBUTE printf
@@ -629,13 +630,13 @@
 #define PG_USE_STDBOOL 1
 
 /* PostgreSQL version as a string */
-#define PG_VERSION "17.5"
+#define PG_VERSION "17.7"
 
 /* PostgreSQL version as a number */
-#define PG_VERSION_NUM 170005
+#define PG_VERSION_NUM 170007
 
 /* A string containing the version number, platform, and C compiler */
-#define PG_VERSION_STR "PostgreSQL 17.5 (libpg_query)"
+#define PG_VERSION_STR "PostgreSQL 17.7 (libpg_query)"
 
 /* Define to 1 to allow profiling output to be saved separately for each
    process. */

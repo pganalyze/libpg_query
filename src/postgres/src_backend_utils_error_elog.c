@@ -1939,6 +1939,17 @@ write_stderr(const char *fmt,...)
 }
 
 
+
+
+/*
+ * Write errors to stderr (or by equal means when stderr is
+ * not available) - va_list version
+ */
+#ifdef WIN32
+#endif
+#ifndef WIN32
+#else
+#endif
 #ifdef WIN32
 __thread volatile int pg_signal_queue;
 
