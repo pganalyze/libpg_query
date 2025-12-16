@@ -344,4 +344,5 @@ install: $(ARLIB) $(SOLIB)
 	$(LN_S) $(SOLIBVER) "$(DESTDIR)"$(libdir)/$(SOLIB)
 	$(INSTALL) -d "$(DESTDIR)"$(includedir)/$(TARGET)
 	$(INSTALL) -m 644 pg_query.h "$(DESTDIR)"$(includedir)/pg_query.h
+	$(INSTALL) -m 644 postgres_deparse.h "$(DESTDIR)"$(includedir)/postgres_deparse.h
 	$(INSTALL) -m 644 protobuf/pg_query.proto "$(DESTDIR)"$(includedir)/$(TARGET)/pg_query.proto
