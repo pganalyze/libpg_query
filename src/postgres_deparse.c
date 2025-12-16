@@ -4028,6 +4028,7 @@ static void deparseJoinExpr(DeparseState *state, JoinExpr *join_expr)
 			break;
 		case JOIN_SEMI:
 		case JOIN_ANTI:
+		case JOIN_RIGHT_SEMI:
 		case JOIN_RIGHT_ANTI:
 		case JOIN_UNIQUE_OUTER:
 		case JOIN_UNIQUE_INNER:
@@ -4782,6 +4783,36 @@ static void deparseColumnDef(DeparseState *state, ColumnDef *column_def)
 	removeTrailingSpace(state);
 }
 
+// "returning_clause" and "returning_option" in gram.y
+static void deparseReturningClause(DeparseState *state, ReturningClause *returning_clause)
+{
+	ListCell *lc;
+
+	deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
+	if (list_length(returning_clause->options) > 0)
+	{
+		deparseAppendStringInfoString(state, "WITH (");
+		foreach(lc, returning_clause->options)
+		{
+			ReturningOption *opt = castNode(ReturningOption, lfirst(lc));
+			switch (opt->option)
+			{
+				case RETURNING_OPTION_OLD:
+					deparseAppendStringInfoString(state, "OLD AS ");
+					break;
+				case RETURNING_OPTION_NEW:
+					deparseAppendStringInfoString(state, "NEW AS ");
+					break;
+			}
+			deparseColId(state, opt->value);
+			if (lnext(returning_clause->options, lc))
+				deparseAppendStringInfoString(state, ", ");
+		}
+		deparseAppendStringInfoString(state, ") ");
+	}
+	deparseTargetList(state, returning_clause->exprs);
+}
+
 static void deparseInsertOverride(DeparseState *state, OverridingKind override)
 {
 	switch (override)
@@ -4839,11 +4870,8 @@ static void deparseInsertStmt(DeparseState *state, InsertStmt *insert_stmt)
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	if (list_length(insert_stmt->returningList) > 0)
-	{
-		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
-		deparseTargetList(state, insert_stmt->returningList);
-	}
+	if (insert_stmt->returningClause != NULL)
+		deparseReturningClause(state, insert_stmt->returningClause);
 
 	removeTrailingSpace(state);
 	deparseStateDecreaseNestingLevel(state, parent_level);
@@ -4941,11 +4969,8 @@ static void deparseUpdateStmt(DeparseState *state, UpdateStmt *update_stmt)
 	deparseFromClause(state, update_stmt->fromClause);
 	deparseWhereOrCurrentClause(state, update_stmt->whereClause);
 
-	if (list_length(update_stmt->returningList) > 0)
-	{
-		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
-		deparseTargetList(state, update_stmt->returningList);
-	}
+	if (update_stmt->returningClause != NULL)
+		deparseReturningClause(state, update_stmt->returningClause);
 
 	removeTrailingSpace(state);
 	deparseStateDecreaseNestingLevel(state, parent_level);
@@ -5040,16 +5065,13 @@ static void deparseMergeStmt(DeparseState *state, MergeStmt *merge_stmt)
 				break;
 		}
 
-		if (lfirst(lc) != llast(merge_stmt->mergeWhenClauses))
-			deparseAppendStringInfoChar(state, ' ');
+		deparseAppendStringInfoChar(state, ' ');
 	}
 
-	if (merge_stmt->returningList)
-	{
-		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
-		deparseTargetList(state, merge_stmt->returningList);
-	}
+	if (merge_stmt->returningClause != NULL)
+		deparseReturningClause(state, merge_stmt->returningClause);
 
+	removeTrailingSpace(state);
 	deparseStateDecreaseNestingLevel(state, parent_level);
 }
 
@@ -5077,11 +5099,8 @@ static void deparseDeleteStmt(DeparseState *state, DeleteStmt *delete_stmt)
 
 	deparseWhereOrCurrentClause(state, delete_stmt->whereClause);
 
-	if (list_length(delete_stmt->returningList) > 0)
-	{
-		deparseAppendPartGroup(state, "RETURNING", DEPARSE_PART_INDENT_AND_MERGE);
-		deparseTargetList(state, delete_stmt->returningList);
-	}
+	if (delete_stmt->returningClause != NULL)
+		deparseReturningClause(state, delete_stmt->returningClause);
 
 	removeTrailingSpace(state);
 	deparseStateDecreaseNestingLevel(state, parent_level);
@@ -5481,6 +5500,12 @@ static void deparseConstraint(DeparseState *state, Constraint *constraint, Depar
 			break;
 		case CONSTR_ATTR_IMMEDIATE:
 			deparseAppendStringInfoString(state, "INITIALLY IMMEDIATE ");
+			break;
+		case CONSTR_ATTR_ENFORCED:
+			deparseAppendStringInfoString(state, "ENFORCED ");
+			break;
+		case CONSTR_ATTR_NOT_ENFORCED:
+			deparseAppendStringInfoString(state, "NOT ENFORCED ");
 			break;
 	}
 
@@ -7005,10 +7030,6 @@ static void deparseAlterTableCmd(DeparseState *state, AlterTableCmd *alter_table
 			deparseAppendStringInfoString(state, "ALTER COLUMN ");
 			options = "DROP EXPRESSION";
 			trailing_missing_ok = true;
-			break;
-		case AT_CheckNotNull: /* check column is already marked not null */
-			// Not present in raw parser output
-			Assert(false);
 			break;
 		case AT_SetStatistics: /* alter column set statistics */
 			deparseAppendStringInfoString(state, "ALTER COLUMN ");

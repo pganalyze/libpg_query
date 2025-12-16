@@ -8,19 +8,19 @@ Date:   Sun Jan 10 00:28:33 2021 -0800
     the already exported plpgsql_adddatum.
 
 diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
-index f1bce708d6..bc9ca26eca 100644
+index b80c59447fb..63a3143582b 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
-@@ -106,8 +106,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
+@@ -89,8 +89,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
  static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
  static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
  									Oid collation, TypeName *origtypname);
 -static void plpgsql_start_datums(void);
 -static void plpgsql_finish_datums(PLpgSQL_function *function);
- static void compute_function_hashkey(FunctionCallInfo fcinfo,
- 									 Form_pg_proc procStruct,
- 									 PLpgSQL_func_hashkey *hashkey,
-@@ -2292,7 +2290,7 @@ plpgsql_parse_err_condition(char *condname)
+ 
+ /* ----------
+  * plpgsql_compile		Make an execution tree for a PL/pgSQL function.
+@@ -2196,7 +2194,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +29,7 @@ index f1bce708d6..bc9ca26eca 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2326,7 +2324,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2230,7 +2228,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -39,10 +39,10 @@ index f1bce708d6..bc9ca26eca 100644
  {
  	Size		copiable_size = 0;
 diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
-index 50c3b28472..418516edb9 100644
+index 41e52b8ce71..b3b67c423c2 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
-@@ -1261,6 +1261,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
+@@ -1250,6 +1250,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
  extern PGDLLEXPORT int plpgsql_recognize_err_condition(const char *condname,
  													   bool allow_sqlstate);
  extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
@@ -50,4 +50,4 @@ index 50c3b28472..418516edb9 100644
 +extern void plpgsql_finish_datums(PLpgSQL_function *function);
  extern void plpgsql_adddatum(PLpgSQL_datum *newdatum);
  extern int	plpgsql_add_initdatums(int **varnos);
- extern void plpgsql_HashTableInit(void);
+ 

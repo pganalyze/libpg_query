@@ -92,6 +92,8 @@ class Runner
       @basepath + 'src/backend/replication/libpqwalreceiver/libpqwalreceiver.c', # Dynamic module
       @basepath + 'src/backend/replication/syncrep_scanner.c', # Built through syncrep.c
       @basepath + 'src/backend/port/posix_sema.c', # Linux only
+      @basepath + 'src/backend/utils/activity/pgstat_wait_event.c', # Built through wait_event.c
+      @basepath + 'src/backend/utils/activity/wait_event_funcs_data.c', # Built through wait_event.c
       @basepath + 'src/common/fe_memutils.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/restricted_token.c', # This file is not expected to be compiled for backend code
       @basepath + 'src/common/unicode/norm_test.c', # This file is not expected to be compiled for backend code
@@ -230,6 +232,7 @@ class Runner
       '-DUSE_ASSERT_CHECKING',
       # EXEC_BACKEND is used on Windows, and can always be safely set during code analysis
       '-DEXEC_BACKEND',
+      '-Wno-nullability-completeness'
     ]
 
     # For certain files, use WIN32 define - we can't always do this since it pulls unnecessary code in other cases
@@ -580,7 +583,7 @@ PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, 
 ))
 runner.mock('parse_datatype', %(
 #include "catalog/pg_collation_d.h"
-static PLpgSQL_type * parse_datatype(const char *string, int location) {
+static PLpgSQL_type * parse_datatype(const char *string, int location, yyscan_t yyscanner){
 	PLpgSQL_type *typ;
 
 	/* Ignore trailing spaces */
@@ -646,10 +649,10 @@ runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowty
 runner.mock('plpgsql_parse_cwordtype', 'PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }')
 runner.mock('plpgsql_parse_cwordrowtype', 'PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }')
 runner.mock('function_parse_error_transpose', 'bool function_parse_error_transpose(const char *prosrc) { return false; }')
-runner.mock('free_expr', "static void free_expr(PLpgSQL_expr *expr) {}") # This would free a cached plan, which does not apply to us
-runner.mock('make_return_stmt', %(
+runner.mock('free_expr', "static void free_expr(PLpgSQL_expr *expr, void *context) {}") # This would free a cached plan, which does not apply to us
+runner.mock('mmake_return_stmt', %(
 static PLpgSQL_stmt *
-make_return_stmt(int location)
+make_return_stmt(int location, YYSTYPE *yylvalp, YYLTYPE *yyllocp, yyscan_t yyscanner)
 {
 	PLpgSQL_stmt_return *new;
 
@@ -657,17 +660,39 @@ make_return_stmt(int location)
 
 	new = palloc0(sizeof(PLpgSQL_stmt_return));
 	new->cmd_type = PLPGSQL_STMT_RETURN;
-	new->lineno   = plpgsql_location_to_lineno(location);
-	new->expr	  = NULL;
+	new->lineno = plpgsql_location_to_lineno(location, yyscanner);
+	new->stmtid = ++plpgsql_curr_compile->nstatements;
+	new->expr = NULL;
 	new->retvarno = -1;
 
-  int tok = yylex();
+  /*
+   * We want to special-case simple variable references for efficiency.
+   * So peek ahead to see if that's what we have.
+   */
+  int			tok = yylex(yylvalp, yyllocp, yyscanner);
 
-  if (tok != ';')
-	{
-		plpgsql_push_back_token(tok);
-		new->expr = read_sql_expression(';', ";");
-	}
+  if (tok == T_DATUM && plpgsql_peek(yyscanner) == ';' &&
+    (yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_VAR ||
+      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_PROMISE ||
+      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_ROW ||
+      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_REC))
+  {
+    new->retvarno = yylvalp->wdatum.datum->dno;
+    /* eat the semicolon token that we only peeked at above */
+    tok = yylex(yylvalp, yyllocp, yyscanner);
+    Assert(tok == ';');
+  }
+  else
+  {
+    /*
+      * Not (just) a variable name, so treat as expression.
+      *
+      * Note that a well-formed expression is _required_ here; anything
+      * else is a compile-time error.
+      */
+    plpgsql_push_back_token(tok, yylvalp, yyllocp, yyscanner);
+    new->expr = read_sql_expression(';', ";", yylvalp, yyllocp, yyscanner);
+  }
 
 	return (PLpgSQL_stmt *) new;
 }

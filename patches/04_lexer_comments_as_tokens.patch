@@ -122,7 +122,7 @@ index 9407da51ef..51919febe5 100644
 +
 +		else if (token == SQL_COMMENT || token == C_COMMENT)
 +		{
-+			token = internal_yylex(auxdata);
++			token = internal_yylex(auxdata, yyscanner);
 +		}
  	}
  

@@ -28,7 +28,6 @@
  * - plpgsql_parse_cwordtype
  * - plpgsql_parse_cwordrowtype
  * - plpgsql_build_datatype_arrayof
- * - plpgsql_parse_result
  * - plpgsql_finish_datums
  * - plpgsql_compile_error_callback
  * - add_dummy_return
@@ -40,7 +39,7 @@
  * pl_comp.c		- Compiler part of the PL/pgSQL
  *			  procedural language
  *
- * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -60,7 +59,7 @@
 #include "catalog/pg_type.h"
 #include "funcapi.h"
 #include "nodes/makefuncs.h"
-#include "parser/parse_type.h"
+#include "parser/parse_node.h"
 #include "plpgsql.h"
 #include "utils/builtins.h"
 #include "utils/fmgroids.h"
@@ -68,7 +67,6 @@
 #include "utils/lsyscache.h"
 #include "utils/memutils.h"
 #include "utils/regproc.h"
-#include "utils/rel.h"
 #include "utils/syscache.h"
 #include "utils/typcache.h"
 
@@ -76,9 +74,6 @@
  * Our own local and global variables
  * ----------
  */
-__thread PLpgSQL_stmt_block *plpgsql_parse_result;
-
-
 static __thread int	datums_alloc;
 
 __thread int			plpgsql_nDatums;
@@ -103,20 +98,6 @@ __thread MemoryContext plpgsql_compile_tmp_cxt;
 
 
 /* ----------
- * Hash table for compiled functions
- * ----------
- */
-
-
-typedef struct plpgsql_hashent
-{
-	PLpgSQL_func_hashkey key;
-	PLpgSQL_function *function;
-} plpgsql_HashEnt;
-
-#define FUNCS_PER_USER		128 /* initial table size */
-
-/* ----------
  * Lookup table for EXCEPTION condition names
  * ----------
  */
@@ -127,7 +108,7 @@ typedef struct
 } ExceptionLabelMap;
 
 static const ExceptionLabelMap exception_label_map[] = {
-#include "plerrcodes.h"			/* pgrminclude ignore */
+#include "plerrcodes.h"
 	{NULL, 0}
 };
 
@@ -136,11 +117,11 @@ static const ExceptionLabelMap exception_label_map[] = {
  * static prototypes
  * ----------
  */
-static PLpgSQL_function *do_compile(FunctionCallInfo fcinfo,
-									HeapTuple procTup,
-									PLpgSQL_function *function,
-									PLpgSQL_func_hashkey *hashkey,
-									bool forValidator);
+static void plpgsql_compile_callback(FunctionCallInfo fcinfo,
+									 HeapTuple procTup,
+									 const CachedFunctionHashKey *hashkey,
+									 CachedFunction *cfunc,
+									 bool forValidator);
 static void plpgsql_compile_error_callback(void *arg);
 static void add_parameter_name(PLpgSQL_nsitem_type itemtype, int itemno, const char *name);
 static void add_dummy_return(PLpgSQL_function *function);
@@ -153,19 +134,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
 static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
 static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
 									Oid collation, TypeName *origtypname);
-static void compute_function_hashkey(FunctionCallInfo fcinfo,
-									 Form_pg_proc procStruct,
-									 PLpgSQL_func_hashkey *hashkey,
-									 bool forValidator);
-static void plpgsql_resolve_polymorphic_argtypes(int numargs,
-												 Oid *argtypes, char *argmodes,
-												 Node *call_expr, bool forValidator,
-												 const char *proname);
-static PLpgSQL_function *plpgsql_HashTableLookup(PLpgSQL_func_hashkey *func_key);
-static void plpgsql_HashTableInsert(PLpgSQL_function *function,
-									PLpgSQL_func_hashkey *func_key);
-static void plpgsql_HashTableDelete(PLpgSQL_function *function);
-static void delete_function(PLpgSQL_function *func);
 
 /* ----------
  * plpgsql_compile		Make an execution tree for a PL/pgSQL function.
@@ -179,11 +147,17 @@ static void delete_function(PLpgSQL_function *func);
  */
 
 
+struct compile_error_callback_arg
+{
+	const char *proc_source;
+	yyscan_t	yyscanner;
+};
+
 /*
  * This is the slow part of plpgsql_compile().
  *
- * The passed-in "function" pointer is either NULL or an already-allocated
- * function struct to overwrite.
+ * The passed-in "cfunc" struct is expected to be zeroes, except
+ * for the CachedFunction fields, which we don't touch here.
  *
  * While compiling a function, the CurrentMemoryContext is the
  * per-function memory context of the function we are compiling. That
@@ -206,8 +180,8 @@ static void delete_function(PLpgSQL_function *func);
 /* ----------
  * plpgsql_compile_inline	Make an execution tree for an anonymous code block.
  *
- * Note: this is generally parallel to do_compile(); is it worth trying to
- * merge the two?
+ * Note: this is generally parallel to plpgsql_compile_callback(); is it worth
+ * trying to merge the two?
  *
  * Note: we assume the block will be thrown away so there is no need to build
  * persistent data structures.
@@ -216,27 +190,29 @@ static void delete_function(PLpgSQL_function *func);
 PLpgSQL_function *
 plpgsql_compile_inline(char *proc_source)
 {
+	yyscan_t	scanner;
 	char	   *func_name = "inline_code_block";
 	PLpgSQL_function *function;
+	struct compile_error_callback_arg cbarg;
 	ErrorContextCallback plerrcontext;
 	PLpgSQL_variable *var;
 	int			parse_rc;
 	MemoryContext func_cxt;
 
 	/*
-	 * Setup the scanner input and error info.  We assume that this function
-	 * cannot be invoked recursively, so there's no need to save and restore
-	 * the static variables used here.
+	 * Setup the scanner input and error info.
 	 */
-	plpgsql_scanner_init(proc_source);
+	scanner = plpgsql_scanner_init(proc_source);
 
 	plpgsql_error_funcname = func_name;
 
 	/*
 	 * Setup error traceback support for ereport()
 	 */
+	cbarg.proc_source = proc_source;
+	cbarg.yyscanner = scanner;
 	plerrcontext.callback = plpgsql_compile_error_callback;
-	plerrcontext.arg = proc_source;
+	plerrcontext.arg = &cbarg;
 	plerrcontext.previous = error_context_stack;
 	error_context_stack = &plerrcontext;
 
@@ -274,6 +250,7 @@ plpgsql_compile_inline(char *proc_source)
 
 	function->nstatements = 0;
 	function->requires_procedure_resowner = false;
+	function->has_exception_block = false;
 
 	plpgsql_ns_init();
 	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
@@ -310,12 +287,11 @@ plpgsql_compile_inline(char *proc_source)
 	/*
 	 * Now parse the function's text
 	 */
-	parse_rc = plpgsql_yyparse();
+	parse_rc = plpgsql_yyparse(&function->action, scanner);
 	if (parse_rc != 0)
 		elog(ERROR, "plpgsql parser returned %d", parse_rc);
-	function->action = plpgsql_parse_result;
 
-	plpgsql_scanner_finish();
+	plpgsql_scanner_finish(scanner);
 
 	/*
 	 * If it returns VOID (always true at the moment), we allow control to
@@ -330,6 +306,13 @@ plpgsql_compile_inline(char *proc_source)
 	function->fn_nargs = 0;
 
 	plpgsql_finish_datums(function);
+
+	if (function->has_exception_block)
+		plpgsql_mark_local_assignment_targets(function);
+
+	/* Debug dump for completed functions */
+	if (plpgsql_DumpExecTree)
+		plpgsql_dumptree(function);
 
 	/*
 	 * Pop the error context stack
@@ -353,13 +336,16 @@ plpgsql_compile_inline(char *proc_source)
 static void
 plpgsql_compile_error_callback(void *arg)
 {
-	if (arg)
+	struct compile_error_callback_arg *cbarg = (struct compile_error_callback_arg *) arg;
+	yyscan_t	yyscanner = cbarg->yyscanner;
+
+	if (cbarg->proc_source)
 	{
 		/*
 		 * Try to convert syntax error position to reference text of original
 		 * CREATE FUNCTION or DO command.
 		 */
-		if (function_parse_error_transpose((const char *) arg))
+		if (function_parse_error_transpose(cbarg->proc_source))
 			return;
 
 		/*
@@ -370,7 +356,7 @@ plpgsql_compile_error_callback(void *arg)
 
 	if (plpgsql_error_funcname)
 		errcontext("compilation of PL/pgSQL function \"%s\" near line %d",
-				   plpgsql_error_funcname, plpgsql_latest_lineno());
+				   plpgsql_error_funcname, plpgsql_latest_lineno(yyscanner));
 }
 
 
@@ -1037,14 +1023,10 @@ plpgsql_parse_err_condition(char *condname)
 	 * here.
 	 */
 
-	/*
-	 * OTHERS is represented as code 0 (which would map to '00000', but we
-	 * have no need to represent that as an exception condition).
-	 */
 	if (strcmp(condname, "others") == 0)
 	{
 		new = palloc(sizeof(PLpgSQL_condition));
-		new->sqlerrstate = 0;
+		new->sqlerrstate = PLPGSQL_OTHERS;
 		new->condname = condname;
 		new->next = NULL;
 		return new;
@@ -1205,50 +1187,3 @@ plpgsql_add_initdatums(int **varnos)
 	datums_last = plpgsql_nDatums;
 	return n;
 }
-
-
-/*
- * Compute the hashkey for a given function invocation
- *
- * The hashkey is returned into the caller-provided storage at *hashkey.
- */
-
-
-/*
- * This is the same as the standard resolve_polymorphic_argtypes() function,
- * except that:
- * 1. We go ahead and report the error if we can't resolve the types.
- * 2. We treat RECORD-type input arguments (not output arguments) as if
- *    they were polymorphic, replacing their types with the actual input
- *    types if we can determine those.  This allows us to create a separate
- *    function cache entry for each named composite type passed to such an
- *    argument.
- * 3. In validation mode, we have no inputs to look at, so assume that
- *    polymorphic arguments are integer, integer-array or integer-range.
- */
-
-
-/*
- * delete_function - clean up as much as possible of a stale function cache
- *
- * We can't release the PLpgSQL_function struct itself, because of the
- * possibility that there are fn_extra pointers to it.  We can release
- * the subsidiary storage, but only if there are no active evaluations
- * in progress.  Otherwise we'll just leak that storage.  Since the
- * case would only occur if a pg_proc update is detected during a nested
- * recursive call on the function, a leak seems acceptable.
- *
- * Note that this can be called more than once if there are multiple fn_extra
- * pointers to the same function cache.  Hence be careful not to do things
- * twice.
- */
-
-
-/* exported so we can call it from _PG_init() */
-
-
-
-
-
-
-

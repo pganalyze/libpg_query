@@ -50,15 +50,30 @@ static void add_dummy_return(PLpgSQL_function *function)
 	}
 }
 
-static void plpgsql_compile_error_callback(void *arg)
+struct compile_error_callback_arg
 {
-	if (arg)
+	const char *proc_source;
+	yyscan_t	yyscanner;
+};
+
+/*
+ * error context callback to let us supply a call-stack traceback.
+ * If we are validating or executing an anonymous code block, the function
+ * source text is passed as an argument.
+ */
+static void
+plpgsql_compile_error_callback(void *arg)
+{
+	struct compile_error_callback_arg *cbarg = (struct compile_error_callback_arg *) arg;
+	yyscan_t	yyscanner = cbarg->yyscanner;
+
+	if (cbarg->proc_source)
 	{
 		/*
 		 * Try to convert syntax error position to reference text of original
 		 * CREATE FUNCTION or DO command.
 		 */
-		if (function_parse_error_transpose((const char *) arg))
+		if (function_parse_error_transpose(cbarg->proc_source))
 			return;
 
 		/*
@@ -69,7 +84,7 @@ static void plpgsql_compile_error_callback(void *arg)
 
 	if (plpgsql_error_funcname)
 		errcontext("compilation of PL/pgSQL function \"%s\" near line %d",
-				   plpgsql_error_funcname, plpgsql_latest_lineno());
+				   plpgsql_error_funcname, plpgsql_latest_lineno(yyscanner));
 }
 
 static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
@@ -104,6 +119,7 @@ static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
 
 static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 {
+	yyscan_t	scanner;
 	char *func_name;
 	char *proc_source = NULL;
 	PLpgSQL_function *function;
@@ -166,7 +182,7 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	 * cannot be invoked recursively, so there's no need to save and restore
 	 * the static variables used here.
 	 */
-	plpgsql_scanner_init(proc_source);
+	scanner = plpgsql_scanner_init(proc_source);
 
 	plpgsql_error_funcname = func_name;
 
@@ -274,12 +290,11 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	/*
 	 * Now parse the function's text
 	 */
-	parse_rc = plpgsql_yyparse();
+	parse_rc = plpgsql_yyparse(&function->action, scanner);
 	if (parse_rc != 0)
 		elog(ERROR, "plpgsql parser returned %d", parse_rc);
-	function->action = plpgsql_parse_result;
 
-	plpgsql_scanner_finish();
+	plpgsql_scanner_finish(scanner);
 
 	/*
 	 * If it returns VOID (always true at the moment), we allow control to

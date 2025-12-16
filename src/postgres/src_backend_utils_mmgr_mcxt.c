@@ -57,7 +57,7 @@
  * context's MemoryContextMethods struct.
  *
  *
- * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -336,31 +336,31 @@ MemoryContextTraverseNext(MemoryContext curr, MemoryContext top)
 static void
 BogusFree(void *pointer)
 {
-	elog(ERROR, "pfree called with invalid pointer %p (header 0x%016llx)",
-		 pointer, (unsigned long long) GetMemoryChunkHeader(pointer));
+	elog(ERROR, "pfree called with invalid pointer %p (header 0x%016" PRIx64 ")",
+		 pointer, GetMemoryChunkHeader(pointer));
 }
 
 static void *
 BogusRealloc(void *pointer, Size size, int flags)
 {
-	elog(ERROR, "repalloc called with invalid pointer %p (header 0x%016llx)",
-		 pointer, (unsigned long long) GetMemoryChunkHeader(pointer));
+	elog(ERROR, "repalloc called with invalid pointer %p (header 0x%016" PRIx64 ")",
+		 pointer, GetMemoryChunkHeader(pointer));
 	return NULL;				/* keep compiler quiet */
 }
 
 static MemoryContext
 BogusGetChunkContext(void *pointer)
 {
-	elog(ERROR, "GetMemoryChunkContext called with invalid pointer %p (header 0x%016llx)",
-		 pointer, (unsigned long long) GetMemoryChunkHeader(pointer));
+	elog(ERROR, "GetMemoryChunkContext called with invalid pointer %p (header 0x%016" PRIx64 ")",
+		 pointer, GetMemoryChunkHeader(pointer));
 	return NULL;				/* keep compiler quiet */
 }
 
 static Size
 BogusGetChunkSpace(void *pointer)
 {
-	elog(ERROR, "GetMemoryChunkSpace called with invalid pointer %p (header 0x%016llx)",
-		 pointer, (unsigned long long) GetMemoryChunkHeader(pointer));
+	elog(ERROR, "GetMemoryChunkSpace called with invalid pointer %p (header 0x%016" PRIx64 ")",
+		 pointer, GetMemoryChunkHeader(pointer));
 	return 0;					/* keep compiler quiet */
 }
 
@@ -803,7 +803,7 @@ MemoryContextStatsDetail(MemoryContext context,
 
 	memset(&grand_totals, 0, sizeof(grand_totals));
 
-	MemoryContextStatsInternal(context, 0, max_level, max_children,
+	MemoryContextStatsInternal(context, 1, max_level, max_children,
 							   &grand_totals, print_to_stderr);
 
 	if (print_to_stderr)
@@ -855,7 +855,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
 	/* Examine the context itself */
 	context->methods->stats(context,
 							MemoryContextStatsPrint,
-							(void *) &level,
+							&level,
 							totals, print_to_stderr);
 
 	/*
@@ -868,7 +868,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
 	 */
 	child = context->firstchild;
 	ichild = 0;
-	if (level < max_level && !stack_is_too_deep())
+	if (level <= max_level && !stack_is_too_deep())
 	{
 		for (; child != NULL && ichild < max_children;
 			 child = child->nextchild, ichild++)
@@ -897,7 +897,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
 
 		if (print_to_stderr)
 		{
-			for (int i = 0; i <= level; i++)
+			for (int i = 0; i < level; i++)
 				fprintf(stderr, "  ");
 			fprintf(stderr,
 					"%d more child contexts containing %zu total in %zu blocks; %zu free (%zu chunks); %zu used\n",
@@ -998,7 +998,7 @@ MemoryContextStatsPrint(MemoryContext context, void *passthru,
 
 	if (print_to_stderr)
 	{
-		for (i = 0; i < level; i++)
+		for (i = 1; i < level; i++)
 			fprintf(stderr, "  ");
 		fprintf(stderr, "%s: %s%s\n", name, stats_string, truncated_ident);
 	}
@@ -1062,6 +1062,10 @@ MemoryContextCreate(MemoryContext node,
 	/* Creating new memory contexts is not allowed in a critical section */
 	Assert(CritSectionCount == 0);
 
+	/* Validate parent, to help prevent crazy context linkages */
+	Assert(parent == NULL || MemoryContextIsValid(parent));
+	Assert(node != parent);
+
 	/* Initialize all standard fields of memory context header */
 	node->type = tag;
 	node->isReset = true;
@@ -1104,7 +1108,8 @@ MemoryContextAllocationFailure(MemoryContext context, Size size, int flags)
 {
 	if ((flags & MCXT_ALLOC_NO_OOM) == 0)
 	{
-		MemoryContextStats(TopMemoryContext);
+		if (TopMemoryContext)
+			MemoryContextStats(TopMemoryContext);
 		ereport(ERROR,
 				(errcode(ERRCODE_OUT_OF_MEMORY),
 				 errmsg("out of memory"),
@@ -1279,7 +1284,8 @@ palloc0(Size size)
 	context->isReset = false;
 
 	ret = context->methods->alloc(context, size, 0);
-
+	/* We expect OOM to be handled by the alloc function */
+	Assert(ret != NULL);
 	VALGRIND_MEMPOOL_ALLOC(context, ret, size);
 
 	MemSetAligned(ret, 0, size);

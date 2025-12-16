@@ -168,7 +168,7 @@ class Generator
       end
     end
 
-    ['nodes/parsenodes', 'nodes/primnodes', 'nodes/nodes', 'nodes/lockoptions'].each do |group|
+    ['nodes/parsenodes', 'nodes/primnodes', 'nodes/nodes', 'nodes/lockoptions', 'access/cmptype'].each do |group|
       @enum_defs[group].each do |enum_type, enum_def|
         next if enum_type == 'NodeTag'
 

@@ -373,6 +373,11 @@
           "name": "RTE_RESULT",
           "value": 8,
           "comment": "/* RTE represents an empty FROM clause; such\n\t\t\t\t\t\t\t\t * RTEs are added by the planner, they're not\n\t\t\t\t\t\t\t\t * present during parsing or rewriting */\n"
+        },
+        {
+          "name": "RTE_GROUP",
+          "value": 9,
+          "comment": "/* the grouping step */"
         }
       ],
       "comment": "/*--------------------\n * RangeTblEntry -\n *\t  A range table is a List of RangeTblEntry nodes.\n *\n *\t  A range table entry may represent a plain relation, a sub-select in\n *\t  FROM, or the result of a JOIN clause.  (Only explicit JOIN syntax\n *\t  produces an RTE, not the implicit join resulting from multiple FROM\n *\t  items.  This is because we only need the RTE to deal with SQL features\n *\t  like outer joins and join-output-column aliasing.)  Other special\n *\t  RTE types also exist, as indicated by RTEKind.\n *\n *\t  Note that we consider RTE_RELATION to cover anything that has a pg_class\n *\t  entry.  relkind distinguishes the sub-cases.\n *\n *\t  alias is an Alias node representing the AS alias-clause attached to the\n *\t  FROM expression, or NULL if no clause.\n *\n *\t  eref is the table reference name and column reference names (either\n *\t  real or aliases).  Note that system columns (OID etc) are not included\n *\t  in the column list.\n *\t  eref->aliasname is required to be present, and should generally be used\n *\t  to identify the RTE for error messages etc.\n *\n *\t  In RELATION RTEs, the colnames in both alias and eref are indexed by\n *\t  physical attribute number; this means there must be colname entries for\n *\t  dropped columns.  When building an RTE we insert empty strings (\"\") for\n *\t  dropped columns.  Note however that a stored rule may have nonempty\n *\t  colnames for columns dropped since the rule was created (and for that\n *\t  matter the colnames might be out of date due to column renamings).\n *\t  The same comments apply to FUNCTION RTEs when a function's return type\n *\t  is a named composite type.\n *\n *\t  In JOIN RTEs, the colnames in both alias and eref are one-to-one with\n *\t  joinaliasvars entries.  A JOIN RTE will omit columns of its inputs when\n *\t  those columns are known to be dropped at parse time.  Again, however,\n *\t  a stored rule might contain entries for columns dropped since the rule\n *\t  was created.  (This is only possible for columns not actually referenced\n *\t  in the rule.)  When loading a stored rule, we replace the joinaliasvars\n *\t  items for any such columns with null pointers.  (We can't simply delete\n *\t  them from the joinaliasvars list, because that would affect the attnums\n *\t  of Vars referencing the rest of the list.)\n *\n *\t  inFromCl marks those range variables that are listed in the FROM clause.\n *\t  It's false for RTEs that are added to a query behind the scenes, such\n *\t  as the NEW and OLD variables for a rule, or the subqueries of a UNION.\n *\t  This flag is not used during parsing (except in transformLockingClause,\n *\t  q.v.); the parser now uses a separate \"namespace\" data structure to\n *\t  control visibility.  But it is needed by ruleutils.c to determine\n *\t  whether RTEs should be shown in decompiled queries.\n *\n *\t  securityQuals is a list of security barrier quals (boolean expressions),\n *\t  to be tested in the listed order before returning a row from the\n *\t  relation.  It is always NIL in parser output.  Entries are added by the\n *\t  rewriter to implement security-barrier views and/or row-level security.\n *\t  Note that the planner turns each boolean expression into an implicitly\n *\t  AND'ed sublist, as is its usual habit with qualification expressions.\n *--------------------\n */\n"
@@ -465,6 +470,24 @@
         }
       ],
       "comment": "/*\n * CommonTableExpr -\n *\t   representation of WITH list element\n */\n"
+    },
+    "ReturningOptionKind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "RETURNING_OPTION_OLD",
+          "value": 0,
+          "comment": "/* specify alias for OLD in RETURNING */"
+        },
+        {
+          "name": "RETURNING_OPTION_NEW",
+          "value": 1,
+          "comment": "/* specify alias for NEW in RETURNING */"
+        }
+      ],
+      "comment": "/*\n * ReturningOptionKind -\n *\t\tPossible kinds of option in RETURNING WITH(...) list\n *\n * Currently, this is used only for specifying OLD/NEW aliases.\n */\n"
     },
     "JsonQuotes": {
       "values": [
@@ -822,298 +845,293 @@
           "comment": "/* alter column drop expression */"
         },
         {
-          "name": "AT_CheckNotNull",
-          "value": 8,
-          "comment": "/* check column is already marked not null */"
-        },
-        {
           "name": "AT_SetStatistics",
-          "value": 9,
+          "value": 8,
           "comment": "/* alter column set statistics */"
         },
         {
           "name": "AT_SetOptions",
-          "value": 10,
+          "value": 9,
           "comment": "/* alter column set ( options ) */"
         },
         {
           "name": "AT_ResetOptions",
-          "value": 11,
+          "value": 10,
           "comment": "/* alter column reset ( options ) */"
         },
         {
           "name": "AT_SetStorage",
-          "value": 12,
+          "value": 11,
           "comment": "/* alter column set storage */"
         },
         {
           "name": "AT_SetCompression",
-          "value": 13,
+          "value": 12,
           "comment": "/* alter column set compression */"
         },
         {
           "name": "AT_DropColumn",
-          "value": 14,
+          "value": 13,
           "comment": "/* drop column */"
         },
         {
           "name": "AT_AddIndex",
-          "value": 15,
+          "value": 14,
           "comment": "/* add index */"
         },
         {
           "name": "AT_ReAddIndex",
-          "value": 16,
+          "value": 15,
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
           "name": "AT_AddConstraint",
-          "value": 17,
+          "value": 16,
           "comment": "/* add constraint */"
         },
         {
           "name": "AT_ReAddConstraint",
-          "value": 18,
+          "value": 17,
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
           "name": "AT_ReAddDomainConstraint",
-          "value": 19,
+          "value": 18,
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
           "name": "AT_AlterConstraint",
-          "value": 20,
+          "value": 19,
           "comment": "/* alter constraint */"
         },
         {
           "name": "AT_ValidateConstraint",
-          "value": 21,
+          "value": 20,
           "comment": "/* validate constraint */"
         },
         {
           "name": "AT_AddIndexConstraint",
-          "value": 22,
+          "value": 21,
           "comment": "/* add constraint using existing index */"
         },
         {
           "name": "AT_DropConstraint",
-          "value": 23,
+          "value": 22,
           "comment": "/* drop constraint */"
         },
         {
           "name": "AT_ReAddComment",
-          "value": 24,
+          "value": 23,
           "comment": "/* internal to commands/tablecmds.c */"
         },
         {
           "name": "AT_AlterColumnType",
-          "value": 25,
+          "value": 24,
           "comment": "/* alter column type */"
         },
         {
           "name": "AT_AlterColumnGenericOptions",
-          "value": 26,
+          "value": 25,
           "comment": "/* alter column OPTIONS (...) */"
         },
         {
           "name": "AT_ChangeOwner",
-          "value": 27,
+          "value": 26,
           "comment": "/* change owner */"
         },
         {
           "name": "AT_ClusterOn",
-          "value": 28,
+          "value": 27,
           "comment": "/* CLUSTER ON */"
         },
         {
           "name": "AT_DropCluster",
-          "value": 29,
+          "value": 28,
           "comment": "/* SET WITHOUT CLUSTER */"
         },
         {
           "name": "AT_SetLogged",
-          "value": 30,
+          "value": 29,
           "comment": "/* SET LOGGED */"
         },
         {
           "name": "AT_SetUnLogged",
-          "value": 31,
+          "value": 30,
           "comment": "/* SET UNLOGGED */"
         },
         {
           "name": "AT_DropOids",
-          "value": 32,
+          "value": 31,
           "comment": "/* SET WITHOUT OIDS */"
         },
         {
           "name": "AT_SetAccessMethod",
-          "value": 33,
+          "value": 32,
           "comment": "/* SET ACCESS METHOD */"
         },
         {
           "name": "AT_SetTableSpace",
-          "value": 34,
+          "value": 33,
           "comment": "/* SET TABLESPACE */"
         },
         {
           "name": "AT_SetRelOptions",
-          "value": 35,
+          "value": 34,
           "comment": "/* SET (...) -- AM specific parameters */"
         },
         {
           "name": "AT_ResetRelOptions",
-          "value": 36,
+          "value": 35,
           "comment": "/* RESET (...) -- AM specific parameters */"
         },
         {
           "name": "AT_ReplaceRelOptions",
-          "value": 37,
+          "value": 36,
           "comment": "/* replace reloption list in its entirety */"
         },
         {
           "name": "AT_EnableTrig",
-          "value": 38,
+          "value": 37,
           "comment": "/* ENABLE TRIGGER name */"
         },
         {
           "name": "AT_EnableAlwaysTrig",
-          "value": 39,
+          "value": 38,
           "comment": "/* ENABLE ALWAYS TRIGGER name */"
         },
         {
           "name": "AT_EnableReplicaTrig",
-          "value": 40,
+          "value": 39,
           "comment": "/* ENABLE REPLICA TRIGGER name */"
         },
         {
           "name": "AT_DisableTrig",
-          "value": 41,
+          "value": 40,
           "comment": "/* DISABLE TRIGGER name */"
         },
         {
           "name": "AT_EnableTrigAll",
-          "value": 42,
+          "value": 41,
           "comment": "/* ENABLE TRIGGER ALL */"
         },
         {
           "name": "AT_DisableTrigAll",
-          "value": 43,
+          "value": 42,
           "comment": "/* DISABLE TRIGGER ALL */"
         },
         {
           "name": "AT_EnableTrigUser",
-          "value": 44,
+          "value": 43,
           "comment": "/* ENABLE TRIGGER USER */"
         },
         {
           "name": "AT_DisableTrigUser",
-          "value": 45,
+          "value": 44,
           "comment": "/* DISABLE TRIGGER USER */"
         },
         {
           "name": "AT_EnableRule",
-          "value": 46,
+          "value": 45,
           "comment": "/* ENABLE RULE name */"
         },
         {
           "name": "AT_EnableAlwaysRule",
-          "value": 47,
+          "value": 46,
           "comment": "/* ENABLE ALWAYS RULE name */"
         },
         {
           "name": "AT_EnableReplicaRule",
-          "value": 48,
+          "value": 47,
           "comment": "/* ENABLE REPLICA RULE name */"
         },
         {
           "name": "AT_DisableRule",
-          "value": 49,
+          "value": 48,
           "comment": "/* DISABLE RULE name */"
         },
         {
           "name": "AT_AddInherit",
-          "value": 50,
+          "value": 49,
           "comment": "/* INHERIT parent */"
         },
         {
           "name": "AT_DropInherit",
-          "value": 51,
+          "value": 50,
           "comment": "/* NO INHERIT parent */"
         },
         {
           "name": "AT_AddOf",
-          "value": 52,
+          "value": 51,
           "comment": "/* OF <type_name> */"
         },
         {
           "name": "AT_DropOf",
-          "value": 53,
+          "value": 52,
           "comment": "/* NOT OF */"
         },
         {
           "name": "AT_ReplicaIdentity",
-          "value": 54,
+          "value": 53,
           "comment": "/* REPLICA IDENTITY */"
         },
         {
           "name": "AT_EnableRowSecurity",
-          "value": 55,
+          "value": 54,
           "comment": "/* ENABLE ROW SECURITY */"
         },
         {
           "name": "AT_DisableRowSecurity",
-          "value": 56,
+          "value": 55,
           "comment": "/* DISABLE ROW SECURITY */"
         },
         {
           "name": "AT_ForceRowSecurity",
-          "value": 57,
+          "value": 56,
           "comment": "/* FORCE ROW SECURITY */"
         },
         {
           "name": "AT_NoForceRowSecurity",
-          "value": 58,
+          "value": 57,
           "comment": "/* NO FORCE ROW SECURITY */"
         },
         {
           "name": "AT_GenericOptions",
-          "value": 59,
+          "value": 58,
           "comment": "/* OPTIONS (...) */"
         },
         {
           "name": "AT_AttachPartition",
-          "value": 60,
+          "value": 59,
           "comment": "/* ATTACH PARTITION */"
         },
         {
           "name": "AT_DetachPartition",
-          "value": 61,
+          "value": 60,
           "comment": "/* DETACH PARTITION */"
         },
         {
           "name": "AT_DetachPartitionFinalize",
-          "value": 62,
+          "value": 61,
           "comment": "/* DETACH PARTITION FINALIZE */"
         },
         {
           "name": "AT_AddIdentity",
-          "value": 63,
+          "value": 62,
           "comment": "/* ADD IDENTITY */"
         },
         {
           "name": "AT_SetIdentity",
-          "value": 64,
+          "value": 63,
           "comment": "/* SET identity column options */"
         },
         {
           "name": "AT_DropIdentity",
-          "value": 65,
+          "value": 64,
           "comment": "/* DROP IDENTITY */"
         },
         {
           "name": "AT_ReAddStatistics",
-          "value": 66,
+          "value": 65,
           "comment": "/* internal to commands/tablecmds.c */"
         }
       ],
@@ -1242,6 +1260,14 @@
         {
           "name": "CONSTR_ATTR_IMMEDIATE",
           "value": 13
+        },
+        {
+          "name": "CONSTR_ATTR_ENFORCED",
+          "value": 14
+        },
+        {
+          "name": "CONSTR_ATTR_NOT_ENFORCED",
+          "value": 15
         }
       ],
       "comment": "/* ----------\n * Definitions for constraints in CreateStmt\n *\n * Note that column defaults are treated as a type of constraint,\n * even though that's a bit odd semantically.\n *\n * For constraints that use expressions (CONSTR_CHECK, CONSTR_DEFAULT)\n * we may have the expression in either \"raw\" form (an untransformed\n * parse tree) or \"cooked\" form (the nodeToString representation of\n * an executable expression tree), depending on how this Constraint\n * node was created (by parsing, or by inheritance from an existing\n * relation).  We should never have both in the same node!\n *\n * FKCONSTR_ACTION_xxx values are stored into pg_constraint.confupdtype\n * and pg_constraint.confdeltype columns; FKCONSTR_MATCH_xxx values are\n * stored into pg_constraint.confmatchtype.  Changing the code values may\n * require an initdb!\n *\n * If skip_validation is true then we skip checking that the existing rows\n * in the table satisfy the constraint, and just install the catalog entries\n * for the constraint.  A new FK constraint is marked as valid iff\n * initially_valid is true.  (Usually skip_validation and initially_valid\n * are inverses, but we can set both true if the table is known empty.)\n *\n * Constraint attributes (DEFERRABLE etc) are initially represented as\n * separate Constraint nodes for simplicity of parsing.  parse_utilcmd.c makes\n * a pass through the constraints list to insert the info into the appropriate\n * Constraint node.\n * ----------\n */\n"
@@ -1628,7 +1654,7 @@
           "value": 2
         }
       ],
-      "comment": "/*-------------------------------------------------------------------------\n *\n * primnodes.h\n *\t  Definitions for \"primitive\" node types, those that are used in more\n *\t  than one of the parse/plan/execute stages of the query pipeline.\n *\t  Currently, these are mostly nodes for executable expressions\n *\t  and join trees.\n *\n *\n * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/primnodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
+      "comment": "/*-------------------------------------------------------------------------\n *\n * primnodes.h\n *\t  Definitions for \"primitive\" node types, those that are used in more\n *\t  than one of the parse/plan/execute stages of the query pipeline.\n *\t  Currently, these are mostly nodes for executable expressions\n *\t  and join trees.\n *\n *\n * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group\n * Portions Copyright (c) 1994, Regents of the University of California\n *\n * src/include/nodes/primnodes.h\n *\n *-------------------------------------------------------------------------\n */\n"
     },
     "OnCommitAction": {
       "values": [
@@ -1673,6 +1699,29 @@
         }
       ],
       "comment": null
+    },
+    "VarReturningType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "VAR_RETURNING_DEFAULT",
+          "value": 0,
+          "comment": "/* return OLD for DELETE, else return NEW */"
+        },
+        {
+          "name": "VAR_RETURNING_OLD",
+          "value": 1,
+          "comment": "/* return OLD for DELETE/UPDATE, else NULL */"
+        },
+        {
+          "name": "VAR_RETURNING_NEW",
+          "value": 2,
+          "comment": "/* return NEW for INSERT/UPDATE, else NULL */"
+        }
+      ],
+      "comment": "/* Returning behavior for Vars in RETURNING list */\n"
     },
     "ParamKind": {
       "values": [
@@ -1812,47 +1861,6 @@
         }
       ],
       "comment": "/*\n * SubLink\n *\n * A SubLink represents a subselect appearing in an expression, and in some\n * cases also the combining operator(s) just above it.  The subLinkType\n * indicates the form of the expression represented:\n *\tEXISTS_SUBLINK\t\tEXISTS(SELECT ...)\n *\tALL_SUBLINK\t\t\t(lefthand) op ALL (SELECT ...)\n *\tANY_SUBLINK\t\t\t(lefthand) op ANY (SELECT ...)\n *\tROWCOMPARE_SUBLINK\t(lefthand) op (SELECT ...)\n *\tEXPR_SUBLINK\t\t(SELECT with single targetlist item ...)\n *\tMULTIEXPR_SUBLINK\t(SELECT with multiple targetlist items ...)\n *\tARRAY_SUBLINK\t\tARRAY(SELECT with single targetlist item ...)\n *\tCTE_SUBLINK\t\t\tWITH query (never actually part of an expression)\n * For ALL, ANY, and ROWCOMPARE, the lefthand is a list of expressions of the\n * same length as the subselect's targetlist.  ROWCOMPARE will *always* have\n * a list with more than one entry; if the subselect has just one target\n * then the parser will create an EXPR_SUBLINK instead (and any operator\n * above the subselect will be represented separately).\n * ROWCOMPARE, EXPR, and MULTIEXPR require the subselect to deliver at most\n * one row (if it returns no rows, the result is NULL).\n * ALL, ANY, and ROWCOMPARE require the combining operators to deliver boolean\n * results.  ALL and ANY combine the per-row results using AND and OR\n * semantics respectively.\n * ARRAY requires just one target column, and creates an array of the target\n * column's type using any number of rows resulting from the subselect.\n *\n * SubLink is classed as an Expr node, but it is not actually executable;\n * it must be replaced in the expression tree by a SubPlan node during\n * planning.\n *\n * NOTE: in the raw output of gram.y, testexpr contains just the raw form\n * of the lefthand expression (if any), and operName is the String name of\n * the combining operator.  Also, subselect is a raw parsetree.  During parse\n * analysis, the parser transforms testexpr into a complete boolean expression\n * that compares the lefthand value(s) to PARAM_SUBLINK nodes representing the\n * output columns of the subselect.  And subselect is transformed to a Query.\n * This is the representation seen in saved rules and in the rewriter.\n *\n * In EXISTS, EXPR, MULTIEXPR, and ARRAY SubLinks, testexpr and operName\n * are unused and are always null.\n *\n * subLinkId is currently used only for MULTIEXPR SubLinks, and is zero in\n * other SubLinks.  This number identifies different multiple-assignment\n * subqueries within an UPDATE statement's SET list.  It is unique only\n * within a particular targetlist.  The output column(s) of the MULTIEXPR\n * are referenced by PARAM_MULTIEXPR Params appearing elsewhere in the tlist.\n *\n * The CTE_SUBLINK case never occurs in actual SubLink nodes, but it is used\n * in SubPlans generated for WITH subqueries.\n */\n"
-    },
-    "RowCompareType": {
-      "values": [
-        {
-          "comment": ""
-        },
-        {
-          "comment": "\t/* Values of this enum are chosen to match btree strategy numbers */\n"
-        },
-        {
-          "name": "ROWCOMPARE_LT",
-          "value": 1,
-          "comment": "/* BTLessStrategyNumber */"
-        },
-        {
-          "name": "ROWCOMPARE_LE",
-          "value": 2,
-          "comment": "/* BTLessEqualStrategyNumber */"
-        },
-        {
-          "name": "ROWCOMPARE_EQ",
-          "value": 3,
-          "comment": "/* BTEqualStrategyNumber */"
-        },
-        {
-          "name": "ROWCOMPARE_GE",
-          "value": 4,
-          "comment": "/* BTGreaterEqualStrategyNumber */"
-        },
-        {
-          "name": "ROWCOMPARE_GT",
-          "value": 5,
-          "comment": "/* BTGreaterStrategyNumber */"
-        },
-        {
-          "name": "ROWCOMPARE_NE",
-          "value": 6,
-          "comment": "/* no such btree strategy */"
-        }
-      ],
-      "comment": "/*\n * RowCompareExpr - row-wise comparison, such as (a, b) <= (1, 2)\n *\n * We support row comparison for any operator that can be determined to\n * act like =, <>, <, <=, >, or >= (we determine this by looking for the\n * operator in btree opfamilies).  Note that the same operator name might\n * map to a different operator for each pair of row elements, since the\n * element datatypes can vary.\n *\n * A RowCompareExpr node is only generated for the < <= > >= cases;\n * the = and <> cases are translated to simple AND or OR combinations\n * of the pairwise comparisons.  However, we include = and <> in the\n * RowCompareType enum for the convenience of parser logic.\n */\n"
     },
     "MinMaxOp": {
       "values": [
@@ -2630,159 +2638,159 @@
           "value": 60
         },
         {
-          "name": "T_TargetEntry",
+          "name": "T_ReturningExpr",
           "value": 61
         },
         {
-          "name": "T_RangeTblRef",
+          "name": "T_TargetEntry",
           "value": 62
         },
         {
-          "name": "T_JoinExpr",
+          "name": "T_RangeTblRef",
           "value": 63
         },
         {
-          "name": "T_FromExpr",
+          "name": "T_JoinExpr",
           "value": 64
         },
         {
-          "name": "T_OnConflictExpr",
+          "name": "T_FromExpr",
           "value": 65
         },
         {
-          "name": "T_Query",
+          "name": "T_OnConflictExpr",
           "value": 66
         },
         {
-          "name": "T_TypeName",
+          "name": "T_Query",
           "value": 67
         },
         {
-          "name": "T_ColumnRef",
+          "name": "T_TypeName",
           "value": 68
         },
         {
-          "name": "T_ParamRef",
+          "name": "T_ColumnRef",
           "value": 69
         },
         {
-          "name": "T_A_Expr",
+          "name": "T_ParamRef",
           "value": 70
         },
         {
-          "name": "T_A_Const",
+          "name": "T_A_Expr",
           "value": 71
         },
         {
-          "name": "T_TypeCast",
+          "name": "T_A_Const",
           "value": 72
         },
         {
-          "name": "T_CollateClause",
+          "name": "T_TypeCast",
           "value": 73
         },
         {
-          "name": "T_RoleSpec",
+          "name": "T_CollateClause",
           "value": 74
         },
         {
-          "name": "T_FuncCall",
+          "name": "T_RoleSpec",
           "value": 75
         },
         {
-          "name": "T_A_Star",
+          "name": "T_FuncCall",
           "value": 76
         },
         {
-          "name": "T_A_Indices",
+          "name": "T_A_Star",
           "value": 77
         },
         {
-          "name": "T_A_Indirection",
+          "name": "T_A_Indices",
           "value": 78
         },
         {
-          "name": "T_A_ArrayExpr",
+          "name": "T_A_Indirection",
           "value": 79
         },
         {
-          "name": "T_ResTarget",
+          "name": "T_A_ArrayExpr",
           "value": 80
         },
         {
-          "name": "T_MultiAssignRef",
+          "name": "T_ResTarget",
           "value": 81
         },
         {
-          "name": "T_SortBy",
+          "name": "T_MultiAssignRef",
           "value": 82
         },
         {
-          "name": "T_WindowDef",
+          "name": "T_SortBy",
           "value": 83
         },
         {
-          "name": "T_RangeSubselect",
+          "name": "T_WindowDef",
           "value": 84
         },
         {
-          "name": "T_RangeFunction",
+          "name": "T_RangeSubselect",
           "value": 85
         },
         {
-          "name": "T_RangeTableFunc",
+          "name": "T_RangeFunction",
           "value": 86
         },
         {
-          "name": "T_RangeTableFuncCol",
+          "name": "T_RangeTableFunc",
           "value": 87
         },
         {
-          "name": "T_RangeTableSample",
+          "name": "T_RangeTableFuncCol",
           "value": 88
         },
         {
-          "name": "T_ColumnDef",
+          "name": "T_RangeTableSample",
           "value": 89
         },
         {
-          "name": "T_TableLikeClause",
+          "name": "T_ColumnDef",
           "value": 90
         },
         {
-          "name": "T_IndexElem",
+          "name": "T_TableLikeClause",
           "value": 91
         },
         {
-          "name": "T_DefElem",
+          "name": "T_IndexElem",
           "value": 92
         },
         {
-          "name": "T_LockingClause",
+          "name": "T_DefElem",
           "value": 93
         },
         {
-          "name": "T_XmlSerialize",
+          "name": "T_LockingClause",
           "value": 94
         },
         {
-          "name": "T_PartitionElem",
+          "name": "T_XmlSerialize",
           "value": 95
         },
         {
-          "name": "T_PartitionSpec",
+          "name": "T_PartitionElem",
           "value": 96
         },
         {
-          "name": "T_PartitionBoundSpec",
+          "name": "T_PartitionSpec",
           "value": 97
         },
         {
-          "name": "T_PartitionRangeDatum",
+          "name": "T_PartitionBoundSpec",
           "value": 98
         },
         {
-          "name": "T_SinglePartitionSpec",
+          "name": "T_PartitionRangeDatum",
           "value": 99
         },
         {
@@ -2854,1436 +2862,1456 @@
           "value": 116
         },
         {
-          "name": "T_TriggerTransition",
+          "name": "T_ReturningOption",
           "value": 117
         },
         {
-          "name": "T_JsonOutput",
+          "name": "T_ReturningClause",
           "value": 118
         },
         {
-          "name": "T_JsonArgument",
+          "name": "T_TriggerTransition",
           "value": 119
         },
         {
-          "name": "T_JsonFuncExpr",
+          "name": "T_JsonOutput",
           "value": 120
         },
         {
-          "name": "T_JsonTablePathSpec",
+          "name": "T_JsonArgument",
           "value": 121
         },
         {
-          "name": "T_JsonTable",
+          "name": "T_JsonFuncExpr",
           "value": 122
         },
         {
-          "name": "T_JsonTableColumn",
+          "name": "T_JsonTablePathSpec",
           "value": 123
         },
         {
-          "name": "T_JsonKeyValue",
+          "name": "T_JsonTable",
           "value": 124
         },
         {
-          "name": "T_JsonParseExpr",
+          "name": "T_JsonTableColumn",
           "value": 125
         },
         {
-          "name": "T_JsonScalarExpr",
+          "name": "T_JsonKeyValue",
           "value": 126
         },
         {
-          "name": "T_JsonSerializeExpr",
+          "name": "T_JsonParseExpr",
           "value": 127
         },
         {
-          "name": "T_JsonObjectConstructor",
+          "name": "T_JsonScalarExpr",
           "value": 128
         },
         {
-          "name": "T_JsonArrayConstructor",
+          "name": "T_JsonSerializeExpr",
           "value": 129
         },
         {
-          "name": "T_JsonArrayQueryConstructor",
+          "name": "T_JsonObjectConstructor",
           "value": 130
         },
         {
-          "name": "T_JsonAggConstructor",
+          "name": "T_JsonArrayConstructor",
           "value": 131
         },
         {
-          "name": "T_JsonObjectAgg",
+          "name": "T_JsonArrayQueryConstructor",
           "value": 132
         },
         {
-          "name": "T_JsonArrayAgg",
+          "name": "T_JsonAggConstructor",
           "value": 133
         },
         {
-          "name": "T_RawStmt",
+          "name": "T_JsonObjectAgg",
           "value": 134
         },
         {
-          "name": "T_InsertStmt",
+          "name": "T_JsonArrayAgg",
           "value": 135
         },
         {
-          "name": "T_DeleteStmt",
+          "name": "T_RawStmt",
           "value": 136
         },
         {
-          "name": "T_UpdateStmt",
+          "name": "T_InsertStmt",
           "value": 137
         },
         {
-          "name": "T_MergeStmt",
+          "name": "T_DeleteStmt",
           "value": 138
         },
         {
-          "name": "T_SelectStmt",
+          "name": "T_UpdateStmt",
           "value": 139
         },
         {
-          "name": "T_SetOperationStmt",
+          "name": "T_MergeStmt",
           "value": 140
         },
         {
-          "name": "T_ReturnStmt",
+          "name": "T_SelectStmt",
           "value": 141
         },
         {
-          "name": "T_PLAssignStmt",
+          "name": "T_SetOperationStmt",
           "value": 142
         },
         {
-          "name": "T_CreateSchemaStmt",
+          "name": "T_ReturnStmt",
           "value": 143
         },
         {
-          "name": "T_AlterTableStmt",
+          "name": "T_PLAssignStmt",
           "value": 144
         },
         {
-          "name": "T_ReplicaIdentityStmt",
+          "name": "T_CreateSchemaStmt",
           "value": 145
         },
         {
-          "name": "T_AlterTableCmd",
+          "name": "T_AlterTableStmt",
           "value": 146
         },
         {
-          "name": "T_AlterCollationStmt",
+          "name": "T_AlterTableCmd",
           "value": 147
         },
         {
-          "name": "T_AlterDomainStmt",
+          "name": "T_ATAlterConstraint",
           "value": 148
         },
         {
-          "name": "T_GrantStmt",
+          "name": "T_ReplicaIdentityStmt",
           "value": 149
         },
         {
-          "name": "T_ObjectWithArgs",
+          "name": "T_AlterCollationStmt",
           "value": 150
         },
         {
-          "name": "T_AccessPriv",
+          "name": "T_AlterDomainStmt",
           "value": 151
         },
         {
-          "name": "T_GrantRoleStmt",
+          "name": "T_GrantStmt",
           "value": 152
         },
         {
-          "name": "T_AlterDefaultPrivilegesStmt",
+          "name": "T_ObjectWithArgs",
           "value": 153
         },
         {
-          "name": "T_CopyStmt",
+          "name": "T_AccessPriv",
           "value": 154
         },
         {
-          "name": "T_VariableSetStmt",
+          "name": "T_GrantRoleStmt",
           "value": 155
         },
         {
-          "name": "T_VariableShowStmt",
+          "name": "T_AlterDefaultPrivilegesStmt",
           "value": 156
         },
         {
-          "name": "T_CreateStmt",
+          "name": "T_CopyStmt",
           "value": 157
         },
         {
-          "name": "T_Constraint",
+          "name": "T_VariableSetStmt",
           "value": 158
         },
         {
-          "name": "T_CreateTableSpaceStmt",
+          "name": "T_VariableShowStmt",
           "value": 159
         },
         {
-          "name": "T_DropTableSpaceStmt",
+          "name": "T_CreateStmt",
           "value": 160
         },
         {
-          "name": "T_AlterTableSpaceOptionsStmt",
+          "name": "T_Constraint",
           "value": 161
         },
         {
-          "name": "T_AlterTableMoveAllStmt",
+          "name": "T_CreateTableSpaceStmt",
           "value": 162
         },
         {
-          "name": "T_CreateExtensionStmt",
+          "name": "T_DropTableSpaceStmt",
           "value": 163
         },
         {
-          "name": "T_AlterExtensionStmt",
+          "name": "T_AlterTableSpaceOptionsStmt",
           "value": 164
         },
         {
-          "name": "T_AlterExtensionContentsStmt",
+          "name": "T_AlterTableMoveAllStmt",
           "value": 165
         },
         {
-          "name": "T_CreateFdwStmt",
+          "name": "T_CreateExtensionStmt",
           "value": 166
         },
         {
-          "name": "T_AlterFdwStmt",
+          "name": "T_AlterExtensionStmt",
           "value": 167
         },
         {
-          "name": "T_CreateForeignServerStmt",
+          "name": "T_AlterExtensionContentsStmt",
           "value": 168
         },
         {
-          "name": "T_AlterForeignServerStmt",
+          "name": "T_CreateFdwStmt",
           "value": 169
         },
         {
-          "name": "T_CreateForeignTableStmt",
+          "name": "T_AlterFdwStmt",
           "value": 170
         },
         {
-          "name": "T_CreateUserMappingStmt",
+          "name": "T_CreateForeignServerStmt",
           "value": 171
         },
         {
-          "name": "T_AlterUserMappingStmt",
+          "name": "T_AlterForeignServerStmt",
           "value": 172
         },
         {
-          "name": "T_DropUserMappingStmt",
+          "name": "T_CreateForeignTableStmt",
           "value": 173
         },
         {
-          "name": "T_ImportForeignSchemaStmt",
+          "name": "T_CreateUserMappingStmt",
           "value": 174
         },
         {
-          "name": "T_CreatePolicyStmt",
+          "name": "T_AlterUserMappingStmt",
           "value": 175
         },
         {
-          "name": "T_AlterPolicyStmt",
+          "name": "T_DropUserMappingStmt",
           "value": 176
         },
         {
-          "name": "T_CreateAmStmt",
+          "name": "T_ImportForeignSchemaStmt",
           "value": 177
         },
         {
-          "name": "T_CreateTrigStmt",
+          "name": "T_CreatePolicyStmt",
           "value": 178
         },
         {
-          "name": "T_CreateEventTrigStmt",
+          "name": "T_AlterPolicyStmt",
           "value": 179
         },
         {
-          "name": "T_AlterEventTrigStmt",
+          "name": "T_CreateAmStmt",
           "value": 180
         },
         {
-          "name": "T_CreatePLangStmt",
+          "name": "T_CreateTrigStmt",
           "value": 181
         },
         {
-          "name": "T_CreateRoleStmt",
+          "name": "T_CreateEventTrigStmt",
           "value": 182
         },
         {
-          "name": "T_AlterRoleStmt",
+          "name": "T_AlterEventTrigStmt",
           "value": 183
         },
         {
-          "name": "T_AlterRoleSetStmt",
+          "name": "T_CreatePLangStmt",
           "value": 184
         },
         {
-          "name": "T_DropRoleStmt",
+          "name": "T_CreateRoleStmt",
           "value": 185
         },
         {
-          "name": "T_CreateSeqStmt",
+          "name": "T_AlterRoleStmt",
           "value": 186
         },
         {
-          "name": "T_AlterSeqStmt",
+          "name": "T_AlterRoleSetStmt",
           "value": 187
         },
         {
-          "name": "T_DefineStmt",
+          "name": "T_DropRoleStmt",
           "value": 188
         },
         {
-          "name": "T_CreateDomainStmt",
+          "name": "T_CreateSeqStmt",
           "value": 189
         },
         {
-          "name": "T_CreateOpClassStmt",
+          "name": "T_AlterSeqStmt",
           "value": 190
         },
         {
-          "name": "T_CreateOpClassItem",
+          "name": "T_DefineStmt",
           "value": 191
         },
         {
-          "name": "T_CreateOpFamilyStmt",
+          "name": "T_CreateDomainStmt",
           "value": 192
         },
         {
-          "name": "T_AlterOpFamilyStmt",
+          "name": "T_CreateOpClassStmt",
           "value": 193
         },
         {
-          "name": "T_DropStmt",
+          "name": "T_CreateOpClassItem",
           "value": 194
         },
         {
-          "name": "T_TruncateStmt",
+          "name": "T_CreateOpFamilyStmt",
           "value": 195
         },
         {
-          "name": "T_CommentStmt",
+          "name": "T_AlterOpFamilyStmt",
           "value": 196
         },
         {
-          "name": "T_SecLabelStmt",
+          "name": "T_DropStmt",
           "value": 197
         },
         {
-          "name": "T_DeclareCursorStmt",
+          "name": "T_TruncateStmt",
           "value": 198
         },
         {
-          "name": "T_ClosePortalStmt",
+          "name": "T_CommentStmt",
           "value": 199
         },
         {
-          "name": "T_FetchStmt",
+          "name": "T_SecLabelStmt",
           "value": 200
         },
         {
-          "name": "T_IndexStmt",
+          "name": "T_DeclareCursorStmt",
           "value": 201
         },
         {
-          "name": "T_CreateStatsStmt",
+          "name": "T_ClosePortalStmt",
           "value": 202
         },
         {
-          "name": "T_StatsElem",
+          "name": "T_FetchStmt",
           "value": 203
         },
         {
-          "name": "T_AlterStatsStmt",
+          "name": "T_IndexStmt",
           "value": 204
         },
         {
-          "name": "T_CreateFunctionStmt",
+          "name": "T_CreateStatsStmt",
           "value": 205
         },
         {
-          "name": "T_FunctionParameter",
+          "name": "T_StatsElem",
           "value": 206
         },
         {
-          "name": "T_AlterFunctionStmt",
+          "name": "T_AlterStatsStmt",
           "value": 207
         },
         {
-          "name": "T_DoStmt",
+          "name": "T_CreateFunctionStmt",
           "value": 208
         },
         {
-          "name": "T_InlineCodeBlock",
+          "name": "T_FunctionParameter",
           "value": 209
         },
         {
-          "name": "T_CallStmt",
+          "name": "T_AlterFunctionStmt",
           "value": 210
         },
         {
-          "name": "T_CallContext",
+          "name": "T_DoStmt",
           "value": 211
         },
         {
-          "name": "T_RenameStmt",
+          "name": "T_InlineCodeBlock",
           "value": 212
         },
         {
-          "name": "T_AlterObjectDependsStmt",
+          "name": "T_CallStmt",
           "value": 213
         },
         {
-          "name": "T_AlterObjectSchemaStmt",
+          "name": "T_CallContext",
           "value": 214
         },
         {
-          "name": "T_AlterOwnerStmt",
+          "name": "T_RenameStmt",
           "value": 215
         },
         {
-          "name": "T_AlterOperatorStmt",
+          "name": "T_AlterObjectDependsStmt",
           "value": 216
         },
         {
-          "name": "T_AlterTypeStmt",
+          "name": "T_AlterObjectSchemaStmt",
           "value": 217
         },
         {
-          "name": "T_RuleStmt",
+          "name": "T_AlterOwnerStmt",
           "value": 218
         },
         {
-          "name": "T_NotifyStmt",
+          "name": "T_AlterOperatorStmt",
           "value": 219
         },
         {
-          "name": "T_ListenStmt",
+          "name": "T_AlterTypeStmt",
           "value": 220
         },
         {
-          "name": "T_UnlistenStmt",
+          "name": "T_RuleStmt",
           "value": 221
         },
         {
-          "name": "T_TransactionStmt",
+          "name": "T_NotifyStmt",
           "value": 222
         },
         {
-          "name": "T_CompositeTypeStmt",
+          "name": "T_ListenStmt",
           "value": 223
         },
         {
-          "name": "T_CreateEnumStmt",
+          "name": "T_UnlistenStmt",
           "value": 224
         },
         {
-          "name": "T_CreateRangeStmt",
+          "name": "T_TransactionStmt",
           "value": 225
         },
         {
-          "name": "T_AlterEnumStmt",
+          "name": "T_CompositeTypeStmt",
           "value": 226
         },
         {
-          "name": "T_ViewStmt",
+          "name": "T_CreateEnumStmt",
           "value": 227
         },
         {
-          "name": "T_LoadStmt",
+          "name": "T_CreateRangeStmt",
           "value": 228
         },
         {
-          "name": "T_CreatedbStmt",
+          "name": "T_AlterEnumStmt",
           "value": 229
         },
         {
-          "name": "T_AlterDatabaseStmt",
+          "name": "T_ViewStmt",
           "value": 230
         },
         {
-          "name": "T_AlterDatabaseRefreshCollStmt",
+          "name": "T_LoadStmt",
           "value": 231
         },
         {
-          "name": "T_AlterDatabaseSetStmt",
+          "name": "T_CreatedbStmt",
           "value": 232
         },
         {
-          "name": "T_DropdbStmt",
+          "name": "T_AlterDatabaseStmt",
           "value": 233
         },
         {
-          "name": "T_AlterSystemStmt",
+          "name": "T_AlterDatabaseRefreshCollStmt",
           "value": 234
         },
         {
-          "name": "T_ClusterStmt",
+          "name": "T_AlterDatabaseSetStmt",
           "value": 235
         },
         {
-          "name": "T_VacuumStmt",
+          "name": "T_DropdbStmt",
           "value": 236
         },
         {
-          "name": "T_VacuumRelation",
+          "name": "T_AlterSystemStmt",
           "value": 237
         },
         {
-          "name": "T_ExplainStmt",
+          "name": "T_ClusterStmt",
           "value": 238
         },
         {
-          "name": "T_CreateTableAsStmt",
+          "name": "T_VacuumStmt",
           "value": 239
         },
         {
-          "name": "T_RefreshMatViewStmt",
+          "name": "T_VacuumRelation",
           "value": 240
         },
         {
-          "name": "T_CheckPointStmt",
+          "name": "T_ExplainStmt",
           "value": 241
         },
         {
-          "name": "T_DiscardStmt",
+          "name": "T_CreateTableAsStmt",
           "value": 242
         },
         {
-          "name": "T_LockStmt",
+          "name": "T_RefreshMatViewStmt",
           "value": 243
         },
         {
-          "name": "T_ConstraintsSetStmt",
+          "name": "T_CheckPointStmt",
           "value": 244
         },
         {
-          "name": "T_ReindexStmt",
+          "name": "T_DiscardStmt",
           "value": 245
         },
         {
-          "name": "T_CreateConversionStmt",
+          "name": "T_LockStmt",
           "value": 246
         },
         {
-          "name": "T_CreateCastStmt",
+          "name": "T_ConstraintsSetStmt",
           "value": 247
         },
         {
-          "name": "T_CreateTransformStmt",
+          "name": "T_ReindexStmt",
           "value": 248
         },
         {
-          "name": "T_PrepareStmt",
+          "name": "T_CreateConversionStmt",
           "value": 249
         },
         {
-          "name": "T_ExecuteStmt",
+          "name": "T_CreateCastStmt",
           "value": 250
         },
         {
-          "name": "T_DeallocateStmt",
+          "name": "T_CreateTransformStmt",
           "value": 251
         },
         {
-          "name": "T_DropOwnedStmt",
+          "name": "T_PrepareStmt",
           "value": 252
         },
         {
-          "name": "T_ReassignOwnedStmt",
+          "name": "T_ExecuteStmt",
           "value": 253
         },
         {
-          "name": "T_AlterTSDictionaryStmt",
+          "name": "T_DeallocateStmt",
           "value": 254
         },
         {
-          "name": "T_AlterTSConfigurationStmt",
+          "name": "T_DropOwnedStmt",
           "value": 255
         },
         {
-          "name": "T_PublicationTable",
+          "name": "T_ReassignOwnedStmt",
           "value": 256
         },
         {
-          "name": "T_PublicationObjSpec",
+          "name": "T_AlterTSDictionaryStmt",
           "value": 257
         },
         {
-          "name": "T_CreatePublicationStmt",
+          "name": "T_AlterTSConfigurationStmt",
           "value": 258
         },
         {
-          "name": "T_AlterPublicationStmt",
+          "name": "T_PublicationTable",
           "value": 259
         },
         {
-          "name": "T_CreateSubscriptionStmt",
+          "name": "T_PublicationObjSpec",
           "value": 260
         },
         {
-          "name": "T_AlterSubscriptionStmt",
+          "name": "T_CreatePublicationStmt",
           "value": 261
         },
         {
-          "name": "T_DropSubscriptionStmt",
+          "name": "T_AlterPublicationStmt",
           "value": 262
         },
         {
-          "name": "T_PlannerGlobal",
+          "name": "T_CreateSubscriptionStmt",
           "value": 263
         },
         {
-          "name": "T_PlannerInfo",
+          "name": "T_AlterSubscriptionStmt",
           "value": 264
         },
         {
-          "name": "T_RelOptInfo",
+          "name": "T_DropSubscriptionStmt",
           "value": 265
         },
         {
-          "name": "T_IndexOptInfo",
+          "name": "T_PlannerGlobal",
           "value": 266
         },
         {
-          "name": "T_ForeignKeyOptInfo",
+          "name": "T_PlannerInfo",
           "value": 267
         },
         {
-          "name": "T_StatisticExtInfo",
+          "name": "T_RelOptInfo",
           "value": 268
         },
         {
-          "name": "T_JoinDomain",
+          "name": "T_IndexOptInfo",
           "value": 269
         },
         {
-          "name": "T_EquivalenceClass",
+          "name": "T_ForeignKeyOptInfo",
           "value": 270
         },
         {
-          "name": "T_EquivalenceMember",
+          "name": "T_StatisticExtInfo",
           "value": 271
         },
         {
-          "name": "T_PathKey",
+          "name": "T_JoinDomain",
           "value": 272
         },
         {
-          "name": "T_GroupByOrdering",
+          "name": "T_EquivalenceClass",
           "value": 273
         },
         {
-          "name": "T_PathTarget",
+          "name": "T_EquivalenceMember",
           "value": 274
         },
         {
-          "name": "T_ParamPathInfo",
+          "name": "T_PathKey",
           "value": 275
         },
         {
-          "name": "T_Path",
+          "name": "T_GroupByOrdering",
           "value": 276
         },
         {
-          "name": "T_IndexPath",
+          "name": "T_PathTarget",
           "value": 277
         },
         {
-          "name": "T_IndexClause",
+          "name": "T_ParamPathInfo",
           "value": 278
         },
         {
-          "name": "T_BitmapHeapPath",
+          "name": "T_Path",
           "value": 279
         },
         {
-          "name": "T_BitmapAndPath",
+          "name": "T_IndexPath",
           "value": 280
         },
         {
-          "name": "T_BitmapOrPath",
+          "name": "T_IndexClause",
           "value": 281
         },
         {
-          "name": "T_TidPath",
+          "name": "T_BitmapHeapPath",
           "value": 282
         },
         {
-          "name": "T_TidRangePath",
+          "name": "T_BitmapAndPath",
           "value": 283
         },
         {
-          "name": "T_SubqueryScanPath",
+          "name": "T_BitmapOrPath",
           "value": 284
         },
         {
-          "name": "T_ForeignPath",
+          "name": "T_TidPath",
           "value": 285
         },
         {
-          "name": "T_CustomPath",
+          "name": "T_TidRangePath",
           "value": 286
         },
         {
-          "name": "T_AppendPath",
+          "name": "T_SubqueryScanPath",
           "value": 287
         },
         {
-          "name": "T_MergeAppendPath",
+          "name": "T_ForeignPath",
           "value": 288
         },
         {
-          "name": "T_GroupResultPath",
+          "name": "T_CustomPath",
           "value": 289
         },
         {
-          "name": "T_MaterialPath",
+          "name": "T_AppendPath",
           "value": 290
         },
         {
-          "name": "T_MemoizePath",
+          "name": "T_MergeAppendPath",
           "value": 291
         },
         {
-          "name": "T_UniquePath",
+          "name": "T_GroupResultPath",
           "value": 292
         },
         {
-          "name": "T_GatherPath",
+          "name": "T_MaterialPath",
           "value": 293
         },
         {
-          "name": "T_GatherMergePath",
+          "name": "T_MemoizePath",
           "value": 294
         },
         {
-          "name": "T_NestPath",
+          "name": "T_UniquePath",
           "value": 295
         },
         {
-          "name": "T_MergePath",
+          "name": "T_GatherPath",
           "value": 296
         },
         {
-          "name": "T_HashPath",
+          "name": "T_GatherMergePath",
           "value": 297
         },
         {
-          "name": "T_ProjectionPath",
+          "name": "T_NestPath",
           "value": 298
         },
         {
-          "name": "T_ProjectSetPath",
+          "name": "T_MergePath",
           "value": 299
         },
         {
-          "name": "T_SortPath",
+          "name": "T_HashPath",
           "value": 300
         },
         {
-          "name": "T_IncrementalSortPath",
+          "name": "T_ProjectionPath",
           "value": 301
         },
         {
-          "name": "T_GroupPath",
+          "name": "T_ProjectSetPath",
           "value": 302
         },
         {
-          "name": "T_UpperUniquePath",
+          "name": "T_SortPath",
           "value": 303
         },
         {
-          "name": "T_AggPath",
+          "name": "T_IncrementalSortPath",
           "value": 304
         },
         {
-          "name": "T_GroupingSetData",
+          "name": "T_GroupPath",
           "value": 305
         },
         {
-          "name": "T_RollupData",
+          "name": "T_UpperUniquePath",
           "value": 306
         },
         {
-          "name": "T_GroupingSetsPath",
+          "name": "T_AggPath",
           "value": 307
         },
         {
-          "name": "T_MinMaxAggPath",
+          "name": "T_GroupingSetData",
           "value": 308
         },
         {
-          "name": "T_WindowAggPath",
+          "name": "T_RollupData",
           "value": 309
         },
         {
-          "name": "T_SetOpPath",
+          "name": "T_GroupingSetsPath",
           "value": 310
         },
         {
-          "name": "T_RecursiveUnionPath",
+          "name": "T_MinMaxAggPath",
           "value": 311
         },
         {
-          "name": "T_LockRowsPath",
+          "name": "T_WindowAggPath",
           "value": 312
         },
         {
-          "name": "T_ModifyTablePath",
+          "name": "T_SetOpPath",
           "value": 313
         },
         {
-          "name": "T_LimitPath",
+          "name": "T_RecursiveUnionPath",
           "value": 314
         },
         {
-          "name": "T_RestrictInfo",
+          "name": "T_LockRowsPath",
           "value": 315
         },
         {
-          "name": "T_PlaceHolderVar",
+          "name": "T_ModifyTablePath",
           "value": 316
         },
         {
-          "name": "T_SpecialJoinInfo",
+          "name": "T_LimitPath",
           "value": 317
         },
         {
-          "name": "T_OuterJoinClauseInfo",
+          "name": "T_RestrictInfo",
           "value": 318
         },
         {
-          "name": "T_AppendRelInfo",
+          "name": "T_PlaceHolderVar",
           "value": 319
         },
         {
-          "name": "T_RowIdentityVarInfo",
+          "name": "T_SpecialJoinInfo",
           "value": 320
         },
         {
-          "name": "T_PlaceHolderInfo",
+          "name": "T_OuterJoinClauseInfo",
           "value": 321
         },
         {
-          "name": "T_MinMaxAggInfo",
+          "name": "T_AppendRelInfo",
           "value": 322
         },
         {
-          "name": "T_PlannerParamItem",
+          "name": "T_RowIdentityVarInfo",
           "value": 323
         },
         {
-          "name": "T_AggInfo",
+          "name": "T_PlaceHolderInfo",
           "value": 324
         },
         {
-          "name": "T_AggTransInfo",
+          "name": "T_MinMaxAggInfo",
           "value": 325
         },
         {
-          "name": "T_PlannedStmt",
+          "name": "T_PlannerParamItem",
           "value": 326
         },
         {
-          "name": "T_Result",
+          "name": "T_AggInfo",
           "value": 327
         },
         {
-          "name": "T_ProjectSet",
+          "name": "T_AggTransInfo",
           "value": 328
         },
         {
-          "name": "T_ModifyTable",
+          "name": "T_UniqueRelInfo",
           "value": 329
         },
         {
-          "name": "T_Append",
+          "name": "T_PlannedStmt",
           "value": 330
         },
         {
-          "name": "T_MergeAppend",
+          "name": "T_Result",
           "value": 331
         },
         {
-          "name": "T_RecursiveUnion",
+          "name": "T_ProjectSet",
           "value": 332
         },
         {
-          "name": "T_BitmapAnd",
+          "name": "T_ModifyTable",
           "value": 333
         },
         {
-          "name": "T_BitmapOr",
+          "name": "T_Append",
           "value": 334
         },
         {
-          "name": "T_SeqScan",
+          "name": "T_MergeAppend",
           "value": 335
         },
         {
-          "name": "T_SampleScan",
+          "name": "T_RecursiveUnion",
           "value": 336
         },
         {
-          "name": "T_IndexScan",
+          "name": "T_BitmapAnd",
           "value": 337
         },
         {
-          "name": "T_IndexOnlyScan",
+          "name": "T_BitmapOr",
           "value": 338
         },
         {
-          "name": "T_BitmapIndexScan",
+          "name": "T_SeqScan",
           "value": 339
         },
         {
-          "name": "T_BitmapHeapScan",
+          "name": "T_SampleScan",
           "value": 340
         },
         {
-          "name": "T_TidScan",
+          "name": "T_IndexScan",
           "value": 341
         },
         {
-          "name": "T_TidRangeScan",
+          "name": "T_IndexOnlyScan",
           "value": 342
         },
         {
-          "name": "T_SubqueryScan",
+          "name": "T_BitmapIndexScan",
           "value": 343
         },
         {
-          "name": "T_FunctionScan",
+          "name": "T_BitmapHeapScan",
           "value": 344
         },
         {
-          "name": "T_ValuesScan",
+          "name": "T_TidScan",
           "value": 345
         },
         {
-          "name": "T_TableFuncScan",
+          "name": "T_TidRangeScan",
           "value": 346
         },
         {
-          "name": "T_CteScan",
+          "name": "T_SubqueryScan",
           "value": 347
         },
         {
-          "name": "T_NamedTuplestoreScan",
+          "name": "T_FunctionScan",
           "value": 348
         },
         {
-          "name": "T_WorkTableScan",
+          "name": "T_ValuesScan",
           "value": 349
         },
         {
-          "name": "T_ForeignScan",
+          "name": "T_TableFuncScan",
           "value": 350
         },
         {
-          "name": "T_CustomScan",
+          "name": "T_CteScan",
           "value": 351
         },
         {
-          "name": "T_NestLoop",
+          "name": "T_NamedTuplestoreScan",
           "value": 352
         },
         {
-          "name": "T_NestLoopParam",
+          "name": "T_WorkTableScan",
           "value": 353
         },
         {
-          "name": "T_MergeJoin",
+          "name": "T_ForeignScan",
           "value": 354
         },
         {
-          "name": "T_HashJoin",
+          "name": "T_CustomScan",
           "value": 355
         },
         {
-          "name": "T_Material",
+          "name": "T_NestLoop",
           "value": 356
         },
         {
-          "name": "T_Memoize",
+          "name": "T_NestLoopParam",
           "value": 357
         },
         {
-          "name": "T_Sort",
+          "name": "T_MergeJoin",
           "value": 358
         },
         {
-          "name": "T_IncrementalSort",
+          "name": "T_HashJoin",
           "value": 359
         },
         {
-          "name": "T_Group",
+          "name": "T_Material",
           "value": 360
         },
         {
-          "name": "T_Agg",
+          "name": "T_Memoize",
           "value": 361
         },
         {
-          "name": "T_WindowAgg",
+          "name": "T_Sort",
           "value": 362
         },
         {
-          "name": "T_Unique",
+          "name": "T_IncrementalSort",
           "value": 363
         },
         {
-          "name": "T_Gather",
+          "name": "T_Group",
           "value": 364
         },
         {
-          "name": "T_GatherMerge",
+          "name": "T_Agg",
           "value": 365
         },
         {
-          "name": "T_Hash",
+          "name": "T_WindowAgg",
           "value": 366
         },
         {
-          "name": "T_SetOp",
+          "name": "T_Unique",
           "value": 367
         },
         {
-          "name": "T_LockRows",
+          "name": "T_Gather",
           "value": 368
         },
         {
-          "name": "T_Limit",
+          "name": "T_GatherMerge",
           "value": 369
         },
         {
-          "name": "T_PlanRowMark",
+          "name": "T_Hash",
           "value": 370
         },
         {
-          "name": "T_PartitionPruneInfo",
+          "name": "T_SetOp",
           "value": 371
         },
         {
-          "name": "T_PartitionedRelPruneInfo",
+          "name": "T_LockRows",
           "value": 372
         },
         {
-          "name": "T_PartitionPruneStepOp",
+          "name": "T_Limit",
           "value": 373
         },
         {
-          "name": "T_PartitionPruneStepCombine",
+          "name": "T_PlanRowMark",
           "value": 374
         },
         {
-          "name": "T_PlanInvalItem",
+          "name": "T_PartitionPruneInfo",
           "value": 375
         },
         {
-          "name": "T_ExprState",
+          "name": "T_PartitionedRelPruneInfo",
           "value": 376
         },
         {
-          "name": "T_IndexInfo",
+          "name": "T_PartitionPruneStepOp",
           "value": 377
         },
         {
-          "name": "T_ExprContext",
+          "name": "T_PartitionPruneStepCombine",
           "value": 378
         },
         {
-          "name": "T_ReturnSetInfo",
+          "name": "T_PlanInvalItem",
           "value": 379
         },
         {
-          "name": "T_ProjectionInfo",
+          "name": "T_ExprState",
           "value": 380
         },
         {
-          "name": "T_JunkFilter",
+          "name": "T_IndexInfo",
           "value": 381
         },
         {
-          "name": "T_OnConflictSetState",
+          "name": "T_ExprContext",
           "value": 382
         },
         {
-          "name": "T_MergeActionState",
+          "name": "T_ReturnSetInfo",
           "value": 383
         },
         {
-          "name": "T_ResultRelInfo",
+          "name": "T_ProjectionInfo",
           "value": 384
         },
         {
-          "name": "T_EState",
+          "name": "T_JunkFilter",
           "value": 385
         },
         {
-          "name": "T_WindowFuncExprState",
+          "name": "T_OnConflictSetState",
           "value": 386
         },
         {
-          "name": "T_SetExprState",
+          "name": "T_MergeActionState",
           "value": 387
         },
         {
-          "name": "T_SubPlanState",
+          "name": "T_ResultRelInfo",
           "value": 388
         },
         {
-          "name": "T_DomainConstraintState",
+          "name": "T_EState",
           "value": 389
         },
         {
-          "name": "T_ResultState",
+          "name": "T_WindowFuncExprState",
           "value": 390
         },
         {
-          "name": "T_ProjectSetState",
+          "name": "T_SetExprState",
           "value": 391
         },
         {
-          "name": "T_ModifyTableState",
+          "name": "T_SubPlanState",
           "value": 392
         },
         {
-          "name": "T_AppendState",
+          "name": "T_DomainConstraintState",
           "value": 393
         },
         {
-          "name": "T_MergeAppendState",
+          "name": "T_ResultState",
           "value": 394
         },
         {
-          "name": "T_RecursiveUnionState",
+          "name": "T_ProjectSetState",
           "value": 395
         },
         {
-          "name": "T_BitmapAndState",
+          "name": "T_ModifyTableState",
           "value": 396
         },
         {
-          "name": "T_BitmapOrState",
+          "name": "T_AppendState",
           "value": 397
         },
         {
-          "name": "T_ScanState",
+          "name": "T_MergeAppendState",
           "value": 398
         },
         {
-          "name": "T_SeqScanState",
+          "name": "T_RecursiveUnionState",
           "value": 399
         },
         {
-          "name": "T_SampleScanState",
+          "name": "T_BitmapAndState",
           "value": 400
         },
         {
-          "name": "T_IndexScanState",
+          "name": "T_BitmapOrState",
           "value": 401
         },
         {
-          "name": "T_IndexOnlyScanState",
+          "name": "T_ScanState",
           "value": 402
         },
         {
-          "name": "T_BitmapIndexScanState",
+          "name": "T_SeqScanState",
           "value": 403
         },
         {
-          "name": "T_BitmapHeapScanState",
+          "name": "T_SampleScanState",
           "value": 404
         },
         {
-          "name": "T_TidScanState",
+          "name": "T_IndexScanState",
           "value": 405
         },
         {
-          "name": "T_TidRangeScanState",
+          "name": "T_IndexOnlyScanState",
           "value": 406
         },
         {
-          "name": "T_SubqueryScanState",
+          "name": "T_BitmapIndexScanState",
           "value": 407
         },
         {
-          "name": "T_FunctionScanState",
+          "name": "T_BitmapHeapScanState",
           "value": 408
         },
         {
-          "name": "T_ValuesScanState",
+          "name": "T_TidScanState",
           "value": 409
         },
         {
-          "name": "T_TableFuncScanState",
+          "name": "T_TidRangeScanState",
           "value": 410
         },
         {
-          "name": "T_CteScanState",
+          "name": "T_SubqueryScanState",
           "value": 411
         },
         {
-          "name": "T_NamedTuplestoreScanState",
+          "name": "T_FunctionScanState",
           "value": 412
         },
         {
-          "name": "T_WorkTableScanState",
+          "name": "T_ValuesScanState",
           "value": 413
         },
         {
-          "name": "T_ForeignScanState",
+          "name": "T_TableFuncScanState",
           "value": 414
         },
         {
-          "name": "T_CustomScanState",
+          "name": "T_CteScanState",
           "value": 415
         },
         {
-          "name": "T_JoinState",
+          "name": "T_NamedTuplestoreScanState",
           "value": 416
         },
         {
-          "name": "T_NestLoopState",
+          "name": "T_WorkTableScanState",
           "value": 417
         },
         {
-          "name": "T_MergeJoinState",
+          "name": "T_ForeignScanState",
           "value": 418
         },
         {
-          "name": "T_HashJoinState",
+          "name": "T_CustomScanState",
           "value": 419
         },
         {
-          "name": "T_MaterialState",
+          "name": "T_JoinState",
           "value": 420
         },
         {
-          "name": "T_MemoizeState",
+          "name": "T_NestLoopState",
           "value": 421
         },
         {
-          "name": "T_SortState",
+          "name": "T_MergeJoinState",
           "value": 422
         },
         {
-          "name": "T_IncrementalSortState",
+          "name": "T_HashJoinState",
           "value": 423
         },
         {
-          "name": "T_GroupState",
+          "name": "T_MaterialState",
           "value": 424
         },
         {
-          "name": "T_AggState",
+          "name": "T_MemoizeState",
           "value": 425
         },
         {
-          "name": "T_WindowAggState",
+          "name": "T_SortState",
           "value": 426
         },
         {
-          "name": "T_UniqueState",
+          "name": "T_IncrementalSortState",
           "value": 427
         },
         {
-          "name": "T_GatherState",
+          "name": "T_GroupState",
           "value": 428
         },
         {
-          "name": "T_GatherMergeState",
+          "name": "T_AggState",
           "value": 429
         },
         {
-          "name": "T_HashState",
+          "name": "T_WindowAggState",
           "value": 430
         },
         {
-          "name": "T_SetOpState",
+          "name": "T_UniqueState",
           "value": 431
         },
         {
-          "name": "T_LockRowsState",
+          "name": "T_GatherState",
           "value": 432
         },
         {
-          "name": "T_LimitState",
+          "name": "T_GatherMergeState",
           "value": 433
         },
         {
-          "name": "T_IndexAmRoutine",
+          "name": "T_HashState",
           "value": 434
         },
         {
-          "name": "T_TableAmRoutine",
+          "name": "T_SetOpState",
           "value": 435
         },
         {
-          "name": "T_TsmRoutine",
+          "name": "T_LockRowsState",
           "value": 436
         },
         {
-          "name": "T_EventTriggerData",
+          "name": "T_LimitState",
           "value": 437
         },
         {
-          "name": "T_TriggerData",
+          "name": "T_IndexAmRoutine",
           "value": 438
         },
         {
-          "name": "T_TupleTableSlot",
+          "name": "T_TableAmRoutine",
           "value": 439
         },
         {
-          "name": "T_FdwRoutine",
+          "name": "T_TsmRoutine",
           "value": 440
         },
         {
-          "name": "T_Bitmapset",
+          "name": "T_EventTriggerData",
           "value": 441
         },
         {
-          "name": "T_ExtensibleNode",
+          "name": "T_TriggerData",
           "value": 442
         },
         {
-          "name": "T_ErrorSaveContext",
+          "name": "T_TupleTableSlot",
           "value": 443
         },
         {
-          "name": "T_IdentifySystemCmd",
+          "name": "T_FdwRoutine",
           "value": 444
         },
         {
-          "name": "T_BaseBackupCmd",
+          "name": "T_Bitmapset",
           "value": 445
         },
         {
-          "name": "T_CreateReplicationSlotCmd",
+          "name": "T_ExtensibleNode",
           "value": 446
         },
         {
-          "name": "T_DropReplicationSlotCmd",
+          "name": "T_ErrorSaveContext",
           "value": 447
         },
         {
-          "name": "T_AlterReplicationSlotCmd",
+          "name": "T_IdentifySystemCmd",
           "value": 448
         },
         {
-          "name": "T_StartReplicationCmd",
+          "name": "T_BaseBackupCmd",
           "value": 449
         },
         {
-          "name": "T_ReadReplicationSlotCmd",
+          "name": "T_CreateReplicationSlotCmd",
           "value": 450
         },
         {
-          "name": "T_TimeLineHistoryCmd",
+          "name": "T_DropReplicationSlotCmd",
           "value": 451
         },
         {
-          "name": "T_UploadManifestCmd",
+          "name": "T_AlterReplicationSlotCmd",
           "value": 452
         },
         {
-          "name": "T_SupportRequestSimplify",
+          "name": "T_StartReplicationCmd",
           "value": 453
         },
         {
-          "name": "T_SupportRequestSelectivity",
+          "name": "T_ReadReplicationSlotCmd",
           "value": 454
         },
         {
-          "name": "T_SupportRequestCost",
+          "name": "T_TimeLineHistoryCmd",
           "value": 455
         },
         {
-          "name": "T_SupportRequestRows",
+          "name": "T_UploadManifestCmd",
           "value": 456
         },
         {
-          "name": "T_SupportRequestIndexCondition",
+          "name": "T_SupportRequestSimplify",
           "value": 457
         },
         {
-          "name": "T_SupportRequestWFuncMonotonic",
+          "name": "T_SupportRequestSelectivity",
           "value": 458
         },
         {
-          "name": "T_SupportRequestOptimizeWindowClause",
+          "name": "T_SupportRequestCost",
           "value": 459
         },
         {
-          "name": "T_Integer",
+          "name": "T_SupportRequestRows",
           "value": 460
         },
         {
-          "name": "T_Float",
+          "name": "T_SupportRequestIndexCondition",
           "value": 461
         },
         {
-          "name": "T_Boolean",
+          "name": "T_SupportRequestWFuncMonotonic",
           "value": 462
         },
         {
-          "name": "T_String",
+          "name": "T_SupportRequestOptimizeWindowClause",
           "value": 463
         },
         {
-          "name": "T_BitString",
+          "name": "T_SupportRequestModifyInPlace",
           "value": 464
         },
         {
-          "name": "T_ForeignKeyCacheInfo",
+          "name": "T_Integer",
           "value": 465
         },
         {
-          "name": "T_IntList",
+          "name": "T_Float",
           "value": 466
         },
         {
-          "name": "T_OidList",
+          "name": "T_Boolean",
           "value": 467
         },
         {
-          "name": "T_XidList",
+          "name": "T_String",
           "value": 468
         },
         {
-          "name": "T_AllocSetContext",
+          "name": "T_BitString",
           "value": 469
         },
         {
-          "name": "T_GenerationContext",
+          "name": "T_ForeignKeyCacheInfo",
           "value": 470
         },
         {
-          "name": "T_SlabContext",
+          "name": "T_IntList",
           "value": 471
         },
         {
-          "name": "T_BumpContext",
+          "name": "T_OidList",
           "value": 472
         },
         {
-          "name": "T_TIDBitmap",
+          "name": "T_XidList",
           "value": 473
         },
         {
-          "name": "T_WindowObjectData",
+          "name": "T_AllocSetContext",
           "value": 474
+        },
+        {
+          "name": "T_GenerationContext",
+          "value": 475
+        },
+        {
+          "name": "T_SlabContext",
+          "value": 476
+        },
+        {
+          "name": "T_BumpContext",
+          "value": 477
+        },
+        {
+          "name": "T_TIDBitmap",
+          "value": 478
+        },
+        {
+          "name": "T_WindowObjectData",
+          "value": 479
         }
       ],
       "comment": "/*\n * The first field of every node is NodeTag. Each node created (with makeNode)\n * will have one of the following tags as the value of its first field.\n *\n * Note that inserting or deleting node types changes the numbers of other\n * node types later in the list.  This is no problem during development, since\n * the node numbers are never stored on disk.  But don't do it in a released\n * branch, because that would represent an ABI break for extensions.\n */\n"
@@ -4380,8 +4408,13 @@
           "comment": "/* 1 copy of each LHS row that has no match */"
         },
         {
-          "name": "JOIN_RIGHT_ANTI",
+          "name": "JOIN_RIGHT_SEMI",
           "value": 6,
+          "comment": "/* 1 copy of each RHS row that has match(es) */"
+        },
+        {
+          "name": "JOIN_RIGHT_ANTI",
+          "value": 7,
           "comment": "/* 1 copy of each RHS row that has no match */"
         },
         {
@@ -4392,12 +4425,12 @@
         },
         {
           "name": "JOIN_UNIQUE_OUTER",
-          "value": 7,
+          "value": 8,
           "comment": "/* LHS path must be made unique */"
         },
         {
           "name": "JOIN_UNIQUE_INNER",
-          "value": 8,
+          "value": 9,
           "comment": "/* RHS path must be made unique */"
         },
         {
@@ -4559,6 +4592,58 @@
   },
   "access/attnum": {
   },
+  "access/cmptype": {
+    "CompareType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "COMPARE_INVALID",
+          "value": 0
+        },
+        {
+          "name": "COMPARE_LT",
+          "value": 1,
+          "comment": "/* BTLessStrategyNumber */"
+        },
+        {
+          "name": "COMPARE_LE",
+          "value": 2,
+          "comment": "/* BTLessEqualStrategyNumber */"
+        },
+        {
+          "name": "COMPARE_EQ",
+          "value": 3,
+          "comment": "/* BTEqualStrategyNumber */"
+        },
+        {
+          "name": "COMPARE_GE",
+          "value": 4,
+          "comment": "/* BTGreaterEqualStrategyNumber */"
+        },
+        {
+          "name": "COMPARE_GT",
+          "value": 5,
+          "comment": "/* BTGreaterStrategyNumber */"
+        },
+        {
+          "name": "COMPARE_NE",
+          "value": 6,
+          "comment": "/* no such btree strategy */"
+        },
+        {
+          "name": "COMPARE_OVERLAP",
+          "value": 7
+        },
+        {
+          "name": "COMPARE_CONTAINED_BY",
+          "value": 8
+        }
+      ],
+      "comment": "/*\n * CompareType - fundamental semantics of certain operators\n *\n * These enum symbols represent the fundamental semantics of certain operators\n * that the system needs to have some hardcoded knowledge about.  (For\n * example, RowCompareExpr needs to know which operators can be determined to\n * act like =, <>, <, etc.)  Index access methods map (some of) strategy\n * numbers to these values so that the system can know about the meaning of\n * (some of) the operators without needing hardcoded knowledge of index AM's\n * strategy numbering.\n *\n * XXX Currently, this mapping is not fully developed and most values are\n * chosen to match btree strategy numbers, which is not going to work very\n * well for other access methods.\n */\n"
+    }
+  },
   "c": {
   },
   "postgres": {
@@ -4612,7 +4697,7 @@
           "value": 1
         }
       ],
-      "comment": "/*\n * Defines the direction for scanning a table or an index.  Scans are never\n * invoked using NoMovementScanDirectionScans.  For convenience, we use the\n * values -1 and 1 for backward and forward scans.  This allows us to perform\n * a few mathematical tricks such as what is done in ScanDirectionCombine.\n */\n"
+      "comment": "/*\n * Defines the direction for scanning a table or an index.  Scans are never\n * invoked using NoMovementScanDirection.  For convenience, we use the values\n * -1 and 1 for backward and forward scans.  This allows us to perform a few\n * mathematical tricks such as what is done in ScanDirectionCombine.\n */\n"
     }
   },
   "mb/pg_wchar": {
@@ -5444,1500 +5529,1512 @@
           "value": 404
         },
         {
-          "name": "ENUM_P",
+          "name": "ENFORCED",
           "value": 405
         },
         {
-          "name": "ERROR_P",
+          "name": "ENUM_P",
           "value": 406
         },
         {
-          "name": "ESCAPE",
+          "name": "ERROR_P",
           "value": 407
         },
         {
-          "name": "EVENT",
+          "name": "ESCAPE",
           "value": 408
         },
         {
-          "name": "EXCEPT",
+          "name": "EVENT",
           "value": 409
         },
         {
-          "name": "EXCLUDE",
+          "name": "EXCEPT",
           "value": 410
         },
         {
-          "name": "EXCLUDING",
+          "name": "EXCLUDE",
           "value": 411
         },
         {
-          "name": "EXCLUSIVE",
+          "name": "EXCLUDING",
           "value": 412
         },
         {
-          "name": "EXECUTE",
+          "name": "EXCLUSIVE",
           "value": 413
         },
         {
-          "name": "EXISTS",
+          "name": "EXECUTE",
           "value": 414
         },
         {
-          "name": "EXPLAIN",
+          "name": "EXISTS",
           "value": 415
         },
         {
-          "name": "EXPRESSION",
+          "name": "EXPLAIN",
           "value": 416
         },
         {
-          "name": "EXTENSION",
+          "name": "EXPRESSION",
           "value": 417
         },
         {
-          "name": "EXTERNAL",
+          "name": "EXTENSION",
           "value": 418
         },
         {
-          "name": "EXTRACT",
+          "name": "EXTERNAL",
           "value": 419
         },
         {
-          "name": "FALSE_P",
+          "name": "EXTRACT",
           "value": 420
         },
         {
-          "name": "FAMILY",
+          "name": "FALSE_P",
           "value": 421
         },
         {
-          "name": "FETCH",
+          "name": "FAMILY",
           "value": 422
         },
         {
-          "name": "FILTER",
+          "name": "FETCH",
           "value": 423
         },
         {
-          "name": "FINALIZE",
+          "name": "FILTER",
           "value": 424
         },
         {
-          "name": "FIRST_P",
+          "name": "FINALIZE",
           "value": 425
         },
         {
-          "name": "FLOAT_P",
+          "name": "FIRST_P",
           "value": 426
         },
         {
-          "name": "FOLLOWING",
+          "name": "FLOAT_P",
           "value": 427
         },
         {
-          "name": "FOR",
+          "name": "FOLLOWING",
           "value": 428
         },
         {
-          "name": "FORCE",
+          "name": "FOR",
           "value": 429
         },
         {
-          "name": "FOREIGN",
+          "name": "FORCE",
           "value": 430
         },
         {
-          "name": "FORMAT",
+          "name": "FOREIGN",
           "value": 431
         },
         {
-          "name": "FORWARD",
+          "name": "FORMAT",
           "value": 432
         },
         {
-          "name": "FREEZE",
+          "name": "FORWARD",
           "value": 433
         },
         {
-          "name": "FROM",
+          "name": "FREEZE",
           "value": 434
         },
         {
-          "name": "FULL",
+          "name": "FROM",
           "value": 435
         },
         {
-          "name": "FUNCTION",
+          "name": "FULL",
           "value": 436
         },
         {
-          "name": "FUNCTIONS",
+          "name": "FUNCTION",
           "value": 437
         },
         {
-          "name": "GENERATED",
+          "name": "FUNCTIONS",
           "value": 438
         },
         {
-          "name": "GLOBAL",
+          "name": "GENERATED",
           "value": 439
         },
         {
-          "name": "GRANT",
+          "name": "GLOBAL",
           "value": 440
         },
         {
-          "name": "GRANTED",
+          "name": "GRANT",
           "value": 441
         },
         {
-          "name": "GREATEST",
+          "name": "GRANTED",
           "value": 442
         },
         {
-          "name": "GROUP_P",
+          "name": "GREATEST",
           "value": 443
         },
         {
-          "name": "GROUPING",
+          "name": "GROUP_P",
           "value": 444
         },
         {
-          "name": "GROUPS",
+          "name": "GROUPING",
           "value": 445
         },
         {
-          "name": "HANDLER",
+          "name": "GROUPS",
           "value": 446
         },
         {
-          "name": "HAVING",
+          "name": "HANDLER",
           "value": 447
         },
         {
-          "name": "HEADER_P",
+          "name": "HAVING",
           "value": 448
         },
         {
-          "name": "HOLD",
+          "name": "HEADER_P",
           "value": 449
         },
         {
-          "name": "HOUR_P",
+          "name": "HOLD",
           "value": 450
         },
         {
-          "name": "IDENTITY_P",
+          "name": "HOUR_P",
           "value": 451
         },
         {
-          "name": "IF_P",
+          "name": "IDENTITY_P",
           "value": 452
         },
         {
-          "name": "ILIKE",
+          "name": "IF_P",
           "value": 453
         },
         {
-          "name": "IMMEDIATE",
+          "name": "ILIKE",
           "value": 454
         },
         {
-          "name": "IMMUTABLE",
+          "name": "IMMEDIATE",
           "value": 455
         },
         {
-          "name": "IMPLICIT_P",
+          "name": "IMMUTABLE",
           "value": 456
         },
         {
-          "name": "IMPORT_P",
+          "name": "IMPLICIT_P",
           "value": 457
         },
         {
-          "name": "IN_P",
+          "name": "IMPORT_P",
           "value": 458
         },
         {
-          "name": "INCLUDE",
+          "name": "IN_P",
           "value": 459
         },
         {
-          "name": "INCLUDING",
+          "name": "INCLUDE",
           "value": 460
         },
         {
-          "name": "INCREMENT",
+          "name": "INCLUDING",
           "value": 461
         },
         {
-          "name": "INDENT",
+          "name": "INCREMENT",
           "value": 462
         },
         {
-          "name": "INDEX",
+          "name": "INDENT",
           "value": 463
         },
         {
-          "name": "INDEXES",
+          "name": "INDEX",
           "value": 464
         },
         {
-          "name": "INHERIT",
+          "name": "INDEXES",
           "value": 465
         },
         {
-          "name": "INHERITS",
+          "name": "INHERIT",
           "value": 466
         },
         {
-          "name": "INITIALLY",
+          "name": "INHERITS",
           "value": 467
         },
         {
-          "name": "INLINE_P",
+          "name": "INITIALLY",
           "value": 468
         },
         {
-          "name": "INNER_P",
+          "name": "INLINE_P",
           "value": 469
         },
         {
-          "name": "INOUT",
+          "name": "INNER_P",
           "value": 470
         },
         {
-          "name": "INPUT_P",
+          "name": "INOUT",
           "value": 471
         },
         {
-          "name": "INSENSITIVE",
+          "name": "INPUT_P",
           "value": 472
         },
         {
-          "name": "INSERT",
+          "name": "INSENSITIVE",
           "value": 473
         },
         {
-          "name": "INSTEAD",
+          "name": "INSERT",
           "value": 474
         },
         {
-          "name": "INT_P",
+          "name": "INSTEAD",
           "value": 475
         },
         {
-          "name": "INTEGER",
+          "name": "INT_P",
           "value": 476
         },
         {
-          "name": "INTERSECT",
+          "name": "INTEGER",
           "value": 477
         },
         {
-          "name": "INTERVAL",
+          "name": "INTERSECT",
           "value": 478
         },
         {
-          "name": "INTO",
+          "name": "INTERVAL",
           "value": 479
         },
         {
-          "name": "INVOKER",
+          "name": "INTO",
           "value": 480
         },
         {
-          "name": "IS",
+          "name": "INVOKER",
           "value": 481
         },
         {
-          "name": "ISNULL",
+          "name": "IS",
           "value": 482
         },
         {
-          "name": "ISOLATION",
+          "name": "ISNULL",
           "value": 483
         },
         {
-          "name": "JOIN",
+          "name": "ISOLATION",
           "value": 484
         },
         {
-          "name": "JSON",
+          "name": "JOIN",
           "value": 485
         },
         {
-          "name": "JSON_ARRAY",
+          "name": "JSON",
           "value": 486
         },
         {
-          "name": "JSON_ARRAYAGG",
+          "name": "JSON_ARRAY",
           "value": 487
         },
         {
-          "name": "JSON_EXISTS",
+          "name": "JSON_ARRAYAGG",
           "value": 488
         },
         {
-          "name": "JSON_OBJECT",
+          "name": "JSON_EXISTS",
           "value": 489
         },
         {
-          "name": "JSON_OBJECTAGG",
+          "name": "JSON_OBJECT",
           "value": 490
         },
         {
-          "name": "JSON_QUERY",
+          "name": "JSON_OBJECTAGG",
           "value": 491
         },
         {
-          "name": "JSON_SCALAR",
+          "name": "JSON_QUERY",
           "value": 492
         },
         {
-          "name": "JSON_SERIALIZE",
+          "name": "JSON_SCALAR",
           "value": 493
         },
         {
-          "name": "JSON_TABLE",
+          "name": "JSON_SERIALIZE",
           "value": 494
         },
         {
-          "name": "JSON_VALUE",
+          "name": "JSON_TABLE",
           "value": 495
         },
         {
-          "name": "KEEP",
+          "name": "JSON_VALUE",
           "value": 496
         },
         {
-          "name": "KEY",
+          "name": "KEEP",
           "value": 497
         },
         {
-          "name": "KEYS",
+          "name": "KEY",
           "value": 498
         },
         {
-          "name": "LABEL",
+          "name": "KEYS",
           "value": 499
         },
         {
-          "name": "LANGUAGE",
+          "name": "LABEL",
           "value": 500
         },
         {
-          "name": "LARGE_P",
+          "name": "LANGUAGE",
           "value": 501
         },
         {
-          "name": "LAST_P",
+          "name": "LARGE_P",
           "value": 502
         },
         {
-          "name": "LATERAL_P",
+          "name": "LAST_P",
           "value": 503
         },
         {
-          "name": "LEADING",
+          "name": "LATERAL_P",
           "value": 504
         },
         {
-          "name": "LEAKPROOF",
+          "name": "LEADING",
           "value": 505
         },
         {
-          "name": "LEAST",
+          "name": "LEAKPROOF",
           "value": 506
         },
         {
-          "name": "LEFT",
+          "name": "LEAST",
           "value": 507
         },
         {
-          "name": "LEVEL",
+          "name": "LEFT",
           "value": 508
         },
         {
-          "name": "LIKE",
+          "name": "LEVEL",
           "value": 509
         },
         {
-          "name": "LIMIT",
+          "name": "LIKE",
           "value": 510
         },
         {
-          "name": "LISTEN",
+          "name": "LIMIT",
           "value": 511
         },
         {
-          "name": "LOAD",
+          "name": "LISTEN",
           "value": 512
         },
         {
-          "name": "LOCAL",
+          "name": "LOAD",
           "value": 513
         },
         {
-          "name": "LOCALTIME",
+          "name": "LOCAL",
           "value": 514
         },
         {
-          "name": "LOCALTIMESTAMP",
+          "name": "LOCALTIME",
           "value": 515
         },
         {
-          "name": "LOCATION",
+          "name": "LOCALTIMESTAMP",
           "value": 516
         },
         {
-          "name": "LOCK_P",
+          "name": "LOCATION",
           "value": 517
         },
         {
-          "name": "LOCKED",
+          "name": "LOCK_P",
           "value": 518
         },
         {
-          "name": "LOGGED",
+          "name": "LOCKED",
           "value": 519
         },
         {
-          "name": "MAPPING",
+          "name": "LOGGED",
           "value": 520
         },
         {
-          "name": "MATCH",
+          "name": "MAPPING",
           "value": 521
         },
         {
-          "name": "MATCHED",
+          "name": "MATCH",
           "value": 522
         },
         {
-          "name": "MATERIALIZED",
+          "name": "MATCHED",
           "value": 523
         },
         {
-          "name": "MAXVALUE",
+          "name": "MATERIALIZED",
           "value": 524
         },
         {
-          "name": "MERGE",
+          "name": "MAXVALUE",
           "value": 525
         },
         {
-          "name": "MERGE_ACTION",
+          "name": "MERGE",
           "value": 526
         },
         {
-          "name": "METHOD",
+          "name": "MERGE_ACTION",
           "value": 527
         },
         {
-          "name": "MINUTE_P",
+          "name": "METHOD",
           "value": 528
         },
         {
-          "name": "MINVALUE",
+          "name": "MINUTE_P",
           "value": 529
         },
         {
-          "name": "MODE",
+          "name": "MINVALUE",
           "value": 530
         },
         {
-          "name": "MONTH_P",
+          "name": "MODE",
           "value": 531
         },
         {
-          "name": "MOVE",
+          "name": "MONTH_P",
           "value": 532
         },
         {
-          "name": "NAME_P",
+          "name": "MOVE",
           "value": 533
         },
         {
-          "name": "NAMES",
+          "name": "NAME_P",
           "value": 534
         },
         {
-          "name": "NATIONAL",
+          "name": "NAMES",
           "value": 535
         },
         {
-          "name": "NATURAL",
+          "name": "NATIONAL",
           "value": 536
         },
         {
-          "name": "NCHAR",
+          "name": "NATURAL",
           "value": 537
         },
         {
-          "name": "NESTED",
+          "name": "NCHAR",
           "value": 538
         },
         {
-          "name": "NEW",
+          "name": "NESTED",
           "value": 539
         },
         {
-          "name": "NEXT",
+          "name": "NEW",
           "value": 540
         },
         {
-          "name": "NFC",
+          "name": "NEXT",
           "value": 541
         },
         {
-          "name": "NFD",
+          "name": "NFC",
           "value": 542
         },
         {
-          "name": "NFKC",
+          "name": "NFD",
           "value": 543
         },
         {
-          "name": "NFKD",
+          "name": "NFKC",
           "value": 544
         },
         {
-          "name": "NO",
+          "name": "NFKD",
           "value": 545
         },
         {
-          "name": "NONE",
+          "name": "NO",
           "value": 546
         },
         {
-          "name": "NORMALIZE",
+          "name": "NONE",
           "value": 547
         },
         {
-          "name": "NORMALIZED",
+          "name": "NORMALIZE",
           "value": 548
         },
         {
-          "name": "NOT",
+          "name": "NORMALIZED",
           "value": 549
         },
         {
-          "name": "NOTHING",
+          "name": "NOT",
           "value": 550
         },
         {
-          "name": "NOTIFY",
+          "name": "NOTHING",
           "value": 551
         },
         {
-          "name": "NOTNULL",
+          "name": "NOTIFY",
           "value": 552
         },
         {
-          "name": "NOWAIT",
+          "name": "NOTNULL",
           "value": 553
         },
         {
-          "name": "NULL_P",
+          "name": "NOWAIT",
           "value": 554
         },
         {
-          "name": "NULLIF",
+          "name": "NULL_P",
           "value": 555
         },
         {
-          "name": "NULLS_P",
+          "name": "NULLIF",
           "value": 556
         },
         {
-          "name": "NUMERIC",
+          "name": "NULLS_P",
           "value": 557
         },
         {
-          "name": "OBJECT_P",
+          "name": "NUMERIC",
           "value": 558
         },
         {
-          "name": "OF",
+          "name": "OBJECT_P",
           "value": 559
         },
         {
-          "name": "OFF",
+          "name": "OBJECTS_P",
           "value": 560
         },
         {
-          "name": "OFFSET",
+          "name": "OF",
           "value": 561
         },
         {
-          "name": "OIDS",
+          "name": "OFF",
           "value": 562
         },
         {
-          "name": "OLD",
+          "name": "OFFSET",
           "value": 563
         },
         {
-          "name": "OMIT",
+          "name": "OIDS",
           "value": 564
         },
         {
-          "name": "ON",
+          "name": "OLD",
           "value": 565
         },
         {
-          "name": "ONLY",
+          "name": "OMIT",
           "value": 566
         },
         {
-          "name": "OPERATOR",
+          "name": "ON",
           "value": 567
         },
         {
-          "name": "OPTION",
+          "name": "ONLY",
           "value": 568
         },
         {
-          "name": "OPTIONS",
+          "name": "OPERATOR",
           "value": 569
         },
         {
-          "name": "OR",
+          "name": "OPTION",
           "value": 570
         },
         {
-          "name": "ORDER",
+          "name": "OPTIONS",
           "value": 571
         },
         {
-          "name": "ORDINALITY",
+          "name": "OR",
           "value": 572
         },
         {
-          "name": "OTHERS",
+          "name": "ORDER",
           "value": 573
         },
         {
-          "name": "OUT_P",
+          "name": "ORDINALITY",
           "value": 574
         },
         {
-          "name": "OUTER_P",
+          "name": "OTHERS",
           "value": 575
         },
         {
-          "name": "OVER",
+          "name": "OUT_P",
           "value": 576
         },
         {
-          "name": "OVERLAPS",
+          "name": "OUTER_P",
           "value": 577
         },
         {
-          "name": "OVERLAY",
+          "name": "OVER",
           "value": 578
         },
         {
-          "name": "OVERRIDING",
+          "name": "OVERLAPS",
           "value": 579
         },
         {
-          "name": "OWNED",
+          "name": "OVERLAY",
           "value": 580
         },
         {
-          "name": "OWNER",
+          "name": "OVERRIDING",
           "value": 581
         },
         {
-          "name": "PARALLEL",
+          "name": "OWNED",
           "value": 582
         },
         {
-          "name": "PARAMETER",
+          "name": "OWNER",
           "value": 583
         },
         {
-          "name": "PARSER",
+          "name": "PARALLEL",
           "value": 584
         },
         {
-          "name": "PARTIAL",
+          "name": "PARAMETER",
           "value": 585
         },
         {
-          "name": "PARTITION",
+          "name": "PARSER",
           "value": 586
         },
         {
-          "name": "PASSING",
+          "name": "PARTIAL",
           "value": 587
         },
         {
-          "name": "PASSWORD",
+          "name": "PARTITION",
           "value": 588
         },
         {
-          "name": "PATH",
+          "name": "PASSING",
           "value": 589
         },
         {
-          "name": "PLACING",
+          "name": "PASSWORD",
           "value": 590
         },
         {
-          "name": "PLAN",
+          "name": "PATH",
           "value": 591
         },
         {
-          "name": "PLANS",
+          "name": "PERIOD",
           "value": 592
         },
         {
-          "name": "POLICY",
+          "name": "PLACING",
           "value": 593
         },
         {
-          "name": "POSITION",
+          "name": "PLAN",
           "value": 594
         },
         {
-          "name": "PRECEDING",
+          "name": "PLANS",
           "value": 595
         },
         {
-          "name": "PRECISION",
+          "name": "POLICY",
           "value": 596
         },
         {
-          "name": "PRESERVE",
+          "name": "POSITION",
           "value": 597
         },
         {
-          "name": "PREPARE",
+          "name": "PRECEDING",
           "value": 598
         },
         {
-          "name": "PREPARED",
+          "name": "PRECISION",
           "value": 599
         },
         {
-          "name": "PRIMARY",
+          "name": "PRESERVE",
           "value": 600
         },
         {
-          "name": "PRIOR",
+          "name": "PREPARE",
           "value": 601
         },
         {
-          "name": "PRIVILEGES",
+          "name": "PREPARED",
           "value": 602
         },
         {
-          "name": "PROCEDURAL",
+          "name": "PRIMARY",
           "value": 603
         },
         {
-          "name": "PROCEDURE",
+          "name": "PRIOR",
           "value": 604
         },
         {
-          "name": "PROCEDURES",
+          "name": "PRIVILEGES",
           "value": 605
         },
         {
-          "name": "PROGRAM",
+          "name": "PROCEDURAL",
           "value": 606
         },
         {
-          "name": "PUBLICATION",
+          "name": "PROCEDURE",
           "value": 607
         },
         {
-          "name": "QUOTE",
+          "name": "PROCEDURES",
           "value": 608
         },
         {
-          "name": "QUOTES",
+          "name": "PROGRAM",
           "value": 609
         },
         {
-          "name": "RANGE",
+          "name": "PUBLICATION",
           "value": 610
         },
         {
-          "name": "READ",
+          "name": "QUOTE",
           "value": 611
         },
         {
-          "name": "REAL",
+          "name": "QUOTES",
           "value": 612
         },
         {
-          "name": "REASSIGN",
+          "name": "RANGE",
           "value": 613
         },
         {
-          "name": "RECHECK",
+          "name": "READ",
           "value": 614
         },
         {
-          "name": "RECURSIVE",
+          "name": "REAL",
           "value": 615
         },
         {
-          "name": "REF_P",
+          "name": "REASSIGN",
           "value": 616
         },
         {
-          "name": "REFERENCES",
+          "name": "RECURSIVE",
           "value": 617
         },
         {
-          "name": "REFERENCING",
+          "name": "REF_P",
           "value": 618
         },
         {
-          "name": "REFRESH",
+          "name": "REFERENCES",
           "value": 619
         },
         {
-          "name": "REINDEX",
+          "name": "REFERENCING",
           "value": 620
         },
         {
-          "name": "RELATIVE_P",
+          "name": "REFRESH",
           "value": 621
         },
         {
-          "name": "RELEASE",
+          "name": "REINDEX",
           "value": 622
         },
         {
-          "name": "RENAME",
+          "name": "RELATIVE_P",
           "value": 623
         },
         {
-          "name": "REPEATABLE",
+          "name": "RELEASE",
           "value": 624
         },
         {
-          "name": "REPLACE",
+          "name": "RENAME",
           "value": 625
         },
         {
-          "name": "REPLICA",
+          "name": "REPEATABLE",
           "value": 626
         },
         {
-          "name": "RESET",
+          "name": "REPLACE",
           "value": 627
         },
         {
-          "name": "RESTART",
+          "name": "REPLICA",
           "value": 628
         },
         {
-          "name": "RESTRICT",
+          "name": "RESET",
           "value": 629
         },
         {
-          "name": "RETURN",
+          "name": "RESTART",
           "value": 630
         },
         {
-          "name": "RETURNING",
+          "name": "RESTRICT",
           "value": 631
         },
         {
-          "name": "RETURNS",
+          "name": "RETURN",
           "value": 632
         },
         {
-          "name": "REVOKE",
+          "name": "RETURNING",
           "value": 633
         },
         {
-          "name": "RIGHT",
+          "name": "RETURNS",
           "value": 634
         },
         {
-          "name": "ROLE",
+          "name": "REVOKE",
           "value": 635
         },
         {
-          "name": "ROLLBACK",
+          "name": "RIGHT",
           "value": 636
         },
         {
-          "name": "ROLLUP",
+          "name": "ROLE",
           "value": 637
         },
         {
-          "name": "ROUTINE",
+          "name": "ROLLBACK",
           "value": 638
         },
         {
-          "name": "ROUTINES",
+          "name": "ROLLUP",
           "value": 639
         },
         {
-          "name": "ROW",
+          "name": "ROUTINE",
           "value": 640
         },
         {
-          "name": "ROWS",
+          "name": "ROUTINES",
           "value": 641
         },
         {
-          "name": "RULE",
+          "name": "ROW",
           "value": 642
         },
         {
-          "name": "SAVEPOINT",
+          "name": "ROWS",
           "value": 643
         },
         {
-          "name": "SCALAR",
+          "name": "RULE",
           "value": 644
         },
         {
-          "name": "SCHEMA",
+          "name": "SAVEPOINT",
           "value": 645
         },
         {
-          "name": "SCHEMAS",
+          "name": "SCALAR",
           "value": 646
         },
         {
-          "name": "SCROLL",
+          "name": "SCHEMA",
           "value": 647
         },
         {
-          "name": "SEARCH",
+          "name": "SCHEMAS",
           "value": 648
         },
         {
-          "name": "SECOND_P",
+          "name": "SCROLL",
           "value": 649
         },
         {
-          "name": "SECURITY",
+          "name": "SEARCH",
           "value": 650
         },
         {
-          "name": "SELECT",
+          "name": "SECOND_P",
           "value": 651
         },
         {
-          "name": "SEQUENCE",
+          "name": "SECURITY",
           "value": 652
         },
         {
-          "name": "SEQUENCES",
+          "name": "SELECT",
           "value": 653
         },
         {
-          "name": "SERIALIZABLE",
+          "name": "SEQUENCE",
           "value": 654
         },
         {
-          "name": "SERVER",
+          "name": "SEQUENCES",
           "value": 655
         },
         {
-          "name": "SESSION",
+          "name": "SERIALIZABLE",
           "value": 656
         },
         {
-          "name": "SESSION_USER",
+          "name": "SERVER",
           "value": 657
         },
         {
-          "name": "SET",
+          "name": "SESSION",
           "value": 658
         },
         {
-          "name": "SETS",
+          "name": "SESSION_USER",
           "value": 659
         },
         {
-          "name": "SETOF",
+          "name": "SET",
           "value": 660
         },
         {
-          "name": "SHARE",
+          "name": "SETS",
           "value": 661
         },
         {
-          "name": "SHOW",
+          "name": "SETOF",
           "value": 662
         },
         {
-          "name": "SIMILAR",
+          "name": "SHARE",
           "value": 663
         },
         {
-          "name": "SIMPLE",
+          "name": "SHOW",
           "value": 664
         },
         {
-          "name": "SKIP",
+          "name": "SIMILAR",
           "value": 665
         },
         {
-          "name": "SMALLINT",
+          "name": "SIMPLE",
           "value": 666
         },
         {
-          "name": "SNAPSHOT",
+          "name": "SKIP",
           "value": 667
         },
         {
-          "name": "SOME",
+          "name": "SMALLINT",
           "value": 668
         },
         {
-          "name": "SOURCE",
+          "name": "SNAPSHOT",
           "value": 669
         },
         {
-          "name": "SQL_P",
+          "name": "SOME",
           "value": 670
         },
         {
-          "name": "STABLE",
+          "name": "SOURCE",
           "value": 671
         },
         {
-          "name": "STANDALONE_P",
+          "name": "SQL_P",
           "value": 672
         },
         {
-          "name": "START",
+          "name": "STABLE",
           "value": 673
         },
         {
-          "name": "STATEMENT",
+          "name": "STANDALONE_P",
           "value": 674
         },
         {
-          "name": "STATISTICS",
+          "name": "START",
           "value": 675
         },
         {
-          "name": "STDIN",
+          "name": "STATEMENT",
           "value": 676
         },
         {
-          "name": "STDOUT",
+          "name": "STATISTICS",
           "value": 677
         },
         {
-          "name": "STORAGE",
+          "name": "STDIN",
           "value": 678
         },
         {
-          "name": "STORED",
+          "name": "STDOUT",
           "value": 679
         },
         {
-          "name": "STRICT_P",
+          "name": "STORAGE",
           "value": 680
         },
         {
-          "name": "STRING_P",
+          "name": "STORED",
           "value": 681
         },
         {
-          "name": "STRIP_P",
+          "name": "STRICT_P",
           "value": 682
         },
         {
-          "name": "SUBSCRIPTION",
+          "name": "STRING_P",
           "value": 683
         },
         {
-          "name": "SUBSTRING",
+          "name": "STRIP_P",
           "value": 684
         },
         {
-          "name": "SUPPORT",
+          "name": "SUBSCRIPTION",
           "value": 685
         },
         {
-          "name": "SYMMETRIC",
+          "name": "SUBSTRING",
           "value": 686
         },
         {
-          "name": "SYSID",
+          "name": "SUPPORT",
           "value": 687
         },
         {
-          "name": "SYSTEM_P",
+          "name": "SYMMETRIC",
           "value": 688
         },
         {
-          "name": "SYSTEM_USER",
+          "name": "SYSID",
           "value": 689
         },
         {
-          "name": "TABLE",
+          "name": "SYSTEM_P",
           "value": 690
         },
         {
-          "name": "TABLES",
+          "name": "SYSTEM_USER",
           "value": 691
         },
         {
-          "name": "TABLESAMPLE",
+          "name": "TABLE",
           "value": 692
         },
         {
-          "name": "TABLESPACE",
+          "name": "TABLES",
           "value": 693
         },
         {
-          "name": "TARGET",
+          "name": "TABLESAMPLE",
           "value": 694
         },
         {
-          "name": "TEMP",
+          "name": "TABLESPACE",
           "value": 695
         },
         {
-          "name": "TEMPLATE",
+          "name": "TARGET",
           "value": 696
         },
         {
-          "name": "TEMPORARY",
+          "name": "TEMP",
           "value": 697
         },
         {
-          "name": "TEXT_P",
+          "name": "TEMPLATE",
           "value": 698
         },
         {
-          "name": "THEN",
+          "name": "TEMPORARY",
           "value": 699
         },
         {
-          "name": "TIES",
+          "name": "TEXT_P",
           "value": 700
         },
         {
-          "name": "TIME",
+          "name": "THEN",
           "value": 701
         },
         {
-          "name": "TIMESTAMP",
+          "name": "TIES",
           "value": 702
         },
         {
-          "name": "TO",
+          "name": "TIME",
           "value": 703
         },
         {
-          "name": "TRAILING",
+          "name": "TIMESTAMP",
           "value": 704
         },
         {
-          "name": "TRANSACTION",
+          "name": "TO",
           "value": 705
         },
         {
-          "name": "TRANSFORM",
+          "name": "TRAILING",
           "value": 706
         },
         {
-          "name": "TREAT",
+          "name": "TRANSACTION",
           "value": 707
         },
         {
-          "name": "TRIGGER",
+          "name": "TRANSFORM",
           "value": 708
         },
         {
-          "name": "TRIM",
+          "name": "TREAT",
           "value": 709
         },
         {
-          "name": "TRUE_P",
+          "name": "TRIGGER",
           "value": 710
         },
         {
-          "name": "TRUNCATE",
+          "name": "TRIM",
           "value": 711
         },
         {
-          "name": "TRUSTED",
+          "name": "TRUE_P",
           "value": 712
         },
         {
-          "name": "TYPE_P",
+          "name": "TRUNCATE",
           "value": 713
         },
         {
-          "name": "TYPES_P",
+          "name": "TRUSTED",
           "value": 714
         },
         {
-          "name": "UESCAPE",
+          "name": "TYPE_P",
           "value": 715
         },
         {
-          "name": "UNBOUNDED",
+          "name": "TYPES_P",
           "value": 716
         },
         {
-          "name": "UNCONDITIONAL",
+          "name": "UESCAPE",
           "value": 717
         },
         {
-          "name": "UNCOMMITTED",
+          "name": "UNBOUNDED",
           "value": 718
         },
         {
-          "name": "UNENCRYPTED",
+          "name": "UNCONDITIONAL",
           "value": 719
         },
         {
-          "name": "UNION",
+          "name": "UNCOMMITTED",
           "value": 720
         },
         {
-          "name": "UNIQUE",
+          "name": "UNENCRYPTED",
           "value": 721
         },
         {
-          "name": "UNKNOWN",
+          "name": "UNION",
           "value": 722
         },
         {
-          "name": "UNLISTEN",
+          "name": "UNIQUE",
           "value": 723
         },
         {
-          "name": "UNLOGGED",
+          "name": "UNKNOWN",
           "value": 724
         },
         {
-          "name": "UNTIL",
+          "name": "UNLISTEN",
           "value": 725
         },
         {
-          "name": "UPDATE",
+          "name": "UNLOGGED",
           "value": 726
         },
         {
-          "name": "USER",
+          "name": "UNTIL",
           "value": 727
         },
         {
-          "name": "USING",
+          "name": "UPDATE",
           "value": 728
         },
         {
-          "name": "VACUUM",
+          "name": "USER",
           "value": 729
         },
         {
-          "name": "VALID",
+          "name": "USING",
           "value": 730
         },
         {
-          "name": "VALIDATE",
+          "name": "VACUUM",
           "value": 731
         },
         {
-          "name": "VALIDATOR",
+          "name": "VALID",
           "value": 732
         },
         {
-          "name": "VALUE_P",
+          "name": "VALIDATE",
           "value": 733
         },
         {
-          "name": "VALUES",
+          "name": "VALIDATOR",
           "value": 734
         },
         {
-          "name": "VARCHAR",
+          "name": "VALUE_P",
           "value": 735
         },
         {
-          "name": "VARIADIC",
+          "name": "VALUES",
           "value": 736
         },
         {
-          "name": "VARYING",
+          "name": "VARCHAR",
           "value": 737
         },
         {
-          "name": "VERBOSE",
+          "name": "VARIADIC",
           "value": 738
         },
         {
-          "name": "VERSION_P",
+          "name": "VARYING",
           "value": 739
         },
         {
-          "name": "VIEW",
+          "name": "VERBOSE",
           "value": 740
         },
         {
-          "name": "VIEWS",
+          "name": "VERSION_P",
           "value": 741
         },
         {
-          "name": "VOLATILE",
+          "name": "VIEW",
           "value": 742
         },
         {
-          "name": "WHEN",
+          "name": "VIEWS",
           "value": 743
         },
         {
-          "name": "WHERE",
+          "name": "VIRTUAL",
           "value": 744
         },
         {
-          "name": "WHITESPACE_P",
+          "name": "VOLATILE",
           "value": 745
         },
         {
-          "name": "WINDOW",
+          "name": "WHEN",
           "value": 746
         },
         {
-          "name": "WITH",
+          "name": "WHERE",
           "value": 747
         },
         {
-          "name": "WITHIN",
+          "name": "WHITESPACE_P",
           "value": 748
         },
         {
-          "name": "WITHOUT",
+          "name": "WINDOW",
           "value": 749
         },
         {
-          "name": "WORK",
+          "name": "WITH",
           "value": 750
         },
         {
-          "name": "WRAPPER",
+          "name": "WITHIN",
           "value": 751
         },
         {
-          "name": "WRITE",
+          "name": "WITHOUT",
           "value": 752
         },
         {
-          "name": "XML_P",
+          "name": "WORK",
           "value": 753
         },
         {
-          "name": "XMLATTRIBUTES",
+          "name": "WRAPPER",
           "value": 754
         },
         {
-          "name": "XMLCONCAT",
+          "name": "WRITE",
           "value": 755
         },
         {
-          "name": "XMLELEMENT",
+          "name": "XML_P",
           "value": 756
         },
         {
-          "name": "XMLEXISTS",
+          "name": "XMLATTRIBUTES",
           "value": 757
         },
         {
-          "name": "XMLFOREST",
+          "name": "XMLCONCAT",
           "value": 758
         },
         {
-          "name": "XMLNAMESPACES",
+          "name": "XMLELEMENT",
           "value": 759
         },
         {
-          "name": "XMLPARSE",
+          "name": "XMLEXISTS",
           "value": 760
         },
         {
-          "name": "XMLPI",
+          "name": "XMLFOREST",
           "value": 761
         },
         {
-          "name": "XMLROOT",
+          "name": "XMLNAMESPACES",
           "value": 762
         },
         {
-          "name": "XMLSERIALIZE",
+          "name": "XMLPARSE",
           "value": 763
         },
         {
-          "name": "XMLTABLE",
+          "name": "XMLPI",
           "value": 764
         },
         {
-          "name": "YEAR_P",
+          "name": "XMLROOT",
           "value": 765
         },
         {
-          "name": "YES_P",
+          "name": "XMLSERIALIZE",
           "value": 766
         },
         {
-          "name": "ZONE",
+          "name": "XMLTABLE",
           "value": 767
         },
         {
-          "name": "FORMAT_LA",
+          "name": "YEAR_P",
           "value": 768
         },
         {
-          "name": "NOT_LA",
+          "name": "YES_P",
           "value": 769
         },
         {
-          "name": "NULLS_LA",
+          "name": "ZONE",
           "value": 770
         },
         {
-          "name": "WITH_LA",
+          "name": "FORMAT_LA",
           "value": 771
         },
         {
-          "name": "WITHOUT_LA",
+          "name": "NOT_LA",
           "value": 772
         },
         {
-          "name": "MODE_TYPE_NAME",
+          "name": "NULLS_LA",
           "value": 773
         },
         {
-          "name": "MODE_PLPGSQL_EXPR",
+          "name": "WITH_LA",
           "value": 774
         },
         {
-          "name": "MODE_PLPGSQL_ASSIGN1",
+          "name": "WITHOUT_LA",
           "value": 775
         },
         {
-          "name": "MODE_PLPGSQL_ASSIGN2",
+          "name": "MODE_TYPE_NAME",
           "value": 776
         },
         {
-          "name": "MODE_PLPGSQL_ASSIGN3",
+          "name": "MODE_PLPGSQL_EXPR",
           "value": 777
         },
         {
-          "name": "UMINUS",
+          "name": "MODE_PLPGSQL_ASSIGN1",
           "value": 778
+        },
+        {
+          "name": "MODE_PLPGSQL_ASSIGN2",
+          "value": 779
+        },
+        {
+          "name": "MODE_PLPGSQL_ASSIGN3",
+          "value": 780
+        },
+        {
+          "name": "UMINUS",
+          "value": 781
         }
       ],
       "comment": "   /* Put the tokens into the symbol table, so that GDB and other debuggers\n      know about them.  */\n"

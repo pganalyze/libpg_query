@@ -9,7 +9,7 @@
  * pg_proc.c
  *	  routines to support manipulation of the pg_proc relation
  *
- * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -32,7 +32,6 @@
 #include "catalog/pg_proc.h"
 #include "catalog/pg_transform.h"
 #include "catalog/pg_type.h"
-#include "commands/defrem.h"
 #include "executor/functions.h"
 #include "funcapi.h"
 #include "mb/pg_wchar.h"
@@ -66,6 +65,35 @@ static bool match_prosrc_to_literal(const char *prosrc, const char *literal,
 
 /* ----------------------------------------------------------------
  *		ProcedureCreate
+ *
+ *	procedureName: string name of routine (proname)
+ *	procNamespace: OID of namespace (pronamespace)
+ *	replace: true to allow replacement of an existing pg_proc entry
+ *	returnsSet: returns set? (proretset)
+ *	returnType: OID of result type (prorettype)
+ *	proowner: OID of owner role (proowner)
+ *	languageObjectId: OID of function language (prolang)
+ *	languageValidator: OID of validator function to apply, if any
+ *	prosrc: string form of function definition (prosrc)
+ *	probin: string form of binary reference, or NULL (probin)
+ *	prosqlbody: Node tree of pre-parsed SQL body, or NULL (prosqlbody)
+ *	prokind: function/aggregate/procedure/etc code (prokind)
+ *	security_definer: security definer? (prosecdef)
+ *	isLeakProof: leak proof? (proleakproof)
+ *	isStrict: strict? (proisstrict)
+ *	volatility: volatility code (provolatile)
+ *	parallel: parallel safety code (proparallel)
+ *	parameterTypes: input parameter types, as an oidvector (proargtypes)
+ *	allParameterTypes: all parameter types, as an OID array (proallargtypes)
+ *	parameterModes: parameter modes, as a "char" array (proargmodes)
+ *	parameterNames: parameter names, as a text array (proargnames)
+ *	parameterDefaults: defaults, as a List of Node trees (proargdefaults)
+ *	trftypes: transformable type OIDs, as an OID array (protrftypes)
+ *	trfoids: List of transform OIDs that routine should depend on
+ *	proconfig: GUC set clauses, as a text array (proconfig)
+ *	prosupport: OID of support function, if any (prosupport)
+ *	procost: cost factor (procost)
+ *	prorows: estimated output rows for a SRF (prorows)
  *
  * Note: allParameterTypes, parameterModes, parameterNames, trftypes, and proconfig
  * are either arrays of the proper types or NULL.  We declare them Datum,

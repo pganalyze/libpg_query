@@ -246,9 +246,13 @@ class Generator
   ]
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
+    [nil, 'list_start'] => :skip,
+    [nil, 'list_end'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
     ['RangeVar', 'relname'] => FINGERPRINT_RANGE_VAR_RELNAME,
     ['A_Expr', 'kind'] => FINGERPRINT_A_EXPR_KIND,
+    ['A_Expr', 'rexpr_list_start'] => :skip,
+    ['A_Expr', 'rexpr_list_end'] => :skip,
     ['PrepareStmt', 'name'] => :skip,
     ['ExecuteStmt', 'name'] => :skip,
     ['DeallocateStmt', 'name'] => :skip,

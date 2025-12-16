@@ -34,9 +34,9 @@
  * - backtrace_function_list
  * - set_backtrace
  * - FreeErrorDataContents
- * - geterrcode
  * - errsave_start
  * - errsave_finish
+ * - geterrcode
  * - errhint
  * - errposition
  * - internalerrposition
@@ -98,7 +98,7 @@
  * overflow.)
  *
  *
- * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -122,6 +122,7 @@
 #endif
 
 #include "access/xact.h"
+#include "common/ip.h"
 #include "libpq/libpq.h"
 #include "libpq/pqformat.h"
 #include "mb/pg_wchar.h"
@@ -151,8 +152,6 @@ __thread ErrorContextCallback *error_context_stack = NULL;
 
 __thread sigjmp_buf *PG_exception_stack = NULL;
 
-
-extern bool redirection_done;
 
 /*
  * Hook for intercepting messages before they are sent to the server log.
@@ -197,8 +196,6 @@ static void write_syslog(int level, const char *line);
 #endif
 
 #ifdef WIN32
-extern char *event_source;
-
 static void write_eventlog(int level, const char *line, int len);
 #endif
 
@@ -1180,6 +1177,12 @@ errhint(const char *fmt,...)
 	return 0;					/* return value does not matter */
 }
 
+/*
+ * errhint_internal --- add a hint error message text to the current error
+ *
+ * Non-translated version of errhint(), see also errmsg_internal().
+ */
+
 
 /*
  * errhint_plural --- add a hint error message text to the current error,
@@ -1365,14 +1368,6 @@ geterrcode(void)
 
 	return edata->sqlerrcode;
 }
-
-/*
- * geterrlevel --- return the currently set error level
- *
- * This is only intended for use in error callback subroutines, since there
- * is no other place outside elog.c where the concept is meaningful.
- */
-
 
 /*
  * geterrposition --- return the currently set error position (0 if none)
@@ -1635,12 +1630,15 @@ FlushErrorState(void)
 /*
  * ThrowErrorData --- report an error described by an ErrorData structure
  *
- * This is somewhat like ReThrowError, but it allows elevels besides ERROR,
- * and the boolean flags such as output_to_server are computed via the
- * default rules rather than being copied from the given ErrorData.
- * This is primarily used to re-report errors originally reported by
- * background worker processes and then propagated (with or without
- * modification) to the backend responsible for them.
+ * This function should be called on an ErrorData structure that isn't stored
+ * on the errordata stack and hasn't been processed yet. It will call
+ * errstart() and errfinish() as needed, so those should not have already been
+ * called.
+ *
+ * ThrowErrorData() is useful for handling soft errors. It's also useful for
+ * re-reporting errors originally reported by background worker processes and
+ * then propagated (with or without modification) to the backend responsible
+ * for them.
  */
 
 

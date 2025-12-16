@@ -13,7 +13,7 @@ int main()
 	size_t i;
 	bool ret_code = EXIT_SUCCESS;
 
-	for (i = 0; i < testsLength; i += 2)
+	for (i = 0; i < testsLength; i += 3)
 	{
 		PgQuerySplitResult result = pg_query_split_with_scanner(tests[i]);
 
@@ -83,10 +83,10 @@ int main()
 		if (strlen(buf) > 0 && buf[strlen(buf) - 1] == ';')
 			buf[strlen(buf) - 1] = '\0';
 
-		if (strcmp(buf, tests[i + 1]) != 0)
+		if (strcmp(buf, tests[i + 2]) != 0)
 		{
 			ret_code = EXIT_FAILURE;
-			printf("INVALID parser split result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 1], buf);
+			printf("INVALID parser split result for \"%s\"\nexpected: %s\n  actual: %s\n", tests[i], tests[i + 2], buf);
 		}
 		else
 		{

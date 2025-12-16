@@ -58,7 +58,7 @@ class Extractor
     @typedefs = []
 
     ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
-     'nodes/nodes', 'nodes/params', 'access/attnum', 'c', 'postgres', 'postgres_ext',
+     'nodes/nodes', 'nodes/params', 'access/attnum', 'access/cmptype', 'c', 'postgres', 'postgres_ext',
      'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram', '../backend/parser/gramparse'].each do |group|
       @target_group = group
       @struct_defs[@target_group] = {}
@@ -184,7 +184,7 @@ class Extractor
     'nodes/primnodes' => {
       'MinMaxExpr' => 'MinMaxOp',
       'Param' => 'ParamKind',
-      'RowCompareExpr' => 'RowCompareType',
+#      'RowCompareExpr' => 'CompareType',
       'SubLink' => 'SubLinkType',
       'BooleanTest' => 'BoolTestType',
       'NullTest' => 'NullTestType',

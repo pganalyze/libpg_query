@@ -11,7 +11,7 @@
  * datum.c
  *	  POSTGRES Datum (abstract data type) manipulation routines.
  *
- * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -157,7 +157,7 @@ datumCopy(Datum value, bool typByVal, int typLen)
 
 			resultsize = EOH_get_flat_size(eoh);
 			resultptr = (char *) palloc(resultsize);
-			EOH_flatten_into(eoh, (void *) resultptr, resultsize);
+			EOH_flatten_into(eoh, resultptr, resultsize);
 			res = PointerGetDatum(resultptr);
 		}
 		else

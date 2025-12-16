@@ -30,7 +30,7 @@
           "comment": ""
         },
         {
-          "comment": "\t/*\n\t * query identifier (can be set by plugins); ignored for equal, as it\n\t * might not be set; also not stored.  This is the result of the query\n\t * jumble, hence ignored.\n\t */\n"
+          "comment": "\t/*\n\t * query identifier (can be set by plugins); ignored for equal, as it\n\t * might not be set; also not stored.  This is the result of the query\n\t * jumble, hence ignored.\n\t *\n\t * We store this as a signed value as this is the form it's displayed to\n\t * users in places such as EXPLAIN and pg_stat_statements.  Primarily this\n\t * is done due to lack of an SQL type to represent the full range of\n\t * uint64.\n\t */\n"
         },
         {
           "comment": ""
@@ -141,6 +141,14 @@
           "comment": null
         },
         {
+          "comment": "\t/* parser has added an RTE_GROUP RTE */\n"
+        },
+        {
+          "name": "hasGroupRTE",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
           "comment": "\t/* is a RETURN statement */\n"
         },
         {
@@ -239,6 +247,19 @@
         },
         {
           "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * The following three fields describe the contents of the RETURNING list\n\t * for INSERT/UPDATE/DELETE/MERGE. returningOldAlias and returningNewAlias\n\t * are the alias names for OLD and NEW, which may be user-supplied values,\n\t * the defaults \"old\" and \"new\", or NULL (if the default \"old\"/\"new\" is\n\t * already in use as the alias for some other relation).\n\t */\n"
+        },
+        {
+          "name": "returningOldAlias",
+          "c_type": "char*",
+          "comment": null
+        },
+        {
+          "name": "returningNewAlias",
+          "c_type": "char*",
+          "comment": null
         },
         {
           "name": "returningList",
@@ -497,6 +518,22 @@
           "comment": "/* right argument, or NULL if none */"
         },
         {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * If rexpr is a list of some kind, we separately track its starting and\n\t * ending location; it's not the same as the starting and ending location\n\t * of the token itself.\n\t */\n"
+        },
+        {
+          "name": "rexpr_list_start",
+          "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
+          "name": "rexpr_list_end",
+          "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
           "name": "location",
           "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
@@ -710,6 +747,16 @@
           "name": "elements",
           "c_type": "List*",
           "comment": "/* array element expressions */"
+        },
+        {
+          "name": "list_start",
+          "c_type": "ParseLoc",
+          "comment": "/* start of the element list */"
+        },
+        {
+          "name": "list_end",
+          "c_type": "ParseLoc",
+          "comment": "/* end of the elements list */"
         },
         {
           "name": "location",
@@ -1073,7 +1120,7 @@
         },
         {
           "name": "inhcount",
-          "c_type": "int",
+          "c_type": "int16",
           "comment": "/* number of times column is inherited */"
         },
         {
@@ -1489,16 +1536,6 @@
       ],
       "comment": null
     },
-    "SinglePartitionSpec": {
-      "fields": [
-        {
-          "name": "type",
-          "c_type": "NodeTag",
-          "comment": null
-        }
-      ],
-      "comment": "/*\n * PartitionDesc - used in reverted ALTER TABLE SPLIT PARTITION command\n *\n * Kept as a stub for nodetag ABI compatibility.\n */\n"
-    },
     "PartitionCmd": {
       "fields": [
         {
@@ -1546,7 +1583,10 @@
           "comment": null
         },
         {
-          "comment": "\t/* expanded reference names */\n"
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * Expanded reference names.  This uses a custom query jumble function so\n\t * that the table name is included in the computation, but not its list of\n\t * columns.\n\t */\n"
         },
         {
           "name": "eref",
@@ -1824,6 +1864,20 @@
           "comment": ""
         },
         {
+          "comment": "\t/*\n\t * Fields valid for a GROUP RTE (else NIL):\n\t */\n"
+        },
+        {
+          "comment": "\t/* list of grouping expressions */\n"
+        },
+        {
+          "name": "groupexprs",
+          "c_type": "List*",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
           "comment": "\t/*\n\t * Fields valid in all RTEs:\n\t */\n"
         },
         {
@@ -2057,6 +2111,11 @@
           "name": "sortop",
           "c_type": "Oid",
           "comment": "/* the ordering operator ('<' op), or 0 */"
+        },
+        {
+          "name": "reverse_sort",
+          "c_type": "bool",
+          "comment": "/* is sortop a \"greater than\" operator? */"
         },
         {
           "name": "nulls_first",
@@ -2572,6 +2631,51 @@
         }
       ],
       "comment": "/*\n * MergeWhenClause -\n *\t\traw parser representation of a WHEN clause in a MERGE statement\n *\n * This is transformed into MergeAction by parse analysis\n */\n"
+    },
+    "ReturningOption": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "option",
+          "c_type": "ReturningOptionKind",
+          "comment": "/* specified option */"
+        },
+        {
+          "name": "value",
+          "c_type": "char*",
+          "comment": "/* option's value */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
+        }
+      ],
+      "comment": "/*\n * ReturningOption -\n *\t\tAn individual option in the RETURNING WITH(...) list\n */\n"
+    },
+    "ReturningClause": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "options",
+          "c_type": "List*",
+          "comment": "/* list of ReturningOption elements */"
+        },
+        {
+          "name": "exprs",
+          "c_type": "List*",
+          "comment": "/* list of expressions to return */"
+        }
+      ],
+      "comment": "/*\n * ReturningClause -\n *\t\tList of RETURNING expressions, together with any WITH(...) options\n */\n"
     },
     "TriggerTransition": {
       "fields": [
@@ -3194,9 +3298,9 @@
           "comment": "/* ON CONFLICT clause */"
         },
         {
-          "name": "returningList",
-          "c_type": "List*",
-          "comment": "/* list of expressions to return */"
+          "name": "returningClause",
+          "c_type": "ReturningClause*",
+          "comment": "/* RETURNING clause */"
         },
         {
           "name": "withClause",
@@ -3234,9 +3338,9 @@
           "comment": "/* qualifications */"
         },
         {
-          "name": "returningList",
-          "c_type": "List*",
-          "comment": "/* list of expressions to return */"
+          "name": "returningClause",
+          "c_type": "ReturningClause*",
+          "comment": "/* RETURNING clause */"
         },
         {
           "name": "withClause",
@@ -3274,9 +3378,9 @@
           "comment": "/* optional from clause for more tables */"
         },
         {
-          "name": "returningList",
-          "c_type": "List*",
-          "comment": "/* list of expressions to return */"
+          "name": "returningClause",
+          "c_type": "ReturningClause*",
+          "comment": "/* RETURNING clause */"
         },
         {
           "name": "withClause",
@@ -3314,9 +3418,9 @@
           "comment": "/* list of MergeWhenClause(es) */"
         },
         {
-          "name": "returningList",
-          "c_type": "List*",
-          "comment": "/* list of expressions to return */"
+          "name": "returningClause",
+          "c_type": "ReturningClause*",
+          "comment": "/* RETURNING clause */"
         },
         {
           "name": "withClause",
@@ -3650,26 +3754,6 @@
       ],
       "comment": "/* ----------------------\n *\tAlter Table\n * ----------------------\n */\n"
     },
-    "ReplicaIdentityStmt": {
-      "fields": [
-        {
-          "name": "type",
-          "c_type": "NodeTag",
-          "comment": null
-        },
-        {
-          "name": "identity_type",
-          "c_type": "char",
-          "comment": null
-        },
-        {
-          "name": "name",
-          "c_type": "char*",
-          "comment": null
-        }
-      ],
-      "comment": "/* ----------------------\n *\tAlter Table\n * ----------------------\n */\n"
-    },
     "AlterTableCmd": {
       "fields": [
         {
@@ -3716,6 +3800,76 @@
           "name": "recurse",
           "c_type": "bool",
           "comment": "/* exec-time recursion */"
+        }
+      ],
+      "comment": "/* ----------------------\n *\tAlter Table\n * ----------------------\n */\n"
+    },
+    "ATAlterConstraint": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "conname",
+          "c_type": "char*",
+          "comment": "/* Constraint name */"
+        },
+        {
+          "name": "alterEnforceability",
+          "c_type": "bool",
+          "comment": "/* changing enforceability properties? */"
+        },
+        {
+          "name": "is_enforced",
+          "c_type": "bool",
+          "comment": "/* ENFORCED? */"
+        },
+        {
+          "name": "alterDeferrability",
+          "c_type": "bool",
+          "comment": "/* changing deferrability properties? */"
+        },
+        {
+          "name": "deferrable",
+          "c_type": "bool",
+          "comment": "/* DEFERRABLE? */"
+        },
+        {
+          "name": "initdeferred",
+          "c_type": "bool",
+          "comment": "/* INITIALLY DEFERRED? */"
+        },
+        {
+          "name": "alterInheritability",
+          "c_type": "bool",
+          "comment": "/* changing inheritability properties */"
+        },
+        {
+          "name": "noinherit",
+          "c_type": "bool",
+          "comment": null
+        }
+      ],
+      "comment": "/* Ad-hoc node for AT_AlterConstraint */\n"
+    },
+    "ReplicaIdentityStmt": {
+      "fields": [
+        {
+          "name": "type",
+          "c_type": "NodeTag",
+          "comment": null
+        },
+        {
+          "name": "identity_type",
+          "c_type": "char",
+          "comment": null
+        },
+        {
+          "name": "name",
+          "c_type": "char*",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\tAlter Table\n * ----------------------\n */\n"
@@ -4006,19 +4160,47 @@
           "comment": null
         },
         {
+          "comment": "\t/* variable to be set */\n"
+        },
+        {
           "name": "name",
           "c_type": "char*",
-          "comment": "/* variable to be set */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* List of A_Const nodes */\n"
         },
         {
           "name": "args",
           "c_type": "List*",
-          "comment": "/* List of A_Const nodes */"
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * True if arguments should be accounted for in query jumbling.  We use a\n\t * separate flag rather than query_jumble_ignore on \"args\" as several\n\t * grammar flavors of SET rely on a list of values that are parsed\n\t * directly from the grammar's keywords.\n\t */\n"
+        },
+        {
+          "name": "jumble_args",
+          "c_type": "bool",
+          "comment": null
+        },
+        {
+          "comment": "\t/* SET LOCAL? */\n"
         },
         {
           "name": "is_local",
           "c_type": "bool",
-          "comment": "/* SET LOCAL? */"
+          "comment": null
+        },
+        {
+          "comment": "\t/* token location, or -1 if unknown */\n"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": null
@@ -4081,6 +4263,11 @@
           "comment": "/* constraints (list of Constraint nodes) */"
         },
         {
+          "name": "nnconstraints",
+          "c_type": "List*",
+          "comment": "/* NOT NULL constraints (ditto) */"
+        },
+        {
           "name": "options",
           "c_type": "List*",
           "comment": "/* options from WITH clause */"
@@ -4106,7 +4293,7 @@
           "comment": "/* just do nothing if it already exists? */"
         }
       ],
-      "comment": "/* ----------------------\n *\t\tCreate Table Statement\n *\n * NOTE: in the raw gram.y output, ColumnDef and Constraint nodes are\n * intermixed in tableElts, and constraints is NIL.  After parse analysis,\n * tableElts contains just ColumnDefs, and constraints contains just\n * Constraint nodes (in fact, only CONSTR_CHECK nodes, in the present\n * implementation).\n * ----------------------\n */\n"
+      "comment": "/* ----------------------\n *\t\tCreate Table Statement\n *\n * NOTE: in the raw gram.y output, ColumnDef and Constraint nodes are\n * intermixed in tableElts, and constraints and nnconstraints are NIL.  After\n * parse analysis, tableElts contains just ColumnDefs, nnconstraints contains\n * Constraint nodes of CONSTR_NOTNULL type from various sources, and\n * constraints contains just CONSTR_CHECK Constraint nodes.\n * ----------------------\n */\n"
     },
     "Constraint": {
       "fields": [
@@ -4134,6 +4321,11 @@
           "name": "initdeferred",
           "c_type": "bool",
           "comment": "/* INITIALLY DEFERRED? */"
+        },
+        {
+          "name": "is_enforced",
+          "c_type": "bool",
+          "comment": "/* enforced constraint? */"
         },
         {
           "name": "skip_validation",
@@ -4166,9 +4358,9 @@
           "comment": "/* ALWAYS or BY DEFAULT */"
         },
         {
-          "name": "inhcount",
-          "c_type": "int",
-          "comment": "/* initial inheritance count to apply, for\n\t\t\t\t\t\t\t\t * \"raw\" NOT NULL constraints */\n"
+          "name": "generated_kind",
+          "c_type": "char",
+          "comment": "/* STORED or VIRTUAL */"
         },
         {
           "name": "nulls_not_distinct",
@@ -4179,6 +4371,11 @@
           "name": "keys",
           "c_type": "List*",
           "comment": "/* String nodes naming referenced key\n\t\t\t\t\t\t\t\t * column(s); for UNIQUE/PK/NOT NULL */\n"
+        },
+        {
+          "name": "without_overlaps",
+          "c_type": "bool",
+          "comment": "/* WITHOUT OVERLAPS specified */"
         },
         {
           "name": "including",
@@ -4240,6 +4437,16 @@
           "name": "pk_attrs",
           "c_type": "List*",
           "comment": "/* Corresponding attrs in PK table */"
+        },
+        {
+          "name": "fk_with_period",
+          "c_type": "bool",
+          "comment": "/* Last attribute of FK uses PERIOD */"
+        },
+        {
+          "name": "pk_with_period",
+          "c_type": "bool",
+          "comment": "/* Last attribute of PK uses PERIOD */"
         },
         {
           "name": "fk_matchtype",
@@ -5673,6 +5880,11 @@
           "comment": "/* is it for a pkey/unique constraint? */"
         },
         {
+          "name": "iswithoutoverlaps",
+          "c_type": "bool",
+          "comment": "/* is the constraint WITHOUT OVERLAPS? */"
+        },
+        {
           "name": "deferrable",
           "c_type": "bool",
           "comment": "/* is the constraint DEFERRABLE? */"
@@ -5866,6 +6078,11 @@
           "name": "defexpr",
           "c_type": "Node*",
           "comment": "/* raw default expr, or NULL if not given */"
+        },
+        {
+          "name": "location",
+          "c_type": "ParseLoc",
+          "comment": "/* token location, or -1 if unknown */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Function Statement\n * ----------------------\n */\n"
@@ -7668,7 +7885,7 @@
         },
         {
           "name": "viewQuery",
-          "c_type": "Node*",
+          "c_type": "Query*",
           "comment": null
         },
         {
@@ -7677,7 +7894,7 @@
           "comment": "/* true for WITH NO DATA */"
         }
       ],
-      "comment": "/*\n * IntoClause - target information for SELECT INTO, CREATE TABLE AS, and\n * CREATE MATERIALIZED VIEW\n *\n * For CREATE MATERIALIZED VIEW, viewQuery is the parsed-but-not-rewritten\n * SELECT Query for the view; otherwise it's NULL.  This is irrelevant in\n * the query jumbling as CreateTableAsStmt already includes a reference to\n * its own Query, so ignore it.  (Although it's actually Query*, we declare\n * it as Node* to avoid a forward reference.)\n */\n"
+      "comment": "/*\n * IntoClause - target information for SELECT INTO, CREATE TABLE AS, and\n * CREATE MATERIALIZED VIEW\n *\n * For CREATE MATERIALIZED VIEW, viewQuery is the parsed-but-not-rewritten\n * SELECT Query for the view; otherwise it's NULL.  This is irrelevant in\n * the query jumbling as CreateTableAsStmt already includes a reference to\n * its own Query, so ignore it.  (We declare it as struct Query* to avoid a\n * forward reference.)\n */\n"
     },
     "Expr": {
       "fields": [
@@ -7771,6 +7988,17 @@
           "comment": ""
         },
         {
+          "comment": "\t/* returning type of this var (see above) */\n"
+        },
+        {
+          "name": "varreturningtype",
+          "c_type": "VarReturningType",
+          "comment": null
+        },
+        {
+          "comment": ""
+        },
+        {
           "comment": "\t/*\n\t * varnosyn/varattnosyn are ignored for equality, because Vars with\n\t * different syntactic identifiers are semantically the same as long as\n\t * their varno/varattno match.\n\t */\n"
         },
         {
@@ -7797,7 +8025,7 @@
           "comment": null
         }
       ],
-      "comment": "/* Symbols for the indexes of the special RTE entries in rules */\n"
+      "comment": null
     },
     "Const": {
       "fields": [
@@ -9447,6 +9675,22 @@
           "comment": null
         },
         {
+          "comment": "\t/* location of the start of the elements list */\n"
+        },
+        {
+          "name": "list_start",
+          "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
+          "comment": "\t/* location of the end of the elements list */\n"
+        },
+        {
+          "name": "list_end",
+          "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
           "comment": "\t/* token location, or -1 if unknown */\n"
         },
         {
@@ -9533,8 +9777,8 @@
           "comment": "\t/* LT LE GE or GT, never EQ or NE */\n"
         },
         {
-          "name": "rctype",
-          "c_type": "RowCompareType",
+          "name": "cmptype",
+          "c_type": "CompareType",
           "comment": null
         },
         {
@@ -9578,7 +9822,7 @@
           "comment": null
         }
       ],
-      "comment": "/*\n * RowCompareExpr - row-wise comparison, such as (a, b) <= (1, 2)\n *\n * We support row comparison for any operator that can be determined to\n * act like =, <>, <, <=, >, or >= (we determine this by looking for the\n * operator in btree opfamilies).  Note that the same operator name might\n * map to a different operator for each pair of row elements, since the\n * element datatypes can vary.\n *\n * A RowCompareExpr node is only generated for the < <= > >= cases;\n * the = and <> cases are translated to simple AND or OR combinations\n * of the pairwise comparisons.  However, we include = and <> in the\n * RowCompareType enum for the convenience of parser logic.\n */\n"
+      "comment": "/*\n * RowCompareExpr - row-wise comparison, such as (a, b) <= (1, 2)\n *\n * We support row comparison for any operator that can be determined to\n * act like =, <>, <, <=, >, or >= (we determine this by looking for the\n * operator in btree opfamilies).  Note that the same operator name might\n * map to a different operator for each pair of row elements, since the\n * element datatypes can vary.\n *\n * A RowCompareExpr node is only generated for the < <= > >= cases;\n * the = and <> cases are translated to simple AND or OR combinations\n * of the pairwise comparisons.\n */\n"
     },
     "CoalesceExpr": {
       "fields": [
@@ -9863,12 +10107,12 @@
         {
           "name": "raw_expr",
           "c_type": "Expr*",
-          "comment": "/* raw expression */"
+          "comment": "/* user-specified expression */"
         },
         {
           "name": "formatted_expr",
           "c_type": "Expr*",
-          "comment": "/* formatted expression */"
+          "comment": "/* coerced formatted expression */"
         },
         {
           "name": "format",
@@ -9876,7 +10120,7 @@
           "comment": "/* FORMAT clause, if specified */"
         }
       ],
-      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * The actual value is obtained by evaluating formatted_expr.  raw_expr is\n * only there for displaying the original user-written expression and is not\n * evaluated by ExecInterpExpr() and eval_const_expressions_mutator().\n */\n"
+      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * raw_expr is the user-specified value, while formatted_expr is the value\n * obtained by coercing raw_expr to the type required by either the FORMAT\n * clause or an enclosing node's RETURNING clause.\n *\n * When deparsing a JsonValueExpr, get_rule_expr() prints raw_expr. However,\n * during the evaluation of a JsonValueExpr, the value of formatted_expr\n * takes precedence over that of raw_expr.\n */\n"
     },
     "JsonConstructorExpr": {
       "fields": [
@@ -10580,6 +10824,31 @@
       ],
       "comment": "/*\n * InferenceElem - an element of a unique index inference specification\n *\n * This mostly matches the structure of IndexElems, but having a dedicated\n * primnode allows for a clean separation between the use of index parameters\n * by utility commands, and this node.\n */\n"
     },
+    "ReturningExpr": {
+      "fields": [
+        {
+          "name": "xpr",
+          "c_type": "Expr",
+          "comment": null
+        },
+        {
+          "name": "retlevelsup",
+          "c_type": "int",
+          "comment": "/* > 0 if it belongs to outer query */"
+        },
+        {
+          "name": "retold",
+          "c_type": "bool",
+          "comment": "/* true for OLD, false for NEW */"
+        },
+        {
+          "name": "retexpr",
+          "c_type": "Expr*",
+          "comment": "/* expression to be returned */"
+        }
+      ],
+      "comment": "/*\n * ReturningExpr - return OLD/NEW.(expression) in RETURNING list\n *\n * This is used when updating an auto-updatable view and returning a view\n * column that is not simply a Var referring to the base relation.  In such\n * cases, OLD/NEW.viewcol can expand to an arbitrary expression, but the\n * result is required to be NULL if the OLD/NEW row doesn't exist.  To handle\n * this, the rewriter wraps the expanded expression in a ReturningExpr, which\n * is equivalent to \"CASE WHEN (OLD/NEW row exists) THEN (expr) ELSE NULL\".\n *\n * A similar situation can arise when rewriting the RETURNING clause of a\n * rule, which may also contain arbitrary expressions.\n *\n * ReturningExpr nodes never appear in a parsed Query --- they are only ever\n * inserted by the rewriter and the planner.\n */\n"
+    },
     "TargetEntry": {
       "fields": [
         {
@@ -10933,6 +11202,8 @@
   },
   "access/attnum": {
   },
+  "access/cmptype": {
+  },
   "c": {
   },
   "postgres": {
@@ -11194,6 +11465,17 @@
           "name": "toast_parent",
           "c_type": "Oid",
           "comment": "/* for privilege checks when recursing */"
+        },
+        {
+          "comment": ""
+        },
+        {
+          "comment": "\t/*\n\t * Fraction of pages in a relation that vacuum can eagerly scan and fail\n\t * to freeze. Only applicable for table AMs using visibility maps. Derived\n\t * from GUC or table storage parameter. 0 if disabled.\n\t */\n"
+        },
+        {
+          "name": "max_eager_freeze_failure_rate",
+          "c_type": "double",
+          "comment": null
         },
         {
           "comment": ""

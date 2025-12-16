@@ -58,6 +58,7 @@ static SetToDefault * _readSetToDefault(OUT_TYPE(SetToDefault, SetToDefault) msg
 static CurrentOfExpr * _readCurrentOfExpr(OUT_TYPE(CurrentOfExpr, CurrentOfExpr) msg);
 static NextValueExpr * _readNextValueExpr(OUT_TYPE(NextValueExpr, NextValueExpr) msg);
 static InferenceElem * _readInferenceElem(OUT_TYPE(InferenceElem, InferenceElem) msg);
+static ReturningExpr * _readReturningExpr(OUT_TYPE(ReturningExpr, ReturningExpr) msg);
 static TargetEntry * _readTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) msg);
 static RangeTblRef * _readRangeTblRef(OUT_TYPE(RangeTblRef, RangeTblRef) msg);
 static JoinExpr * _readJoinExpr(OUT_TYPE(JoinExpr, JoinExpr) msg);
@@ -95,7 +96,6 @@ static PartitionElem * _readPartitionElem(OUT_TYPE(PartitionElem, PartitionElem)
 static PartitionSpec * _readPartitionSpec(OUT_TYPE(PartitionSpec, PartitionSpec) msg);
 static PartitionBoundSpec * _readPartitionBoundSpec(OUT_TYPE(PartitionBoundSpec, PartitionBoundSpec) msg);
 static PartitionRangeDatum * _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg);
-static SinglePartitionSpec * _readSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) msg);
 static PartitionCmd * _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg);
 static RangeTblEntry * _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg);
 static RTEPermissionInfo * _readRTEPermissionInfo(OUT_TYPE(RTEPermissionInfo, RTEPermissionInfo) msg);
@@ -113,6 +113,8 @@ static CTESearchClause * _readCTESearchClause(OUT_TYPE(CTESearchClause, CTESearc
 static CTECycleClause * _readCTECycleClause(OUT_TYPE(CTECycleClause, CTECycleClause) msg);
 static CommonTableExpr * _readCommonTableExpr(OUT_TYPE(CommonTableExpr, CommonTableExpr) msg);
 static MergeWhenClause * _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg);
+static ReturningOption * _readReturningOption(OUT_TYPE(ReturningOption, ReturningOption) msg);
+static ReturningClause * _readReturningClause(OUT_TYPE(ReturningClause, ReturningClause) msg);
 static TriggerTransition * _readTriggerTransition(OUT_TYPE(TriggerTransition, TriggerTransition) msg);
 static JsonOutput * _readJsonOutput(OUT_TYPE(JsonOutput, JsonOutput) msg);
 static JsonArgument * _readJsonArgument(OUT_TYPE(JsonArgument, JsonArgument) msg);
@@ -141,8 +143,9 @@ static ReturnStmt * _readReturnStmt(OUT_TYPE(ReturnStmt, ReturnStmt) msg);
 static PLAssignStmt * _readPLAssignStmt(OUT_TYPE(PLAssignStmt, PLAssignStmt) msg);
 static CreateSchemaStmt * _readCreateSchemaStmt(OUT_TYPE(CreateSchemaStmt, CreateSchemaStmt) msg);
 static AlterTableStmt * _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg);
-static ReplicaIdentityStmt * _readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg);
 static AlterTableCmd * _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg);
+static ATAlterConstraint * _readATAlterConstraint(OUT_TYPE(ATAlterConstraint, ATAlterConstraint) msg);
+static ReplicaIdentityStmt * _readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg);
 static AlterCollationStmt * _readAlterCollationStmt(OUT_TYPE(AlterCollationStmt, AlterCollationStmt) msg);
 static AlterDomainStmt * _readAlterDomainStmt(OUT_TYPE(AlterDomainStmt, AlterDomainStmt) msg);
 static GrantStmt * _readGrantStmt(OUT_TYPE(GrantStmt, GrantStmt) msg);
@@ -318,7 +321,7 @@ _readIntoClause(OUT_TYPE(IntoClause, IntoClause) msg)
   READ_LIST_FIELD(options, options, options);
   READ_ENUM_FIELD(OnCommitAction, on_commit, onCommit, onCommit);
   READ_STRING_FIELD(table_space_name, tableSpaceName, tableSpaceName);
-  READ_NODE_PTR_FIELD(view_query, viewQuery, viewQuery);
+  READ_SPECIFIC_NODE_PTR_FIELD(Query, query, view_query, viewQuery, viewQuery);
   READ_BOOL_FIELD(skip_data, skipData, skipData);
   return node;
 }
@@ -334,6 +337,7 @@ _readVar(OUT_TYPE(Var, Var) msg)
   READ_UINT_FIELD(varcollid, varcollid, varcollid);
   READ_BITMAPSET_FIELD(varnullingrels, varnullingrels, varnullingrels);
   READ_UINT_FIELD(varlevelsup, varlevelsup, varlevelsup);
+  READ_ENUM_FIELD(VarReturningType, varreturningtype, varreturningtype, varreturningtype);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -702,6 +706,8 @@ _readArrayExpr(OUT_TYPE(ArrayExpr, ArrayExpr) msg)
   READ_UINT_FIELD(element_typeid, element_typeid, element_typeid);
   READ_LIST_FIELD(elements, elements, elements);
   READ_BOOL_FIELD(multidims, multidims, multidims);
+  READ_INT_FIELD(list_start, list_start, list_start);
+  READ_INT_FIELD(list_end, list_end, list_end);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -722,7 +728,7 @@ static RowCompareExpr *
 _readRowCompareExpr(OUT_TYPE(RowCompareExpr, RowCompareExpr) msg)
 {
   RowCompareExpr *node = makeNode(RowCompareExpr);
-  READ_ENUM_FIELD(RowCompareType, rctype, rctype, rctype);
+  READ_ENUM_FIELD(CompareType, cmptype, cmptype, cmptype);
   READ_LIST_FIELD(opnos, opnos, opnos);
   READ_LIST_FIELD(opfamilies, opfamilies, opfamilies);
   READ_LIST_FIELD(inputcollids, inputcollids, inputcollids);
@@ -1001,6 +1007,16 @@ _readInferenceElem(OUT_TYPE(InferenceElem, InferenceElem) msg)
   return node;
 }
 
+static ReturningExpr *
+_readReturningExpr(OUT_TYPE(ReturningExpr, ReturningExpr) msg)
+{
+  ReturningExpr *node = makeNode(ReturningExpr);
+  READ_INT_FIELD(retlevelsup, retlevelsup, retlevelsup);
+  READ_BOOL_FIELD(retold, retold, retold);
+  READ_ABSTRACT_PTR_FIELD(retexpr, retexpr, retexpr, Expr*);
+  return node;
+}
+
 static TargetEntry *
 _readTargetEntry(OUT_TYPE(TargetEntry, TargetEntry) msg)
 {
@@ -1081,6 +1097,7 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_BOOL_FIELD(has_modifying_cte, hasModifyingCTE, hasModifyingCTE);
   READ_BOOL_FIELD(has_for_update, hasForUpdate, hasForUpdate);
   READ_BOOL_FIELD(has_row_security, hasRowSecurity, hasRowSecurity);
+  READ_BOOL_FIELD(has_group_rte, hasGroupRTE, hasGroupRTE);
   READ_BOOL_FIELD(is_return, isReturn, isReturn);
   READ_LIST_FIELD(cte_list, cteList, cteList);
   READ_LIST_FIELD(rtable, rtable, rtable);
@@ -1092,6 +1109,8 @@ _readQuery(OUT_TYPE(Query, Query) msg)
   READ_LIST_FIELD(target_list, targetList, targetList);
   READ_ENUM_FIELD(OverridingKind, override, override, override);
   READ_SPECIFIC_NODE_PTR_FIELD(OnConflictExpr, on_conflict_expr, on_conflict, onConflict, onConflict);
+  READ_STRING_FIELD(returning_old_alias, returningOldAlias, returningOldAlias);
+  READ_STRING_FIELD(returning_new_alias, returningNewAlias, returningNewAlias);
   READ_LIST_FIELD(returning_list, returningList, returningList);
   READ_LIST_FIELD(group_clause, groupClause, groupClause);
   READ_BOOL_FIELD(group_distinct, groupDistinct, groupDistinct);
@@ -1153,6 +1172,8 @@ _readAExpr(OUT_TYPE(A_Expr, AExpr) msg)
   READ_LIST_FIELD(name, name, name);
   READ_NODE_PTR_FIELD(lexpr, lexpr, lexpr);
   READ_NODE_PTR_FIELD(rexpr, rexpr, rexpr);
+  READ_INT_FIELD(rexpr_list_start, rexpr_list_start, rexpr_list_start);
+  READ_INT_FIELD(rexpr_list_end, rexpr_list_end, rexpr_list_end);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -1236,6 +1257,8 @@ _readAArrayExpr(OUT_TYPE(A_ArrayExpr, AArrayExpr) msg)
 {
   A_ArrayExpr *node = makeNode(A_ArrayExpr);
   READ_LIST_FIELD(elements, elements, elements);
+  READ_INT_FIELD(list_start, list_start, list_start);
+  READ_INT_FIELD(list_end, list_end, list_end);
   READ_INT_FIELD(location, location, location);
   return node;
 }
@@ -1483,13 +1506,6 @@ _readPartitionRangeDatum(OUT_TYPE(PartitionRangeDatum, PartitionRangeDatum) msg)
   return node;
 }
 
-static SinglePartitionSpec *
-_readSinglePartitionSpec(OUT_TYPE(SinglePartitionSpec, SinglePartitionSpec) msg)
-{
-  SinglePartitionSpec *node = makeNode(SinglePartitionSpec);
-  return node;
-}
-
 static PartitionCmd *
 _readPartitionCmd(OUT_TYPE(PartitionCmd, PartitionCmd) msg)
 {
@@ -1533,6 +1549,7 @@ _readRangeTblEntry(OUT_TYPE(RangeTblEntry, RangeTblEntry) msg)
   READ_LIST_FIELD(colcollations, colcollations, colcollations);
   READ_STRING_FIELD(enrname, enrname, enrname);
   READ_FLOAT_FIELD(enrtuples, enrtuples, enrtuples);
+  READ_LIST_FIELD(groupexprs, groupexprs, groupexprs);
   READ_BOOL_FIELD(lateral, lateral, lateral);
   READ_BOOL_FIELD(in_from_cl, inFromCl, inFromCl);
   READ_LIST_FIELD(security_quals, securityQuals, securityQuals);
@@ -1596,6 +1613,7 @@ _readSortGroupClause(OUT_TYPE(SortGroupClause, SortGroupClause) msg)
   READ_UINT_FIELD(tle_sort_group_ref, tleSortGroupRef, tleSortGroupRef);
   READ_UINT_FIELD(eqop, eqop, eqop);
   READ_UINT_FIELD(sortop, sortop, sortop);
+  READ_BOOL_FIELD(reverse_sort, reverse_sort, reverse_sort);
   READ_BOOL_FIELD(nulls_first, nulls_first, nulls_first);
   READ_BOOL_FIELD(hashable, hashable, hashable);
   return node;
@@ -1734,6 +1752,25 @@ _readMergeWhenClause(OUT_TYPE(MergeWhenClause, MergeWhenClause) msg)
   READ_NODE_PTR_FIELD(condition, condition, condition);
   READ_LIST_FIELD(target_list, targetList, targetList);
   READ_LIST_FIELD(values, values, values);
+  return node;
+}
+
+static ReturningOption *
+_readReturningOption(OUT_TYPE(ReturningOption, ReturningOption) msg)
+{
+  ReturningOption *node = makeNode(ReturningOption);
+  READ_ENUM_FIELD(ReturningOptionKind, option, option, option);
+  READ_STRING_FIELD(value, value, value);
+  READ_INT_FIELD(location, location, location);
+  return node;
+}
+
+static ReturningClause *
+_readReturningClause(OUT_TYPE(ReturningClause, ReturningClause) msg)
+{
+  ReturningClause *node = makeNode(ReturningClause);
+  READ_LIST_FIELD(options, options, options);
+  READ_LIST_FIELD(exprs, exprs, exprs);
   return node;
 }
 
@@ -1953,7 +1990,7 @@ _readInsertStmt(OUT_TYPE(InsertStmt, InsertStmt) msg)
   READ_LIST_FIELD(cols, cols, cols);
   READ_NODE_PTR_FIELD(select_stmt, selectStmt, selectStmt);
   READ_SPECIFIC_NODE_PTR_FIELD(OnConflictClause, on_conflict_clause, on_conflict_clause, onConflictClause, onConflictClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(ReturningClause, returning_clause, returning_clause, returningClause, returningClause);
   READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
   READ_ENUM_FIELD(OverridingKind, override, override, override);
   return node;
@@ -1966,7 +2003,7 @@ _readDeleteStmt(OUT_TYPE(DeleteStmt, DeleteStmt) msg)
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, relation, relation, relation);
   READ_LIST_FIELD(using_clause, usingClause, usingClause);
   READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(ReturningClause, returning_clause, returning_clause, returningClause, returningClause);
   READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
   return node;
 }
@@ -1979,7 +2016,7 @@ _readUpdateStmt(OUT_TYPE(UpdateStmt, UpdateStmt) msg)
   READ_LIST_FIELD(target_list, targetList, targetList);
   READ_NODE_PTR_FIELD(where_clause, whereClause, whereClause);
   READ_LIST_FIELD(from_clause, fromClause, fromClause);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(ReturningClause, returning_clause, returning_clause, returningClause, returningClause);
   READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
   return node;
 }
@@ -1992,7 +2029,7 @@ _readMergeStmt(OUT_TYPE(MergeStmt, MergeStmt) msg)
   READ_NODE_PTR_FIELD(source_relation, sourceRelation, sourceRelation);
   READ_NODE_PTR_FIELD(join_condition, joinCondition, joinCondition);
   READ_LIST_FIELD(merge_when_clauses, mergeWhenClauses, mergeWhenClauses);
-  READ_LIST_FIELD(returning_list, returningList, returningList);
+  READ_SPECIFIC_NODE_PTR_FIELD(ReturningClause, returning_clause, returning_clause, returningClause, returningClause);
   READ_SPECIFIC_NODE_PTR_FIELD(WithClause, with_clause, with_clause, withClause, withClause);
   return node;
 }
@@ -2081,15 +2118,6 @@ _readAlterTableStmt(OUT_TYPE(AlterTableStmt, AlterTableStmt) msg)
   return node;
 }
 
-static ReplicaIdentityStmt *
-_readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg)
-{
-  ReplicaIdentityStmt *node = makeNode(ReplicaIdentityStmt);
-  READ_CHAR_FIELD(identity_type, identity_type, identity_type);
-  READ_STRING_FIELD(name, name, name);
-  return node;
-}
-
 static AlterTableCmd *
 _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg)
 {
@@ -2102,6 +2130,30 @@ _readAlterTableCmd(OUT_TYPE(AlterTableCmd, AlterTableCmd) msg)
   READ_ENUM_FIELD(DropBehavior, behavior, behavior, behavior);
   READ_BOOL_FIELD(missing_ok, missing_ok, missing_ok);
   READ_BOOL_FIELD(recurse, recurse, recurse);
+  return node;
+}
+
+static ATAlterConstraint *
+_readATAlterConstraint(OUT_TYPE(ATAlterConstraint, ATAlterConstraint) msg)
+{
+  ATAlterConstraint *node = makeNode(ATAlterConstraint);
+  READ_STRING_FIELD(conname, conname, conname);
+  READ_BOOL_FIELD(alter_enforceability, alterEnforceability, alterEnforceability);
+  READ_BOOL_FIELD(is_enforced, is_enforced, is_enforced);
+  READ_BOOL_FIELD(alter_deferrability, alterDeferrability, alterDeferrability);
+  READ_BOOL_FIELD(deferrable, deferrable, deferrable);
+  READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  READ_BOOL_FIELD(alter_inheritability, alterInheritability, alterInheritability);
+  READ_BOOL_FIELD(noinherit, noinherit, noinherit);
+  return node;
+}
+
+static ReplicaIdentityStmt *
+_readReplicaIdentityStmt(OUT_TYPE(ReplicaIdentityStmt, ReplicaIdentityStmt) msg)
+{
+  ReplicaIdentityStmt *node = makeNode(ReplicaIdentityStmt);
+  READ_CHAR_FIELD(identity_type, identity_type, identity_type);
+  READ_STRING_FIELD(name, name, name);
   return node;
 }
 
@@ -2206,7 +2258,9 @@ _readVariableSetStmt(OUT_TYPE(VariableSetStmt, VariableSetStmt) msg)
   READ_ENUM_FIELD(VariableSetKind, kind, kind, kind);
   READ_STRING_FIELD(name, name, name);
   READ_LIST_FIELD(args, args, args);
+  READ_BOOL_FIELD(jumble_args, jumble_args, jumble_args);
   READ_BOOL_FIELD(is_local, is_local, is_local);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
@@ -2229,6 +2283,7 @@ _readCreateStmt(OUT_TYPE(CreateStmt, CreateStmt) msg)
   READ_SPECIFIC_NODE_PTR_FIELD(PartitionSpec, partition_spec, partspec, partspec, partspec);
   READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, of_typename, ofTypename, ofTypename);
   READ_LIST_FIELD(constraints, constraints, constraints);
+  READ_LIST_FIELD(nnconstraints, nnconstraints, nnconstraints);
   READ_LIST_FIELD(options, options, options);
   READ_ENUM_FIELD(OnCommitAction, oncommit, oncommit, oncommit);
   READ_STRING_FIELD(tablespacename, tablespacename, tablespacename);
@@ -2245,15 +2300,17 @@ _readConstraint(OUT_TYPE(Constraint, Constraint) msg)
   READ_STRING_FIELD(conname, conname, conname);
   READ_BOOL_FIELD(deferrable, deferrable, deferrable);
   READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
+  READ_BOOL_FIELD(is_enforced, is_enforced, is_enforced);
   READ_BOOL_FIELD(skip_validation, skip_validation, skip_validation);
   READ_BOOL_FIELD(initially_valid, initially_valid, initially_valid);
   READ_BOOL_FIELD(is_no_inherit, is_no_inherit, is_no_inherit);
   READ_NODE_PTR_FIELD(raw_expr, raw_expr, raw_expr);
   READ_STRING_FIELD(cooked_expr, cooked_expr, cooked_expr);
   READ_CHAR_FIELD(generated_when, generated_when, generated_when);
-  READ_INT_FIELD(inhcount, inhcount, inhcount);
+  READ_CHAR_FIELD(generated_kind, generated_kind, generated_kind);
   READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
   READ_LIST_FIELD(keys, keys, keys);
+  READ_BOOL_FIELD(without_overlaps, without_overlaps, without_overlaps);
   READ_LIST_FIELD(including, including, including);
   READ_LIST_FIELD(exclusions, exclusions, exclusions);
   READ_LIST_FIELD(options, options, options);
@@ -2265,6 +2322,8 @@ _readConstraint(OUT_TYPE(Constraint, Constraint) msg)
   READ_SPECIFIC_NODE_PTR_FIELD(RangeVar, range_var, pktable, pktable, pktable);
   READ_LIST_FIELD(fk_attrs, fk_attrs, fk_attrs);
   READ_LIST_FIELD(pk_attrs, pk_attrs, pk_attrs);
+  READ_BOOL_FIELD(fk_with_period, fk_with_period, fk_with_period);
+  READ_BOOL_FIELD(pk_with_period, pk_with_period, pk_with_period);
   READ_CHAR_FIELD(fk_matchtype, fk_matchtype, fk_matchtype);
   READ_CHAR_FIELD(fk_upd_action, fk_upd_action, fk_upd_action);
   READ_CHAR_FIELD(fk_del_action, fk_del_action, fk_del_action);
@@ -2764,6 +2823,7 @@ _readIndexStmt(OUT_TYPE(IndexStmt, IndexStmt) msg)
   READ_BOOL_FIELD(nulls_not_distinct, nulls_not_distinct, nulls_not_distinct);
   READ_BOOL_FIELD(primary, primary, primary);
   READ_BOOL_FIELD(isconstraint, isconstraint, isconstraint);
+  READ_BOOL_FIELD(iswithoutoverlaps, iswithoutoverlaps, iswithoutoverlaps);
   READ_BOOL_FIELD(deferrable, deferrable, deferrable);
   READ_BOOL_FIELD(initdeferred, initdeferred, initdeferred);
   READ_BOOL_FIELD(transformed, transformed, transformed);
@@ -2828,6 +2888,7 @@ _readFunctionParameter(OUT_TYPE(FunctionParameter, FunctionParameter) msg)
   READ_SPECIFIC_NODE_PTR_FIELD(TypeName, type_name, arg_type, argType, argType);
   READ_ENUM_FIELD(FunctionParameterMode, mode, mode, mode);
   READ_NODE_PTR_FIELD(defexpr, defexpr, defexpr);
+  READ_INT_FIELD(location, location, location);
   return node;
 }
 
