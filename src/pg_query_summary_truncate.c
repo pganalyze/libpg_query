@@ -285,9 +285,9 @@ cmp_possible_truncations(const ListCell *a, const ListCell *b)
 static void
 global_replace(char *str, char *pattern, char *replacement)
 {
-	size_t plen = strlen(pattern);
-	size_t rlen = strlen(replacement);
-	char *s = str;
+	size_t		plen = strlen(pattern);
+	size_t		rlen = strlen(replacement);
+	char	   *s = str;
 
 	Assert(plen >= rlen);
 
@@ -295,7 +295,7 @@ global_replace(char *str, char *pattern, char *replacement)
 	{
 		memcpy(s, replacement, rlen);
 
-		// Shift remainder of the string if needed
+		/* Shift remainder of the string if needed */
 		if (plen > rlen)
 			memmove(s + rlen, s + plen, strlen(s + plen) + 1);
 
