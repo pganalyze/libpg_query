@@ -32,15 +32,17 @@ pg_query_is_utility_stmt(const char *query)
 
 	PgQueryInternalParsetreeAndError parsetree_and_error = pg_query_raw_parse(query, 0);
 
-	size_t length = list_length(parsetree_and_error.tree);
-	result.length = 0;
-	result.items = malloc(sizeof(bool) * length);
+	if (parsetree_and_error.error) {
+		result.error = parsetree_and_error.error;
+	} else {
+		result.length = list_length(parsetree_and_error.tree);
+		result.items = malloc(sizeof(bool) * result.length);
 
-	ListCell *lc;
-	foreach(lc, parsetree_and_error.tree) {
-		RawStmt *raw_stmt = lfirst_node(RawStmt, lc);
-		result.items[result.length] = is_utility_stmt_actual(raw_stmt);
-		result.length++;
+		ListCell *lc;
+		foreach(lc, parsetree_and_error.tree) {
+			RawStmt *raw_stmt = lfirst_node(RawStmt, lc);
+			result.items[foreach_current_index(lc)] = is_utility_stmt_actual(raw_stmt);
+		}
 	}
 
 	if (parsetree_and_error.stderr_buffer)

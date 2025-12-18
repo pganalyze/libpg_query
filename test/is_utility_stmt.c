@@ -5,8 +5,6 @@
 
 #include "test/framework/main.h"
 
-extern PgQueryIsUtilityResult pg_query_is_utility_stmt(const char *query);
-
 struct LastResult {
 	bool has_result;
 	PgQueryIsUtilityResult result;
