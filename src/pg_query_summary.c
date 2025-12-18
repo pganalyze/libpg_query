@@ -140,13 +140,13 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 				break;
 			}
 
-        case T_CallStmt:
-            {
-                CallStmt *stmt = castNode(CallStmt, node);
+		case T_CallStmt:
+			{
+				CallStmt   *stmt = castNode(CallStmt, node);
 
-                if (stmt->funccall)
-                    return pg_query_summary_walk_impl((Node *) stmt->funccall, state);
-            }
+				if (stmt->funccall)
+					return pg_query_summary_walk_impl((Node *) stmt->funccall, state);
+			}
 
 		case T_SelectStmt:
 			{
@@ -206,7 +206,7 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 
 		case T_MergeStmt:
 			{
-				MergeStmt *stmt = castNode(MergeStmt, node);
+				MergeStmt  *stmt = castNode(MergeStmt, node);
 
 				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
 				break;
@@ -832,7 +832,7 @@ summary_to_protobuf(PgQuerySummaryParseResult * result, Summary * summary)
 		pfree(sr.filter_columns[i]);
 	pfree(sr.filter_columns);
 
-	pfree (sr.truncated_query);
+	pfree(sr.truncated_query);
 }
 
 /*
