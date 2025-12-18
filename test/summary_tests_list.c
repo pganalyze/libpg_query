@@ -91,3 +91,4 @@
 &it_ignores_target_list_columns,
 &it_ignores_order_by_columns,
 &it_handles_all_tables_in_schema,
+&it_handles_schema_qualified_columns,

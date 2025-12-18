@@ -1067,3 +1067,9 @@ void it_handles_all_tables_in_schema(TestState* test_state) {
 	Summary result = summary("GRANT SELECT ON ALL TABLES IN SCHEMA public TO myrole", 0, -1);
 	TEST_ASSERT_LIST_LENGTH(result.filter_columns, 0);
 }
+
+void it_handles_schema_qualified_columns(TestState* test_state) {
+	Summary result = summary("SELECT * FROM b.c WHERE a.b.c = 1", 0, -1);
+	TEST_ASSERT_LIST_LENGTH(result.filter_columns, 1);
+	TEST_SUMMARY_ASSERT_FILTER_COLUMN(result.filter_columns, "a", "b", "c");
+}

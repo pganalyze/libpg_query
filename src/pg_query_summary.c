@@ -537,7 +537,7 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 				else if (num_fields == 3)
 				{
 					schema_name = linitial(ref->fields);
-					table_name = castNode(String, list_nth_cell(ref->fields, 1));
+					table_name = lsecond_node(String, ref->fields);
 				}
 
 				FilterColumn *fc = palloc(sizeof(FilterColumn));
