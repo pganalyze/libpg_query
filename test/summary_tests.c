@@ -1062,3 +1062,8 @@ void it_ignores_order_by_columns(TestState* test_state) {
 	TEST_SUMMARY_ASSERT_FILTER_COLUMN(result.filter_columns, NULL, "x", "y");
 	TEST_SUMMARY_ASSERT_FILTER_COLUMN(result.filter_columns, NULL, "x", "z");
 }
+
+void it_handles_all_tables_in_schema(TestState* test_state) {
+	Summary result = summary("GRANT SELECT ON ALL TABLES IN SCHEMA public TO myrole", 0, -1);
+	TEST_ASSERT_LIST_LENGTH(result.filter_columns, 0);
+}

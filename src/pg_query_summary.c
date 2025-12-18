@@ -412,7 +412,8 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 
 							foreach(lc, stmt->objects)
 							{
-								add_range_var(lfirst(lc), CONTEXT_DDL, state);
+								if (IsA(lfirst(lc), RangeVar))
+									add_range_var(lfirst(lc), CONTEXT_DDL, state);
 							}
 							break;
 						}

@@ -90,3 +90,4 @@
 &it_finds_unqualified_names_in_intersect_all_query,
 &it_ignores_target_list_columns,
 &it_ignores_order_by_columns,
+&it_handles_all_tables_in_schema,
