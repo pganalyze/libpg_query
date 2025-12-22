@@ -11,7 +11,8 @@ static
 bool
 is_utility_stmt_actual(RawStmt *raw_stmt)
 {
-	switch (nodeTag(raw_stmt->stmt)) {
+	switch (nodeTag(raw_stmt->stmt))
+	{
 		case T_SelectStmt:
 		case T_InsertStmt:
 		case T_UpdateStmt:
@@ -32,15 +33,21 @@ pg_query_is_utility_stmt(const char *query)
 
 	PgQueryInternalParsetreeAndError parsetree_and_error = pg_query_raw_parse(query, 0);
 
-	if (parsetree_and_error.error) {
+	if (parsetree_and_error.error)
+	{
 		result.error = parsetree_and_error.error;
-	} else {
+	}
+	else
+	{
+		ListCell   *lc;
+
 		result.length = list_length(parsetree_and_error.tree);
 		result.items = malloc(sizeof(bool) * result.length);
 
-		ListCell *lc;
-		foreach(lc, parsetree_and_error.tree) {
-			RawStmt *raw_stmt = lfirst_node(RawStmt, lc);
+		foreach(lc, parsetree_and_error.tree)
+		{
+			RawStmt    *raw_stmt = lfirst_node(RawStmt, lc);
+
 			result.items[foreach_current_index(lc)] = is_utility_stmt_actual(raw_stmt);
 		}
 	}
