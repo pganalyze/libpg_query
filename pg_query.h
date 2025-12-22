@@ -146,7 +146,6 @@ PgQueryIsUtilityResult pg_query_is_utility_stmt(const char *query);
 
 PgQuerySummaryParseResult pg_query_summary(const char* input, int parser_options, int truncate_limit);
 
-void pg_query_free_is_utility_result(PgQueryIsUtilityResult result);
 void pg_query_free_normalize_result(PgQueryNormalizeResult result);
 void pg_query_free_scan_result(PgQueryScanResult result);
 void pg_query_free_parse_result(PgQueryParseResult result);
@@ -156,6 +155,7 @@ void pg_query_free_deparse_comments_result(PgQueryDeparseCommentsResult result);
 void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
+void pg_query_free_is_utility_result(PgQueryIsUtilityResult result);
 void pg_query_free_summary_parse_result(PgQuerySummaryParseResult result);
 
 // Optional, cleans up the top-level memory context (automatically done for threads that exit)
