@@ -63,5 +63,8 @@ pg_query_is_utility_stmt(const char *query)
 void
 pg_query_free_is_utility_result(PgQueryIsUtilityResult result)
 {
+	if (result.error)
+		pg_query_free_error(result.error);
+
 	free(result.items);
 }
