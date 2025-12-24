@@ -47,6 +47,10 @@ void remove_node_locations(char *parse_tree_json)
 	remove_numeric_key(parse_tree_json, "location");
 	remove_numeric_key(parse_tree_json, "name_location");
 	remove_numeric_key(parse_tree_json, "stmt_location");
+	remove_numeric_key(parse_tree_json, "rexpr_list_start");
+	remove_numeric_key(parse_tree_json, "rexpr_list_end");
+	remove_numeric_key(parse_tree_json, "list_start");
+	remove_numeric_key(parse_tree_json, "list_end");
 }
 
 int run_test(const char *query, bool compare_query_text, bool pretty_print) {
@@ -361,6 +365,7 @@ const char* deparseDepeszFilenames[] =
 };
 size_t deparseDepeszFilenameCount = sizeof(deparseDepeszFilenames) / sizeof(deparseDepeszFilenames[0]);
 
+// This intentionally omits numerology.sql because it contains multiple sections with error cases
 const char* regressFilenames[] = {
 	"advisory_lock.sql",
 	"aggregates.sql",
@@ -433,7 +438,8 @@ const char* regressFilenames[] = {
 	"foreign_data.sql",
 	"foreign_key.sql",
 	"functional_deps.sql",
-	"generated.sql",
+	"generated_stored.sql",
+	"generated_virtual.sql",
 	"geometry.sql",
 	"gin.sql",
 	"gist.sql",
@@ -474,6 +480,7 @@ const char* regressFilenames[] = {
 	"lseg.sql",
 	"macaddr.sql",
 	"macaddr8.sql",
+	"maintain_every.sql",
 	"matview.sql",
 	"md5.sql",
 	"memoize.sql",
@@ -486,6 +493,7 @@ const char* regressFilenames[] = {
 	"mvcc.sql",
 	"name.sql",
 	"namespace.sql",
+	"numa.sql",
 	"numeric.sql",
 	"numeric_big.sql",
 	"object_address.sql",
@@ -512,6 +520,7 @@ const char* regressFilenames[] = {
 	"privileges.sql",
 	"psql.sql",
 	"psql_crosstab.sql",
+	"psql_pipeline.sql",
 	"publication.sql",
 	"random.sql",
 	"rangefuncs.sql",
@@ -543,6 +552,7 @@ const char* regressFilenames[] = {
 	"sqljson_queryfuncs.sql",
 	"stats.sql",
 	"stats_ext.sql",
+	"stats_import.sql",
 	"strings.sql",
 	"subscription.sql",
 	"subselect.sql",
@@ -580,6 +590,7 @@ const char* regressFilenames[] = {
 	"varchar.sql",
 	"window.sql",
 	"with.sql",
+	"without_overlaps.sql",
 	"write_parallel.sql",
 	"xid.sql",
 	"xml.sql",
