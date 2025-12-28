@@ -38,7 +38,7 @@ pg_query_deparse_protobuf_opts(PgQueryProtobuf parse_tree, PostgresDeparseOpts o
 
 		foreach(lc, stmts)
 		{
-			deparseRawStmtOpts(&str, castNode(RawStmt, lfirst(lc)), opts);
+			deparseRawStmtOpts(&str, castNode(RawStmt, lfirst(lc)), &opts);
 			if (lnext(stmts, lc))
 				appendStringInfoString(&str, "; ");
 		}

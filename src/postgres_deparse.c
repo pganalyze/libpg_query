@@ -152,7 +152,7 @@ typedef struct DeparseState
 	List *result_parts;
 
 	/* Deparse options originally passed in */
-	PostgresDeparseOpts opts;
+	PostgresDeparseOpts *opts;
 
 	/* Set of indexes of comments already placed in the output query */
 	Bitmapset *emitted_comments;
@@ -323,7 +323,7 @@ makeDeparseStatePart(DeparseState *state, DeparseStateNestingLevel *level, Depar
 	part->str = makeStringInfo();
 	part->indent = level->base_indent;
 	if (indent_mode != DEPARSE_PART_NO_INDENT)
-		part->indent += state->opts.indent_size;
+		part->indent += state->opts->indent_size;
 	part->mergeable = indent_mode == DEPARSE_PART_INDENT_AND_MERGE;
 	return part;
 }
@@ -443,7 +443,7 @@ deparseAppendPart(DeparseState *state, bool deduplicate)
 static void
 deparseAppendCommaAndPart(DeparseState *state)
 {
-	if (state->opts.commas_start_of_line)
+	if (state->opts->commas_start_of_line)
 	{
 		deparseAppendPart(state, true);
 		deparseAppendStringInfoString(state, ", ");
@@ -474,25 +474,25 @@ deparseAppendPartGroup(DeparseState *state, const char *keyword, DeparsePartInde
 static void
 deparseAppendCommentsIfNeeded(DeparseState *state, ParseLoc location)
 {
-	for (int i = 0; i < state->opts.comment_count; i++)
+	for (int i = 0; i < state->opts->comment_count; i++)
 	{
 		if (bms_is_member(i, state->emitted_comments))
 			continue;
 
-		PostgresDeparseComment *comment = state->opts.comments[i];
+		PostgresDeparseComment *comment = state->opts->comments[i];
 		if (comment->match_location > location)
 			continue;
 
 		// Emit one less leading newline if we already emitted one for formatting reasons
 		int newlines_before_comment = comment->newlines_before_comment;
-		if (state->opts.pretty_print && newlines_before_comment > 0 &&
+		if (state->opts->pretty_print && newlines_before_comment > 0 &&
 			deparseGetCurrentPartGroup(state)->keyword != NULL &&
 			deparseGetCurrentStringInfo(state)->len == 0)
 			newlines_before_comment -= 1;
 
 		for (int j = 0; j < newlines_before_comment; j++)
 		{
-			if (state->opts.pretty_print)
+			if (state->opts->pretty_print)
 				deparseAppendPart(state, false);
 			else
 				deparseAppendStringInfoChar(state, '\n');
@@ -505,7 +505,7 @@ deparseAppendCommentsIfNeeded(DeparseState *state, ParseLoc location)
 
 		for (int j = 0; j < comment->newlines_after_comment; j++)
 		{
-			if (state->opts.pretty_print)
+			if (state->opts->pretty_print)
 				deparseAppendPart(state, false);
 			else
 				deparseAppendStringInfoChar(state, '\n');
@@ -533,10 +533,10 @@ deparseEmit(DeparseState *state, StringInfo str)
 		DeparseStatePart *part = (DeparseStatePart *) lfirst(lc);
 		bool last_part = list_cell_number(state->result_parts, lc) == list_length(state->result_parts) - 1;
 
-		if (!state->opts.pretty_print && part->str->len > 0 && (part->str->data[0] == ')' || part->str->data[0] == ';'))
+		if (!state->opts->pretty_print && part->str->len > 0 && (part->str->data[0] == ')' || part->str->data[0] == ';'))
 			removeTrailingSpaceFromStr(str);
 
-		if (state->opts.pretty_print)
+		if (state->opts->pretty_print)
 		{
 			for (int i = 0; i < part->indent; i++)
 				appendStringInfoChar(str, ' ');
@@ -547,7 +547,7 @@ deparseEmit(DeparseState *state, StringInfo str)
 
 		if (!last_part)
 		{
-			if (state->opts.pretty_print)
+			if (state->opts->pretty_print)
 				appendStringInfoChar(str, '\n');
 			else if (str->data[str->len - 1] != '(')
 				appendStringInfoChar(str, ' ');
@@ -558,7 +558,7 @@ deparseEmit(DeparseState *state, StringInfo str)
 	list_free(state->result_parts);
 	state->result_parts = NIL;
 
-	if (state->opts.pretty_print && state->opts.trailing_newline)
+	if (state->opts->pretty_print && state->opts->trailing_newline)
 		appendStringInfoChar(str, '\n');
 }
 
@@ -570,9 +570,9 @@ deparseStateIncreaseNestingLevel(DeparseState *state)
 	if (parent)
 	{
 		DeparseStatePartGroup *part_group = deparseGetCurrentPartGroup(state);
-		level->base_indent = parent->base_indent + state->opts.indent_size;
+		level->base_indent = parent->base_indent + state->opts->indent_size;
 		if (part_group->indent_mode != DEPARSE_PART_NO_INDENT) /* Indent again if parts next to us are also indented */
-			level->base_indent += state->opts.indent_size;
+			level->base_indent += state->opts->indent_size;
 
 		/* Parts with nested elements don't get merged, even if otherwise permitted */
 		deparseMarkCurrentPartNonMergable(state);
@@ -602,7 +602,7 @@ deparseStateDecreaseNestingLevel(DeparseState *state, DeparseStateNestingLevel *
 				DeparseStatePart *part = (DeparseStatePart *) lfirst(lc2);
 				removeTrailingSpaceFromStr(target->str);
 				if (target->mergeable && part->mergeable &&
-					target->indent + target->str->len + 1 + part->str->len <= state->opts.max_line_length)
+					target->indent + target->str->len + 1 + part->str->len <= state->opts->max_line_length)
 				{
 					if (target->str->len > 0 && target->str->data[target->str->len - 1] != '(')
 						appendStringInfoChar(target->str, ' ');
@@ -3030,10 +3030,10 @@ void deparseRawStmt(StringInfo str, struct RawStmt *raw_stmt)
 {
 	PostgresDeparseOpts opts;
 	MemSet(&opts, 0, sizeof(PostgresDeparseOpts)); // zero initialized means pretty print = false
-	deparseRawStmtOpts(str, raw_stmt, opts);
+	deparseRawStmtOpts(str, raw_stmt, &opts);
 }
 
-void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDeparseOpts opts)
+void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDeparseOpts *opts)
 {
 	DeparseState *state = NULL;
 	if (raw_stmt->stmt == NULL)
@@ -3041,21 +3041,21 @@ void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDepars
 
 	state = palloc0(sizeof(DeparseState));
 	state->opts = opts;
-	if (state->opts.indent_size == 0)
-		state->opts.indent_size = 4;
-	if (state->opts.max_line_length == 0)
-		state->opts.max_line_length = 80;
+	if (state->opts->indent_size == 0)
+		state->opts->indent_size = 4;
+	if (state->opts->max_line_length == 0)
+		state->opts->max_line_length = 80;
 
 	/* Check for any comments at the start of the statement */
-	if (state->opts.comment_count > 0)
+	if (state->opts->comment_count > 0)
 	{
 		/*
 		 * Filter out comments that are placed before this statement starts, this
 		 * avoids emitting comments multiple times in multi-statement queries.
 		 */
-		for (int i = 0; i < state->opts.comment_count; i++)
+		for (int i = 0; i < state->opts->comment_count; i++)
 		{
-			if (state->opts.comments[i]->match_location < raw_stmt->stmt_location)
+			if (state->opts->comments[i]->match_location < raw_stmt->stmt_location)
 				state->emitted_comments = bms_add_member(state->emitted_comments, i);
 		}
 

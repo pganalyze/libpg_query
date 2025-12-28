@@ -521,7 +521,7 @@ deparse_raw_stmt_list(List *stmts)
 
 	foreach(lc, stmts)
 	{
-		deparseRawStmtOpts(str, castNode(RawStmt, lfirst(lc)), opts);
+		deparseRawStmtOpts(str, castNode(RawStmt, lfirst(lc)), &opts);
 		if (lnext(stmts, lc))
 			appendStringInfoString(str, "; ");
 	}
