@@ -827,6 +827,16 @@
 #define HAVE_XLOCALE_H 1
 #endif
 
+/*
+ * Assume we don't have copyfile.h on non-MacOS.
+ */
+#undef HAVE_COPYFILE
+#undef HAVE_COPYFILE_H
+#ifdef __APPLE__
+#define HAVE_COPYFILE 1
+#define HAVE_COPYFILE_H 1
+#endif
+
 /* Support gcc earlier than 4.6.0 and MSVC */
 #undef HAVE__STATIC_ASSERT
 
@@ -885,8 +895,6 @@
 
 /* Windows */
 #if defined(_WIN32) || defined(_WIN64)
-#undef HAVE_COPYFILE
-#undef HAVE_COPYFILE_H
 #undef HAVE_DECL_F_FULLFSYNC
 #define HAVE_DECL_F_FULLFSYNC 0
 #undef HAVE_DECL_PREADV
