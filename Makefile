@@ -262,8 +262,7 @@ ifeq ($(VALGRIND),1)
 else
 	test/complex
 	test/concurrency
-# TODO: Deparser has known diffs
-#	test/deparse
+	test/deparse
 	test/fingerprint
 	test/fingerprint_opts
 	test/is_utility_stmt

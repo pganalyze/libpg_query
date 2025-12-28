@@ -10,6 +10,8 @@
 
 #include "protobuf/pg_query.pb-c.h"
 
+static PostgresDeparseOpts * copy_deparse_opts_for_stmt(RawStmt *raw_stmt, PostgresDeparseOpts * opts, size_t start, size_t end);
+
 PgQueryDeparseResult
 pg_query_deparse_protobuf(PgQueryProtobuf parse_tree)
 {
@@ -23,23 +25,35 @@ PgQueryDeparseResult
 pg_query_deparse_protobuf_opts(PgQueryProtobuf parse_tree, PostgresDeparseOpts opts)
 {
 	PgQueryDeparseResult result = {0};
-	StringInfoData str;
-	MemoryContext ctx;
-	List	   *stmts;
-	ListCell   *lc;
-
-	ctx = pg_query_enter_memory_context();
+	MemoryContext ctx = pg_query_enter_memory_context();
 
 	PG_TRY();
 	{
-		stmts = pg_query_protobuf_to_nodes(parse_tree);
+		StringInfoData str;
+		List	   *stmts = pg_query_protobuf_to_nodes(parse_tree);
+		size_t		prev_end = 0;
 
 		initStringInfo(&str);
 
-		foreach(lc, stmts)
+		foreach_ptr(RawStmt, raw_stmt, stmts)
 		{
-			deparseRawStmtOpts(&str, castNode(RawStmt, lfirst(lc)), &opts);
-			if (lnext(stmts, lc))
+			PostgresDeparseOpts *stmt_opts = &opts;
+			bool		is_last = foreach_current_index(raw_stmt) == (list_length(stmts) - 1);
+
+			/*
+			 * If we have more than one statement, and we have comments, we
+			 * split them up by statement
+			 */
+			if (list_length(stmts) > 1 && opts.comment_count > 0)
+			{
+				size_t		end = is_last ? INT_MAX : (raw_stmt->stmt_location + raw_stmt->stmt_len);
+
+				stmt_opts = copy_deparse_opts_for_stmt(raw_stmt, &opts, prev_end, end);
+				prev_end = end;
+			}
+
+			deparseRawStmtOpts(&str, raw_stmt, stmt_opts);
+			if (!is_last)
 				appendStringInfoString(&str, "; ");
 		}
 		result.query = strdup(str.data);
@@ -72,6 +86,28 @@ pg_query_deparse_protobuf_opts(PgQueryProtobuf parse_tree, PostgresDeparseOpts o
 	pg_query_exit_memory_context(ctx);
 
 	return result;
+}
+
+static PostgresDeparseOpts *
+copy_deparse_opts_for_stmt(RawStmt *raw_stmt, PostgresDeparseOpts * opts, size_t start, size_t end)
+{
+	PostgresDeparseOpts *stmt_opts = palloc(sizeof(PostgresDeparseOpts));
+
+	memcpy(stmt_opts, opts, sizeof(PostgresDeparseOpts));
+
+	stmt_opts->comments = palloc0(sizeof(PostgresDeparseComment *) * opts->comment_count);
+	stmt_opts->comment_count = 0;
+
+	for (int i = 0; i < opts->comment_count; i++)
+	{
+		if (opts->comments[i]->match_location >= start && opts->comments[i]->match_location < end)
+		{
+			stmt_opts->comments[stmt_opts->comment_count] = opts->comments[i];
+			stmt_opts->comment_count++;
+		}
+	}
+
+	return stmt_opts;
 }
 
 void

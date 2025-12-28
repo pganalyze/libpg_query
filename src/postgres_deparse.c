@@ -3049,16 +3049,6 @@ void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDepars
 	/* Check for any comments at the start of the statement */
 	if (state->opts->comment_count > 0)
 	{
-		/*
-		 * Filter out comments that are placed before this statement starts, this
-		 * avoids emitting comments multiple times in multi-statement queries.
-		 */
-		for (int i = 0; i < state->opts->comment_count; i++)
-		{
-			if (state->opts->comments[i]->match_location < raw_stmt->stmt_location)
-				state->emitted_comments = bms_add_member(state->emitted_comments, i);
-		}
-
 		deparseStateIncreaseNestingLevel(state);
 		deparseAppendCommentsIfNeeded(state, raw_stmt->stmt_location);
 		deparseRemoveTrailingEmptyPart(state);
@@ -3066,6 +3056,15 @@ void deparseRawStmtOpts(StringInfo str, struct RawStmt *raw_stmt, PostgresDepars
 	}
 
 	deparseStmt(state, raw_stmt->stmt);
+
+	/* Check for any comments at the end of the statement */
+	if (state->opts->comment_count > 0)
+	{
+		deparseStateIncreaseNestingLevel(state);
+		deparseAppendCommentsIfNeeded(state, INT_MAX);
+		deparseRemoveTrailingEmptyPart(state);
+		deparseStateDecreaseNestingLevel(state, NULL);
+	}
 
 	deparseEmit(state, str);
 
