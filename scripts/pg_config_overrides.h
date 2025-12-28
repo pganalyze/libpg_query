@@ -3,11 +3,10 @@
  *
  * Note this is required on older MacOS to avoid "unknown type name 'locale_t'"
  */
-#undef LOCALE_T_IN_XLOCALE
+#undef HAVE_XLOCALE_H
 #ifdef __APPLE__
-#define LOCALE_T_IN_XLOCALE 1
+#define HAVE_XLOCALE_H 1
 #endif
-#undef WCSTOMBS_L_IN_XLOCALE
 
 /* Support gcc earlier than 4.6.0 and MSVC */
 #undef HAVE__STATIC_ASSERT
