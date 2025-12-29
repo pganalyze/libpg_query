@@ -147,8 +147,11 @@ static bool match_prosrc_to_literal(const char *prosrc, const char *literal,
  *
  * Returns true if a syntax error was processed, false if not.
  */
-bool function_parse_error_transpose(const char *prosrc) { return false; }
 
+bool
+function_parse_error_transpose(const char *prosrc)
+{
+return false;}
 
 /*
  * Try to locate the string literal containing the function body in the

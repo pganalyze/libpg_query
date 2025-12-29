@@ -562,8 +562,12 @@ valgrind_report_error_query(const char *query)
  * return; another interrupt could have arrived.  But we promise that
  * any pre-existing one will have been serviced.)
  */
-void ProcessInterrupts(void) {}
 
+void
+ProcessInterrupts(void)
+{
+	/* Do nothing */
+}
 
 /*
  * GUC check_hook for client_connection_check_interval

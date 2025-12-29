@@ -1197,8 +1197,8 @@ extern bool plpgsql_check_asserts;
 #define PLPGSQL_XCHECK_STRICTMULTIASSIGNMENT	(1 << 3)
 #define PLPGSQL_XCHECK_ALL						((int) ~0)
 
-extern int	plpgsql_extra_warnings;
-extern int	plpgsql_extra_errors;
+extern __thread int plpgsql_extra_warnings;
+extern __thread int plpgsql_extra_errors;
 
 extern __thread bool plpgsql_check_syntax;
 extern __thread bool plpgsql_DumpExecTree;

@@ -586,7 +586,6 @@ DECLARE
  prior ALIAS FOR old;
  updated ALIAS FOR new;
 BEGIN
- RETURN;
 END;
 $$
   LANGUAGE plpgsql;

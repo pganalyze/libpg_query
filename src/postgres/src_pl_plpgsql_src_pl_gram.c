@@ -12,11 +12,11 @@
  * - read_sql_stmt
  * - read_datatype
  * - parse_datatype
+ * - plpgsql_sql_error_callback
  * - read_sql_expression
  * - read_sql_construct
  * - make_plpgsql_expr
  * - check_sql_expr
- * - plpgsql_sql_error_callback
  * - check_assignable
  * - tok_is_keyword
  * - NameOfDatum
@@ -6300,31 +6300,35 @@ plpgsql_sql_error_callback(void *arg)
  * This is handled the same as in check_sql_expr(), and we likewise
  * expect that the given string is a copy from the source text.
  */
+static PLpgSQL_type *
+parse_datatype(const char *string, int location, yyscan_t yyscanner)
+{
+	TypeName   *typeName;
+	Oid			type_id;
+	int32		typmod;
+	sql_error_callback_arg cbarg;
+	ErrorContextCallback syntax_errcontext;
 
-#include "catalog/pg_collation_d.h"
-static PLpgSQL_type * parse_datatype(const char *string, int location, yyscan_t yyscanner){
-	PLpgSQL_type *typ;
+	cbarg.location = location;
+	cbarg.yyscanner = yyscanner;
 
-	/* Ignore trailing spaces */
-	size_t len = strlen(string);
-	while (len > 0 && scanner_isspace(string[len - 1])) --len;
+	syntax_errcontext.callback = plpgsql_sql_error_callback;
+	syntax_errcontext.arg = &cbarg;
+	syntax_errcontext.previous = error_context_stack;
+	error_context_stack = &syntax_errcontext;
 
-	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
-	typ->typname = pstrdup(string);
-	typ->ttype = pg_strncasecmp(string, "RECORD", len) == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
-	if (pg_strncasecmp(string, "REFCURSOR", len) == 0 || pg_strncasecmp(string, "CURSOR", len) == 0)
-	{
-		typ->typoid = REFCURSOROID;
-	}
-	else if (pg_strncasecmp(string, "TEXT", len) == 0)
-	{
-		typ->typoid = TEXTOID;
-		typ->collation = DEFAULT_COLLATION_OID;
-	}
-	return typ;
+	/* Let the main parser try to parse it under standard SQL rules */
+	typeName = typeStringToTypeName(string, NULL);
+	typenameTypeIdAndMod(NULL, typeName, &type_id, &typmod);
+
+	/* Restore former ereport callback */
+	error_context_stack = syntax_errcontext.previous;
+
+	/* Okay, build a PLpgSQL_type data structure for it */
+	return plpgsql_build_datatype(type_id, typmod,
+								  plpgsql_curr_compile->fn_input_collation,
+								  typeName);
 }
-
-
 
 /*
  * Check block starting and ending labels match.

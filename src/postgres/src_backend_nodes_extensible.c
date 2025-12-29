@@ -65,10 +65,7 @@ typedef struct
 const ExtensibleNodeMethods *
 GetExtensibleNodeMethods(const char *extnodename, bool missing_ok)
 {
-	return NULL;
-}
-
-
+return NULL;}
 
 /*
  * Get the methods for a given name of CustomScanMethods

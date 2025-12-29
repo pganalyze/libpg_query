@@ -62,8 +62,8 @@ class Runner
     @blocklist << symbol
   end
 
-  def mock(symbol, code)
-    @mock[symbol] = code
+  def mock(symbol, code = nil, add_definition = true)
+    @mock[symbol] = code ? [code, add_definition] : ["\n" + File.read(File.join(__dir__, 'mocks', symbol + '.c')) + "\n", false]
   end
 
   def run
@@ -431,7 +431,16 @@ class Runner
         skipped_code = full_code[(pos[0]-1)...pos[1]]
 
         if @mock.key?(symbol)
-          str += "\n" + @mock[symbol] + "\n"
+          mock_code, mock_add_definition = @mock[symbol]
+          str += "\n" + skipped_code.split('{').first + "{\n" if mock_add_definition
+          if mock_code == :error_not_implemented
+            str += "\tAssert(false); elog(ERROR, \"Not implemented\");\n"
+          elsif mock_code == :do_nothing
+            str += "\t/* Do nothing */\n"
+          else
+            str += mock_code
+          end
+          str += "}" if mock_add_definition
         elsif @external_variables.include?(symbol) && symbols.include?(symbol)
           file_thread_local_variables << symbol
           if skipped_code.include?('static')
@@ -494,13 +503,19 @@ runner.run
 runner.blocklist('SearchSysCache')
 runner.blocklist('heap_open')
 runner.blocklist('relation_open')
-runner.blocklist('RelnameGetRelid')
 runner.blocklist('ProcessClientWriteInterrupt')
-runner.blocklist('typeStringToTypeName')
 runner.blocklist('LWLockAcquire')
 runner.blocklist('SPI_freeplan')
 runner.blocklist('get_ps_display')
 runner.blocklist('pq_beginmessage')
+
+# The following pull in unnecessary dependencies but could technically be permitted
+runner.blocklist('lookup_type_cache')
+runner.blocklist('get_database_name')
+runner.blocklist('AcceptInvalidationMessages')
+runner.blocklist('SharedInvalidMessageCounter')
+runner.blocklist('LockRelationOid')
+runner.blocklist('RangeVarGetRelidExtended')
 
 # We have to mock this as it calls `hash_search`, which eventually makes
 # calls down to `pgstat_report_wait_start` and `pgstat_report_wait_end`.
@@ -516,201 +531,57 @@ runner.blocklist('pq_beginmessage')
 #
 # Instead of tackling this directly, we just return `NULL` in the mock below,
 # observing that we do not need to support the registration of custom nodes.
-runner.mock('GetExtensibleNodeMethods', %(
-const ExtensibleNodeMethods *
-GetExtensibleNodeMethods(const char *extnodename, bool missing_ok)
-{
-	return NULL;
-}
-))
+runner.mock('GetExtensibleNodeMethods', 'return NULL;')
 
 # Mocks REQUIRED for basic operations (error handling, memory management)
-runner.mock('ProcessInterrupts', 'void ProcessInterrupts(void) {}') # Required by errfinish
+runner.mock('ProcessInterrupts', :do_nothing) # Required by errfinish
 runner.mock('PqCommMethods', 'const PQcommMethods *PqCommMethods = NULL;') # Required by errfinish
-runner.mock('proc_exit', 'void proc_exit(int code) { printf("Terminating process due to FATAL error\n"); exit(1); }') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
-runner.mock('send_message_to_server_log', 'static void send_message_to_server_log(ErrorData *edata) {}')
-runner.mock('send_message_to_frontend', 'static void send_message_to_frontend(ErrorData *edata) {}')
+runner.mock('proc_exit', 'printf("Terminating process due to FATAL error\n"); exit(1);') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
+runner.mock('send_message_to_server_log', :do_nothing)
+runner.mock('send_message_to_frontend', :do_nothing)
+runner.mock('GetUserId', 'return InvalidOid;') # Avoid assert that prevents InvalidOid
 
 # Mocks REQUIRED for PL/pgSQL parsing
-runner.mock('format_type_be', 'char * format_type_be(Oid type_oid) { return pstrdup("-"); }')
-runner.mock('build_row_from_class', 'static PLpgSQL_row *build_row_from_class(Oid classOid) { return NULL; }')
-runner.mock('plpgsql_build_datatype', %(
-PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname)
-{
-	PLpgSQL_type *typ;
-	char *ident = NULL, *ns = NULL;
-	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
-
-	typ->ttype = PLPGSQL_TTYPE_SCALAR;
-	typ->atttypmod = typmod;
-	typ->collation = collation;
-
-	if (origtypname) {
-		typ->typoid = origtypname->typeOid;
-
-		if (list_length(origtypname->names) == 1) {
-			ident = linitial_node(String, origtypname->names)->sval;
-		} else if (list_length(origtypname->names) == 2) {
-			ns = linitial_node(String, origtypname->names)->sval;
-			ident = lsecond_node(String, origtypname->names)->sval;
-			if (strcmp(ns, "pg_catalog") != 0)
-				typ->ttype = PLPGSQL_TTYPE_REC;
-		}
-	} else {
-		typ->typoid = typeOid;
-		ns = "pg_catalog";
-		switch(typeOid)
-		{
-			case BOOLOID:
-				ident = "boolean";
-				break;
-			case INT4OID:
-				ident = "integer";
-				break;
-			case TEXTOID:
-				ident = "text";
-				break;
-			case REFCURSOROID:
-				ident = "refcursor";
-				break;
-		}
-	}
-	if (ident) {
-		typ->typname = quote_qualified_identifier(ns, ident);
-	}
-	return typ;
-}
-))
-runner.mock('parse_datatype', %(
-#include "catalog/pg_collation_d.h"
-static PLpgSQL_type * parse_datatype(const char *string, int location, yyscan_t yyscanner){
-	PLpgSQL_type *typ;
-
-	/* Ignore trailing spaces */
-	size_t len = strlen(string);
-	while (len > 0 && scanner_isspace(string[len - 1])) --len;
-
-	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
-	typ->typname = pstrdup(string);
-	typ->ttype = pg_strncasecmp(string, "RECORD", len) == 0 ? PLPGSQL_TTYPE_REC : PLPGSQL_TTYPE_SCALAR;
-	if (pg_strncasecmp(string, "REFCURSOR", len) == 0 || pg_strncasecmp(string, "CURSOR", len) == 0)
-	{
-		typ->typoid = REFCURSOROID;
-	}
-	else if (pg_strncasecmp(string, "TEXT", len) == 0)
-	{
-		typ->typoid = TEXTOID;
-		typ->collation = DEFAULT_COLLATION_OID;
-	}
-	return typ;
-}
-))
-runner.mock('plpgsql_build_datatype_arrayof', %(
-PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype)
-{
-	if (dtype->typisarray)
-		return dtype;
-
-	PLpgSQL_type *array_type;
-	array_type = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
-
-	array_type->ttype = PLPGSQL_TTYPE_REC;
-	array_type->atttypmod = dtype->atttypmod;
-	array_type->collation = dtype->collation;
-
-	array_type->typisarray = true;
-
-	switch(dtype->typoid)
-	{
-		case BOOLOID:
-			array_type->typoid = BOOLARRAYOID;
-			array_type->typname = pstrdup("boolean[]");
-			break;
-		case INT4OID:
-			array_type->typoid = INT4ARRAYOID;
-			array_type->typname = pstrdup("integer[]");
-			break;
-		case TEXTOID:
-			array_type->typoid = TEXTARRAYOID;
-			array_type->typname = pstrdup("text[]");
-			break;
-		default:
-			array_type->typname = pstrdup("UNKNOWN");
-			break;
-	}
-	array_type->typoid = dtype->typoid;
-
-	return array_type;
-}
-))
-runner.mock('get_collation_oid', 'Oid get_collation_oid(List *name, bool missing_ok) { return DEFAULT_COLLATION_OID; }')
-runner.mock('plpgsql_parse_wordtype', 'PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }')
-runner.mock('plpgsql_parse_wordrowtype', 'PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }')
-runner.mock('plpgsql_parse_cwordtype', 'PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }')
-runner.mock('plpgsql_parse_cwordrowtype', 'PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }')
-runner.mock('function_parse_error_transpose', 'bool function_parse_error_transpose(const char *prosrc) { return false; }')
-runner.mock('free_expr', "static void free_expr(PLpgSQL_expr *expr, void *context) {}") # This would free a cached plan, which does not apply to us
-runner.mock('mmake_return_stmt', %(
-static PLpgSQL_stmt *
-make_return_stmt(int location, YYSTYPE *yylvalp, YYLTYPE *yyllocp, yyscan_t yyscanner)
-{
-	PLpgSQL_stmt_return *new;
-
-  Assert(plpgsql_curr_compile->fn_rettype == VOIDOID);
-
-	new = palloc0(sizeof(PLpgSQL_stmt_return));
-	new->cmd_type = PLPGSQL_STMT_RETURN;
-	new->lineno = plpgsql_location_to_lineno(location, yyscanner);
-	new->stmtid = ++plpgsql_curr_compile->nstatements;
-	new->expr = NULL;
-	new->retvarno = -1;
-
-  /*
-   * We want to special-case simple variable references for efficiency.
-   * So peek ahead to see if that's what we have.
-   */
-  int			tok = yylex(yylvalp, yyllocp, yyscanner);
-
-  if (tok == T_DATUM && plpgsql_peek(yyscanner) == ';' &&
-    (yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_VAR ||
-      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_PROMISE ||
-      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_ROW ||
-      yylvalp->wdatum.datum->dtype == PLPGSQL_DTYPE_REC))
-  {
-    new->retvarno = yylvalp->wdatum.datum->dno;
-    /* eat the semicolon token that we only peeked at above */
-    tok = yylex(yylvalp, yyllocp, yyscanner);
-    Assert(tok == ';');
-  }
-  else
-  {
-    /*
-      * Not (just) a variable name, so treat as expression.
-      *
-      * Note that a well-formed expression is _required_ here; anything
-      * else is a compile-time error.
-      */
-    plpgsql_push_back_token(tok, yylvalp, yyllocp, yyscanner);
-    new->expr = read_sql_expression(';', ";", yylvalp, yyllocp, yyscanner);
-  }
-
-	return (PLpgSQL_stmt *) new;
-}
-)) # We're always working with fn_rettype = VOIDOID, due to our use of plpgsql_compile_inline
+runner.mock('SearchSysCache1')
+runner.mock('GetSysCacheOid')
+runner.mock('typenameTypeMod', 'return -1;')
+runner.mock('LookupExplicitNamespace')
+runner.mock('object_aclcheck', 'return ACLCHECK_OK;')
+runner.mock('recomputeNamespacePath', 'activeSearchPath = list_make2_oid(PG_CATALOG_NAMESPACE, PG_PUBLIC_NAMESPACE);')
+runner.mock('ConditionalLockRelationOid', 'return true;')
+runner.mock('LockRelationOid', :do_nothing)
+runner.mock('UnlockRelationOid', :do_nothing)
+runner.mock('AcceptInvalidationMessages', :do_nothing)
+runner.mock('ReleaseSysCache', :do_nothing)
+runner.mock('build_row_from_class', :do_nothing)
+runner.mock('get_collation_oid', 'return DEFAULT_COLLATION_OID;')
+runner.mock('plpgsql_parse_wordtype')      # Stub returning a SCALAR PLpgSQL_type carrying "<ident>%TYPE" as typname
+runner.mock('plpgsql_parse_wordrowtype')   # Stub returning a SCALAR PLpgSQL_type carrying "<ident>%rowtype" as typname
+runner.mock('plpgsql_parse_cwordtype')     # Stub returning a SCALAR PLpgSQL_type carrying "<dotted.idents>%TYPE" as typname
+runner.mock('plpgsql_parse_cwordrowtype')  # Stub returning a SCALAR PLpgSQL_type carrying "<dotted.idents>%rowtype" as typname
+runner.mock('function_parse_error_transpose', 'return false;')
+runner.mock('TypeIsVisible', 'return true;')
+runner.mock('printTypmod', 'return psprintf("%s(%d)", typname, (int) typmod);') # Optionally does OidFunctionCall1Coll (which we don't support, so ignore that branch)
+runner.mock('assign_expr_collations', :do_nothing) # We need to skip this because we mock transformExpr (called by interpret_function_parameter_list)
+runner.mock('contain_var_clause', 'return false;') # We need to skip this because we mock transformExpr (called by interpret_function_parameter_list)
+runner.mock('transformExpr', 'return expr;') # Don't transform default expressions in parameters
+runner.mock('coerce_to_specific_type', 'return node;') # Don't handle default expression type coercion
+runner.mock('free_expr', :do_nothing) # This would free a cached plan, which does not apply to us
+runner.mock('build_datatype') # Adjusted to not call lookup_type_cache to reduce dependencies
+runner.mock('DeconstructQualifiedName') # Adjusted to not call get_database_name / check database name, avoid inval and lock handling
+runner.mock('LookupTypeNameExtended') # Adjusted to not resolve table names
+runner.mock('pg_detoast_datum', 'if (VARATT_IS_EXTENDED(datum))
+		elog(ERROR, "TOASTed values are not supported");
+	else
+		return datum;')
+runner.mock('pg_detoast_datum_packed', 'if (VARATT_IS_COMPRESSED(datum) || VARATT_IS_EXTERNAL(datum))
+		elog(ERROR, "TOASTed values are not supported");
+	else
+		return datum;')
 
 # Mocks REQUIRED for Windows support
-runner.mock('write_stderr', %(
-void
-write_stderr(const char *fmt,...)
-{
-	va_list	ap;
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	fflush(stderr);
-	va_end(ap);
-}
-)) # Avoid pulling in write_console/write_eventlog, and instead always output to stderr (like on POSIX)
-runner.mock('should_output_to_client', 'static inline bool should_output_to_client(int elevel) { return false; }') # Avoid pulling in postmaster.c, which has a bunch of Windows-specific code hidden behind a define
+runner.mock('write_stderr') # Avoid pulling in write_console/write_eventlog, and instead always output to stderr (like on POSIX)
+runner.mock('should_output_to_client', 'return false;') # Avoid pulling in postmaster.c, which has a bunch of Windows-specific code hidden behind a define
 
 ## ---
 
@@ -721,6 +592,24 @@ runner.deep_resolve('raw_parser')
 runner.deep_resolve('plpgsql_compile_inline')
 runner.deep_resolve('plpgsql_free_function_memory')
 runner.deep_resolve('quote_qualified_identifier')
+runner.deep_resolve('interpret_function_parameter_list')
+runner.deep_resolve('CreateTemplateTupleDesc')
+runner.deep_resolve('TupleDescInitEntry')
+runner.deep_resolve('TupleDescInitEntryCollation')
+runner.deep_resolve('LookupTypeName')
+runner.deep_resolve('typeTypeId')
+runner.deep_resolve('IsCatalogNamespace')
+runner.deep_resolve('text_to_cstring')
+runner.deep_resolve('varstr_levenshtein') # Required so varlena.c builds (needed for text_to_cstring)
+runner.deep_resolve('deconstruct_array_builtin')
+runner.deep_resolve('plpgsql_extra_errors')
+runner.deep_resolve('plpgsql_extra_warnings')
+runner.deep_resolve('TypeNameToString')
+runner.deep_resolve('get_base_element_type') # needed for build_datatype (dependency not detected due to mock)
+runner.deep_resolve('type_is_rowtype') # needed for build_datatype (dependency not detected due to mock)
+runner.deep_resolve('setup_parser_errposition_callback') # needed for LookupTypeNameExtended
+runner.deep_resolve('cancel_parser_errposition_callback') # needed for LookupTypeNameExtended
+runner.deep_resolve('TypenameGetTypidExtended') # needed for LookupTypeNameExtended
 
 # Basic Postgres needed to call parser
 runner.deep_resolve('SetDatabaseEncoding')

@@ -217,7 +217,7 @@ examples: $(EXAMPLES)
 	examples/normalize
 	examples/simple_error
 	examples/normalize_error
-#	examples/simple_plpgsql
+	examples/simple_plpgsql
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
@@ -277,8 +277,7 @@ else
 	test/summary
 	test/summary_truncate
 	# Output-based tests
-# TODO: PL/pgSQL parsing crashes
-#	test/parse_plpgsql
+	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 endif
 

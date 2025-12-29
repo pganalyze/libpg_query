@@ -1,5 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
+ * - quote_qualified_identifier
  * - quote_identifier
  * - quote_all_identifiers
  * - quote_qualified_identifier

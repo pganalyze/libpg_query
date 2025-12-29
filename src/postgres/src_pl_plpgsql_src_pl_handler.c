@@ -2,6 +2,8 @@
  * Symbols referenced in this file:
  * - plpgsql_variable_conflict
  * - plpgsql_print_strict_params
+ * - plpgsql_extra_errors
+ * - plpgsql_extra_warnings
  *--------------------------------------------------------------------
  */
 
@@ -53,7 +55,9 @@ __thread bool		plpgsql_print_strict_params = false;
 
 
 
+__thread int			plpgsql_extra_warnings;
 
+__thread int			plpgsql_extra_errors;
 
 
 /* Hook for plugins */

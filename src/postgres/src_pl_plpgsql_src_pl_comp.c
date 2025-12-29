@@ -15,6 +15,7 @@
  * - plpgsql_adddatum
  * - plpgsql_build_record
  * - plpgsql_build_datatype
+ * - build_datatype
  * - plpgsql_parse_tripword
  * - plpgsql_build_recfield
  * - plpgsql_parse_dblword
@@ -686,7 +687,17 @@ plpgsql_parse_tripword(char *word1, char *word2, char *word3,
  * Returns datatype struct.  Throws error if no match found for word.
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
+PLpgSQL_type *
+plpgsql_parse_wordtype(char *ident)
+{
+	PLpgSQL_type *typ;
+
+	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+	typ->typname = psprintf("%s%%TYPE", ident);
+	typ->ttype = PLPGSQL_TTYPE_SCALAR;
+	return typ;
+}
+
 
 
 
@@ -698,7 +709,17 @@ PLpgSQL_type * plpgsql_parse_wordtype(char *ident) { return NULL; }
  * latter case was intended.)
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
+PLpgSQL_type *
+plpgsql_parse_cwordtype(List *idents)
+{
+	PLpgSQL_type *typ;
+
+	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+	typ->typname = psprintf("%s%%TYPE", NameListToString(idents));
+	typ->ttype = PLPGSQL_TTYPE_SCALAR;
+	return typ;
+}
+
 
 
 /* ----------
@@ -706,7 +727,17 @@ PLpgSQL_type * plpgsql_parse_cwordtype(List *idents) { return NULL; }
  *					So word must be a table name.
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
+PLpgSQL_type *
+plpgsql_parse_wordrowtype(char *ident)
+{
+	PLpgSQL_type *typ;
+
+	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+	typ->typname = psprintf("%s%%rowtype", ident);
+	typ->ttype = PLPGSQL_TTYPE_SCALAR;
+	return typ;
+}
+
 
 
 /* ----------
@@ -714,7 +745,17 @@ PLpgSQL_type * plpgsql_parse_wordrowtype(char *ident) { return NULL; }
  *			So word must be a namespace qualified table name.
  * ----------
  */
-PLpgSQL_type * plpgsql_parse_cwordrowtype(List *idents) { return NULL; }
+PLpgSQL_type *
+plpgsql_parse_cwordrowtype(List *idents)
+{
+	PLpgSQL_type *typ;
+
+	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+	typ->typname = psprintf("%s%%rowtype", NameListToString(idents));
+	typ->ttype = PLPGSQL_TTYPE_SCALAR;
+	return typ;
+}
+
 
 
 /*
@@ -870,103 +911,165 @@ plpgsql_build_recfield(PLpgSQL_rec *rec, const char *fldname)
  * It can be NULL if the type could not be a composite type, or if it was
  * identified by OID to begin with (e.g., it's a function argument type).
  */
-
-PLpgSQL_type * plpgsql_build_datatype(Oid typeOid, int32 typmod, Oid collation, TypeName *origtypname)
+PLpgSQL_type *
+plpgsql_build_datatype(Oid typeOid, int32 typmod,
+					   Oid collation, TypeName *origtypname)
 {
+	HeapTuple	typeTup;
 	PLpgSQL_type *typ;
-	char *ident = NULL, *ns = NULL;
-	typ = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
 
-	typ->ttype = PLPGSQL_TTYPE_SCALAR;
-	typ->atttypmod = typmod;
-	typ->collation = collation;
+	typeTup = SearchSysCache1(TYPEOID, ObjectIdGetDatum(typeOid));
+	if (!HeapTupleIsValid(typeTup))
+		elog(ERROR, "cache lookup failed for type %u", typeOid);
 
-	if (origtypname) {
-		typ->typoid = origtypname->typeOid;
+	typ = build_datatype(typeTup, typmod, collation, origtypname);
 
-		if (list_length(origtypname->names) == 1) {
-			ident = linitial_node(String, origtypname->names)->sval;
-		} else if (list_length(origtypname->names) == 2) {
-			ns = linitial_node(String, origtypname->names)->sval;
-			ident = lsecond_node(String, origtypname->names)->sval;
-			if (strcmp(ns, "pg_catalog") != 0)
-				typ->ttype = PLPGSQL_TTYPE_REC;
-		}
-	} else {
-		typ->typoid = typeOid;
-		ns = "pg_catalog";
-		switch(typeOid)
-		{
-			case BOOLOID:
-				ident = "boolean";
-				break;
-			case INT4OID:
-				ident = "integer";
-				break;
-			case TEXTOID:
-				ident = "text";
-				break;
-			case REFCURSOROID:
-				ident = "refcursor";
-				break;
-		}
-	}
-	if (ident) {
-		typ->typname = quote_qualified_identifier(ns, ident);
-	}
+	ReleaseSysCache(typeTup);
+
 	return typ;
 }
-
-
 
 /*
  * Utility subroutine to make a PLpgSQL_type struct given a pg_type entry
  * and additional details (see comments for plpgsql_build_datatype).
  */
+static PLpgSQL_type *
+build_datatype(HeapTuple typeTup, int32 typmod,
+			   Oid collation, TypeName *origtypname)
+{
+	Form_pg_type typeStruct = (Form_pg_type) GETSTRUCT(typeTup);
+	PLpgSQL_type *typ;
+
+	if (!typeStruct->typisdefined)
+		ereport(ERROR,
+				(errcode(ERRCODE_UNDEFINED_OBJECT),
+				 errmsg("type \"%s\" is only a shell",
+						NameStr(typeStruct->typname))));
+
+	typ = (PLpgSQL_type *) palloc(sizeof(PLpgSQL_type));
+
+	typ->typname = pstrdup(NameStr(typeStruct->typname));
+	typ->typoid = typeStruct->oid;
+	switch (typeStruct->typtype)
+	{
+		case TYPTYPE_BASE:
+		case TYPTYPE_ENUM:
+		case TYPTYPE_RANGE:
+		case TYPTYPE_MULTIRANGE:
+			typ->ttype = PLPGSQL_TTYPE_SCALAR;
+			break;
+		case TYPTYPE_COMPOSITE:
+			typ->ttype = PLPGSQL_TTYPE_REC;
+			break;
+		case TYPTYPE_DOMAIN:
+			if (type_is_rowtype(typeStruct->typbasetype))
+				typ->ttype = PLPGSQL_TTYPE_REC;
+			else
+				typ->ttype = PLPGSQL_TTYPE_SCALAR;
+			break;
+		case TYPTYPE_PSEUDO:
+			if (typ->typoid == RECORDOID)
+				typ->ttype = PLPGSQL_TTYPE_REC;
+			else
+				typ->ttype = PLPGSQL_TTYPE_PSEUDO;
+			break;
+		default:
+			elog(ERROR, "unrecognized typtype: %d",
+				 (int) typeStruct->typtype);
+			break;
+	}
+	typ->typlen = typeStruct->typlen;
+	typ->typbyval = typeStruct->typbyval;
+	typ->typtype = typeStruct->typtype;
+	typ->collation = typeStruct->typcollation;
+	if (OidIsValid(collation) && OidIsValid(typ->collation))
+		typ->collation = collation;
+	/* Detect if type is true array, or domain thereof */
+	/* NB: this is only used to decide whether to apply expand_array */
+	if (typeStruct->typtype == TYPTYPE_BASE)
+	{
+		/*
+		 * This test should include what get_element_type() checks.  We also
+		 * disallow non-toastable array types (i.e. oidvector and int2vector).
+		 */
+		typ->typisarray = (IsTrueArrayType(typeStruct) &&
+						   typeStruct->typstorage != TYPSTORAGE_PLAIN);
+	}
+	else if (typeStruct->typtype == TYPTYPE_DOMAIN)
+	{
+		/* we can short-circuit looking up base types if it's not varlena */
+		typ->typisarray = (typeStruct->typlen == -1 &&
+						   typeStruct->typstorage != TYPSTORAGE_PLAIN &&
+						   OidIsValid(get_base_element_type(typeStruct->typbasetype)));
+	}
+	else
+		typ->typisarray = false;
+	typ->atttypmod = typmod;
+
+	/*
+	 * If it's a named composite type (or domain over one), find the typcache
+	 * entry and record the current tupdesc ID, so we can detect changes
+	 * (including drops).  We don't currently support on-the-fly replacement
+	 * of non-composite types, else we might want to do this for them too.
+	 */
+    // CHANGED: Not needed, and lookup_type_cache introduces unnecessary dependencies
+	/*if (typ->ttype == PLPGSQL_TTYPE_REC && typ->typoid != RECORDOID)
+	{
+		TypeCacheEntry *typentry;
+
+		typentry = lookup_type_cache(typ->typoid,
+									 TYPECACHE_TUPDESC |
+									 TYPECACHE_DOMAIN_BASE_INFO);
+		if (typentry->typtype == TYPTYPE_DOMAIN)
+			typentry = lookup_type_cache(typentry->domainBaseType,
+										 TYPECACHE_TUPDESC);
+		if (typentry->tupDesc == NULL)
+			ereport(ERROR,
+					(errcode(ERRCODE_WRONG_OBJECT_TYPE),
+					 errmsg("type %s is not composite",
+							format_type_be(typ->typoid))));
+
+		typ->origtypname = origtypname;
+		typ->tcache = typentry;
+		typ->tupdesc_id = typentry->tupDesc_identifier;
+	}
+	else*/
+	{
+		typ->origtypname = NULL;
+		typ->tcache = NULL;
+		typ->tupdesc_id = 0;
+	}
+
+	return typ;
+}
 
 
 /*
  * Build an array type for the element type specified as argument.
  */
-
-PLpgSQL_type * plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype)
+PLpgSQL_type *
+plpgsql_build_datatype_arrayof(PLpgSQL_type *dtype)
 {
+	Oid			array_typeid;
+
+	/*
+	 * If it's already an array type, use it as-is: Postgres doesn't do nested
+	 * arrays.
+	 */
 	if (dtype->typisarray)
 		return dtype;
 
-	PLpgSQL_type *array_type;
-	array_type = (PLpgSQL_type *) palloc0(sizeof(PLpgSQL_type));
+	array_typeid = get_array_type(dtype->typoid);
+	if (!OidIsValid(array_typeid))
+		ereport(ERROR,
+				(errcode(ERRCODE_UNDEFINED_OBJECT),
+				 errmsg("could not find array type for data type %s",
+						format_type_be(dtype->typoid))));
 
-	array_type->ttype = PLPGSQL_TTYPE_REC;
-	array_type->atttypmod = dtype->atttypmod;
-	array_type->collation = dtype->collation;
-
-	array_type->typisarray = true;
-
-	switch(dtype->typoid)
-	{
-		case BOOLOID:
-			array_type->typoid = BOOLARRAYOID;
-			array_type->typname = pstrdup("boolean[]");
-			break;
-		case INT4OID:
-			array_type->typoid = INT4ARRAYOID;
-			array_type->typname = pstrdup("integer[]");
-			break;
-		case TEXTOID:
-			array_type->typoid = TEXTARRAYOID;
-			array_type->typname = pstrdup("text[]");
-			break;
-		default:
-			array_type->typname = pstrdup("UNKNOWN");
-			break;
-	}
-	array_type->typoid = dtype->typoid;
-
-	return array_type;
+	/* Note we inherit typmod and collation, if any, from the element type */
+	return plpgsql_build_datatype(array_typeid, dtype->atttypmod,
+								  dtype->collation, NULL);
 }
-
-
 
 /*
  *	plpgsql_recognize_err_condition

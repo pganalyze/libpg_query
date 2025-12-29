@@ -19,6 +19,7 @@
  * - list_copy_deep
  * - list_copy_tail
  * - list_truncate
+ * - lappend_oid
  * - list_delete_last
  * - list_insert_nth
  * - insert_new_cell
@@ -373,7 +374,20 @@ lappend(List *list, void *datum)
 /*
  * Append an OID to the specified list. See lappend()
  */
+List *
+lappend_oid(List *list, Oid datum)
+{
+	Assert(IsOidList(list));
 
+	if (list == NIL)
+		list = new_list(T_OidList, 1);
+	else
+		new_tail_cell(list);
+
+	llast_oid(list) = datum;
+	check_list_invariants(list);
+	return list;
+}
 
 /*
  * Append a TransactionId to the specified list. See lappend()

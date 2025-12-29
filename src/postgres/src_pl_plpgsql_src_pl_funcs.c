@@ -696,8 +696,12 @@ free_stmt(PLpgSQL_stmt *stmt, void *context)
 	plpgsql_statement_tree_walker(stmt, free_stmt, free_expr, NULL);
 }
 
-static void free_expr(PLpgSQL_expr *expr, void *context) {}
 
+static void
+free_expr(PLpgSQL_expr *expr, void *context)
+{
+	/* Do nothing */
+}
 
 void
 plpgsql_free_function_memory(PLpgSQL_function *func)

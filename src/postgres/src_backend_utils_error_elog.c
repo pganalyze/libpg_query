@@ -41,10 +41,10 @@
  * - errposition
  * - internalerrposition
  * - internalerrquery
- * - geterrposition
- * - getinternalerrposition
  * - set_errcontext_domain
  * - errcontext_msg
+ * - geterrposition
+ * - getinternalerrposition
  * - CopyErrorData
  * - FlushErrorState
  * - pg_signal_queue
@@ -305,8 +305,11 @@ should_output_to_server(int elevel)
 /*
  * should_output_to_client --- should message of given elevel go to the client?
  */
-static inline bool should_output_to_client(int elevel) { return false; }
 
+static inline bool
+should_output_to_client(int elevel)
+{
+return false;}
 
 
 /*
@@ -1851,8 +1854,12 @@ pg_re_throw(void)
 /*
  * Write error report to server's log
  */
-static void send_message_to_server_log(ErrorData *edata) {}
 
+static void
+send_message_to_server_log(ErrorData *edata)
+{
+	/* Do nothing */
+}
 
 /*
  * Send data to the syslogger using the chunked protocol
@@ -1893,8 +1900,12 @@ static void send_message_to_server_log(ErrorData *edata) {}
 /*
  * Write error report to client
  */
-static void send_message_to_frontend(ErrorData *edata) {}
 
+static void
+send_message_to_frontend(ErrorData *edata)
+{
+	/* Do nothing */
+}
 
 
 /*
@@ -1925,7 +1936,6 @@ static void send_message_to_frontend(ErrorData *edata) {}
  * not available). Used before ereport/elog can be used
  * safely (memory context, GUC load etc)
  */
-
 void
 write_stderr(const char *fmt,...)
 {
@@ -1935,7 +1945,6 @@ write_stderr(const char *fmt,...)
 	fflush(stderr);
 	va_end(ap);
 }
-
 
 
 

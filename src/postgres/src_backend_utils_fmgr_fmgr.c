@@ -1,6 +1,8 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - FunctionCall6Coll
+ * - pg_detoast_datum
+ * - pg_detoast_datum_packed
  *--------------------------------------------------------------------
  */
 
@@ -484,12 +486,26 @@ Float8GetDatum(float8 X)
  */
 
 
+struct varlena *
+pg_detoast_datum(struct varlena *datum)
+{
+if (VARATT_IS_EXTENDED(datum))
+		elog(ERROR, "TOASTed values are not supported");
+	else
+		return datum;}
 
 
 
 
 
 
+struct varlena *
+pg_detoast_datum_packed(struct varlena *datum)
+{
+if (VARATT_IS_COMPRESSED(datum) || VARATT_IS_EXTERNAL(datum))
+		elog(ERROR, "TOASTed values are not supported");
+	else
+		return datum;}
 
 /*-------------------------------------------------------------------------
  *		Support routines for extracting info from fn_expr parse tree
