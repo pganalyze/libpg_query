@@ -186,6 +186,21 @@ PgQueryRawParseResult pg_query_parse_raw(const char* input);
 PgQueryRawParseResult pg_query_parse_raw_opts(const char* input, int parser_options);
 void pg_query_free_raw_parse_result(PgQueryRawParseResult result);
 
+// Raw deparse (bypasses protobuf serialization)
+// Takes a raw parse result and converts it back to SQL
+PgQueryDeparseResult pg_query_deparse_raw(PgQueryRawParseResult parse_result);
+PgQueryDeparseResult pg_query_deparse_raw_opts(PgQueryRawParseResult parse_result, struct PostgresDeparseOpts opts);
+
+// Node building helpers for Rust (bypasses protobuf)
+// These allow Rust to construct parse trees directly
+void *pg_query_deparse_enter_context(void);
+void pg_query_deparse_exit_context(void *ctx);
+void *pg_query_alloc_node(size_t size, int tag);
+char *pg_query_pstrdup(const char *str);
+void *pg_query_list_make1(void *datum);
+void *pg_query_list_append(void *list, void *datum);
+PgQueryDeparseResult pg_query_deparse_nodes(void *stmts);
+
 // Deprecated APIs below
 
 void pg_query_init(void); // Deprecated as of 9.5-1.4.1, this is now run automatically as needed
