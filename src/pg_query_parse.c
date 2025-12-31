@@ -188,3 +188,47 @@ void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result)
 	free(result.parse_tree.data);
 	free(result.stderr_buffer);
 }
+
+PgQueryRawParseResult pg_query_parse_raw(const char* input)
+{
+	return pg_query_parse_raw_opts(input, PG_QUERY_PARSE_DEFAULT);
+}
+
+PgQueryRawParseResult pg_query_parse_raw_opts(const char* input, int parser_options)
+{
+	MemoryContext ctx = NULL;
+	PgQueryInternalParsetreeAndError parsetree_and_error;
+	PgQueryRawParseResult result = {0};
+
+	ctx = pg_query_enter_memory_context();
+
+	parsetree_and_error = pg_query_raw_parse(input, parser_options);
+
+	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
+	result.stderr_buffer = parsetree_and_error.stderr_buffer;
+	result.error = parsetree_and_error.error;
+
+	// Keep the parse tree in memory context - caller must not exit memory context until done
+	result.tree = parsetree_and_error.tree;
+	result.context = ctx;
+
+	// Note: We intentionally do NOT exit the memory context here because the tree
+	// is still allocated in it. The caller must call pg_query_free_raw_parse_result
+	// which will exit the memory context.
+
+	return result;
+}
+
+void pg_query_free_raw_parse_result(PgQueryRawParseResult result)
+{
+	if (result.error) {
+		pg_query_free_error(result.error);
+	}
+
+	free(result.stderr_buffer);
+
+	// Exit the memory context to free the parse tree
+	if (result.context) {
+		pg_query_exit_memory_context(result.context);
+	}
+}

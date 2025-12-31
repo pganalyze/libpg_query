@@ -135,6 +135,26 @@ void pg_query_exit(void);
 #define PG_VERSION "16.1"
 #define PG_VERSION_NUM 160001
 
+// Raw parse tree access (bypasses protobuf serialization)
+// Note: The returned tree uses PostgreSQL's memory context. The tree is only
+// valid until pg_query_free_raw_parse_result is called or pg_query_exit is called.
+
+// Forward declaration of PostgreSQL List type (defined in nodes/pg_list.h)
+struct List;
+// Forward declaration of PostgreSQL MemoryContextData type
+struct MemoryContextData;
+
+typedef struct {
+  struct List *tree;  // PostgreSQL parse tree (List of RawStmt nodes)
+  char* stderr_buffer;
+  PgQueryError* error;
+  struct MemoryContextData* context;  // Internal: Memory context for the tree (do not modify)
+} PgQueryRawParseResult;
+
+PgQueryRawParseResult pg_query_parse_raw(const char* input);
+PgQueryRawParseResult pg_query_parse_raw_opts(const char* input, int parser_options);
+void pg_query_free_raw_parse_result(PgQueryRawParseResult result);
+
 // Deprecated APIs below
 
 void pg_query_init(void); // Deprecated as of 9.5-1.4.1, this is now run automatically as needed
