@@ -201,6 +201,29 @@ void *pg_query_list_make1(void *datum);
 void *pg_query_list_append(void *list, void *datum);
 PgQueryDeparseResult pg_query_deparse_nodes(void *stmts);
 
+// Raw scan (bypasses protobuf serialization)
+// Returns tokens directly without protobuf encoding
+
+typedef struct {
+  int start;
+  int end;
+  int token;        // Token type (matches Token enum in protobuf)
+  int keyword_kind; // KeywordKind enum value
+} PgQueryRawScanToken;
+
+typedef struct {
+  PgQueryRawScanToken *tokens;
+  size_t n_tokens;
+  char* stderr_buffer;
+  PgQueryError* error;
+} PgQueryRawScanResult;
+
+PgQueryRawScanResult pg_query_scan_raw(const char* input);
+void pg_query_free_raw_scan_result(PgQueryRawScanResult result);
+
+// Raw fingerprint (works with raw parse result, bypasses re-parsing)
+PgQueryFingerprintResult pg_query_fingerprint_raw(PgQueryRawParseResult parse_result);
+
 // Deprecated APIs below
 
 void pg_query_init(void); // Deprecated as of 9.5-1.4.1, this is now run automatically as needed
