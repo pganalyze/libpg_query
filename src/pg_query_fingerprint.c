@@ -423,12 +423,17 @@ PgQueryFingerprintResult pg_query_fingerprint_raw(PgQueryRawParseResult parse_re
 		return result;
 	}
 
-	if (parse_result.tree != NULL) {
+	// Match behavior of pg_query_fingerprint_with_opts: fingerprint even if tree is NULL
+	// (e.g., for comment-only or empty queries)
+	{
 		FingerprintContext ctx;
 		XXH64_canonical_t chash;
 
 		_fingerprintInitContext(&ctx, NULL, false);
-		_fingerprintNode(&ctx, parse_result.tree, NULL, NULL, 0);
+
+		if (parse_result.tree != NULL) {
+			_fingerprintNode(&ctx, parse_result.tree, NULL, NULL, 0);
+		}
 
 		result.fingerprint = XXH3_64bits_digest(ctx.xxh_state);
 		_fingerprintFreeContext(&ctx);
