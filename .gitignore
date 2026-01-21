@@ -21,3 +21,4 @@ tmp/*
 !tmp/.gitkeep
 
 .vs/*
+.claude-session-id

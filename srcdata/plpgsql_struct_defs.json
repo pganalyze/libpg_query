@@ -1,0 +1,1494 @@
+{
+  "PLpgSQL_type": {
+    "fields": [
+      {
+        "name": "typname",
+        "c_type": "char*",
+        "comment": "/* (simple) name of the type */"
+      },
+      {
+        "name": "ttype",
+        "c_type": "PLpgSQL_type_type",
+        "comment": "/* PLPGSQL_TTYPE_ code */"
+      },
+      {
+        "comment": "\t/* Remaining fields are used only for named composite types (not RECORD) */\n"
+      }
+    ],
+    "comment": "/*\n * Postgres data type\n */\n"
+  },
+  "PLpgSQL_expr": {
+    "fields": [
+      {
+        "name": "query",
+        "c_type": "char*",
+        "comment": "/* query string, verbatim from function body */"
+      },
+      {
+        "name": "parseMode",
+        "c_type": "RawParseMode",
+        "comment": "/* raw_parser() mode to use */"
+      },
+      {
+        "comment": "\t/* function containing this expr (not set until we first parse query) */\n"
+      },
+      {
+        "comment": "\t/* namespace chain visible to this expr */\n"
+      },
+      {
+        "comment": "\t/* fields for \"simple expression\" fast-path execution: */\n"
+      },
+      {
+        "comment": "\t/*\n\t * These fields are used to optimize assignments to expanded-datum\n\t * variables.  If this expression is the source of an assignment to a\n\t * simple variable, target_param holds that variable's dno; else it's -1.\n\t * If we match a Param within expr_simple_expr to such a variable, that\n\t * Param's address is stored in expr_rw_param; then expression code\n\t * generation will allow the value for that Param to be passed read/write.\n\t */\n"
+      },
+      {
+        "comment": "\t/*\n\t * If the expression was ever determined to be simple, we remember its\n\t * CachedPlanSource and CachedPlan here.  If expr_simple_plan_lxid matches\n\t * current LXID, then we hold a refcount on expr_simple_plan in the\n\t * current transaction.  Otherwise we need to get one before re-using it.\n\t */\n"
+      },
+      {
+        "comment": "\t/*\n\t * if expr is simple AND prepared in current transaction,\n\t * expr_simple_state and expr_simple_in_use are valid. Test validity by\n\t * seeing if expr_simple_lxid matches current LXID.  (If not,\n\t * expr_simple_state probably points at garbage!)\n\t */\n"
+      }
+    ],
+    "comment": "/*\n * SQL Query to plan and execute\n */\n"
+  },
+  "PLpgSQL_datum": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Generic datum array item\n *\n * PLpgSQL_datum is the common supertype for PLpgSQL_var, PLpgSQL_row,\n * PLpgSQL_rec, and PLpgSQL_recfield.\n */\n"
+  },
+  "PLpgSQL_variable": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "refname",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "isconst",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "notnull",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "default_val",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Scalar or composite variable\n *\n * The variants PLpgSQL_var, PLpgSQL_row, and PLpgSQL_rec share these\n * fields.\n */\n"
+  },
+  "PLpgSQL_var": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "refname",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "isconst",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "notnull",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "default_val",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "comment": "\t/* end of PLpgSQL_variable fields */\n"
+      },
+      {
+        "name": "datatype",
+        "c_type": "PLpgSQL_type*",
+        "comment": null
+      },
+      {
+        "comment": "\t/*\n\t * Variables declared as CURSOR FOR <query> are mostly like ordinary\n\t * scalar variables of type refcursor, but they have these additional\n\t * properties:\n\t */\n"
+      },
+      {
+        "name": "cursor_explicit_expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "cursor_explicit_argrow",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "cursor_options",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "comment": "\t/* Fields below here can change at runtime */\n"
+      },
+      {
+        "comment": "\t/*\n\t * The promise field records which \"promised\" value to assign if the\n\t * promise must be honored.  If it's a normal variable, or the promise has\n\t * been fulfilled, this is PLPGSQL_PROMISE_NONE.\n\t */\n"
+      },
+      {
+        "name": "promise",
+        "c_type": "PLpgSQL_promise_type",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Scalar variable\n *\n * DTYPE_VAR and DTYPE_PROMISE datums both use this struct type.\n * A PROMISE datum works exactly like a VAR datum for most purposes,\n * but if it is read without having previously been assigned to, then\n * a special \"promised\" value is computed and assigned to the datum\n * before the read is performed.  This technique avoids the overhead of\n * computing the variable's value in cases where we expect that many\n * functions will never read it.\n */\n"
+  },
+  "PLpgSQL_row": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "refname",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "isconst",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "notnull",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "default_val",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "comment": "\t/* end of PLpgSQL_variable fields */\n"
+      },
+      {
+        "comment": "\t/*\n\t * rowtupdesc is only set up if we might need to convert the row into a\n\t * composite datum, which currently only happens for OUT parameters.\n\t * Otherwise it is NULL.\n\t */\n"
+      },
+      {
+        "name": "nfields",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "fieldnames",
+        "c_type": "char**",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Row variable - this represents one or more variables that are listed in an\n * INTO clause, FOR-loop targetlist, cursor argument list, etc.  We also use\n * a row to represent a function's OUT parameters when there's more than one.\n *\n * Note that there's no way to name the row as such from PL/pgSQL code,\n * so many functions don't need to support these.\n *\n * That also means that there's no real name for the row variable, so we\n * conventionally set refname to \"(unnamed row)\".  We could leave it NULL,\n * but it's too convenient to be able to assume that refname is valid in\n * all variants of PLpgSQL_variable.\n *\n * isconst, notnull, and default_val are unsupported (and hence\n * always zero/null) for a row.  The member variables of a row should have\n * been checked to be writable at compile time, so isconst is correctly set\n * to false.  notnull and default_val aren't applicable.\n */\n"
+  },
+  "PLpgSQL_rec": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "refname",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "isconst",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "notnull",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "default_val",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "comment": "\t/* end of PLpgSQL_variable fields */\n"
+      },
+      {
+        "comment": "\t/*\n\t * Note: for non-RECORD cases, we may from time to time re-look-up the\n\t * composite type, using datatype->origtypname.  That can result in\n\t * changing rectypeid.\n\t */\n"
+      },
+      {
+        "name": "datatype",
+        "c_type": "PLpgSQL_type*",
+        "comment": "/* can be NULL, if rectypeid is RECORDOID */"
+      },
+      {
+        "comment": "\t/* RECFIELDs for this record are chained together for easy access */\n"
+      },
+      {
+        "name": "firstfield",
+        "c_type": "int",
+        "comment": "/* dno of first RECFIELD, or -1 if none */"
+      },
+      {
+        "comment": "\t/* Fields below here can change at runtime */\n"
+      },
+      {
+        "comment": "\t/* We always store record variables as \"expanded\" records */\n"
+      }
+    ],
+    "comment": "/*\n * Record variable (any composite type, including RECORD)\n */\n"
+  },
+  "PLpgSQL_recfield": {
+    "fields": [
+      {
+        "name": "dtype",
+        "c_type": "PLpgSQL_datum_type",
+        "comment": null
+      },
+      {
+        "name": "dno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "comment": "\t/* end of PLpgSQL_datum fields */\n"
+      },
+      {
+        "name": "fieldname",
+        "c_type": "char*",
+        "comment": "/* name of field */"
+      },
+      {
+        "name": "recparentno",
+        "c_type": "int",
+        "comment": "/* dno of parent record */"
+      },
+      {
+        "name": "nextfield",
+        "c_type": "int",
+        "comment": "/* dno of next child, or -1 if none */"
+      },
+      {
+        "comment": "\t/* if rectupledescid == INVALID_TUPLEDESC_IDENTIFIER, finfo isn't valid */\n"
+      }
+    ],
+    "comment": "/*\n * Field in record\n */\n"
+  },
+  "PLpgSQL_stmt": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "comment": "\t/*\n\t * Unique statement ID in this function (starting at 1; 0 is invalid/not\n\t * set).  This can be used by a profiler as the index for an array of\n\t * per-statement metrics.\n\t */\n"
+      }
+    ],
+    "comment": "/*\n * Generic execution node\n */\n"
+  },
+  "PLpgSQL_condition": {
+    "fields": [
+      {
+        "name": "sqlerrstate",
+        "c_type": "int",
+        "comment": "/* SQLSTATE code */"
+      },
+      {
+        "name": "condname",
+        "c_type": "char*",
+        "comment": "/* condition name (for debugging) */"
+      }
+    ],
+    "comment": "/*\n * One EXCEPTION condition name\n */\n"
+  },
+  "PLpgSQL_exception_block": {
+    "fields": [
+      {
+        "name": "sqlstate_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "sqlerrm_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "exc_list",
+        "c_type": "List*",
+        "comment": "/* List of WHEN clauses */"
+      }
+    ],
+    "comment": "/*\n * EXCEPTION block\n */\n"
+  },
+  "PLpgSQL_exception": {
+    "fields": [
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "conditions",
+        "c_type": "PLpgSQL_condition*",
+        "comment": null
+      },
+      {
+        "name": "action",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * One EXCEPTION ... WHEN clause\n */\n"
+  },
+  "PLpgSQL_stmt_block": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      },
+      {
+        "name": "n_initvars",
+        "c_type": "int",
+        "comment": "/* Length of initvarnos[] */"
+      },
+      {
+        "name": "initvarnos",
+        "c_type": "int*",
+        "comment": "/* dnos of variables declared in this block */"
+      },
+      {
+        "name": "exceptions",
+        "c_type": "PLpgSQL_exception_block*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Block of statements\n */\n"
+  },
+  "PLpgSQL_stmt_assign": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * Assign statement\n */\n"
+  },
+  "PLpgSQL_stmt_perform": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * PERFORM statement\n */\n"
+  },
+  "PLpgSQL_stmt_call": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "is_call",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "name": "target",
+        "c_type": "PLpgSQL_variable*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * CALL statement\n */\n"
+  },
+  "PLpgSQL_stmt_commit": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "chain",
+        "c_type": "bool",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * COMMIT statement\n */\n"
+  },
+  "PLpgSQL_stmt_rollback": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "chain",
+        "c_type": "bool",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * ROLLBACK statement\n */\n"
+  },
+  "PLpgSQL_diag_item": {
+    "fields": [
+      {
+        "name": "kind",
+        "c_type": "PLpgSQL_getdiag_kind",
+        "comment": "/* id for diagnostic value desired */"
+      },
+      {
+        "name": "target",
+        "c_type": "int",
+        "comment": "/* where to assign it */"
+      }
+    ],
+    "comment": "/*\n * GET DIAGNOSTICS item\n */\n"
+  },
+  "PLpgSQL_stmt_getdiag": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "is_stacked",
+        "c_type": "bool",
+        "comment": "/* STACKED or CURRENT diagnostics area? */"
+      },
+      {
+        "name": "diag_items",
+        "c_type": "List*",
+        "comment": "/* List of PLpgSQL_diag_item */"
+      }
+    ],
+    "comment": "/*\n * GET DIAGNOSTICS statement\n */\n"
+  },
+  "PLpgSQL_stmt_if": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "cond",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* boolean expression for THEN */"
+      },
+      {
+        "name": "then_body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      },
+      {
+        "name": "elsif_list",
+        "c_type": "List*",
+        "comment": "/* List of PLpgSQL_if_elsif structs */"
+      },
+      {
+        "name": "else_body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * IF statement\n */\n"
+  },
+  "PLpgSQL_if_elsif": {
+    "fields": [
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "cond",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* boolean expression for this case */"
+      },
+      {
+        "name": "stmts",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * one ELSIF arm of IF statement\n */\n"
+  },
+  "PLpgSQL_stmt_case": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "t_expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* test expression, or NULL if none */"
+      },
+      {
+        "name": "t_varno",
+        "c_type": "int",
+        "comment": "/* var to store test expression value into */"
+      },
+      {
+        "name": "case_when_list",
+        "c_type": "List*",
+        "comment": "/* List of PLpgSQL_case_when structs */"
+      },
+      {
+        "name": "have_else",
+        "c_type": "bool",
+        "comment": "/* flag needed because list could be empty */"
+      },
+      {
+        "name": "else_stmts",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * CASE statement\n */\n"
+  },
+  "PLpgSQL_case_when": {
+    "fields": [
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* boolean expression for this case */"
+      },
+      {
+        "name": "stmts",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * one arm of CASE statement\n */\n"
+  },
+  "PLpgSQL_stmt_loop": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * Unconditional LOOP statement\n */\n"
+  },
+  "PLpgSQL_stmt_while": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "cond",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * WHILE cond LOOP statement\n */\n"
+  },
+  "PLpgSQL_stmt_fori": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "var",
+        "c_type": "PLpgSQL_var*",
+        "comment": null
+      },
+      {
+        "name": "lower",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "upper",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "step",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* NULL means default (ie, BY 1) */"
+      },
+      {
+        "name": "reverse",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * FOR statement with integer loopvar\n */\n"
+  },
+  "PLpgSQL_stmt_forq": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "var",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* Loop variable (record or row) */"
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * PLpgSQL_stmt_forq represents a FOR statement running over a SQL query.\n * It is the common supertype of PLpgSQL_stmt_fors, PLpgSQL_stmt_forc\n * and PLpgSQL_stmt_dynfors.\n */\n"
+  },
+  "PLpgSQL_stmt_fors": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "var",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* Loop variable (record or row) */"
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      },
+      {
+        "comment": "\t/* end of fields that must match PLpgSQL_stmt_forq */\n"
+      },
+      {
+        "name": "query",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * FOR statement running over SELECT\n */\n"
+  },
+  "PLpgSQL_stmt_forc": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "var",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* Loop variable (record or row) */"
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      },
+      {
+        "comment": "\t/* end of fields that must match PLpgSQL_stmt_forq */\n"
+      },
+      {
+        "name": "curvar",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "argquery",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* cursor arguments if any */"
+      }
+    ],
+    "comment": "/*\n * FOR statement running over cursor\n */\n"
+  },
+  "PLpgSQL_stmt_dynfors": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "var",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* Loop variable (record or row) */"
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      },
+      {
+        "comment": "\t/* end of fields that must match PLpgSQL_stmt_forq */\n"
+      },
+      {
+        "name": "query",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "params",
+        "c_type": "List*",
+        "comment": "/* USING expressions */"
+      }
+    ],
+    "comment": "/*\n * FOR statement running over EXECUTE\n */\n"
+  },
+  "PLpgSQL_stmt_foreach_a": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "varno",
+        "c_type": "int",
+        "comment": "/* loop target variable */"
+      },
+      {
+        "name": "slice",
+        "c_type": "int",
+        "comment": "/* slice dimension, or 0 */"
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* array expression */"
+      },
+      {
+        "name": "body",
+        "c_type": "List*",
+        "comment": "/* List of statements */"
+      }
+    ],
+    "comment": "/*\n * FOREACH item in array loop\n */\n"
+  },
+  "PLpgSQL_stmt_open": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "curvar",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "cursor_options",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "argquery",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "query",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "dynquery",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "params",
+        "c_type": "List*",
+        "comment": "/* USING expressions */"
+      }
+    ],
+    "comment": "/*\n * OPEN a curvar\n */\n"
+  },
+  "PLpgSQL_stmt_fetch": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "target",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* target (record or row) */"
+      },
+      {
+        "name": "curvar",
+        "c_type": "int",
+        "comment": "/* cursor variable to fetch from */"
+      },
+      {
+        "name": "direction",
+        "c_type": "FetchDirection",
+        "comment": "/* fetch direction */"
+      },
+      {
+        "name": "how_many",
+        "c_type": "long",
+        "comment": "/* count, if constant (expr is NULL) */"
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* count, if expression */"
+      },
+      {
+        "name": "is_move",
+        "c_type": "bool",
+        "comment": "/* is this a fetch or move? */"
+      },
+      {
+        "name": "returns_multiple_rows",
+        "c_type": "bool",
+        "comment": "/* can return more than one row? */"
+      }
+    ],
+    "comment": "/*\n * FETCH or MOVE statement\n */\n"
+  },
+  "PLpgSQL_stmt_close": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "curvar",
+        "c_type": "int",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * CLOSE curvar\n */\n"
+  },
+  "PLpgSQL_stmt_exit": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "is_exit",
+        "c_type": "bool",
+        "comment": "/* Is this an exit or a continue? */"
+      },
+      {
+        "name": "label",
+        "c_type": "char*",
+        "comment": "/* NULL if it's an unlabeled EXIT/CONTINUE */"
+      },
+      {
+        "name": "cond",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * EXIT or CONTINUE statement\n */\n"
+  },
+  "PLpgSQL_stmt_return": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "retvarno",
+        "c_type": "int",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * RETURN statement\n */\n"
+  },
+  "PLpgSQL_stmt_return_next": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "retvarno",
+        "c_type": "int",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * RETURN NEXT statement\n */\n"
+  },
+  "PLpgSQL_stmt_return_query": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "query",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* if static query */"
+      },
+      {
+        "name": "dynquery",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* if dynamic query (RETURN QUERY EXECUTE) */"
+      },
+      {
+        "name": "params",
+        "c_type": "List*",
+        "comment": "/* USING arguments for dynamic query */"
+      }
+    ],
+    "comment": "/*\n * RETURN QUERY statement\n */\n"
+  },
+  "PLpgSQL_stmt_raise": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "elog_level",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "condname",
+        "c_type": "char*",
+        "comment": "/* condition name, SQLSTATE, or NULL */"
+      },
+      {
+        "name": "message",
+        "c_type": "char*",
+        "comment": "/* old-style message format literal, or NULL */"
+      },
+      {
+        "name": "params",
+        "c_type": "List*",
+        "comment": "/* list of expressions for old-style message */"
+      },
+      {
+        "name": "options",
+        "c_type": "List*",
+        "comment": "/* list of PLpgSQL_raise_option */"
+      }
+    ],
+    "comment": "/*\n * RAISE statement\n */\n"
+  },
+  "PLpgSQL_raise_option": {
+    "fields": [
+      {
+        "name": "opt_type",
+        "c_type": "PLpgSQL_raise_option_type",
+        "comment": null
+      },
+      {
+        "name": "expr",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * RAISE statement option\n */\n"
+  },
+  "PLpgSQL_stmt_assert": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "cond",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "message",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      }
+    ],
+    "comment": "/*\n * ASSERT statement\n */\n"
+  },
+  "PLpgSQL_stmt_execsql": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "sqlstmt",
+        "c_type": "PLpgSQL_expr*",
+        "comment": null
+      },
+      {
+        "name": "mod_stmt",
+        "c_type": "bool",
+        "comment": "/* is the stmt INSERT/UPDATE/DELETE/MERGE? */"
+      },
+      {
+        "name": "mod_stmt_set",
+        "c_type": "bool",
+        "comment": "/* is mod_stmt valid yet? */"
+      },
+      {
+        "name": "into",
+        "c_type": "bool",
+        "comment": "/* INTO supplied? */"
+      },
+      {
+        "name": "strict",
+        "c_type": "bool",
+        "comment": "/* INTO STRICT flag */"
+      },
+      {
+        "name": "target",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* INTO target (record or row) */"
+      }
+    ],
+    "comment": "/*\n * Generic SQL statement to execute\n */\n"
+  },
+  "PLpgSQL_stmt_dynexecute": {
+    "fields": [
+      {
+        "name": "cmd_type",
+        "c_type": "PLpgSQL_stmt_type",
+        "comment": null
+      },
+      {
+        "name": "lineno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "query",
+        "c_type": "PLpgSQL_expr*",
+        "comment": "/* string expression */"
+      },
+      {
+        "name": "into",
+        "c_type": "bool",
+        "comment": "/* INTO supplied? */"
+      },
+      {
+        "name": "strict",
+        "c_type": "bool",
+        "comment": "/* INTO STRICT flag */"
+      },
+      {
+        "name": "target",
+        "c_type": "PLpgSQL_variable*",
+        "comment": "/* INTO target (record or row) */"
+      },
+      {
+        "name": "params",
+        "c_type": "List*",
+        "comment": "/* USING expressions */"
+      }
+    ],
+    "comment": "/*\n * Dynamic SQL string to execute\n */\n"
+  },
+  "PLpgSQL_function": {
+    "fields": [
+      {
+        "name": "fn_signature",
+        "c_type": "char*",
+        "comment": null
+      },
+      {
+        "name": "fn_is_trigger",
+        "c_type": "PLpgSQL_trigtype",
+        "comment": null
+      },
+      {
+        "name": "out_param_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "found_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "new_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "old_varno",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "resolve_option",
+        "c_type": "PLpgSQL_resolve_option",
+        "comment": null
+      },
+      {
+        "name": "print_strict_params",
+        "c_type": "bool",
+        "comment": null
+      },
+      {
+        "comment": "\t/* extra checks */\n"
+      },
+      {
+        "name": "extra_warnings",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "name": "extra_errors",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "comment": "\t/* the datums representing the function's local variables */\n"
+      },
+      {
+        "name": "ndatums",
+        "c_type": "int",
+        "comment": null
+      },
+      {
+        "comment": "\t/* function body parsetree */\n"
+      },
+      {
+        "name": "action",
+        "c_type": "PLpgSQL_stmt_block*",
+        "comment": null
+      },
+      {
+        "comment": "\t/* data derived while parsing body */\n"
+      },
+      {
+        "comment": "\t/* these fields change when the function is used */\n"
+      }
+    ],
+    "comment": "/*\n * Complete compiled function\n */\n"
+  }
+}

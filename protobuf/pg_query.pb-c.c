@@ -12316,6 +12316,1986 @@ void   pg_query__summary_result__free_unpacked
   assert(message->base.descriptor == &pg_query__summary_result__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   pg_query__plpg_sqlparse_result__init
+                     (PgQuery__PLpgSQLParseResult         *message)
+{
+  static const PgQuery__PLpgSQLParseResult init_value = PG_QUERY__PLPG_SQLPARSE_RESULT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sqlparse_result__get_packed_size
+                     (const PgQuery__PLpgSQLParseResult *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sqlparse_result__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sqlparse_result__pack
+                     (const PgQuery__PLpgSQLParseResult *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sqlparse_result__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sqlparse_result__pack_to_buffer
+                     (const PgQuery__PLpgSQLParseResult *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sqlparse_result__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLParseResult *
+       pg_query__plpg_sqlparse_result__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLParseResult *)
+     protobuf_c_message_unpack (&pg_query__plpg_sqlparse_result__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sqlparse_result__free_unpacked
+                     (PgQuery__PLpgSQLParseResult *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sqlparse_result__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt__init
+                     (PgQuery__PLpgSQLStmt         *message)
+{
+  static const PgQuery__PLpgSQLStmt init_value = PG_QUERY__PLPG_SQL_STMT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt__get_packed_size
+                     (const PgQuery__PLpgSQLStmt *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt__pack
+                     (const PgQuery__PLpgSQLStmt *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmt *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmt *
+       pg_query__plpg_sql_stmt__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmt *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt__free_unpacked
+                     (PgQuery__PLpgSQLStmt *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_datum__init
+                     (PgQuery__PLpgSQLDatum         *message)
+{
+  static const PgQuery__PLpgSQLDatum init_value = PG_QUERY__PLPG_SQL_DATUM__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_datum__get_packed_size
+                     (const PgQuery__PLpgSQLDatum *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_datum__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_datum__pack
+                     (const PgQuery__PLpgSQLDatum *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_datum__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_datum__pack_to_buffer
+                     (const PgQuery__PLpgSQLDatum *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_datum__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLDatum *
+       pg_query__plpg_sql_datum__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLDatum *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_datum__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_datum__free_unpacked
+                     (PgQuery__PLpgSQLDatum *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_datum__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_type__init
+                     (PgQuery__PLpgSQLType         *message)
+{
+  static const PgQuery__PLpgSQLType init_value = PG_QUERY__PLPG_SQL_TYPE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_type__get_packed_size
+                     (const PgQuery__PLpgSQLType *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_type__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_type__pack
+                     (const PgQuery__PLpgSQLType *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_type__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_type__pack_to_buffer
+                     (const PgQuery__PLpgSQLType *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_type__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLType *
+       pg_query__plpg_sql_type__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLType *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_type__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_type__free_unpacked
+                     (PgQuery__PLpgSQLType *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_type__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_expr__init
+                     (PgQuery__PLpgSQLExpr         *message)
+{
+  static const PgQuery__PLpgSQLExpr init_value = PG_QUERY__PLPG_SQL_EXPR__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_expr__get_packed_size
+                     (const PgQuery__PLpgSQLExpr *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_expr__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_expr__pack
+                     (const PgQuery__PLpgSQLExpr *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_expr__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_expr__pack_to_buffer
+                     (const PgQuery__PLpgSQLExpr *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_expr__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLExpr *
+       pg_query__plpg_sql_expr__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLExpr *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_expr__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_expr__free_unpacked
+                     (PgQuery__PLpgSQLExpr *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_expr__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_var__init
+                     (PgQuery__PLpgSQLVar         *message)
+{
+  static const PgQuery__PLpgSQLVar init_value = PG_QUERY__PLPG_SQL_VAR__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_var__get_packed_size
+                     (const PgQuery__PLpgSQLVar *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_var__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_var__pack
+                     (const PgQuery__PLpgSQLVar *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_var__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_var__pack_to_buffer
+                     (const PgQuery__PLpgSQLVar *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_var__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLVar *
+       pg_query__plpg_sql_var__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLVar *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_var__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_var__free_unpacked
+                     (PgQuery__PLpgSQLVar *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_var__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_row__init
+                     (PgQuery__PLpgSQLRow         *message)
+{
+  static const PgQuery__PLpgSQLRow init_value = PG_QUERY__PLPG_SQL_ROW__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_row__get_packed_size
+                     (const PgQuery__PLpgSQLRow *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_row__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_row__pack
+                     (const PgQuery__PLpgSQLRow *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_row__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_row__pack_to_buffer
+                     (const PgQuery__PLpgSQLRow *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_row__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLRow *
+       pg_query__plpg_sql_row__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLRow *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_row__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_row__free_unpacked
+                     (PgQuery__PLpgSQLRow *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_row__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_rec__init
+                     (PgQuery__PLpgSQLRec         *message)
+{
+  static const PgQuery__PLpgSQLRec init_value = PG_QUERY__PLPG_SQL_REC__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_rec__get_packed_size
+                     (const PgQuery__PLpgSQLRec *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_rec__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_rec__pack
+                     (const PgQuery__PLpgSQLRec *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_rec__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_rec__pack_to_buffer
+                     (const PgQuery__PLpgSQLRec *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_rec__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLRec *
+       pg_query__plpg_sql_rec__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLRec *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_rec__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_rec__free_unpacked
+                     (PgQuery__PLpgSQLRec *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_rec__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_recfield__init
+                     (PgQuery__PLpgSQLRecfield         *message)
+{
+  static const PgQuery__PLpgSQLRecfield init_value = PG_QUERY__PLPG_SQL_RECFIELD__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_recfield__get_packed_size
+                     (const PgQuery__PLpgSQLRecfield *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_recfield__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_recfield__pack
+                     (const PgQuery__PLpgSQLRecfield *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_recfield__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_recfield__pack_to_buffer
+                     (const PgQuery__PLpgSQLRecfield *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_recfield__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLRecfield *
+       pg_query__plpg_sql_recfield__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLRecfield *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_recfield__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_recfield__free_unpacked
+                     (PgQuery__PLpgSQLRecfield *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_recfield__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_condition__init
+                     (PgQuery__PLpgSQLCondition         *message)
+{
+  static const PgQuery__PLpgSQLCondition init_value = PG_QUERY__PLPG_SQL_CONDITION__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_condition__get_packed_size
+                     (const PgQuery__PLpgSQLCondition *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_condition__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_condition__pack
+                     (const PgQuery__PLpgSQLCondition *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_condition__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_condition__pack_to_buffer
+                     (const PgQuery__PLpgSQLCondition *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_condition__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLCondition *
+       pg_query__plpg_sql_condition__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLCondition *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_condition__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_condition__free_unpacked
+                     (PgQuery__PLpgSQLCondition *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_condition__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_exception_block__init
+                     (PgQuery__PLpgSQLExceptionBlock         *message)
+{
+  static const PgQuery__PLpgSQLExceptionBlock init_value = PG_QUERY__PLPG_SQL_EXCEPTION_BLOCK__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_exception_block__get_packed_size
+                     (const PgQuery__PLpgSQLExceptionBlock *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception_block__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_exception_block__pack
+                     (const PgQuery__PLpgSQLExceptionBlock *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception_block__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_exception_block__pack_to_buffer
+                     (const PgQuery__PLpgSQLExceptionBlock *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception_block__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLExceptionBlock *
+       pg_query__plpg_sql_exception_block__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLExceptionBlock *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_exception_block__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_exception_block__free_unpacked
+                     (PgQuery__PLpgSQLExceptionBlock *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception_block__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_exception__init
+                     (PgQuery__PLpgSQLException         *message)
+{
+  static const PgQuery__PLpgSQLException init_value = PG_QUERY__PLPG_SQL_EXCEPTION__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_exception__get_packed_size
+                     (const PgQuery__PLpgSQLException *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_exception__pack
+                     (const PgQuery__PLpgSQLException *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_exception__pack_to_buffer
+                     (const PgQuery__PLpgSQLException *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLException *
+       pg_query__plpg_sql_exception__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLException *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_exception__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_exception__free_unpacked
+                     (PgQuery__PLpgSQLException *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_exception__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_block__init
+                     (PgQuery__PLpgSQLStmtBlock         *message)
+{
+  static const PgQuery__PLpgSQLStmtBlock init_value = PG_QUERY__PLPG_SQL_STMT_BLOCK__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_block__get_packed_size
+                     (const PgQuery__PLpgSQLStmtBlock *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_block__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_block__pack
+                     (const PgQuery__PLpgSQLStmtBlock *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_block__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_block__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtBlock *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_block__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtBlock *
+       pg_query__plpg_sql_stmt_block__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtBlock *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_block__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_block__free_unpacked
+                     (PgQuery__PLpgSQLStmtBlock *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_block__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_assign__init
+                     (PgQuery__PLpgSQLStmtAssign         *message)
+{
+  static const PgQuery__PLpgSQLStmtAssign init_value = PG_QUERY__PLPG_SQL_STMT_ASSIGN__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_assign__get_packed_size
+                     (const PgQuery__PLpgSQLStmtAssign *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assign__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_assign__pack
+                     (const PgQuery__PLpgSQLStmtAssign *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assign__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_assign__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtAssign *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assign__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtAssign *
+       pg_query__plpg_sql_stmt_assign__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtAssign *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_assign__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_assign__free_unpacked
+                     (PgQuery__PLpgSQLStmtAssign *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assign__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_perform__init
+                     (PgQuery__PLpgSQLStmtPerform         *message)
+{
+  static const PgQuery__PLpgSQLStmtPerform init_value = PG_QUERY__PLPG_SQL_STMT_PERFORM__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_perform__get_packed_size
+                     (const PgQuery__PLpgSQLStmtPerform *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_perform__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_perform__pack
+                     (const PgQuery__PLpgSQLStmtPerform *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_perform__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_perform__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtPerform *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_perform__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtPerform *
+       pg_query__plpg_sql_stmt_perform__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtPerform *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_perform__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_perform__free_unpacked
+                     (PgQuery__PLpgSQLStmtPerform *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_perform__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_call__init
+                     (PgQuery__PLpgSQLStmtCall         *message)
+{
+  static const PgQuery__PLpgSQLStmtCall init_value = PG_QUERY__PLPG_SQL_STMT_CALL__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_call__get_packed_size
+                     (const PgQuery__PLpgSQLStmtCall *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_call__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_call__pack
+                     (const PgQuery__PLpgSQLStmtCall *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_call__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_call__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtCall *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_call__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtCall *
+       pg_query__plpg_sql_stmt_call__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtCall *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_call__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_call__free_unpacked
+                     (PgQuery__PLpgSQLStmtCall *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_call__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_commit__init
+                     (PgQuery__PLpgSQLStmtCommit         *message)
+{
+  static const PgQuery__PLpgSQLStmtCommit init_value = PG_QUERY__PLPG_SQL_STMT_COMMIT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_commit__get_packed_size
+                     (const PgQuery__PLpgSQLStmtCommit *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_commit__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_commit__pack
+                     (const PgQuery__PLpgSQLStmtCommit *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_commit__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_commit__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtCommit *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_commit__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtCommit *
+       pg_query__plpg_sql_stmt_commit__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtCommit *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_commit__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_commit__free_unpacked
+                     (PgQuery__PLpgSQLStmtCommit *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_commit__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_rollback__init
+                     (PgQuery__PLpgSQLStmtRollback         *message)
+{
+  static const PgQuery__PLpgSQLStmtRollback init_value = PG_QUERY__PLPG_SQL_STMT_ROLLBACK__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_rollback__get_packed_size
+                     (const PgQuery__PLpgSQLStmtRollback *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_rollback__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_rollback__pack
+                     (const PgQuery__PLpgSQLStmtRollback *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_rollback__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_rollback__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtRollback *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_rollback__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtRollback *
+       pg_query__plpg_sql_stmt_rollback__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtRollback *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_rollback__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_rollback__free_unpacked
+                     (PgQuery__PLpgSQLStmtRollback *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_rollback__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_diag_item__init
+                     (PgQuery__PLpgSQLDiagItem         *message)
+{
+  static const PgQuery__PLpgSQLDiagItem init_value = PG_QUERY__PLPG_SQL_DIAG_ITEM__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_diag_item__get_packed_size
+                     (const PgQuery__PLpgSQLDiagItem *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_diag_item__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_diag_item__pack
+                     (const PgQuery__PLpgSQLDiagItem *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_diag_item__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_diag_item__pack_to_buffer
+                     (const PgQuery__PLpgSQLDiagItem *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_diag_item__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLDiagItem *
+       pg_query__plpg_sql_diag_item__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLDiagItem *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_diag_item__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_diag_item__free_unpacked
+                     (PgQuery__PLpgSQLDiagItem *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_diag_item__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_getdiag__init
+                     (PgQuery__PLpgSQLStmtGetdiag         *message)
+{
+  static const PgQuery__PLpgSQLStmtGetdiag init_value = PG_QUERY__PLPG_SQL_STMT_GETDIAG__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_getdiag__get_packed_size
+                     (const PgQuery__PLpgSQLStmtGetdiag *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_getdiag__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_getdiag__pack
+                     (const PgQuery__PLpgSQLStmtGetdiag *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_getdiag__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_getdiag__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtGetdiag *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_getdiag__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtGetdiag *
+       pg_query__plpg_sql_stmt_getdiag__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtGetdiag *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_getdiag__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_getdiag__free_unpacked
+                     (PgQuery__PLpgSQLStmtGetdiag *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_getdiag__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_if__init
+                     (PgQuery__PLpgSQLStmtIf         *message)
+{
+  static const PgQuery__PLpgSQLStmtIf init_value = PG_QUERY__PLPG_SQL_STMT_IF__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_if__get_packed_size
+                     (const PgQuery__PLpgSQLStmtIf *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_if__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_if__pack
+                     (const PgQuery__PLpgSQLStmtIf *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_if__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_if__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtIf *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_if__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtIf *
+       pg_query__plpg_sql_stmt_if__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtIf *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_if__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_if__free_unpacked
+                     (PgQuery__PLpgSQLStmtIf *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_if__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_if_elsif__init
+                     (PgQuery__PLpgSQLIfElsif         *message)
+{
+  static const PgQuery__PLpgSQLIfElsif init_value = PG_QUERY__PLPG_SQL_IF_ELSIF__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_if_elsif__get_packed_size
+                     (const PgQuery__PLpgSQLIfElsif *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_if_elsif__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_if_elsif__pack
+                     (const PgQuery__PLpgSQLIfElsif *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_if_elsif__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_if_elsif__pack_to_buffer
+                     (const PgQuery__PLpgSQLIfElsif *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_if_elsif__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLIfElsif *
+       pg_query__plpg_sql_if_elsif__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLIfElsif *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_if_elsif__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_if_elsif__free_unpacked
+                     (PgQuery__PLpgSQLIfElsif *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_if_elsif__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_case__init
+                     (PgQuery__PLpgSQLStmtCase         *message)
+{
+  static const PgQuery__PLpgSQLStmtCase init_value = PG_QUERY__PLPG_SQL_STMT_CASE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_case__get_packed_size
+                     (const PgQuery__PLpgSQLStmtCase *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_case__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_case__pack
+                     (const PgQuery__PLpgSQLStmtCase *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_case__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_case__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtCase *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_case__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtCase *
+       pg_query__plpg_sql_stmt_case__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtCase *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_case__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_case__free_unpacked
+                     (PgQuery__PLpgSQLStmtCase *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_case__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_case_when__init
+                     (PgQuery__PLpgSQLCaseWhen         *message)
+{
+  static const PgQuery__PLpgSQLCaseWhen init_value = PG_QUERY__PLPG_SQL_CASE_WHEN__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_case_when__get_packed_size
+                     (const PgQuery__PLpgSQLCaseWhen *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_case_when__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_case_when__pack
+                     (const PgQuery__PLpgSQLCaseWhen *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_case_when__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_case_when__pack_to_buffer
+                     (const PgQuery__PLpgSQLCaseWhen *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_case_when__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLCaseWhen *
+       pg_query__plpg_sql_case_when__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLCaseWhen *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_case_when__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_case_when__free_unpacked
+                     (PgQuery__PLpgSQLCaseWhen *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_case_when__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_loop__init
+                     (PgQuery__PLpgSQLStmtLoop         *message)
+{
+  static const PgQuery__PLpgSQLStmtLoop init_value = PG_QUERY__PLPG_SQL_STMT_LOOP__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_loop__get_packed_size
+                     (const PgQuery__PLpgSQLStmtLoop *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_loop__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_loop__pack
+                     (const PgQuery__PLpgSQLStmtLoop *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_loop__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_loop__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtLoop *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_loop__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtLoop *
+       pg_query__plpg_sql_stmt_loop__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtLoop *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_loop__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_loop__free_unpacked
+                     (PgQuery__PLpgSQLStmtLoop *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_loop__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_while__init
+                     (PgQuery__PLpgSQLStmtWhile         *message)
+{
+  static const PgQuery__PLpgSQLStmtWhile init_value = PG_QUERY__PLPG_SQL_STMT_WHILE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_while__get_packed_size
+                     (const PgQuery__PLpgSQLStmtWhile *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_while__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_while__pack
+                     (const PgQuery__PLpgSQLStmtWhile *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_while__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_while__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtWhile *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_while__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtWhile *
+       pg_query__plpg_sql_stmt_while__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtWhile *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_while__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_while__free_unpacked
+                     (PgQuery__PLpgSQLStmtWhile *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_while__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_fori__init
+                     (PgQuery__PLpgSQLStmtFori         *message)
+{
+  static const PgQuery__PLpgSQLStmtFori init_value = PG_QUERY__PLPG_SQL_STMT_FORI__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_fori__get_packed_size
+                     (const PgQuery__PLpgSQLStmtFori *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fori__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_fori__pack
+                     (const PgQuery__PLpgSQLStmtFori *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fori__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_fori__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtFori *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fori__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtFori *
+       pg_query__plpg_sql_stmt_fori__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtFori *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_fori__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_fori__free_unpacked
+                     (PgQuery__PLpgSQLStmtFori *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fori__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_fors__init
+                     (PgQuery__PLpgSQLStmtFors         *message)
+{
+  static const PgQuery__PLpgSQLStmtFors init_value = PG_QUERY__PLPG_SQL_STMT_FORS__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_fors__get_packed_size
+                     (const PgQuery__PLpgSQLStmtFors *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fors__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_fors__pack
+                     (const PgQuery__PLpgSQLStmtFors *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fors__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_fors__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtFors *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fors__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtFors *
+       pg_query__plpg_sql_stmt_fors__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtFors *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_fors__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_fors__free_unpacked
+                     (PgQuery__PLpgSQLStmtFors *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fors__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_forc__init
+                     (PgQuery__PLpgSQLStmtForc         *message)
+{
+  static const PgQuery__PLpgSQLStmtForc init_value = PG_QUERY__PLPG_SQL_STMT_FORC__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_forc__get_packed_size
+                     (const PgQuery__PLpgSQLStmtForc *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_forc__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_forc__pack
+                     (const PgQuery__PLpgSQLStmtForc *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_forc__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_forc__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtForc *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_forc__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtForc *
+       pg_query__plpg_sql_stmt_forc__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtForc *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_forc__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_forc__free_unpacked
+                     (PgQuery__PLpgSQLStmtForc *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_forc__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_dynfors__init
+                     (PgQuery__PLpgSQLStmtDynfors         *message)
+{
+  static const PgQuery__PLpgSQLStmtDynfors init_value = PG_QUERY__PLPG_SQL_STMT_DYNFORS__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_dynfors__get_packed_size
+                     (const PgQuery__PLpgSQLStmtDynfors *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynfors__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_dynfors__pack
+                     (const PgQuery__PLpgSQLStmtDynfors *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynfors__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_dynfors__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtDynfors *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynfors__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtDynfors *
+       pg_query__plpg_sql_stmt_dynfors__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtDynfors *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_dynfors__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_dynfors__free_unpacked
+                     (PgQuery__PLpgSQLStmtDynfors *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynfors__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_foreach_a__init
+                     (PgQuery__PLpgSQLStmtForeachA         *message)
+{
+  static const PgQuery__PLpgSQLStmtForeachA init_value = PG_QUERY__PLPG_SQL_STMT_FOREACH_A__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_foreach_a__get_packed_size
+                     (const PgQuery__PLpgSQLStmtForeachA *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_foreach_a__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_foreach_a__pack
+                     (const PgQuery__PLpgSQLStmtForeachA *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_foreach_a__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_foreach_a__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtForeachA *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_foreach_a__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtForeachA *
+       pg_query__plpg_sql_stmt_foreach_a__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtForeachA *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_foreach_a__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_foreach_a__free_unpacked
+                     (PgQuery__PLpgSQLStmtForeachA *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_foreach_a__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_open__init
+                     (PgQuery__PLpgSQLStmtOpen         *message)
+{
+  static const PgQuery__PLpgSQLStmtOpen init_value = PG_QUERY__PLPG_SQL_STMT_OPEN__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_open__get_packed_size
+                     (const PgQuery__PLpgSQLStmtOpen *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_open__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_open__pack
+                     (const PgQuery__PLpgSQLStmtOpen *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_open__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_open__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtOpen *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_open__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtOpen *
+       pg_query__plpg_sql_stmt_open__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtOpen *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_open__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_open__free_unpacked
+                     (PgQuery__PLpgSQLStmtOpen *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_open__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_fetch__init
+                     (PgQuery__PLpgSQLStmtFetch         *message)
+{
+  static const PgQuery__PLpgSQLStmtFetch init_value = PG_QUERY__PLPG_SQL_STMT_FETCH__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_fetch__get_packed_size
+                     (const PgQuery__PLpgSQLStmtFetch *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fetch__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_fetch__pack
+                     (const PgQuery__PLpgSQLStmtFetch *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fetch__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_fetch__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtFetch *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fetch__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtFetch *
+       pg_query__plpg_sql_stmt_fetch__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtFetch *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_fetch__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_fetch__free_unpacked
+                     (PgQuery__PLpgSQLStmtFetch *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_fetch__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_close__init
+                     (PgQuery__PLpgSQLStmtClose         *message)
+{
+  static const PgQuery__PLpgSQLStmtClose init_value = PG_QUERY__PLPG_SQL_STMT_CLOSE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_close__get_packed_size
+                     (const PgQuery__PLpgSQLStmtClose *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_close__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_close__pack
+                     (const PgQuery__PLpgSQLStmtClose *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_close__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_close__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtClose *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_close__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtClose *
+       pg_query__plpg_sql_stmt_close__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtClose *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_close__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_close__free_unpacked
+                     (PgQuery__PLpgSQLStmtClose *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_close__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_exit__init
+                     (PgQuery__PLpgSQLStmtExit         *message)
+{
+  static const PgQuery__PLpgSQLStmtExit init_value = PG_QUERY__PLPG_SQL_STMT_EXIT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_exit__get_packed_size
+                     (const PgQuery__PLpgSQLStmtExit *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_exit__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_exit__pack
+                     (const PgQuery__PLpgSQLStmtExit *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_exit__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_exit__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtExit *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_exit__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtExit *
+       pg_query__plpg_sql_stmt_exit__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtExit *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_exit__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_exit__free_unpacked
+                     (PgQuery__PLpgSQLStmtExit *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_exit__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_return__init
+                     (PgQuery__PLpgSQLStmtReturn         *message)
+{
+  static const PgQuery__PLpgSQLStmtReturn init_value = PG_QUERY__PLPG_SQL_STMT_RETURN__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_return__get_packed_size
+                     (const PgQuery__PLpgSQLStmtReturn *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_return__pack
+                     (const PgQuery__PLpgSQLStmtReturn *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_return__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtReturn *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtReturn *
+       pg_query__plpg_sql_stmt_return__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtReturn *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_return__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_return__free_unpacked
+                     (PgQuery__PLpgSQLStmtReturn *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_return_next__init
+                     (PgQuery__PLpgSQLStmtReturnNext         *message)
+{
+  static const PgQuery__PLpgSQLStmtReturnNext init_value = PG_QUERY__PLPG_SQL_STMT_RETURN_NEXT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_return_next__get_packed_size
+                     (const PgQuery__PLpgSQLStmtReturnNext *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_next__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_return_next__pack
+                     (const PgQuery__PLpgSQLStmtReturnNext *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_next__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_return_next__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtReturnNext *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_next__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtReturnNext *
+       pg_query__plpg_sql_stmt_return_next__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtReturnNext *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_return_next__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_return_next__free_unpacked
+                     (PgQuery__PLpgSQLStmtReturnNext *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_next__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_return_query__init
+                     (PgQuery__PLpgSQLStmtReturnQuery         *message)
+{
+  static const PgQuery__PLpgSQLStmtReturnQuery init_value = PG_QUERY__PLPG_SQL_STMT_RETURN_QUERY__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_return_query__get_packed_size
+                     (const PgQuery__PLpgSQLStmtReturnQuery *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_query__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_return_query__pack
+                     (const PgQuery__PLpgSQLStmtReturnQuery *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_query__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_return_query__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtReturnQuery *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_query__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtReturnQuery *
+       pg_query__plpg_sql_stmt_return_query__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtReturnQuery *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_return_query__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_return_query__free_unpacked
+                     (PgQuery__PLpgSQLStmtReturnQuery *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_return_query__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_raise__init
+                     (PgQuery__PLpgSQLStmtRaise         *message)
+{
+  static const PgQuery__PLpgSQLStmtRaise init_value = PG_QUERY__PLPG_SQL_STMT_RAISE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_raise__get_packed_size
+                     (const PgQuery__PLpgSQLStmtRaise *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_raise__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_raise__pack
+                     (const PgQuery__PLpgSQLStmtRaise *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_raise__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_raise__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtRaise *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_raise__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtRaise *
+       pg_query__plpg_sql_stmt_raise__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtRaise *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_raise__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_raise__free_unpacked
+                     (PgQuery__PLpgSQLStmtRaise *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_raise__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_raise_option__init
+                     (PgQuery__PLpgSQLRaiseOption         *message)
+{
+  static const PgQuery__PLpgSQLRaiseOption init_value = PG_QUERY__PLPG_SQL_RAISE_OPTION__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_raise_option__get_packed_size
+                     (const PgQuery__PLpgSQLRaiseOption *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_raise_option__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_raise_option__pack
+                     (const PgQuery__PLpgSQLRaiseOption *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_raise_option__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_raise_option__pack_to_buffer
+                     (const PgQuery__PLpgSQLRaiseOption *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_raise_option__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLRaiseOption *
+       pg_query__plpg_sql_raise_option__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLRaiseOption *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_raise_option__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_raise_option__free_unpacked
+                     (PgQuery__PLpgSQLRaiseOption *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_raise_option__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_assert__init
+                     (PgQuery__PLpgSQLStmtAssert         *message)
+{
+  static const PgQuery__PLpgSQLStmtAssert init_value = PG_QUERY__PLPG_SQL_STMT_ASSERT__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_assert__get_packed_size
+                     (const PgQuery__PLpgSQLStmtAssert *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assert__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_assert__pack
+                     (const PgQuery__PLpgSQLStmtAssert *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assert__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_assert__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtAssert *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assert__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtAssert *
+       pg_query__plpg_sql_stmt_assert__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtAssert *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_assert__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_assert__free_unpacked
+                     (PgQuery__PLpgSQLStmtAssert *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_assert__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_execsql__init
+                     (PgQuery__PLpgSQLStmtExecsql         *message)
+{
+  static const PgQuery__PLpgSQLStmtExecsql init_value = PG_QUERY__PLPG_SQL_STMT_EXECSQL__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_execsql__get_packed_size
+                     (const PgQuery__PLpgSQLStmtExecsql *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_execsql__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_execsql__pack
+                     (const PgQuery__PLpgSQLStmtExecsql *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_execsql__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_execsql__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtExecsql *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_execsql__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtExecsql *
+       pg_query__plpg_sql_stmt_execsql__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtExecsql *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_execsql__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_execsql__free_unpacked
+                     (PgQuery__PLpgSQLStmtExecsql *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_execsql__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_stmt_dynexecute__init
+                     (PgQuery__PLpgSQLStmtDynexecute         *message)
+{
+  static const PgQuery__PLpgSQLStmtDynexecute init_value = PG_QUERY__PLPG_SQL_STMT_DYNEXECUTE__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_stmt_dynexecute__get_packed_size
+                     (const PgQuery__PLpgSQLStmtDynexecute *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynexecute__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_stmt_dynexecute__pack
+                     (const PgQuery__PLpgSQLStmtDynexecute *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynexecute__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_stmt_dynexecute__pack_to_buffer
+                     (const PgQuery__PLpgSQLStmtDynexecute *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynexecute__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLStmtDynexecute *
+       pg_query__plpg_sql_stmt_dynexecute__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLStmtDynexecute *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_stmt_dynexecute__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_stmt_dynexecute__free_unpacked
+                     (PgQuery__PLpgSQLStmtDynexecute *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_stmt_dynexecute__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   pg_query__plpg_sql_function__init
+                     (PgQuery__PLpgSQLFunction         *message)
+{
+  static const PgQuery__PLpgSQLFunction init_value = PG_QUERY__PLPG_SQL_FUNCTION__INIT;
+  *message = init_value;
+}
+size_t pg_query__plpg_sql_function__get_packed_size
+                     (const PgQuery__PLpgSQLFunction *message)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_function__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t pg_query__plpg_sql_function__pack
+                     (const PgQuery__PLpgSQLFunction *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_function__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t pg_query__plpg_sql_function__pack_to_buffer
+                     (const PgQuery__PLpgSQLFunction *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &pg_query__plpg_sql_function__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+PgQuery__PLpgSQLFunction *
+       pg_query__plpg_sql_function__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (PgQuery__PLpgSQLFunction *)
+     protobuf_c_message_unpack (&pg_query__plpg_sql_function__descriptor,
+                                allocator, len, data);
+}
+void   pg_query__plpg_sql_function__free_unpacked
+                     (PgQuery__PLpgSQLFunction *message,
+                      ProtobufCAllocator *allocator)
+{
+  if(!message)
+    return;
+  assert(message->base.descriptor == &pg_query__plpg_sql_function__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 static const ProtobufCFieldDescriptor pg_query__parse_result__field_descriptors[2] =
 {
   {
@@ -41161,6 +43141,4370 @@ const ProtobufCMessageDescriptor pg_query__summary_result__descriptor =
   (ProtobufCMessageInit) pg_query__summary_result__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
+static const ProtobufCFieldDescriptor pg_query__plpg_sqlparse_result__field_descriptors[2] =
+{
+  {
+    "version",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLParseResult, version),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "plpgsql_funcs",
+    2,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLParseResult, n_plpgsql_funcs),
+    offsetof(PgQuery__PLpgSQLParseResult, plpgsql_funcs),
+    &pg_query__plpg_sql_function__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sqlparse_result__field_indices_by_name[] = {
+  1,   /* field[1] = plpgsql_funcs */
+  0,   /* field[0] = version */
+};
+static const ProtobufCIntRange pg_query__plpg_sqlparse_result__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sqlparse_result__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQLParseResult",
+  "PLpgSQLParseResult",
+  "PgQuery__PLpgSQLParseResult",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLParseResult),
+  2,
+  pg_query__plpg_sqlparse_result__field_descriptors,
+  pg_query__plpg_sqlparse_result__field_indices_by_name,
+  1,  pg_query__plpg_sqlparse_result__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sqlparse_result__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt__field_descriptors[27] =
+{
+  {
+    "stmt_block",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_block),
+    &pg_query__plpg_sql_stmt_block__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_assign",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_assign),
+    &pg_query__plpg_sql_stmt_assign__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_if",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_if),
+    &pg_query__plpg_sql_stmt_if__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_case_",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case_),
+    &pg_query__plpg_sql_stmt_case__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_loop",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_loop),
+    &pg_query__plpg_sql_stmt_loop__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_while",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_while),
+    &pg_query__plpg_sql_stmt_while__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_fori",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_fori),
+    &pg_query__plpg_sql_stmt_fori__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_fors",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_fors),
+    &pg_query__plpg_sql_stmt_fors__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_forc",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_forc),
+    &pg_query__plpg_sql_stmt_forc__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_foreach_a",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_foreach_a),
+    &pg_query__plpg_sql_stmt_foreach_a__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_exit",
+    11,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_exit),
+    &pg_query__plpg_sql_stmt_exit__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_return",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_return),
+    &pg_query__plpg_sql_stmt_return__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_return_next",
+    13,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_return_next),
+    &pg_query__plpg_sql_stmt_return_next__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_return_query",
+    14,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_return_query),
+    &pg_query__plpg_sql_stmt_return_query__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_raise",
+    15,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_raise),
+    &pg_query__plpg_sql_stmt_raise__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_assert",
+    16,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_assert),
+    &pg_query__plpg_sql_stmt_assert__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_execsql",
+    17,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_execsql),
+    &pg_query__plpg_sql_stmt_execsql__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_dynexecute",
+    18,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_dynexecute),
+    &pg_query__plpg_sql_stmt_dynexecute__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_dynfors",
+    19,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_dynfors),
+    &pg_query__plpg_sql_stmt_dynfors__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_getdiag",
+    20,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_getdiag),
+    &pg_query__plpg_sql_stmt_getdiag__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_open",
+    21,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_open),
+    &pg_query__plpg_sql_stmt_open__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_fetch",
+    22,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_fetch),
+    &pg_query__plpg_sql_stmt_fetch__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_close",
+    23,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_close),
+    &pg_query__plpg_sql_stmt_close__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_perform",
+    24,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_perform),
+    &pg_query__plpg_sql_stmt_perform__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_call",
+    25,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_call),
+    &pg_query__plpg_sql_stmt_call__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_commit",
+    26,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_commit),
+    &pg_query__plpg_sql_stmt_commit__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmt_rollback",
+    27,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmt, stmt_case),
+    offsetof(PgQuery__PLpgSQLStmt, stmt_rollback),
+    &pg_query__plpg_sql_stmt_rollback__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt__field_indices_by_name[] = {
+  15,   /* field[15] = stmt_assert */
+  1,   /* field[1] = stmt_assign */
+  0,   /* field[0] = stmt_block */
+  24,   /* field[24] = stmt_call */
+  3,   /* field[3] = stmt_case_ */
+  22,   /* field[22] = stmt_close */
+  25,   /* field[25] = stmt_commit */
+  17,   /* field[17] = stmt_dynexecute */
+  18,   /* field[18] = stmt_dynfors */
+  16,   /* field[16] = stmt_execsql */
+  10,   /* field[10] = stmt_exit */
+  21,   /* field[21] = stmt_fetch */
+  8,   /* field[8] = stmt_forc */
+  9,   /* field[9] = stmt_foreach_a */
+  6,   /* field[6] = stmt_fori */
+  7,   /* field[7] = stmt_fors */
+  19,   /* field[19] = stmt_getdiag */
+  2,   /* field[2] = stmt_if */
+  4,   /* field[4] = stmt_loop */
+  20,   /* field[20] = stmt_open */
+  23,   /* field[23] = stmt_perform */
+  14,   /* field[14] = stmt_raise */
+  11,   /* field[11] = stmt_return */
+  12,   /* field[12] = stmt_return_next */
+  13,   /* field[13] = stmt_return_query */
+  26,   /* field[26] = stmt_rollback */
+  5,   /* field[5] = stmt_while */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 27 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt",
+  "PLpgSQLStmt",
+  "PgQuery__PLpgSQLStmt",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmt),
+  27,
+  pg_query__plpg_sql_stmt__field_descriptors,
+  pg_query__plpg_sql_stmt__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_datum__field_descriptors[4] =
+{
+  {
+    "var",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLDatum, datum_case),
+    offsetof(PgQuery__PLpgSQLDatum, var),
+    &pg_query__plpg_sql_var__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "row",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLDatum, datum_case),
+    offsetof(PgQuery__PLpgSQLDatum, row),
+    &pg_query__plpg_sql_row__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "rec",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLDatum, datum_case),
+    offsetof(PgQuery__PLpgSQLDatum, rec),
+    &pg_query__plpg_sql_rec__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "recfield",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLDatum, datum_case),
+    offsetof(PgQuery__PLpgSQLDatum, recfield),
+    &pg_query__plpg_sql_recfield__descriptor,
+    NULL,
+    PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_datum__field_indices_by_name[] = {
+  2,   /* field[2] = rec */
+  3,   /* field[3] = recfield */
+  1,   /* field[1] = row */
+  0,   /* field[0] = var */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_datum__number_ranges[2 + 1] =
+{
+  { 1, 0 },
+  { 3, 1 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_datum__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_datum",
+  "PLpgSQLDatum",
+  "PgQuery__PLpgSQLDatum",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLDatum),
+  4,
+  pg_query__plpg_sql_datum__field_descriptors,
+  pg_query__plpg_sql_datum__field_indices_by_name,
+  2,  pg_query__plpg_sql_datum__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_datum__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_type__field_descriptors[2] =
+{
+  {
+    "typname",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLType, typname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ttype",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLType, ttype),
+    &pg_query__plpg_sql_type_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_type__field_indices_by_name[] = {
+  1,   /* field[1] = ttype */
+  0,   /* field[0] = typname */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_type__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_type__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_type",
+  "PLpgSQLType",
+  "PgQuery__PLpgSQLType",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLType),
+  2,
+  pg_query__plpg_sql_type__field_descriptors,
+  pg_query__plpg_sql_type__field_indices_by_name,
+  1,  pg_query__plpg_sql_type__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_type__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_expr__field_descriptors[2] =
+{
+  {
+    "query",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLExpr, query),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "parse_mode",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLExpr, parse_mode),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_expr__field_indices_by_name[] = {
+  1,   /* field[1] = parse_mode */
+  0,   /* field[0] = query */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_expr__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_expr__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_expr",
+  "PLpgSQLExpr",
+  "PgQuery__PLpgSQLExpr",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLExpr),
+  2,
+  pg_query__plpg_sql_expr__field_descriptors,
+  pg_query__plpg_sql_expr__field_indices_by_name,
+  1,  pg_query__plpg_sql_expr__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_expr__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_var__field_descriptors[12] =
+{
+  {
+    "dtype",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, dtype),
+    &pg_query__plpg_sql_datum_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, dno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refname",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, refname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "isconst",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, isconst),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "notnull",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, notnull),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "default_val",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, default_val),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "datatype",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, datatype),
+    &pg_query__plpg_sql_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cursor_explicit_expr",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, cursor_explicit_expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cursor_explicit_argrow",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, cursor_explicit_argrow),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cursor_options",
+    11,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, cursor_options),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "promise",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLVar, promise),
+    &pg_query__plpg_sql_promise_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_var__field_indices_by_name[] = {
+  9,   /* field[9] = cursor_explicit_argrow */
+  8,   /* field[8] = cursor_explicit_expr */
+  10,   /* field[10] = cursor_options */
+  7,   /* field[7] = datatype */
+  6,   /* field[6] = default_val */
+  1,   /* field[1] = dno */
+  0,   /* field[0] = dtype */
+  4,   /* field[4] = isconst */
+  3,   /* field[3] = lineno */
+  5,   /* field[5] = notnull */
+  11,   /* field[11] = promise */
+  2,   /* field[2] = refname */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_var__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 12 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_var__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_var",
+  "PLpgSQLVar",
+  "PgQuery__PLpgSQLVar",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLVar),
+  12,
+  pg_query__plpg_sql_var__field_descriptors,
+  pg_query__plpg_sql_var__field_indices_by_name,
+  1,  pg_query__plpg_sql_var__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_var__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_row__field_descriptors[8] =
+{
+  {
+    "dtype",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, dtype),
+    &pg_query__plpg_sql_datum_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, dno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refname",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, refname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "isconst",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, isconst),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "notnull",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, notnull),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "default_val",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, default_val),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "nfields",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRow, nfields),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_row__field_indices_by_name[] = {
+  6,   /* field[6] = default_val */
+  1,   /* field[1] = dno */
+  0,   /* field[0] = dtype */
+  4,   /* field[4] = isconst */
+  3,   /* field[3] = lineno */
+  7,   /* field[7] = nfields */
+  5,   /* field[5] = notnull */
+  2,   /* field[2] = refname */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_row__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 8 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_row__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_row",
+  "PLpgSQLRow",
+  "PgQuery__PLpgSQLRow",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLRow),
+  8,
+  pg_query__plpg_sql_row__field_descriptors,
+  pg_query__plpg_sql_row__field_indices_by_name,
+  1,  pg_query__plpg_sql_row__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_row__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_rec__field_descriptors[9] =
+{
+  {
+    "dtype",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, dtype),
+    &pg_query__plpg_sql_datum_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, dno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "refname",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, refname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "isconst",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, isconst),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "notnull",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, notnull),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "default_val",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, default_val),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "datatype",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, datatype),
+    &pg_query__plpg_sql_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "firstfield",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRec, firstfield),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_rec__field_indices_by_name[] = {
+  7,   /* field[7] = datatype */
+  6,   /* field[6] = default_val */
+  1,   /* field[1] = dno */
+  0,   /* field[0] = dtype */
+  8,   /* field[8] = firstfield */
+  4,   /* field[4] = isconst */
+  3,   /* field[3] = lineno */
+  5,   /* field[5] = notnull */
+  2,   /* field[2] = refname */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_rec__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 9 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_rec__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_rec",
+  "PLpgSQLRec",
+  "PgQuery__PLpgSQLRec",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLRec),
+  9,
+  pg_query__plpg_sql_rec__field_descriptors,
+  pg_query__plpg_sql_rec__field_indices_by_name,
+  1,  pg_query__plpg_sql_rec__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_rec__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_recfield__field_descriptors[5] =
+{
+  {
+    "dtype",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRecfield, dtype),
+    &pg_query__plpg_sql_datum_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRecfield, dno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "fieldname",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRecfield, fieldname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "recparentno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRecfield, recparentno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "nextfield",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRecfield, nextfield),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_recfield__field_indices_by_name[] = {
+  1,   /* field[1] = dno */
+  0,   /* field[0] = dtype */
+  2,   /* field[2] = fieldname */
+  4,   /* field[4] = nextfield */
+  3,   /* field[3] = recparentno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_recfield__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 5 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_recfield__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_recfield",
+  "PLpgSQLRecfield",
+  "PgQuery__PLpgSQLRecfield",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLRecfield),
+  5,
+  pg_query__plpg_sql_recfield__field_descriptors,
+  pg_query__plpg_sql_recfield__field_indices_by_name,
+  1,  pg_query__plpg_sql_recfield__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_recfield__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_condition__field_descriptors[2] =
+{
+  {
+    "sqlerrstate",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLCondition, sqlerrstate),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "condname",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLCondition, condname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_condition__field_indices_by_name[] = {
+  1,   /* field[1] = condname */
+  0,   /* field[0] = sqlerrstate */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_condition__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_condition__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_condition",
+  "PLpgSQLCondition",
+  "PgQuery__PLpgSQLCondition",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLCondition),
+  2,
+  pg_query__plpg_sql_condition__field_descriptors,
+  pg_query__plpg_sql_condition__field_indices_by_name,
+  1,  pg_query__plpg_sql_condition__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_condition__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_exception_block__field_descriptors[3] =
+{
+  {
+    "sqlstate_varno",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLExceptionBlock, sqlstate_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "sqlerrm_varno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLExceptionBlock, sqlerrm_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "exc_list",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLExceptionBlock, n_exc_list),
+    offsetof(PgQuery__PLpgSQLExceptionBlock, exc_list),
+    &pg_query__plpg_sql_exception__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_exception_block__field_indices_by_name[] = {
+  2,   /* field[2] = exc_list */
+  1,   /* field[1] = sqlerrm_varno */
+  0,   /* field[0] = sqlstate_varno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_exception_block__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_exception_block__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_exception_block",
+  "PLpgSQLExceptionBlock",
+  "PgQuery__PLpgSQLExceptionBlock",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLExceptionBlock),
+  3,
+  pg_query__plpg_sql_exception_block__field_descriptors,
+  pg_query__plpg_sql_exception_block__field_indices_by_name,
+  1,  pg_query__plpg_sql_exception_block__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_exception_block__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_exception__field_descriptors[3] =
+{
+  {
+    "lineno",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLException, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "conditions",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLException, conditions),
+    &pg_query__plpg_sql_condition__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "action",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLException, n_action),
+    offsetof(PgQuery__PLpgSQLException, action),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_exception__field_indices_by_name[] = {
+  2,   /* field[2] = action */
+  1,   /* field[1] = conditions */
+  0,   /* field[0] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_exception__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_exception__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_exception",
+  "PLpgSQLException",
+  "PgQuery__PLpgSQLException",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLException),
+  3,
+  pg_query__plpg_sql_exception__field_descriptors,
+  pg_query__plpg_sql_exception__field_indices_by_name,
+  1,  pg_query__plpg_sql_exception__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_exception__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_block__field_descriptors[6] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtBlock, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtBlock, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtBlock, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtBlock, n_body),
+    offsetof(PgQuery__PLpgSQLStmtBlock, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "n_initvars",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtBlock, n_initvars),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "exceptions",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtBlock, exceptions),
+    &pg_query__plpg_sql_exception_block__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_block__field_indices_by_name[] = {
+  3,   /* field[3] = body */
+  0,   /* field[0] = cmd_type */
+  5,   /* field[5] = exceptions */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = n_initvars */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_block__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 6 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_block__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_block",
+  "PLpgSQLStmtBlock",
+  "PgQuery__PLpgSQLStmtBlock",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtBlock),
+  6,
+  pg_query__plpg_sql_stmt_block__field_descriptors,
+  pg_query__plpg_sql_stmt_block__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_block__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_block__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_assign__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssign, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssign, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "varno",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssign, varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssign, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_assign__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = expr */
+  1,   /* field[1] = lineno */
+  2,   /* field[2] = varno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_assign__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_assign__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_assign",
+  "PLpgSQLStmtAssign",
+  "PgQuery__PLpgSQLStmtAssign",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtAssign),
+  4,
+  pg_query__plpg_sql_stmt_assign__field_descriptors,
+  pg_query__plpg_sql_stmt_assign__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_assign__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_assign__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_perform__field_descriptors[3] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtPerform, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtPerform, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtPerform, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_perform__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = expr */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_perform__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_perform__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_perform",
+  "PLpgSQLStmtPerform",
+  "PgQuery__PLpgSQLStmtPerform",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtPerform),
+  3,
+  pg_query__plpg_sql_stmt_perform__field_descriptors,
+  pg_query__plpg_sql_stmt_perform__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_perform__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_perform__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_call__field_descriptors[5] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCall, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCall, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCall, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "is_call",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCall, is_call),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "target",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCall, target),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_call__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = expr */
+  3,   /* field[3] = is_call */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = target */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_call__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 5 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_call__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_call",
+  "PLpgSQLStmtCall",
+  "PgQuery__PLpgSQLStmtCall",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtCall),
+  5,
+  pg_query__plpg_sql_stmt_call__field_descriptors,
+  pg_query__plpg_sql_stmt_call__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_call__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_call__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_commit__field_descriptors[3] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCommit, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCommit, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "chain",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCommit, chain),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_commit__field_indices_by_name[] = {
+  2,   /* field[2] = chain */
+  0,   /* field[0] = cmd_type */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_commit__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_commit__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_commit",
+  "PLpgSQLStmtCommit",
+  "PgQuery__PLpgSQLStmtCommit",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtCommit),
+  3,
+  pg_query__plpg_sql_stmt_commit__field_descriptors,
+  pg_query__plpg_sql_stmt_commit__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_commit__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_commit__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_rollback__field_descriptors[3] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRollback, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRollback, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "chain",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRollback, chain),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_rollback__field_indices_by_name[] = {
+  2,   /* field[2] = chain */
+  0,   /* field[0] = cmd_type */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_rollback__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_rollback__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_rollback",
+  "PLpgSQLStmtRollback",
+  "PgQuery__PLpgSQLStmtRollback",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtRollback),
+  3,
+  pg_query__plpg_sql_stmt_rollback__field_descriptors,
+  pg_query__plpg_sql_stmt_rollback__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_rollback__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_rollback__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_diag_item__field_descriptors[2] =
+{
+  {
+    "kind",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLDiagItem, kind),
+    &pg_query__plpg_sql_getdiag_kind__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "target",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLDiagItem, target),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_diag_item__field_indices_by_name[] = {
+  0,   /* field[0] = kind */
+  1,   /* field[1] = target */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_diag_item__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_diag_item__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_diag_item",
+  "PLpgSQLDiagItem",
+  "PgQuery__PLpgSQLDiagItem",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLDiagItem),
+  2,
+  pg_query__plpg_sql_diag_item__field_descriptors,
+  pg_query__plpg_sql_diag_item__field_indices_by_name,
+  1,  pg_query__plpg_sql_diag_item__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_diag_item__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_getdiag__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtGetdiag, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtGetdiag, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "is_stacked",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtGetdiag, is_stacked),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "diag_items",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtGetdiag, n_diag_items),
+    offsetof(PgQuery__PLpgSQLStmtGetdiag, diag_items),
+    &pg_query__plpg_sql_diag_item__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_getdiag__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = diag_items */
+  2,   /* field[2] = is_stacked */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_getdiag__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_getdiag__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_getdiag",
+  "PLpgSQLStmtGetdiag",
+  "PgQuery__PLpgSQLStmtGetdiag",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtGetdiag),
+  4,
+  pg_query__plpg_sql_stmt_getdiag__field_descriptors,
+  pg_query__plpg_sql_stmt_getdiag__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_getdiag__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_getdiag__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_if__field_descriptors[6] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtIf, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtIf, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cond",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtIf, cond),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "then_body",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtIf, n_then_body),
+    offsetof(PgQuery__PLpgSQLStmtIf, then_body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "elsif_list",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtIf, n_elsif_list),
+    offsetof(PgQuery__PLpgSQLStmtIf, elsif_list),
+    &pg_query__plpg_sql_if_elsif__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "else_body",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtIf, n_else_body),
+    offsetof(PgQuery__PLpgSQLStmtIf, else_body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_if__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = cond */
+  5,   /* field[5] = else_body */
+  4,   /* field[4] = elsif_list */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = then_body */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_if__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 6 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_if__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_if",
+  "PLpgSQLStmtIf",
+  "PgQuery__PLpgSQLStmtIf",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtIf),
+  6,
+  pg_query__plpg_sql_stmt_if__field_descriptors,
+  pg_query__plpg_sql_stmt_if__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_if__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_if__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_if_elsif__field_descriptors[3] =
+{
+  {
+    "lineno",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLIfElsif, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cond",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLIfElsif, cond),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmts",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLIfElsif, n_stmts),
+    offsetof(PgQuery__PLpgSQLIfElsif, stmts),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_if_elsif__field_indices_by_name[] = {
+  1,   /* field[1] = cond */
+  0,   /* field[0] = lineno */
+  2,   /* field[2] = stmts */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_if_elsif__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_if_elsif__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_if_elsif",
+  "PLpgSQLIfElsif",
+  "PgQuery__PLpgSQLIfElsif",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLIfElsif),
+  3,
+  pg_query__plpg_sql_if_elsif__field_descriptors,
+  pg_query__plpg_sql_if_elsif__field_indices_by_name,
+  1,  pg_query__plpg_sql_if_elsif__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_if_elsif__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_case__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCase, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCase, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "t_expr",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCase, t_expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "t_varno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCase, t_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "case_when_list",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtCase, n_case_when_list),
+    offsetof(PgQuery__PLpgSQLStmtCase, case_when_list),
+    &pg_query__plpg_sql_case_when__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "have_else",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtCase, have_else),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "else_stmts",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtCase, n_else_stmts),
+    offsetof(PgQuery__PLpgSQLStmtCase, else_stmts),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_case__field_indices_by_name[] = {
+  4,   /* field[4] = case_when_list */
+  0,   /* field[0] = cmd_type */
+  6,   /* field[6] = else_stmts */
+  5,   /* field[5] = have_else */
+  1,   /* field[1] = lineno */
+  2,   /* field[2] = t_expr */
+  3,   /* field[3] = t_varno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_case__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_case__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_case",
+  "PLpgSQLStmtCase",
+  "PgQuery__PLpgSQLStmtCase",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtCase),
+  7,
+  pg_query__plpg_sql_stmt_case__field_descriptors,
+  pg_query__plpg_sql_stmt_case__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_case__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_case__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_case_when__field_descriptors[3] =
+{
+  {
+    "lineno",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLCaseWhen, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLCaseWhen, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "stmts",
+    3,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLCaseWhen, n_stmts),
+    offsetof(PgQuery__PLpgSQLCaseWhen, stmts),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_case_when__field_indices_by_name[] = {
+  1,   /* field[1] = expr */
+  0,   /* field[0] = lineno */
+  2,   /* field[2] = stmts */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_case_when__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_case_when__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_case_when",
+  "PLpgSQLCaseWhen",
+  "PgQuery__PLpgSQLCaseWhen",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLCaseWhen),
+  3,
+  pg_query__plpg_sql_case_when__field_descriptors,
+  pg_query__plpg_sql_case_when__field_indices_by_name,
+  1,  pg_query__plpg_sql_case_when__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_case_when__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_loop__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtLoop, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtLoop, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtLoop, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    4,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtLoop, n_body),
+    offsetof(PgQuery__PLpgSQLStmtLoop, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_loop__field_indices_by_name[] = {
+  3,   /* field[3] = body */
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_loop__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_loop__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_loop",
+  "PLpgSQLStmtLoop",
+  "PgQuery__PLpgSQLStmtLoop",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtLoop),
+  4,
+  pg_query__plpg_sql_stmt_loop__field_descriptors,
+  pg_query__plpg_sql_stmt_loop__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_loop__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_loop__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_while__field_descriptors[5] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtWhile, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtWhile, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtWhile, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cond",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtWhile, cond),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtWhile, n_body),
+    offsetof(PgQuery__PLpgSQLStmtWhile, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_while__field_indices_by_name[] = {
+  4,   /* field[4] = body */
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = cond */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_while__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 5 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_while__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_while",
+  "PLpgSQLStmtWhile",
+  "PgQuery__PLpgSQLStmtWhile",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtWhile),
+  5,
+  pg_query__plpg_sql_stmt_while__field_descriptors,
+  pg_query__plpg_sql_stmt_while__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_while__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_while__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_fori__field_descriptors[9] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "var",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, var),
+    &pg_query__plpg_sql_var__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lower",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, lower),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "upper",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, upper),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "step",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, step),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "reverse",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFori, reverse),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    9,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtFori, n_body),
+    offsetof(PgQuery__PLpgSQLStmtFori, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_fori__field_indices_by_name[] = {
+  8,   /* field[8] = body */
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = lower */
+  7,   /* field[7] = reverse */
+  6,   /* field[6] = step */
+  5,   /* field[5] = upper */
+  3,   /* field[3] = var */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_fori__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 9 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_fori__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_fori",
+  "PLpgSQLStmtFori",
+  "PgQuery__PLpgSQLStmtFori",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtFori),
+  9,
+  pg_query__plpg_sql_stmt_fori__field_descriptors,
+  pg_query__plpg_sql_stmt_fori__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_fori__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_fori__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_fors__field_descriptors[6] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFors, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFors, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFors, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "var",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFors, var),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtFors, n_body),
+    offsetof(PgQuery__PLpgSQLStmtFors, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "query",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFors, query),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_fors__field_indices_by_name[] = {
+  4,   /* field[4] = body */
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  5,   /* field[5] = query */
+  3,   /* field[3] = var */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_fors__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 6 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_fors__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_fors",
+  "PLpgSQLStmtFors",
+  "PgQuery__PLpgSQLStmtFors",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtFors),
+  6,
+  pg_query__plpg_sql_stmt_fors__field_descriptors,
+  pg_query__plpg_sql_stmt_fors__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_fors__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_fors__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_forc__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "var",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, var),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtForc, n_body),
+    offsetof(PgQuery__PLpgSQLStmtForc, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "curvar",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, curvar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "argquery",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForc, argquery),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_forc__field_indices_by_name[] = {
+  6,   /* field[6] = argquery */
+  4,   /* field[4] = body */
+  0,   /* field[0] = cmd_type */
+  5,   /* field[5] = curvar */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = var */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_forc__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_forc__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_forc",
+  "PLpgSQLStmtForc",
+  "PgQuery__PLpgSQLStmtForc",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtForc),
+  7,
+  pg_query__plpg_sql_stmt_forc__field_descriptors,
+  pg_query__plpg_sql_stmt_forc__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_forc__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_forc__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_dynfors__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynfors, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynfors, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynfors, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "var",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynfors, var),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtDynfors, n_body),
+    offsetof(PgQuery__PLpgSQLStmtDynfors, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "query",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynfors, query),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "params",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtDynfors, n_params),
+    offsetof(PgQuery__PLpgSQLStmtDynfors, params),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_dynfors__field_indices_by_name[] = {
+  4,   /* field[4] = body */
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  6,   /* field[6] = params */
+  5,   /* field[5] = query */
+  3,   /* field[3] = var */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_dynfors__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_dynfors__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_dynfors",
+  "PLpgSQLStmtDynfors",
+  "PgQuery__PLpgSQLStmtDynfors",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtDynfors),
+  7,
+  pg_query__plpg_sql_stmt_dynfors__field_descriptors,
+  pg_query__plpg_sql_stmt_dynfors__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_dynfors__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_dynfors__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_foreach_a__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "varno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "slice",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, slice),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtForeachA, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "body",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtForeachA, n_body),
+    offsetof(PgQuery__PLpgSQLStmtForeachA, body),
+    &pg_query__plpg_sql_stmt__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_foreach_a__field_indices_by_name[] = {
+  6,   /* field[6] = body */
+  0,   /* field[0] = cmd_type */
+  5,   /* field[5] = expr */
+  2,   /* field[2] = label */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = slice */
+  3,   /* field[3] = varno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_foreach_a__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_foreach_a__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_foreach_a",
+  "PLpgSQLStmtForeachA",
+  "PgQuery__PLpgSQLStmtForeachA",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtForeachA),
+  7,
+  pg_query__plpg_sql_stmt_foreach_a__field_descriptors,
+  pg_query__plpg_sql_stmt_foreach_a__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_foreach_a__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_foreach_a__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_open__field_descriptors[8] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "curvar",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, curvar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cursor_options",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, cursor_options),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "argquery",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, argquery),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "query",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, query),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dynquery",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtOpen, dynquery),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "params",
+    8,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtOpen, n_params),
+    offsetof(PgQuery__PLpgSQLStmtOpen, params),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_open__field_indices_by_name[] = {
+  4,   /* field[4] = argquery */
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = cursor_options */
+  2,   /* field[2] = curvar */
+  6,   /* field[6] = dynquery */
+  1,   /* field[1] = lineno */
+  7,   /* field[7] = params */
+  5,   /* field[5] = query */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_open__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 8 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_open__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_open",
+  "PLpgSQLStmtOpen",
+  "PgQuery__PLpgSQLStmtOpen",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtOpen),
+  8,
+  pg_query__plpg_sql_stmt_open__field_descriptors,
+  pg_query__plpg_sql_stmt_open__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_open__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_open__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_fetch__field_descriptors[9] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "target",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, target),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "curvar",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, curvar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "direction",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, direction),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "how_many",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT64,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, how_many),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "is_move",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, is_move),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "returns_multiple_rows",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtFetch, returns_multiple_rows),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_fetch__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = curvar */
+  4,   /* field[4] = direction */
+  6,   /* field[6] = expr */
+  5,   /* field[5] = how_many */
+  7,   /* field[7] = is_move */
+  1,   /* field[1] = lineno */
+  8,   /* field[8] = returns_multiple_rows */
+  2,   /* field[2] = target */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_fetch__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 9 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_fetch__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_fetch",
+  "PLpgSQLStmtFetch",
+  "PgQuery__PLpgSQLStmtFetch",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtFetch),
+  9,
+  pg_query__plpg_sql_stmt_fetch__field_descriptors,
+  pg_query__plpg_sql_stmt_fetch__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_fetch__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_fetch__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_close__field_descriptors[3] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtClose, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtClose, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "curvar",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtClose, curvar),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_close__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = curvar */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_close__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 3 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_close__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_close",
+  "PLpgSQLStmtClose",
+  "PgQuery__PLpgSQLStmtClose",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtClose),
+  3,
+  pg_query__plpg_sql_stmt_close__field_descriptors,
+  pg_query__plpg_sql_stmt_close__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_close__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_close__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_exit__field_descriptors[5] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExit, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExit, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "is_exit",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExit, is_exit),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "label",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExit, label),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cond",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExit, cond),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_exit__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  4,   /* field[4] = cond */
+  2,   /* field[2] = is_exit */
+  3,   /* field[3] = label */
+  1,   /* field[1] = lineno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_exit__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 5 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_exit__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_exit",
+  "PLpgSQLStmtExit",
+  "PgQuery__PLpgSQLStmtExit",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtExit),
+  5,
+  pg_query__plpg_sql_stmt_exit__field_descriptors,
+  pg_query__plpg_sql_stmt_exit__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_exit__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_exit__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_return__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturn, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturn, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturn, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "retvarno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturn, retvarno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_return__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = expr */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = retvarno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_return__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_return__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_return",
+  "PLpgSQLStmtReturn",
+  "PgQuery__PLpgSQLStmtReturn",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtReturn),
+  4,
+  pg_query__plpg_sql_stmt_return__field_descriptors,
+  pg_query__plpg_sql_stmt_return__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_return__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_return__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_return_next__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnNext, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnNext, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnNext, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "retvarno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnNext, retvarno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_return_next__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = expr */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = retvarno */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_return_next__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_return_next__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_return_next",
+  "PLpgSQLStmtReturnNext",
+  "PgQuery__PLpgSQLStmtReturnNext",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtReturnNext),
+  4,
+  pg_query__plpg_sql_stmt_return_next__field_descriptors,
+  pg_query__plpg_sql_stmt_return_next__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_return_next__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_return_next__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_return_query__field_descriptors[5] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "query",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, query),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "dynquery",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, dynquery),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "params",
+    5,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, n_params),
+    offsetof(PgQuery__PLpgSQLStmtReturnQuery, params),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_return_query__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = dynquery */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = params */
+  2,   /* field[2] = query */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_return_query__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 5 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_return_query__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_return_query",
+  "PLpgSQLStmtReturnQuery",
+  "PgQuery__PLpgSQLStmtReturnQuery",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtReturnQuery),
+  5,
+  pg_query__plpg_sql_stmt_return_query__field_descriptors,
+  pg_query__plpg_sql_stmt_return_query__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_return_query__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_return_query__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_raise__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRaise, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRaise, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "elog_level",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRaise, elog_level),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "condname",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRaise, condname),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "message",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtRaise, message),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "params",
+    6,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtRaise, n_params),
+    offsetof(PgQuery__PLpgSQLStmtRaise, params),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "options",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtRaise, n_options),
+    offsetof(PgQuery__PLpgSQLStmtRaise, options),
+    &pg_query__plpg_sql_raise_option__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_raise__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = condname */
+  2,   /* field[2] = elog_level */
+  1,   /* field[1] = lineno */
+  4,   /* field[4] = message */
+  6,   /* field[6] = options */
+  5,   /* field[5] = params */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_raise__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_raise__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_raise",
+  "PLpgSQLStmtRaise",
+  "PgQuery__PLpgSQLStmtRaise",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtRaise),
+  7,
+  pg_query__plpg_sql_stmt_raise__field_descriptors,
+  pg_query__plpg_sql_stmt_raise__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_raise__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_raise__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_raise_option__field_descriptors[2] =
+{
+  {
+    "opt_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRaiseOption, opt_type),
+    &pg_query__plpg_sql_raise_option_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "expr",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLRaiseOption, expr),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_raise_option__field_indices_by_name[] = {
+  1,   /* field[1] = expr */
+  0,   /* field[0] = opt_type */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_raise_option__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_raise_option__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_raise_option",
+  "PLpgSQLRaiseOption",
+  "PgQuery__PLpgSQLRaiseOption",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLRaiseOption),
+  2,
+  pg_query__plpg_sql_raise_option__field_descriptors,
+  pg_query__plpg_sql_raise_option__field_indices_by_name,
+  1,  pg_query__plpg_sql_raise_option__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_raise_option__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_assert__field_descriptors[4] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssert, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssert, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "cond",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssert, cond),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "message",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtAssert, message),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_assert__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  2,   /* field[2] = cond */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = message */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_assert__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 4 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_assert__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_assert",
+  "PLpgSQLStmtAssert",
+  "PgQuery__PLpgSQLStmtAssert",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtAssert),
+  4,
+  pg_query__plpg_sql_stmt_assert__field_descriptors,
+  pg_query__plpg_sql_stmt_assert__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_assert__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_assert__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_execsql__field_descriptors[8] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "sqlstmt",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, sqlstmt),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "mod_stmt",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, mod_stmt),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "mod_stmt_set",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, mod_stmt_set),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "into",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, into),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "strict",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, strict),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "target",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtExecsql, target),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_execsql__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  5,   /* field[5] = into */
+  1,   /* field[1] = lineno */
+  3,   /* field[3] = mod_stmt */
+  4,   /* field[4] = mod_stmt_set */
+  2,   /* field[2] = sqlstmt */
+  6,   /* field[6] = strict */
+  7,   /* field[7] = target */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_execsql__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 8 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_execsql__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_execsql",
+  "PLpgSQLStmtExecsql",
+  "PgQuery__PLpgSQLStmtExecsql",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtExecsql),
+  8,
+  pg_query__plpg_sql_stmt_execsql__field_descriptors,
+  pg_query__plpg_sql_stmt_execsql__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_execsql__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_execsql__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_stmt_dynexecute__field_descriptors[7] =
+{
+  {
+    "cmd_type",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, cmd_type),
+    &pg_query__plpg_sql_stmt_type__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "lineno",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, lineno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "query",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, query),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "into",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, into),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "strict",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, strict),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "target",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, target),
+    &pg_query__plpg_sql_datum__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "params",
+    7,
+    PROTOBUF_C_LABEL_REPEATED,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, n_params),
+    offsetof(PgQuery__PLpgSQLStmtDynexecute, params),
+    &pg_query__plpg_sql_expr__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_stmt_dynexecute__field_indices_by_name[] = {
+  0,   /* field[0] = cmd_type */
+  3,   /* field[3] = into */
+  1,   /* field[1] = lineno */
+  6,   /* field[6] = params */
+  2,   /* field[2] = query */
+  4,   /* field[4] = strict */
+  5,   /* field[5] = target */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_dynexecute__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 7 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_stmt_dynexecute__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_dynexecute",
+  "PLpgSQLStmtDynexecute",
+  "PgQuery__PLpgSQLStmtDynexecute",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLStmtDynexecute),
+  7,
+  pg_query__plpg_sql_stmt_dynexecute__field_descriptors,
+  pg_query__plpg_sql_stmt_dynexecute__field_indices_by_name,
+  1,  pg_query__plpg_sql_stmt_dynexecute__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_stmt_dynexecute__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor pg_query__plpg_sql_function__field_descriptors[12] =
+{
+  {
+    "fn_signature",
+    1,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, fn_signature),
+    NULL,
+    &protobuf_c_empty_string,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "fn_is_trigger",
+    2,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, fn_is_trigger),
+    &pg_query__plpg_sql_trigtype__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "out_param_varno",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, out_param_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "found_varno",
+    4,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, found_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "new_varno",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, new_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "old_varno",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, old_varno),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "resolve_option",
+    7,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_ENUM,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, resolve_option),
+    &pg_query__plpg_sql_resolve_option__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "print_strict_params",
+    8,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, print_strict_params),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "extra_warnings",
+    9,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, extra_warnings),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "extra_errors",
+    10,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, extra_errors),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "ndatums",
+    11,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, ndatums),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+  {
+    "action",
+    12,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_MESSAGE,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__PLpgSQLFunction, action),
+    &pg_query__plpg_sql_stmt_block__descriptor,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned pg_query__plpg_sql_function__field_indices_by_name[] = {
+  11,   /* field[11] = action */
+  9,   /* field[9] = extra_errors */
+  8,   /* field[8] = extra_warnings */
+  1,   /* field[1] = fn_is_trigger */
+  0,   /* field[0] = fn_signature */
+  3,   /* field[3] = found_varno */
+  10,   /* field[10] = ndatums */
+  4,   /* field[4] = new_varno */
+  5,   /* field[5] = old_varno */
+  2,   /* field[2] = out_param_varno */
+  7,   /* field[7] = print_strict_params */
+  6,   /* field[6] = resolve_option */
+};
+static const ProtobufCIntRange pg_query__plpg_sql_function__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 12 }
+};
+const ProtobufCMessageDescriptor pg_query__plpg_sql_function__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_function",
+  "PLpgSQLFunction",
+  "PgQuery__PLpgSQLFunction",
+  "pg_query",
+  sizeof(PgQuery__PLpgSQLFunction),
+  12,
+  pg_query__plpg_sql_function__field_descriptors,
+  pg_query__plpg_sql_function__field_indices_by_name,
+  1,  pg_query__plpg_sql_function__number_ranges,
+  (ProtobufCMessageInit) pg_query__plpg_sql_function__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
 static const ProtobufCEnumValue pg_query__query_source__enum_values_by_number[6] =
 {
   { "QUERY_SOURCE_UNDEFINED", "PG_QUERY__QUERY_SOURCE__QUERY_SOURCE_UNDEFINED", 0 },
@@ -44995,5 +51339,427 @@ const ProtobufCEnumDescriptor pg_query__token__descriptor =
   pg_query__token__enum_values_by_name,
   6,
   pg_query__token__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_nsitem_type__enum_values_by_number[4] =
+{
+  { "P__LPG_SQL_NSITEM_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_NSITEM_TYPE__P__LPG_SQL_NSITEM_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_NSTYPE_LABEL", "PG_QUERY__PLPG_SQL_NSITEM_TYPE__PLPGSQL_NSTYPE_LABEL", 1 },
+  { "PLPGSQL_NSTYPE_VAR", "PG_QUERY__PLPG_SQL_NSITEM_TYPE__PLPGSQL_NSTYPE_VAR", 2 },
+  { "PLPGSQL_NSTYPE_REC", "PG_QUERY__PLPG_SQL_NSITEM_TYPE__PLPGSQL_NSTYPE_REC", 3 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_nsitem_type__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_nsitem_type__enum_values_by_name[4] =
+{
+  { "PLPGSQL_NSTYPE_LABEL", 1 },
+  { "PLPGSQL_NSTYPE_REC", 3 },
+  { "PLPGSQL_NSTYPE_VAR", 2 },
+  { "P__LPG_SQL_NSITEM_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_nsitem_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_nsitem_type",
+  "PLpgSQL_nsitem_type",
+  "PgQuery__PLpgSQLNsitemType",
+  "pg_query",
+  4,
+  pg_query__plpg_sql_nsitem_type__enum_values_by_number,
+  4,
+  pg_query__plpg_sql_nsitem_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_nsitem_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_label_type__enum_values_by_number[4] =
+{
+  { "P__LPG_SQL_LABEL_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_LABEL_TYPE__P__LPG_SQL_LABEL_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_LABEL_BLOCK", "PG_QUERY__PLPG_SQL_LABEL_TYPE__PLPGSQL_LABEL_BLOCK", 1 },
+  { "PLPGSQL_LABEL_LOOP", "PG_QUERY__PLPG_SQL_LABEL_TYPE__PLPGSQL_LABEL_LOOP", 2 },
+  { "PLPGSQL_LABEL_OTHER", "PG_QUERY__PLPG_SQL_LABEL_TYPE__PLPGSQL_LABEL_OTHER", 3 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_label_type__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_label_type__enum_values_by_name[4] =
+{
+  { "PLPGSQL_LABEL_BLOCK", 1 },
+  { "PLPGSQL_LABEL_LOOP", 2 },
+  { "PLPGSQL_LABEL_OTHER", 3 },
+  { "P__LPG_SQL_LABEL_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_label_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_label_type",
+  "PLpgSQL_label_type",
+  "PgQuery__PLpgSQLLabelType",
+  "pg_query",
+  4,
+  pg_query__plpg_sql_label_type__enum_values_by_number,
+  4,
+  pg_query__plpg_sql_label_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_label_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_datum_type__enum_values_by_number[6] =
+{
+  { "P__LPG_SQL_DATUM_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_DATUM_TYPE__P__LPG_SQL_DATUM_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_DTYPE_VAR", "PG_QUERY__PLPG_SQL_DATUM_TYPE__PLPGSQL_DTYPE_VAR", 1 },
+  { "PLPGSQL_DTYPE_ROW", "PG_QUERY__PLPG_SQL_DATUM_TYPE__PLPGSQL_DTYPE_ROW", 2 },
+  { "PLPGSQL_DTYPE_REC", "PG_QUERY__PLPG_SQL_DATUM_TYPE__PLPGSQL_DTYPE_REC", 3 },
+  { "PLPGSQL_DTYPE_RECFIELD", "PG_QUERY__PLPG_SQL_DATUM_TYPE__PLPGSQL_DTYPE_RECFIELD", 4 },
+  { "PLPGSQL_DTYPE_PROMISE", "PG_QUERY__PLPG_SQL_DATUM_TYPE__PLPGSQL_DTYPE_PROMISE", 5 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_datum_type__value_ranges[] = {
+{0, 0},{0, 6}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_datum_type__enum_values_by_name[6] =
+{
+  { "PLPGSQL_DTYPE_PROMISE", 5 },
+  { "PLPGSQL_DTYPE_REC", 3 },
+  { "PLPGSQL_DTYPE_RECFIELD", 4 },
+  { "PLPGSQL_DTYPE_ROW", 2 },
+  { "PLPGSQL_DTYPE_VAR", 1 },
+  { "P__LPG_SQL_DATUM_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_datum_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_datum_type",
+  "PLpgSQL_datum_type",
+  "PgQuery__PLpgSQLDatumType",
+  "pg_query",
+  6,
+  pg_query__plpg_sql_datum_type__enum_values_by_number,
+  6,
+  pg_query__plpg_sql_datum_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_datum_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_promise_type__enum_values_by_number[13] =
+{
+  { "P__LPG_SQL_PROMISE_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__P__LPG_SQL_PROMISE_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_PROMISE_NONE", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_NONE", 1 },
+  { "PLPGSQL_PROMISE_TG_NAME", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_NAME", 2 },
+  { "PLPGSQL_PROMISE_TG_WHEN", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_WHEN", 3 },
+  { "PLPGSQL_PROMISE_TG_LEVEL", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_LEVEL", 4 },
+  { "PLPGSQL_PROMISE_TG_OP", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_OP", 5 },
+  { "PLPGSQL_PROMISE_TG_RELID", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_RELID", 6 },
+  { "PLPGSQL_PROMISE_TG_TABLE_NAME", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_TABLE_NAME", 7 },
+  { "PLPGSQL_PROMISE_TG_TABLE_SCHEMA", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_TABLE_SCHEMA", 8 },
+  { "PLPGSQL_PROMISE_TG_NARGS", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_NARGS", 9 },
+  { "PLPGSQL_PROMISE_TG_ARGV", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_ARGV", 10 },
+  { "PLPGSQL_PROMISE_TG_EVENT", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_EVENT", 11 },
+  { "PLPGSQL_PROMISE_TG_TAG", "PG_QUERY__PLPG_SQL_PROMISE_TYPE__PLPGSQL_PROMISE_TG_TAG", 12 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_promise_type__value_ranges[] = {
+{0, 0},{0, 13}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_promise_type__enum_values_by_name[13] =
+{
+  { "PLPGSQL_PROMISE_NONE", 1 },
+  { "PLPGSQL_PROMISE_TG_ARGV", 10 },
+  { "PLPGSQL_PROMISE_TG_EVENT", 11 },
+  { "PLPGSQL_PROMISE_TG_LEVEL", 4 },
+  { "PLPGSQL_PROMISE_TG_NAME", 2 },
+  { "PLPGSQL_PROMISE_TG_NARGS", 9 },
+  { "PLPGSQL_PROMISE_TG_OP", 5 },
+  { "PLPGSQL_PROMISE_TG_RELID", 6 },
+  { "PLPGSQL_PROMISE_TG_TABLE_NAME", 7 },
+  { "PLPGSQL_PROMISE_TG_TABLE_SCHEMA", 8 },
+  { "PLPGSQL_PROMISE_TG_TAG", 12 },
+  { "PLPGSQL_PROMISE_TG_WHEN", 3 },
+  { "P__LPG_SQL_PROMISE_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_promise_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_promise_type",
+  "PLpgSQL_promise_type",
+  "PgQuery__PLpgSQLPromiseType",
+  "pg_query",
+  13,
+  pg_query__plpg_sql_promise_type__enum_values_by_number,
+  13,
+  pg_query__plpg_sql_promise_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_promise_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_type_type__enum_values_by_number[4] =
+{
+  { "P__LPG_SQL_TYPE_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_TYPE_TYPE__P__LPG_SQL_TYPE_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_TTYPE_SCALAR", "PG_QUERY__PLPG_SQL_TYPE_TYPE__PLPGSQL_TTYPE_SCALAR", 1 },
+  { "PLPGSQL_TTYPE_REC", "PG_QUERY__PLPG_SQL_TYPE_TYPE__PLPGSQL_TTYPE_REC", 2 },
+  { "PLPGSQL_TTYPE_PSEUDO", "PG_QUERY__PLPG_SQL_TYPE_TYPE__PLPGSQL_TTYPE_PSEUDO", 3 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_type_type__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_type_type__enum_values_by_name[4] =
+{
+  { "PLPGSQL_TTYPE_PSEUDO", 3 },
+  { "PLPGSQL_TTYPE_REC", 2 },
+  { "PLPGSQL_TTYPE_SCALAR", 1 },
+  { "P__LPG_SQL_TYPE_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_type_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_type_type",
+  "PLpgSQL_type_type",
+  "PgQuery__PLpgSQLTypeType",
+  "pg_query",
+  4,
+  pg_query__plpg_sql_type_type__enum_values_by_number,
+  4,
+  pg_query__plpg_sql_type_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_type_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_stmt_type__enum_values_by_number[28] =
+{
+  { "P__LPG_SQL_STMT_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_STMT_TYPE__P__LPG_SQL_STMT_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_STMT_BLOCK", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_BLOCK", 1 },
+  { "PLPGSQL_STMT_ASSIGN", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_ASSIGN", 2 },
+  { "PLPGSQL_STMT_IF", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_IF", 3 },
+  { "PLPGSQL_STMT_CASE", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_CASE", 4 },
+  { "PLPGSQL_STMT_LOOP", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_LOOP", 5 },
+  { "PLPGSQL_STMT_WHILE", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_WHILE", 6 },
+  { "PLPGSQL_STMT_FORI", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_FORI", 7 },
+  { "PLPGSQL_STMT_FORS", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_FORS", 8 },
+  { "PLPGSQL_STMT_FORC", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_FORC", 9 },
+  { "PLPGSQL_STMT_FOREACH_A", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_FOREACH_A", 10 },
+  { "PLPGSQL_STMT_EXIT", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_EXIT", 11 },
+  { "PLPGSQL_STMT_RETURN", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_RETURN", 12 },
+  { "PLPGSQL_STMT_RETURN_NEXT", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_RETURN_NEXT", 13 },
+  { "PLPGSQL_STMT_RETURN_QUERY", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_RETURN_QUERY", 14 },
+  { "PLPGSQL_STMT_RAISE", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_RAISE", 15 },
+  { "PLPGSQL_STMT_ASSERT", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_ASSERT", 16 },
+  { "PLPGSQL_STMT_EXECSQL", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_EXECSQL", 17 },
+  { "PLPGSQL_STMT_DYNEXECUTE", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_DYNEXECUTE", 18 },
+  { "PLPGSQL_STMT_DYNFORS", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_DYNFORS", 19 },
+  { "PLPGSQL_STMT_GETDIAG", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_GETDIAG", 20 },
+  { "PLPGSQL_STMT_OPEN", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_OPEN", 21 },
+  { "PLPGSQL_STMT_FETCH", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_FETCH", 22 },
+  { "PLPGSQL_STMT_CLOSE", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_CLOSE", 23 },
+  { "PLPGSQL_STMT_PERFORM", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_PERFORM", 24 },
+  { "PLPGSQL_STMT_CALL", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_CALL", 25 },
+  { "PLPGSQL_STMT_COMMIT", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_COMMIT", 26 },
+  { "PLPGSQL_STMT_ROLLBACK", "PG_QUERY__PLPG_SQL_STMT_TYPE__PLPGSQL_STMT_ROLLBACK", 27 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_stmt_type__value_ranges[] = {
+{0, 0},{0, 28}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_stmt_type__enum_values_by_name[28] =
+{
+  { "PLPGSQL_STMT_ASSERT", 16 },
+  { "PLPGSQL_STMT_ASSIGN", 2 },
+  { "PLPGSQL_STMT_BLOCK", 1 },
+  { "PLPGSQL_STMT_CALL", 25 },
+  { "PLPGSQL_STMT_CASE", 4 },
+  { "PLPGSQL_STMT_CLOSE", 23 },
+  { "PLPGSQL_STMT_COMMIT", 26 },
+  { "PLPGSQL_STMT_DYNEXECUTE", 18 },
+  { "PLPGSQL_STMT_DYNFORS", 19 },
+  { "PLPGSQL_STMT_EXECSQL", 17 },
+  { "PLPGSQL_STMT_EXIT", 11 },
+  { "PLPGSQL_STMT_FETCH", 22 },
+  { "PLPGSQL_STMT_FORC", 9 },
+  { "PLPGSQL_STMT_FOREACH_A", 10 },
+  { "PLPGSQL_STMT_FORI", 7 },
+  { "PLPGSQL_STMT_FORS", 8 },
+  { "PLPGSQL_STMT_GETDIAG", 20 },
+  { "PLPGSQL_STMT_IF", 3 },
+  { "PLPGSQL_STMT_LOOP", 5 },
+  { "PLPGSQL_STMT_OPEN", 21 },
+  { "PLPGSQL_STMT_PERFORM", 24 },
+  { "PLPGSQL_STMT_RAISE", 15 },
+  { "PLPGSQL_STMT_RETURN", 12 },
+  { "PLPGSQL_STMT_RETURN_NEXT", 13 },
+  { "PLPGSQL_STMT_RETURN_QUERY", 14 },
+  { "PLPGSQL_STMT_ROLLBACK", 27 },
+  { "PLPGSQL_STMT_WHILE", 6 },
+  { "P__LPG_SQL_STMT_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_stmt_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_stmt_type",
+  "PLpgSQL_stmt_type",
+  "PgQuery__PLpgSQLStmtType",
+  "pg_query",
+  28,
+  pg_query__plpg_sql_stmt_type__enum_values_by_number,
+  28,
+  pg_query__plpg_sql_stmt_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_stmt_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_getdiag_kind__enum_values_by_number[14] =
+{
+  { "P__LPG_SQL_GETDIAG_KIND_UNDEFINED", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__P__LPG_SQL_GETDIAG_KIND_UNDEFINED", 0 },
+  { "PLPGSQL_GETDIAG_ROW_COUNT", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_ROW_COUNT", 1 },
+  { "PLPGSQL_GETDIAG_ROUTINE_OID", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_ROUTINE_OID", 2 },
+  { "PLPGSQL_GETDIAG_CONTEXT", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_CONTEXT", 3 },
+  { "PLPGSQL_GETDIAG_ERROR_CONTEXT", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_ERROR_CONTEXT", 4 },
+  { "PLPGSQL_GETDIAG_ERROR_DETAIL", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_ERROR_DETAIL", 5 },
+  { "PLPGSQL_GETDIAG_ERROR_HINT", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_ERROR_HINT", 6 },
+  { "PLPGSQL_GETDIAG_RETURNED_SQLSTATE", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_RETURNED_SQLSTATE", 7 },
+  { "PLPGSQL_GETDIAG_COLUMN_NAME", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_COLUMN_NAME", 8 },
+  { "PLPGSQL_GETDIAG_CONSTRAINT_NAME", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_CONSTRAINT_NAME", 9 },
+  { "PLPGSQL_GETDIAG_DATATYPE_NAME", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_DATATYPE_NAME", 10 },
+  { "PLPGSQL_GETDIAG_MESSAGE_TEXT", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_MESSAGE_TEXT", 11 },
+  { "PLPGSQL_GETDIAG_TABLE_NAME", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_TABLE_NAME", 12 },
+  { "PLPGSQL_GETDIAG_SCHEMA_NAME", "PG_QUERY__PLPG_SQL_GETDIAG_KIND__PLPGSQL_GETDIAG_SCHEMA_NAME", 13 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_getdiag_kind__value_ranges[] = {
+{0, 0},{0, 14}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_getdiag_kind__enum_values_by_name[14] =
+{
+  { "PLPGSQL_GETDIAG_COLUMN_NAME", 8 },
+  { "PLPGSQL_GETDIAG_CONSTRAINT_NAME", 9 },
+  { "PLPGSQL_GETDIAG_CONTEXT", 3 },
+  { "PLPGSQL_GETDIAG_DATATYPE_NAME", 10 },
+  { "PLPGSQL_GETDIAG_ERROR_CONTEXT", 4 },
+  { "PLPGSQL_GETDIAG_ERROR_DETAIL", 5 },
+  { "PLPGSQL_GETDIAG_ERROR_HINT", 6 },
+  { "PLPGSQL_GETDIAG_MESSAGE_TEXT", 11 },
+  { "PLPGSQL_GETDIAG_RETURNED_SQLSTATE", 7 },
+  { "PLPGSQL_GETDIAG_ROUTINE_OID", 2 },
+  { "PLPGSQL_GETDIAG_ROW_COUNT", 1 },
+  { "PLPGSQL_GETDIAG_SCHEMA_NAME", 13 },
+  { "PLPGSQL_GETDIAG_TABLE_NAME", 12 },
+  { "P__LPG_SQL_GETDIAG_KIND_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_getdiag_kind__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_getdiag_kind",
+  "PLpgSQL_getdiag_kind",
+  "PgQuery__PLpgSQLGetdiagKind",
+  "pg_query",
+  14,
+  pg_query__plpg_sql_getdiag_kind__enum_values_by_number,
+  14,
+  pg_query__plpg_sql_getdiag_kind__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_getdiag_kind__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_raise_option_type__enum_values_by_number[10] =
+{
+  { "P__LPG_SQL_RAISE_OPTION_TYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__P__LPG_SQL_RAISE_OPTION_TYPE_UNDEFINED", 0 },
+  { "PLPGSQL_RAISEOPTION_ERRCODE", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_ERRCODE", 1 },
+  { "PLPGSQL_RAISEOPTION_MESSAGE", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_MESSAGE", 2 },
+  { "PLPGSQL_RAISEOPTION_DETAIL", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_DETAIL", 3 },
+  { "PLPGSQL_RAISEOPTION_HINT", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_HINT", 4 },
+  { "PLPGSQL_RAISEOPTION_COLUMN", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_COLUMN", 5 },
+  { "PLPGSQL_RAISEOPTION_CONSTRAINT", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_CONSTRAINT", 6 },
+  { "PLPGSQL_RAISEOPTION_DATATYPE", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_DATATYPE", 7 },
+  { "PLPGSQL_RAISEOPTION_TABLE", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_TABLE", 8 },
+  { "PLPGSQL_RAISEOPTION_SCHEMA", "PG_QUERY__PLPG_SQL_RAISE_OPTION_TYPE__PLPGSQL_RAISEOPTION_SCHEMA", 9 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_raise_option_type__value_ranges[] = {
+{0, 0},{0, 10}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_raise_option_type__enum_values_by_name[10] =
+{
+  { "PLPGSQL_RAISEOPTION_COLUMN", 5 },
+  { "PLPGSQL_RAISEOPTION_CONSTRAINT", 6 },
+  { "PLPGSQL_RAISEOPTION_DATATYPE", 7 },
+  { "PLPGSQL_RAISEOPTION_DETAIL", 3 },
+  { "PLPGSQL_RAISEOPTION_ERRCODE", 1 },
+  { "PLPGSQL_RAISEOPTION_HINT", 4 },
+  { "PLPGSQL_RAISEOPTION_MESSAGE", 2 },
+  { "PLPGSQL_RAISEOPTION_SCHEMA", 9 },
+  { "PLPGSQL_RAISEOPTION_TABLE", 8 },
+  { "P__LPG_SQL_RAISE_OPTION_TYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_raise_option_type__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_raise_option_type",
+  "PLpgSQL_raise_option_type",
+  "PgQuery__PLpgSQLRaiseOptionType",
+  "pg_query",
+  10,
+  pg_query__plpg_sql_raise_option_type__enum_values_by_number,
+  10,
+  pg_query__plpg_sql_raise_option_type__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_raise_option_type__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_resolve_option__enum_values_by_number[4] =
+{
+  { "P__LPG_SQL_RESOLVE_OPTION_UNDEFINED", "PG_QUERY__PLPG_SQL_RESOLVE_OPTION__P__LPG_SQL_RESOLVE_OPTION_UNDEFINED", 0 },
+  { "PLPGSQL_RESOLVE_ERROR", "PG_QUERY__PLPG_SQL_RESOLVE_OPTION__PLPGSQL_RESOLVE_ERROR", 1 },
+  { "PLPGSQL_RESOLVE_VARIABLE", "PG_QUERY__PLPG_SQL_RESOLVE_OPTION__PLPGSQL_RESOLVE_VARIABLE", 2 },
+  { "PLPGSQL_RESOLVE_COLUMN", "PG_QUERY__PLPG_SQL_RESOLVE_OPTION__PLPGSQL_RESOLVE_COLUMN", 3 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_resolve_option__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_resolve_option__enum_values_by_name[4] =
+{
+  { "PLPGSQL_RESOLVE_COLUMN", 3 },
+  { "PLPGSQL_RESOLVE_ERROR", 1 },
+  { "PLPGSQL_RESOLVE_VARIABLE", 2 },
+  { "P__LPG_SQL_RESOLVE_OPTION_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_resolve_option__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_resolve_option",
+  "PLpgSQL_resolve_option",
+  "PgQuery__PLpgSQLResolveOption",
+  "pg_query",
+  4,
+  pg_query__plpg_sql_resolve_option__enum_values_by_number,
+  4,
+  pg_query__plpg_sql_resolve_option__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_resolve_option__value_ranges,
+  NULL,NULL,NULL,NULL   /* reserved[1234] */
+};
+static const ProtobufCEnumValue pg_query__plpg_sql_trigtype__enum_values_by_number[4] =
+{
+  { "P__LPG_SQL_TRIGTYPE_UNDEFINED", "PG_QUERY__PLPG_SQL_TRIGTYPE__P__LPG_SQL_TRIGTYPE_UNDEFINED", 0 },
+  { "PLPGSQL_DML_TRIGGER", "PG_QUERY__PLPG_SQL_TRIGTYPE__PLPGSQL_DML_TRIGGER", 1 },
+  { "PLPGSQL_EVENT_TRIGGER", "PG_QUERY__PLPG_SQL_TRIGTYPE__PLPGSQL_EVENT_TRIGGER", 2 },
+  { "PLPGSQL_NOT_TRIGGER", "PG_QUERY__PLPG_SQL_TRIGTYPE__PLPGSQL_NOT_TRIGGER", 3 },
+};
+static const ProtobufCIntRange pg_query__plpg_sql_trigtype__value_ranges[] = {
+{0, 0},{0, 4}
+};
+static const ProtobufCEnumValueIndex pg_query__plpg_sql_trigtype__enum_values_by_name[4] =
+{
+  { "PLPGSQL_DML_TRIGGER", 1 },
+  { "PLPGSQL_EVENT_TRIGGER", 2 },
+  { "PLPGSQL_NOT_TRIGGER", 3 },
+  { "P__LPG_SQL_TRIGTYPE_UNDEFINED", 0 },
+};
+const ProtobufCEnumDescriptor pg_query__plpg_sql_trigtype__descriptor =
+{
+  PROTOBUF_C__ENUM_DESCRIPTOR_MAGIC,
+  "pg_query.PLpgSQL_trigtype",
+  "PLpgSQL_trigtype",
+  "PgQuery__PLpgSQLTrigtype",
+  "pg_query",
+  4,
+  pg_query__plpg_sql_trigtype__enum_values_by_number,
+  4,
+  pg_query__plpg_sql_trigtype__enum_values_by_name,
+  1,
+  pg_query__plpg_sql_trigtype__value_ranges,
   NULL,NULL,NULL,NULL   /* reserved[1234] */
 };
