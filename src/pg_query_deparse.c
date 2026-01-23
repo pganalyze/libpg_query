@@ -88,7 +88,7 @@ pg_query_free_deparse_result(PgQueryDeparseResult result)
 PgQueryDeparseCommentsResult
 pg_query_deparse_comments_for_query(const char *query)
 {
-	PgQueryDeparseCommentsResult result;
+	PgQueryDeparseCommentsResult result = {0};
 	PgQueryScanResult scan_result_raw = pg_query_scan(query);
 
 	if (scan_result_raw.error)
