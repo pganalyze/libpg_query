@@ -2,6 +2,13 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 17-6.2.2   2026-01-26
+
+* pg_query_normalize: Fix handling of special strings in DefElem [#325](https://github.com/pganalyze/libpg_query/pull/325)
+  - This avoids a crash when running the normalize function on certain utility statements
+* pg_query_deparse_comments_for_query: Add missing initialization [#324](https://github.com/pganalyze/libpg_query/pull/324)
+  - This avoids a crash for callers that read the error field of the result when there is no error
+
 ## 17-6.2.1   2026-01-14
 
 * Add pg_query_is_utility_stmt function to determine if query text contains utility statements [#313](https://github.com/pganalyze/libpg_query/pull/313)
