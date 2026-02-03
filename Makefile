@@ -69,7 +69,7 @@ CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2) $(PGDIRZIP)
 
 AR ?= ar
-AR := $(AR) rs
+ARFLAGS ?= rs
 INSTALL = install
 LN_S = ln -s
 RM = rm -f
@@ -188,7 +188,7 @@ extract_source: $(PGDIR)
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(ARLIB): $(OBJ_FILES) Makefile
-	@$(AR) $@ $(OBJ_FILES)
+	@$(AR) $(ARFLAGS) $@ $(OBJ_FILES)
 
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
