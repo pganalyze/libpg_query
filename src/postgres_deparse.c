@@ -93,6 +93,7 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_A_EXPR,
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
+	DEPARSE_NODE_CONTEXT_ALTER_DOMAIN,
 	DEPARSE_NODE_CONTEXT_SET_STATEMENT,
 	DEPARSE_NODE_CONTEXT_FUNC_EXPR,
 	DEPARSE_NODE_CONTEXT_SELECT_SETOP,
@@ -231,7 +232,7 @@ static void deparseJsonFuncExpr(DeparseState *state, JsonFuncExpr *json_func_exp
 static void deparseJsonQuotesClauseOpt(DeparseState *state, JsonQuotes quotes);
 static void deparseJsonOnErrorClauseOpt(DeparseState *state, JsonBehavior *behavior);
 static void deparseJsonOnEmptyClauseOpt(DeparseState *state, JsonBehavior *behavior);
-static void deparseConstraint(DeparseState *state, Constraint *constraint);
+static void deparseConstraint(DeparseState *state, Constraint *constraint, DeparseNodeContext context);
 static void deparseSchemaStmt(DeparseState *state, Node *node);
 static void deparseExecuteStmt(DeparseState *state, ExecuteStmt *execute_stmt);
 static void deparseTriggerTransition(DeparseState *state, TriggerTransition *trigger_transition);
@@ -4769,7 +4770,7 @@ static void deparseColumnDef(DeparseState *state, ColumnDef *column_def)
 
 	foreach(lc, column_def->constraints)
 	{
-		deparseConstraint(state, castNode(Constraint, lfirst(lc)));
+		deparseConstraint(state, castNode(Constraint, lfirst(lc)), DEPARSE_NODE_CONTEXT_NONE);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
@@ -5332,7 +5333,7 @@ static void deparseCreateDomainStmt(DeparseState *state, CreateDomainStmt *creat
 
 	foreach(lc, create_domain_stmt->constraints)
 	{
-		deparseConstraint(state, castNode(Constraint, lfirst(lc)));
+		deparseConstraint(state, castNode(Constraint, lfirst(lc)), DEPARSE_NODE_CONTEXT_NONE);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 
@@ -5381,7 +5382,7 @@ static void deparseCreateExtensionStmt(DeparseState *state, CreateExtensionStmt 
 }
 
 // "ColConstraintElem" and "ConstraintElem" in gram.y
-static void deparseConstraint(DeparseState *state, Constraint *constraint)
+static void deparseConstraint(DeparseState *state, Constraint *constraint, DeparseNodeContext context)
 {
 	ListCell *lc;
 
@@ -5487,7 +5488,7 @@ static void deparseConstraint(DeparseState *state, Constraint *constraint)
 	{
 		bool valueOnly = false;
 
-		if (list_length(constraint->keys) == 1) {
+		if (context == DEPARSE_NODE_CONTEXT_ALTER_DOMAIN && list_length(constraint->keys) == 1) {
 			Node* firstKey = constraint->keys->elements[0].ptr_value;
 			valueOnly = IsA(firstKey, String) && !strcmp("value", ((String*)firstKey)->sval);
 		}
@@ -5997,7 +5998,7 @@ static void deparseTableElement(DeparseState *state, Node *node)
 			deparseTableLikeClause(state, castNode(TableLikeClause, node));
 			break;
 		case T_Constraint:
-			deparseConstraint(state, castNode(Constraint, node));
+			deparseConstraint(state, castNode(Constraint, node), DEPARSE_NODE_CONTEXT_NONE);
 			break;
 		default:
 			Assert(false);
@@ -7286,7 +7287,7 @@ static void deparseAlterTableCmd(DeparseState *state, AlterTableCmd *alter_table
 		case AT_AddIdentity:
 		case AT_AddConstraint:
 		case AT_AlterConstraint:
-			deparseConstraint(state, castNode(Constraint, alter_table_cmd->def));
+			deparseConstraint(state, castNode(Constraint, alter_table_cmd->def), DEPARSE_NODE_CONTEXT_NONE);
 			deparseAppendStringInfoChar(state, ' ');
 			break;
 		case AT_SetIdentity:
@@ -7452,7 +7453,7 @@ static void deparseAlterDomainStmt(DeparseState *state, AlterDomainStmt *alter_d
 			break;
 		case 'C':
 			deparseAppendStringInfoString(state, "ADD ");
-			deparseConstraint(state, castNode(Constraint, alter_domain_stmt->def));
+			deparseConstraint(state, castNode(Constraint, alter_domain_stmt->def), DEPARSE_NODE_CONTEXT_ALTER_DOMAIN);
 			break;
 		case 'X':
 			deparseAppendStringInfoString(state, "DROP CONSTRAINT ");
