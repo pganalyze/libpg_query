@@ -127,6 +127,42 @@ int run_test(const char *query, bool compare_query_text, bool pretty_print) {
 	return ret_code;
 }
 
+int run_test_expect_deparse_error(const char *query, const char *expected_message_substring) {
+	PgQueryProtobufParseResult parse_result = pg_query_parse_protobuf(query);
+	if (parse_result.error) {
+		printf("\nERROR for \"%s\"\n  unexpected parse error: %s\n", query, parse_result.error->message);
+		pg_query_free_protobuf_parse_result(parse_result);
+		return EXIT_FAILURE;
+	}
+
+	PgQueryDeparseResult deparse_result = pg_query_deparse_protobuf(parse_result.parse_tree);
+	if (!deparse_result.error) {
+		printf("\nERROR for \"%s\"\n  expected deparse error, got: %s\n",
+			   query,
+			   deparse_result.query);
+		pg_query_free_deparse_result(deparse_result);
+		pg_query_free_protobuf_parse_result(parse_result);
+		return EXIT_FAILURE;
+	}
+
+	if (expected_message_substring != NULL &&
+		strstr(deparse_result.error->message, expected_message_substring) == NULL) {
+		printf("\nERROR for \"%s\"\n  expected deparse error containing \"%s\"\n  actual: %s\n",
+			   query,
+			   expected_message_substring,
+			   deparse_result.error->message);
+		pg_query_free_deparse_result(deparse_result);
+		pg_query_free_protobuf_parse_result(parse_result);
+		return EXIT_FAILURE;
+	}
+
+	printf(".");
+
+	pg_query_free_deparse_result(deparse_result);
+	pg_query_free_protobuf_parse_result(parse_result);
+	return EXIT_SUCCESS;
+}
+
 int run_tests_from_file(const char * filename, bool compare_query_text, bool pretty_print) {
 	char *sample_buffer;
 	struct stat sample_stat;
@@ -604,6 +640,13 @@ const char* plpgsqlRegressFilenames[] =
 };
 size_t plpgsqlRegressFilenameCount = sizeof(plpgsqlRegressFilenames) / sizeof(plpgsqlRegressFilenames[0]);
 
+const char* deparseErrorTests[] = {
+	"CREATE TABLE t0 (foo ENUM8('a' = 1, 2))",
+	"CREATE TABLE t0 (foo ENUM8('a' = 1, 'b' = 2), bar ENUM16('a' = 1, 'b' = 2), baz ENUM('a', 'b'))",
+	"SELECT 1::enum8('a' = 1, 2)"
+};
+size_t deparseErrorTestsLength = sizeof(deparseErrorTests) / sizeof(deparseErrorTests[0]);
+
 int main() {
 	size_t i;
 	int ret_code = EXIT_SUCCESS;
@@ -633,6 +676,13 @@ int main() {
 		strcat(filename, deparseDepeszFilenames[i]);
 		test_ret_code = run_tests_from_file(filename, true, true);
 		free(filename);
+		if (test_ret_code != EXIT_SUCCESS)
+			ret_code = test_ret_code;
+	}
+
+	printf("\ndeparse_error.sql\n");
+	for (i = 0; i < deparseErrorTestsLength; i += 1) {
+		test_ret_code = run_test_expect_deparse_error(deparseErrorTests[i], "unsupported typmod node type");
 		if (test_ret_code != EXIT_SUCCESS)
 			ret_code = test_ret_code;
 	}
