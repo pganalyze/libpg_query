@@ -348,7 +348,7 @@ static void record_defelem_arg_location(pgssConstLocations *jstate, int location
 
 static void record_matching_string(pgssConstLocations *jstate, const char *str)
 {
-	char *loc = NULL;
+	const char *loc = NULL;
 	if (str == NULL)
 		return;
 
