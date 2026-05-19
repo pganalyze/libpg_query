@@ -5,6 +5,9 @@
  * - populate_compact_attribute
  * - populate_compact_attribute_internal
  * - TupleDescInitEntryCollation
+ * - CreateTemplateTupleDesc
+ * - TupleDescInitEntry
+ * - TupleDescInitEntryCollation
  *--------------------------------------------------------------------
  */
 

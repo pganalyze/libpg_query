@@ -1,8 +1,9 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
  * - FunctionCall6Coll
- * - pg_detoast_datum
  * - pg_detoast_datum_packed
+ * - get_fn_expr_rettype
+ * - pg_detoast_datum
  *--------------------------------------------------------------------
  */
 
@@ -523,6 +524,10 @@ if (VARATT_IS_COMPRESSED(datum) || VARATT_IS_EXTERNAL(datum))
  * Returns InvalidOid if information is not available
  */
 
+Oid
+get_fn_expr_rettype(FmgrInfo *flinfo)
+{
+return InvalidOid;}
 
 /*
  * Get the actual type OID of a specific function argument (counting from 0)

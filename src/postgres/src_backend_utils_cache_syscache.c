@@ -2,6 +2,7 @@
  * Symbols referenced in this file:
  * - SearchSysCache1
  * - ReleaseSysCache
+ * - SysCacheGetAttrNotNull
  * - GetSysCacheOid
  *--------------------------------------------------------------------
  */
@@ -413,6 +414,32 @@ GetSysCacheOid(int cacheId,
  * Note: it is legal to use SysCacheGetAttr() with a cacheId referencing
  * a different cache for the same catalog the tuple was fetched from.
  */
+#include "pg_query_proctup_attrs.h"
+
+/*
+ * libpg_query only ever invokes SysCacheGetAttr from inside
+ * plpgsql_compile_callback (transitively via get_func_arg_info), and the
+ * tuple it sees is the libpg_query-forged pg_proc HeapTuple embedded in a
+ * ProcTupWithAttrs wrapper. We recover the wrapper from the tuple pointer
+ * and read the Anum-indexed value the caller asked for.
+ */
+Datum
+SysCacheGetAttr(int cacheId, HeapTuple tup, AttrNumber attributeNumber, bool *isNull)
+{
+	ProcTupWithAttrs *w;
+
+	if (cacheId != PROCOID)
+		elog(ERROR, "Not implemented (SysCacheGetAttr only supports PROCOID, got cache %d)", cacheId);
+
+	if (attributeNumber < 1 || attributeNumber > Natts_pg_proc)
+		elog(ERROR, "SysCacheGetAttr: invalid pg_proc attribute number %d", attributeNumber);
+
+	w = (ProcTupWithAttrs *) ((char *) tup - offsetof(ProcTupWithAttrs, tup));
+
+	*isNull = w->nulls[attributeNumber - 1];
+	return w->values[attributeNumber - 1];
+}
+
 
 
 /*
@@ -421,6 +448,21 @@ GetSysCacheOid(int cacheId,
  * As above, a version of SysCacheGetAttr which knows that the attr cannot
  * be NULL.
  */
+/*
+ * Thin wrapper over the libpg_query SysCacheGetAttr mock: assert the value
+ * isn't NULL and return its Datum.
+ */
+Datum
+SysCacheGetAttrNotNull(int cacheId, HeapTuple tup, AttrNumber attributeNumber)
+{
+	bool		isNull;
+	Datum		d = SysCacheGetAttr(cacheId, tup, attributeNumber, &isNull);
+
+	if (isNull)
+		elog(ERROR, "unexpected null attribute %d from pg_proc tuple", attributeNumber);
+	return d;
+}
+
 
 
 /*

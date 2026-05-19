@@ -35,6 +35,8 @@
  * - palloc
  * - palloc0
  * - MemoryContextCreate
+ * - MemoryContextSetIdentifier
+ * - CacheMemoryContext
  * - MemoryContextInit
  * - MemoryContextAllowInCriticalSection
  * - CurrentMemoryContext
@@ -201,6 +203,7 @@ __thread MemoryContext TopMemoryContext = NULL;
 __thread MemoryContext ErrorContext = NULL;
 
 
+__thread MemoryContext CacheMemoryContext = NULL;
 
 
 
@@ -644,6 +647,11 @@ MemoryContextCallResetCallbacks(MemoryContext context)
  * context deletion.  Pass id = NULL to forget any old identifier.
  */
 
+void
+MemoryContextSetIdentifier(MemoryContext context, const char *id)
+{
+	/* Do nothing */
+}
 
 /*
  * MemoryContextSetParent

@@ -2,25 +2,48 @@ commit 4850baf8039f2714d01c45a64af7ccbd12bbbd64
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 10 00:28:33 2021 -0800
 
-    PL/pgSQL: Make plpgsql_start_datums and plpgsql_finish_datums extern
-    
-    This allows other source units to have the accompanying functions for
-    the already exported plpgsql_adddatum.
+    PL/pgSQL: Expose compile helpers needed by libpg_query
+
+    Makes plpgsql_start_datums, plpgsql_finish_datums, and
+    plpgsql_compile_callback externally visible so libpg_query can drive
+    the upstream compile path directly instead of maintaining a near-copy
+    of plpgsql_compile_callback.
 
 diff --git a/src/pl/plpgsql/src/pl_comp.c b/src/pl/plpgsql/src/pl_comp.c
 index b80c59447fb..63a3143582b 100644
 --- a/src/pl/plpgsql/src/pl_comp.c
 +++ b/src/pl/plpgsql/src/pl_comp.c
-@@ -89,8 +89,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
+@@ -72,11 +72,6 @@
+  * static prototypes
+  * ----------
+  */
+-static void plpgsql_compile_callback(FunctionCallInfo fcinfo,
+-									 HeapTuple procTup,
+-									 const CachedFunctionHashKey *hashkey,
+-									 CachedFunction *cfunc,
+-									 bool forValidator);
+ static void plpgsql_compile_error_callback(void *arg);
+ static void add_parameter_name(PLpgSQL_nsitem_type itemtype, int itemno, const char *name);
+ static void add_dummy_return(PLpgSQL_function *function);
+@@ -89,8 +84,6 @@ static Node *make_datum_param(PLpgSQL_expr *expr, int dno, int location);
  static PLpgSQL_row *build_row_from_vars(PLpgSQL_variable **vars, int numvars);
  static PLpgSQL_type *build_datatype(HeapTuple typeTup, int32 typmod,
  									Oid collation, TypeName *origtypname);
 -static void plpgsql_start_datums(void);
 -static void plpgsql_finish_datums(PLpgSQL_function *function);
- 
+
  /* ----------
   * plpgsql_compile		Make an execution tree for a PL/pgSQL function.
-@@ -2196,7 +2194,7 @@ plpgsql_parse_err_condition(char *condname)
+@@ -161,7 +154,7 @@
+  * NB: this code is not re-entrant.  We assume that nothing we do here could
+  * result in the invocation of another plpgsql function.
+  */
+-static void
++void
+ plpgsql_compile_callback(FunctionCallInfo fcinfo,
+ 						 HeapTuple procTup,
+ 						 const CachedFunctionHashKey *hashkey,
+@@ -2196,7 +2189,7 @@ plpgsql_parse_err_condition(char *condname)
   * plpgsql_start_datums			Initialize datum list at compile startup.
   * ----------
   */
@@ -29,7 +52,7 @@ index b80c59447fb..63a3143582b 100644
  plpgsql_start_datums(void)
  {
  	datums_alloc = 128;
-@@ -2230,7 +2228,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
+@@ -2230,7 +2223,7 @@ plpgsql_adddatum(PLpgSQL_datum *newdatum)
   * plpgsql_finish_datums	Copy completed datum info into function struct.
   * ----------
   */
@@ -42,12 +65,16 @@ diff --git a/src/pl/plpgsql/src/plpgsql.h b/src/pl/plpgsql/src/plpgsql.h
 index 41e52b8ce71..b3b67c423c2 100644
 --- a/src/pl/plpgsql/src/plpgsql.h
 +++ b/src/pl/plpgsql/src/plpgsql.h
-@@ -1250,6 +1250,8 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
+@@ -1250,6 +1250,13 @@ extern PLpgSQL_recfield *plpgsql_build_recfield(PLpgSQL_rec *rec,
  extern PGDLLEXPORT int plpgsql_recognize_err_condition(const char *condname,
  													   bool allow_sqlstate);
  extern PLpgSQL_condition *plpgsql_parse_err_condition(char *condname);
 +extern void plpgsql_start_datums(void);
 +extern void plpgsql_finish_datums(PLpgSQL_function *function);
++extern void plpgsql_compile_callback(FunctionCallInfo fcinfo,
++									 HeapTuple procTup,
++									 const CachedFunctionHashKey *hashkey,
++									 CachedFunction *cfunc,
++									 bool forValidator);
  extern void plpgsql_adddatum(PLpgSQL_datum *newdatum);
  extern int	plpgsql_add_initdatums(int **varnos);
- 

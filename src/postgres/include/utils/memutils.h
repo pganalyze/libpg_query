@@ -58,7 +58,7 @@
 extern PGDLLIMPORT __thread MemoryContext TopMemoryContext;
 extern PGDLLIMPORT __thread MemoryContext ErrorContext;
 extern PGDLLIMPORT MemoryContext PostmasterContext;
-extern PGDLLIMPORT MemoryContext CacheMemoryContext;
+extern PGDLLIMPORT __thread MemoryContext CacheMemoryContext;
 extern PGDLLIMPORT MemoryContext MessageContext;
 extern PGDLLIMPORT MemoryContext TopTransactionContext;
 extern PGDLLIMPORT MemoryContext CurTransactionContext;

@@ -3,12 +3,13 @@
  * - get_namespace_name_or_temp
  * - get_namespace_name
  * - get_array_type
- * - get_element_type
- * - get_base_element_type
  * - type_is_rowtype
  * - get_typtype
  * - getBaseType
  * - getBaseTypeAndTypmod
+ * - get_element_type
+ * - get_base_element_type
+ * - type_is_rowtype
  *--------------------------------------------------------------------
  */
 

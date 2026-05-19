@@ -1,5 +1,6 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
+ * - text_to_cstring
  * - cstring_to_text
  * - cstring_to_text_with_len
  * - text_to_cstring

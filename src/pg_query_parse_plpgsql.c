@@ -3,6 +3,7 @@
 #include "pg_query.h"
 #include "pg_query_internal.h"
 #include "pg_query_json_plpgsql.h"
+#include "pg_query_proctup_attrs.h"
 
 #include <assert.h>
 
@@ -24,132 +25,6 @@ typedef struct {
 } PgQueryInternalPlpgsqlFuncAndError;
 
 static PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt);
-
-/*
- * Add a name for a function parameter to the function's namespace
- */
-static void
-add_parameter_name(PLpgSQL_nsitem_type itemtype, int itemno, const char *name)
-{
-	/*
-	 * Before adding the name, check for duplicates.  We need this even though
-	 * functioncmds.c has a similar check, because that code explicitly
-	 * doesn't complain about conflicting IN and OUT parameter names.  In
-	 * plpgsql, such names are in the same namespace, so there is no way to
-	 * disambiguate.
-	 */
-	if (plpgsql_ns_lookup(plpgsql_ns_top(), true,
-						  name, NULL, NULL,
-						  NULL) != NULL)
-		ereport(ERROR,
-				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
-				 errmsg("parameter name \"%s\" used more than once",
-						name)));
-
-	/* OK, add the name */
-	plpgsql_ns_additem(itemtype, itemno, name);
-}
-
-/*
- * Add a dummy RETURN statement to the given function's body
- */
-static void
-add_dummy_return(PLpgSQL_function *function)
-{
-	/*
-	 * If the outer block has an EXCEPTION clause, we need to make a new outer
-	 * block, since the added RETURN shouldn't act like it is inside the
-	 * EXCEPTION clause.
-	 */
-	if (function->action->exceptions != NULL)
-	{
-		PLpgSQL_stmt_block *new;
-
-		new = palloc0(sizeof(PLpgSQL_stmt_block));
-		new->cmd_type = PLPGSQL_STMT_BLOCK;
-		new->body = list_make1(function->action);
-
-		function->action = new;
-	}
-	if (function->action->body == NIL ||
-		((PLpgSQL_stmt *) llast(function->action->body))->cmd_type != PLPGSQL_STMT_RETURN)
-	{
-		PLpgSQL_stmt_return *new;
-
-		new = palloc0(sizeof(PLpgSQL_stmt_return));
-		new->cmd_type = PLPGSQL_STMT_RETURN;
-		new->expr = NULL;
-		new->retvarno = function->out_param_varno;
-
-		function->action->body = lappend(function->action->body, new);
-	}
-}
-
-/*
- * Build a row-variable data structure given the component variables.
- * Include a rowtupdesc, since we will need to materialize the row result.
- */
-static PLpgSQL_row *
-build_row_from_vars(PLpgSQL_variable **vars, int numvars)
-{
-	PLpgSQL_row *row;
-	int			i;
-
-	row = palloc0(sizeof(PLpgSQL_row));
-	row->dtype = PLPGSQL_DTYPE_ROW;
-	row->refname = "(unnamed row)";
-	row->lineno = -1;
-	row->rowtupdesc = CreateTemplateTupleDesc(numvars);
-	row->nfields = numvars;
-	row->fieldnames = palloc(numvars * sizeof(char *));
-	row->varnos = palloc(numvars * sizeof(int));
-
-	for (i = 0; i < numvars; i++)
-	{
-		PLpgSQL_variable *var = vars[i];
-		Oid			typoid;
-		int32		typmod;
-		Oid			typcoll;
-
-		/* Member vars of a row should never be const */
-		Assert(!var->isconst);
-
-		switch (var->dtype)
-		{
-			case PLPGSQL_DTYPE_VAR:
-			case PLPGSQL_DTYPE_PROMISE:
-				typoid = ((PLpgSQL_var *) var)->datatype->typoid;
-				typmod = ((PLpgSQL_var *) var)->datatype->atttypmod;
-				typcoll = ((PLpgSQL_var *) var)->datatype->collation;
-				break;
-
-			case PLPGSQL_DTYPE_REC:
-				/* shouldn't need to revalidate rectypeid already... */
-				typoid = ((PLpgSQL_rec *) var)->rectypeid;
-				typmod = -1;	/* don't know typmod, if it's used at all */
-				typcoll = InvalidOid;	/* composite types have no collation */
-				break;
-
-			default:
-				elog(ERROR, "unrecognized dtype: %d", var->dtype);
-				typoid = InvalidOid;	/* keep compiler quiet */
-				typmod = 0;
-				typcoll = InvalidOid;
-				break;
-		}
-
-		row->fieldnames[i] = var->refname;
-		row->varnos[i] = var->dno;
-
-		TupleDescInitEntry(row->rowtupdesc, i + 1,
-						   var->refname,
-						   typoid, typmod,
-						   0);
-		TupleDescInitEntryCollation(row->rowtupdesc, i + 1, typcoll);
-	}
-
-	return row;
-}
 
 /*
  *	 Examine the RETURNS clause of the CREATE FUNCTION statement
@@ -244,43 +119,6 @@ compute_return_type(TypeName *returnType, Oid languageOid,
 	*returnsSet_p = returnType->setof;
 }
 
-struct compile_error_callback_arg
-{
-	const char *proc_source;
-	yyscan_t	yyscanner;
-};
-
-/*
- * error context callback to let us supply a call-stack traceback.
- * If we are validating or executing an anonymous code block, the function
- * source text is passed as an argument.
- */
-static void
-plpgsql_compile_error_callback(void *arg)
-{
-	struct compile_error_callback_arg *cbarg = (struct compile_error_callback_arg *) arg;
-	yyscan_t	yyscanner = cbarg->yyscanner;
-
-	if (cbarg->proc_source)
-	{
-		/*
-		 * Try to convert syntax error position to reference text of original
-		 * CREATE FUNCTION or DO command.
-		 */
-		if (function_parse_error_transpose(cbarg->proc_source))
-			return;
-
-		/*
-		 * Done if a syntax error position was reported; otherwise we have to
-		 * fall back to a "near line N" report.
-		 */
-	}
-
-	if (plpgsql_error_funcname)
-		errcontext("compilation of PL/pgSQL function \"%s\" near line %d",
-				   plpgsql_error_funcname, plpgsql_latest_lineno(yyscanner));
-}
-
 static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
 {
 	char *proc_source = NULL;
@@ -311,9 +149,140 @@ static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
 
 }
 
-static Form_pg_proc proc_from_create_stmt(CreateFunctionStmt* stmt, int *numargs, Oid **p_argtypes, char ***p_argnames, char **p_argmodes)
+/*
+ * Allocate a wrapper holding a HeapTupleData and the Anum-indexed
+ * values[]/nulls[] arrays, with the pg_proc header+Form_pg_proc payload
+ * appended after it so t_data points into the same chunk. We embed the
+ * arrays in the wrapper struct so SysCacheGetAttr can recover them via
+ * container_of from the HeapTuple pointer without any thread-local state.
+ */
+static ProcTupWithAttrs *
+build_fake_proc_tuple(Form_pg_proc procStruct)
 {
-	Form_pg_proc procStruct = palloc0(sizeof(FormData_pg_proc));
+	ProcTupWithAttrs *wrapper;
+	HeapTupleHeader td;
+	Size		len,
+				data_len;
+	int			hoff;
+
+	len = offsetof(HeapTupleHeaderData, t_bits);
+	hoff = len = MAXALIGN(len);
+	data_len = MAXALIGN(sizeof(FormData_pg_proc));
+	len += data_len;
+
+	wrapper = (ProcTupWithAttrs *) palloc0(sizeof(ProcTupWithAttrs) + len);
+	wrapper->tup.t_data = td = (HeapTupleHeader) ((char *) wrapper + sizeof(ProcTupWithAttrs));
+	wrapper->tup.t_len = len;
+	ItemPointerSetInvalid(&(wrapper->tup.t_self));
+	wrapper->tup.t_tableOid = InvalidOid;
+
+	HeapTupleHeaderSetDatumLength(td, len);
+	ItemPointerSetInvalid(&(td->t_ctid));
+	HeapTupleHeaderSetNatts(td, Natts_pg_proc);
+	td->t_hoff = hoff;
+
+	memcpy((char *) td + hoff, procStruct, sizeof(FormData_pg_proc));
+
+	return wrapper;
+}
+
+/*
+ * Stripped version of upstream ProcedureCreate. Builds the Anum_pg_proc_*
+ * indexed values[]/nulls[] arrays (as upstream does on its way to
+ * heap_form_tuple), populates the Form_pg_proc fields plpgsql_compile_callback
+ * reads via GETSTRUCT, and returns a wrapper carrying both the HeapTuple and
+ * the attribute arrays. Catalog insertion, syscache duplicate checks, ACL
+ * handling, and dependency tracking are all dropped.
+ */
+static ProcTupWithAttrs *
+pg_query_procedure_create(const char *procedureName,
+						  bool returnsSet,
+						  Oid returnType,
+						  char prokind,
+						  char volatility,
+						  oidvector *parameterTypes,
+						  Datum allParameterTypes,
+						  Datum parameterModes,
+						  Datum parameterNames,
+						  const char *prosrc)
+{
+	ProcTupWithAttrs *wrapper;
+	FormData_pg_proc procStruct = {0};
+	Datum	   *values;
+	bool	   *nulls;
+	int			parameterCount;
+
+	Assert(PointerIsValid(prosrc));
+
+	parameterCount = parameterTypes->dim1;
+
+	/* Fixed-size attributes that GETSTRUCT will read back via procStruct. */
+	namestrcpy(&procStruct.proname, procedureName);
+	procStruct.prokind = prokind;
+	procStruct.provolatile = volatility;
+	procStruct.pronargs = parameterCount;
+	procStruct.prorettype = returnType;
+	procStruct.proretset = returnsSet;
+
+	wrapper = build_fake_proc_tuple(&procStruct);
+	values = wrapper->values;
+	nulls = wrapper->nulls;
+
+	/*
+	 * Anum-indexed attributes that get_func_arg_info reads via
+	 * SysCacheGetAttr. These mirror the assignments in upstream
+	 * ProcedureCreate.
+	 */
+	values[Anum_pg_proc_proname - 1] = NameGetDatum(&procStruct.proname);
+	values[Anum_pg_proc_prokind - 1] = CharGetDatum(prokind);
+	values[Anum_pg_proc_provolatile - 1] = CharGetDatum(volatility);
+	values[Anum_pg_proc_pronargs - 1] = UInt16GetDatum(parameterCount);
+	values[Anum_pg_proc_prorettype - 1] = ObjectIdGetDatum(returnType);
+	values[Anum_pg_proc_proretset - 1] = BoolGetDatum(returnsSet);
+	values[Anum_pg_proc_proargtypes - 1] = PointerGetDatum(parameterTypes);
+
+	if (allParameterTypes != PointerGetDatum(NULL))
+		values[Anum_pg_proc_proallargtypes - 1] = allParameterTypes;
+	else
+		nulls[Anum_pg_proc_proallargtypes - 1] = true;
+
+	if (parameterModes != PointerGetDatum(NULL))
+		values[Anum_pg_proc_proargmodes - 1] = parameterModes;
+	else
+		nulls[Anum_pg_proc_proargmodes - 1] = true;
+
+	if (parameterNames != PointerGetDatum(NULL))
+		values[Anum_pg_proc_proargnames - 1] = parameterNames;
+	else
+		nulls[Anum_pg_proc_proargnames - 1] = true;
+
+	values[Anum_pg_proc_prosrc - 1] = CStringGetTextDatum(prosrc);
+
+	return wrapper;
+}
+
+/*
+ * Stripped version of upstream CreateFunction. Picks the language and source
+ * out of stmt->options, runs interpret_function_parameter_list and
+ * compute_return_type the same way upstream does, then calls
+ * pg_query_procedure_create to obtain a pg_proc HeapTuple.
+ *
+ * is_dml_trigger / is_event_trigger are inferred from the RETURNS clause and
+ * returned so the caller can attach a TriggerData / EventTriggerData node to
+ * fcinfo->context, which is what plpgsql_compile_callback inspects via
+ * CALLED_AS_TRIGGER / CALLED_AS_EVENT_TRIGGER.
+ */
+static ProcTupWithAttrs *
+pg_query_create_function(CreateFunctionStmt *stmt,
+						 const char *language,
+						 const char *proc_source,
+						 bool *is_dml_trigger,
+						 bool *is_event_trigger)
+{
+	char	   *funcname;
+	Oid			prorettype;
+	bool		returnsSet;
+	char		prokind;
 	oidvector  *parameterTypes;
 	List	   *parameterTypes_list = NIL;
 	ArrayType  *allParameterTypes;
@@ -323,17 +292,25 @@ static Form_pg_proc proc_from_create_stmt(CreateFunctionStmt* stmt, int *numargs
 	List	   *parameterDefaults;
 	Oid			variadicArgType;
 	Oid			requiredResultType;
-	Datum	   *elems;
-	int			nelems;
-	int			i;
 
-	procStruct->prokind = stmt->is_procedure ? OBJECT_PROCEDURE : OBJECT_FUNCTION;
-	//procStruct->prorettype = VOIDOID; // TODO: Make this dependent on CreateFunctionStmt
-	//procStruct->proretset = is_setof;
+	funcname = strVal(linitial(stmt->funcname));
+
+	*is_dml_trigger = false;
+	*is_event_trigger = false;
+	if (stmt->returnType != NULL)
+	{
+		foreach_ptr(String, val, stmt->returnType->names)
+		{
+			if (strcmp(val->sval, "trigger") == 0)
+				*is_dml_trigger = true;
+			else if (strcmp(val->sval, "event_trigger") == 0)
+				*is_event_trigger = true;
+		}
+	}
 
 	interpret_function_parameter_list(palloc0(sizeof(ParseState)),
 									  stmt->parameters,
-									  InvalidOid /* We don't know the PL/pgSQL language OID */,
+									  InvalidOid,
 									  stmt->is_procedure ? OBJECT_PROCEDURE : OBJECT_FUNCTION,
 									  &parameterTypes,
 									  &parameterTypes_list,
@@ -348,15 +325,14 @@ static Form_pg_proc proc_from_create_stmt(CreateFunctionStmt* stmt, int *numargs
 	if (stmt->is_procedure)
 	{
 		Assert(!stmt->returnType);
-		procStruct->prorettype = requiredResultType ? requiredResultType : VOIDOID;
-		procStruct->proretset = false;
+		prorettype = requiredResultType ? requiredResultType : VOIDOID;
+		returnsSet = false;
 	}
 	else if (stmt->returnType)
 	{
-		/* explicit RETURNS clause */
 		compute_return_type(stmt->returnType, InvalidOid,
-							&procStruct->prorettype, &procStruct->proretset);
-		if (OidIsValid(requiredResultType) && procStruct->prorettype != requiredResultType)
+							&prorettype, &returnsSet);
+		if (OidIsValid(requiredResultType) && prorettype != requiredResultType)
 			ereport(ERROR,
 					(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
 					 errmsg("function result type must be %s because of OUT parameters",
@@ -364,109 +340,80 @@ static Form_pg_proc proc_from_create_stmt(CreateFunctionStmt* stmt, int *numargs
 	}
 	else if (OidIsValid(requiredResultType))
 	{
-		/* default RETURNS clause from OUT parameters */
-		procStruct->prorettype = requiredResultType;
-		procStruct->proretset = false;
+		prorettype = requiredResultType;
+		returnsSet = false;
 	}
 	else
 	{
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
 				 errmsg("function result type must be specified")));
-		/* Alternative possibility: default to RETURNS VOID */
-		procStruct->prorettype = VOIDOID;
-		procStruct->proretset = false;
 	}
 
-	if (allParameterTypes != NULL)
+	prokind = stmt->is_procedure ? PROKIND_PROCEDURE : PROKIND_FUNCTION;
+
+	/*
+	 * When there are no OUT args, interpret_function_parameter_list returns
+	 * allParameterTypes=NULL and upstream get_func_arg_info would then read
+	 * the inline procStruct->proargtypes oidvector. Our fake Form_pg_proc has
+	 * an empty oidvector, so synthesise an allParameterTypes array from the
+	 * IN args to keep get_func_arg_info on the array path.
+	 */
+	if (allParameterTypes == NULL && parameterTypes->dim1 > 0)
 	{
-		deconstruct_array_builtin(allParameterTypes, OIDOID,
-								  &elems, NULL, numargs);
-		*p_argtypes = (Oid *) palloc(*numargs * sizeof(Oid));
-		for (i = 0; i < *numargs; i++)
-			(*p_argtypes)[i] = elems[i];
-	}
-	else
-	{
-		*p_argtypes = parameterTypes->values;
-		*numargs = parameterTypes->dim1;
+		Datum	   *typeDatums = palloc(parameterTypes->dim1 * sizeof(Datum));
+		int			i;
+
+		for (i = 0; i < parameterTypes->dim1; i++)
+			typeDatums[i] = ObjectIdGetDatum(parameterTypes->values[i]);
+		allParameterTypes = construct_array_builtin(typeDatums,
+													parameterTypes->dim1,
+													OIDOID);
 	}
 
-	if (parameterModes != NULL)
-	{
-		deconstruct_array_builtin(parameterModes, CHAROID,
-								  &elems, NULL, &nelems);
-		Assert(nelems == *numargs);
-		*p_argmodes = (char *) palloc(*numargs * sizeof(char));
-		for (i = 0; i < *numargs; i++)
-			(*p_argmodes)[i] = elems[i];
-	}
-	else
-	{
-		*p_argmodes = NULL;
-	}
-
-	if (parameterNames != NULL)
-	{
-		deconstruct_array_builtin(parameterNames, TEXTOID,
-								  &elems, NULL, &nelems);
-		Assert(nelems == *numargs);
-		*p_argnames = (char **) palloc(sizeof(char *) * *numargs);
-		for (i = 0; i < *numargs; i++)
-			(*p_argnames)[i] = TextDatumGetCString(elems[i]);
-	}
-	else
-	{
-		*p_argnames = NULL;
-	}
-
-	return procStruct;
+	return pg_query_procedure_create(funcname,
+									 returnsSet,
+									 prorettype,
+									 prokind,
+									 PROVOLATILE_VOLATILE,
+									 parameterTypes,
+									 allParameterTypes ? PointerGetDatum(allParameterTypes) : PointerGetDatum(NULL),
+									 parameterModes ? PointerGetDatum(parameterModes) : PointerGetDatum(NULL),
+									 parameterNames ? PointerGetDatum(parameterNames) : PointerGetDatum(NULL),
+									 proc_source);
 }
 
-static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
+/*
+ * Alternate path: rather than duplicate plpgsql_compile_callback's body in
+ * compile_create_function_stmt, build the inputs the callback expects via
+ * pg_query_create_function and invoke the real callback. The pg_proc tuple's
+ * variable-length attributes are exposed to the callback's SysCacheGetAttr
+ * calls through the values[]/nulls[] arrays mirrored from upstream
+ * ProcedureCreate.
+ */
+static PLpgSQL_function *
+compile_create_function_stmt_via_callback(CreateFunctionStmt *stmt)
 {
-	PLpgSQL_function *function = (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
-	Form_pg_proc procStruct = NULL;//(Form_pg_proc) GETSTRUCT(procTup)
-	bool		is_dml_trigger = false;//CALLED_AS_TRIGGER(fcinfo);
-	bool		is_event_trigger = false;//CALLED_AS_EVENT_TRIGGER(fcinfo);
-	yyscan_t	scanner;
-	char *func_name;
-	char *proc_source = NULL;
-	HeapTuple	typeTup;
-	Form_pg_type typeStruct;
-	PLpgSQL_variable *var;
-	PLpgSQL_rec *rec;
-	int			i;
-	struct compile_error_callback_arg cbarg;
-	ErrorContextCallback plerrcontext;
-	int			parse_rc;
-	Oid			rettypeid;
-	int			numargs;
-	int			num_in_args = 0;
-	int			num_out_args = 0;
-	Oid		   *argtypes;
-	char	  **argnames;
-	char	   *argmodes;
-	int		   *in_arg_varnos = NULL;
-	PLpgSQL_variable **out_arg_variables;
-	MemoryContext func_cxt;
-	char *language = "plpgsql";
-	bool forValidator = true;
+	PLpgSQL_function *function;
+	ProcTupWithAttrs *wrapper;
+	FmgrInfo	flinfo = {0};
+	LOCAL_FCINFO(fcinfo, 0);
+	TriggerData triggerData = {0};
+	EventTriggerData eventTriggerData = {0};
+	char	   *proc_source = NULL;
+	char	   *language = "plpgsql";
+	bool		is_dml_trigger;
+	bool		is_event_trigger;
 
 	assert(IsA(stmt, CreateFunctionStmt));
-
-	func_name = strVal(linitial(stmt->funcname));
 
 	foreach_ptr(DefElem, elem, stmt->options)
 	{
 		if (strcmp(elem->defname, "as") == 0)
 		{
 			assert(IsA(elem->arg, List));
-
-			foreach_ptr(String, proc_source_str, (List*) elem->arg)
-			{
+			foreach_ptr(String, proc_source_str, (List *) elem->arg)
 				proc_source = proc_source_str->sval;
-			}
 		}
 		else if (strcmp(elem->defname, "language") == 0)
 		{
@@ -479,553 +426,34 @@ static PLpgSQL_function *compile_create_function_stmt(CreateFunctionStmt* stmt)
 	if (strcmp(language, "plpgsql") != 0)
 		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
 
-	if (stmt->returnType != NULL)
-	{
-		foreach_ptr(String, val, stmt->returnType->names)
-		{
-			if (strcmp(val->sval, "trigger") == 0)
-				is_dml_trigger = true;
-		}
-	}
+	wrapper = pg_query_create_function(stmt, language, proc_source,
+									   &is_dml_trigger, &is_event_trigger);
 
-	/* Populate an interim procStruct from the passed in CREATE FUNCTION */
-	procStruct = proc_from_create_stmt(stmt, &numargs, &argtypes, &argnames, &argmodes);
-
-	/*
-	 * Setup the scanner input and error info.  We assume that this function
-	 * cannot be invoked recursively, so there's no need to save and restore
-	 * the static variables used here.
-	 */
-	scanner = plpgsql_scanner_init(proc_source);
-
-	plpgsql_error_funcname = func_name;
-
-	/*
-	 * Setup error traceback support for ereport()
-	 */
-	cbarg.proc_source = proc_source;
-	cbarg.yyscanner = scanner;
-	plerrcontext.callback = plpgsql_compile_error_callback;
-	plerrcontext.arg = &cbarg;
-	plerrcontext.previous = error_context_stack;
-	error_context_stack = &plerrcontext;
-
-	/* Do extra syntax checking if check_function_bodies is on */
-	plpgsql_check_syntax = true;
-
-	plpgsql_curr_compile = function;
-
-	/*
-	 * All the rest of the compile-time storage (e.g. parse tree) is kept in
-	 * its own memory context, so it can be reclaimed easily.
-	 */
-	func_cxt = AllocSetContextCreate(CurrentMemoryContext,
-									 "PL/pgSQL pg_query context",
-									 ALLOCSET_DEFAULT_SIZES);
-	plpgsql_compile_tmp_cxt = MemoryContextSwitchTo(func_cxt);
-
-	function->fn_signature = pstrdup(func_name);
-	function->fn_is_trigger = PLPGSQL_NOT_TRIGGER;
-	function->fn_input_collation = InvalidOid;
-	function->fn_cxt = func_cxt;
-	function->out_param_varno = -1;		/* set up for no OUT param */
-	function->resolve_option = plpgsql_variable_conflict;
-	function->print_strict_params = plpgsql_print_strict_params;
-	function->extra_warnings = plpgsql_extra_warnings;
-	function->extra_errors = plpgsql_extra_errors;
+	flinfo.fn_oid = InvalidOid;
+	flinfo.fn_expr = NULL;
+	fcinfo->flinfo = &flinfo;
+	fcinfo->fncollation = InvalidOid;
+	fcinfo->context = NULL;
+	fcinfo->resultinfo = NULL;
+	fcinfo->isnull = false;
+	fcinfo->nargs = 0;
 
 	if (is_dml_trigger)
-		function->fn_is_trigger = PLPGSQL_DML_TRIGGER;
-	else if (is_event_trigger)
-		function->fn_is_trigger = PLPGSQL_EVENT_TRIGGER;
-	else
-		function->fn_is_trigger = PLPGSQL_NOT_TRIGGER;
-
-	function->fn_prokind = procStruct->prokind;
-
-	function->nstatements = 0;
-	function->requires_procedure_resowner = false;
-	function->has_exception_block = false;
-
-	/*
-	 * Initialize the compiler, particularly the namespace stack.  The
-	 * outermost namespace contains function parameters and other special
-	 * variables (such as FOUND), and is named after the function itself.
-	 */
-	plpgsql_ns_init();
-	plpgsql_ns_push(func_name, PLPGSQL_LABEL_BLOCK);
-	plpgsql_DumpExecTree = false;
-	plpgsql_start_datums();
-
-	/* Setup parameter names */
-	switch (function->fn_is_trigger)
 	{
-		case PLPGSQL_NOT_TRIGGER:
-
-			/*
-			 * Fetch info about the procedure's parameters. Allocations aren't
-			 * needed permanently, so make them in tmp cxt.
-			 *
-			 * We also need to resolve any polymorphic input or output
-			 * argument types.  In validation mode we won't be able to, so we
-			 * arbitrarily assume we are dealing with integers.
-			 */
-			MemoryContextSwitchTo(plpgsql_compile_tmp_cxt);
-
-			/*numargs = get_func_arg_info(procTup,
-			//							&argtypes, &argnames, &argmodes);*/
-			// TODO: Populate numargs/argtypes/argnames/argmodes
-
-			/*cfunc_resolve_polymorphic_argtypes(numargs, argtypes, argmodes,
-											   fcinfo->flinfo->fn_expr,
-											   forValidator,
-											   plpgsql_error_funcname);*/
-			// TODO: Can we do this resolve in some way?
-
-			in_arg_varnos = (int *) palloc(numargs * sizeof(int));
-			out_arg_variables = (PLpgSQL_variable **) palloc(numargs * sizeof(PLpgSQL_variable *));
-
-			MemoryContextSwitchTo(func_cxt);
-
-			/*
-			 * Create the variables for the procedure's parameters.
-			 */
-			for (i = 0; i < numargs; i++)
-			{
-				char		buf[32];
-				Oid			argtypeid = argtypes[i];
-				char		argmode = argmodes ? argmodes[i] : PROARGMODE_IN;
-				PLpgSQL_type *argdtype;
-				PLpgSQL_variable *argvariable;
-				PLpgSQL_nsitem_type argitemtype;
-
-				/* Create $n name for variable */
-				snprintf(buf, sizeof(buf), "$%d", i + 1);
-
-				/* Create datatype info */
-				argdtype = plpgsql_build_datatype(argtypeid,
-												  -1,
-												  function->fn_input_collation,
-												  NULL);
-
-				/* Disallow pseudotype argument */
-				/* (note we already replaced polymorphic types) */
-				/* (build_variable would do this, but wrong message) */
-				if (argdtype->ttype == PLPGSQL_TTYPE_PSEUDO)
-					ereport(ERROR,
-							(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-							 errmsg("PL/pgSQL functions cannot accept type %s",
-									format_type_be(argtypeid))));
-
-				/*
-				 * Build variable and add to datum list.  If there's a name
-				 * for the argument, use that as refname, else use $n name.
-				 */
-				argvariable = plpgsql_build_variable((argnames &&
-													  argnames[i][0] != '\0') ?
-													 argnames[i] : buf,
-													 0, argdtype, false);
-
-				if (argvariable->dtype == PLPGSQL_DTYPE_VAR)
-				{
-					argitemtype = PLPGSQL_NSTYPE_VAR;
-				}
-				else
-				{
-					Assert(argvariable->dtype == PLPGSQL_DTYPE_REC);
-					argitemtype = PLPGSQL_NSTYPE_REC;
-				}
-
-				/* Remember arguments in appropriate arrays */
-				if (argmode == PROARGMODE_IN ||
-					argmode == PROARGMODE_INOUT ||
-					argmode == PROARGMODE_VARIADIC)
-					in_arg_varnos[num_in_args++] = argvariable->dno;
-				if (argmode == PROARGMODE_OUT ||
-					argmode == PROARGMODE_INOUT ||
-					argmode == PROARGMODE_TABLE)
-					out_arg_variables[num_out_args++] = argvariable;
-
-				/* Add to namespace under the $n name */
-				add_parameter_name(argitemtype, argvariable->dno, buf);
-
-				/* If there's a name for the argument, make an alias */
-				if (argnames && argnames[i][0] != '\0')
-					add_parameter_name(argitemtype, argvariable->dno,
-									   argnames[i]);
-			}
-
-			/*
-			 * If there's just one OUT parameter, out_param_varno points
-			 * directly to it.  If there's more than one, build a row that
-			 * holds all of them.  Procedures return a row even for one OUT
-			 * parameter.
-			 */
-			if (num_out_args > 1 ||
-				(num_out_args == 1 && function->fn_prokind == PROKIND_PROCEDURE))
-			{
-				PLpgSQL_row *row = build_row_from_vars(out_arg_variables,
-													   num_out_args);
-
-				plpgsql_adddatum((PLpgSQL_datum *) row);
-				function->out_param_varno = row->dno;
-			}
-			else if (num_out_args == 1)
-				function->out_param_varno = out_arg_variables[0]->dno;
-
-			/*
-			 * Check for a polymorphic returntype. If found, use the actual
-			 * returntype type from the caller's FuncExpr node, if we have
-			 * one.  (In validation mode we arbitrarily assume we are dealing
-			 * with integers.)
-			 *
-			 * Note: errcode is FEATURE_NOT_SUPPORTED because it should always
-			 * work; if it doesn't we're in some context that fails to make
-			 * the info available.
-			 */
-			rettypeid = procStruct->prorettype;
-			if (IsPolymorphicType(rettypeid))
-			{
-				if (forValidator)
-				{
-					if (rettypeid == ANYARRAYOID ||
-						rettypeid == ANYCOMPATIBLEARRAYOID)
-						rettypeid = INT4ARRAYOID;
-					else if (rettypeid == ANYRANGEOID ||
-							 rettypeid == ANYCOMPATIBLERANGEOID)
-						rettypeid = INT4RANGEOID;
-					else if (rettypeid == ANYMULTIRANGEOID)
-						rettypeid = INT4MULTIRANGEOID;
-					else		/* ANYELEMENT or ANYNONARRAY or ANYCOMPATIBLE */
-						rettypeid = INT4OID;
-					/* XXX what could we use for ANYENUM? */
-				}
-				else
-				{
-					Assert(false); // We're always in validating mode
-					/*rettypeid = get_fn_expr_rettype(fcinfo->flinfo);
-					if (!OidIsValid(rettypeid))
-						ereport(ERROR,
-								(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-								 errmsg("could not determine actual return type "
-										"for polymorphic function \"%s\"",
-										plpgsql_error_funcname)));*/
-				}
-			}
-
-			/*
-			 * Normal function has a defined returntype
-			 */
-			function->fn_rettype = rettypeid;
-			function->fn_retset = procStruct->proretset;
-
-			/*
-			 * Lookup the function's return type
-			 */
-			typeTup = SearchSysCache1(TYPEOID, ObjectIdGetDatum(rettypeid));
-			if (!HeapTupleIsValid(typeTup))
-				elog(ERROR, "cache lookup failed for type %u", rettypeid);
-			typeStruct = (Form_pg_type) GETSTRUCT(typeTup);
-
-			/* Disallow pseudotype result, except VOID or RECORD */
-			/* (note we already replaced polymorphic types) */
-			if (typeStruct->typtype == TYPTYPE_PSEUDO)
-			{
-				if (rettypeid == VOIDOID ||
-					rettypeid == RECORDOID ||
-					rettypeid == UNKNOWNOID) // Changed: UNKNOWNOID is added here because we return this whne we don't know a type
-					 /* okay */ ;
-				else if (rettypeid == TRIGGEROID || rettypeid == EVENT_TRIGGEROID)
-					ereport(ERROR,
-							(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-							 errmsg("trigger functions can only be called as triggers")));
-				else
-					ereport(ERROR,
-							(errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-							 errmsg("PL/pgSQL functions cannot return type %s",
-									format_type_be(rettypeid))));
-			}
-
-			function->fn_retistuple = type_is_rowtype(rettypeid);
-			function->fn_retisdomain = (typeStruct->typtype == TYPTYPE_DOMAIN);
-			function->fn_retbyval = typeStruct->typbyval;
-			function->fn_rettyplen = typeStruct->typlen;
-
-			/*
-			 * install $0 reference, but only for polymorphic return types,
-			 * and not when the return is specified through an output
-			 * parameter.
-			 */
-			if (IsPolymorphicType(procStruct->prorettype) &&
-				num_out_args == 0)
-			{
-				(void) plpgsql_build_variable("$0", 0,
-											  //build_datatype(typeTup,
-											  plpgsql_build_datatype(rettypeid,
-															 -1,
-															 function->fn_input_collation,
-															 NULL),
-											  true);
-			}
-
-			/*ReleaseSysCache(typeTup);*/
-			break;
-
-		case PLPGSQL_DML_TRIGGER:
-			/* Trigger procedure's return type is unknown yet */
-			function->fn_rettype = InvalidOid;
-			function->fn_retbyval = false;
-			function->fn_retistuple = true;
-			function->fn_retisdomain = false;
-			function->fn_retset = false;
-
-			/* shouldn't be any declared arguments */
-			if (procStruct->pronargs != 0)
-				ereport(ERROR,
-						(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
-						 errmsg("trigger functions cannot have declared arguments"),
-						 errhint("The arguments of the trigger can be accessed through TG_NARGS and TG_ARGV instead.")));
-
-			/* Add the record for referencing NEW ROW */
-			rec = plpgsql_build_record("new", 0, NULL, RECORDOID, true);
-			function->new_varno = rec->dno;
-
-			/* Add the record for referencing OLD ROW */
-			rec = plpgsql_build_record("old", 0, NULL, RECORDOID, true);
-			function->old_varno = rec->dno;
-
-			/* Add the variable tg_name */
-			var = plpgsql_build_variable("tg_name", 0,
-										 plpgsql_build_datatype(NAMEOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_NAME;
-
-			/* Add the variable tg_when */
-			var = plpgsql_build_variable("tg_when", 0,
-										 plpgsql_build_datatype(TEXTOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_WHEN;
-
-			/* Add the variable tg_level */
-			var = plpgsql_build_variable("tg_level", 0,
-										 plpgsql_build_datatype(TEXTOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_LEVEL;
-
-			/* Add the variable tg_op */
-			var = plpgsql_build_variable("tg_op", 0,
-										 plpgsql_build_datatype(TEXTOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_OP;
-
-			/* Add the variable tg_relid */
-			var = plpgsql_build_variable("tg_relid", 0,
-										 plpgsql_build_datatype(OIDOID,
-																-1,
-																InvalidOid,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_RELID;
-
-			/* Add the variable tg_relname */
-			var = plpgsql_build_variable("tg_relname", 0,
-										 plpgsql_build_datatype(NAMEOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_TABLE_NAME;
-
-			/* tg_table_name is now preferred to tg_relname */
-			var = plpgsql_build_variable("tg_table_name", 0,
-										 plpgsql_build_datatype(NAMEOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_TABLE_NAME;
-
-			/* add the variable tg_table_schema */
-			var = plpgsql_build_variable("tg_table_schema", 0,
-										 plpgsql_build_datatype(NAMEOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_TABLE_SCHEMA;
-
-			/* Add the variable tg_nargs */
-			var = plpgsql_build_variable("tg_nargs", 0,
-										 plpgsql_build_datatype(INT4OID,
-																-1,
-																InvalidOid,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_NARGS;
-
-			/* Add the variable tg_argv */
-			var = plpgsql_build_variable("tg_argv", 0,
-										 plpgsql_build_datatype(TEXTARRAYOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_ARGV;
-
-			break;
-
-		case PLPGSQL_EVENT_TRIGGER:
-			function->fn_rettype = VOIDOID;
-			function->fn_retbyval = false;
-			function->fn_retistuple = true;
-			function->fn_retisdomain = false;
-			function->fn_retset = false;
-
-			/* shouldn't be any declared arguments */
-			if (procStruct->pronargs != 0)
-				ereport(ERROR,
-						(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
-						 errmsg("event trigger functions cannot have declared arguments")));
-
-			/* Add the variable tg_event */
-			var = plpgsql_build_variable("tg_event", 0,
-										 plpgsql_build_datatype(TEXTOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_EVENT;
-
-			/* Add the variable tg_tag */
-			var = plpgsql_build_variable("tg_tag", 0,
-										 plpgsql_build_datatype(TEXTOID,
-																-1,
-																function->fn_input_collation,
-																NULL),
-										 true);
-			Assert(var->dtype == PLPGSQL_DTYPE_VAR);
-			var->dtype = PLPGSQL_DTYPE_PROMISE;
-			((PLpgSQL_var *) var)->promise = PLPGSQL_PROMISE_TG_TAG;
-
-			break;
-
-		default:
-			elog(ERROR, "unrecognized function typecode: %d",
-				 (int) function->fn_is_trigger);
-			break;
+		triggerData.type = T_TriggerData;
+		fcinfo->context = (Node *) &triggerData;
 	}
-	/*foreach(lc, stmt->parameters)
+	else if (is_event_trigger)
 	{
-		FunctionParameter *param = lfirst_node(FunctionParameter, lc);
-		char buf[32];
-		PLpgSQL_type *argdtype;
-		PLpgSQL_variable *argvariable;
-		PLpgSQL_nsitem_type argitemtype;
-		snprintf(buf, sizeof(buf), "$%d", foreach_current_index(lc) + 1);
-		argdtype = plpgsql_build_datatype(UNKNOWNOID, -1, InvalidOid, param->argType);
-		argvariable = plpgsql_build_variable(param->name ? param->name : buf, 0, argdtype, false);
-		if (param->mode == FUNC_PARAM_OUT || param->mode == FUNC_PARAM_INOUT || param->mode == FUNC_PARAM_TABLE)
-			function->out_param_varno = argvariable->dno;
-		argitemtype = argvariable->dtype == PLPGSQL_DTYPE_VAR ? PLPGSQL_NSTYPE_VAR : PLPGSQL_NSTYPE_REC;
-		plpgsql_ns_additem(argitemtype, argvariable->dno, buf);
-		if (param->name != NULL)
-			plpgsql_ns_additem(argitemtype, argvariable->dno, param->name);
-	}*/
+		eventTriggerData.type = T_EventTriggerData;
+		fcinfo->context = (Node *) &eventTriggerData;
+	}
 
-	/* Remember if function is STABLE/IMMUTABLE */
-	function->fn_readonly = (procStruct->provolatile != PROVOLATILE_VOLATILE);
+	function = (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
 
-	/*
-	 * Create the magic FOUND variable.
-	 */
-	var = plpgsql_build_variable("found", 0,
-								 plpgsql_build_datatype(BOOLOID,
-														-1,
-														InvalidOid,
-														NULL),
-								 true);
-	function->found_varno = var->dno;
+	plpgsql_compile_callback(fcinfo, &wrapper->tup, NULL,
+							 (CachedFunction *) function, true);
 
-	/*
-	 * Now parse the function's text
-	 */
-	parse_rc = plpgsql_yyparse(&function->action, scanner);
-	if (parse_rc != 0)
-		elog(ERROR, "plpgsql parser returned %d", parse_rc);
-
-	plpgsql_scanner_finish(scanner);
-	pfree(proc_source);
-
-	/*
-	 * If it has OUT parameters or returns VOID or returns a set, we allow
-	 * control to fall off the end without an explicit RETURN statement. The
-	 * easiest way to implement this is to add a RETURN statement to the end
-	 * of the statement list during parsing.
-	 */
-	if (num_out_args > 0 || function->fn_rettype == VOIDOID ||
-		function->fn_retset)
-		add_dummy_return(function);
-
-	/*
-	 * Complete the function's info
-	 */
-	function->fn_nargs = procStruct->pronargs;
-	for (i = 0; i < function->fn_nargs; i++)
-		function->fn_argvarnos[i] = in_arg_varnos[i];
-
-	plpgsql_finish_datums(function);
-
-	if (function->has_exception_block)
-		plpgsql_mark_local_assignment_targets(function);
-
-	/* Debug dump for completed functions */
-	//if (plpgsql_DumpExecTree)
-	//	plpgsql_dumptree(function);
-
-	/*
-	 * Pop the error context stack
-	 */
-	error_context_stack = plerrcontext.previous;
-	plpgsql_error_funcname = NULL;
-
-	plpgsql_check_syntax = false;
-
-	MemoryContextSwitchTo(plpgsql_compile_tmp_cxt);
-	plpgsql_compile_tmp_cxt = NULL;
 	return function;
 }
 
@@ -1063,7 +491,7 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt)
 	PG_TRY();
 	{
 		if (IsA(stmt, CreateFunctionStmt)) {
-			result.func = compile_create_function_stmt((CreateFunctionStmt *) stmt);
+			result.func = compile_create_function_stmt_via_callback((CreateFunctionStmt *) stmt);
 		} else if (IsA(stmt, DoStmt)){
 			result.func = compile_do_stmt((DoStmt *) stmt);
 		} else {
