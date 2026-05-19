@@ -48,9 +48,9 @@ const char* tests[] = {
   "VACUUM FULL my_table",
   "fdf2f4127644f4d8",
   "SELECT * FROM x AS a, y AS b",
-  "4e9acae841dae228",
+  "675cc4043bec7035",
   "SELECT * FROM y AS a, x AS b",
-  "4e9acae841dae228",
+  "675cc4043bec7035",
   "SELECT x AS a, y AS b FROM x",
   "65dff5f5e9a643ad",
   "SELECT y AS a, x AS b FROM x",
@@ -66,7 +66,7 @@ const char* tests[] = {
   "SELECT * FROM a",
   "fcf44da7b597ef43",
   "SELECT * FROM a AS b",
-  "fcf44da7b597ef43",
+  "579efc630b5991eb",
   "UPDATE users SET one_thing = $1, second_thing = $2 WHERE users.id = $1",
   "a0ea386c1cfd1e69",
   "UPDATE users SET something_else = $1 WHERE users.id = $1",
@@ -157,6 +157,45 @@ const char* tests[] = {
   "25de297c6377cb74",
   "MERGE INTO customer_account ca USING (VALUES (1, 42), (2, 99)) t(customer_id, transaction_value) ON t.customer_id = ca.customer_id WHEN MATCHED THEN UPDATE SET balance = balance + transaction_value + 1 WHEN NOT MATCHED THEN INSERT (customer_id, balance) VALUES (t.customer_id, t.transaction_value)",
   "ff7d4d704926aae4",
+  // RangeVar in SELECT/DML context: schema-qualified and unqualified references
+  // to a same-named relation share a fingerprint (mirrors Postgres queryjumble
+  // commit 787514b30bb, which jumbles eref.aliasname only and ignores relid).
+  "SELECT * FROM foo.tab",
+  "1a678764af3bd76d",
+  "SELECT * FROM bar.tab",
+  "1a678764af3bd76d",
+  // Different user aliases produce different fingerprints (Postgres jumbles the
+  // alias name in eref.aliasname).
+  "SELECT * FROM tab AS x",
+  "60eb7bae7474b60e",
+  "SELECT * FROM tab AS y",
+  "ede41da8bc09cdd7",
+  // When an alias is present, the relation name is dropped in DML context, so
+  // different relations with the same alias share a fingerprint.
+  "SELECT * FROM other AS x",
+  "60eb7bae7474b60e",
+  // DML target relations with aliases distinguish on alias name.
+  "UPDATE tab AS x SET a = 1",
+  "e45a56e43724218b",
+  "UPDATE tab AS y SET a = 1",
+  "eff39c1c251a4201",
+  "DELETE FROM tab AS x WHERE id = 1",
+  "76982f1fab5a5aca",
+  "DELETE FROM tab AS y WHERE id = 1",
+  "9c7d1e3f8e0aea5b",
+  "INSERT INTO tab AS x DEFAULT VALUES",
+  "76551e63873ea03f",
+  "INSERT INTO tab AS y DEFAULT VALUES",
+  "40d35538c9d91d18",
+  // Utility statements keep the schema name in the fingerprint.
+  "CREATE TABLE foo.bar (id int)",
+  "c1cdc0f98e0b1e99",
+  "CREATE TABLE baz.bar (id int)",
+  "8590d7efddf4bb13",
+  "ALTER TABLE foo.bar ADD COLUMN c int",
+  "1a16559b625d7498",
+  "ALTER TABLE baz.bar ADD COLUMN c int",
+  "2f36adf7ba9689b8",
 };
 
 const size_t testsLength = sizeof(tests)/sizeof(*tests)/2;

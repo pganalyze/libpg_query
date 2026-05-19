@@ -270,21 +270,30 @@ _fingerprintAlias(FingerprintContext *ctx, const Alias *node, const void *parent
 static void
 _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *parent, const char *field_name, unsigned int depth)
 {
-  if (node->alias != NULL) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "alias");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintAlias(ctx, node->alias, node, "alias", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
+  bool is_dml_context = false;
+  if (parent != NULL && field_name != NULL) {
+    if (IsA(parent, SelectStmt) && strcmp(field_name, "fromClause") == 0) {
+      is_dml_context = true;
+    } else if (IsA(parent, InsertStmt) && strcmp(field_name, "relation") == 0) {
+      is_dml_context = true;
+    } else if (IsA(parent, UpdateStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "fromClause") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, DeleteStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "usingClause") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, MergeStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "sourceRelation") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, JoinExpr)) {
+      is_dml_context = true;
+    } else if (IsA(parent, RangeTableSample)) {
+      is_dml_context = true;
+    } else if (IsA(parent, LockingClause)) {
+      is_dml_context = true;
     }
-    XXH3_freeState(prev);
+  }
+
+  if (node->alias != NULL && node->alias->aliasname != NULL) {
+    _fingerprintString(ctx, "aliasname");
+    _fingerprintString(ctx, node->alias->aliasname);
   }
 
   if (node->catalogname != NULL) {
@@ -299,7 +308,10 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
 
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->relname != NULL && node->relpersistence != 't') {
+  // In DML/SELECT context, the relation name only contributes to the jumble
+  // when there is no user alias (matches eref.aliasname). In utility context,
+  // the relation name is always part of the jumble.
+  if (node->relname != NULL && node->relpersistence != 't' && !(is_dml_context && node->alias != NULL)) {
     int len = strlen(node->relname);
     char *r = palloc0((len + 1) * sizeof(char));
     char *p = r;
@@ -325,7 +337,7 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
     _fingerprintString(ctx, buffer);
   }
 
-  if (node->schemaname != NULL) {
+  if (node->schemaname != NULL && !is_dml_context) {
     _fingerprintString(ctx, "schemaname");
     _fingerprintString(ctx, node->schemaname);
   }

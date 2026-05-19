@@ -22,8 +22,60 @@ class Generator
 
   EOL
 
-  FINGERPRINT_RANGE_VAR_RELNAME = <<-EOL
-  if (node->relname != NULL && node->relpersistence != 't') {
+  # Custom body for _fingerprintRangeVar.
+  #
+  # Mirrors Postgres' query jumble for relation references after parse analysis
+  # (RangeTblEntry.eref custom_query_jumble, RangeTblEntry.relid query_jumble_ignore,
+  # see Postgres commit 787514b30bb), narrowly: in SELECT/DML contexts we add the
+  # user alias name when present, skip the relation name when an alias is present
+  # (matches eref.aliasname), and drop the schema name (Postgres jumbles only the
+  # eref string; schema-qualified and unqualified references that resolve to the
+  # same table now share a query ID). catalogname/inh/relpersistence are kept in
+  # all contexts to minimize diff against pre-existing fingerprints; their values
+  # rarely diverge from defaults in DML parse trees.
+  FINGERPRINT_RANGE_VAR_BODY = <<-EOL
+  bool is_dml_context = false;
+  if (parent != NULL && field_name != NULL) {
+    if (IsA(parent, SelectStmt) && strcmp(field_name, "fromClause") == 0) {
+      is_dml_context = true;
+    } else if (IsA(parent, InsertStmt) && strcmp(field_name, "relation") == 0) {
+      is_dml_context = true;
+    } else if (IsA(parent, UpdateStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "fromClause") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, DeleteStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "usingClause") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, MergeStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "sourceRelation") == 0)) {
+      is_dml_context = true;
+    } else if (IsA(parent, JoinExpr)) {
+      is_dml_context = true;
+    } else if (IsA(parent, RangeTableSample)) {
+      is_dml_context = true;
+    } else if (IsA(parent, LockingClause)) {
+      is_dml_context = true;
+    }
+  }
+
+  if (node->alias != NULL && node->alias->aliasname != NULL) {
+    _fingerprintString(ctx, "aliasname");
+    _fingerprintString(ctx, node->alias->aliasname);
+  }
+
+  if (node->catalogname != NULL) {
+    _fingerprintString(ctx, "catalogname");
+    _fingerprintString(ctx, node->catalogname);
+  }
+
+  if (node->inh) {
+    _fingerprintString(ctx, "inh");
+    _fingerprintString(ctx, "true");
+  }
+
+  // Intentionally ignoring node->location for fingerprinting
+
+  // In DML/SELECT context, the relation name only contributes to the jumble
+  // when there is no user alias (matches eref.aliasname). In utility context,
+  // the relation name is always part of the jumble.
+  if (node->relname != NULL && node->relpersistence != 't' && !(is_dml_context && node->alias != NULL)) {
     int len = strlen(node->relname);
     char *r = palloc0((len + 1) * sizeof(char));
     char *p = r;
@@ -41,6 +93,17 @@ class Generator
     _fingerprintString(ctx, "relname");
     _fingerprintString(ctx, r);
     pfree(r);
+  }
+
+  if (node->relpersistence != 0) {
+    char buffer[2] = {node->relpersistence, '\\0'};
+    _fingerprintString(ctx, "relpersistence");
+    _fingerprintString(ctx, buffer);
+  }
+
+  if (node->schemaname != NULL && !is_dml_context) {
+    _fingerprintString(ctx, "schemaname");
+    _fingerprintString(ctx, node->schemaname);
   }
 
   EOL
@@ -244,12 +307,16 @@ class Generator
     'OidList',
     'Null',
   ]
+  # Node types that have a complete, hand-written fingerprint body. Bypasses
+  # per-field generation entirely.
+  FINGERPRINT_FULL_BODY_NODES = {
+    'RangeVar' => FINGERPRINT_RANGE_VAR_BODY,
+  }
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
     [nil, 'list_start'] => :skip,
     [nil, 'list_end'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
-    ['RangeVar', 'relname'] => FINGERPRINT_RANGE_VAR_RELNAME,
     ['A_Expr', 'kind'] => FINGERPRINT_A_EXPR_KIND,
     ['A_Expr', 'rexpr_list_start'] => :skip,
     ['A_Expr', 'rexpr_list_end'] => :skip,
@@ -293,6 +360,8 @@ class Generator
 
         if FINGERPRINT_SKIP_NODES.include?(type)
           fingerprint_def = "  // Intentionally ignoring all fields for fingerprinting\n"
+        elsif FINGERPRINT_FULL_BODY_NODES.key?(type)
+          fingerprint_def = FINGERPRINT_FULL_BODY_NODES[type]
         else
           fingerprint_def = ''
           struct_def['fields'].reject { |f| f['name'].nil? }.sort_by { |f| f['name'] }.each do |field|
