@@ -69,6 +69,7 @@
 
 #include "postgres.h"
 
+#include "common/int.h"
 #include "mb/pg_wchar.h"
 #include "miscadmin.h"
 #include "utils/memdebug.h"
@@ -208,6 +209,9 @@ __thread MemoryContext ErrorContext = NULL;
 /* This is a transient link to the active portal's memory context: */
 
 
+/* Is memory context logging currently in progress? */
+
+
 static void MemoryContextDeleteOnly(MemoryContext context);
 static void MemoryContextCallResetCallbacks(MemoryContext context);
 static void MemoryContextStatsInternal(MemoryContext context, int level,
@@ -217,6 +221,8 @@ static void MemoryContextStatsInternal(MemoryContext context, int level,
 static void MemoryContextStatsPrint(MemoryContext context, void *passthru,
 									const char *stats_string,
 									bool print_to_stderr);
+pg_noreturn static pg_noinline void add_size_error(Size s1, Size s2);
+pg_noreturn static pg_noinline void mul_size_error(Size s1, Size s2);
 
 /*
  * You should not do memory allocations within a critical section, because
@@ -1486,6 +1492,57 @@ repalloc(void *pointer, Size size)
  * repalloc0
  *		Adjust the size of a previously allocated chunk and zero out the added
  *		space.
+ */
+
+
+/*
+ * Support for safe calculation of memory request sizes
+ *
+ * These functions perform the requested calculation, but throw error if the
+ * result overflows.
+ *
+ * An important property of these functions is that if an argument was a
+ * negative signed int before promotion (implying overflow in calculating it)
+ * we will detect that as an error.  That happens because we reject results
+ * larger than SIZE_MAX / 2 later on, in the actual allocation step.
+ */
+
+
+
+
+
+
+
+
+/*
+ * palloc_mul
+ *		Equivalent to palloc(mul_size(s1, s2)).
+ */
+
+
+/*
+ * palloc0_mul
+ *		Equivalent to palloc0(mul_size(s1, s2)).
+ *
+ * This is comparable to standard calloc's behavior.
+ */
+
+
+/*
+ * palloc_mul_extended
+ *		Equivalent to palloc_extended(mul_size(s1, s2), flags).
+ */
+
+
+/*
+ * repalloc_mul
+ *		Equivalent to repalloc(p, mul_size(s1, s2)).
+ */
+
+
+/*
+ * repalloc_mul_extended
+ *		Equivalent to repalloc_extended(p, mul_size(s1, s2), flags).
  */
 
 

@@ -10197,10 +10197,7 @@ _fingerprintVariableSetStmt(FingerprintContext *ctx, const VariableSetStmt *node
     _fingerprintString(ctx, "true");
   }
 
-  if (node->jumble_args) {
-    _fingerprintString(ctx, "jumble_args");
-    _fingerprintString(ctx, "true");
-  }
+  // Intentionally ignoring node->jumble_args for fingerprinting
 
   if (true) {
     _fingerprintString(ctx, "kind");

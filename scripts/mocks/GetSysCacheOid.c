@@ -21,6 +21,12 @@ GetSysCacheOid(int cacheId,
     }
     else if (DatumGetObjectId(key2) == PG_PUBLIC_NAMESPACE)
     {
+        /*
+         * For now, we assume that any unknown type in the public namespace
+         * is a row type. That is not correct for extensions or custom types,
+         * but requires a more invasive fix (e.g. by having the user pass in
+         * custom type data) that is not yet implemented.
+         */
         return RECORDOID;
     }
     else

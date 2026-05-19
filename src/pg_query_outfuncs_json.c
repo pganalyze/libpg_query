@@ -70,9 +70,16 @@
 					 	booltostr(node->fldname)); \
 	}
 
-/* Write a character-string (possibly NULL) field */
+/* Write a character-string (possibly NULL) field
+ *
+ * Empty strings are skipped intentionally: the protobuf representation
+ * cannot distinguish "" from an absent field for proto3 scalar strings, so
+ * after a protobuf round-trip an empty value comes back as NULL. Omitting
+ * empty strings here keeps the JSON output consistent with that behavior
+ * (e.g. "COMMENT ON ... IS ''" matches "IS NULL" semantically and in PG).
+ */
 #define WRITE_STRING_FIELD(outname, outname_json, fldname) \
-	if (node->fldname != NULL) { \
+	if (node->fldname != NULL && node->fldname[0] != '\0') { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 	 	_outToken(out, node->fldname); \
 	 	appendStringInfo(out, ","); \

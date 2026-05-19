@@ -30,6 +30,10 @@
 
 #if defined(HAVE_ELF_AUX_INFO) || defined(HAVE_GETAUXVAL)
 #include <sys/auxv.h>
+/* Ancient glibc releases don't include the HWCAPxxx macros in sys/auxv.h */
+#if defined(__linux__) && !defined(HWCAP_SVE)
+#include <asm/hwcap.h>
+#endif
 #endif
 #endif
 
@@ -140,4 +144,10 @@ pg_popcount64(uint64 word)
  */
 
 
-#endif							/* POPCNT_AARCH64 */
+#else							/* POPCNT_AARCH64 */
+
+/* prevent linker complaints about empty module */
+extern int	pg_popcount_aarch64_dummy_variable;
+int			pg_popcount_aarch64_dummy_variable = 0;
+
+#endif							/* ! POPCNT_AARCH64 */

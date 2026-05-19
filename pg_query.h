@@ -163,8 +163,8 @@ void pg_query_exit(void);
 
 // Postgres version information
 #define PG_MAJORVERSION "18"
-#define PG_VERSION "18.1"
-#define PG_VERSION_NUM 180001
+#define PG_VERSION "18.4"
+#define PG_VERSION_NUM 180004
 
 // Deprecated APIs below
 

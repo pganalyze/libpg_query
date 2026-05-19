@@ -183,6 +183,52 @@ select x, y || 'y'
   group by grouping sets (x, y)
   order by 1, 2;
 
+-- check that operands wrapped in PlaceHolderVars are capable of index matching
+begin;
+
+set local enable_bitmapscan = off;
+
+explain (costs off)
+select x, y
+  from (select unique1 as x, unique2 as y from tenk1) as t
+  where x = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+select x, y
+  from (select unique1 as x, unique2 as y from tenk1) as t
+  where x = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+explain (costs off)
+select x, y
+  from (select unique1::oid as x, unique2 as y from tenk1) as t
+  where x::integer = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+select x, y
+  from (select unique1::oid as x, unique2 as y from tenk1) as t
+  where x::integer = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+explain (costs off)
+select x, y
+  from (select t1.unique1 as x, t1.unique2 as y from tenk1 t1, tenk1 t2) as t
+  where x = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+select x, y
+  from (select t1.unique1 as x, t1.unique2 as y from tenk1 t1, tenk1 t2) as t
+  where x = 1
+  group by grouping sets (x, y)
+  order by 1, 2;
+
+rollback;
+
 -- check qual push-down rules for a subquery with grouping sets
 explain (verbose, costs off)
 select * from (
@@ -720,5 +766,28 @@ group by grouping sets((a, b), (a));
 select a, b, row_number() over (order by a, b nulls first)
 from (values (1, 1), (2, 2)) as t (a, b) where a = b
 group by grouping sets((a, b), (a));
+
+-- test handling of SRFs with grouping sets
+explain (verbose, costs off)
+select generate_series(1, a) as g
+from (values (1, 1), (2, 2)) as t (a, b)
+group by rollup(g)
+order by 1;
+
+select generate_series(1, a) as g
+from (values (1, 1), (2, 2)) as t (a, b)
+group by rollup(g)
+order by 1;
+
+explain (verbose, costs off)
+select generate_series(1, a) as g, a+b as ab
+from (values (1, 1), (2, 2)) as t (a, b)
+group by rollup(a, ab)
+order by 1, 2;
+
+select generate_series(1, a) as g, a+b as ab
+from (values (1, 1), (2, 2)) as t (a, b)
+group by rollup(a, ab)
+order by 1, 2;
 
 -- end

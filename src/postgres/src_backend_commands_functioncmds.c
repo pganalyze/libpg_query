@@ -155,7 +155,6 @@ interpret_function_parameter_list(ParseState *pstate,
 		bool		isinput = false;
 		Oid			toid;
 		Type		typtup;
-		AclResult	aclresult;
 
 		/* For our purposes here, a defaulted mode spec is identical to IN */
 		if (fpmode == FUNC_PARAM_DEFAULT)
@@ -199,10 +198,6 @@ interpret_function_parameter_list(ParseState *pstate,
 					 parser_errposition(pstate, t->location)));
 			toid = InvalidOid;	/* keep compiler quiet */
 		}
-
-		aclresult = object_aclcheck(TypeRelationId, toid, GetUserId(), ACL_USAGE);
-		if (aclresult != ACLCHECK_OK)
-			aclcheck_error_type(aclresult, toid);
 
 		if (t->setof)
 		{

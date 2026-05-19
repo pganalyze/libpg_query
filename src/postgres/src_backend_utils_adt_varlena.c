@@ -147,6 +147,7 @@ static text *text_substring(Datum str,
 							int32 start,
 							int32 length,
 							bool length_not_specified);
+static int	pg_mbcharcliplen_chars(const char *mbstr, int len, int limit);
 static text *text_overlay(text *t1, text *t2, int sp, int sl);
 static int	text_position(text *t1, text *t2, Oid collid);
 static void text_position_setup(text *t1, text *t2, Oid collid, TextPositionState *state);
@@ -402,8 +403,11 @@ text_to_cstring(const text *t)
  * charlen_to_bytelen()
  *	Compute the number of bytes occupied by n characters starting at *p
  *
- * It is caller's responsibility that there actually are n characters;
- * the string need not be null-terminated.
+ * The caller shall ensure there are n complete characters.  Callers achieve
+ * this by deriving "n" from regmatch_t findings from searching a wchar array.
+ * pg_mb2wchar_with_len() skips any trailing incomplete character, so regex
+ * matches will end no later than the last complete character.  (The string
+ * need not be null-terminated.)
  */
 
 
@@ -453,6 +457,15 @@ text_to_cstring(const text *t)
  *	of it in some cases.
  *
  *	The result is always a freshly palloc'd datum.
+ */
+
+
+/*
+ * pg_mbcharcliplen_chars -
+ *	Mirror pg_mbcharcliplen(), except return value unit is chars, not bytes.
+ *
+ *	This mirrors all the dubious historical behavior, so it's static to
+ *	discourage proliferation.  The assertions are specific to the one caller.
  */
 
 

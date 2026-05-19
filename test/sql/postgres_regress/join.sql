@@ -1481,6 +1481,30 @@ select * from int4_tbl left join (
 ) ss(x) on true
 where ss.x is null;
 
+-- Test computation of varnullingrels when translating appendrel Var
+begin;
+
+create temp table t_append (a int not null, b int);
+insert into t_append values (1, 1);
+insert into t_append values (2, 3);
+
+explain (verbose, costs off)
+select t1.a, s.a from t_append t1
+  left join t_append t2 on t1.a = t2.b
+  join lateral (
+    select t1.a as a union all select t2.a as a
+  ) s on true
+where s.a is not null;
+
+select t1.a, s.a from t_append t1
+  left join t_append t2 on t1.a = t2.b
+  join lateral (
+    select t1.a as a union all select t2.a as a
+  ) s on true
+where s.a is not null;
+
+rollback;
+
 --
 -- test inlining of immutable functions
 --
@@ -2200,6 +2224,29 @@ from int8_tbl t1
     on t1.q2 = t2.q2
   left join onek t4
     on t2.q2 < t3.unique2;
+
+-- bug #19460: we need to clean up RestrictInfos more than we had been doing
+explain (costs off)
+select * from
+  (select 1::int as id) as lhs
+full join
+  (select dummy_source.id
+   from (select null::int as id) as dummy_source
+   left join (select a.id from a where a.id = 42) as sub
+   on sub.id = dummy_source.id
+  ) as rhs
+on lhs.id = rhs.id;
+
+explain (costs off)
+select * from
+  (select 1::int as id) as lhs
+full join
+  (select dummy_source.id
+   from (select 2::int as id) as dummy_source
+   left join (select a.id from a) as sub
+   on sub.id = dummy_source.id
+  ) as rhs
+on lhs.id = rhs.id;
 
 -- More tests of correct placement of pseudoconstant quals
 
@@ -3054,6 +3101,12 @@ SELECT * FROM
 (SELECT n2.a FROM sj n1, sj n2 WHERE n1.a <> n2.a) q0, sl
 WHERE q0.a = 1;
 
+-- Do not forget to replace relid in bare Var join clause (bug #19435)
+ALTER TABLE sl ADD COLUMN bool_col boolean;
+EXPLAIN (COSTS OFF)
+SELECT 1 AS c1 FROM sl sl1 LEFT JOIN (sl AS sl2 NATURAL JOIN sl AS sl3)
+  ON sl2.bool_col LEFT JOIN sl AS sl4 ON sl2.bool_col;
+
 -- Check optimization disabling if it will violate special join conditions.
 -- Two identical joined relations satisfies self join removal conditions but
 -- stay in different special join infos.
@@ -3731,6 +3784,16 @@ SELECT 1 FROM group_tbl t1
 GROUP BY s.c1, s.c2;
 
 DROP TABLE group_tbl;
+
+-- Test that we ignore PlaceHolderVars when looking up statistics
+EXPLAIN (COSTS OFF)
+SELECT t1.unique1 FROM tenk1 t1 LEFT JOIN
+  (SELECT *, 42 AS phv FROM tenk1 t2) ss ON t1.unique2 = ss.unique2
+WHERE ss.unique1 = ss.phv AND t1.unique1 < 100;
+
+SELECT t1.unique1 FROM tenk1 t1 LEFT JOIN
+  (SELECT *, 42 AS phv FROM tenk1 t2) ss ON t1.unique2 = ss.unique2
+WHERE ss.unique1 = ss.phv AND t1.unique1 < 100;
 
 --
 -- Test for a nested loop join involving index scan, transforming OR-clauses

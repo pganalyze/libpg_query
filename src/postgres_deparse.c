@@ -4660,6 +4660,7 @@ static void deparseAIndirection(DeparseState *state, A_Indirection *a_indirectio
 		IsA(a_indirection->arg, A_Expr) ||
 		IsA(a_indirection->arg, TypeCast) ||
 		IsA(a_indirection->arg, RowExpr) ||
+		IsA(a_indirection->arg, A_ArrayExpr) ||
 		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices)) ||
 		IsA(a_indirection->arg, JsonFuncExpr);
 

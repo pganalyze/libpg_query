@@ -36,6 +36,7 @@
 #endif
 #include "storage/dsm.h"
 #include "storage/ipc.h"
+#include "storage/lwlock.h"
 #include "tcop/tcopprot.h"
 
 

@@ -7,9 +7,9 @@ PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 PGDIRZIP = $(root_dir)/tmp/postgres.zip
 
-PG_VERSION = 18.1
+PG_VERSION = 18.4
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 180001
+PG_VERSION_NUM = 180004
 PROTOC_VERSION = 25.1
 
 VERSION = 7.0.0
@@ -129,6 +129,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/09_allow_param_junk.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/10_avoid_namespace_hashtab_impl_gen.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/11_ifndef_namedatalen.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/12_remove_acl_check.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h

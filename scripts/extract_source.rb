@@ -516,6 +516,7 @@ runner.blocklist('AcceptInvalidationMessages')
 runner.blocklist('SharedInvalidMessageCounter')
 runner.blocklist('LockRelationOid')
 runner.blocklist('RangeVarGetRelidExtended')
+runner.blocklist('object_aclcheck')
 
 # We have to mock this as it calls `hash_search`, which eventually makes
 # calls down to `pgstat_report_wait_start` and `pgstat_report_wait_end`.
@@ -539,14 +540,12 @@ runner.mock('PqCommMethods', 'const PQcommMethods *PqCommMethods = NULL;') # Req
 runner.mock('proc_exit', 'printf("Terminating process due to FATAL error\n"); exit(1);') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
 runner.mock('send_message_to_server_log', :do_nothing)
 runner.mock('send_message_to_frontend', :do_nothing)
-runner.mock('GetUserId', 'return InvalidOid;') # Avoid assert that prevents InvalidOid
 
 # Mocks REQUIRED for PL/pgSQL parsing
 runner.mock('SearchSysCache1')
 runner.mock('GetSysCacheOid')
 runner.mock('typenameTypeMod', 'return -1;')
 runner.mock('LookupExplicitNamespace')
-runner.mock('object_aclcheck', 'return ACLCHECK_OK;')
 runner.mock('recomputeNamespacePath', 'activeSearchPath = list_make2_oid(PG_CATALOG_NAMESPACE, PG_PUBLIC_NAMESPACE);')
 runner.mock('ConditionalLockRelationOid', 'return true;')
 runner.mock('LockRelationOid', :do_nothing)

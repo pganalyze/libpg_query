@@ -82,7 +82,7 @@ truncate_mbstr(char *mbstr, size_t max_chars)
 		return;
 
 	/* Determine how many bytes hold `max_chars - 3`. */
-	int			n_bytes = pg_mbcharcliplen(mbstr, n_chars, max_chars - 3);
+	int			n_bytes = pg_mbcharcliplen(mbstr, strlen(mbstr), max_chars - 3);
 
 	/* Actually truncate it. */
 	strncpy(mbstr + n_bytes, "...", 4);

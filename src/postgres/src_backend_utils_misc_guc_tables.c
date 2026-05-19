@@ -88,6 +88,7 @@
 #include "storage/bufmgr.h"
 #include "storage/bufpage.h"
 #include "storage/copydir.h"
+#include "storage/fd.h"
 #include "storage/io_worker.h"
 #include "storage/large_object.h"
 #include "storage/pg_shmem.h"
@@ -253,6 +254,9 @@ StaticAssertDecl(lengthof(ssl_protocol_versions_info) == (PG_TLS1_3_VERSION + 2)
 #endif
 
 #if defined(HAVE_COPYFILE) && defined(COPYFILE_CLONE_FORCE) || defined(HAVE_COPY_FILE_RANGE)
+#endif
+
+#ifdef HAVE_POSIX_FALLOCATE
 #endif
 
 /*

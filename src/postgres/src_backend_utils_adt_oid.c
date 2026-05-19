@@ -83,6 +83,15 @@ buildoidvector(const Oid *oids, int n)
 }
 
 /*
+ * validate that an array object meets the restrictions of oidvector
+ *
+ * We need this because there are pathways by which a general oid[] array can
+ * be cast to oidvector, allowing the type's restrictions to be violated.
+ * All code that receives an oidvector as a SQL parameter should check this.
+ */
+
+
+/*
  *		oidvectorin			- converts "num num ..." to internal form
  */
 

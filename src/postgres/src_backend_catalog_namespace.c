@@ -936,8 +936,8 @@ DeconstructQualifiedName(const List *names,
 Oid
 LookupExplicitNamespace(const char *nspname, bool missing_ok)
 {
-	Oid			namespaceId;
-	AclResult	aclresult;
+	//Oid			namespaceId;
+	//AclResult	aclresult;
 
 	/* check for pg_temp alias */
 	if (strcmp(nspname, "pg_temp") == 0)
@@ -952,13 +952,27 @@ LookupExplicitNamespace(const char *nspname, bool missing_ok)
 		 */
 	}
 
+	// CHANGED: Only support pg_catalog and public namespace
     if (strcmp(nspname, "pg_catalog") == 0)
         return PG_CATALOG_NAMESPACE;
 
     if (strcmp(nspname, "public") == 0)
         return PG_PUBLIC_NAMESPACE;
 
-    elog(ERROR, "Not implemented (LookupExplicitNamespace only supports pg_catalog)");
+    elog(ERROR, "Not implemented (LookupExplicitNamespace only supports pg_catalog and public)");
+
+	/*namespaceId = get_namespace_oid(nspname, missing_ok);
+	if (missing_ok && !OidIsValid(namespaceId))
+		return InvalidOid;
+
+	aclresult = object_aclcheck(NamespaceRelationId, namespaceId, GetUserId(), ACL_USAGE);
+	if (aclresult != ACLCHECK_OK)
+		aclcheck_error(aclresult, OBJECT_SCHEMA,
+					   nspname);*/
+	/* Schema search hook for this lookup */
+	//InvokeNamespaceSearchHook(namespaceId, true);
+
+	//return namespaceId;
 }
 
 

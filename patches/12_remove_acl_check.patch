@@ -1,0 +1,37 @@
+From a82a1c037417eaddfba5b8accaf884c45048d65f Mon Sep 17 00:00:00 2001
+From: Lukas Fittl <lukas@fittl.com>
+Date: Mon, 18 May 2026 23:27:15 -0700
+Subject: [PATCH] interpret_function_parameter_list: Remove ACL check
+
+This is not needed for pg_query (we never check permissions) and
+unnecessarily pulls in extra files.
+---
+ src/backend/commands/functioncmds.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/src/backend/commands/functioncmds.c b/src/backend/commands/functioncmds.c
+index 0335e982b31..24332955562 100644
+--- a/src/backend/commands/functioncmds.c
++++ b/src/backend/commands/functioncmds.c
+@@ -226,7 +226,6 @@ interpret_function_parameter_list(ParseState *pstate,
+ 		bool		isinput = false;
+ 		Oid			toid;
+ 		Type		typtup;
+-		AclResult	aclresult;
+ 
+ 		/* For our purposes here, a defaulted mode spec is identical to IN */
+ 		if (fpmode == FUNC_PARAM_DEFAULT)
+@@ -271,10 +270,6 @@ interpret_function_parameter_list(ParseState *pstate,
+ 			toid = InvalidOid;	/* keep compiler quiet */
+ 		}
+ 
+-		aclresult = object_aclcheck(TypeRelationId, toid, GetUserId(), ACL_USAGE);
+-		if (aclresult != ACLCHECK_OK)
+-			aclcheck_error_type(aclresult, toid);
+-
+ 		if (t->setof)
+ 		{
+ 			if (objtype == OBJECT_AGGREGATE)
+-- 
+2.47.1
+
