@@ -13,18 +13,17 @@ diff --git a/src/backend/utils/mmgr/aset.c b/src/backend/utils/mmgr/aset.c
 index dede30dd86..16306c3216 100644
 --- a/src/backend/utils/mmgr/aset.c
 +++ b/src/backend/utils/mmgr/aset.c
-@@ -1722,3 +1722,25 @@ AllocSetCheck(MemoryContext context)
+@@ -1722,3 +1722,24 @@ AllocSetCheck(MemoryContext context)
  }
  
  #endif							/* MEMORY_CONTEXT_CHECKING */
 +
 +void
-+AllocSetDeleteFreeList(MemoryContext context)
++AllocSetDeleteFreeList(void)
 +{
-+	AllocSet set = (AllocSet) context;
-+	if (set->freeListIndex >= 0)
++	for (int i = 0; i < lengthof(context_freelists); i++)
 +	{
-+		AllocSetFreeList *freelist = &context_freelists[set->freeListIndex];
++		AllocSetFreeList *freelist = &context_freelists[i];
 +
 +		while (freelist->first_free != NULL)
 +		{
@@ -47,7 +46,7 @@ index cd9596ff21..fac1271673 100644
  												   Size minContextSize,
  												   Size initBlockSize,
  												   Size maxBlockSize);
-+extern void AllocSetDeleteFreeList(MemoryContext context);
++extern void AllocSetDeleteFreeList(void);
  
  /*
   * This wrapper macro exists to check for non-constant strings used as context

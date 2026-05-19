@@ -1771,12 +1771,11 @@ AllocSetCheck(MemoryContext context)
 #endif							/* MEMORY_CONTEXT_CHECKING */
 
 void
-AllocSetDeleteFreeList(MemoryContext context)
+AllocSetDeleteFreeList(void)
 {
-	AllocSet set = (AllocSet) context;
-	if (set->freeListIndex >= 0)
+	for (int i = 0; i < lengthof(context_freelists); i++)
 	{
-		AllocSetFreeList *freelist = &context_freelists[set->freeListIndex];
+		AllocSetFreeList *freelist = &context_freelists[i];
 
 		while (freelist->first_free != NULL)
 		{

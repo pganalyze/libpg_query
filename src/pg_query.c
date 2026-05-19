@@ -47,7 +47,7 @@ void pg_query_free_top_memory_context(MemoryContext context)
 	MemoryContextDeleteChildren(context);
 
 	/* Clean up the aset.c freelist, to leave no unused context behind */
-	AllocSetDeleteFreeList(context);
+	AllocSetDeleteFreeList();
 
 	context->methods->delete_context(context);
 

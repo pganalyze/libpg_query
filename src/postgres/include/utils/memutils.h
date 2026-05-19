@@ -114,7 +114,7 @@ extern MemoryContext AllocSetContextCreateInternal(MemoryContext parent,
 												   Size minContextSize,
 												   Size initBlockSize,
 												   Size maxBlockSize);
-extern void AllocSetDeleteFreeList(MemoryContext context);
+extern void AllocSetDeleteFreeList(void);
 
 /*
  * This wrapper macro exists to check for non-constant strings used as context
