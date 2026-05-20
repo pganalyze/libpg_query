@@ -1,6 +1,26 @@
 # Changelog
 
-All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
+All versions are tagged by the major Postgres version, plus a minor/patch version to indicate changes to the libpg_query supporting code. The minor version does not reflect the Postgres minor version, but is instead used to indicate major or API breaking changes in libpg_query itself.
+
+## 18.0.0     2026-05-20
+
+* Upgrade to Postgres 18
+* Rework PL/pgSQL parsing to use proper type definitions
+  - This is a substantial change to the hack-ish approach we've taken in
+    prior versions, instead of hacking our way to get the PL/pgSQL parser
+    to accept our constructs, imitate actual CREATE FUNCTION logic and
+    PL/pgSQL compilation for a function.
+* Deparser: Rework comment handling for PG 18 multi-statement strings
+  - Previously a subsequent statement in a multi-statement string would start
+    at the end of the prior statement, including any comments between. In
+    Postgres 18 this has changed, and such comments (and whitespace) are
+    excluded from the statements, the next statement starts at the first
+    non-whitespace (and non-comment) character.
+* Deparser: Pass opts by reference/pointer instead of copying it
+  - This is a breaking change for callers, but seems more appropriate since
+    it avoids implicit shallow copying of the struct (which itself includes
+    pointer values, that would be retained in such a copy).
+* Fingerprinting: Rework alias/schema name handling to match Postgres 18
 
 ## 17-6.2.2   2026-01-26
 

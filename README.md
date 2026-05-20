@@ -12,7 +12,7 @@ You can find further background to why a query's parse tree is useful here: http
 ## Installation
 
 ```sh
-git clone -b 17-latest git://github.com/pganalyze/libpg_query
+git clone -b 18-latest git://github.com/pganalyze/libpg_query
 cd libpg_query
 make
 ```
@@ -59,7 +59,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 170007,
+    "version": 180004,
     "stmts": [
         {
             "stmt": {
@@ -69,10 +69,8 @@ This will output the parse tree (whitespace adjusted here for better readability
                             "ResTarget": {
                                 "val": {
                                     "A_Const": {
-                                        "val": {
-                                            "Integer": {
-                                                "ival": 1
-                                            }
+                                        "ival": {
+                                            "ival": 1
                                         },
                                         "location": 7
                                     }
@@ -132,7 +130,7 @@ int main() {
 This will output the following:
 
 ```
-  version: 170007, tokens: 7, size: 77
+  version: 180004, tokens: 7, size: 77
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -225,11 +223,82 @@ $$ LANGUAGE plpgsql;");
 }
 ```
 
-This will output:
+This will output (formatted for clarity):
 
 ```json
 [
-{"PLpgSQL_function":{"datums":[{"PLpgSQL_var":{"refname":"found","datatype":{"PLpgSQL_type":{"typname":"UNKNOWN"}}}}],"action":{"PLpgSQL_stmt_block":{"lineno":1,"body":[{"PLpgSQL_stmt_if":{"lineno":1,"cond":{"PLpgSQL_expr":{"query":"SELECT v_version IS NULL"}},"then_body":[{"PLpgSQL_stmt_return":{"lineno":1,"expr":{"PLpgSQL_expr":{"query":"SELECT v_name"}}}}]}},{"PLpgSQL_stmt_return":{"lineno":1,"expr":{"PLpgSQL_expr":{"query":"SELECT v_name || '/' || v_version"}}}}]}}}}
+    {
+        "PLpgSQL_function": {
+            "datums": [
+                {
+                    "PLpgSQL_var": {
+                        "refname": "v_name",
+                        "datatype": {
+                            "PLpgSQL_type": {
+                                "typname": "varchar"
+                            }
+                        }
+                    }
+                },
+                {
+                    "PLpgSQL_var": {
+                        "refname": "v_version",
+                        "datatype": {
+                            "PLpgSQL_type": {
+                                "typname": "varchar"
+                            }
+                        }
+                    }
+                },
+                {
+                    "PLpgSQL_var": {
+                        "refname": "found",
+                        "datatype": {
+                            "PLpgSQL_type": {
+                                "typname": "bool"
+                            }
+                        }
+                    }
+                }
+            ],
+            "action": {
+                "PLpgSQL_stmt_block": {
+                    "lineno": 1,
+                    "body": [
+                        {
+                            "PLpgSQL_stmt_if": {
+                                "lineno": 1,
+                                "cond": {
+                                    "PLpgSQL_expr": {
+                                        "query": "v_version IS NULL",
+                                        "parseMode": 2
+                                    }
+                                },
+                                "then_body": [
+                                    {
+                                        "PLpgSQL_stmt_return": {
+                                            "lineno": 1
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "PLpgSQL_stmt_return": {
+                                "lineno": 1,
+                                "expr": {
+                                    "PLpgSQL_expr": {
+                                        "query": "v_name || '/' || v_version",
+                                        "parseMode": 2
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
 ]
 ```
 
@@ -241,7 +310,8 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 
 | PostgreSQL Major Version | Branch     | Status              |
 |--------------------------|------------|---------------------|
-| 17                       | 17-latest  | Active development  |
+| 18                       | 18-latest  | Active development  |
+| 17                       | 17-latest  | Critical fixes only |
 | 16                       | 16-latest  | Critical fixes only |
 | 15                       | 15-latest  | Critical fixes only |
 | 14                       | 14-latest  | Critical fixes only |
@@ -282,18 +352,12 @@ Products, tools and libraries built on pg_query:
 
 Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/new/master) to add yours! :)
 
-
-## Authors
-
-- [Lukas Fittl](mailto:lukas@fittl.com)
-
-
 ## License
 
 PostgreSQL server source code, used under the [PostgreSQL license](https://www.postgresql.org/about/licence/).<br>
-Portions Copyright (c) 1996-2023, The PostgreSQL Global Development Group<br>
+Portions Copyright (c) 1996-2026, The PostgreSQL Global Development Group<br>
 Portions Copyright (c) 1994, The Regents of the University of California
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>
-Copyright (c) 2016-2025, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
+Copyright (c) 2016-2026, Duboce Labs, Inc. (pganalyze) <team@pganalyze.com>
