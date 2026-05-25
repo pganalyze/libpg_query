@@ -49,6 +49,21 @@
 #define HAVE_DECL_STRCHRNUL 0
 #endif
 
+/*
+ * Ensure we use built-in strlcpy/strlcat on systems that have them (all BSDs, macOS, musl, and glibc 2.38+).
+ *
+ * See https://sourceware.org/git/?p=glibc.git;a=commit;h=454a20c8756c9c1d55419153255fc7692b3d2199 re: glibc.
+ */
+#undef HAVE_DECL_STRLCPY
+#undef HAVE_DECL_STRLCAT
+#if !defined(_WIN32) && !defined(_WIN64) && (defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__) || !defined(__GLIBC__) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 38) || __GLIBC__ > 2)
+#define HAVE_DECL_STRLCPY 1
+#define HAVE_DECL_STRLCAT 1
+#else
+#define HAVE_DECL_STRLCPY 0
+#define HAVE_DECL_STRLCAT 0
+#endif
+
 /* 32-bit */
 #if defined(_WIN32) || __SIZEOF_POINTER__ == 4
 #undef ALIGNOF_DOUBLE
@@ -82,10 +97,6 @@
 #define HAVE_DECL_PREADV 0
 #undef HAVE_DECL_PWRITEV
 #define HAVE_DECL_PWRITEV 0
-#undef HAVE_DECL_STRLCAT
-#define HAVE_DECL_STRLCAT 0
-#undef HAVE_DECL_STRLCPY
-#define HAVE_DECL_STRLCPY 0
 #undef HAVE_GETIFADDRS
 #undef HAVE_GETPEEREID
 #undef HAVE_IFADDRS_H
