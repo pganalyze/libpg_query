@@ -43,6 +43,8 @@ const char* tests[] = {
   "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, 0) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
   "DO language E'plpgsql' 'BEGIN PERFORM 1; END'",
   "DO language E'plpgsql' 'BEGIN PERFORM 1; END'",
+  "DO U&'' '' ''",
+  "DO U&'' '' ''",
   "NOTIFY channel, 'a'",
   "NOTIFY channel, $1",
   "NOTIFY channel, 'b'",

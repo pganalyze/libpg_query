@@ -348,11 +348,26 @@ static bool is_special_string_start(char c)
 
 static void record_defelem_arg_location(pgssConstLocations *jstate, int location)
 {
-	for (int i = location; i < jstate->query_len; i++) {
-		if (is_string_delimiter(jstate->query[i]) || (i + 1 < jstate->query_len && is_special_string_start(jstate->query[i]) && is_string_delimiter(jstate->query[i + 1]))) {
-			RecordConstLocation(jstate, i);
-			break;
-		}
+	for (int i = location; i < jstate->query_len; i++)
+	{
+		if (!is_string_delimiter(jstate->query[i]))
+			continue;
+
+		/*
+		 * Step back over tokens that affect the string constant, placed right
+		 * before the opening quote, so the recorded location includes those
+		 * tokens. "U&" for a Unicode escaped strings, or a single character
+		 * special start token matched by is_special_string_start.
+		 */
+		if (i - 2 >= location && jstate->query[i - 1] == '&' &&
+			(jstate->query[i - 2] == 'u' || jstate->query[i - 2] == 'U'))
+			i -= 2;
+		else if (i - 1 >= location && is_special_string_start(jstate->query[i - 1]))
+			i -= 1;
+
+		RecordConstLocation(jstate, i);
+
+		break;
 	}
 }
 
