@@ -19,6 +19,7 @@ extern "C"
 #include "nodes/plannodes.h"
 #include "nodes/value.h"
 #include "utils/datum.h"
+#include "miscadmin.h"
 }
 
 #define OUT_TYPE(typename, typename_c) pg_query::typename*
@@ -203,6 +204,8 @@ _outAConst(pg_query::A_Const* out_node, const A_Const *node)
 static void
 _outNode(pg_query::Node* out, const void *obj)
 {
+	check_stack_depth();
+
 	if (obj == NULL)
 		return; // Keep out as NULL
 
