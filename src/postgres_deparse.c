@@ -1879,8 +1879,7 @@ bool optBooleanValue(Node *node)
 		case T_String: {
 			// Longest valid string is "off\0"
 			char lower[4];
-			strncpy(lower, strVal(node), 4);
-			lower[3] = 0;
+			strlcpy(lower, strVal(node), sizeof(lower));
 
 			if (strcmp(lower, "on") == 0) {
 				return true;

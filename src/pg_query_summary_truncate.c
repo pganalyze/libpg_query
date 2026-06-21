@@ -85,8 +85,7 @@ truncate_mbstr(char *mbstr, size_t max_chars)
 	int			n_bytes = pg_mbcharcliplen(mbstr, strlen(mbstr), max_chars - 3);
 
 	/* Actually truncate it. */
-	strncpy(mbstr + n_bytes, "...", 4);
-	mbstr[n_bytes + 3] = '\0';
+	strlcpy(mbstr + n_bytes, "...", 4);
 }
 
 static void
