@@ -255,8 +255,8 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 	for (i = 0; i < jstate->clocations_count; i++)
 	{
 		int			off,		/* Offset from start for cur tok */
-					tok_len,	/* Length (in bytes) of that tok */
-					param_id;	/* Param ID to be assigned */
+					tok_len;	/* Length (in bytes) of that tok */
+		int64_t		param_id;	/* Param ID to be assigned */
 
 		off = jstate->clocations[i].location;
 		/* Adjust recorded location if we're dealing with partial string */
@@ -277,9 +277,9 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 
 		/* And insert a param symbol in place of the constant token */
 		param_id = (jstate->clocations[i].param_id < 0) ?
-					jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
+					(int64_t) jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
 					jstate->clocations[i].param_id;
-		n_quer_loc += sprintf(norm_query + n_quer_loc, "$%d", param_id);
+		n_quer_loc += sprintf(norm_query + n_quer_loc, "$" INT64_FORMAT, param_id);
 
 		quer_loc = off + tok_len;
 		last_off = off;
