@@ -9,6 +9,10 @@ pg_query.lib
 examples/*
 !examples/*.c
 
+benchmark/*
+!benchmark/*.c
+!benchmark/*.md
+
 test/*
 !test/*.c
 !test/*.sql
