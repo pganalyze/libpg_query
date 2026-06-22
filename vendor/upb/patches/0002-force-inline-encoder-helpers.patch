@@ -1,0 +1,53 @@
+Force-inline encoder helpers to reduce stack use per nesting level
+
+In optimized builds, marking encode_field(), encode_scalar() and
+encode_array() as UPB_FORCEINLINE makes encoding a nested message use one
+stack frame (encode_message) per nesting level instead of two, cutting encoder
+stack use per level by ~25-28% (e.g. 192 -> 144 bytes on arm64 at -O3 for
+chains like "a + b + ..."). Inlining only encode_scalar() makes things worse
+(encode_field() then gets outlined), so all three are needed.
+
+This is only done when optimizing (__OPTIMIZE__): in unoptimized builds the
+inlined functions' locals don't share stack slots, which increases stack use
+per level instead (e.g. 1885 -> 3464 bytes at -O0). No effect on MSVC, where
+UPB_FORCEINLINE is plain "static" and __OPTIMIZE__ isn't defined.
+
+--- a/upb.c
++++ b/upb.c
+@@ -9854,7 +9854,17 @@
+   }
+ }
+
+-static char* encode_scalar(char* ptr, upb_encstate* e, const void* field_mem,
++/* libpg_query local patch: force-inline encode_scalar/array/field when
++ * optimizing, to reduce encoder stack use per message nesting level. Not done
++ * in unoptimized builds, where inlining increases stack use instead. See
++ * vendor/upb/README. */
++#ifdef __OPTIMIZE__
++#define PG_QUERY_ENCODE_INLINE UPB_FORCEINLINE
++#else
++#define PG_QUERY_ENCODE_INLINE static
++#endif
++
++PG_QUERY_ENCODE_INLINE char* encode_scalar(char* ptr, upb_encstate* e, const void* field_mem,
+                            const upb_MiniTableField* f) {
+   // Max size is tag + 10 bytes for max varint or 8 for largest fixed size
+ #define CASE(ctype, type, wtype, encodeval)                                   \
+@@ -9942,7 +9952,7 @@
+ #undef CASE
+ }
+
+-static char* encode_array(char* ptr, upb_encstate* e, const upb_Message* msg,
++PG_QUERY_ENCODE_INLINE char* encode_array(char* ptr, upb_encstate* e, const upb_Message* msg,
+                           const upb_MiniTableField* f) {
+   const upb_Array* arr = *UPB_PTR_AT(msg, f->UPB_PRIVATE(offset), upb_Array*);
+   bool packed = upb_MiniTableField_IsPacked(f);
+@@ -10162,7 +10172,7 @@
+   }
+ }
+
+-static char* encode_field(char* ptr, upb_encstate* e, const upb_Message* msg,
++PG_QUERY_ENCODE_INLINE char* encode_field(char* ptr, upb_encstate* e, const upb_Message* msg,
+                           const upb_MiniTableField* field) {
+   switch (UPB_PRIVATE(_upb_MiniTableField_Mode)(field)) {
+     case kUpb_FieldMode_Array:

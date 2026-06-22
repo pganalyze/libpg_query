@@ -1,0 +1,20 @@
+Decode proto3 string fields as bytes, skipping UTF-8 validation
+
+SQL string literals may contain arbitrary, non-UTF-8 bytes in some server
+encodings; the previous protobuf-c backend never validated them. The override
+must come after the upstream _upb_Decoder_MaybeVerifyUtf8() step, which may
+itself upgrade Bytes back to String and asserts on non-bytes fields.
+
+--- a/upb.c
++++ b/upb.c
+@@ -8991,6 +8991,10 @@
+   } else if (op == kUpb_DecodeOp_Bytes) {
+     _upb_Decoder_MaybeVerifyUtf8(d, field, &op);
+   }
++
++  /* libpg_query local patch: decode proto3 string fields as bytes to skip
++   * UTF-8 validation (SQL literals may be non-UTF-8). See vendor/upb/README. */
++  if (op == kUpb_DecodeOp_String) op = kUpb_DecodeOp_Bytes;
+
+   return op;
+ }

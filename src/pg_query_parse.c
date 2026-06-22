@@ -207,7 +207,8 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 	/*
 	 * Serialize the tree to protobuf. This walks the parse tree recursively
 	 * and may throw (e.g. "stack depth limit exceeded" for deeply nested
-	 * expressions), so it needs its own error handling.
+	 * expressions, or when the tree is too deep to encode), so it needs its
+	 * own error handling.
 	 */
 	PG_TRY();
 	{

@@ -25,3 +25,5 @@ tmp/*
 !tmp/.gitkeep
 
 .vs/*
+
+vendor/upb/.upb-update-tmp/

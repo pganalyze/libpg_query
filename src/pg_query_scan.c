@@ -4,7 +4,7 @@
 #include "gramparse.h"
 #include "lib/stringinfo.h"
 
-#include "protobuf/pg_query.pb-c.h"
+#include "protobuf/pg_query.upb.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -84,7 +84,9 @@ PgQueryScanResult pg_query_scan(const char* input)
 {
   MemoryContext ctx = NULL;
   PgQueryScanResult result = {0};
-  PgQuery__ScanResult scan_result = PG_QUERY__SCAN_RESULT__INIT;
+  /* volatile: assigned inside PG_TRY and read in PG_CATCH (after longjmp) */
+  upb_Arena *volatile arena = NULL;
+  pg_query_ScanResult *scan_result;
 
   ctx = pg_query_enter_memory_context();
 
@@ -118,29 +120,39 @@ PgQueryScanResult pg_query_scan(const char* input)
 
   PG_TRY();
   {
+    size_t packed_len;
+    char *packed_data;
     int n_tokens;
     PgQueryScanToken *tokens = scan_tokens(input, &n_tokens);
-    PgQuery__ScanToken *output_tokens = palloc(sizeof(PgQuery__ScanToken) * n_tokens);
-    PgQuery__ScanToken **output_token_ptrs = palloc(sizeof(PgQuery__ScanToken *) * n_tokens);
+
+    arena = upb_Arena_New();
+    scan_result = pg_query_ScanResult_new(arena);
+    pg_query_ScanResult_set_version(scan_result, PG_VERSION_NUM);
 
     for (int i = 0; i < n_tokens; i++)
     {
-      pg_query__scan_token__init(&output_tokens[i]);
-      output_tokens[i].start = tokens[i].start;
-      output_tokens[i].end = tokens[i].end;
-      output_tokens[i].token = tokens[i].token;
-      output_tokens[i].keyword_kind = tokens[i].keyword_kind;
-      output_token_ptrs[i] = &output_tokens[i];
+      pg_query_ScanToken *scan_token = pg_query_ScanResult_add_tokens(scan_result, arena);
+
+      pg_query_ScanToken_set_start(scan_token, tokens[i].start);
+      pg_query_ScanToken_set_end(scan_token, tokens[i].end);
+      pg_query_ScanToken_set_token(scan_token, tokens[i].token);
+      pg_query_ScanToken_set_keyword_kind(scan_token, tokens[i].keyword_kind);
     }
 
-    scan_result.version = PG_VERSION_NUM;
-    scan_result.n_tokens = n_tokens;
-    scan_result.tokens = output_token_ptrs;
+    /* Serialize into the arena, then copy out into a malloc'd buffer that
+     * survives exiting the memory context (freed in pg_query_free_scan_result).
+     * Serialization fails (returns NULL) e.g. when the arena runs out of memory;
+     * PG_CATCH below frees the arena. */
+    packed_data = pg_query_ScanResult_serialize(scan_result, arena, &packed_len);
+    if (packed_data == NULL)
+      elog(ERROR, "could not serialize scan result to protobuf");
 
-    // Note: This is intentionally malloc so exiting the memory context doesn't free this
-    result.pbuf.len = pg_query__scan_result__get_packed_size(&scan_result);
-    result.pbuf.data = malloc(result.pbuf.len);
-    pg_query__scan_result__pack(&scan_result, (void*) result.pbuf.data);
+    result.pbuf.len = packed_len;
+    result.pbuf.data = malloc(packed_len);
+    memcpy(result.pbuf.data, packed_data, packed_len);
+
+    upb_Arena_Free(arena);
+    arena = NULL;
 
 #ifndef DEBUG
     // Save stderr for result
@@ -156,6 +168,12 @@ PgQueryScanResult pg_query_scan(const char* input)
 
     MemoryContextSwitchTo(parse_context);
     error_data = CopyErrorData();
+
+    // The arena is malloc-backed, so it is not freed with the memory context
+    if (arena != NULL) {
+      upb_Arena_Free(arena);
+      arena = NULL;
+    }
 
     // Note: This is intentionally malloc so exiting the memory context doesn't free this
     error = malloc(sizeof(PgQueryError));

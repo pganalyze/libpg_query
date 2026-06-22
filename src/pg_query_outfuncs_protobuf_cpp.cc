@@ -33,9 +33,9 @@ extern "C"
 
 /*
  * These macros are invoked from the generated pg_query_outfuncs_defs.c /
- * _conds.c, shared with the C protobuf and JSON backends. The leading `msgtype`
- * argument names the enclosing message type; the C++ backend sets fields on
- * the typed `out` message and ignores it.
+ * _conds.c, shared with the upb and JSON backends. The leading `msgtype`
+ * argument names the enclosing message for the upb backend; the C++ backend
+ * sets fields on the typed `out` message and ignores it.
  */
 #define WRITE_INT_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
 #define WRITE_UINT_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
