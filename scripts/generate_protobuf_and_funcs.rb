@@ -63,11 +63,11 @@ class Generator
           outname = OUTNAME_OVERRIDES[[node_type, name]] || underscore(name)
           outname_json = name
 
-          # NOTE: Every WRITE_*/READ_* macro takes the enclosing message type
-          # (node_type) as its FIRST argument, so backends that use
-          # per-message accessor functions (e.g. pg_query_<MsgType>_set_<field>)
-          # can build their names. Keeping it first also lets the typedef-alias
-          # handling below rewrite it with a simple gsub on "(<SourceType>, ".
+          # NOTE: For the upb backend every WRITE_*/READ_* macro takes the
+          # enclosing message type (node_type) as its FIRST argument, so the
+          # macro can build the upb accessor name pg_query_<MsgType>_set_<field>.
+          # Keeping it first also lets the typedef-alias handling below rewrite
+          # it with a simple gsub on "(<SourceType>, ".
           if type == :skip
             # Ignore
           elsif type == 'NodeTag'
@@ -226,7 +226,7 @@ class Generator
 
       src = typedef['source_type']
       dst = typedef['new_type_name']
-      # The new (aliased) type gets its own protobuf message, so the enclosing-type
+      # The new (aliased) type gets its own upb message, so the enclosing-type
       # token baked into each WRITE_*/READ_* macro must point at the alias, not
       # the source. Every macro takes that token as its first argument, so a
       # gsub on the "(<SourceType>, " prefix retargets them all.

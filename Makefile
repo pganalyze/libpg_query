@@ -11,6 +11,7 @@ PG_VERSION = 18.4
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 180004
 PROTOC_VERSION = 25.1
+UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
 
 VERSION = 18.0.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
@@ -31,10 +32,14 @@ else
 	SOFLAG = -soname
 endif
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
+UPB_DIR := vendor/upb
+UPB_INCLUDES := -I./$(UPB_DIR) -I./$(UPB_DIR)/third_party/utf8_range
+UPB_SRC_FILES := $(UPB_DIR)/upb.c $(UPB_DIR)/third_party/utf8_range/utf8_range.c protobuf/pg_query.upb_minitable.c
+
+SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/xxhash/xxhash.c $(UPB_SRC_FILES)
 OBJ_FILES := $(SRC_FILES:.c=.o)
 
-override CFLAGS += -g -I. -I./vendor -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+override CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
 ifeq ($(OS),Windows_NT)
 override CFLAGS += -I./src/postgres/include/port/win32
@@ -43,7 +48,7 @@ endif
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
-override TEST_CFLAGS += -g -I. -I./vendor -Wall
+override TEST_CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -Wall
 override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
@@ -194,14 +199,24 @@ $(ARLIB): $(OBJ_FILES) Makefile
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
-protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
-ifneq ($(shell which protoc-gen-c), )
-	protoc --c_out=. protobuf/pg_query.proto
+# upb-generated message code + minitables (regenerated only when the upb protoc
+# plugins are installed; otherwise the committed files are used as-is). Must be
+# generated with a protoc/protoc-gen-upb matching vendor/upb/VERSION.
+#
+# protoc-gen-upb also emits an empty pg_query.upb.c (all accessors are inline
+# in the header), which we don't keep.
+protobuf/pg_query.upb.h protobuf/pg_query.upb_minitable.h protobuf/pg_query.upb_minitable.c: protobuf/pg_query.proto
+ifneq ($(shell which protoc-gen-upb), )
+ifneq ($(shell protoc --version 2>/dev/null | cut -f2 -d" "), $(UPB_PROTOC_VERSION))
+	$(error ERROR - upb codegen needs protoc $(UPB_PROTOC_VERSION) to match vendor/upb/VERSION (found "$(shell protoc --version 2>/dev/null | cut -f2 -d' ')"); run 'make -C vendor/upb update TAG=...' to change the pinned version)
+endif
+	protoc --upb_out=. --upb_minitable_out=. protobuf/pg_query.proto
+	rm -f protobuf/pg_query.upb.c
 else
-	@echo 'Warning: protoc-gen-c not found, skipping protocol buffer regeneration'
+	@echo 'Warning: protoc-gen-upb not found, skipping upb regeneration'
 endif
 
-src/pg_query_protobuf.c src/pg_query_scan.c: protobuf/pg_query.pb-c.h
+src/pg_query_scan.c: protobuf/pg_query.upb.h
 
 # Only used when USE_PROTOBUF_CPP is used (experimental for testing only)
 src/pg_query_outfuncs_protobuf_cpp.cc: protobuf/pg_query.pb.cc
@@ -250,12 +265,13 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/deparse_depth || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/is_utility_stmt || (cat test/valgrind.log && false)
@@ -277,6 +293,7 @@ else
 	test/complex
 	test/concurrency
 	test/deparse
+	test/deparse_depth
 	test/fingerprint
 	test/fingerprint_opts
 	test/is_utility_stmt
@@ -305,6 +322,9 @@ test/concurrency: test/concurrency.c test/parse_tests.c $(ARLIB)
 
 test/deparse: test/deparse.c test/deparse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/deparse.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/deparse_depth: test/deparse_depth.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/deparse_depth.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts

@@ -1,0 +1,132 @@
+Vendored upb runtime
+====================
+
+The pinned protobuf release tag is in ./VERSION (and nothing else, so it stays
+machine-readable). The vendored runtime and the generated
+protobuf/pg_query.upb*.{c,h} must come from that same version -- the generated
+minitables are ABI-locked to the runtime.
+
+This Makefile, README, VERSION, LICENSE and patches/ are owned by this repo;
+everything else here is vendored/amalgamated from upstream -- do not edit it
+by hand. Local changes to upb.c go in patches/ (see LOCAL PATCHES below).
+
+Updating
+--------
+upb is released as part of protobuf (https://github.com/protocolbuffers/protobuf),
+so a "upb version" is a protobuf release tag. To find the latest one:
+
+    git ls-remote --tags https://github.com/protocolbuffers/protobuf.git 'v*' \
+      | grep -v -e '-rc' -e '-dev' -e '\^{}' | awk -F/ '{print $3}' | sort -V | tail -1
+
+1. Install a matching toolchain. You need git, python3, protoc,
+   protoc-gen-upb and protoc-gen-upb_minitable on PATH, and protoc must be the
+   same version as the tag. The protoc release zips on GitHub do NOT include
+   the upb plugins; the Homebrew formula does:
+
+       brew upgrade protobuf        # or: brew install protobuf
+       protoc --version             # e.g. "libprotoc 36.2"
+
+   If Homebrew lags behind the tag you want, wait for it (or build protoc and
+   the upb plugins from the protobuf source tree yourself).
+
+2. Re-vendor + regenerate:
+
+       make -C vendor/upb update TAG=v36.2
+
+   That shallow-clones the tag, amalgamates the runtime subset (see Layout),
+   applies the local patches in patches/ (see below), writes VERSION, and regenerates
+   protobuf/pg_query.upb*.{c,h}. It refuses to run if protoc doesn't match TAG
+   (override with ALLOW_VERSION_MISMATCH=1 only if you know what you're doing).
+
+3. Build and test from the repo root:
+
+       make clean && make && make test
+
+4. Review the diff. Things that have broken on past updates:
+
+   - Link errors for missing upb symbols (e.g. v36 added upb/port/port.c): a
+     new upstream directory contains .c files the runtime needs. Add it to
+     SUBSET in this Makefile (and to the list under Layout below) and re-run.
+   - A local patch failing to apply (see "Updating a patch" below), or
+     asserting at runtime (e.g. v36 added _upb_Decoder_MaybeVerifyUtf8(), which
+     asserts that Bytes ops are only used for bytes fields, so the string->bytes
+     override had to move after it).
+   - API changes in the generated accessors, which affect
+     src/pg_query_{outfuncs,readfuncs}_protobuf.c and
+     scripts/generate_protobuf_and_funcs.rb. upb does not promise a stable API.
+
+   Also check that Makefile.msvc still builds (it compiles the same upb.c).
+
+Layout
+------
+The runtime is AMALGAMATED (via upb's own amalgamate.py) into a single
+translation unit, so the build compiles one upb.c instead of dozens of files
+across many directories (which also avoids duplicate object basenames and the
+per-directory MSVC build dance):
+
+  upb.c                          amalgamated runtime (one TU)
+  upb/generated_code_support.h   amalgamated header the generated code includes
+  upb/port/def.inc, undef.inc    kept separate: the generated code brackets its
+                                 own declarations with these (push/pop macros)
+  third_party/utf8_range/        UTF-8 validation (not part of upb proper)
+
+Only the minimal runtime subset needed for generated-code serialize/parse is
+included (base, hash, mem, message, mini_descriptor, mini_table, port, wire).
+Reflection/JSON/text/lex and the optional fast-path parser (decode_fast, which
+needs UPB_FASTTABLE and doesn't build under MSVC) are intentionally excluded;
+amalgamate.py skips decode_fast automatically.
+
+LOCAL PATCHES (applied automatically by `make update`)
+------------------------------------------------------
+Local changes to the amalgamated upb.c live as unified diffs in patches/, and
+are applied in filename order with `patch -p1 -F 0` (no fuzz, so a patch whose
+context changed upstream fails instead of applying in the wrong place). Each
+patch starts with a description, and every patched spot in upb.c is marked with
+a "libpg_query local patch" comment.
+
+- 0001-decode-strings-as-bytes.patch: in _upb_Decoder_GetDelimitedOp(), decode
+  proto3 string fields as bytes (skip UTF-8 validation). SQL string literals
+  may contain arbitrary, non-UTF-8 bytes in some server encodings; the previous
+  protobuf-c backend never validated them. The override must be the last thing
+  before `return op;`, i.e. after the upstream _upb_Decoder_MaybeVerifyUtf8()
+  step (which may itself upgrade Bytes back to String and asserts on non-bytes
+  fields).
+- 0002-force-inline-encoder-helpers.patch: in optimized builds, mark
+  encode_field(), encode_scalar() and encode_array() as UPB_FORCEINLINE, so
+  encoding a nested message uses one stack frame (encode_message) per nesting
+  level instead of two. This cuts encoder stack use per level by ~25-28% (e.g.
+  192 -> 144 bytes on arm64 at -O3 for chains like "a + b + ..."), and is
+  slightly faster. Inlining only encode_scalar() makes things worse
+  (encode_field() then gets outlined), so all three are needed. Only done when
+  __OPTIMIZE__ is defined: at -O0, inlining increases stack use instead (1885
+  -> 3464 bytes per level). To check the effect after an update, compile upb.c
+  with -O3 -fstack-usage and look at the encode_message frame size (there
+  should be no separate encode_field/scalar/array frames).
+- 0003-stack-depth-check.patch: wherever upb recurses into a submessage
+  (_upb_Decoder_RecurseSubMessage() in the decoder, and the four
+  "--e->depth == 0" checks in encode_scalar() / encode_array()), also check
+  Postgres' stack_is_too_deep() and fail with upb's regular MaxDepthExceeded
+  error when the stack depth limit is reached. The fixed nesting limit alone
+  can't prevent stack overflows, since both the available stack and the stack
+  used per level vary. libpg_query sets up the stack depth limit per call
+  (pg_query_init), the same one its own recursive walkers check via
+  check_stack_depth(). After an update, re-check that these are still all the
+  places where upb recurses (grep for "depth" in the encoder/decoder).
+
+Updating a patch (or adding a new one)
+--------------------------------------
+Patches apply in order, so each one is a diff against upb.c with all earlier
+patches applied. If `make update` reports that a patch no longer applies:
+
+1. Temporarily move that patch and all later ones out of patches/, and re-run
+   `make update TAG=...`. upb.c now has only the earlier patches applied.
+2. Copy it (cp upb.c /tmp/a-upb.c), re-apply the change to upb.c by hand, then
+   regenerate the patch, keeping its description header:
+
+       diff -u --label a/upb.c --label b/upb.c /tmp/a-upb.c upb.c
+
+3. Move the later patches back and re-run `make update TAG=...`, fixing each
+   later patch the same way if needed.
+
+To add a patch, create the next numbered patches/NNNN-description.patch the
+same way (diffed against upb.c with all existing patches applied).

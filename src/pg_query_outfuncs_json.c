@@ -27,10 +27,10 @@
 
 /*
  * NOTE: These macros are invoked from the generated pg_query_outfuncs_defs.c /
- * _conds.c, which are shared with the protobuf backends. Every WRITE_ macro
- * receives the enclosing message type as a leading `msgtype` argument, for
- * backends that need it to build per-message accessor names. The JSON backend
- * writes by field name and simply ignores `msgtype`.
+ * _conds.c, which are shared with the protobuf (upb) backend. That backend needs
+ * the enclosing message type to build its accessor names, so every WRITE_ macro
+ * receives it as a leading `msgtype` argument. The JSON backend writes by field
+ * name and simply ignores `msgtype`.
  */
 
 /* Write an integer field */

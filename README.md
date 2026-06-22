@@ -124,7 +124,7 @@ int main() {
 }
 ```
 
-If you need the tokens as a Protobuf message instead, e.g. to decode them in another language, use `pg_query_scan`, which returns the same tokens serialized as a `ScanResult`.
+If you need the tokens as a Protobuf message instead, e.g. to decode them in another language, use `pg_query_scan`, which returns the same tokens serialized as a `ScanResult`. It can be decoded with the vendored [upb](https://github.com/protocolbuffers/protobuf/tree/main/upb) runtime, which is included in `libpg_query.a` (the upb headers must then be on the include path as well, `-Ilibpg_query/vendor/upb`).
 
 This will output the following:
 
@@ -324,6 +324,18 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 | 9.5                      | 9.5-latest | No longer supported |
 | 9.4                      | 9.4-latest | No longer supported |
 
+## Updating the vendored upb (Protobuf) runtime
+
+Protobuf serialization uses [upb](https://github.com/protocolbuffers/protobuf/tree/main/upb), vendored in `vendor/upb`. The generated code in `protobuf/pg_query.upb*.{c,h}` is tied to the exact upb version it was generated with, so both are updated together:
+
+```sh
+brew upgrade protobuf       # protoc + protoc-gen-upb must match the target release
+make -C vendor/upb update TAG=v$(protoc --version | awk '{print $2}')
+make clean && make && make test
+```
+
+See [vendor/upb/README](vendor/upb/README) for details, including the local patches that are re-applied on each update.
+
 ## Resources
 
 pg_query wrappers in other languages:
@@ -358,6 +370,15 @@ Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/ne
 PostgreSQL server source code, used under the [PostgreSQL license](https://www.postgresql.org/about/licence/).<br>
 Portions Copyright (c) 1996-2026, The PostgreSQL Global Development Group<br>
 Portions Copyright (c) 1994, The Regents of the University of California
+
+upb Protobuf runtime (`vendor/upb`), used under the [3-clause BSD license](vendor/upb/LICENSE).<br>
+Copyright 2008 Google Inc.<br>
+Includes utf8_range (`vendor/upb/third_party/utf8_range`), used under the [MIT license](vendor/upb/third_party/utf8_range/LICENSE).<br>
+Copyright (c) 2019 Yibo Cai<br>
+Copyright 2022 Google LLC
+
+xxHash (`vendor/xxhash`), used under the [2-clause BSD license](vendor/xxhash/xxhash.h).<br>
+Copyright (C) 2012-2020 Yann Collet
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>

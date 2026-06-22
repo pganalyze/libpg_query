@@ -1,0 +1,70 @@
+Stop encoder/decoder recursion when the stack depth limit is reached
+
+upb bounds encoder and decoder recursion by a fixed nesting depth, but the
+stack used per level varies a lot between compilers and optimization levels
+(~150 bytes to ~2 kB), and callers run on stacks of different sizes, so no
+fixed limit reliably prevents stack overflows. In addition to the fixed limit,
+also check Postgres' stack_is_too_deep() at every point where upb recurses
+into a submessage, and fail with upb's regular MaxDepthExceeded error (which
+unwinds through upb's own error handling) when the stack budget set up by
+libpg_query for the current call is exhausted.
+
+--- a/upb.c
++++ b/upb.c
+@@ -8311,13 +8311,19 @@
+   }
+   return ptr;
+ }
++
++/* libpg_query local patch: also stop recursing (with a MaxDepthExceeded error)
++ * when the stack depth limit is reached, using Postgres' stack_is_too_deep().
++ * The fixed depth limit alone can't prevent stack overflows, since the stack
++ * available and the stack used per nesting level vary. See vendor/upb/README. */
++extern bool stack_is_too_deep(void);
+
+ UPB_FORCEINLINE
+ const char* _upb_Decoder_RecurseSubMessage(upb_Decoder* d, const char* ptr,
+                                            upb_Message* submsg,
+                                            const upb_MiniTable* subl,
+                                            uint32_t expected_end_group) {
+-  if (--d->depth < 0) {
++  if (--d->depth < 0 || stack_is_too_deep()) {
+     upb_ErrorHandler_ThrowError(d->err, kUpb_DecodeStatus_MaxDepthExceeded);
+   }
+   ptr = _upb_Decoder_DecodeMessage(d, ptr, submsg, subl);
+@@ -9921,7 +9927,7 @@
+       if (submsg == 0) {
+         return ptr;
+       }
+-      if (--e->depth == 0) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
++      if (--e->depth == 0 || stack_is_too_deep()) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
+       ptr = encode_tag(ptr, e, upb_MiniTableField_Number(f),
+                        kUpb_WireType_EndGroup);
+       ptr = encode_message(ptr, e, submsg, subm, &size);
+@@ -9936,7 +9942,7 @@
+       if (submsg == 0) {
+         return ptr;
+       }
+-      if (--e->depth == 0) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
++      if (--e->depth == 0 || stack_is_too_deep()) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
+       ptr = encode_message(ptr, e, submsg, subm, &size);
+       e->depth++;
+       size_t max_size = UPB_PB_VARINT32_MAX_LEN + UPB_PB_VARINT32_MAX_LEN;
+@@ -10034,7 +10040,7 @@
+       const upb_Message* const* start = upb_Array_DataPtr(arr);
+       const upb_Message* const* arr_ptr = start + upb_Array_Size(arr);
+       const upb_MiniTable* subm = upb_MiniTable_GetSubMessageTable(f);
+-      if (--e->depth == 0) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
++      if (--e->depth == 0 || stack_is_too_deep()) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
+       do {
+         size_t size;
+         arr_ptr--;
+@@ -10051,7 +10057,7 @@
+       const upb_Message* const* start = upb_Array_DataPtr(arr);
+       const upb_Message* const* arr_ptr = start + upb_Array_Size(arr);
+       const upb_MiniTable* subm = upb_MiniTable_GetSubMessageTable(f);
+-      if (--e->depth == 0) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
++      if (--e->depth == 0 || stack_is_too_deep()) encode_err(e, kUpb_EncodeStatus_MaxDepthExceeded);
+       do {
+         size_t size;
+         arr_ptr--;
