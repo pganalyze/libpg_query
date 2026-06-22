@@ -4,7 +4,8 @@
 #include "gramparse.h"
 #include "lib/stringinfo.h"
 
-#include "protobuf/pg_query.pb-c.h"
+#include "protobuf/pg_query.upb.h"
+#include "upb/mem/arena.h"
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -31,10 +32,8 @@ PgQueryScanResult pg_query_scan(const char* input)
   core_yy_extra_type yyextra;
   core_YYSTYPE yylval;
   YYLTYPE    yylloc;
-  PgQuery__ScanResult scan_result = PG_QUERY__SCAN_RESULT__INIT;
-  PgQuery__ScanToken **output_tokens;
-  size_t token_count = 0;
-  size_t i;
+  upb_Arena *arena = NULL;
+  pg_query_ScanResult *scan_result;
 
   ctx = pg_query_enter_memory_context();
 
@@ -68,59 +67,55 @@ PgQueryScanResult pg_query_scan(const char* input)
 
   PG_TRY();
   {
-    // Really this is stupid, we only run twice so we can pre-allocate the output array correctly
-    yyscanner = scanner_init(input, &yyextra, &ScanKeywords, ScanKeywordTokens);
-    for (;; token_count++)
-    {
-      if (core_yylex(&yylval, &yylloc, yyscanner) == 0) break;
-    }
-    scanner_finish(yyscanner);
+    size_t packed_len;
+    char *packed_data;
 
-    output_tokens = malloc(sizeof(PgQuery__ScanToken *) * token_count);
+    arena = upb_Arena_New();
+    scan_result = pg_query_ScanResult_new(arena);
+    pg_query_ScanResult_set_version(scan_result, PG_VERSION_NUM);
 
-    /* initialize the flex scanner --- should match raw_parser() */
+    /* initialize the flex scanner --- should match raw_parser().
+     * upb's repeated field grows dynamically, so unlike the protobuf-c path we
+     * no longer need a separate pre-counting pass to size the token array. */
     yyscanner = scanner_init(input, &yyextra, &ScanKeywords, ScanKeywordTokens);
 
     /* Lex tokens  */
-    for (i = 0; ; i++)
+    for (;;)
     {
       int tok;
-      int keyword;
+      pg_query_ScanToken *scan_token;
 
       tok = core_yylex(&yylval, &yylloc, yyscanner);
       if (tok == 0) break;
 
-      output_tokens[i] = malloc(sizeof(PgQuery__ScanToken));
-      pg_query__scan_token__init(output_tokens[i]);
-      output_tokens[i]->start = yylloc;
+      scan_token = pg_query_ScanResult_add_tokens(scan_result, arena);
+      pg_query_ScanToken_set_start(scan_token, yylloc);
       if (tok == SCONST || tok == USCONST || tok == BCONST || tok == XCONST || tok == IDENT || tok == UIDENT || tok == C_COMMENT) {
-        output_tokens[i]->end = yyextra.yyllocend;
+        pg_query_ScanToken_set_end(scan_token, yyextra.yyllocend);
       } else {
-        output_tokens[i]->end = yylloc + ((struct yyguts_t*) yyscanner)->yyleng_r;
+        pg_query_ScanToken_set_end(scan_token, yylloc + ((struct yyguts_t*) yyscanner)->yyleng_r);
       }
-      output_tokens[i]->token = tok;
+      pg_query_ScanToken_set_token(scan_token, tok);
 
       switch (tok) {
-      #define PG_KEYWORD(a,b,c,d) case b: output_tokens[i]->keyword_kind = c + 1; break;
+      #define PG_KEYWORD(a,b,c,d) case b: pg_query_ScanToken_set_keyword_kind(scan_token, c + 1); break;
       #include "parser/kwlist.h"
       #undef PG_KEYWORD
-      default: output_tokens[i]->keyword_kind = 0;
+      default: pg_query_ScanToken_set_keyword_kind(scan_token, 0);
       }
     }
 
     scanner_finish(yyscanner);
 
-    scan_result.version = PG_VERSION_NUM;
-    scan_result.n_tokens = token_count;
-    scan_result.tokens = output_tokens;
-    result.pbuf.len = pg_query__scan_result__get_packed_size(&scan_result);
-    result.pbuf.data = malloc(result.pbuf.len);
-    pg_query__scan_result__pack(&scan_result, (void*) result.pbuf.data);
+    /* Serialize into the arena, then copy out into a malloc'd buffer that
+     * survives exiting the memory context (freed in pg_query_free_scan_result). */
+    packed_data = pg_query_ScanResult_serialize(scan_result, arena, &packed_len);
+    result.pbuf.len = packed_len;
+    result.pbuf.data = malloc(packed_len);
+    memcpy(result.pbuf.data, packed_data, packed_len);
 
-    for (i = 0; i < token_count; i++) {
-      free(output_tokens[i]);
-    }
-    free(output_tokens);
+    upb_Arena_Free(arena);
+    arena = NULL;
 
 #ifndef DEBUG
     // Save stderr for result

@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "protobuf/pg_query.pb-c.h"
+#include "protobuf/pg_query.upb.h"
+#include "protobuf/pg_query.enum_names.h"
+#include "upb/mem/arena.h"
 
 size_t testCount = 13;
 const char* tests[] = {
@@ -23,10 +25,10 @@ const char* tests[] = {
 
 int main() {
   PgQueryScanResult result;
-  PgQuery__ScanResult *scan_result;
-  PgQuery__ScanToken *scan_token;
-  const ProtobufCEnumValue *token_kind;
-  const ProtobufCEnumValue *keyword_kind;
+  pg_query_ScanResult *scan_result;
+  const pg_query_ScanToken *scan_token;
+  const char *token_kind;
+  const char *keyword_kind;
   size_t i;
   size_t j;
 
@@ -37,17 +39,24 @@ int main() {
     if (result.error) {
       printf("  error: %s at %d\n", result.error->message, result.error->cursorpos);
     } else {
-      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf.len, (void *) result.pbuf.data);
+      upb_Arena *arena = upb_Arena_New();
+      size_t n_tokens = 0;
+      const pg_query_ScanToken *const *tokens;
+      scan_result = pg_query_ScanResult_parse(result.pbuf.data, result.pbuf.len, arena);
+      tokens = pg_query_ScanResult_tokens(scan_result, &n_tokens);
 
-      printf("  version: %d, tokens: %zu, size: %zu\n", scan_result->version, scan_result->n_tokens, result.pbuf.len);
-      for (j = 0; j < scan_result->n_tokens; j++) {
-        scan_token = scan_result->tokens[j];
-        token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
-        keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-        printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name);
+      printf("  version: %d, tokens: %zu, size: %zu\n", pg_query_ScanResult_version(scan_result), n_tokens, result.pbuf.len);
+      for (j = 0; j < n_tokens; j++) {
+        int32_t start, end;
+        scan_token = tokens[j];
+        token_kind = pg_query_token_name(pg_query_ScanToken_token(scan_token));
+        keyword_kind = pg_query_keyword_kind_name(pg_query_ScanToken_keyword_kind(scan_token));
+        start = pg_query_ScanToken_start(scan_token);
+        end = pg_query_ScanToken_end(scan_token);
+        printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", end - start, &(tests[i][start]), start, end, token_kind, keyword_kind);
       }
 
-      pg_query__scan_result__free_unpacked(scan_result, NULL);
+      upb_Arena_Free(arena);
     }
 
     pg_query_free_scan_result(result);

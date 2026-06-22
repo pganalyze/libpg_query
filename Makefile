@@ -31,10 +31,16 @@ else
 	SOFLAG = -soname
 endif
 
-SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
+# Vendored upb runtime (see vendor/upb/VERSION) plus the upb-generated message
+# code. Compiled into the archive alongside everything else.
+UPB_DIR := vendor/upb
+UPB_INCLUDES := -I./$(UPB_DIR) -I./$(UPB_DIR)/third_party/utf8_range
+UPB_SRC_FILES := $(shell find $(UPB_DIR) -name '*.c' -not -path '*/decode_fast/*' 2>/dev/null) protobuf/pg_query.upb_minitable.c protobuf/pg_query.upb.c protobuf/pg_query.enum_names.c
+
+SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/xxhash/xxhash.c $(UPB_SRC_FILES)
 OBJ_FILES := $(SRC_FILES:.c=.o)
 
-override CFLAGS += -g -I. -I./vendor -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+override CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
 
 ifeq ($(OS),Windows_NT)
 override CFLAGS += -I./src/postgres/include/port/win32
@@ -43,7 +49,7 @@ endif
 
 override PG_CONFIGURE_FLAGS += -q --without-readline --without-zlib --without-icu
 
-override TEST_CFLAGS += -g -I. -I./vendor -Wall
+override TEST_CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -Wall
 override TEST_LDFLAGS += -pthread
 
 CFLAGS_OPT_LEVEL = -O3
@@ -194,14 +200,17 @@ $(ARLIB): $(OBJ_FILES) Makefile
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
-protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
-ifneq ($(shell which protoc-gen-c), )
-	protoc --c_out=. protobuf/pg_query.proto
+# upb-generated message code + minitables (regenerated only when the upb protoc
+# plugins are installed; otherwise the committed files are used as-is). Must be
+# generated with a protoc/protoc-gen-upb matching vendor/upb/VERSION.
+protobuf/pg_query.upb.h protobuf/pg_query.upb.c protobuf/pg_query.upb_minitable.h protobuf/pg_query.upb_minitable.c: protobuf/pg_query.proto
+ifneq ($(shell which protoc-gen-upb), )
+	protoc --upb_out=. --upb_minitable_out=. protobuf/pg_query.proto
 else
-	@echo 'Warning: protoc-gen-c not found, skipping protocol buffer regeneration'
+	@echo 'Warning: protoc-gen-upb not found, skipping upb regeneration'
 endif
 
-src/pg_query_protobuf.c src/pg_query_scan.c: protobuf/pg_query.pb-c.h
+src/pg_query_scan.c: protobuf/pg_query.upb.h
 
 # Only used when USE_PROTOBUF_CPP is used (experimental for testing only)
 src/pg_query_outfuncs_protobuf_cpp.cc: protobuf/pg_query.pb.cc

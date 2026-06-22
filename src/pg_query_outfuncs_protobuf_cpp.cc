@@ -30,27 +30,33 @@ extern "C"
 		_out##typename_c(fldname, (const typename_cast *) obj); \
 	}
 
-#define WRITE_INT_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
-#define WRITE_UINT_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
-#define WRITE_UINT64_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
-#define WRITE_LONG_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
-#define WRITE_FLOAT_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
-#define WRITE_BOOL_FIELD(outname, outname_json, fldname) out->set_##outname(node->fldname);
+/*
+ * These macros are invoked from the generated pg_query_outfuncs_defs.c /
+ * _conds.c, shared with the upb and JSON backends. The leading `msgtype`
+ * argument names the enclosing message for the upb backend; the C++ backend
+ * sets fields on the typed `out` message and ignores it.
+ */
+#define WRITE_INT_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
+#define WRITE_UINT_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
+#define WRITE_UINT64_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
+#define WRITE_LONG_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
+#define WRITE_FLOAT_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
+#define WRITE_BOOL_FIELD(msgtype, outname, outname_json, fldname) out->set_##outname(node->fldname);
 
-#define WRITE_CHAR_FIELD(outname, outname_json, fldname) \
+#define WRITE_CHAR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		out->set_##outname({node->fldname}); \
 	}
 
-#define WRITE_STRING_FIELD(outname, outname_json, fldname) \
+#define WRITE_STRING_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 	  out->set_##outname(node->fldname); \
 	}
 
-#define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	out->set_##outname((pg_query::typename) _enumToInt##typename(node->fldname));
+#define WRITE_ENUM_FIELD(msgtype, enumtype, outname, outname_json, fldname) \
+	out->set_##outname((pg_query::enumtype) _enumToInt##enumtype(node->fldname));
 
-#define WRITE_LIST_FIELD(outname, outname_json, fldname) \
+#define WRITE_LIST_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
     	const ListCell *lc; \
     	foreach(lc, node->fldname) \
@@ -59,27 +65,27 @@ extern "C"
     	} \
 	}
 
-#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) // FIXME
+#define WRITE_BITMAPSET_FIELD(msgtype, outname, outname_json, fldname) // FIXME
 
-#define WRITE_NODE_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_FIELD(msgtype, outname, outname_json, fldname) \
 	{ \
 		out->set_allocated_##fldname(new pg_query::Node()); \
     	_outNode(out->mutable_##outname(), &node->fldname); \
   	}
 
-#define WRITE_NODE_PTR_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_PTR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
     	out->set_allocated_##outname(new pg_query::Node()); \
     	_outNode(out->mutable_##outname(), node->fldname); \
 	}
 
-#define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	{ \
 		out->set_allocated_##outname(new pg_query::typename()); \
 		_out##typename(out->mutable_##outname(), &node->fldname); \
 	}
 
-#define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		out->set_allocated_##outname(new pg_query::typename()); \
 		_out##typename(out->mutable_##outname(), node->fldname); \

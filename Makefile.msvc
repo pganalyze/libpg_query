@@ -3,9 +3,13 @@
 TARGET = pg_query
 ARLIB = $(TARGET).lib
 
-SRC_FILES = src/*.c src/postgres/*.c vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
+# Generated upb code (collision-free basenames) compiles alongside the main
+# sources; the vendored upb runtime is compiled per-directory below because it
+# has duplicate basenames (message.c, compat.c, ...) that would collide in the
+# flat *.obj output.
+SRC_FILES = src/*.c src/postgres/*.c vendor/xxhash/xxhash.c protobuf/pg_query.upb.c protobuf/pg_query.upb_minitable.c protobuf/pg_query.enum_names.c
 
-CFLAGS = -I. -I./vendor -I./src/postgres/include -I./src/include -I./src/postgres/include/port/win32 -I./src/postgres/include/port/win32_msvc
+CFLAGS = -I. -I./vendor -I./vendor/upb -I./vendor/upb/third_party/utf8_range -I./src/postgres/include -I./src/include -I./src/postgres/include/port/win32 -I./src/postgres/include/port/win32_msvc
 
 RM = del
 
@@ -14,14 +18,38 @@ all: examples test build
 build: $(ARLIB)
 
 clean:
-	$(RM) *.obj
-	$(RM) pg_query.lib
+	-$(RM) /s /q *.obj
+	-$(RM) pg_query.lib
 
 .PHONY: all clean build build_shared extract_source examples test install
 
+# NOTE: The vendored upb runtime is compiled per-directory, writing each
+# directory's objects next to its sources, so that duplicate basenames (e.g. the
+# three message.c) do not collide in a flat object directory. The /Fo<dir>\
+# (trailing backslash = directory) is placed BEFORE /c so the recipe line does
+# not END in a backslash, which nmake would otherwise treat as a line
+# continuation and merge all of these into a single command.
 $(ARLIB): clean $(SRC_FILES)
 	$(CC) $(CFLAGS) /c $(SRC_FILES)
-    lib /OUT:pg_query.lib *.obj
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\base\ /c vendor\upb\upb\base\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\hash\ /c vendor\upb\upb\hash\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\mem\ /c vendor\upb\upb\mem\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\message\ /c vendor\upb\upb\message\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\message\internal\ /c vendor\upb\upb\message\internal\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\mini_descriptor\ /c vendor\upb\upb\mini_descriptor\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\mini_descriptor\internal\ /c vendor\upb\upb\mini_descriptor\internal\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\mini_table\ /c vendor\upb\upb\mini_table\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\mini_table\internal\ /c vendor\upb\upb\mini_table\internal\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\wire\ /c vendor\upb\upb\wire\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\upb\wire\internal\ /c vendor\upb\upb\wire\internal\*.c
+	$(CC) $(CFLAGS) /Fovendor\upb\third_party\utf8_range\ /c vendor\upb\third_party\utf8_range\*.c
+	lib /OUT:pg_query.lib *.obj \
+		vendor\upb\upb\base\*.obj vendor\upb\upb\hash\*.obj vendor\upb\upb\mem\*.obj \
+		vendor\upb\upb\message\*.obj vendor\upb\upb\message\internal\*.obj \
+		vendor\upb\upb\mini_descriptor\*.obj vendor\upb\upb\mini_descriptor\internal\*.obj \
+		vendor\upb\upb\mini_table\*.obj vendor\upb\upb\mini_table\internal\*.obj \
+		vendor\upb\upb\wire\*.obj vendor\upb\upb\wire\internal\*.obj \
+		vendor\upb\third_party\utf8_range\*.obj
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
