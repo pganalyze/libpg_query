@@ -109,11 +109,11 @@ build: $(ARLIB)
 build_shared: $(SOLIB)
 
 clean:
-	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES) $(TESTS)
-	-@ $(RM) -rf {test,examples}/*.dSYM
+	-@ $(RM) $(CLEANLIBS) $(CLEANOBJS) $(CLEANFILES) $(EXAMPLES) $(TESTS) $(BENCHMARKS)
+	-@ $(RM) -rf {test,examples,benchmark}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2) $(PGDIRZIP)
 
-.PHONY: all clean build build_shared extract_source examples test install
+.PHONY: all clean build build_shared extract_source examples test benchmark install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -210,6 +210,18 @@ ifneq ($(shell protoc --version 2>/dev/null | cut -f2 -d" "), $(PROTOC_VERSION))
 	$(error "ERROR - Wrong protobuf compiler version, need $(PROTOC_VERSION)")
 endif
 	protoc --cpp_out=. protobuf/pg_query.proto
+
+BENCHMARKS = benchmark/bench_protobuf benchmark/microbench_protobuf
+BENCHMARK_CFLAGS = $(TEST_CFLAGS) -O2 -I./src -I./src/include -I./src/postgres/include
+benchmark: $(BENCHMARKS)
+	benchmark/bench_protobuf
+	benchmark/microbench_protobuf
+
+benchmark/bench_protobuf: benchmark/bench_protobuf.c $(ARLIB)
+	$(CC) $(BENCHMARK_CFLAGS) -o $@ benchmark/bench_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
+
+benchmark/microbench_protobuf: benchmark/microbench_protobuf.c $(ARLIB)
+	$(CC) $(BENCHMARK_CFLAGS) -o $@ benchmark/microbench_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
