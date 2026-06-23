@@ -227,26 +227,38 @@ pg_query_nodes_to_protobuf(const void *obj)
 {
 	PgQueryProtobuf protobuf;
 	const ListCell *lc;
-	pg_query::ParseResult parse_result;
+
 	if (obj == NULL) {
 		protobuf.data = strdup("");
 		protobuf.len = 0;
 		return protobuf;
 	}
 
-	parse_result.set_version(PG_VERSION_NUM);
-	foreach(lc, (List*) obj)
+	pg_query::ParseResult *parse_result = new pg_query::ParseResult();
+
+	PG_TRY();
 	{
-		_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		parse_result->set_version(PG_VERSION_NUM);
+		foreach(lc, (List*) obj)
+		{
+			_outRawStmt(parse_result->add_stmts(), (const RawStmt*) lfirst(lc));
+		}
+
+		std::string output;
+		parse_result->SerializeToString(&output);
+
+		protobuf.data = (char*) calloc(output.size(), sizeof(char));
+		memcpy(protobuf.data, output.data(), output.size());
+		protobuf.len = output.size();
 	}
+	PG_CATCH();
+	{
+		delete parse_result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
 
-	std::string output;
-	parse_result.SerializeToString(&output);
-
-	protobuf.data = (char*) calloc(output.size(), sizeof(char));
-	memcpy(protobuf.data, output.data(), output.size());
-	protobuf.len = output.size();
-
+	delete parse_result;
 	return protobuf;
 }
 
@@ -254,19 +266,32 @@ extern "C" char *
 pg_query_nodes_to_json(const void *obj)
 {
 	const ListCell *lc;
-	pg_query::ParseResult parse_result;
+	char	   *result = NULL;
 
 	if (obj == NULL)
 		return pstrdup("{}");
 
-	parse_result.set_version(PG_VERSION_NUM);
-	foreach(lc, (List*) obj)
+	pg_query::ParseResult *parse_result = new pg_query::ParseResult();
+
+	PG_TRY();
 	{
-		_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		parse_result->set_version(PG_VERSION_NUM);
+		foreach(lc, (List*) obj)
+		{
+			_outRawStmt(parse_result->add_stmts(), (const RawStmt*) lfirst(lc));
+		}
+
+		std::string output;
+		google::protobuf::util::MessageToJsonString(*parse_result, &output);
+		result = pstrdup(output.c_str());
 	}
+	PG_CATCH();
+	{
+		delete parse_result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
 
-	std::string output;
-	google::protobuf::util::MessageToJsonString(parse_result, &output);
-
-	return pstrdup(output.c_str());
+	delete parse_result;
+	return result;
 }
