@@ -13,8 +13,6 @@
 #include "utils/builtins.h"
 
 #include "protobuf/pg_query.upb.h"
-#include "upb/mem/arena.h"
-#include "upb/base/string_view.h"
 
 #include <unistd.h>
 #include <fcntl.h>

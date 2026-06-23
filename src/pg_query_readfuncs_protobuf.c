@@ -7,7 +7,6 @@
 #include "nodes/value.h"
 
 #include "protobuf/pg_query.upb.h"
-#include "upb/base/string_view.h"
 
 #define OUT_TYPE(typename, typename_c) pg_query_##typename*
 

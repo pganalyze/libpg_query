@@ -5,7 +5,6 @@
 #include "lib/stringinfo.h"
 
 #include "protobuf/pg_query.upb.h"
-#include "upb/mem/arena.h"
 
 #include <unistd.h>
 #include <fcntl.h>

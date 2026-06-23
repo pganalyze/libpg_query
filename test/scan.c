@@ -9,7 +9,6 @@
 
 #include "protobuf/pg_query.upb.h"
 #include "protobuf/pg_query.enum_names.h"
-#include "upb/mem/arena.h"
 
 int main() {
   size_t i;

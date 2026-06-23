@@ -4,7 +4,6 @@
 
 #include "protobuf/pg_query.upb.h"
 #include "protobuf/pg_query.enum_names.h"
-#include "upb/mem/arena.h"
 
 size_t testCount = 13;
 const char* tests[] = {

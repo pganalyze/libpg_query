@@ -9,9 +9,6 @@
 #include "utils/datum.h"
 
 #include "protobuf/pg_query.upb.h"
-#include "upb/mem/arena.h"
-#include "upb/base/string_view.h"
-#include "upb/wire/encode.h"
 
 /*
  * The arena that all messages for the current pg_query_nodes_to_protobuf() call

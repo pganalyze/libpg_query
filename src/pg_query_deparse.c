@@ -11,7 +11,6 @@
 #include <limits.h>
 
 #include "protobuf/pg_query.upb.h"
-#include "upb/mem/arena.h"
 
 static PostgresDeparseOpts * copy_deparse_opts_for_stmt(RawStmt *raw_stmt, PostgresDeparseOpts * opts, size_t start, size_t end);
 

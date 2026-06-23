@@ -11,6 +11,7 @@ PG_VERSION = 18.4
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 180004
 PROTOC_VERSION = 25.1
+UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
 
 VERSION = 18.0.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
@@ -31,11 +32,9 @@ else
 	SOFLAG = -soname
 endif
 
-# Vendored upb runtime (see vendor/upb/VERSION) plus the upb-generated message
-# code. Compiled into the archive alongside everything else.
 UPB_DIR := vendor/upb
 UPB_INCLUDES := -I./$(UPB_DIR) -I./$(UPB_DIR)/third_party/utf8_range
-UPB_SRC_FILES := $(shell find $(UPB_DIR) -name '*.c' -not -path '*/decode_fast/*' 2>/dev/null) protobuf/pg_query.upb_minitable.c protobuf/pg_query.upb.c protobuf/pg_query.enum_names.c
+UPB_SRC_FILES := $(UPB_DIR)/upb.c $(UPB_DIR)/third_party/utf8_range/utf8_range.c protobuf/pg_query.upb_minitable.c protobuf/pg_query.upb.c protobuf/pg_query.enum_names.c
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/xxhash/xxhash.c $(UPB_SRC_FILES)
 OBJ_FILES := $(SRC_FILES:.c=.o)
@@ -205,6 +204,9 @@ $(SOLIB): $(OBJ_FILES) Makefile
 # generated with a protoc/protoc-gen-upb matching vendor/upb/VERSION.
 protobuf/pg_query.upb.h protobuf/pg_query.upb.c protobuf/pg_query.upb_minitable.h protobuf/pg_query.upb_minitable.c: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-upb), )
+ifneq ($(shell protoc --version 2>/dev/null | cut -f2 -d" "), $(UPB_PROTOC_VERSION))
+	$(error ERROR - upb codegen needs protoc $(UPB_PROTOC_VERSION) to match vendor/upb/VERSION (found "$(shell protoc --version 2>/dev/null | cut -f2 -d' ')"); run 'make -C vendor/upb update TAG=...' to change the pinned version)
+endif
 	protoc --upb_out=. --upb_minitable_out=. protobuf/pg_query.proto
 else
 	@echo 'Warning: protoc-gen-upb not found, skipping upb regeneration'
