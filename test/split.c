@@ -13,7 +13,7 @@ int main()
 	size_t i;
 	bool ret_code = EXIT_SUCCESS;
 
-	for (i = 0; i < testsLength; i += 3)
+	for (i = 0; tests[i]; i += 3)
 	{
 		PgQuerySplitResult result = pg_query_split_with_scanner(tests[i]);
 

@@ -65,6 +65,5 @@ const char* tests[] = {
   "SELECT 1; ALTER USER a WITH PASSWORD $1",
   "SELECT 3,$2147483647",
   "SELECT 3,$2147483647",
+  NULL // Trailing NULL to tell the test runner we're done.
 };
-
-size_t testsLength = __LINE__ - 8;

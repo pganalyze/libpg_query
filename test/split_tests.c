@@ -22,7 +22,6 @@ const char* tests[] = {
   "loc=0,len=57",
   "SELECT 1;\n;\n-- comment\nSELECT 2;\n;",
   "loc=0,len=8;loc=11,len=20",
-  "loc=0,len=8;loc=23,len=8"
+  "loc=0,len=8;loc=23,len=8",
+  NULL // Trailing NULL to tell the test runner we're done.
 };
-
-size_t testsLength = __LINE__ - 4;

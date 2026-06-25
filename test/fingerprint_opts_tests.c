@@ -29,6 +29,5 @@ const char* tests[] = {
   "NEW.author.first_name = upper(cleanString(NEW.author.first_name))",
   "5",
   "a148e3f78b53c252",
+  NULL // Trailing NULL to tell the test runner we're done.
 };
-
-size_t testsLength = __LINE__ - 4;

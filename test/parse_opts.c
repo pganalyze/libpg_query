@@ -11,7 +11,7 @@ int main() {
   size_t i;
   bool ret_code = 0;
 
-  for (i = 0; i < testsLength; i += 3) {
+  for (i = 0; tests[i]; i += 3) {
     PgQueryParseMode mode = atoi(tests[i+1]);
     PgQueryParseResult result = pg_query_parse_opts(tests[i], mode);
 

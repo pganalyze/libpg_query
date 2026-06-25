@@ -625,7 +625,7 @@ int main() {
 	int ret_code = EXIT_SUCCESS;
 	int test_ret_code;
 
-	for (i = 0; i < testsLength; i += 1) {
+	for (i = 0; tests[i]; i += 1) {
 		test_ret_code = run_test(tests[i], true, false);
 		if (test_ret_code != EXIT_SUCCESS)
 			ret_code = test_ret_code;
