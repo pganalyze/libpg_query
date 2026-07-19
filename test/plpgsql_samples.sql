@@ -610,3 +610,34 @@ BEGIN
     RETURN local_a < local_b;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Regression samples for pg_query_parse_plpgsql() PG 18 issues, see
+-- https://github.com/pganalyze/libpg_query/issues/337
+
+-- Regression: trigger functions must not emit malformed JSON for the
+-- PLPGSQL_DTYPE_PROMISE datums (tg_name, tg_when, ...) created for TG_* vars.
+CREATE FUNCTION audit_trigger() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$;
+
+-- Regression: schema-qualified variable types outside pg_catalog/public must
+-- parse instead of returning "Not implemented (LookupExplicitNamespace ...)".
+CREATE FUNCTION test_qualified_type() RETURNS void LANGUAGE plpgsql AS $$
+DECLARE
+    v_user "my_schema".users;
+BEGIN
+    RETURN;
+END;
+$$;
+
+-- Regression: RETURN <variable> must keep the return target (retvarno) in the
+-- JSON output rather than dropping the expression entirely.
+CREATE FUNCTION return_variable() RETURNS int LANGUAGE plpgsql AS $$
+DECLARE v int := 1;
+BEGIN
+    RETURN v;
+END;
+$$;
