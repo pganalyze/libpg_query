@@ -13669,10 +13669,7 @@ _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const vo
 {
   // Intentionally ignoring node->conditionname for fingerprinting
 
-  if (node->payload != NULL) {
-    _fingerprintString(ctx, "payload");
-    _fingerprintString(ctx, node->payload);
-  }
+  // Intentionally ignoring node->payload for fingerprinting
 
 }
 
