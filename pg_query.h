@@ -112,6 +112,31 @@ typedef enum
 #define PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS 32 // standard_conforming_strings = off (default is on)
 #define PG_QUERY_DISABLE_ESCAPE_STRING_WARNING 64 // escape_string_warning = off (default is on)
 
+// Fingerprint options (flags that control how fingerprints are calculated)
+
+#define PG_QUERY_FINGERPRINT_DEFAULT 0
+
+// RangeVar handling (bits 0-3)
+//
+// By default, relation references are fingerprinted following the Postgres 18+
+// query ID behavior (see Postgres commit 787514b30bb): in SELECT/DML statements
+// the alias name is fingerprinted, the relation name is ignored when an alias
+// is present, and schema names are ignored.
+#define PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES (1 << 0) // Relation names are always fingerprinted, aliases are ignored
+#define PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA (1 << 1) // Schema names are also fingerprinted in SELECT/DML statements (they are always fingerprinted in utility statements)
+
+// Convenience combination that matches how Postgres 17 and earlier calculate
+// query IDs, and how libpg_query 17 and earlier calculated fingerprints
+#define PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT (PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES | PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA)
+
+// Relation name handling (bits 4-7)
+//
+// By default, sequences of two or more digits in relation names are ignored
+// when fingerprinting, so that queries on date/number-suffixed tables (e.g.
+// partitions like "orders_2024_01") get the same fingerprint. Set this flag
+// to fingerprint the full relation name instead.
+#define PG_QUERY_FINGERPRINT_FULL_RELNAME (1 << 4)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -126,7 +151,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
-PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options);
+PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options, int fingerprint_options);
 
 // Use pg_query_split_with_scanner when you need to split statements that may
 // contain parse errors, otherwise pg_query_split_with_parser is recommended

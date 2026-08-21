@@ -15,7 +15,7 @@ int main()
 	for (i = 0; tests[i]; i += 3)
 	{
 		PgQueryParseMode mode = atoi(tests[i+1]);
-		PgQueryFingerprintResult result = pg_query_fingerprint_opts(tests[i], mode);
+		PgQueryFingerprintResult result = pg_query_fingerprint_opts(tests[i], mode, PG_QUERY_FINGERPRINT_DEFAULT);
 
 		if (result.error)
 		{
@@ -32,7 +32,33 @@ int main()
 		{
 			ret_code = -1;
 			printf("INVALID result for \"%s\" with %d mode\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], mode, tests[i + 2], result.fingerprint_str);
-			pg_query_fingerprint_with_opts(tests[i], mode, true);
+			pg_query_fingerprint_with_opts(tests[i], mode, PG_QUERY_FINGERPRINT_DEFAULT, true);
+		}
+
+		pg_query_free_fingerprint_result(result);
+	}
+
+	for (i = 0; fingerprint_option_tests[i]; i += 3)
+	{
+		int fingerprint_options = atoi(fingerprint_option_tests[i+1]);
+		PgQueryFingerprintResult result = pg_query_fingerprint_opts(fingerprint_option_tests[i], PG_QUERY_PARSE_DEFAULT, fingerprint_options);
+
+		if (result.error)
+		{
+			ret_code = -1;
+			printf("%s\n", result.error->message);
+			pg_query_free_fingerprint_result(result);
+			continue;
+		}
+		else if (strcmp(result.fingerprint_str, fingerprint_option_tests[i + 2]) == 0)
+		{
+			printf(".");
+		}
+		else
+		{
+			ret_code = -1;
+			printf("INVALID result for \"%s\" with %d fingerprint options\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", fingerprint_option_tests[i], fingerprint_options, fingerprint_option_tests[i + 2], result.fingerprint_str);
+			pg_query_fingerprint_with_opts(fingerprint_option_tests[i], PG_QUERY_PARSE_DEFAULT, fingerprint_options, true);
 		}
 
 		pg_query_free_fingerprint_result(result);
