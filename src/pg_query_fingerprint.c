@@ -260,6 +260,109 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
 #include "pg_query_enum_defs.c"
 #include "pg_query_fingerprint_defs.c"
 
+/*
+ * Fingerprint a RangeVar (relation reference).
+ *
+ * This is a custom implementation (the generator only emits the declaration
+ * and the dispatch case) since the behavior depends on the parent node
+ * context.
+ *
+ * This mirrors Postgres 18+ query jumbling for relation references after
+ * parse analysis (RangeTblEntry.eref custom_query_jumble,
+ * RangeTblEntry.relid query_jumble_ignore, see Postgres commit 787514b30bb),
+ * narrowly: in SELECT/DML contexts we add the user alias name when present,
+ * skip the relation name when an alias is present (matches eref.aliasname),
+ * and drop the schema name (Postgres jumbles only the eref string;
+ * schema-qualified and unqualified references that resolve to the same table
+ * share a query ID). catalogname/inh/relpersistence are kept in all contexts
+ * to minimize diff against pre-existing fingerprints; their values rarely
+ * diverge from defaults in DML parse trees.
+ */
+static void
+_fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *parent, const char *field_name, unsigned int depth)
+{
+	bool is_dml_context = false;
+	if (parent != NULL && field_name != NULL)
+	{
+		if (IsA(parent, SelectStmt) && strcmp(field_name, "fromClause") == 0)
+			is_dml_context = true;
+		else if (IsA(parent, InsertStmt) && strcmp(field_name, "relation") == 0)
+			is_dml_context = true;
+		else if (IsA(parent, UpdateStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "fromClause") == 0))
+			is_dml_context = true;
+		else if (IsA(parent, DeleteStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "usingClause") == 0))
+			is_dml_context = true;
+		else if (IsA(parent, MergeStmt) && (strcmp(field_name, "relation") == 0 || strcmp(field_name, "sourceRelation") == 0))
+			is_dml_context = true;
+		else if (IsA(parent, JoinExpr) || IsA(parent, RangeTableSample) || IsA(parent, LockingClause))
+			is_dml_context = true;
+	}
+
+	if (node->alias != NULL && node->alias->aliasname != NULL)
+	{
+		_fingerprintString(ctx, "aliasname");
+		_fingerprintString(ctx, node->alias->aliasname);
+	}
+
+	if (node->catalogname != NULL)
+	{
+		_fingerprintString(ctx, "catalogname");
+		_fingerprintString(ctx, node->catalogname);
+	}
+
+	if (node->inh)
+	{
+		_fingerprintString(ctx, "inh");
+		_fingerprintString(ctx, "true");
+	}
+
+	// Intentionally ignoring node->location for fingerprinting
+
+	// In DML/SELECT context, the relation name only contributes to the jumble
+	// when there is no user alias (matches eref.aliasname). In utility context,
+	// the relation name is always part of the jumble.
+	if (node->relname != NULL && node->relpersistence != 't' && !(is_dml_context && node->alias != NULL))
+	{
+		// Ignore sequences of 2 or more digits in the relation name, so that
+		// queries on date/number-suffixed tables (e.g. partitions like
+		// "orders_2024_01") get the same fingerprint
+		int len = strlen(node->relname);
+		char *r = palloc0((len + 1) * sizeof(char));
+		char *p = r;
+		for (int i = 0; i < len; i++)
+		{
+			if (node->relname[i] >= '0' && node->relname[i] <= '9' &&
+				((i + 1 < len && node->relname[i + 1] >= '0' && node->relname[i + 1] <= '9') ||
+				 (i > 0 && node->relname[i - 1] >= '0' && node->relname[i - 1] <= '9')))
+			{
+				// Skip
+			}
+			else
+			{
+				*p = node->relname[i];
+				p++;
+			}
+		}
+		*p = 0;
+		_fingerprintString(ctx, "relname");
+		_fingerprintString(ctx, r);
+		pfree(r);
+	}
+
+	if (node->relpersistence != 0)
+	{
+		char buffer[2] = {node->relpersistence, '\0'};
+		_fingerprintString(ctx, "relpersistence");
+		_fingerprintString(ctx, buffer);
+	}
+
+	if (node->schemaname != NULL && !is_dml_context)
+	{
+		_fingerprintString(ctx, "schemaname");
+		_fingerprintString(ctx, node->schemaname);
+	}
+}
+
 void
 _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *field_name, unsigned int depth)
 {
