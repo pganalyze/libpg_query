@@ -14,25 +14,6 @@ class Generator
     @all_known_enums = JSON.parse(File.read('./srcdata/all_known_enums.json'))
   end
 
-  FINGERPRINT_RES_TARGET_NAME = <<-EOL
-  if (node->name != NULL && (field_name == NULL || parent == NULL || !IsA(parent, SelectStmt) || strcmp(field_name, "targetList") != 0)) {
-    _fingerprintString(ctx, "name");
-    _fingerprintString(ctx, node->name);
-  }
-
-  EOL
-
-  FINGERPRINT_A_EXPR_KIND = <<-EOL
-  if (true) {
-    _fingerprintString(ctx, "kind");
-    if (node->kind == AEXPR_OP_ANY || node->kind == AEXPR_IN)
-      _fingerprintString(ctx, "AEXPR_OP");
-    else
-      _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
-  }
-
-  EOL
-
   # The _fingerprintChild* helpers are implemented in pg_query_fingerprint.c,
   # and take care of hashing the field name and rolling it back if the child
   # node ends up contributing nothing to the fingerprint.
@@ -133,12 +114,17 @@ class Generator
   FINGERPRINT_CUSTOM_NODES = [
     'RangeVar',
   ]
+  # Fields with a custom fingerprint implementation in
+  # src/pg_query_fingerprint.c (_fingerprint<Node>_<field>). The generator
+  # emits a call instead of the standard per-type handling for these.
+  FINGERPRINT_CUSTOM_FIELDS = [
+    ['ResTarget', 'name'],
+    ['A_Expr', 'kind'],
+  ]
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
     [nil, 'list_start'] => :skip,
     [nil, 'list_end'] => :skip,
-    ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,
-    ['A_Expr', 'kind'] => FINGERPRINT_A_EXPR_KIND,
     ['A_Expr', 'rexpr_list_start'] => :skip,
     ['A_Expr', 'rexpr_list_end'] => :skip,
     ['PrepareStmt', 'name'] => :skip,
@@ -189,6 +175,11 @@ class Generator
           struct_def['fields'].reject { |f| f['name'].nil? }.sort_by { |f| f['name'] }.each do |field|
             name = field['name']
             field_type = field['c_type']
+
+            if FINGERPRINT_CUSTOM_FIELDS.include?([type, name])
+              fingerprint_def += format("  _fingerprint%s_%s(ctx, node, parent, field_name, depth);\n\n", type, name)
+              next
+            end
 
             fp_override = FINGERPRINT_OVERRIDE_FIELDS[[type, field['name']]] || FINGERPRINT_OVERRIDE_FIELDS[[nil, field['name']]]
             if fp_override

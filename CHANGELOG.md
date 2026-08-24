@@ -4,6 +4,10 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* Fingerprint: Move ResTarget.name / A_Expr.kind custom logic to pg_query_fingerprint.c
+  - Like the RangeVar change before it, per-field custom fingerprint
+    implementations now live in pg_query_fingerprint.c instead of being
+    embedded as C snippets in the generator script.
 * Fingerprint: Refactor generated code to use shared child node helpers
   - The hash snapshot/rollback logic that was previously repeated inline for
     every node/list field is now provided by helper functions in

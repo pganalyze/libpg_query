@@ -424,6 +424,33 @@ _fingerprintBitmapsetField(FingerprintContext *ctx, const char *field_name, cons
 	bms_free(bms);
 }
 
+/*
+ * Custom per-field fingerprint implementations, called by the generated code
+ * (the generator emits a call to _fingerprint<Node>_<field> instead of the
+ * standard per-type handling for these).
+ */
+
+// Column names in a SELECT target list don't change the query intent
+static void
+_fingerprintResTarget_name(FingerprintContext *ctx, const ResTarget *node, const void *parent, const char *field_name, unsigned int depth)
+{
+	if (node->name != NULL && (field_name == NULL || parent == NULL || !IsA(parent, SelectStmt) || strcmp(field_name, "targetList") != 0)) {
+		_fingerprintString(ctx, "name");
+		_fingerprintString(ctx, node->name);
+	}
+}
+
+// IN (...) and = ANY(...) are treated as equivalent
+static void
+_fingerprintA_Expr_kind(FingerprintContext *ctx, const A_Expr *node, const void *parent, const char *field_name, unsigned int depth)
+{
+	_fingerprintString(ctx, "kind");
+	if (node->kind == AEXPR_OP_ANY || node->kind == AEXPR_IN)
+		_fingerprintString(ctx, "AEXPR_OP");
+	else
+		_fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
+}
+
 #include "pg_query_fingerprint_defs.c"
 
 /*
