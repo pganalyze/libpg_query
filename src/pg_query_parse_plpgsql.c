@@ -140,7 +140,10 @@ static PLpgSQL_function *compile_do_stmt(DoStmt* stmt)
 		}
 	}
 
-	assert(proc_source != NULL);
+	if (proc_source == NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_SYNTAX_ERROR),
+				 errmsg("no inline code specified")));
 
 	if(strcmp(language, "plpgsql") != 0) {
 		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
@@ -421,7 +424,10 @@ compile_create_function_stmt_via_callback(CreateFunctionStmt *stmt)
 		}
 	}
 
-	assert(proc_source != NULL);
+	if (proc_source == NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
+				 errmsg("no function body specified")));
 
 	if (strcmp(language, "plpgsql") != 0)
 		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
@@ -626,6 +632,7 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 		result.error = func_and_error.error;
 
 		if (result.error != NULL) {
+			free(parse_result.stderr_buffer);
 			pg_query_exit_memory_context(ctx);
 			return result;
 		}
