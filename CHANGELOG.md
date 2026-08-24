@@ -11,6 +11,9 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     printing the failed assertion and a backtrace, use a debugger instead.
   - Remove the stderr capture code that was never compiled in. The `stderr_buffer`
     result field is kept for API compatibility, and remains always empty.
+* Fingerprint: Generate functions via Postgres' own gen_node_support.pl
+  - Replaces the regex-based generator script; policy overrides live in
+    scripts/node_support/overrides.pl, regenerate with "make node_support".
 
 ## 18.1.0     2026-09-30
 
