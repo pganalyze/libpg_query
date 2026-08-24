@@ -97,7 +97,7 @@ _fingerprintInteger(FingerprintContext *ctx, const union ValUnion *value)
 		_fingerprintString(ctx, "Integer");
 		_fingerprintString(ctx, "ival");
 		char buffer[50];
-		sprintf(buffer, "%d", value->ival.ival);
+		snprintf(buffer, sizeof(buffer), "%d", value->ival.ival);
 		_fingerprintString(ctx, buffer);
 	}
 }
@@ -311,6 +311,117 @@ _fingerprintChildList(FingerprintContext *ctx, const List *list, const void *par
 	// NB: Historic quirk - a list containing a single NIL element keeps its
 	// field name in the fingerprint even though nothing was contributed
 	_fingerprintChildEnd(ctx, &cs, list_length(list) == 1 && linitial(list) == NIL);
+}
+
+/*
+ * Helpers used by the generated fingerprint functions for scalar fields.
+ * Fields with a zero/NULL/false value don't contribute to the fingerprint.
+ */
+static void
+_fingerprintIntField(FingerprintContext *ctx, const char *field_name, int value)
+{
+	if (value != 0) {
+		char buffer[50];
+		snprintf(buffer, sizeof(buffer), "%d", value);
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, buffer);
+	}
+}
+
+static void
+_fingerprintLongField(FingerprintContext *ctx, const char *field_name, long value)
+{
+	if (value != 0) {
+		char buffer[50];
+		snprintf(buffer, sizeof(buffer), "%ld", value);
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, buffer);
+	}
+}
+
+static void
+_fingerprintUInt64Field(FingerprintContext *ctx, const char *field_name, uint64 value)
+{
+	if (value != 0) {
+		char buffer[50];
+		snprintf(buffer, sizeof(buffer), UINT64_FORMAT, value);
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, buffer);
+	}
+}
+
+static void
+_fingerprintFloatField(FingerprintContext *ctx, const char *field_name, double value)
+{
+	if (value != 0) {
+		char buffer[50];
+		snprintf(buffer, sizeof(buffer), "%f", value);
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, buffer);
+	}
+}
+
+static void
+_fingerprintCharField(FingerprintContext *ctx, const char *field_name, char value)
+{
+	if (value != 0) {
+		char buffer[2] = {value, '\0'};
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, buffer);
+	}
+}
+
+static void
+_fingerprintStringField(FingerprintContext *ctx, const char *field_name, const char *value)
+{
+	if (value != NULL) {
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, value);
+	}
+}
+
+static void
+_fingerprintStringNodeField(FingerprintContext *ctx, const char *field_name, const String *value)
+{
+	if (value != NULL && value->sval != NULL && strlen(value->sval) > 0) {
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, value->sval);
+	}
+}
+
+static void
+_fingerprintBoolField(FingerprintContext *ctx, const char *field_name, bool value)
+{
+	if (value) {
+		_fingerprintString(ctx, field_name);
+		_fingerprintString(ctx, "true");
+	}
+}
+
+static void
+_fingerprintEnumField(FingerprintContext *ctx, const char *field_name, const char *value)
+{
+	_fingerprintString(ctx, field_name);
+	_fingerprintString(ctx, value);
+}
+
+// Unlike the other scalar helpers, an empty Bitmapset still contributes the
+// field name to the fingerprint (historic behavior we need to keep)
+static void
+_fingerprintBitmapsetField(FingerprintContext *ctx, const char *field_name, const Bitmapset *value)
+{
+	int x = -1;
+	Bitmapset *bms = bms_copy(value);
+
+	_fingerprintString(ctx, field_name);
+
+	while ((x = bms_next_member(bms, x)) >= 0) {
+		char buffer[50];
+		snprintf(buffer, sizeof(buffer), "%d", x);
+		_fingerprintString(ctx, buffer);
+	}
+
+	bms_free(bms);
 }
 
 #include "pg_query_fingerprint_defs.c"

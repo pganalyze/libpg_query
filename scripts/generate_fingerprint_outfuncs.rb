@@ -65,100 +65,55 @@ class Generator
 
   EOL
 
+  # Scalar fields are handled by the _fingerprint*Field helpers in
+  # pg_query_fingerprint.c, which skip zero/NULL/false values.
   FINGERPRINT_INT = <<-EOL
-  if (node->%<name>s != 0) {
-    char buffer[50];
-    sprintf(buffer, "%%d", node->%<name>s);
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, buffer);
-  }
+  _fingerprintIntField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_LONG_INT = <<-EOL
-  if (node->%<name>s != 0) {
-    char buffer[50];
-    sprintf(buffer, "%%ld", node->%<name>s);
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, buffer);
-  }
+  _fingerprintLongField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_UINT64 = <<-EOL
-  if (node->%<name>s != 0) {
-    char buffer[50];
-    sprintf(buffer, UINT64_FORMAT, node->%<name>s);
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, buffer);
-  }
+  _fingerprintUInt64Field(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_FLOAT = <<-EOL
-  if (node->%<name>s != 0) {
-    char buffer[50];
-    sprintf(buffer, "%%f", node->%<name>s);
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, buffer);
-  }
+  _fingerprintFloatField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_CHAR = <<-EOL
-  if (node->%<name>s != 0) {
-    char buffer[2] = {node->%<name>s, '\\0'};
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, buffer);
-  }
+  _fingerprintCharField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_CHAR_PTR = <<-EOL
-  if (node->%<name>s != NULL) {
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, node->%<name>s);
-  }
+  _fingerprintStringField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_STRING = <<-EOL
-  if (strlen(node->%<name>s->sval) > 0) {
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, node->%<name>s->sval);
-  }
+  _fingerprintStringNodeField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_BOOL = <<-EOL
-  if (node->%<name>s) {
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, "true");
-  }
+  _fingerprintBoolField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_INT_ARRAY = <<-EOL
-  {
-    int x = -1;
-    Bitmapset *bms = bms_copy(node->%<name>s);
-
-    _fingerprintString(ctx, "%<name>s");
-
-    while ((x = bms_next_member(bms, x)) >= 0) {
-      char buffer[50];
-      sprintf(buffer, "%%d", x);
-      _fingerprintString(ctx, buffer);
-    }
-
-    bms_free(bms);
-  }
+  _fingerprintBitmapsetField(ctx, "%<name>s", node->%<name>s);
 
   EOL
 
   FINGERPRINT_ENUM = <<-EOL
-  _fingerprintString(ctx, "%<name>s");
-  _fingerprintString(ctx, _enumToString%<typename>s(node->%<name>s));
+  _fingerprintEnumField(ctx, "%<name>s", _enumToString%<typename>s(node->%<name>s));
 
   EOL
 
