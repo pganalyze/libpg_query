@@ -33,7 +33,9 @@
           "comment": "\t/*\n\t * query identifier (can be set by plugins); ignored for equal, as it\n\t * might not be set; also not stored.  This is the result of the query\n\t * jumble, hence ignored.\n\t *\n\t * We store this as a signed value as this is the form it's displayed to\n\t * users in places such as EXPLAIN and pg_stat_statements.  Primarily this\n\t * is done due to lack of an SQL type to represent the full range of\n\t * uint64.\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "queryId",
+          "c_type": "int64",
+          "comment": null
         },
         {
           "comment": ""
@@ -8005,13 +8007,17 @@
           "comment": "\t/* syntactic relation index (0 if unknown) */\n"
         },
         {
-          "comment": ""
+          "name": "varnosyn",
+          "c_type": "Index",
+          "comment": null
         },
         {
           "comment": "\t/* syntactic attribute number */\n"
         },
         {
-          "comment": ""
+          "name": "varattnosyn",
+          "c_type": "AttrNumber",
+          "comment": null
         },
         {
           "comment": ""
@@ -8214,7 +8220,9 @@
           "comment": "\t/*\n\t * type Oid of aggregate's transition value; ignored for equal since it\n\t * might not be set yet\n\t */\n"
         },
         {
-          "comment": ""
+          "name": "aggtranstype",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8322,7 +8330,9 @@
           "comment": "\t/* aggregate input already sorted */\n"
         },
         {
-          "comment": ""
+          "name": "aggpresorted",
+          "c_type": "bool",
+          "comment": null
         },
         {
           "comment": ""
@@ -8418,7 +8428,9 @@
           "comment": "\t/* actual column positions set by planner */\n"
         },
         {
-          "comment": ""
+          "name": "cols",
+          "c_type": "List*",
+          "comment": null
         },
         {
           "comment": ""
@@ -8865,7 +8877,9 @@
           "comment": "\t/* PG_PROC OID of underlying function */\n"
         },
         {
-          "comment": ""
+          "name": "opfuncid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8961,7 +8975,9 @@
           "comment": "\t/* PG_PROC OID of comparison function */\n"
         },
         {
-          "comment": ""
+          "name": "opfuncid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8970,7 +8986,9 @@
           "comment": "\t/* PG_PROC OID of hash func or InvalidOid */\n"
         },
         {
-          "comment": ""
+          "name": "hashfuncid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""
@@ -8979,7 +8997,9 @@
           "comment": "\t/* PG_PROC OID of negator of opfuncid function or InvalidOid.  See above */\n"
         },
         {
-          "comment": ""
+          "name": "negfuncid",
+          "c_type": "Oid",
+          "comment": null
         },
         {
           "comment": ""

@@ -27,6 +27,20 @@ class Generator
   TYPE_OVERRIDES = {
     ['Query', 'queryId'] => :skip, # we intentionally do not print the queryId field
     ['JsonTablePath', 'value'] => :skip,
+    # Fields that are only set during parse analysis, and thus can never be
+    # set in the raw parse trees libpg_query produces. Skipped to keep the
+    # protobuf field numbering (and thus wire compatibility) unchanged.
+    # These are also omitted from fingerprinting (see fingerprint_omit_fields
+    # in scripts/node_support_overrides.pl).
+    ['Var', 'varnosyn'] => :skip,
+    ['Var', 'varattnosyn'] => :skip,
+    ['Aggref', 'aggtranstype'] => :skip,
+    ['Aggref', 'aggpresorted'] => :skip,
+    ['GroupingFunc', 'cols'] => :skip,
+    ['OpExpr', 'opfuncid'] => :skip,
+    ['ScalarArrayOpExpr', 'opfuncid'] => :skip,
+    ['ScalarArrayOpExpr', 'hashfuncid'] => :skip,
+    ['ScalarArrayOpExpr', 'negfuncid'] => :skip,
   }
   OUTNAME_OVERRIDES = {
     ['CreateForeignTableStmt', 'base'] => 'base_stmt',

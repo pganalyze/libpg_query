@@ -4,6 +4,11 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* extract_headers: Fix parsing of fields with multi-attribute pg_node_attr
+  - Ten fields (e.g. Query.queryId, Var.varnosyn) were silently missing from
+    srcdata/struct_defs.json. They only exist after parse analysis and are
+    explicitly skipped in the protobuf/outfuncs output, keeping protobuf field
+    numbering (and fingerprints) unchanged.
 * Fingerprint: Generate functions via Postgres' own gen_node_support.pl
   - Replaces the regex-based generator script; policy overrides live in
     scripts/node_support_overrides.pl, regenerate with "make node_support".
