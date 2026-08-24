@@ -1600,13 +1600,7 @@ _fingerprintParamRef(FingerprintContext *ctx, const ParamRef *node, const void *
 static void
 _fingerprintA_Expr(FingerprintContext *ctx, const A_Expr *node, const void *parent, const char *field_name, unsigned int depth)
 {
-  if (true) {
-    _fingerprintString(ctx, "kind");
-    if (node->kind == AEXPR_OP_ANY || node->kind == AEXPR_IN)
-      _fingerprintString(ctx, "AEXPR_OP");
-    else
-      _fingerprintString(ctx, _enumToStringA_Expr_Kind(node->kind));
-  }
+  _fingerprintA_Expr_kind(ctx, node, parent, field_name, depth);
 
   if (node->lexpr != NULL)
     _fingerprintChildNode(ctx, node->lexpr, node, "lexpr", depth);
@@ -1751,10 +1745,7 @@ _fingerprintResTarget(FingerprintContext *ctx, const ResTarget *node, const void
 
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->name != NULL && (field_name == NULL || parent == NULL || !IsA(parent, SelectStmt) || strcmp(field_name, "targetList") != 0)) {
-    _fingerprintString(ctx, "name");
-    _fingerprintString(ctx, node->name);
-  }
+  _fingerprintResTarget_name(ctx, node, parent, field_name, depth);
 
   if (node->val != NULL)
     _fingerprintChildNode(ctx, node->val, node, "val", depth);
