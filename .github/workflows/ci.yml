@@ -83,6 +83,27 @@ jobs:
       uses: actions/checkout@v4
     - name: Build and run tests
       run: make
+  check_generated_node_support:
+    # Re-runs "make node_support" and verifies the checked-in generated files
+    # (fingerprint defs/conds, srcdata JSON, outfuncs/readfuncs/enum defs,
+    # protobuf definition) are unchanged, guarding against hand-edits of
+    # generated files and stale files after patch or generator script changes
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Cache Postgres source
+      uses: actions/cache@v4
+      with:
+        path: tmp/postgres
+        key: ${{ runner.os }}-node-support-postgres-${{ hashFiles('Makefile', 'patches/*.patch') }}
+    - name: Regenerate node support files
+      run: make node_support
+    - name: Check for differences
+      # git add -N makes newly created (untracked) generated files show up in the diff
+      run: |
+        git add -N src/include/ srcdata/ protobuf/pg_query.proto
+        git diff --exit-code src/include/ srcdata/ protobuf/pg_query.proto
   build_windows_msvc:
     runs-on: windows-latest
     strategy:

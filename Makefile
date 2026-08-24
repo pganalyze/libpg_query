@@ -143,7 +143,7 @@ $(PGDIR):
 	# Add pg_config.h overrides
 	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
 	# Only define strlcpy when needed
-	sed -i "" '$(shell echo 's/\#include "c.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/')' $(PGDIR)/src/port/strlcpy.c
+	perl -pi -e 's/#include "c\.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/' $(PGDIR)/src/port/strlcpy.c
 	echo "#endif // HAVE_DECL_STRLCPY == 0" >> $(PGDIR)/src/port/strlcpy.c
 	# Define symbols needed by elog.c that are commonly defined by win32/signal.c
 	echo "#ifdef WIN32" >> $(PGDIR)/src/backend/utils/error/elog.c
@@ -177,11 +177,11 @@ extract_source: $(PGDIR)
 	echo "#endif /* __clang__ */" >> ./src/postgres/include/pg_config_os.h
 	echo "#endif" >> ./src/postgres/include/pg_config_os.h
 	# Adjust version string to ignore differences in build environments
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
+	perl -pi -e 's/#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) (libpg_query)"/' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/')' pg_query.h
+	perl -pi -e 's/#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	rm -f ./test/sql/plpgsql_regress/*.sql
