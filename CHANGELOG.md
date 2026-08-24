@@ -22,6 +22,14 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     pointer values, that would be retained in such a copy).
 * Fingerprinting: Rework alias/schema name handling to match Postgres 18
 
+## 17-6.2.3   2026-08-24
+
+* Deparser:
+  - Preserve parentheses around subscripted array constructors
+    - This prevents `(ARRAY[...])[...]` from being deparsed as invalid SQL
+  - Fix handling of constraint key named `value` in `ALTER TABLE` [#329](https://github.com/pganalyze/libpg_query/pull/329)
+* Preserve `ARFLAGS` when overriding `AR` [#328](https://github.com/pganalyze/libpg_query/pull/328)
+
 ## 17-6.2.2   2026-01-26
 
 * pg_query_normalize: Fix handling of special strings in DefElem [#325](https://github.com/pganalyze/libpg_query/pull/325)
