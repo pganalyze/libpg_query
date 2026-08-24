@@ -2,6 +2,15 @@
 
 All versions are tagged by the major Postgres version, plus a minor/patch version to indicate changes to the libpg_query supporting code. The minor version does not reflect the Postgres minor version, but is instead used to indicate major or API breaking changes in libpg_query itself.
 
+## Unreleased
+
+* Fingerprint: Refactor generated code to use shared child node helpers
+  - The hash snapshot/rollback logic that was previously repeated inline for
+    every node/list field is now provided by helper functions in
+    pg_query_fingerprint.c (_fingerprintChildBegin/End/Node/List), making the
+    generated code much shorter and easier to read. Fingerprint values are
+    unaffected.
+
 ## 18.0.0     2026-05-20
 
 * Upgrade to Postgres 18

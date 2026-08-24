@@ -33,83 +33,36 @@ class Generator
 
   EOL
 
+  # The _fingerprintChild* helpers are implemented in pg_query_fingerprint.c,
+  # and take care of hashing the field name and rolling it back if the child
+  # node ends up contributing nothing to the fingerprint.
   FINGERPRINT_NODE = <<-EOL
-  if (true) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "%<name>s");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, %<cast>s&node->%<name>s, node, "%<name>s", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
+  _fingerprintChildNode(ctx, &node->%<name>s, node, "%<name>s", depth);
 
   EOL
 
   FINGERPRINT_NODE_PTR = <<-EOL
-  if (node->%<name>s != NULL) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "%<name>s");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, %<cast>snode->%<name>s, node, "%<name>s", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
+  if (node->%<name>s != NULL)
+    _fingerprintChildNode(ctx, node->%<name>s, node, "%<name>s", depth);
 
   EOL
 
+  # Calls the node's fingerprint function directly, bypassing the
+  # _fingerprintNode dispatch switch. Unlike FINGERPRINT_NODE_PTR, this does
+  # not hash the node's type name.
   FINGERPRINT_SPECIFIC_NODE_PTR = <<-EOL
   if (node->%<name>s != NULL) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
-
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "%<name>s");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
+    FingerprintChildState cs = _fingerprintChildBegin(ctx, "%<name>s");
     _fingerprint%<typename>s(ctx, node->%<name>s, node, "%<name>s", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
+    _fingerprintChildEnd(ctx, &cs, false);
   }
 
   EOL
 
   FINGERPRINT_LIST = <<-EOL
-  if (node->%<name>s != NULL && node->%<name>s->length > 0) {
-    XXH3_state_t* prev = XXH3_createState();
-    XXH64_hash_t hash;
+  if (node->%<name>s != NULL && node->%<name>s->length > 0)
+    _fingerprintChildList(ctx, node->%<name>s, node, "%<name>s", depth);
 
-    XXH3_copyState(prev, ctx->xxh_state);
-    _fingerprintString(ctx, "%<name>s");
-
-    hash = XXH3_64bits_digest(ctx->xxh_state);
-    _fingerprintNode(ctx, node->%<name>s, node, "%<name>s", depth + 1);
-    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->%<name>s) == 1 && linitial(node->%<name>s) == NIL)) {
-      XXH3_copyState(ctx->xxh_state, prev);
-      if (ctx->write_tokens)
-        dlist_delete(dlist_tail_node(&ctx->tokens));
-    }
-    XXH3_freeState(prev);
-  }
   EOL
 
   FINGERPRINT_INT = <<-EOL
@@ -186,13 +139,13 @@ class Generator
   EOL
 
   FINGERPRINT_INT_ARRAY = <<-EOL
-  if (true) {
+  {
     int x = -1;
-    Bitmapset	*bms = bms_copy(node->%<name>s);
+    Bitmapset *bms = bms_copy(node->%<name>s);
 
     _fingerprintString(ctx, "%<name>s");
 
-  	while ((x = bms_next_member(bms, x)) >= 0) {
+    while ((x = bms_next_member(bms, x)) >= 0) {
       char buffer[50];
       sprintf(buffer, "%%d", x);
       _fingerprintString(ctx, buffer);
@@ -204,10 +157,8 @@ class Generator
   EOL
 
   FINGERPRINT_ENUM = <<-EOL
-  if (true) {
-    _fingerprintString(ctx, "%<name>s");
-    _fingerprintString(ctx, _enumToString%<typename>s(node->%<name>s));
-  }
+  _fingerprintString(ctx, "%<name>s");
+  _fingerprintString(ctx, _enumToString%<typename>s(node->%<name>s));
 
   EOL
 
@@ -298,14 +249,10 @@ class Generator
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY_ARRAY, name: name)
             # when '[]Node'
             #  fingerprint_def += format(FINGERPRINT_NODE_ARRAY, name: name)
-            when 'Node'
-              fingerprint_def += format(FINGERPRINT_NODE, name: name, cast: '')
-            when 'Node*', 'Expr*'
-              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name, cast: '')
-            when 'JsonTablePlan'
-              fingerprint_def += format(FINGERPRINT_NODE, name: name, cast: '(Node*)')
-            when 'JsonTablePlan*'
-              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name, cast: '(Node*)')
+            when 'Node', 'JsonTablePlan'
+              fingerprint_def += format(FINGERPRINT_NODE, name: name)
+            when 'Node*', 'Expr*', 'JsonTablePlan*'
+              fingerprint_def += format(FINGERPRINT_NODE_PTR, name: name)
             when 'List*'
               fingerprint_def += format(FINGERPRINT_LIST, name: name)
             when 'CreateStmt'

@@ -68,7 +68,7 @@ typedef struct FingerprintToken
 	dlist_node list_node;
 } FingerprintToken;
 
-static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *parent_field_name, unsigned int depth);
+static void _fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, const char *parent_field_name, unsigned int depth);
 static void _fingerprintInitContext(FingerprintContext *ctx, FingerprintContext *parent, bool write_tokens);
 static void _fingerprintFreeContext(FingerprintContext *ctx);
 
@@ -148,7 +148,7 @@ static int compareFingerprintListsortItem(const void *a, const void *b)
 }
 
 static void
-_fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, char *field_name, unsigned int depth)
+_fingerprintList(FingerprintContext *ctx, const List *node, const void *parent, const char *field_name, unsigned int depth)
 {
 	if (field_name != NULL && (strcmp(field_name, "fromClause") == 0 || strcmp(field_name, "targetList") == 0 ||
 		strcmp(field_name, "cols") == 0 || strcmp(field_name, "rexpr") == 0 || strcmp(field_name, "valuesLists") == 0 ||
@@ -258,6 +258,61 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
 }
 
 #include "pg_query_enum_defs.c"
+
+/*
+ * Helpers used by the generated fingerprint functions to hash a child node
+ * (or list of nodes) under its field name, rolling back the field name if the
+ * child ends up contributing nothing to the fingerprint.
+ */
+typedef struct FingerprintChildState
+{
+	XXH3_state_t *prev;
+	XXH64_hash_t hash;
+} FingerprintChildState;
+
+static inline FingerprintChildState
+_fingerprintChildBegin(FingerprintContext *ctx, const char *field_name)
+{
+	FingerprintChildState cs;
+
+	cs.prev = XXH3_createState();
+	XXH3_copyState(cs.prev, ctx->xxh_state);
+	_fingerprintString(ctx, field_name);
+	cs.hash = XXH3_64bits_digest(ctx->xxh_state);
+
+	return cs;
+}
+
+static inline void
+_fingerprintChildEnd(FingerprintContext *ctx, FingerprintChildState *cs, bool keep_if_unchanged)
+{
+	if (cs->hash == XXH3_64bits_digest(ctx->xxh_state) && !keep_if_unchanged)
+	{
+		XXH3_copyState(ctx->xxh_state, cs->prev);
+		if (ctx->write_tokens)
+			dlist_delete(dlist_tail_node(&ctx->tokens));
+	}
+	XXH3_freeState(cs->prev);
+}
+
+static void
+_fingerprintChildNode(FingerprintContext *ctx, const void *child, const void *parent, const char *field_name, unsigned int depth)
+{
+	FingerprintChildState cs = _fingerprintChildBegin(ctx, field_name);
+	_fingerprintNode(ctx, child, parent, field_name, depth + 1);
+	_fingerprintChildEnd(ctx, &cs, false);
+}
+
+static void
+_fingerprintChildList(FingerprintContext *ctx, const List *list, const void *parent, const char *field_name, unsigned int depth)
+{
+	FingerprintChildState cs = _fingerprintChildBegin(ctx, field_name);
+	_fingerprintNode(ctx, list, parent, field_name, depth + 1);
+	// NB: Historic quirk - a list containing a single NIL element keeps its
+	// field name in the fingerprint even though nothing was contributed
+	_fingerprintChildEnd(ctx, &cs, list_length(list) == 1 && linitial(list) == NIL);
+}
+
 #include "pg_query_fingerprint_defs.c"
 
 /*
@@ -364,7 +419,7 @@ _fingerprintRangeVar(FingerprintContext *ctx, const RangeVar *node, const void *
 }
 
 void
-_fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, char *field_name, unsigned int depth)
+_fingerprintNode(FingerprintContext *ctx, const void *obj, const void *parent, const char *field_name, unsigned int depth)
 {
 	// Some queries are overly complex in their parsetree - lets consistently cut them off at 100 nodes deep
 	if (depth >= 100) {
