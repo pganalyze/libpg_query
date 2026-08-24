@@ -118,7 +118,7 @@ clean:
 	-@ $(RM) -rf {test,examples,benchmark}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2) $(PGDIRZIP)
 
-.PHONY: all clean build build_shared extract_source examples test benchmark install
+.PHONY: all clean build build_shared extract_source node_support examples test benchmark install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -138,6 +138,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/13_exprlocation_check_stack_depth.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/14_avoid_quadratic_memory_dotted_names.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/15_node_string_constant_locations.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/16_gen_node_support_hook.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -158,6 +159,14 @@ $(PGDIR):
 	echo "int pg_signal_mask;" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "void pgwin32_dispatch_queued_signals(void) {}" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "#endif" >> $(PGDIR)/src/backend/utils/error/elog.c
+
+# Regenerates the node support files from the patched Postgres source:
+# fingerprint funcs (via the patched gen_node_support.pl), the srcdata JSON,
+# and the outfuncs/readfuncs/enum defs and protobuf definition derived from it
+node_support: $(PGDIR)
+	./scripts/generate_node_support.sh $(PGDIR)
+	ruby ./scripts/extract_headers.rb $(PGDIR)
+	ruby ./scripts/generate_protobuf_and_funcs.rb
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/

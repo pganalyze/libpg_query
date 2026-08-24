@@ -1,0 +1,119 @@
+From: Lukas Fittl <lukas@fittl.com>
+Subject: [PATCH] gen_node_support: Add hook for external node support
+ generators
+
+Add a --hook option that names a Perl file to be loaded after all node
+headers have been parsed. The file must return a code reference, which is
+called with the collected node type information (field lists, types and
+attributes per node type, the node type list in nodetag order, enum and
+abstract type names, the various no_*/custom_* lists, and the source and
+output directories).
+
+This allows projects that need their own node support functions, such as
+libpg_query (fingerprinting, JSON/Protobuf output) or pg_stat_plans (plan
+jumbling), to reuse this script's parsing of the node headers instead of
+re-implementing it, without having to carry generator logic in a patch to
+this file.
+
+To make a node struct reconstructible as declared, the parsed information
+now also records the header a node type came from, its supertype (and the
+field it is embedded as) and, for typedef aliases, the aliased node type.
+
+Without --hook the script behaves exactly as before.
+---
+diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_support.pl
+--- a/src/backend/nodes/gen_node_support.pl
++++ b/src/backend/nodes/gen_node_support.pl
+@@ -27,11 +27,18 @@
+ use Catalog;    # for RenameTempFile
+ 
+ my $output_path = '.';
++my $hook_file = '';
++my $hook_outdir = '';
+ 
+-GetOptions('outdir:s' => \$output_path)
++GetOptions(
++	'outdir:s' => \$output_path,
++	'hook:s' => \$hook_file,
++	'hook-outdir:s' => \$hook_outdir)
+   or die "$0: wrong arguments";
+ 
++$hook_outdir = $output_path if $hook_outdir eq '';
+ 
++
+ # Test whether first argument is element of the list in the second
+ # argument
+ sub elem
+@@ -410,6 +417,16 @@
+ 					$node_type_info{$in_struct}->{fields} = \@f;
+ 					$node_type_info{$in_struct}->{field_types} = \%ft;
+ 					$node_type_info{$in_struct}->{field_attrs} = \%fa;
++
++					# Remember where this node came from and its supertype
++					# relationship, for the benefit of hooks (fields of
++					# the supertype are flattened into {fields} above, so
++					# this is the only way to reconstruct the struct as
++					# declared)
++					$node_type_info{$in_struct}->{source_header} = $infile;
++					$node_type_info{$in_struct}->{supertype} = $supertype;
++					$node_type_info{$in_struct}->{supertype_field} =
++					  $supertype_field;
+ 
+ 					# Propagate nodetag_only marking from files to nodes
+ 					push @nodetag_only, $in_struct
+@@ -561,6 +578,14 @@
+ 				$node_type_info{$n}->{fields} = \@f;
+ 				$node_type_info{$n}->{field_types} = \%ft;
+ 				$node_type_info{$n}->{field_attrs} = \%fa;
++
++				# Track the alias relationship, for the benefit of hooks
++				$node_type_info{$n}->{source_header} = $infile;
++				$node_type_info{$n}->{alias_of} = $alias_of;
++				$node_type_info{$n}->{supertype} =
++				  $node_type_info{$alias_of}->{supertype};
++				$node_type_info{$n}->{supertype_field} =
++				  $node_type_info{$alias_of}->{supertype_field};
+ 			}
+ 			# collect enum names
+ 			elsif ($line =~ /^typedef enum (\w+)(\s*\/\*.*)?$/)
+@@ -1374,6 +1399,40 @@
+ close $jff;
+ close $jfs;
+ 
++
++# Optional hook for external node support generators: the given Perl file is
++# loaded after all input headers have been parsed, and must return a code
++# reference, which is called with the collected node type information.
++if ($hook_file ne '')
++{
++	my $hook = require $hook_file;
++	die "hook \"$hook_file\" did not return a code reference\n"
++	  unless ref($hook) eq 'CODE';
++
++	$hook->(
++		{
++			node_type_info => \%node_type_info,
++			node_types => \@node_types,
++			abstract_types => \@abstract_types,
++			enum_types => \@enum_types,
++			extra_tags => \@extra_tags,
++			scalar_types => \@scalar_types,
++			no_copy => \@no_copy,
++			no_equal => \@no_equal,
++			no_query_jumble => \@no_query_jumble,
++			no_read => \@no_read,
++			no_read_write => \@no_read_write,
++			special_read_write => \@special_read_write,
++			nodetag_only => \@nodetag_only,
++			custom_copy_equal => \@custom_copy_equal,
++			custom_read_write => \@custom_read_write,
++			custom_query_jumble => \@custom_query_jumble,
++			manual_nodetag_number => \%manual_nodetag_number,
++			srcdir => "$FindBin::RealBin/../../..",
++			outdir => $hook_outdir,
++		});
++}
++
+ # now rename the temporary files to their final names
+ foreach my $file (@output_files)
+ {
