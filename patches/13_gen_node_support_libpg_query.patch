@@ -1,0 +1,373 @@
+From: Lukas Fittl <lukas@fittl.com>
+Subject: [PATCH] gen_node_support: Add libpg_query fingerprint output
+
+When --libpg_query_outdir is passed, additionally generate
+pg_query_fingerprint_defs.c / pg_query_fingerprint_conds.c: fingerprint
+functions for the raw parse tree nodes (nodes/parsenodes.h and
+nodes/primnodes.h), included by libpg_query's pg_query_fingerprint.c.
+
+Per-node/per-field overrides are loaded from the file passed via
+--libpg_query_overrides (scripts/node_support_overrides.pl in the
+libpg_query repository), keeping fingerprinting policy out of this patch.
+
+Without the new option the generator behaves exactly as before, so the
+regular PostgreSQL build is unaffected.
+---
+diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_support.pl
+--- a/src/backend/nodes/gen_node_support.pl
++++ b/src/backend/nodes/gen_node_support.pl
+@@ -27,8 +27,13 @@
+ use Catalog;    # for RenameTempFile
+ 
+ my $output_path = '.';
++my $libpg_query_outdir = '';
++my $libpg_query_overrides = '';
+ 
+-GetOptions('outdir:s' => \$output_path)
++GetOptions(
++	'outdir:s' => \$output_path,
++	'libpg_query_outdir:s' => \$libpg_query_outdir,
++	'libpg_query_overrides:s' => \$libpg_query_overrides)
+   or die "$0: wrong arguments";
+ 
+ 
+@@ -410,6 +415,15 @@
+ 					$node_type_info{$in_struct}->{fields} = \@f;
+ 					$node_type_info{$in_struct}->{field_types} = \%ft;
+ 					$node_type_info{$in_struct}->{field_attrs} = \%fa;
++
++					# libpg_query: remember where this node came from and
++					# its supertype relationship (fields of the supertype
++					# are flattened into {fields} above, so this is the
++					# only way to reconstruct the struct as declared)
++					$node_type_info{$in_struct}->{source_header} = $infile;
++					$node_type_info{$in_struct}->{supertype} = $supertype;
++					$node_type_info{$in_struct}->{supertype_field} =
++					  $supertype_field;
+ 
+ 					# Propagate nodetag_only marking from files to nodes
+ 					push @nodetag_only, $in_struct
+@@ -561,6 +575,14 @@
+ 				$node_type_info{$n}->{fields} = \@f;
+ 				$node_type_info{$n}->{field_types} = \%ft;
+ 				$node_type_info{$n}->{field_attrs} = \%fa;
++
++				# libpg_query: track the alias relationship
++				$node_type_info{$n}->{source_header} = $infile;
++				$node_type_info{$n}->{alias_of} = $alias_of;
++				$node_type_info{$n}->{supertype} =
++				  $node_type_info{$alias_of}->{supertype};
++				$node_type_info{$n}->{supertype_field} =
++				  $node_type_info{$alias_of}->{supertype_field};
+ 			}
+ 			# collect enum names
+ 			elsif ($line =~ /^typedef enum (\w+)(\s*\/\*.*)?$/)
+@@ -1373,7 +1395,308 @@
+ 
+ close $jff;
+ close $jfs;
++
++
++# libpg_query node support (fingerprint functions)
++#
++# This section is only active when --libpg_query_outdir is passed, so the
++# regular PostgreSQL build is unaffected.  It generates
++# pg_query_fingerprint_defs.c / pg_query_fingerprint_conds.c: fingerprint
++# functions for the raw parse tree nodes (nodes/parsenodes.h and
++# nodes/primnodes.h), included by libpg_query's pg_query_fingerprint.c,
++# which also provides the runtime helpers the generated code relies on
++# (_fingerprintChildBegin/End/Node/List and the custom handlers).
++# Per-node/per-field behavior overrides are loaded from the file passed
++# via --libpg_query_overrides (see scripts/node_support_overrides.pl in
++# the libpg_query repository).
++if ($libpg_query_outdir ne '')
++{
++	my $ov = {};
++	if ($libpg_query_overrides ne '')
++	{
++		$ov = do $libpg_query_overrides;
++		die "could not load libpg_query overrides \"$libpg_query_overrides\": "
++		  . ($@ || $!) . "\n"
++		  unless ref($ov) eq 'HASH';
++	}
++
++	my %fp_exclude =
++	  map { $_ => 1 } @{ $ov->{fingerprint_exclude_nodes} || [] };
++	my %fp_skip_all =
++	  map { $_ => 1 } @{ $ov->{fingerprint_skip_all_nodes} || [] };
++	my %fp_custom_body =
++	  map { $_ => 1 } @{ $ov->{fingerprint_custom_body_nodes} || [] };
++	my %fp_omit_fields = %{ $ov->{fingerprint_omit_fields} || {} };
++	my %fp_skip_fields = %{ $ov->{fingerprint_skip_fields} || {} };
++	my %fp_custom_fields = %{ $ov->{fingerprint_custom_fields} || {} };
++	my %fp_conds_wrap = %{ $ov->{fingerprint_conds_wrap} || {} };
++
++	my @fp_int_types = qw(bits32 uint32 int int32 uint16 int16 Oid Index
++	  AttrNumber SubTransactionId RelFileNumber ParseLoc);
++	my @fp_uint64_types = qw(uint64 AclMode);
++	my @fp_bitmapset_types = ('Bitmapset*', 'Bitmapset', 'Relids');
++	my @fp_float_types = qw(Cost double Cardinality);
++
++	# Node structs from the raw parse tree headers, in nodetag order
++	my @fp_headers = ('nodes/parsenodes.h', 'nodes/primnodes.h');
++	my @lpq_node_types = grep {
++		defined $node_type_info{$_}->{source_header}
++		  and elem $node_type_info{$_}->{source_header}, @fp_headers
++	} @node_types;
++
++	# Reconstruct the field list of each node struct as declared: the
++	# NodeTag or supertype becomes a single leading pseudo-field, and the
++	# flattened supertype fields (which contain a ".") are dropped.
++	my %lpq_fields;
++	foreach my $n (@lpq_node_types)
++	{
++		my @f;
++		if (defined $node_type_info{$n}->{supertype})
++		{
++			push @f,
++			  [
++				$node_type_info{$n}->{supertype_field},
++				$node_type_info{$n}->{supertype}
++			  ];
++		}
++		else
++		{
++			push @f, [ 'type', 'NodeTag' ];
++		}
++		foreach my $f (@{ $node_type_info{$n}->{fields} })
++		{
++			next if $f =~ /\./;
++			my $t = $node_type_info{$n}->{field_types}{$f};
++			$t =~ s/^struct\s+//;
++			push @f, [ $f, $t ];
++		}
++		$lpq_fields{$n} = \@f;
++	}
+ 
++	# generate fingerprint function bodies
++	my %fp_defs;
++	foreach my $n (@lpq_node_types)
++	{
++		next if elem $n, @abstract_types;
++		next if defined $node_type_info{$n}->{alias_of};
++		next if $fp_exclude{$n};
++
++		if ($fp_custom_body{$n})
++		{
++			# hand-written body lives in libpg_query's pg_query_fingerprint.c
++			$fp_defs{$n} = undef;
++			next;
++		}
++
++		if ($fp_skip_all{$n})
++		{
++			$fp_defs{$n} =
++			  "  // Intentionally ignoring all fields for fingerprinting\n";
++			next;
++		}
++
++		my $def = '';
++		foreach
++		  my $fe (sort { $a->[0] cmp $b->[0] } @{ $lpq_fields{$n} })
++		{
++			my ($f, $t) = @$fe;
++
++			next if $fp_omit_fields{"$n.$f"};
++
++			if ($fp_custom_fields{"$n.$f"})
++			{
++				# hand-written field handler in pg_query_fingerprint.c
++				$def .=
++				  "  _fingerprint${n}_${f}(ctx, node, parent, field_name, depth);\n\n";
++				next;
++			}
++
++			if ($fp_skip_fields{"$n.$f"} || $fp_skip_fields{$f})
++			{
++				$def .=
++				  "  // Intentionally ignoring node->$f for fingerprinting\n\n";
++				next;
++			}
++
++			if ($t eq 'Node')
++			{
++				$def .=
++				  "  _fingerprintChildNode(ctx, &node->$f, node, \"$f\", depth);\n\n";
++			}
++			elsif ($t eq 'Datum'
++				or $t eq 'void*'
++				or $t eq 'Expr'
++				or $t eq 'NodeTag')
++			{
++				# ignore
++			}
++			elsif ($t !~ /\*/ and elem $t, @abstract_types)
++			{
++				# embedded abstract node
++				$def .=
++				  "  _fingerprintChildNode(ctx, &node->$f, node, \"$f\", depth);\n\n";
++			}
++			elsif ($t eq 'Node*'
++				or ($t =~ /^(\w+)\*$/ and elem $1, @abstract_types))
++			{
++				# pointer to a node of a type only known at runtime
++				# (includes Expr* and other abstract node types)
++				$def .= <<"EOT";
++  if (node->$f != NULL)
++    _fingerprintChildNode(ctx, node->$f, node, "$f", depth);
++
++EOT
++			}
++			elsif ($t eq 'List*')
++			{
++				$def .= <<"EOT";
++  if (node->$f != NULL && node->$f->length > 0)
++    _fingerprintChildList(ctx, node->$f, node, "$f", depth);
++
++EOT
++			}
++			elsif ($t eq 'char')
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintCharField', $f);
++			}
++			elsif ($t eq 'char*')
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintStringField', $f);
++			}
++			elsif ($t eq 'String*')
++			{
++				$def .=
++				  libpg_query_fp_scalar('_fingerprintStringNodeField', $f);
++			}
++			elsif ($t eq 'bool')
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintBoolField', $f);
++			}
++			elsif (elem $t, @fp_int_types)
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintIntField', $f);
++			}
++			elsif ($t eq 'long')
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintLongField', $f);
++			}
++			elsif (elem $t, @fp_uint64_types)
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintUInt64Field', $f);
++			}
++			elsif (elem $t, @fp_bitmapset_types)
++			{
++				$def .=
++				  libpg_query_fp_scalar('_fingerprintBitmapsetField', $f);
++			}
++			elsif (elem $t, @fp_float_types)
++			{
++				$def .= libpg_query_fp_scalar('_fingerprintFloatField', $f);
++			}
++			elsif ($t !~ /\*/ and elem $t, @lpq_node_types)
++			{
++				# embedded node struct (e.g. CreateForeignTableStmt.base);
++				# note this passes depth as-is, not depth + 1
++				$def .= "  _fingerprintString(ctx, \"$f\");\n";
++				$def .=
++				  "  _fingerprint${t}(ctx, (const ${t}*) &node->$f, node, \"$f\", depth);\n";
++			}
++			elsif ($t =~ /^(\w+)\*$/ and elem $1, @node_types)
++			{
++				# pointer to a node of a statically known type; unlike the
++				# generic node pointer case above this does not add the
++				# type name to the fingerprint (historic behavior)
++				$def .= <<"EOT";
++  if (node->$f != NULL) {
++    FingerprintChildState cs = _fingerprintChildBegin(ctx, "$f");
++    _fingerprint$1(ctx, node->$f, node, "$f", depth + 1);
++    _fingerprintChildEnd(ctx, &cs, false);
++  }
++
++EOT
++			}
++			elsif (elem $t, @enum_types)
++			{
++				$def .=
++				  "  _fingerprintEnumField(ctx, \"$f\", _enumToString${t}(node->$f));\n\n";
++			}
++			else
++			{
++				die
++				  "could not handle type \"$t\" in struct \"$n\" field \"$f\" for fingerprinting\n";
++			}
++		}
++		$fp_defs{$n} = $def;
++	}
++
++	# assemble output files
++	my $fpd = '';
++	my $fpc = '';
++
++	foreach my $n (@lpq_node_types)
++	{
++		next unless exists $fp_defs{$n};
++		$fpd .=
++		  "static void _fingerprint${n}(FingerprintContext *ctx, const ${n} *node, const void *parent, const char *field_name, unsigned int depth);\n";
++	}
++	$fpd .= "\n\n";
++
++	foreach my $n (@lpq_node_types)
++	{
++		next unless exists $fp_defs{$n};
++
++		if (defined $fp_defs{$n})
++		{
++			$fpd .= "static void\n";
++			$fpd .=
++			  "_fingerprint${n}(FingerprintContext *ctx, const ${n} *node, const void *parent, const char *field_name, unsigned int depth)\n";
++			$fpd .= "{\n";
++			$fpd .= $fp_defs{$n};
++			$fpd .= "}\n";
++			$fpd .= "\n";
++		}
++		else
++		{
++			$fpd .=
++			  "// _fingerprint${n} has a custom implementation, see pg_query_fingerprint.c\n\n";
++		}
++
++		$fpc .= "case T_${n}:\n";
++		if ($fp_skip_all{$n})
++		{
++			$fpc .= "  // Intentionally ignoring for fingerprinting\n";
++		}
++		else
++		{
++			$fpc .= $fp_conds_wrap{$n} if exists $fp_conds_wrap{$n};
++			$fpc .= "  _fingerprintString(ctx, \"${n}\");\n";
++			$fpc .=
++			  "  _fingerprint${n}(ctx, obj, parent, field_name, depth);\n";
++			$fpc .= "  }\n" if exists $fp_conds_wrap{$n};
++		}
++		$fpc .= "  break;\n";
++	}
++
++	open my $fpdf, '>', "$libpg_query_outdir/pg_query_fingerprint_defs.c"
++	  or die $!;
++	print $fpdf $fpd;
++	close $fpdf;
++
++	open my $fpcf, '>', "$libpg_query_outdir/pg_query_fingerprint_conds.c"
++	  or die $!;
++	print $fpcf $fpc;
++	close $fpcf;
++
++}
++
++# libpg_query helper: scalar field handled by one of the _fingerprint*Field
++# helpers in pg_query_fingerprint.c
++sub libpg_query_fp_scalar
++{
++	my ($helper, $f) = @_;
++	return "  ${helper}(ctx, \"$f\", node->$f);\n\n";
++}
++
+ # now rename the temporary files to their final names
+ foreach my $file (@output_files)
+ {

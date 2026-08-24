@@ -4,6 +4,9 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* Fingerprint: Generate functions via Postgres' own gen_node_support.pl
+  - Replaces the regex-based generator script; policy overrides live in
+    scripts/node_support_overrides.pl, regenerate with "make node_support".
 * Fingerprint: Move ResTarget.name / A_Expr.kind custom logic to pg_query_fingerprint.c
   - Like the RangeVar change before it, per-field custom fingerprint
     implementations now live in pg_query_fingerprint.c instead of being
