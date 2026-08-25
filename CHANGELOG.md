@@ -4,6 +4,12 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* Generate srcdata/*.json via gen_node_support.pl, replacing scripts/extract_headers.rb
+  - Node struct definitions now come from Postgres' own node header parser,
+    which adds fields the previous regex-based parsing silently dropped
+    (e.g. Query.queryId, Var.varnosyn) and fixes several wrong enum values
+    (e.g. AggSplit, ScanDirection). Comments and non-node structs are no
+    longer included, and the JSON formatting has changed.
 * Generate outfuncs, readfuncs, enum defs and protobuf definition via gen_node_support.pl
   - Replaces scripts/generate_protobuf_and_funcs.rb with the same hook-based
     mechanism used for fingerprinting. Generated output is unchanged.

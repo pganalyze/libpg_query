@@ -152,12 +152,10 @@ $(PGDIR):
 	echo "void pgwin32_dispatch_queued_signals(void) {}" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "#endif" >> $(PGDIR)/src/backend/utils/error/elog.c
 
-# Regenerates the node support files from the patched Postgres source: the
-# fingerprint funcs, outfuncs/readfuncs/enum defs and protobuf definition (via
-# the patched gen_node_support.pl), and the srcdata JSON
+# Regenerates the node support files (fingerprint funcs, outfuncs/readfuncs/enum
+# defs, protobuf definition and srcdata JSON) from the patched Postgres source
 node_support: $(PGDIR)
 	./scripts/generate_node_support.sh $(PGDIR)
-	ruby ./scripts/extract_headers.rb $(PGDIR)
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
