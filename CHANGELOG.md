@@ -4,6 +4,9 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* Generate outfuncs, readfuncs, enum defs and protobuf definition via gen_node_support.pl
+  - Replaces scripts/generate_protobuf_and_funcs.rb with the same hook-based
+    mechanism used for fingerprinting. Generated output is unchanged.
 * Fingerprint: Generate functions via Postgres' own gen_node_support.pl
   - Replaces the regex-based generator script; policy overrides live in
     scripts/node_support/overrides.pl, regenerate with "make node_support".

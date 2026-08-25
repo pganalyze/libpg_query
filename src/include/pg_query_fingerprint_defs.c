@@ -4403,8 +4403,6 @@ _fingerprintCreateStatsStmt(FingerprintContext *ctx, const CreateStatsStmt *node
 
   _fingerprintBoolField(ctx, "if_not_exists", node->if_not_exists);
 
-  _fingerprintIntField(ctx, "owner", node->owner);
-
   if (node->relations != NULL && node->relations->length > 0)
     _fingerprintChildList(ctx, node->relations, node, "relations", depth);
 
