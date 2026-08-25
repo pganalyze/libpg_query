@@ -1,0 +1,12 @@
+# GNU ld version script. Restricts the libpg_query shared library to the
+# documented public API (pg_query.h, postgres_deparse.h) and hides bundled
+# PostgreSQL internals so they don't conflict when libpg_query is embedded
+# inside a PostgreSQL extension (TLS vs non-TLS CurrentMemoryContext).
+{
+    global:
+        pg_query_*;
+        deparseRawStmt;
+        deparseRawStmtOpts;
+    local:
+        *;
+};

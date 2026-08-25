@@ -24,11 +24,15 @@ ifeq ($(shell uname -s), Darwin)
 	SONAME = lib$(TARGET).$(SO_VERSION).dylib
 	SOLIBVER = lib$(TARGET).$(SO_VERSION).$(VERSION_PATCH).dylib
 	SOFLAG = -install_name
+	SO_EXPORTS = -Wl,-exported_symbols_list,$(root_dir)/pg_query.exp
+	SO_EXPORTS_FILE = pg_query.exp
 else
 	SOLIB = lib$(TARGET).so
 	SONAME = $(SOLIB).$(SO_VERSION)
 	SOLIBVER = $(SONAME).$(VERSION_PATCH)
 	SOFLAG = -soname
+	SO_EXPORTS = -Wl,--version-script=$(root_dir)/pg_query.map
+	SO_EXPORTS_FILE = pg_query.map
 endif
 
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
@@ -190,8 +194,8 @@ extract_source: $(PGDIR)
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $(ARFLAGS) $@ $(OBJ_FILES)
 
-$(SOLIB): $(OBJ_FILES) Makefile
-	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
+$(SOLIB): $(OBJ_FILES) Makefile $(SO_EXPORTS_FILE)
+	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(SO_EXPORTS) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )
