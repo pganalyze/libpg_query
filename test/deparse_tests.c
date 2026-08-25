@@ -55,6 +55,7 @@ const char* tests[] = {
   "SELECT * FROM x WHERE id NOT IN (1, 2, 3)",
   "SELECT * FROM x JOIN (SELECT n FROM z) b ON a.id = b.id",
   "SELECT * FROM x WHERE y = z[5]",
+  "SELECT (ARRAY['a', 'b'])[1]",
   "SELECT (foo(1)).y",
   "SELECT proname, (SELECT regexp_split_to_array(proargtypes::text, ' '))[idx] AS argtype, proargnames[idx] AS argname FROM pg_proc",
   "SELECT COALESCE((SELECT customer.sp_person(n.id) AS sp_person).city_id, NULL::int) AS city_id FROM customer.tb_customer n",
