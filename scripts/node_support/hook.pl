@@ -17,6 +17,7 @@ use lib dirname(__FILE__) . '/lib';
 use LibpgQuery::NodeSupport::Enums;
 use LibpgQuery::NodeSupport::Fingerprint;
 use LibpgQuery::NodeSupport::Outfuncs;
+use LibpgQuery::NodeSupport::Srcdata;
 
 my $overrides_file = dirname(__FILE__) . '/overrides.pl';
 my $overrides = do $overrides_file;
@@ -29,4 +30,5 @@ return sub {
 	my $enums = LibpgQuery::NodeSupport::Enums::parse($ctx);
 	LibpgQuery::NodeSupport::Fingerprint::generate($ctx, $overrides);
 	LibpgQuery::NodeSupport::Outfuncs::generate($ctx, $overrides, $enums);
+	LibpgQuery::NodeSupport::Srcdata::generate($ctx);
 };
