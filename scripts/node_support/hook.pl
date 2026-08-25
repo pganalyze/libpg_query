@@ -14,7 +14,9 @@ use warnings FATAL => 'all';
 use File::Basename qw(dirname);
 use lib dirname(__FILE__) . '/lib';
 
+use LibpgQuery::NodeSupport::Enums;
 use LibpgQuery::NodeSupport::Fingerprint;
+use LibpgQuery::NodeSupport::Outfuncs;
 
 my $overrides_file = dirname(__FILE__) . '/overrides.pl';
 my $overrides = do $overrides_file;
@@ -24,5 +26,7 @@ die "could not load $overrides_file: " . ($@ || $!) . "\n"
 return sub {
 	my ($ctx) = @_;
 
+	my $enums = LibpgQuery::NodeSupport::Enums::parse($ctx);
 	LibpgQuery::NodeSupport::Fingerprint::generate($ctx, $overrides);
+	LibpgQuery::NodeSupport::Outfuncs::generate($ctx, $overrides, $enums);
 };

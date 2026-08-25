@@ -6,7 +6,7 @@ use strict;
 use warnings FATAL => 'all';
 use Exporter 'import';
 
-our @EXPORT_OK = qw(elem write_file node_fields parse_tree_nodes);
+our @EXPORT_OK = qw(elem write_file node_fields parse_tree_nodes underscore);
 
 # Header files defining the raw parse tree nodes libpg_query works with
 my @PARSE_TREE_HEADERS = ('nodes/parsenodes.h', 'nodes/primnodes.h');
@@ -16,6 +16,24 @@ sub elem
 {
 	my $x = shift;
 	return grep { $_ eq $x } @_;
+}
+
+# Converts CamelCase names to snake_case, for protobuf field and message
+# names. This intentionally reproduces the behavior of the Ruby method used
+# by the previous generator (an ActiveSupport-derived "underscore"), including
+# its quirk of producing a double underscore for names like "AExpr"
+# ("a__expr"), since the results are part of the Protobuf definition.
+sub underscore
+{
+	my ($word) = @_;
+
+	return $word unless $word =~ /[A-Z-]|::/;
+	$word =~ s{::}{/}g;
+	$word =~ s/^([A-Z\d])([A-Z][a-z])/$1__$2/;
+	$word =~ s/([A-Z\d]+[a-z]+)([A-Z][a-z])/$1_$2/g;
+	$word =~ s/([a-z\d])([A-Z])/$1_$2/g;
+	$word =~ tr/-/_/;
+	return lc $word;
 }
 
 sub write_file

@@ -6,6 +6,12 @@
 #
 #   src/include/pg_query_fingerprint_defs.c
 #   src/include/pg_query_fingerprint_conds.c
+#   src/include/pg_query_enum_defs.c
+#   src/include/pg_query_outfuncs_defs.c
+#   src/include/pg_query_outfuncs_conds.c
+#   src/include/pg_query_readfuncs_defs.c
+#   src/include/pg_query_readfuncs_conds.c
+#   protobuf/pg_query.proto
 #
 # Usage: ./scripts/generate_node_support.sh <postgres_source_dir>
 #
@@ -61,7 +67,11 @@ trap 'rm -rf "$tmp"' EXIT
 	--hook-outdir "$tmp" \
 	"${headers[@]}")
 
-cp "$tmp/pg_query_fingerprint_defs.c" "$here/src/include/pg_query_fingerprint_defs.c"
-cp "$tmp/pg_query_fingerprint_conds.c" "$here/src/include/pg_query_fingerprint_conds.c"
+for f in pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c \
+	pg_query_enum_defs.c pg_query_outfuncs_defs.c pg_query_outfuncs_conds.c \
+	pg_query_readfuncs_defs.c pg_query_readfuncs_conds.c; do
+	cp "$tmp/$f" "$here/src/include/$f"
+done
+cp "$tmp/pg_query.proto" "$here/protobuf/pg_query.proto"
 
-echo "Generated src/include/pg_query_fingerprint_{defs,conds}.c"
+echo "Generated src/include/pg_query_*_{defs,conds}.c and protobuf/pg_query.proto"

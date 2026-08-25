@@ -35,6 +35,23 @@
 #
 # - fingerprint_conds_wrap: opening C code wrapped around the dispatch case
 #   body ("  }\n" is appended automatically), for context-dependent dispatch.
+#
+# - outfuncs_exclude_nodes: no output/input functions, dispatch cases or
+#   Protobuf message are generated (the node either has hand-written support,
+#   or is intentionally not supported).
+#
+# - outfuncs_skip_fields ("Node.field"): the field is left out of the
+#   output/input functions and the Protobuf message. Since Protobuf field
+#   numbers are assigned sequentially, adding or removing entries here changes
+#   the numbering of all subsequent fields of the message (i.e. breaks wire
+#   compatibility). Fields Postgres marks as read_write_ignore must have an
+#   entry here (the generator errors out otherwise).
+#
+# - outfuncs_outname_overrides ("Node.field"): Protobuf field name to use
+#   instead of the snake_case version of the C field name.
+#
+# - outfuncs_explicit_tag_nodes: nodes that need an explicit NodeSetTag in the
+#   input functions, because they are a superset of another node.
 {
 	fingerprint_exclude_nodes => [
 		# Contains a union; contents are fingerprinted via the value nodes
@@ -98,9 +115,8 @@
 	fingerprint_omit_fields => {
 		# Fields that are only set during parse analysis, and thus can never
 		# be set in the raw parse trees that libpg_query fingerprints. These
-		# are also skipped in the protobuf/outfuncs generation (see
-		# TYPE_OVERRIDES in scripts/generate_protobuf_and_funcs.rb) to keep
-		# protobuf field numbering unchanged.
+		# are also skipped in the output functions (see outfuncs_skip_fields
+		# below) to keep protobuf field numbering unchanged.
 		'Query.queryId' => 1,
 		'Var.varnosyn' => 1,
 		'Var.varattnosyn' => 1,
@@ -119,4 +135,43 @@
 		'TypeCast' =>
 		  "  if (!IsA(castNode(TypeCast, (void*) obj)->arg, A_Const) && !IsA(castNode(TypeCast, (void*) obj)->arg, ParamRef))\n  {\n",
 	},
+
+	outfuncs_exclude_nodes => [
+		# Hand-written support (see the value node handling in
+		# pg_query_outfuncs_*.c / pg_query_readfuncs_protobuf.c)
+		'A_Const',
+		# Only needed in post-parse analysis (and it introduces Datums, which
+		# we can't output)
+		'Const',
+	],
+
+	outfuncs_skip_fields => {
+		# We intentionally do not output the queryId field (which Postgres
+		# itself also doesn't, see its read_write_ignore attribute)
+		'Query.queryId' => 1,
+		# Contains a Const, which we can't output
+		'JsonTablePath.value' => 1,
+		# Fields that are only set during parse analysis, and thus can never
+		# be set in the raw parse trees libpg_query produces. Skipped to keep
+		# the protobuf field numbering (and thus wire compatibility) unchanged.
+		'Var.varnosyn' => 1,
+		'Var.varattnosyn' => 1,
+		'Aggref.aggtranstype' => 1,
+		'Aggref.aggpresorted' => 1,
+		'GroupingFunc.cols' => 1,
+		'OpExpr.opfuncid' => 1,
+		'ScalarArrayOpExpr.opfuncid' => 1,
+		'ScalarArrayOpExpr.hashfuncid' => 1,
+		'ScalarArrayOpExpr.negfuncid' => 1,
+	},
+
+	outfuncs_outname_overrides => {
+		# Avoids a name clash in the generated Protobuf code
+		'CreateForeignTableStmt.base' => 'base_stmt',
+	},
+
+	outfuncs_explicit_tag_nodes => [
+		# Superset of CreateStmt, so makeNode() alone would set the wrong tag
+		'CreateForeignTableStmt',
+	],
 }
