@@ -4478,7 +4478,7 @@ static void deparseTypeName(DeparseState *state, TypeName *type_name)
 			else if (IsA(lfirst(lc), ColumnRef))
 				deparseColumnRef(state, lfirst(lc));
 			else
-				Assert(false);
+				elog(ERROR, "deparse: unsupported typmod node type: %u", nodeTag(lfirst(lc)));
 
 			if (lnext(type_name->typmods, lc))
 				deparseAppendStringInfoString(state, ", ");
