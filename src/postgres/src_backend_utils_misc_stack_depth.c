@@ -5,6 +5,8 @@
  * - max_stack_depth_bytes
  * - check_stack_depth
  * - max_stack_depth
+ * - set_stack_base
+ * - assign_max_stack_depth
  *--------------------------------------------------------------------
  */
 
@@ -53,11 +55,29 @@ static __thread char *stack_base_ptr = NULL;
  *
  * Returns the old reference point, if any.
  */
+pg_stack_base_t
+set_stack_base(void)
+{
 #ifndef HAVE__BUILTIN_FRAME_ADDRESS
+	char		stack_base;
 #endif
+	pg_stack_base_t old;
+
+	old = stack_base_ptr;
+
+	/*
+	 * Set up reference point for stack depth checking.  On recent gcc we use
+	 * __builtin_frame_address() to avoid a warning about storing a local
+	 * variable's address in a long-lived variable.
+	 */
 #ifdef HAVE__BUILTIN_FRAME_ADDRESS
+	stack_base_ptr = __builtin_frame_address(0);
 #else
+	stack_base_ptr = &stack_base;
 #endif
+
+	return old;
+}
 
 /*
  * restore_stack_base: restore reference point for stack depth checking
@@ -132,7 +152,13 @@ stack_is_too_deep(void)
 
 
 /* GUC assign hook for max_stack_depth */
+void
+assign_max_stack_depth(int newval, void *extra)
+{
+	ssize_t		newval_bytes = newval * (ssize_t) 1024;
 
+	max_stack_depth_bytes = newval_bytes;
+}
 
 /*
  * Obtain platform stack depth limit (in bytes)
