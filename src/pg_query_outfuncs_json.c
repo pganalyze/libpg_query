@@ -24,47 +24,55 @@
 #define WRITE_NODE_TYPE(nodelabel) \
 	appendStringInfoString(out, "\"" nodelabel "\":{")
 
+/*
+ * NOTE: These macros are invoked from the generated pg_query_outfuncs_defs.c /
+ * _conds.c, which are shared with the protobuf (upb) backend. That backend needs
+ * the enclosing message type to build its accessor names, so every WRITE_ macro
+ * receives it as a leading `msgtype` argument. The JSON backend writes by field
+ * name and simply ignores `msgtype`.
+ */
+
 /* Write an integer field */
-#define WRITE_INT_FIELD(outname, outname_json, fldname) \
+#define WRITE_INT_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%d,", node->fldname); \
 	}
 
 /* Write an unsigned integer field */
-#define WRITE_UINT_FIELD(outname, outname_json, fldname) \
+#define WRITE_UINT_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%u,", node->fldname); \
 	}
 
 /* Write an unsigned integer field */
-#define WRITE_UINT64_FIELD(outname, outname_json, fldname) \
+#define WRITE_UINT64_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":" UINT64_FORMAT ",", node->fldname); \
 	}
 
 /* Write a long-integer field */
-#define WRITE_LONG_FIELD(outname, outname_json, fldname) \
+#define WRITE_LONG_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%ld,", node->fldname); \
 	}
 
 /* Write a char field (ie, one ascii character) */
-#define WRITE_CHAR_FIELD(outname, outname_json, fldname) \
+#define WRITE_CHAR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":\"%c\",", node->fldname); \
 	}
 
 /* Write an enumerated-type field */
-#define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
+#define WRITE_ENUM_FIELD(msgtype, enumtype, outname, outname_json, fldname) \
 	appendStringInfo(out, "\"" CppAsString(outname_json) "\":\"%s\",", \
-					 _enumToString##typename(node->fldname));
+					 _enumToString##enumtype(node->fldname));
 
 /* Write a float field */
-#define WRITE_FLOAT_FIELD(outname, outname_json, fldname) \
+#define WRITE_FLOAT_FIELD(msgtype, outname, outname_json, fldname) \
 	appendStringInfo(out, "\"" CppAsString(outname_json) "\":%f,", node->fldname)
 
 /* Write a boolean field */
-#define WRITE_BOOL_FIELD(outname, outname_json, fldname) \
+#define WRITE_BOOL_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname) { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%s,", \
 					 	booltostr(node->fldname)); \
@@ -78,14 +86,14 @@
  * empty strings here keeps the JSON output consistent with that behavior
  * (e.g. "COMMENT ON ... IS ''" matches "IS NULL" semantically and in PG).
  */
-#define WRITE_STRING_FIELD(outname, outname_json, fldname) \
+#define WRITE_STRING_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL && node->fldname[0] != '\0') { \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 	 	_outToken(out, node->fldname); \
 	 	appendStringInfo(out, ","); \
 	}
 
-#define WRITE_LIST_FIELD(outname, outname_json, fldname) \
+#define WRITE_LIST_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		const ListCell *lc; \
 		appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
@@ -101,21 +109,21 @@
 		 appendStringInfo(out, "],"); \
     }
 
-#define WRITE_NODE_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_FIELD(msgtype, outname, outname_json, fldname) \
 	if (true) { \
 		 appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 	     _outNode(out, &node->fldname); \
 		 appendStringInfo(out, ","); \
   	}
 
-#define WRITE_NODE_PTR_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_PTR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		 appendStringInfo(out, "\"" CppAsString(outname_json) "\":"); \
 		 _outNode(out, node->fldname); \
 		 appendStringInfo(out, ","); \
 	}
 
-#define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	{ \
     	appendStringInfo(out, "\"" CppAsString(outname_json) "\":{"); \
     	_out##typename(out, &node->fldname); \
@@ -123,7 +131,7 @@
  		appendStringInfo(out, "},"); \
   	}
 
-#define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		 appendStringInfo(out, "\"" CppAsString(outname_json) "\":{"); \
 	   	 _out##typename(out, node->fldname); \
@@ -131,7 +139,7 @@
  		 appendStringInfo(out, "},"); \
 	}
 
-#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
+#define WRITE_BITMAPSET_FIELD(msgtype, outname, outname_json, fldname) \
 	if (!bms_is_empty(node->fldname)) \
 	{ \
 		int x = 0; \

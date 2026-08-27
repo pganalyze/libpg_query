@@ -1,0 +1,46 @@
+Vendored upb runtime
+====================
+
+The pinned protobuf release tag is in ./VERSION (and nothing else, so it stays
+machine-readable). The vendored runtime and the generated
+protobuf/pg_query.upb*.{c,h} must come from that same version -- the generated
+minitables are ABI-locked to the runtime.
+
+To update, run (with git + python3 + protoc + protoc-gen-upb matching the new
+tag on PATH):
+
+    make -C vendor/upb update TAG=v34.0
+
+That re-vendors upb from the tag, amalgamates the runtime subset (see below),
+re-applies the local patches (see below), writes VERSION, and regenerates
+protobuf/pg_query.upb*.{c,h}. Then run `make && make test` at the repo root and
+review the diff.
+
+This Makefile, README, VERSION and LICENSE are owned by this repo; everything
+else here is vendored/amalgamated from upstream -- do not edit it by hand.
+
+Layout
+------
+The runtime is AMALGAMATED (via upb's own amalgamate.py) into a single
+translation unit, so the build compiles one upb.c instead of dozens of files
+across many directories (which also avoids duplicate object basenames and the
+per-directory MSVC build dance):
+
+  upb.c                          amalgamated runtime (one TU)
+  upb/generated_code_support.h   amalgamated header the generated code includes
+  upb/port/def.inc, undef.inc    kept separate: the generated code brackets its
+                                 own declarations with these (push/pop macros)
+  third_party/utf8_range/        UTF-8 validation (not part of upb proper)
+
+Only the minimal runtime subset needed for generated-code serialize/parse is
+included (base, hash, mem, message, mini_descriptor, mini_table, wire).
+Reflection/JSON/text/lex and the optional fast-path parser (decode_fast, which
+needs UPB_FASTTABLE and doesn't build under MSVC) are intentionally excluded;
+amalgamate.py skips decode_fast automatically.
+
+LOCAL PATCHES (re-applied automatically by `make update`)
+---------------------------------------------------------
+- upb.c, _upb_Decoder_GetDelimitedOp(): decode proto3 string fields as bytes
+  (skip UTF-8 validation). SQL string literals may contain arbitrary, non-UTF-8
+  bytes in some server encodings; the previous protobuf-c backend never
+  validated them. Search for "libpg_query local patch".

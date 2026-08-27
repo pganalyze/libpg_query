@@ -10,7 +10,6 @@
 #include <fcntl.h>
 
 #include "deparse_tests.c"
-#include "protobuf/pg_query.pb-c.h"
 
 void remove_numeric_key(char *parse_tree_json, char* key)
 {

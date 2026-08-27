@@ -8,7 +8,9 @@
 #include "lib/stringinfo.h"
 #include "nodes/parsenodes.h"
 
-#include "protobuf/pg_query.pb-c.h"
+#include <limits.h>
+
+#include "protobuf/pg_query.upb.h"
 
 static PostgresDeparseOpts * copy_deparse_opts_for_stmt(RawStmt *raw_stmt, PostgresDeparseOpts * opts, size_t start, size_t end);
 
@@ -133,30 +135,39 @@ pg_query_deparse_comments_for_query(const char *query)
 		return result;
 	}
 
-	PgQuery__ScanResult *scan_result = pg_query__scan_result__unpack(NULL, scan_result_raw.pbuf.len, (void *) scan_result_raw.pbuf.data);
+	upb_Arena  *arena = upb_Arena_New();
+	pg_query_ScanResult *scan_result = pg_query_ScanResult_parse(scan_result_raw.pbuf.data, scan_result_raw.pbuf.len, arena);
+	size_t		n_tokens = 0;
+	const pg_query_ScanToken *const *tokens = NULL;
 	bool		prior_token_was_comment = false;
 	int32_t		prior_non_comment_end = 0;
 	int32_t		prior_token_end = 0;
 
-	result.comment_count = 0;
-	for (int i = 0; i < scan_result->n_tokens; i++)
-	{
-		PgQuery__ScanToken *token = scan_result->tokens[i];
+	if (scan_result != NULL)
+		tokens = pg_query_ScanResult_tokens(scan_result, &n_tokens);
 
-		if (token->token == PG_QUERY__TOKEN__SQL_COMMENT || token->token == PG_QUERY__TOKEN__C_COMMENT)
+	result.comment_count = 0;
+	for (size_t i = 0; i < n_tokens; i++)
+	{
+		int32_t		tok = pg_query_ScanToken_token(tokens[i]);
+
+		if (tok == pg_query_SQL_COMMENT || tok == pg_query_C_COMMENT)
 			result.comment_count++;
 	}
 
 	result.comments = malloc(result.comment_count * sizeof(PostgresDeparseComment *));
 	size_t		comment_idx = 0;
 
-	for (int i = 0; i < scan_result->n_tokens; i++)
+	for (size_t i = 0; i < n_tokens; i++)
 	{
-		PgQuery__ScanToken *token = scan_result->tokens[i];
+		const pg_query_ScanToken *token = tokens[i];
+		int32_t		token_start = pg_query_ScanToken_start(token);
+		int32_t		token_end = pg_query_ScanToken_end(token);
+		int32_t		tok = pg_query_ScanToken_token(token);
 
-		if (token->token == PG_QUERY__TOKEN__SQL_COMMENT || token->token == PG_QUERY__TOKEN__C_COMMENT)
+		if (tok == pg_query_SQL_COMMENT || tok == pg_query_C_COMMENT)
 		{
-			size_t		token_len = token->end - token->start;
+			size_t		token_len = token_end - token_start;
 			PostgresDeparseComment *comment = malloc(sizeof(PostgresDeparseComment));
 
 			/*
@@ -182,16 +193,16 @@ pg_query_deparse_comments_for_query(const char *query)
 			 */
 			if (!prior_token_was_comment)
 			{
-				for (int j = prior_token_end; j < token->start; j++)
+				for (int j = prior_token_end; j < token_start; j++)
 				{
 					if (query[j] == '\n')
 						comment->newlines_before_comment++;
 				}
 			}
 
-			if (i < scan_result->n_tokens - 1)
+			if (i < n_tokens - 1)
 			{
-				for (int j = token->end; j < scan_result->tokens[i + 1]->start; j++)
+				for (int j = token_end; j < pg_query_ScanToken_start(tokens[i + 1]); j++)
 				{
 					if (query[j] == '\n')
 						comment->newlines_after_comment++;
@@ -199,7 +210,7 @@ pg_query_deparse_comments_for_query(const char *query)
 			}
 
 			comment->str = malloc(token_len + 1);
-			memcpy(comment->str, &(query[token->start]), token_len);
+			memcpy(comment->str, &(query[token_start]), token_len);
 			comment->str[token_len] = '\0';
 
 			result.comments[comment_idx] = comment;
@@ -208,13 +219,13 @@ pg_query_deparse_comments_for_query(const char *query)
 		}
 		else
 		{
-			prior_non_comment_end = token->end;
+			prior_non_comment_end = token_end;
 			prior_token_was_comment = false;
 		}
-		prior_token_end = token->end;
+		prior_token_end = token_end;
 	}
 
-	pg_query__scan_result__free_unpacked(scan_result, NULL);
+	upb_Arena_Free(arena);
 	pg_query_free_scan_result(scan_result_raw);
 
 	return result;

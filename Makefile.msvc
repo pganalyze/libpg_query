@@ -3,9 +3,9 @@
 TARGET = pg_query
 ARLIB = $(TARGET).lib
 
-SRC_FILES = src/*.c src/postgres/*.c vendor/protobuf-c/protobuf-c.c vendor/xxhash/xxhash.c protobuf/pg_query.pb-c.c
+SRC_FILES = src/*.c src/postgres/*.c vendor/xxhash/xxhash.c vendor/upb/upb.c vendor/upb/third_party/utf8_range/utf8_range.c protobuf/pg_query.upb.c protobuf/pg_query.upb_minitable.c protobuf/pg_query.enum_names.c
 
-CFLAGS = -I. -I./vendor -I./src/postgres/include -I./src/include -I./src/postgres/include/port/win32 -I./src/postgres/include/port/win32_msvc
+CFLAGS = -I. -I./vendor -I./vendor/upb -I./vendor/upb/third_party/utf8_range -I./src/postgres/include -I./src/include -I./src/postgres/include/port/win32 -I./src/postgres/include/port/win32_msvc
 
 RM = del
 
@@ -14,14 +14,14 @@ all: examples test build
 build: $(ARLIB)
 
 clean:
-	$(RM) *.obj
-	$(RM) pg_query.lib
+	-$(RM) *.obj
+	-$(RM) pg_query.lib
 
 .PHONY: all clean build build_shared extract_source examples test install
 
 $(ARLIB): clean $(SRC_FILES)
 	$(CC) $(CFLAGS) /c $(SRC_FILES)
-    lib /OUT:pg_query.lib *.obj
+	lib /OUT:pg_query.lib *.obj
 
 EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
 examples: $(EXAMPLES)
