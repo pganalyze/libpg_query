@@ -506,7 +506,8 @@ dump_return(StringInfo out, PLpgSQL_stmt_return *node)
 
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 	WRITE_EXPR_FIELD(expr);
-	//WRITE_INT_FIELD(retvarno);
+	if (node->retvarno >= 0)
+		appendStringInfo(out, "\"retvarno\":%d,", node->retvarno);
 }
 
 static void
@@ -516,7 +517,8 @@ dump_return_next(StringInfo out, PLpgSQL_stmt_return_next *node)
 
 	WRITE_INT_FIELD(lineno, lineno, lineno);
 	WRITE_EXPR_FIELD(expr);
-	//WRITE_INT_FIELD(retvarno);
+	if (node->retvarno >= 0)
+		appendStringInfo(out, "\"retvarno\":%d,", node->retvarno);
 }
 
 static void
@@ -638,6 +640,8 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 	WRITE_NODE_TYPE("PLpgSQL_function");
 	WRITE_INT_FIELD(new_varno, new_varno, new_varno);
 	WRITE_INT_FIELD(old_varno, old_varno, old_varno);
+	if (node->out_param_varno >= 0)
+		appendStringInfo(out, "\"out_param_varno\":%d,", node->out_param_varno);
 
 	appendStringInfoString(out, "\"datums\":");
 	appendStringInfoChar(out, '[');
