@@ -152,13 +152,27 @@ static Node * _readNode(PgQuery__Node *msg)
 	}
 }
 
+static void *unpack_palloc(void *allocator_data, size_t size)
+{
+	return palloc(size);
+}
+
+static void unpack_free_noop(void *allocator_data, void *pointer)
+{
+	/* freed wholesale when the caller's memory context is deleted */
+}
+
+static ProtobufCAllocator unpack_allocator = {
+	unpack_palloc, unpack_free_noop, NULL
+};
+
 List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 {
 	PgQuery__ParseResult *result = NULL;
 	List * list = NULL;
 	size_t i = 0;
 
-	result = pg_query__parse_result__unpack(NULL, protobuf.len, (const uint8_t *) protobuf.data);
+	result = pg_query__parse_result__unpack(&unpack_allocator, protobuf.len, (const uint8_t *) protobuf.data);
 
 	// TODO: Handle this by returning an error instead
 	Assert(result != NULL);
@@ -170,8 +184,6 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 		list = list_make1(_readRawStmt(result->stmts[0]));
     for (i = 1; i < result->n_stmts; i++)
 		list = lappend(list, _readRawStmt(result->stmts[i]));
-
-	pg_query__parse_result__free_unpacked(result, NULL);
 
 	return list;
 }
