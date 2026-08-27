@@ -405,3 +405,54 @@ void pg_query_free_fingerprint_result(PgQueryFingerprintResult result)
 	free(result.fingerprint_str);
 	free(result.stderr_buffer);
 }
+
+PgQueryFingerprintResult pg_query_fingerprint_raw(PgQueryRawParseResult parse_result)
+{
+	PgQueryFingerprintResult result = {0};
+
+	if (parse_result.error != NULL) {
+		// Copy error from parse result
+		PgQueryError* error = malloc(sizeof(PgQueryError));
+		error->message = parse_result.error->message ? strdup(parse_result.error->message) : NULL;
+		error->filename = parse_result.error->filename ? strdup(parse_result.error->filename) : NULL;
+		error->funcname = parse_result.error->funcname ? strdup(parse_result.error->funcname) : NULL;
+		error->context = parse_result.error->context ? strdup(parse_result.error->context) : NULL;
+		error->lineno = parse_result.error->lineno;
+		error->cursorpos = parse_result.error->cursorpos;
+		result.error = error;
+		return result;
+	}
+
+	// Match behavior of pg_query_fingerprint_with_opts: fingerprint even if tree is NULL
+	// (e.g., for comment-only or empty queries)
+	{
+		FingerprintContext ctx;
+		XXH64_canonical_t chash;
+
+		_fingerprintInitContext(&ctx, NULL, false);
+
+		if (parse_result.tree != NULL) {
+			_fingerprintNode(&ctx, parse_result.tree, NULL, NULL, 0);
+		}
+
+		result.fingerprint = XXH3_64bits_digest(ctx.xxh_state);
+		_fingerprintFreeContext(&ctx);
+
+		XXH64_canonicalFromHash(&chash, result.fingerprint);
+		result.fingerprint_str = malloc(17 * sizeof(char));
+		int n = snprintf(result.fingerprint_str, 17, "%02x%02x%02x%02x%02x%02x%02x%02x",
+						   chash.digest[0], chash.digest[1], chash.digest[2], chash.digest[3],
+						   chash.digest[4], chash.digest[5], chash.digest[6], chash.digest[7]);
+		if (n < 0 || n >= 17) {
+			PgQueryError* error = malloc(sizeof(PgQueryError));
+			error->message = strdup("Failed to output fingerprint string due to snprintf failure");
+			result.error = error;
+		}
+	}
+
+	if (parse_result.stderr_buffer != NULL) {
+		result.stderr_buffer = strdup(parse_result.stderr_buffer);
+	}
+
+	return result;
+}

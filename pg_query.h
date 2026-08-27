@@ -166,6 +166,64 @@ void pg_query_exit(void);
 #define PG_VERSION "17.7"
 #define PG_VERSION_NUM 170007
 
+// Raw parse tree access (bypasses protobuf serialization)
+// Note: The returned tree uses PostgreSQL's memory context. The tree is only
+// valid until pg_query_free_raw_parse_result is called or pg_query_exit is called.
+
+// Forward declaration of PostgreSQL List type (defined in nodes/pg_list.h)
+struct List;
+// Forward declaration of PostgreSQL MemoryContextData type
+struct MemoryContextData;
+
+typedef struct {
+  struct List *tree;  // PostgreSQL parse tree (List of RawStmt nodes)
+  char* stderr_buffer;
+  PgQueryError* error;
+  struct MemoryContextData* context;  // Internal: Memory context for the tree (do not modify)
+} PgQueryRawParseResult;
+
+PgQueryRawParseResult pg_query_parse_raw(const char* input);
+PgQueryRawParseResult pg_query_parse_raw_opts(const char* input, int parser_options);
+void pg_query_free_raw_parse_result(PgQueryRawParseResult result);
+
+// Raw deparse (bypasses protobuf serialization)
+// Takes a raw parse result and converts it back to SQL
+PgQueryDeparseResult pg_query_deparse_raw(PgQueryRawParseResult parse_result);
+PgQueryDeparseResult pg_query_deparse_raw_opts(PgQueryRawParseResult parse_result, struct PostgresDeparseOpts opts);
+
+// Node building helpers for Rust (bypasses protobuf)
+// These allow Rust to construct parse trees directly
+void *pg_query_deparse_enter_context(void);
+void pg_query_deparse_exit_context(void *ctx);
+void *pg_query_alloc_node(size_t size, int tag);
+char *pg_query_pstrdup(const char *str);
+void *pg_query_list_make1(void *datum);
+void *pg_query_list_append(void *list, void *datum);
+PgQueryDeparseResult pg_query_deparse_nodes(void *stmts);
+
+// Raw scan (bypasses protobuf serialization)
+// Returns tokens directly without protobuf encoding
+
+typedef struct {
+  int start;
+  int end;
+  int token;        // Token type (matches Token enum in protobuf)
+  int keyword_kind; // KeywordKind enum value
+} PgQueryRawScanToken;
+
+typedef struct {
+  PgQueryRawScanToken *tokens;
+  size_t n_tokens;
+  char* stderr_buffer;
+  PgQueryError* error;
+} PgQueryRawScanResult;
+
+PgQueryRawScanResult pg_query_scan_raw(const char* input);
+void pg_query_free_raw_scan_result(PgQueryRawScanResult result);
+
+// Raw fingerprint (works with raw parse result, bypasses re-parsing)
+PgQueryFingerprintResult pg_query_fingerprint_raw(PgQueryRawParseResult parse_result);
+
 // Deprecated APIs below
 
 void pg_query_init(void); // Deprecated as of 9.5-1.4.1, this is now run automatically as needed
