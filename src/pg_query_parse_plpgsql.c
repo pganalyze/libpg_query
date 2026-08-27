@@ -17,7 +17,7 @@ typedef struct {
 	PgQueryError* error;
 } PgQueryInternalPlpgsqlFuncAndError;
 
-static PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt);
+PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt);
 
 static void add_dummy_return(PLpgSQL_function *function)
 {

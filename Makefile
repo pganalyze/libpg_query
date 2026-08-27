@@ -193,6 +193,19 @@ $(ARLIB): $(OBJ_FILES) Makefile
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
 
+# PLpgSQL protobuf code generation
+generate_plpgsql:
+	ruby scripts/extract_plpgsql_headers.rb
+	ruby scripts/generate_plpgsql_protobuf.rb
+
+# Append PLpgSQL proto to main proto file (must be done manually when PLpgSQL definitions change)
+# Run: make regenerate_plpgsql_proto
+regenerate_plpgsql_proto: generate_plpgsql
+	@echo "Appending PLpgSQL proto definitions to pg_query.proto"
+	@# Remove any existing PLpgSQL definitions first (between markers if present)
+	@cat src/include/pg_query_plpgsql_protobuf.proto >> protobuf/pg_query.proto
+	@echo "PLpgSQL proto definitions appended. Please commit the changes."
+
 protobuf/pg_query.pb-c.c protobuf/pg_query.pb-c.h: protobuf/pg_query.proto
 ifneq ($(shell which protoc-gen-c), )
 	protoc --c_out=. protobuf/pg_query.proto
@@ -237,7 +250,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/parse_plpgsql_protobuf test/scan test/split test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -279,6 +292,7 @@ else
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
+	test/parse_plpgsql_protobuf
 endif
 
 test/complex: test/complex.c $(ARLIB)
@@ -325,6 +339,9 @@ test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/parse_plpgsql_protobuf: test/parse_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)

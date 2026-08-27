@@ -74,6 +74,12 @@ typedef struct {
 } PgQueryPlpgsqlParseResult;
 
 typedef struct {
+  PgQueryProtobuf parse_tree;
+  char* stderr_buffer;
+  PgQueryError* error;
+} PgQueryPlpgsqlProtobufParseResult;
+
+typedef struct {
   uint64_t fingerprint;
   char* fingerprint_str;
   char* stderr_buffer;
@@ -124,6 +130,10 @@ PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input);
 PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options);
 PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
+PgQueryPlpgsqlProtobufParseResult pg_query_parse_plpgsql_protobuf(const char* input);
+
+// Convert PLpgSQL protobuf back to JSON (for bidirectional support)
+char* pg_query_plpgsql_protobuf_to_json(PgQueryProtobuf protobuf);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
 PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options);
@@ -154,6 +164,7 @@ void pg_query_free_deparse_result(PgQueryDeparseResult result);
 void pg_query_free_deparse_comments_result(PgQueryDeparseCommentsResult result);
 void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
+void pg_query_free_plpgsql_protobuf_parse_result(PgQueryPlpgsqlProtobufParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 void pg_query_free_is_utility_result(PgQueryIsUtilityResult result);
 void pg_query_free_summary_parse_result(PgQuerySummaryParseResult result);
