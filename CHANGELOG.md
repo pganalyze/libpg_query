@@ -2,6 +2,26 @@
 
 All versions are tagged by the major Postgres version, plus a minor/patch version to indicate changes to the libpg_query supporting code. The minor version does not reflect the Postgres minor version, but is instead used to indicate major or API breaking changes in libpg_query itself.
 
+## Unreleased
+
+* Fingerprinting: Add fingerprint options to `pg_query_fingerprint_opts`
+  - This is a breaking change for callers of `pg_query_fingerprint_opts`,
+    which now takes a fingerprint options bitmask as a third argument
+    (flag bits are defined by the `PgQueryFingerprintOption` enum)
+  - By default, relation references are fingerprinted following Postgres 18+
+    query ID behavior: in SELECT/DML statements the alias name replaces the
+    relation name when present, and schema names are ignored
+  - `PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES` always fingerprints
+    relation names and ignores aliases
+  - `PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA` also fingerprints schema
+    names in SELECT/DML statements
+  - Combining both flags (`PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT`)
+    matches how Postgres 17 and earlier calculate query IDs, and how
+    libpg_query 17 and earlier calculated fingerprints
+  - `PG_QUERY_FINGERPRINT_RELNAME_FULL` fingerprints the full relation name,
+    instead of the default behavior of ignoring 2+ consecutive digits (which
+    groups queries on date/number-suffixed tables together)
+
 ## 18.0.0     2026-05-20
 
 * Upgrade to Postgres 18
