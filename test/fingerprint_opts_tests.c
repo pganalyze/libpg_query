@@ -38,8 +38,8 @@ const char* tests[] = {
 // 1 = PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES
 // 2 = PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA
 // 3 = PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT
-// 16 = PG_QUERY_FINGERPRINT_FULL_RELNAME
-// 19 = PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT | PG_QUERY_FINGERPRINT_FULL_RELNAME
+// 16 = PG_QUERY_FINGERPRINT_RELNAME_FULL
+// 19 = PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT | PG_QUERY_FINGERPRINT_RELNAME_FULL
 const char* fingerprint_option_tests[] = {
   // By default, 2+ consecutive digits in the relation name are ignored (these two match)
   "SELECT * FROM orders_2024_01",
@@ -48,7 +48,7 @@ const char* fingerprint_option_tests[] = {
   "SELECT * FROM orders_2024_02",
   "0",
   "0e612f391ad711b8",
-  // With PG_QUERY_FINGERPRINT_FULL_RELNAME the full relation name is fingerprinted (these two differ)
+  // With PG_QUERY_FINGERPRINT_RELNAME_FULL the full relation name is fingerprinted (these two differ)
   "SELECT * FROM orders_2024_01",
   "16",
   "3cc2d1ca3f22c9bf",

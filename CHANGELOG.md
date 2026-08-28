@@ -7,6 +7,7 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 * Fingerprinting: Add fingerprint options to `pg_query_fingerprint_opts`
   - This is a breaking change for callers of `pg_query_fingerprint_opts`,
     which now takes a fingerprint options bitmask as a third argument
+    (flag bits are defined by the `PgQueryFingerprintOption` enum)
   - By default, relation references are fingerprinted following Postgres 18+
     query ID behavior: in SELECT/DML statements the alias name replaces the
     relation name when present, and schema names are ignored
@@ -17,7 +18,7 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
   - Combining both flags (`PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT`)
     matches how Postgres 17 and earlier calculate query IDs, and how
     libpg_query 17 and earlier calculated fingerprints
-  - `PG_QUERY_FINGERPRINT_FULL_RELNAME` fingerprints the full relation name,
+  - `PG_QUERY_FINGERPRINT_RELNAME_FULL` fingerprints the full relation name,
     instead of the default behavior of ignoring 2+ consecutive digits (which
     groups queries on date/number-suffixed tables together)
 

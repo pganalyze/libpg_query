@@ -112,30 +112,38 @@ typedef enum
 #define PG_QUERY_DISABLE_STANDARD_CONFORMING_STRINGS 32 // standard_conforming_strings = off (default is on)
 #define PG_QUERY_DISABLE_ESCAPE_STRING_WARNING 64 // escape_string_warning = off (default is on)
 
-// Fingerprint options (flags that control how fingerprints are calculated)
+// Flag bits included in the fingerprint_options bitmask passed to
+// pg_query_fingerprint_opts, controlling how fingerprints are calculated
+typedef enum PgQueryFingerprintOption
+{
+	PG_QUERY_FINGERPRINT_DEFAULT = 0,
 
-#define PG_QUERY_FINGERPRINT_DEFAULT 0
+	// RangeVar handling (bits 0-3), any combination may be specified
+	//
+	// By default, relation references are fingerprinted following the Postgres 18+
+	// query ID behavior (see Postgres commit 787514b30bb): in SELECT/DML statements
+	// the alias name is fingerprinted, the relation name is ignored when an alias
+	// is present, and schema names are ignored.
 
-// RangeVar handling (bits 0-3)
-//
-// By default, relation references are fingerprinted following the Postgres 18+
-// query ID behavior (see Postgres commit 787514b30bb): in SELECT/DML statements
-// the alias name is fingerprinted, the relation name is ignored when an alias
-// is present, and schema names are ignored.
-#define PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES (1 << 0) // Relation names are always fingerprinted, aliases are ignored
-#define PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA (1 << 1) // Schema names are also fingerprinted in SELECT/DML statements (they are always fingerprinted in utility statements)
+	// Relation names are always fingerprinted, aliases are ignored
+	PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES = 1 << 0,
+	// Schema names are also fingerprinted in SELECT/DML statements
+	// (they are always fingerprinted in utility statements)
+	PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA = 1 << 1,
+	// Convenience combination that matches how Postgres 17 and earlier calculate
+	// query IDs, and how libpg_query 17 and earlier calculated fingerprints
+	PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT =
+		PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES | PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA,
 
-// Convenience combination that matches how Postgres 17 and earlier calculate
-// query IDs, and how libpg_query 17 and earlier calculated fingerprints
-#define PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT (PG_QUERY_FINGERPRINT_RANGEVAR_IGNORE_ALIASES | PG_QUERY_FINGERPRINT_RANGEVAR_INCLUDE_SCHEMA)
+	// Relation name handling (bits 4-7)
+	//
+	// By default, sequences of two or more digits in relation names are ignored
+	// when fingerprinting, so that queries on date/number-suffixed tables (e.g.
+	// partitions like "orders_2024_01") get the same fingerprint.
 
-// Relation name handling (bits 4-7)
-//
-// By default, sequences of two or more digits in relation names are ignored
-// when fingerprinting, so that queries on date/number-suffixed tables (e.g.
-// partitions like "orders_2024_01") get the same fingerprint. Set this flag
-// to fingerprint the full relation name instead.
-#define PG_QUERY_FINGERPRINT_FULL_RELNAME (1 << 4)
+	// The full relation name is fingerprinted, including digit sequences
+	PG_QUERY_FINGERPRINT_RELNAME_FULL = 1 << 4
+} PgQueryFingerprintOption;
 
 #ifdef __cplusplus
 extern "C" {

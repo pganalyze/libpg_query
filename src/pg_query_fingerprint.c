@@ -271,13 +271,13 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
  *
  * By default, sequences of 2 or more digits are ignored, so that queries
  * on date/number-suffixed tables (e.g. partitions like "orders_2024_01")
- * get the same fingerprint. With PG_QUERY_FINGERPRINT_FULL_RELNAME set,
+ * get the same fingerprint. With PG_QUERY_FINGERPRINT_RELNAME_FULL set,
  * the relation name is fingerprinted as-is.
  */
 static void
 _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 {
-	if (ctx->fingerprint_options & PG_QUERY_FINGERPRINT_FULL_RELNAME)
+	if (ctx->fingerprint_options & PG_QUERY_FINGERPRINT_RELNAME_FULL)
 	{
 		_fingerprintString(ctx, "relname");
 		_fingerprintString(ctx, relname);
