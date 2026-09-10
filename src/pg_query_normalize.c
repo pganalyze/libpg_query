@@ -268,6 +268,16 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 		if (tok_len < 0)
 			continue;			/* ignore any duplicates */
 
+		/*
+		 * Defend against constant locations that overlap the previous
+		 * constant or run past the end of the query. Locations come from the
+		 * parser and so should never do either, but getting this wrong means
+		 * a negative length below and a write outside of norm_query, so check
+		 * it at runtime rather than only asserting it.
+		 */
+		if (off < last_off + last_tok_len || off > query_len || tok_len > query_len - off)
+			continue;
+
 		/* Copy next chunk (what precedes the next constant) */
 		len_to_wrt = off - last_off;
 		len_to_wrt -= last_tok_len;
@@ -337,52 +347,6 @@ static void RecordConstLocation(pgssConstLocations *jstate, int location)
 	}
 }
 
-static bool is_string_delimiter(char c)
-{
-	return c == '\'' || c == '$';
-}
-
-static bool is_special_string_start(char c)
-{
-	return c == 'b' || c == 'B' || c == 'x' || c == 'X' || c == 'n' || c == 'N' || c == 'e' || c == 'E';
-}
-
-static void record_defelem_arg_location(pgssConstLocations *jstate, int location)
-{
-	for (int i = location; i < jstate->query_len; i++)
-	{
-		if (!is_string_delimiter(jstate->query[i]))
-			continue;
-
-		/*
-		 * Step back over tokens that affect the string constant, placed right
-		 * before the opening quote, so the recorded location includes those
-		 * tokens. "U&" for a Unicode escaped strings, or a single character
-		 * special start token matched by is_special_string_start.
-		 */
-		if (i - 2 >= location && jstate->query[i - 1] == '&' &&
-			(jstate->query[i - 2] == 'u' || jstate->query[i - 2] == 'U'))
-			i -= 2;
-		else if (i - 1 >= location && is_special_string_start(jstate->query[i - 1]))
-			i -= 1;
-
-		RecordConstLocation(jstate, i);
-
-		break;
-	}
-}
-
-static void record_matching_string(pgssConstLocations *jstate, const char *str)
-{
-	char *loc = NULL;
-	if (str == NULL)
-		return;
-
-	loc = strstr(jstate->query, str);
-	if (loc != NULL)
-		RecordConstLocation(jstate, loc - jstate->query - 1);
-}
-
 static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 {
 	bool result;
@@ -421,14 +385,15 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 		case T_DefElem:
 			{
 				DefElem * defElem = (DefElem *) node;
-				if (defElem->arg == NULL) {
-					// No argument
-				} else if (IsA(defElem->arg, String)) {
-					record_defelem_arg_location(jstate, defElem->location);
-				} else if (IsA(defElem->arg, List) && list_length((List *) defElem->arg) == 1 && IsA(linitial((List *) defElem->arg), String)) {
-					record_defelem_arg_location(jstate, defElem->location);
-				}
-				return const_record_walker((Node *) ((DefElem *) node)->arg, jstate);
+
+				/*
+				 * The grammar records where the option's string constant
+				 * starts, and leaves this as -1 when the argument wasn't
+				 * written as a string constant.
+				 */
+				RecordConstLocation(jstate, defElem->arg_location);
+
+				return const_record_walker((Node *) defElem->arg, jstate);
 			}
 			break;
 		case T_RawStmt:
@@ -458,11 +423,21 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			if (jstate->normalize_utility_only) return false;
 			return const_record_walker((Node *) ((DoStmt *) node)->args, jstate);
 		case T_CreateSubscriptionStmt:
-			record_matching_string(jstate, ((CreateSubscriptionStmt *) node)->conninfo);
-			break;
+			{
+				CreateSubscriptionStmt *stmt = (CreateSubscriptionStmt *) node;
+
+				if (stmt->conninfo != NULL)
+					RecordConstLocation(jstate, stmt->conninfo_location);
+				break;
+			}
 		case T_AlterSubscriptionStmt:
-			record_matching_string(jstate, ((AlterSubscriptionStmt *) node)->conninfo);
-			break;
+			{
+				AlterSubscriptionStmt *stmt = (AlterSubscriptionStmt *) node;
+
+				if (stmt->conninfo != NULL)
+					RecordConstLocation(jstate, stmt->conninfo_location);
+				break;
+			}
 		case T_CreateUserMappingStmt:
 			return const_record_walker((Node *) ((CreateUserMappingStmt *) node)->options, jstate);
 		case T_AlterUserMappingStmt:
@@ -594,17 +569,8 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			{
 				NotifyStmt *stmt = castNode(NotifyStmt, node);
 
-				if (stmt->payload == NULL)
-					break; // No payload to normalize.
-
-				char *loc = strstr(jstate->query, ",");
-
-				if (loc == NULL)
-					// Somehow there's a payload but no comma?
-					// This should be impossible.
-					break;
-
-				record_defelem_arg_location(jstate, loc - jstate->query + 1);
+				if (stmt->payload != NULL)
+					RecordConstLocation(jstate, stmt->payload_location);
 				break;
 			}
 		case T_InsertStmt:

@@ -1401,6 +1401,7 @@ _copyDefElem(const DefElem *from)
 	COPY_NODE_FIELD(arg);
 	COPY_SCALAR_FIELD(defaction);
 	COPY_LOCATION_FIELD(location);
+	COPY_LOCATION_FIELD(arg_location);
 
 	return newnode;
 }
@@ -3240,6 +3241,7 @@ _copyNotifyStmt(const NotifyStmt *from)
 
 	COPY_STRING_FIELD(conditionname);
 	COPY_STRING_FIELD(payload);
+	COPY_LOCATION_FIELD(payload_location);
 
 	return newnode;
 }
@@ -3732,6 +3734,7 @@ _copyCreateSubscriptionStmt(const CreateSubscriptionStmt *from)
 	COPY_STRING_FIELD(conninfo);
 	COPY_NODE_FIELD(publication);
 	COPY_NODE_FIELD(options);
+	COPY_LOCATION_FIELD(conninfo_location);
 
 	return newnode;
 }
@@ -3746,6 +3749,7 @@ _copyAlterSubscriptionStmt(const AlterSubscriptionStmt *from)
 	COPY_STRING_FIELD(conninfo);
 	COPY_NODE_FIELD(publication);
 	COPY_NODE_FIELD(options);
+	COPY_LOCATION_FIELD(conninfo_location);
 
 	return newnode;
 }

@@ -843,6 +843,8 @@ typedef struct DefElem
 								 * TypeName */
 	DefElemAction defaction;	/* unspecified action, or SET/ADD/DROP */
 	ParseLoc	location;		/* token location, or -1 if unknown */
+	/* location of arg's string constant, or -1 if not a string constant */
+	ParseLoc	arg_location pg_node_attr(query_jumble_ignore);
 } DefElem;
 
 /*
@@ -3725,6 +3727,8 @@ typedef struct NotifyStmt
 	NodeTag		type;
 	char	   *conditionname;	/* condition name to notify */
 	char	   *payload;		/* the payload string, or NULL if none */
+	/* location of payload's string constant; only set when payload is */
+	ParseLoc	payload_location pg_node_attr(query_jumble_ignore);
 } NotifyStmt;
 
 /* ----------------------
@@ -4299,6 +4303,8 @@ typedef struct CreateSubscriptionStmt
 	char	   *conninfo;		/* Connection string to publisher */
 	List	   *publication;	/* One or more publication to subscribe to */
 	List	   *options;		/* List of DefElem nodes */
+	/* location of conninfo's string constant; only set when conninfo is */
+	ParseLoc	conninfo_location pg_node_attr(query_jumble_ignore);
 } CreateSubscriptionStmt;
 
 typedef enum AlterSubscriptionType
@@ -4321,6 +4327,8 @@ typedef struct AlterSubscriptionStmt
 	char	   *conninfo;		/* Connection string to publisher */
 	List	   *publication;	/* One or more publication to subscribe to */
 	List	   *options;		/* List of DefElem nodes */
+	/* location of conninfo's string constant; only set when conninfo is */
+	ParseLoc	conninfo_location pg_node_attr(query_jumble_ignore);
 } AlterSubscriptionStmt;
 
 typedef struct DropSubscriptionStmt

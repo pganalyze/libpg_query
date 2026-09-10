@@ -232,6 +232,9 @@ class Generator
   ]
   FINGERPRINT_OVERRIDE_FIELDS = {
     [nil, 'location'] => :skip,
+    [nil, 'arg_location'] => :skip,
+    [nil, 'conninfo_location'] => :skip,
+    [nil, 'payload_location'] => :skip,
     [nil, 'list_start'] => :skip,
     [nil, 'list_end'] => :skip,
     ['ResTarget', 'name'] => FINGERPRINT_RES_TARGET_NAME,

@@ -5757,6 +5757,8 @@ _fingerprintDefElem(FingerprintContext *ctx, const DefElem *node, const void *pa
     XXH3_freeState(prev);
   }
 
+  // Intentionally ignoring node->arg_location for fingerprinting
+
   if (true) {
     _fingerprintString(ctx, "defaction");
     _fingerprintString(ctx, _enumToStringDefElemAction(node->defaction));
@@ -13584,6 +13586,8 @@ _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const vo
 
   // Intentionally ignoring node->payload for fingerprinting
 
+  // Intentionally ignoring node->payload_location for fingerprinting
+
 }
 
 static void
@@ -15035,6 +15039,8 @@ _fingerprintCreateSubscriptionStmt(FingerprintContext *ctx, const CreateSubscrip
     _fingerprintString(ctx, node->conninfo);
   }
 
+  // Intentionally ignoring node->conninfo_location for fingerprinting
+
   if (node->options != NULL && node->options->length > 0) {
     XXH3_state_t* prev = XXH3_createState();
     XXH64_hash_t hash;
@@ -15081,6 +15087,8 @@ _fingerprintAlterSubscriptionStmt(FingerprintContext *ctx, const AlterSubscripti
     _fingerprintString(ctx, "conninfo");
     _fingerprintString(ctx, node->conninfo);
   }
+
+  // Intentionally ignoring node->conninfo_location for fingerprinting
 
   if (true) {
     _fingerprintString(ctx, "kind");
