@@ -1234,6 +1234,7 @@ _outDefElem(OUT_TYPE(DefElem, DefElem) out, const DefElem *node)
   WRITE_NODE_PTR_FIELD(arg, arg, arg);
   WRITE_ENUM_FIELD(DefElemAction, defaction, defaction, defaction);
   WRITE_INT_FIELD(location, location, location);
+  WRITE_INT_FIELD(arg_location, arg_location, arg_location);
 }
 
 static void
@@ -2534,6 +2535,7 @@ _outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out, const NotifyStmt *node)
 {
   WRITE_STRING_FIELD(conditionname, conditionname, conditionname);
   WRITE_STRING_FIELD(payload, payload, payload);
+  WRITE_INT_FIELD(payload_location, payload_location, payload_location);
 }
 
 static void
@@ -2862,6 +2864,7 @@ _outCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionSt
   WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
   WRITE_LIST_FIELD(publication, publication, publication);
   WRITE_LIST_FIELD(options, options, options);
+  WRITE_INT_FIELD(conninfo_location, conninfo_location, conninfo_location);
 }
 
 static void
@@ -2872,6 +2875,7 @@ _outAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt)
   WRITE_STRING_FIELD(conninfo, conninfo, conninfo);
   WRITE_LIST_FIELD(publication, publication, publication);
   WRITE_LIST_FIELD(options, options, options);
+  WRITE_INT_FIELD(conninfo_location, conninfo_location, conninfo_location);
 }
 
 static void

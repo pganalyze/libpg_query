@@ -1260,6 +1260,14 @@
           "name": "location",
           "c_type": "ParseLoc",
           "comment": "/* token location, or -1 if unknown */"
+        },
+        {
+          "comment": "\t/* location of arg's string constant, or -1 if not a string constant */\n"
+        },
+        {
+          "name": "arg_location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": "/*\n * DefElem - a generic \"name = value\" option definition\n *\n * In some contexts the name can be qualified.  Also, certain SQL commands\n * allow a SET/ADD/DROP action to be attached to option settings, so it's\n * convenient to carry a field for that too.  (Note: currently, it is our\n * practice that the grammar allows namespace and action only in statements\n * where they are relevant; C code can just ignore those fields in other\n * statements.)\n */\n"
@@ -6240,6 +6248,14 @@
           "name": "payload",
           "c_type": "char*",
           "comment": "/* the payload string, or NULL if none */"
+        },
+        {
+          "comment": "\t/* location of payload's string constant; only set when payload is */\n"
+        },
+        {
+          "name": "payload_location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": "/* ----------------------\n *\t\tNotify Statement\n * ----------------------\n */\n"
@@ -7304,6 +7320,14 @@
           "name": "options",
           "c_type": "List*",
           "comment": "/* List of DefElem nodes */"
+        },
+        {
+          "comment": "\t/* location of conninfo's string constant; only set when conninfo is */\n"
+        },
+        {
+          "name": "conninfo_location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": null
@@ -7339,6 +7363,14 @@
           "name": "options",
           "c_type": "List*",
           "comment": "/* List of DefElem nodes */"
+        },
+        {
+          "comment": "\t/* location of conninfo's string constant; only set when conninfo is */\n"
+        },
+        {
+          "name": "conninfo_location",
+          "c_type": "ParseLoc",
+          "comment": null
         }
       ],
       "comment": null
@@ -9863,12 +9895,12 @@
         {
           "name": "raw_expr",
           "c_type": "Expr*",
-          "comment": "/* raw expression */"
+          "comment": "/* user-specified expression */"
         },
         {
           "name": "formatted_expr",
           "c_type": "Expr*",
-          "comment": "/* formatted expression */"
+          "comment": "/* coerced formatted expression */"
         },
         {
           "name": "format",
@@ -9876,7 +9908,7 @@
           "comment": "/* FORMAT clause, if specified */"
         }
       ],
-      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * The actual value is obtained by evaluating formatted_expr.  raw_expr is\n * only there for displaying the original user-written expression and is not\n * evaluated by ExecInterpExpr() and eval_const_expressions_mutator().\n */\n"
+      "comment": "/*\n * JsonValueExpr -\n *\t\trepresentation of JSON value expression (expr [FORMAT JsonFormat])\n *\n * raw_expr is the user-specified value, while formatted_expr is the value\n * obtained by coercing raw_expr to the type required by either the FORMAT\n * clause or an enclosing node's RETURNING clause.\n *\n * When deparsing a JsonValueExpr, get_rule_expr() prints raw_expr. However,\n * during the evaluation of a JsonValueExpr, the value of formatted_expr\n * takes precedence over that of raw_expr.\n */\n"
     },
     "JsonConstructorExpr": {
       "fields": [

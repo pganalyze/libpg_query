@@ -25990,7 +25990,7 @@ const ProtobufCMessageDescriptor pg_query__index_elem__descriptor =
   (ProtobufCMessageInit) pg_query__index_elem__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__def_elem__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__def_elem__field_descriptors[6] =
 {
   {
     "defnamespace",
@@ -26052,9 +26052,22 @@ static const ProtobufCFieldDescriptor pg_query__def_elem__field_descriptors[5] =
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "arg_location",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__DefElem, arg_location),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__def_elem__field_indices_by_name[] = {
   2,   /* field[2] = arg */
+  5,   /* field[5] = arg_location */
   3,   /* field[3] = defaction */
   1,   /* field[1] = defname */
   0,   /* field[0] = defnamespace */
@@ -26063,7 +26076,7 @@ static const unsigned pg_query__def_elem__field_indices_by_name[] = {
 static const ProtobufCIntRange pg_query__def_elem__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__def_elem__descriptor =
 {
@@ -26073,7 +26086,7 @@ const ProtobufCMessageDescriptor pg_query__def_elem__descriptor =
   "PgQuery__DefElem",
   "pg_query",
   sizeof(PgQuery__DefElem),
-  5,
+  6,
   pg_query__def_elem__field_descriptors,
   pg_query__def_elem__field_indices_by_name,
   1,  pg_query__def_elem__number_ranges,
@@ -37842,7 +37855,7 @@ const ProtobufCMessageDescriptor pg_query__rule_stmt__descriptor =
   (ProtobufCMessageInit) pg_query__rule_stmt__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__notify_stmt__field_descriptors[2] =
+static const ProtobufCFieldDescriptor pg_query__notify_stmt__field_descriptors[3] =
 {
   {
     "conditionname",
@@ -37868,15 +37881,28 @@ static const ProtobufCFieldDescriptor pg_query__notify_stmt__field_descriptors[2
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "payload_location",
+    3,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__NotifyStmt, payload_location),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__notify_stmt__field_indices_by_name[] = {
   0,   /* field[0] = conditionname */
   1,   /* field[1] = payload */
+  2,   /* field[2] = payload_location */
 };
 static const ProtobufCIntRange pg_query__notify_stmt__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 2 }
+  { 0, 3 }
 };
 const ProtobufCMessageDescriptor pg_query__notify_stmt__descriptor =
 {
@@ -37886,7 +37912,7 @@ const ProtobufCMessageDescriptor pg_query__notify_stmt__descriptor =
   "PgQuery__NotifyStmt",
   "pg_query",
   sizeof(PgQuery__NotifyStmt),
-  2,
+  3,
   pg_query__notify_stmt__field_descriptors,
   pg_query__notify_stmt__field_indices_by_name,
   1,  pg_query__notify_stmt__number_ranges,
@@ -40433,7 +40459,7 @@ const ProtobufCMessageDescriptor pg_query__alter_publication_stmt__descriptor =
   (ProtobufCMessageInit) pg_query__alter_publication_stmt__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__create_subscription_stmt__field_descriptors[4] =
+static const ProtobufCFieldDescriptor pg_query__create_subscription_stmt__field_descriptors[5] =
 {
   {
     "subname",
@@ -40483,9 +40509,22 @@ static const ProtobufCFieldDescriptor pg_query__create_subscription_stmt__field_
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "conninfo_location",
+    5,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__CreateSubscriptionStmt, conninfo_location),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__create_subscription_stmt__field_indices_by_name[] = {
   1,   /* field[1] = conninfo */
+  4,   /* field[4] = conninfo_location */
   3,   /* field[3] = options */
   2,   /* field[2] = publication */
   0,   /* field[0] = subname */
@@ -40493,7 +40532,7 @@ static const unsigned pg_query__create_subscription_stmt__field_indices_by_name[
 static const ProtobufCIntRange pg_query__create_subscription_stmt__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 4 }
+  { 0, 5 }
 };
 const ProtobufCMessageDescriptor pg_query__create_subscription_stmt__descriptor =
 {
@@ -40503,14 +40542,14 @@ const ProtobufCMessageDescriptor pg_query__create_subscription_stmt__descriptor 
   "PgQuery__CreateSubscriptionStmt",
   "pg_query",
   sizeof(PgQuery__CreateSubscriptionStmt),
-  4,
+  5,
   pg_query__create_subscription_stmt__field_descriptors,
   pg_query__create_subscription_stmt__field_indices_by_name,
   1,  pg_query__create_subscription_stmt__number_ranges,
   (ProtobufCMessageInit) pg_query__create_subscription_stmt__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor pg_query__alter_subscription_stmt__field_descriptors[5] =
+static const ProtobufCFieldDescriptor pg_query__alter_subscription_stmt__field_descriptors[6] =
 {
   {
     "kind",
@@ -40572,9 +40611,22 @@ static const ProtobufCFieldDescriptor pg_query__alter_subscription_stmt__field_d
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "conninfo_location",
+    6,
+    PROTOBUF_C_LABEL_NONE,
+    PROTOBUF_C_TYPE_INT32,
+    0,   /* quantifier_offset */
+    offsetof(PgQuery__AlterSubscriptionStmt, conninfo_location),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned pg_query__alter_subscription_stmt__field_indices_by_name[] = {
   2,   /* field[2] = conninfo */
+  5,   /* field[5] = conninfo_location */
   0,   /* field[0] = kind */
   4,   /* field[4] = options */
   3,   /* field[3] = publication */
@@ -40583,7 +40635,7 @@ static const unsigned pg_query__alter_subscription_stmt__field_indices_by_name[]
 static const ProtobufCIntRange pg_query__alter_subscription_stmt__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 5 }
+  { 0, 6 }
 };
 const ProtobufCMessageDescriptor pg_query__alter_subscription_stmt__descriptor =
 {
@@ -40593,7 +40645,7 @@ const ProtobufCMessageDescriptor pg_query__alter_subscription_stmt__descriptor =
   "PgQuery__AlterSubscriptionStmt",
   "pg_query",
   sizeof(PgQuery__AlterSubscriptionStmt),
-  5,
+  6,
   pg_query__alter_subscription_stmt__field_descriptors,
   pg_query__alter_subscription_stmt__field_indices_by_name,
   1,  pg_query__alter_subscription_stmt__number_ranges,

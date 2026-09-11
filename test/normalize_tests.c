@@ -50,6 +50,28 @@ const char* tests[] = {
   "NOTIFY channel, $1",
   "NOTIFY channel",
   "NOTIFY channel",
+  // The grammar records where each of these string constants starts, so we
+  // never have to search the query text for them (which could land mid-token)
+  "do language a$b $$xx$$ 'yy'",
+  "do language a$b $1 $2",
+  "DO LANGUAGE a$b $$xxx$$",
+  "DO LANGUAGE a$b $1",
+  "DO LANGUAGE \"la$nguage\" $$x$$",
+  "DO LANGUAGE \"la$nguage\" $1",
+  "NOTIFY \"a,'b\", 'p'",
+  "NOTIFY \"a,'b\", $1",
+  "CREATE SUBSCRIPTION s0 CONNECTION e'\\x41' PUBLICATION p0; CREATE SUBSCRIPTION s1 CONNECTION e'\\x54' PUBLICATION p1",
+  "CREATE SUBSCRIPTION s0 CONNECTION $1 PUBLICATION p0; CREATE SUBSCRIPTION s1 CONNECTION $2 PUBLICATION p1",
+  "CREATE SUBSCRIPTION s1 CONNECTION 'CREATE' PUBLICATION p1",
+  "CREATE SUBSCRIPTION s1 CONNECTION $1 PUBLICATION p1",
+  "CREATE SUBSCRIPTION s1 CONNECTION '' PUBLICATION p1",
+  "CREATE SUBSCRIPTION s1 CONNECTION $1 PUBLICATION p1",
+  "CREATE ROLE r PASSWORD U&'d\\0061t\\+000061'",
+  "CREATE ROLE r PASSWORD $1",
+  "CREATE FUNCTION functest(a text) RETURNS bool LANGUAGE SQL RETURN a = 'abcd'",
+  "CREATE FUNCTION functest(a text) RETURNS bool LANGUAGE SQL RETURN a = 'abcd'",
+  "CREATE FUNCTION f() RETURNS int LANGUAGE c AS 'obj_file', 'link_symbol'",
+  "CREATE FUNCTION f() RETURNS int LANGUAGE c AS $1, 'link_symbol'",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
@@ -62,4 +84,4 @@ const char* tests[] = {
   "SELECT $1; ALTER USER a WITH PASSWORD $2",
 };
 
-size_t testsLength = __LINE__ - 7;
+size_t testsLength = __LINE__ - 9;

@@ -1411,6 +1411,7 @@ _readDefElem(OUT_TYPE(DefElem, DefElem) msg)
   READ_NODE_PTR_FIELD(arg, arg, arg);
   READ_ENUM_FIELD(DefElemAction, defaction, defaction, defaction);
   READ_INT_FIELD(location, location, location);
+  READ_INT_FIELD(arg_location, arg_location, arg_location);
   return node;
 }
 
@@ -2966,6 +2967,7 @@ _readNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) msg)
   NotifyStmt *node = makeNode(NotifyStmt);
   READ_STRING_FIELD(conditionname, conditionname, conditionname);
   READ_STRING_FIELD(payload, payload, payload);
+  READ_INT_FIELD(payload_location, payload_location, payload_location);
   return node;
 }
 
@@ -3376,6 +3378,7 @@ _readCreateSubscriptionStmt(OUT_TYPE(CreateSubscriptionStmt, CreateSubscriptionS
   READ_STRING_FIELD(conninfo, conninfo, conninfo);
   READ_LIST_FIELD(publication, publication, publication);
   READ_LIST_FIELD(options, options, options);
+  READ_INT_FIELD(conninfo_location, conninfo_location, conninfo_location);
   return node;
 }
 
@@ -3388,6 +3391,7 @@ _readAlterSubscriptionStmt(OUT_TYPE(AlterSubscriptionStmt, AlterSubscriptionStmt
   READ_STRING_FIELD(conninfo, conninfo, conninfo);
   READ_LIST_FIELD(publication, publication, publication);
   READ_LIST_FIELD(options, options, options);
+  READ_INT_FIELD(conninfo_location, conninfo_location, conninfo_location);
   return node;
 }
 

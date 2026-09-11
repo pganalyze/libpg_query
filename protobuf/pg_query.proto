@@ -1272,6 +1272,7 @@ message DefElem
   Node arg = 3 [json_name="arg"];
   DefElemAction defaction = 4 [json_name="defaction"];
   int32 location = 5 [json_name="location"];
+  int32 arg_location = 6 [json_name="arg_location"];
 }
 
 message LockingClause
@@ -2445,6 +2446,7 @@ message NotifyStmt
 {
   string conditionname = 1 [json_name="conditionname"];
   string payload = 2 [json_name="payload"];
+  int32 payload_location = 3 [json_name="payload_location"];
 }
 
 message ListenStmt
@@ -2732,6 +2734,7 @@ message CreateSubscriptionStmt
   string conninfo = 2 [json_name="conninfo"];
   repeated Node publication = 3 [json_name="publication"];
   repeated Node options = 4 [json_name="options"];
+  int32 conninfo_location = 5 [json_name="conninfo_location"];
 }
 
 message AlterSubscriptionStmt
@@ -2741,6 +2744,7 @@ message AlterSubscriptionStmt
   string conninfo = 3 [json_name="conninfo"];
   repeated Node publication = 4 [json_name="publication"];
   repeated Node options = 5 [json_name="options"];
+  int32 conninfo_location = 6 [json_name="conninfo_location"];
 }
 
 message DropSubscriptionStmt
