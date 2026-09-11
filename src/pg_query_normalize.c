@@ -567,6 +567,23 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 				if (jstate->normalize_utility_only) return false;
 				return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
 			}
+		case T_NotifyStmt:
+			{
+				NotifyStmt *stmt = castNode(NotifyStmt, node);
+
+				if (stmt->payload == NULL)
+					break; // No payload to normalize.
+
+				char *loc = strstr(jstate->query, ",");
+
+				if (loc == NULL)
+					// Somehow there's a payload but no comma?
+					// This should be impossible.
+					break;
+
+				record_defelem_arg_location(jstate, loc - jstate->query + 1);
+				break;
+			}
 		case T_InsertStmt:
 			{
 				if (jstate->normalize_utility_only) return false;
