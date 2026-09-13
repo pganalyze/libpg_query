@@ -10,6 +10,7 @@
 #include "common/keywords.h"
 #include "common/kwlookup.h"
 #include "lib/stringinfo.h"
+#include "miscadmin.h"
 #include "nodes/nodes.h"
 #include "nodes/parsenodes.h"
 #include "nodes/pg_list.h"
@@ -786,6 +787,18 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 {
 	if (node == NULL)
 		return;
+
+	/*
+	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
+	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
+	 * added did not, so untrusted input recursed until the OS stack ran out and
+	 * the process died with SIGSEGV/SIGBUS instead of raising an error. This is
+	 * the single dispatcher every nesting level passes through, so one call
+	 * covers the whole tree.
+	 */
+	check_stack_depth();
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -11839,6 +11852,17 @@ static void deparseSchemaStmt(DeparseState *state, Node *node)
 static void deparseStmt(DeparseState *state, Node *node)
 {
 	DeparseStateNestingLevel *parent_level = NULL;
+
+	/*
+	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
+	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
+	 * added did not, so untrusted input recursed until the OS stack ran out and
+	 * the process died with SIGSEGV/SIGBUS instead of raising an error. This is
+	 * the single dispatcher every nesting level passes through, so one call
+	 * covers the whole tree.
+	 */
+	check_stack_depth();
 
 	// For statements that can be nested, push/pop is handled directly in the
 	// respective deparse...Stmt methods

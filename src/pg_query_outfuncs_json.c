@@ -1,6 +1,7 @@
 #include "pg_query_outfuncs.h"
 
 #include "postgres.h"
+#include "miscadmin.h"
 
 #include <ctype.h>
 
@@ -289,6 +290,14 @@ _outAConst(StringInfo out, const A_Const *node)
 static void
 _outNode(StringInfo out, const void *obj)
 {
+	/*
+	 * NOTE (goosedb fork): same guard as the protobuf serializer — this is the
+	 * single dispatcher every nesting level passes through. Without it,
+	 * pg_query_parse() (the JSON entry point) dies with SIGSEGV on deeply
+	 * nested input instead of returning an error.
+	 */
+	check_stack_depth();
+
 	if (obj == NULL)
 	{
 		appendStringInfoString(out, "null");

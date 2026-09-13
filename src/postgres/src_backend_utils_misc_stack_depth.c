@@ -52,12 +52,43 @@ static __thread char *stack_base_ptr = NULL;
  * set_stack_base: set up reference point for stack depth checking
  *
  * Returns the old reference point, if any.
+ *
+ * NOTE: the body was previously stripped here, leaving only the declaration
+ * in miscadmin.h. Without it stack_base_ptr stays NULL forever, so
+ * stack_is_too_deep() can never return true and check_stack_depth() is dead
+ * code everywhere it is called. Body restored from PostgreSQL verbatim.
  */
 #ifndef HAVE__BUILTIN_FRAME_ADDRESS
+static char *stack_base_ptr_workaround = NULL;
 #endif
+
+pg_stack_base_t
+set_stack_base(void)
+{
 #ifdef HAVE__BUILTIN_FRAME_ADDRESS
+	char	   *stack_base;
 #else
+	char		stack_base;
 #endif
+	pg_stack_base_t old;
+
+	old = stack_base_ptr;
+
+	/*
+	 * Set up reference point for stack depth checking.  On recent gcc we use
+	 * __builtin_frame_address() to avoid a warning about storing a local
+	 * variable's address in a long-lived variable.
+	 */
+#ifdef HAVE__BUILTIN_FRAME_ADDRESS
+	stack_base = __builtin_frame_address(0);
+	stack_base_ptr = stack_base;
+#else
+	stack_base_ptr = &stack_base;
+	stack_base_ptr_workaround = &stack_base;
+#endif
+
+	return old;
+}
 
 /*
  * restore_stack_base: restore reference point for stack depth checking
@@ -68,6 +99,11 @@ static __thread char *stack_base_ptr = NULL;
  * the main thread's stack, so it sets the base pointer before the call, and
  * restores it afterwards.
  */
+void
+restore_stack_base(pg_stack_base_t base)
+{
+	stack_base_ptr = base;
+}
 
 
 
@@ -131,7 +167,22 @@ stack_is_too_deep(void)
 /* GUC check hook for max_stack_depth */
 
 
-/* GUC assign hook for max_stack_depth */
+/*
+ * GUC assign hook for max_stack_depth
+ *
+ * NOTE: the body was previously stripped here too, so max_stack_depth_bytes
+ * was stuck at the 100kB compile-time default. That is far too small for the
+ * deparse walker (~1kB of C stack per nesting level): ordinary queries would
+ * be rejected once the guard is armed. pg_query_enter_memory_context() now
+ * passes a limit derived from the running thread's actual stack.
+ */
+void
+assign_max_stack_depth(int newval, void *extra)
+{
+	ssize_t		newval_bytes = newval * (ssize_t) 1024;
+
+	max_stack_depth_bytes = newval_bytes;
+}
 
 
 /*

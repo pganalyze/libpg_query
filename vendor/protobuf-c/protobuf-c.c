@@ -50,6 +50,32 @@
 
 #include "protobuf-c.h"
 
+/*
+ * NOTE (goosedb fork): nesting limit for the unpack recursion.
+ *
+ * protobuf-c has no recursion limit at all, so a deeply nested message
+ * recurses until the C stack runs out and the process dies. Every other
+ * protobuf implementation bounds this (protobuf-go's default is 10000); this
+ * is the same defence.
+ *
+ * 🚨 Why a counter with a NULL return instead of PostgreSQL's
+ * check_stack_depth(): libpg_query calls unpack with the default allocator
+ * (malloc), so ereport()'s longjmp would abandon every submessage allocated so
+ * far -- an unbounded leak on a path an attacker controls. Returning NULL is
+ * protobuf-c's own error convention and its error path frees what it built.
+ *
+ * The counter is reset by the caller at each public entry point (a longjmp out
+ * of an enclosing PostgreSQL walker would otherwise leave it non-zero).
+ */
+__thread unsigned protobuf_c_unpack_nesting = 0;
+
+/*
+ * goosedb fork: declared rather than included. protobuf-c is standalone C and
+ * pulling in postgres.h here would drag PostgreSQL's whole prelude (and its
+ * palloc/pfree macros) into this translation unit.
+ */
+extern void check_stack_depth(void);
+
 #define TRUE				1
 #define FALSE				0
 
@@ -709,6 +735,21 @@ unknown_field_get_packed_size(const ProtobufCMessageUnknownField *field)
  */
 size_t protobuf_c_message_get_packed_size(const ProtobufCMessage *message)
 {
+	/*
+	 * goosedb fork: bound the size-computation recursion.
+	 *
+	 * 🚨 This is the guard that protects the *pack* walk as well, and the
+	 * ordering is why it is safe to put it only here. libpg_query always calls
+	 * get_packed_size() first, then malloc()s the output buffer, then calls
+	 * pack(). Raising from here therefore happens **before** any malloc, so the
+	 * longjmp leaks nothing. Putting a guard inside pack() instead would
+	 * abandon that buffer on every rejection.
+	 *
+	 * pack() walks the same tree to the same depth right afterwards, so a tree
+	 * that fits here fits there too.
+	 */
+	check_stack_depth();
+
 	unsigned i;
 	size_t rv = 0;
 
@@ -3022,8 +3063,17 @@ message_init_generic(const ProtobufCMessageDescriptor *desc,
 #define REQUIRED_FIELD_BITMAP_IS_SET(index)	\
 	(required_fields_bitmap[(index)/8] & (1UL<<((index)%8)))
 
-ProtobufCMessage *
-protobuf_c_message_unpack(const ProtobufCMessageDescriptor *desc,
+/*
+ * goosedb fork: the real body, renamed. The public symbol below is a thin
+ * wrapper that owns the nesting counter.
+ *
+ * 🚨 Why a wrapper instead of ++/-- inside the body: this function has many
+ * return paths (every malformed-input branch returns early), so decrementing
+ * in place would leak depth on some of them and eventually reject valid input.
+ * A wrapper has exactly one return path.
+ */
+static ProtobufCMessage *
+protobuf_c_message_unpack_bounded(const ProtobufCMessageDescriptor *desc,
 			  ProtobufCAllocator *allocator,
 			  size_t len, const uint8_t *data)
 {
@@ -3664,4 +3714,47 @@ protobuf_c_service_descriptor_get_method_by_name(const ProtobufCServiceDescripto
 	if (strcmp(desc->methods[desc->method_indices_by_name[start]].name, name) == 0)
 		return desc->methods + desc->method_indices_by_name[start];
 	return NULL;
+}
+/*
+ * goosedb fork: public entry point for the bounded unpack.
+ *
+ * The recursive call inside the body (parse_required_member -> here) goes
+ * through this wrapper too, which is what makes the bound effective.
+ *
+ * The counter is also reset at every libpg_query public entry point, so a
+ * longjmp out of an enclosing PostgreSQL walker cannot leave it stuck high.
+ */
+ProtobufCMessage *
+protobuf_c_message_unpack(const ProtobufCMessageDescriptor *desc,
+			  ProtobufCAllocator *allocator,
+			  size_t len, const uint8_t *data)
+{
+	ProtobufCMessage *rv;
+
+	/*
+	 * goosedb fork: two bounds, and they are not redundant.
+	 *
+	 * check_stack_depth() is the one that actually matters: this function puts
+	 * a ScannedMember slab on the stack per invocation, so each nesting level
+	 * costs ~1kB and the stack -- not the level count -- is the resource that
+	 * runs out. It raises through PostgreSQL's error machinery, which is safe
+	 * here only because libpg_query now hands us a palloc-backed allocator
+	 * (see pg_query_protobuf_allocator): the longjmp drops the whole memory
+	 * context, so nothing leaks.
+	 *
+	 * The level counter stays as a cheap absolute ceiling for callers that pass
+	 * their own malloc-backed allocator (protobuf-c's public API allows it, and
+	 * such a caller cannot tolerate the longjmp) -- for them the NULL return is
+	 * the only safe rejection.
+	 */
+	check_stack_depth();
+
+	if (protobuf_c_unpack_nesting >= PROTOBUF_C_MAX_UNPACK_NESTING)
+		return NULL;
+
+	protobuf_c_unpack_nesting++;
+	rv = protobuf_c_message_unpack_bounded(desc, allocator, len, data);
+	protobuf_c_unpack_nesting--;
+
+	return rv;
 }
