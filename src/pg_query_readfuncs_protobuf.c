@@ -1,5 +1,7 @@
 #include "pg_query_readfuncs.h"
+#include "pg_query_internal.h"
 
+#include "miscadmin.h"
 #include "nodes/nodes.h"
 #include "nodes/parsenodes.h"
 #include "nodes/pg_list.h"
@@ -96,6 +98,17 @@ static List * _readList(PgQuery__List *msg)
 
 static Node * _readNode(PgQuery__Node *msg)
 {
+	/*
+	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
+	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
+	 * added did not, so untrusted input recursed until the OS stack ran out and
+	 * the process died with SIGSEGV/SIGBUS instead of raising an error. This is
+	 * the single dispatcher every nesting level passes through, so one call
+	 * covers the whole tree.
+	 */
+	check_stack_depth();
+
 	switch (msg->node_case)
 	{
 		#include "pg_query_readfuncs_conds.c"
@@ -158,10 +171,26 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 	List * list = NULL;
 	size_t i = 0;
 
-	result = pg_query__parse_result__unpack(NULL, protobuf.len, (const uint8_t *) protobuf.data);
+	result = pg_query__parse_result__unpack(&pg_query_protobuf_allocator, protobuf.len, (const uint8_t *) protobuf.data);
 
-	// TODO: Handle this by returning an error instead
-	Assert(result != NULL);
+	/*
+	 * NOTE (goosedb fork): upstream's TODO said "Handle this by returning an
+	 * error instead" and left an Assert, which is a no-op in release builds --
+	 * a NULL here then segfaults on result->version below.
+	 *
+	 * NULL now also means "nesting limit reached" (see
+	 * PROTOBUF_C_MAX_UNPACK_NESTING in protobuf-c.c), which untrusted input can
+	 * trigger, so this path must raise rather than trust the Assert. We are
+	 * inside the caller's PG_TRY and protobuf-c already freed its partial
+	 * allocations before returning NULL, so ereport is safe here.
+	 */
+	if (result == NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_STATEMENT_TOO_COMPLEX),
+				 errmsg("could not decode parse tree"),
+				 errdetail("The protobuf message is malformed, or its nesting "
+						   "exceeds the limit of %d.",
+						   PROTOBUF_C_MAX_UNPACK_NESTING)));
 
 	// TODO: Handle this by returning an error instead
 	Assert(result->version == PG_VERSION_NUM);
@@ -171,7 +200,13 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
     for (i = 1; i < result->n_stmts; i++)
 		list = lappend(list, _readRawStmt(result->stmts[i]));
 
-	pg_query__parse_result__free_unpacked(result, NULL);
+	/*
+	 * goosedb fork: must pass the same allocator we unpacked with -- freeing
+	 * palloc'ed memory through free() would corrupt the heap. (The enclosing
+	 * memory context would reclaim it anyway; the explicit free is kept so the
+	 * peak stays lower for large trees.)
+	 */
+	pg_query__parse_result__free_unpacked(result, &pg_query_protobuf_allocator);
 
 	return list;
 }

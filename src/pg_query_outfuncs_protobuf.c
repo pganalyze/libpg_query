@@ -1,6 +1,7 @@
 #include "pg_query_outfuncs.h"
 
 #include "postgres.h"
+#include "miscadmin.h"
 #include <ctype.h>
 #include "access/relation.h"
 #include "nodes/parsenodes.h"
@@ -248,6 +249,17 @@ _outNode(PgQuery__Node* out, const void *obj)
 {
 	if (obj == NULL)
 		return; // Keep out as NULL
+
+	/*
+	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
+	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
+	 * added did not, so untrusted input recursed until the OS stack ran out and
+	 * the process died with SIGSEGV/SIGBUS instead of raising an error. This is
+	 * the single dispatcher every nesting level passes through, so one call
+	 * covers the whole tree.
+	 */
+	check_stack_depth();
 
 	switch (nodeTag(obj))
 	{
