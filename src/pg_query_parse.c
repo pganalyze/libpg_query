@@ -135,9 +135,45 @@ PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
 	result.error = parsetree_and_error.error;
 
-	tree_json = pg_query_nodes_to_json(parsetree_and_error.tree);
-	result.parse_tree = strdup(tree_json);
-	pfree(tree_json);
+	/*
+	 * NOTE (goosedb fork): same reasoning as the protobuf path below -- the
+	 * serialization walk needs its own PG_TRY, because pg_query_raw_parse()'s
+	 * has already ended and an ereport() with no exception stack escalates to
+	 * FATAL (the process exits instead of returning an error).
+	 */
+	if (result.error == NULL)
+	{
+		MemoryContext serialize_context = CurrentMemoryContext;
+
+		PG_TRY();
+		{
+			tree_json = pg_query_nodes_to_json(parsetree_and_error.tree);
+			result.parse_tree = strdup(tree_json);
+			pfree(tree_json);
+		}
+		PG_CATCH();
+		{
+			ErrorData  *error_data;
+			PgQueryError *error;
+
+			MemoryContextSwitchTo(serialize_context);
+			error_data = CopyErrorData();
+
+			/* malloc so it survives exiting the memory context (as above) */
+			error = malloc(sizeof(PgQueryError));
+			error->message   = strdup(error_data->message);
+			error->filename  = strdup(error_data->filename);
+			error->funcname  = strdup(error_data->funcname);
+			error->context   = NULL;
+			error->lineno    = error_data->lineno;
+			error->cursorpos = error_data->cursorpos;
+
+			result.error = error;
+			result.parse_tree = NULL;
+			FlushErrorState();
+		}
+		PG_END_TRY();
+	}
 
 	pg_query_exit_memory_context(ctx);
 
@@ -162,7 +198,51 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 	// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
 	result.stderr_buffer = parsetree_and_error.stderr_buffer;
 	result.error = parsetree_and_error.error;
-	result.parse_tree = pg_query_nodes_to_protobuf(parsetree_and_error.tree);
+
+	/*
+	 * NOTE (goosedb fork): the serialization step needs its own PG_TRY.
+	 *
+	 * pg_query_raw_parse() has one, but it ends before we get here, so an
+	 * ereport() raised while walking the tree had no exception stack to unwind
+	 * to and PostgreSQL escalated it to FATAL -- the process exited instead of
+	 * returning an error. That became reachable the moment _outNode started
+	 * calling check_stack_depth(): a deeply nested statement turned
+	 * "return an error" into "kill the process", which is the very thing the
+	 * depth check exists to prevent.
+	 *
+	 * Only set result.parse_tree when the walk succeeded; on error the caller
+	 * sees result.error and a zeroed parse_tree.
+	 */
+	if (result.error == NULL)
+	{
+		MemoryContext serialize_context = CurrentMemoryContext;
+
+		PG_TRY();
+		{
+			result.parse_tree = pg_query_nodes_to_protobuf(parsetree_and_error.tree);
+		}
+		PG_CATCH();
+		{
+			ErrorData  *error_data;
+			PgQueryError *error;
+
+			MemoryContextSwitchTo(serialize_context);
+			error_data = CopyErrorData();
+
+			/* malloc so it survives exiting the memory context (as above) */
+			error = malloc(sizeof(PgQueryError));
+			error->message   = strdup(error_data->message);
+			error->filename  = strdup(error_data->filename);
+			error->funcname  = strdup(error_data->funcname);
+			error->context   = NULL;
+			error->lineno    = error_data->lineno;
+			error->cursorpos = error_data->cursorpos;
+
+			result.error = error;
+			FlushErrorState();
+		}
+		PG_END_TRY();
+	}
 
 	pg_query_exit_memory_context(ctx);
 

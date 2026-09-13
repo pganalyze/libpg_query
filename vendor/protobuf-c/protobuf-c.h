@@ -955,6 +955,17 @@ protobuf_c_message_pack_to_buffer(
  *      If an error occurred during unpacking.
  */
 PROTOBUF_C__API
+/*
+ * NOTE (goosedb fork): nesting limit for the unpack recursion, and the
+ * per-thread counter that enforces it. Declared here because libpg_query's
+ * call sites report the limit in their error message.
+ *
+ * protobuf-c upstream has no recursion limit; every other protobuf runtime
+ * bounds this (protobuf-go's default is also 10000).
+ */
+#define PROTOBUF_C_MAX_UNPACK_NESTING 10000
+extern __thread unsigned protobuf_c_unpack_nesting;
+
 ProtobufCMessage *
 protobuf_c_message_unpack(
 	const ProtobufCMessageDescriptor *descriptor,
