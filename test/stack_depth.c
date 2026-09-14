@@ -231,6 +231,9 @@ thread_main(void *arg)
 int
 main(void)
 {
+	/* Unbuffered, so a crash still shows which check was running. */
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 	run_checks("main thread", false);
 
 #ifdef _WIN32
