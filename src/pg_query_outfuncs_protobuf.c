@@ -251,7 +251,7 @@ _outNode(PgQuery__Node* out, const void *obj)
 		return; // Keep out as NULL
 
 	/*
-	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * Depth guard for libpg_query's *own* recursive
 	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
 	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
 	 * added did not, so untrusted input recursed until the OS stack ran out and

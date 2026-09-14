@@ -956,7 +956,7 @@ protobuf_c_message_pack_to_buffer(
  */
 PROTOBUF_C__API
 /*
- * NOTE (goosedb fork): nesting limit for the unpack recursion, and the
+ * Nesting limit for the unpack recursion, and the
  * per-thread counter that enforces it. Declared here because libpg_query's
  * call sites report the limit in their error message.
  *

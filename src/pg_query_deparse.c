@@ -135,7 +135,7 @@ pg_query_deparse_comments_for_query(const char *query)
 
 	PgQuery__ScanResult *scan_result = pg_query__scan_result__unpack(&pg_query_protobuf_allocator, scan_result_raw.pbuf.len, (void *) scan_result_raw.pbuf.data);
 
-	/* goosedb fork: NULL now also means "nesting/stack limit reached" */
+	/* NULL now also means "nesting/stack limit reached" */
 	if (scan_result == NULL)
 		ereport(ERROR,
 				(errcode(ERRCODE_STATEMENT_TOO_COMPLEX),
@@ -221,7 +221,7 @@ pg_query_deparse_comments_for_query(const char *query)
 	}
 
 	/*
-	 * goosedb fork: must match the allocator used by the unpack above. Freeing
+	 * Must match the allocator used by the unpack above. Freeing
 	 * palloc'd memory with the default allocator's free() corrupts the heap.
 	 */
 	pg_query__scan_result__free_unpacked(scan_result, &pg_query_protobuf_allocator);

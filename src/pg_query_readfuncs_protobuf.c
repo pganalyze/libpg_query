@@ -99,7 +99,7 @@ static List * _readList(PgQuery__List *msg)
 static Node * _readNode(PgQuery__Node *msg)
 {
 	/*
-	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * Depth guard for libpg_query's *own* recursive
 	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
 	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
 	 * added did not, so untrusted input recursed until the OS stack ran out and
@@ -174,7 +174,7 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 	result = pg_query__parse_result__unpack(&pg_query_protobuf_allocator, protobuf.len, (const uint8_t *) protobuf.data);
 
 	/*
-	 * NOTE (goosedb fork): upstream's TODO said "Handle this by returning an
+	 * The previous TODO said "Handle this by returning an
 	 * error instead" and left an Assert, which is a no-op in release builds --
 	 * a NULL here then segfaults on result->version below.
 	 *
@@ -201,7 +201,7 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 		list = lappend(list, _readRawStmt(result->stmts[i]));
 
 	/*
-	 * goosedb fork: must pass the same allocator we unpacked with -- freeing
+	 * Must pass the same allocator we unpacked with -- freeing
 	 * palloc'ed memory through free() would corrupt the heap. (The enclosing
 	 * memory context would reclaim it anyway; the explicit free is kept so the
 	 * peak stays lower for large trees.)

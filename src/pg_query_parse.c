@@ -136,7 +136,7 @@ PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
 	result.error = parsetree_and_error.error;
 
 	/*
-	 * NOTE (goosedb fork): same reasoning as the protobuf path below -- the
+	 * Same reasoning as the protobuf path below -- the
 	 * serialization walk needs its own PG_TRY, because pg_query_raw_parse()'s
 	 * has already ended and an ereport() with no exception stack escalates to
 	 * FATAL (the process exits instead of returning an error).
@@ -200,7 +200,7 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 	result.error = parsetree_and_error.error;
 
 	/*
-	 * NOTE (goosedb fork): the serialization step needs its own PG_TRY.
+	 * The serialization step needs its own PG_TRY.
 	 *
 	 * pg_query_raw_parse() has one, but it ends before we get here, so an
 	 * ereport() raised while walking the tree had no exception stack to unwind

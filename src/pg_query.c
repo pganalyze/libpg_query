@@ -5,7 +5,7 @@
 #include <miscadmin.h>
 #include <tcop/tcopprot.h>
 
-/* goosedb fork: protobuf-c nesting counter (see protobuf-c.c) */
+/* Nesting counter for protobuf-c unpacking (see protobuf-c.c) */
 extern __thread unsigned protobuf_c_unpack_nesting;
 #include <utils/memutils.h>
 #include <utils/memdebug.h>
@@ -179,7 +179,7 @@ pg_query_arm_stack_guard(void)
 }
 
 /*
- * NOTE (goosedb fork): a palloc-backed allocator for protobuf-c.
+ * A palloc-backed allocator for protobuf-c.
  *
  * libpg_query passed NULL (protobuf-c's malloc/free default) to every
  * unpack call. That made the unpack recursion impossible to guard: the only

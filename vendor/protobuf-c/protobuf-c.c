@@ -51,7 +51,7 @@
 #include "protobuf-c.h"
 
 /*
- * NOTE (goosedb fork): nesting limit for the unpack recursion.
+ * Nesting limit for the unpack recursion.
  *
  * protobuf-c has no recursion limit at all, so a deeply nested message
  * recurses until the C stack runs out and the process dies. Every other
@@ -70,7 +70,7 @@
 __thread unsigned protobuf_c_unpack_nesting = 0;
 
 /*
- * goosedb fork: declared rather than included. protobuf-c is standalone C and
+ * Declared rather than included. protobuf-c is standalone C and
  * pulling in postgres.h here would drag PostgreSQL's whole prelude (and its
  * palloc/pfree macros) into this translation unit.
  */
@@ -736,7 +736,7 @@ unknown_field_get_packed_size(const ProtobufCMessageUnknownField *field)
 size_t protobuf_c_message_get_packed_size(const ProtobufCMessage *message)
 {
 	/*
-	 * goosedb fork: bound the size-computation recursion.
+	 * Bound the size-computation recursion.
 	 *
 	 * 🚨 This is the guard that protects the *pack* walk as well, and the
 	 * ordering is why it is safe to put it only here. libpg_query always calls
@@ -3064,7 +3064,7 @@ message_init_generic(const ProtobufCMessageDescriptor *desc,
 	(required_fields_bitmap[(index)/8] & (1UL<<((index)%8)))
 
 /*
- * goosedb fork: the real body, renamed. The public symbol below is a thin
+ * The real body, renamed. The public symbol below is a thin
  * wrapper that owns the nesting counter.
  *
  * 🚨 Why a wrapper instead of ++/-- inside the body: this function has many
@@ -3716,7 +3716,7 @@ protobuf_c_service_descriptor_get_method_by_name(const ProtobufCServiceDescripto
 	return NULL;
 }
 /*
- * goosedb fork: public entry point for the bounded unpack.
+ * Public entry point for the bounded unpack.
  *
  * The recursive call inside the body (parse_required_member -> here) goes
  * through this wrapper too, which is what makes the bound effective.
@@ -3732,7 +3732,7 @@ protobuf_c_message_unpack(const ProtobufCMessageDescriptor *desc,
 	ProtobufCMessage *rv;
 
 	/*
-	 * goosedb fork: two bounds, and they are not redundant.
+	 * Two bounds, and they are not redundant.
 	 *
 	 * check_stack_depth() is the one that actually matters: this function puts
 	 * a ScannedMember slab on the stack per invocation, so each nesting level

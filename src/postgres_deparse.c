@@ -789,7 +789,7 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 		return;
 
 	/*
-	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * Depth guard for libpg_query's *own* recursive
 	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
 	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
 	 * added did not, so untrusted input recursed until the OS stack ran out and
@@ -11854,7 +11854,7 @@ static void deparseStmt(DeparseState *state, Node *node)
 	DeparseStateNestingLevel *parent_level = NULL;
 
 	/*
-	 * NOTE (goosedb fork): depth guard for libpg_query's *own* recursive
+	 * Depth guard for libpg_query's *own* recursive
 	 * walker. Every walker PostgreSQL ships calls check_stack_depth()
 	 * (copyfuncs.c, nodeFuncs.c, equalfuncs.c all do); the walkers libpg_query
 	 * added did not, so untrusted input recursed until the OS stack ran out and

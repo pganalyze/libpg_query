@@ -21,7 +21,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char *input, int parse
 
 void		pg_query_free_error(PgQueryError * error);
 
-/* goosedb fork: palloc-backed allocator for protobuf-c (see pg_query.c) */
+/* Allocator for protobuf-c backed by palloc (see pg_query.c) */
 extern ProtobufCAllocator pg_query_protobuf_allocator;
 
 MemoryContext pg_query_enter_memory_context();
