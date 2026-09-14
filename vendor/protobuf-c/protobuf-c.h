@@ -937,6 +937,27 @@ protobuf_c_message_pack_to_buffer(
 	const ProtobufCMessage *message,
 	ProtobufCBuffer *buffer);
 
+/*
+ * Nesting limit for the unpack recursion, and the per-thread counter that
+ * enforces it. Declared here so that libpg_query can reset the counter at each
+ * public entry point (see pg_query.c).
+ *
+ * protobuf-c upstream has no recursion limit; every other protobuf runtime
+ * bounds this (protobuf-go's default is also 10000).
+ *
+ * This header is included without PostgreSQL's pg_config.h, which is what
+ * maps __thread for MSVC, so the thread-local keyword is spelled out here.
+ */
+#define PROTOBUF_C_MAX_UNPACK_NESTING 10000
+
+#if defined(_MSC_VER)
+# define PROTOBUF_C__THREAD_LOCAL __declspec(thread)
+#else
+# define PROTOBUF_C__THREAD_LOCAL __thread
+#endif
+
+extern PROTOBUF_C__THREAD_LOCAL unsigned protobuf_c_unpack_nesting;
+
 /**
  * Unpack a serialised message into an in-memory representation.
  *
@@ -955,17 +976,6 @@ protobuf_c_message_pack_to_buffer(
  *      If an error occurred during unpacking.
  */
 PROTOBUF_C__API
-/*
- * Nesting limit for the unpack recursion, and the
- * per-thread counter that enforces it. Declared here because libpg_query's
- * call sites report the limit in their error message.
- *
- * protobuf-c upstream has no recursion limit; every other protobuf runtime
- * bounds this (protobuf-go's default is also 10000).
- */
-#define PROTOBUF_C_MAX_UNPACK_NESTING 10000
-extern __thread unsigned protobuf_c_unpack_nesting;
-
 ProtobufCMessage *
 protobuf_c_message_unpack(
 	const ProtobufCMessageDescriptor *descriptor,

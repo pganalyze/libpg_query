@@ -58,16 +58,13 @@
  * protobuf implementation bounds this (protobuf-go's default is 10000); this
  * is the same defence.
  *
- * 🚨 Why a counter with a NULL return instead of PostgreSQL's
- * check_stack_depth(): libpg_query calls unpack with the default allocator
- * (malloc), so ereport()'s longjmp would abandon every submessage allocated so
- * far -- an unbounded leak on a path an attacker controls. Returning NULL is
- * protobuf-c's own error convention and its error path frees what it built.
+ * It backs up check_stack_depth() rather than replacing it; see
+ * protobuf_c_message_unpack() for why both exist.
  *
  * The counter is reset by the caller at each public entry point (a longjmp out
  * of an enclosing PostgreSQL walker would otherwise leave it non-zero).
  */
-__thread unsigned protobuf_c_unpack_nesting = 0;
+PROTOBUF_C__THREAD_LOCAL unsigned protobuf_c_unpack_nesting = 0;
 
 /*
  * Declared rather than included. protobuf-c is standalone C and
@@ -3740,12 +3737,15 @@ protobuf_c_message_unpack(const ProtobufCMessageDescriptor *desc,
 	 * runs out. It raises through PostgreSQL's error machinery, which is safe
 	 * here only because libpg_query now hands us a palloc-backed allocator
 	 * (see pg_query_protobuf_allocator): the longjmp drops the whole memory
-	 * context, so nothing leaks.
+	 * context, so nothing leaks. Every unpack call in libpg_query passes that
+	 * allocator; a caller passing a malloc-backed one must not reach this
+	 * function with a message deep enough to trip the check.
 	 *
-	 * The level counter stays as a cheap absolute ceiling for callers that pass
-	 * their own malloc-backed allocator (protobuf-c's public API allows it, and
-	 * such a caller cannot tolerate the longjmp) -- for them the NULL return is
-	 * the only safe rejection.
+	 * The level counter stays as a cheap absolute ceiling that does not depend
+	 * on the thread's stack size: on a very large stack the depth limit alone
+	 * would allow far more levels than any real parse tree has. Hitting it
+	 * returns NULL, protobuf-c's own error convention, whose error path frees
+	 * what it built.
 	 */
 	check_stack_depth();
 

@@ -1,22 +1,43 @@
+/*
+ * pg_query_arm_stack_guard() calls pthread_getattr_np() on Linux. That is a
+ * GNU extension which glibc and musl declare only under _GNU_SOURCE, and the
+ * feature macros are latched by the first system header, so the define has to
+ * come before any #include. Without it the call is an implicit declaration,
+ * which clang and GCC 14 reject.
+ *
+ * Kept to this file on purpose: the pregenerated pg_config.h sets
+ * STRERROR_R_INT, which assumes the XSI strerror_r(), and defining
+ * _GNU_SOURCE for every file would hand src_port_strerror.c the GNU prototype.
+ */
+#if defined(__linux__) && !defined(_GNU_SOURCE)
+#define _GNU_SOURCE
+#endif
+
 #include "pg_query.h"
 #include "pg_query_internal.h"
 
 #include <mb/pg_wchar.h>
 #include <miscadmin.h>
 #include <tcop/tcopprot.h>
-
-/* Nesting counter for protobuf-c unpacking (see protobuf-c.c) */
-extern __thread unsigned protobuf_c_unpack_nesting;
 #include <utils/memutils.h>
 #include <utils/memdebug.h>
 #include "protobuf-c/protobuf-c.h"
 #include <utils/guc_hooks.h>
 
 /*
- * pthread is needed unconditionally by pg_query_arm_stack_guard() (it asks
- * the running thread for its stack size), not just by the thread-exit hook.
+ * pg_query_arm_stack_guard() asks the running thread for its stack size,
+ * which needs pthread on macOS as well as wherever HAVE_PTHREAD is set.
+ * pg_config.h leaves HAVE_PTHREAD undefined for MSVC, which has no pthread.h.
  */
+#if defined(HAVE_PTHREAD) || defined(__APPLE__)
 #include <pthread.h>
+#endif
+
+#if defined(HAVE_PTHREAD) && defined(__linux__)
+#include <sys/resource.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+#endif
 
 #include <signal.h>
 
@@ -100,7 +121,7 @@ void pg_query_exit(void)
  * Both are __thread, and a caller may invoke us from any thread (Go's cgo
  * calls run on the OS thread backing the current M, which changes over time),
  * so we re-arm on every entry. The cost is one frame-address read plus, on
- * the first call for a thread, one pthread attribute query.
+ * the first call for a thread, one query for its stack size.
  *
  * The limit is derived from the thread's *actual* stack size rather than
  * hardcoded: the same statement that is safe on an 8MB thread overflows a
@@ -124,8 +145,43 @@ pg_query_arm_stack_guard(void)
 
 #if defined(__APPLE__)
 		stack_bytes = pthread_get_stacksize_np(pthread_self());
-#elif defined(HAVE_PTHREAD) && defined(__GLIBC__)
+#elif defined(WIN32)
 		{
+			/*
+			 * The fallback below would be wrong here rather than merely
+			 * imprecise: Windows gives threads 1MB by default, so a 2MB limit
+			 * could never fire before the stack overflowed.
+			 * GetCurrentThreadStackLimits() needs Windows 8; PostgreSQL
+			 * already requires Windows 10 (port/win32.h).
+			 */
+			ULONG_PTR	low;
+			ULONG_PTR	high;
+
+			GetCurrentThreadStackLimits(&low, &high);
+			stack_bytes = (size_t) (high - low);
+		}
+#elif defined(HAVE_PTHREAD) && defined(__linux__)
+		if (getpid() == (pid_t) syscall(SYS_gettid))
+		{
+			/*
+			 * The main thread's stack grows on demand up to RLIMIT_STACK, which
+			 * is also what PostgreSQL itself consults. pthread_getattr_np()
+			 * cannot be used here: musl reports only the part of the main
+			 * stack mapped so far (about 130kB early on), which would reject
+			 * ordinary queries. An unlimited rlimit leaves the fallback below.
+			 */
+			struct rlimit rlim;
+
+			if (getrlimit(RLIMIT_STACK, &rlim) == 0 && rlim.rlim_cur != RLIM_INFINITY)
+				stack_bytes = (size_t) rlim.rlim_cur;
+		}
+		else
+		{
+			/*
+			 * glibc and musl both provide this for other threads. musl matters
+			 * in particular: its default thread stack is about 130kB, far below
+			 * the fallback.
+			 */
 			pthread_attr_t attr;
 
 			if (pthread_getattr_np(pthread_self(), &attr) == 0)
@@ -142,9 +198,9 @@ pg_query_arm_stack_guard(void)
 
 		/*
 		 * Fall back to PostgreSQL's own default when the platform will not
-		 * tell us. 2MB is what postgresql.conf ships, and it is small enough
-		 * to sit inside the 8MB stacks that both glibc and macOS give threads
-		 * by default.
+		 * tell us (e.g. the BSDs). 2MB is what postgresql.conf ships and fits
+		 * the 8MB main-thread stacks those systems use, but it is not safe on
+		 * a thread with a smaller stack; that is why the platforms above ask.
 		 */
 		if (stack_bytes == 0)
 			pg_query_stack_limit_kb = 2048;
