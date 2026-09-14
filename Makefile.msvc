@@ -50,7 +50,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate test/stack_depth
 test: $(TESTS)
 	.\test\deparse
 	.\test\fingerprint
@@ -65,6 +65,7 @@ test: $(TESTS)
 	.\test\split
 	.\test\summary
 	.\test\summary_truncate
+	.\test\stack_depth
 
 # Doesn't work because of C2026: string too big, trailing characters truncated
 #test/complex: test/complex.c $(ARLIB)
@@ -118,3 +119,6 @@ test/summary: test/framework/main.c test/summary.c test/summary_tests.c test/sum
 
 test/summary_truncate: test/framework/main.c test/summary_truncate.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/framework/main.c test/summary_truncate.c $(ARLIB)
+
+test/stack_depth: test/stack_depth.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/stack_depth.c $(ARLIB)
