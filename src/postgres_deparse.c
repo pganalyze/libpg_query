@@ -19,6 +19,96 @@
 #include "utils/xml.h"
 
 /*
+ * Strict structural checking of the input tree (on by default).
+ *
+ * The deparser receives its parse tree from the caller (in libpg_query, from
+ * an arbitrary protobuf), so the tree may not have the shape a given deparse
+ * path expects. The stock code documents those expectations with Assert(),
+ * which is a no-op in a release build, so a malformed tree instead triggers
+ * out-of-bounds reads that can leak adjacent heap memory or crash. Two cases:
+ *
+ *   - A node's actual type not matching what a path expects. The stock
+ *     castNode() is a bare cast with no runtime check, so intVal()/strVal()/
+ *     boolVal()/floatVal() read the wrong union member.
+ *
+ *   - A list being shorter than a path assumes. The stock linitial()/lsecond()/
+ *     lthird()/lfourth()/llast() index past the end of the ListCell array.
+ *
+ * By default we redefine those macros here to check and raise a normal error
+ * on violation, caught by libpg_query's surrounding PG_TRY and returned as a
+ * PgQueryError. Redefining castNode() covers intVal()/strVal()/etc., since
+ * they are all defined in terms of it; redefining the positional list
+ * accessors covers every fixed-index access.
+ *
+ * Define PG_QUERY_DEPARSE_NO_STRICT_CHECKS to opt out and keep the stock
+ * unchecked macros -- e.g. if you feed the deparser only trees you have
+ * already validated and want to avoid the per-access checks.
+ */
+#ifndef PG_QUERY_DEPARSE_NO_STRICT_CHECKS
+static inline void *
+pg_query_strict_cast_node(NodeTag type, void *ptr, const char *file, int line)
+{
+	if (ptr != NULL && nodeTag(ptr) != type)
+		elog(ERROR, "deparse: unexpected node type %d, expected %d (%s:%d)",
+			 (int) nodeTag(ptr), (int) type, file, line);
+	return ptr;
+}
+#undef castNode
+#define castNode(_type_, nodeptr) \
+	((_type_ *) pg_query_strict_cast_node(T_##_type_, (nodeptr), __FILE__, __LINE__))
+
+/*
+ * intVal()/strVal()/boolVal()/floatVal() extract a scalar from a value node, so
+ * a NULL node is always a bug (a genuinely-absent value is handled by the
+ * caller before extraction, e.g. "PASSWORD NULL"). Reject NULL here rather than
+ * dereferencing it. castNode()'s own check then covers a wrong node type.
+ */
+static inline void *
+pg_query_require_value_node(void *ptr, const char *file, int line)
+{
+	if (ptr == NULL)
+		elog(ERROR, "deparse: value extraction from NULL node (%s:%d)", file, line);
+	return ptr;
+}
+#undef intVal
+#undef floatVal
+#undef boolVal
+#undef strVal
+#define intVal(v)	(castNode(Integer, pg_query_require_value_node((v), __FILE__, __LINE__))->ival)
+#define floatVal(v)	atof(castNode(Float, pg_query_require_value_node((v), __FILE__, __LINE__))->fval)
+#define boolVal(v)	(castNode(Boolean, pg_query_require_value_node((v), __FILE__, __LINE__))->boolval)
+#define strVal(v)	(castNode(String, pg_query_require_value_node((v), __FILE__, __LINE__))->sval)
+
+static inline void *
+pg_query_checked_list_nth(const List *l, int n, const char *file, int line)
+{
+	if (l == NIL || n < 0 || n >= list_length(l))
+		elog(ERROR, "deparse: list index %d out of range for length %d (%s:%d)",
+			 n, list_length(l), file, line);
+	return list_nth(l, n);
+}
+
+static inline void *
+pg_query_checked_list_last(const List *l, const char *file, int line)
+{
+	if (l == NIL)
+		elog(ERROR, "deparse: llast() on empty list (%s:%d)", file, line);
+	return list_nth(l, list_length(l) - 1);
+}
+
+#undef linitial
+#undef lsecond
+#undef lthird
+#undef lfourth
+#undef llast
+#define linitial(l)	pg_query_checked_list_nth((l), 0, __FILE__, __LINE__)
+#define lsecond(l)	pg_query_checked_list_nth((l), 1, __FILE__, __LINE__)
+#define lthird(l)	pg_query_checked_list_nth((l), 2, __FILE__, __LINE__)
+#define lfourth(l)	pg_query_checked_list_nth((l), 3, __FILE__, __LINE__)
+#define llast(l)	pg_query_checked_list_last((l), __FILE__, __LINE__)
+#endif
+
+/*
  * # Deparser overview
  *
  * The deparser works by walking the input parse tree and emitting into the
@@ -736,6 +826,9 @@ static void deparseAnyNameSkipLast(DeparseState *state, List *parts)
 // "func_expr" in gram.y
 static void deparseFuncExpr(DeparseState *state, Node *node, DeparseNodeContext context)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
@@ -785,6 +878,7 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 {
 	if (node == NULL)
 		return;
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -861,6 +955,9 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 // "b_expr" in gram.y
 static void deparseBExpr(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node in deparseBExpr");
+
 	if (IsA(node, XmlExpr)) {
 		deparseXmlExpr(state, castNode(XmlExpr, node), DEPARSE_NODE_CONTEXT_NONE);
 		return;
@@ -889,6 +986,9 @@ static void deparseBExpr(DeparseState *state, Node *node)
 // "AexprConst" in gram.y
 static void deparseAexprConst(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_A_Const:
@@ -907,6 +1007,9 @@ static void deparseAexprConst(DeparseState *state, Node *node)
 // "c_expr" in gram.y
 static void deparseCExpr(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -1042,6 +1145,9 @@ static void deparseSimpleTypename(DeparseState *state, Node *node)
 // "NumericOnly" in gram.y
 static void deparseNumericOnly(DeparseState *state, union ValUnion *value)
 {
+	if (value == NULL)
+		elog(ERROR, "deparse: unexpected NULL value in deparseNumericOnly");
+
 	switch (nodeTag(value))
 	{
 		case T_Integer:
@@ -1423,7 +1529,7 @@ static void deparseCommonFuncOptItem(DeparseState *state, DefElem *def_elem)
 		deparseAppendStringInfoString(state, "SUPPORT ");
 		deparseAnyName(state, castNode(List, def_elem->arg));
 	}
-	else if (strcmp(def_elem->defname, "set") == 0 && IsA(def_elem->arg, VariableSetStmt)) // FunctionSetResetClause
+	else if (strcmp(def_elem->defname, "set") == 0 && def_elem->arg != NULL && IsA(def_elem->arg, VariableSetStmt)) // FunctionSetResetClause
 	{
 		deparseVariableSetStmt(state, castNode(VariableSetStmt, def_elem->arg));
 	}
@@ -1572,6 +1678,9 @@ static void deparseFuncName(DeparseState *state, List *func_name)
 // "function_with_argtypes" in gram.y
 static void deparseFunctionWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	ListCell *lc;
 	deparseFuncName(state, object_with_args->objname);
 
@@ -1611,6 +1720,9 @@ static void deparseFunctionWithArgtypesList(DeparseState *state, List *l)
 // "operator_with_argtypes" in gram.y
 static void deparseOperatorWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	deparseAnyOperator(state, object_with_args->objname);
 
 	Assert(list_length(object_with_args->objargs) == 2);
@@ -1673,6 +1785,9 @@ static void deparseAggrArgs(DeparseState *state, List *aggr_args)
 // "aggregate_with_argtypes" in gram.y
 static void deparseAggregateWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	ListCell *lc = NULL;
 
 	deparseFuncName(state, object_with_args->objname);
@@ -2152,6 +2267,9 @@ static void deparseXmlNamespaceList(DeparseState *state, List *l)
 // "table_ref" in gram.y
 static void deparseTableRef(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_RangeVar:
@@ -2357,7 +2475,8 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 			deparseAppendCommaAndPart(state);
 
 		ResTarget *res_target = castNode(ResTarget, lfirst(lc));
-		Assert(res_target->val != NULL);
+		if (res_target->val == NULL)
+			elog(ERROR, "deparse: unexpected NULL val in SET clause ResTarget");
 
 		if (IsA(res_target->val, MultiAssignRef))
 		{
@@ -2387,6 +2506,9 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 // "func_expr_windowless" in gram.y
 static void deparseFuncExprWindowless(DeparseState *state, Node* node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
@@ -2731,6 +2853,9 @@ static void deparseUtilityOptionList(DeparseState *state, List *options)
 
 static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNodeContext context)
 {
+	if (stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL SelectStmt");
+
 	const ListCell *lc = NULL;
 	const ListCell *lc2 = NULL;
 	bool need_parens = context == DEPARSE_NODE_CONTEXT_SELECT_SETOP && (
@@ -2799,6 +2924,8 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 
 			if (stmt->intoClause != NULL)
 			{
+				if (stmt->intoClause->rel == NULL)
+					elog(ERROR, "deparse: unexpected NULL rel in IntoClause");
 				deparseAppendPartGroup(state, "INTO", DEPARSE_PART_INDENT);
 				deparseOptTemp(state, stmt->intoClause->rel->relpersistence);
 				deparseIntoClause(state, stmt->intoClause);
@@ -2975,6 +3102,9 @@ static void deparseIntoClause(DeparseState *state, IntoClause *into_clause)
 
 static void deparseRangeVar(DeparseState *state, RangeVar *range_var, DeparseNodeContext context)
 {
+	if (range_var == NULL)
+		elog(ERROR, "deparse: unexpected NULL RangeVar");
+
 	if (!range_var->inh && context != DEPARSE_NODE_CONTEXT_CREATE_TYPE && context != DEPARSE_NODE_CONTEXT_ALTER_TYPE)
 		deparseAppendStringInfoString(state, "ONLY ");
 
@@ -3074,6 +3204,9 @@ static void deparseAConst(DeparseState *state, A_Const *a_const)
 
 static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNodeContext context)
 {
+	if (func_call == NULL)
+		elog(ERROR, "deparse: unexpected NULL FuncCall");
+
 	const ListCell *lc = NULL;
 
 	Assert(list_length(func_call->funcname) > 0);
@@ -3607,6 +3740,9 @@ needsParensAsBExpr(Node *node)
 // This handles "A_Expr" parse tree objects, which are a subset of the rules in "a_expr" (handled by deparseExpr)
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context)
 {
+	if (a_expr->rexpr == NULL)
+		elog(ERROR, "deparse: unexpected NULL rexpr in A_Expr");
+
 	ListCell *lc;
 	char *name;
 
@@ -3998,6 +4134,9 @@ static void deparseWithClause(DeparseState *state, WithClause *with_clause)
 // "joined_table" in gram.y
 static void deparseJoinExpr(DeparseState *state, JoinExpr *join_expr)
 {
+	if (join_expr->larg == NULL || join_expr->rarg == NULL)
+		elog(ERROR, "deparse: unexpected NULL larg/rarg in JoinExpr");
+
 	ListCell *lc;
 	bool need_alias_parens = join_expr->alias != NULL;
 	bool need_rarg_parens = IsA(join_expr->rarg, JoinExpr) && castNode(JoinExpr, join_expr->rarg)->alias == NULL;
@@ -4273,9 +4412,12 @@ static void deparseRowExpr(DeparseState *state, RowExpr *row_expr)
 
 static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNodeContext context)
 {
-	bool need_parens = needsParensAsBExpr(type_cast->arg);
+	bool need_parens;
 
-	Assert(type_cast->typeName != NULL);
+	if (type_cast->arg == NULL || type_cast->typeName == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg/typeName in TypeCast");
+
+	need_parens = needsParensAsBExpr(type_cast->arg);
 
 	if (context == DEPARSE_NODE_CONTEXT_FUNC_EXPR)
 	{
@@ -4357,6 +4499,9 @@ static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNod
 
 static void deparseTypeName(DeparseState *state, TypeName *type_name)
 {
+	if (type_name == NULL)
+		elog(ERROR, "deparse: unexpected NULL TypeName");
+
 	ListCell *lc;
 	bool skip_typmods = false;
 
@@ -4632,6 +4777,9 @@ static void deparseCaseWhen(DeparseState *state, CaseWhen *case_when)
 
 static void deparseAIndirection(DeparseState *state, A_Indirection *a_indirection)
 {
+	if (a_indirection->arg == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg in A_Indirection");
+
 	ListCell *lc;
 	bool need_parens =
 		IsA(a_indirection->arg, A_Indirection) ||
@@ -4690,6 +4838,9 @@ static void deparseMinMaxExpr(DeparseState *state, MinMaxExpr *min_max_expr)
 
 static void deparseBooleanTest(DeparseState *state, BooleanTest *boolean_test)
 {
+	if (boolean_test->arg == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg in BooleanTest");
+
 	bool need_parens = IsA(boolean_test->arg, BoolExpr);
 
 	if (need_parens)
@@ -4728,6 +4879,9 @@ static void deparseBooleanTest(DeparseState *state, BooleanTest *boolean_test)
 // "columnDef" and "alter_table_cmd" in gram.y
 static void deparseColumnDef(DeparseState *state, ColumnDef *column_def)
 {
+	if (column_def == NULL)
+		elog(ERROR, "deparse: unexpected NULL ColumnDef");
+
 	ListCell *lc;
 
 	if (column_def->colname != NULL)
@@ -5385,6 +5539,9 @@ static void deparseCreateExtensionStmt(DeparseState *state, CreateExtensionStmt 
 // "ColConstraintElem" and "ConstraintElem" in gram.y
 static void deparseConstraint(DeparseState *state, Constraint *constraint, DeparseNodeContext context)
 {
+	if (constraint == NULL)
+		elog(ERROR, "deparse: unexpected NULL Constraint");
+
 	ListCell *lc;
 
 	if (constraint->conname != NULL)
@@ -5866,6 +6023,9 @@ static void deparseCreateConversionStmt(DeparseState *state, CreateConversionStm
 
 static void deparseRoleSpec(DeparseState *state, RoleSpec *role_spec)
 {
+	if (role_spec == NULL)
+		elog(ERROR, "deparse: unexpected NULL RoleSpec");
+
 	switch (role_spec->roletype)
 	{
 		case ROLESPEC_CSTRING:
@@ -5976,6 +6136,9 @@ static void deparsePartitionBoundSpec(DeparseState *state, PartitionBoundSpec *p
 
 static void deparsePartitionCmd(DeparseState *state, PartitionCmd *partition_cmd)
 {
+	if (partition_cmd == NULL)
+		elog(ERROR, "deparse: unexpected NULL PartitionCmd");
+
 	deparseRangeVar(state, partition_cmd->name, DEPARSE_NODE_CONTEXT_NONE);
 
 	if (partition_cmd->bound != NULL)
@@ -5990,6 +6153,9 @@ static void deparsePartitionCmd(DeparseState *state, PartitionCmd *partition_cmd
 // "TableElement" in gram.y
 static void deparseTableElement(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnDef:
@@ -6008,6 +6174,9 @@ static void deparseTableElement(DeparseState *state, Node *node)
 
 static void deparseCreateStmt(DeparseState *state, CreateStmt *create_stmt, bool is_foreign_table)
 {
+	if (create_stmt->relation == NULL)
+		elog(ERROR, "deparse: unexpected NULL relation in CreateStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -6431,6 +6600,10 @@ static void deparseImportForeignSchemaStmt(DeparseState *state, ImportForeignSch
 
 static void deparseCreateTableAsStmt(DeparseState *state, CreateTableAsStmt *create_table_as_stmt)
 {
+	if (create_table_as_stmt->into == NULL || create_table_as_stmt->into->rel == NULL ||
+		create_table_as_stmt->query == NULL)
+		elog(ERROR, "deparse: unexpected NULL into/query in CreateTableAsStmt");
+
 	ListCell *lc;
 	deparseAppendStringInfoString(state, "CREATE ");
 
@@ -6471,6 +6644,9 @@ static void deparseCreateTableAsStmt(DeparseState *state, CreateTableAsStmt *cre
 
 static void deparseViewStmt(DeparseState *state, ViewStmt *view_stmt)
 {
+	if (view_stmt->view == NULL)
+		elog(ERROR, "deparse: unexpected NULL view in ViewStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -7796,6 +7972,9 @@ static bool isSetTimeZoneInterval(VariableSetStmt* stmt)
 
 static void deparseVariableSetStmt(DeparseState *state, VariableSetStmt* variable_set_stmt)
 {
+	if (variable_set_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL VariableSetStmt");
+
 	ListCell *lc;
 
 	switch (variable_set_stmt->kind)
@@ -8188,6 +8367,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				else if (strcmp(def_elem->defname, "force_quote") == 0)
 				{
 					deparseAppendStringInfoString(state, "FORCE_QUOTE ");
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_QUOTE");
 					if (IsA(def_elem->arg, A_Star))
 					{
 						deparseAppendStringInfoChar(state, '*');
@@ -8207,6 +8388,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				{
 					deparseAppendStringInfoString(state, "FORCE_NOT_NULL ");
 
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_NOT_NULL");
 					if (IsA(def_elem->arg, A_Star))
 						deparseAStar(state, castNode(A_Star, def_elem->arg));
 					else
@@ -8220,6 +8403,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				{
 					deparseAppendStringInfoString(state, "FORCE_NULL ");
 
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_NULL");
 					if (IsA(def_elem->arg, A_Star))
 						deparseAStar(state, castNode(A_Star, def_elem->arg));
 					else
@@ -8737,6 +8922,9 @@ static void deparseAccessPriv(DeparseState *state, AccessPriv *access_priv)
 
 static void deparseGrantStmt(DeparseState *state, GrantStmt *grant_stmt)
 {
+	if (grant_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL GrantStmt");
+
 	ListCell *lc;
 	if (grant_stmt->is_grant)
 		deparseAppendStringInfoString(state, "GRANT ");
@@ -8804,6 +8992,8 @@ static void deparseGrantRoleStmt(DeparseState *state, GrantRoleStmt *grant_role_
 
 	if (!grant_role_stmt->is_grant && list_length(grant_role_stmt->opt)) {
 		DefElem *defelem = castNode(DefElem, linitial(grant_role_stmt->opt));
+		if (defelem->arg == NULL)
+			elog(ERROR, "deparse: unexpected NULL arg in GRANT role option");
 		Assert(!castNode(Boolean, defelem->arg)->boolval);
 
 		if (strcmp("admin", defelem->defname) == 0) {
@@ -8840,6 +9030,8 @@ static void deparseGrantRoleStmt(DeparseState *state, GrantRoleStmt *grant_role_
 
 		foreach(lc, grant_role_stmt->opt) {
 			DefElem *defelem = castNode(DefElem, lfirst(lc));
+			if (defelem->arg == NULL)
+				elog(ERROR, "deparse: unexpected NULL arg in GRANT role option");
 			if (strcmp("admin", defelem->defname) == 0) {
 				deparseAppendStringInfoString(state, "ADMIN ");
 				deparseAppendStringInfoString(state, castNode(Boolean, defelem->arg)->boolval ? "OPTION" : "FALSE");
@@ -9502,6 +9694,9 @@ static void deparseUnlistenStmt(DeparseState *state, UnlistenStmt *unlisten_stmt
 
 static void deparseCreateSeqStmt(DeparseState *state, CreateSeqStmt *create_seq_stmt)
 {
+	if (create_seq_stmt->sequence == NULL)
+		elog(ERROR, "deparse: unexpected NULL sequence in CreateSeqStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -9653,6 +9848,9 @@ static void deparseRefreshMatViewStmt(DeparseState *state, RefreshMatViewStmt *r
 
 static void deparseReplicaIdentityStmt(DeparseState *state, ReplicaIdentityStmt *replica_identity_stmt)
 {
+	if (replica_identity_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL ReplicaIdentityStmt");
+
 	switch (replica_identity_stmt->identity_type)
 	{
 		case REPLICA_IDENTITY_NOTHING:
@@ -9839,6 +10037,8 @@ static void deparsePublicationObjectList(DeparseState *state, List *pubobjects) 
 
 		switch (obj->pubobjtype) {
 			case PUBLICATIONOBJ_TABLE:
+				if (obj->pubtable == NULL)
+					elog(ERROR, "deparse: unexpected NULL pubtable in PublicationObjSpec");
 				deparseAppendStringInfoString(state, "TABLE ");
 				deparseRangeVar(state, obj->pubtable->relation, DEPARSE_NODE_CONTEXT_NONE);
 				
@@ -11063,6 +11263,9 @@ static void deparseJsonIsPredicate(DeparseState *state, JsonIsPredicate *j)
 // "json_value_expr" in gram.y
 static void deparseJsonValueExpr(DeparseState *state, JsonValueExpr *json_value_expr)
 {
+	if (json_value_expr == NULL)
+		elog(ERROR, "deparse: unexpected NULL JsonValueExpr");
+
 	deparseExpr(state, (Node *) json_value_expr->raw_expr, DEPARSE_NODE_CONTEXT_A_EXPR);
 	deparseAppendStringInfoChar(state, ' ');
 	deparseJsonFormat(state, json_value_expr->format);
@@ -11109,7 +11312,8 @@ static void deparseJsonOutput(DeparseState *state, JsonOutput *json_output)
 	if (json_output == NULL)
 		return;
 
-	Assert(json_output->returning != NULL);
+	if (json_output->returning == NULL)
+		elog(ERROR, "deparse: unexpected NULL returning in JsonOutput");
 
 	deparseAppendStringInfoString(state, "RETURNING ");
 	deparseTypeName(state, json_output->typeName);
@@ -11612,6 +11816,9 @@ static void deparseValue(DeparseState *state, union ValUnion *value, DeparseNode
 // "PrepareableStmt" in gram.y
 static void deparsePreparableStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11637,6 +11844,9 @@ static void deparsePreparableStmt(DeparseState *state, Node *node)
 // "RuleActionStmt" in gram.y
 static void deparseRuleActionStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11662,6 +11872,9 @@ static void deparseRuleActionStmt(DeparseState *state, Node *node)
 // "ExplainableStmt" in gram.y
 static void deparseExplainableStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11699,6 +11912,9 @@ static void deparseExplainableStmt(DeparseState *state, Node *node)
 // "schema_stmt" in gram.y
 static void deparseSchemaStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_CreateStmt:
@@ -11764,6 +11980,9 @@ static void deparseStmt(DeparseState *state, Node *node)
 	//
 	// And the following grammar names error out in the parser:
 	// - CreateAssertionStmt (not supported yet)
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_AlterEventTrigStmt:

@@ -160,15 +160,18 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 
 	result = pg_query__parse_result__unpack(NULL, protobuf.len, (const uint8_t *) protobuf.data);
 
-	// TODO: Handle this by returning an error instead
-	Assert(result != NULL);
+	if (result == NULL)
+		elog(ERROR, "could not unpack protobuf parse tree");
 
-	// TODO: Handle this by returning an error instead
-	Assert(result->version == PG_VERSION_NUM);
+	if (result->version != PG_VERSION_NUM)
+	{
+		pg_query__parse_result__free_unpacked(result, NULL);
+		elog(ERROR, "protobuf parse tree version mismatch: %d (expected %d)", result->version, PG_VERSION_NUM);
+	}
 
 	if (result->n_stmts > 0)
 		list = list_make1(_readRawStmt(result->stmts[0]));
-    for (i = 1; i < result->n_stmts; i++)
+	for (i = 1; i < result->n_stmts; i++)
 		list = lappend(list, _readRawStmt(result->stmts[i]));
 
 	pg_query__parse_result__free_unpacked(result, NULL);
