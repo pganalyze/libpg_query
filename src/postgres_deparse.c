@@ -3294,8 +3294,19 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		if (isLocal)
 			deparseAppendStringInfoString(state, " AT LOCAL");
 		else {
+			Node *zone = linitial(func_call->args);
+
 			deparseAppendStringInfoString(state, " AT TIME ZONE ");
-			deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
+
+			if (IsA(zone, A_Expr)) {
+				deparseAppendStringInfoChar(state, '(');
+			}
+
+			deparseExpr(state, zone, DEPARSE_NODE_CONTEXT_A_EXPR);
+
+			if (IsA(zone, A_Expr)) {
+				deparseAppendStringInfoChar(state, ')');
+			}
 		}
 
 		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
