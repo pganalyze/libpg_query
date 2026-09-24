@@ -22,28 +22,34 @@
 	out->node_case = PG_QUERY__NODE__NODE_##typename_underscore_upcase; \
   }
 
-#define WRITE_INT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
-#define WRITE_UINT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
-#define WRITE_UINT64_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
-#define WRITE_LONG_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
-#define WRITE_FLOAT_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
-#define WRITE_BOOL_FIELD(outname, outname_json, fldname) out->outname = node->fldname;
+/*
+ * These macros are invoked from the generated pg_query_outfuncs_defs.c /
+ * _conds.c, shared with the C++ and JSON backends. The leading `msgtype`
+ * argument names the enclosing message type; this backend sets fields on the
+ * typed `out` struct directly and ignores it.
+ */
+#define WRITE_INT_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_UINT_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_UINT64_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_LONG_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_FLOAT_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
+#define WRITE_BOOL_FIELD(msgtype, outname, outname_json, fldname) out->outname = node->fldname;
 
-#define WRITE_CHAR_FIELD(outname, outname_json, fldname) \
+#define WRITE_CHAR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != 0) { \
 		out->outname = palloc(sizeof(char) * 2); \
 		out->outname[0] = node->fldname; \
 		out->outname[1] = '\0'; \
 	}
-#define WRITE_STRING_FIELD(outname, outname_json, fldname) \
+#define WRITE_STRING_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		out->outname = pstrdup(node->fldname); \
 	}
 
-#define WRITE_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	out->outname = _enumToInt##typename(node->fldname);
+#define WRITE_ENUM_FIELD(msgtype, enumtype, outname, outname_json, fldname) \
+	out->outname = _enumToInt##enumtype(node->fldname);
 
-#define WRITE_LIST_FIELD(outname, outname_json, fldname) \
+#define WRITE_LIST_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 	  out->n_##outname = list_length(node->fldname); \
 	  out->outname = palloc(sizeof(PgQuery__Node*) * out->n_##outname); \
@@ -56,7 +62,7 @@
       } \
     }
 
-#define WRITE_BITMAPSET_FIELD(outname, outname_json, fldname) \
+#define WRITE_BITMAPSET_FIELD(msgtype, outname, outname_json, fldname) \
 	if (!bms_is_empty(node->fldname)) \
 	{ \
 		int x = -1; \
@@ -67,7 +73,7 @@
 			out->outname[i++] = x; \
     }
 
-#define WRITE_NODE_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_FIELD(msgtype, outname, outname_json, fldname) \
 	{ \
 		PgQuery__Node *__node = palloc(sizeof(PgQuery__Node)); \
 		pg_query__node__init(__node); \
@@ -75,7 +81,7 @@
 		_outNode(out->outname, &node->fldname); \
 	}
 
-#define WRITE_NODE_PTR_FIELD(outname, outname_json, fldname) \
+#define WRITE_NODE_PTR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		PgQuery__Node *__node = palloc(sizeof(PgQuery__Node)); \
 		pg_query__node__init(__node); \
@@ -83,7 +89,7 @@
 		_outNode(out->outname, node->fldname); \
 	}
 
-#define WRITE_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	{ \
 		PgQuery__##typename *__node = palloc(sizeof(PgQuery__##typename)); \
 		pg_query__##typename_underscore##__init(__node); \
@@ -91,7 +97,7 @@
 		out->outname = __node; \
 	}
 
-#define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define WRITE_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		PgQuery__##typename *__node = palloc(sizeof(PgQuery__##typename)); \
 		pg_query__##typename_underscore##__init(__node); \
