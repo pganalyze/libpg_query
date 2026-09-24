@@ -12,27 +12,32 @@
 	case PG_QUERY__NODE__NODE_##typename_underscore_upcase: \
 		return (Node *) _read##typename_c(msg->outname);
 
-#define READ_INT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
-#define READ_UINT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
-#define READ_UINT64_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
-#define READ_LONG_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
-#define READ_FLOAT_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
-#define READ_BOOL_FIELD(outname, outname_json, fldname) node->fldname = msg->outname;
+/*
+ * As in the outfuncs, every READ_ macro takes the enclosing message type as a
+ * leading `msgtype` argument; this backend reads fields from the typed `msg`
+ * struct directly and ignores it.
+ */
+#define READ_INT_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_UINT_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_UINT64_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_LONG_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_FLOAT_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
+#define READ_BOOL_FIELD(msgtype, outname, outname_json, fldname) node->fldname = msg->outname;
 
-#define READ_CHAR_FIELD(outname, outname_json, fldname) \
+#define READ_CHAR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (msg->outname != NULL && strlen(msg->outname) > 0) { \
 		node->fldname = msg->outname[0]; \
 	}
 
-#define READ_STRING_FIELD(outname, outname_json, fldname) \
+#define READ_STRING_FIELD(msgtype, outname, outname_json, fldname) \
 	if (msg->outname != NULL && strlen(msg->outname) > 0) { \
 		node->fldname = pstrdup(msg->outname); \
 	}
 
-#define READ_ENUM_FIELD(typename, outname, outname_json, fldname) \
-	node->fldname = _intToEnum##typename(msg->outname);
+#define READ_ENUM_FIELD(msgtype, enumtype, outname, outname_json, fldname) \
+	node->fldname = _intToEnum##enumtype(msg->outname);
 
-#define READ_LIST_FIELD(outname, outname_json, fldname) \
+#define READ_LIST_FIELD(msgtype, outname, outname_json, fldname) \
 	{ \
 		if (msg->n_##outname > 0) \
 			node->fldname = list_make1(_readNode(msg->outname[0])); \
@@ -40,43 +45,43 @@
 			node->fldname = lappend(node->fldname, _readNode(msg->outname[i])); \
 	}
 
-#define READ_BITMAPSET_FIELD(outname, outname_json, fldname) // FIXME
+#define READ_BITMAPSET_FIELD(msgtype, outname, outname_json, fldname) // FIXME
 
-#define READ_NODE_FIELD(outname, outname_json, fldname) \
+#define READ_NODE_FIELD(msgtype, outname, outname_json, fldname) \
 	node->fldname = *_readNode(msg->outname);
 
-#define READ_NODE_PTR_FIELD(outname, outname_json, fldname) \
+#define READ_NODE_PTR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (msg->outname != NULL) { \
 		node->fldname = _readNode(msg->outname); \
 	}
 
-#define READ_ABSTRACT_PTR_FIELD(outname, outname_json, fldname, fldtype) \
+#define READ_ABSTRACT_PTR_FIELD(msgtype, outname, outname_json, fldname, fldtype) \
 	if (msg->outname != NULL) { \
 		node->fldname = (fldtype) _readNode(msg->outname); \
 	}
 
-#define READ_VALUE_FIELD(outname, outname_json, fldname) \
+#define READ_VALUE_FIELD(msgtype, outname, outname_json, fldname) \
 	if (msg->outname != NULL) { \
 		node->fldname = *((Value *) _readNode(msg->outname)); \
 	}
 
-#define READ_VALUE_PTR_FIELD(outname, outname_json, fldname) \
+#define READ_VALUE_PTR_FIELD(msgtype, outname, outname_json, fldname) \
 	if (msg->outname != NULL) { \
 		node->fldname = (Value *) _readNode(msg->outname); \
 	}
 
-#define READ_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define READ_SPECIFIC_NODE_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	node->fldname = *_read##typename(msg->outname);
 
-#define READ_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
+#define READ_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	if (msg->outname != NULL) { \
 		node->fldname = _read##typename(msg->outname); \
 	}
 
-static Node * _readNode(PgQuery__Node *msg);
+static Node * _readNode(const PgQuery__Node *msg);
 
 static String *
-_readString(PgQuery__String* msg)
+_readString(const PgQuery__String* msg)
 {
 	return makeString(pstrdup(msg->sval));
 }
@@ -84,7 +89,7 @@ _readString(PgQuery__String* msg)
 #include "pg_query_enum_defs.c"
 #include "pg_query_readfuncs_defs.c"
 
-static List * _readList(PgQuery__List *msg)
+static List * _readList(const PgQuery__List *msg)
 {
 	List *node = NULL;
 	if (msg->n_items > 0)
@@ -94,7 +99,7 @@ static List * _readList(PgQuery__List *msg)
 	return node;
 }
 
-static Node * _readNode(PgQuery__Node *msg)
+static Node * _readNode(const PgQuery__Node *msg)
 {
 	switch (msg->node_case)
 	{
