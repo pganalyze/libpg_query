@@ -12,7 +12,7 @@ PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 170007
 PROTOC_VERSION = 25.1
 
-VERSION = 6.2.0
+VERSION = 6.2.3
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
@@ -69,7 +69,7 @@ CLEANOBJS = $(OBJ_FILES)
 CLEANFILES = $(PGDIRBZ2) $(PGDIRZIP)
 
 AR ?= ar
-AR := $(AR) rs
+ARFLAGS ?= rs
 INSTALL = install
 LN_S = ln -s
 RM = rm -f
@@ -188,7 +188,7 @@ extract_source: $(PGDIR)
 	@$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(ARLIB): $(OBJ_FILES) Makefile
-	@$(AR) $@ $(OBJ_FILES)
+	@$(AR) $(ARFLAGS) $@ $(OBJ_FILES)
 
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)

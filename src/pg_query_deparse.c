@@ -270,7 +270,7 @@ pg_query_deparse_raw_opts(PgQueryRawParseResult parse_result, PostgresDeparseOpt
 PgQueryDeparseCommentsResult
 pg_query_deparse_comments_for_query(const char *query)
 {
-	PgQueryDeparseCommentsResult result;
+	PgQueryDeparseCommentsResult result = {0};
 	PgQueryScanResult scan_result_raw = pg_query_scan(query);
 
 	if (scan_result_raw.error)

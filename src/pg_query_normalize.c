@@ -336,10 +336,20 @@ static void RecordConstLocation(pgssConstLocations *jstate, int location)
 	}
 }
 
+static bool is_string_delimiter(char c)
+{
+	return c == '\'' || c == '$';
+}
+
+static bool is_special_string_start(char c)
+{
+	return c == 'b' || c == 'B' || c == 'x' || c == 'X' || c == 'n' || c == 'N' || c == 'e' || c == 'E';
+}
+
 static void record_defelem_arg_location(pgssConstLocations *jstate, int location)
 {
 	for (int i = location; i < jstate->query_len; i++) {
-		if (jstate->query[i] == '\'' || jstate->query[i] == '$') {
+		if (is_string_delimiter(jstate->query[i]) || (i + 1 < jstate->query_len && is_special_string_start(jstate->query[i]) && is_string_delimiter(jstate->query[i + 1]))) {
 			RecordConstLocation(jstate, i);
 			break;
 		}
