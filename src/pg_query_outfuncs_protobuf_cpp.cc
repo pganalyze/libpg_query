@@ -15,10 +15,39 @@ extern "C"
 #include "postgres.h"
 #include <ctype.h>
 #include "access/relation.h"
+#include "miscadmin.h"
 #include "nodes/parsenodes.h"
 #include "nodes/plannodes.h"
 #include "nodes/value.h"
 #include "utils/datum.h"
+}
+
+/*
+ * The C serializers call check_stack_depth() once per nesting level. That
+ * raises through ereport()'s longjmp, which must not cross C++ frames holding
+ * live objects: it would skip the destructors of the protobuf messages being
+ * built. So this walker only records that the tree is too deep and stops
+ * descending; the entry points below raise the error once those objects have
+ * been destroyed.
+ *
+ * Checking the stack in the walker is not enough on its own here. The
+ * protobuf C++ runtime then recurses over the finished tree itself -- to
+ * serialize it, print it as JSON, and destroy it -- and it spends far more
+ * stack per level than this walker does. Measured without a limit: the JSON
+ * path died at about 700 bytes of stack per nesting level, so a tree the
+ * walker could build within the limit still overflowed afterwards. The
+ * walker therefore also caps the nesting depth at one level per kB of
+ * max_stack_depth, i.e. a budget of 1kB per level for the runtime's recursion.
+ */
+static thread_local bool pg_query_cpp_too_deep = false;
+static thread_local int pg_query_cpp_depth = 0;
+
+static void
+pg_query_cpp_raise_too_deep(void)
+{
+	ereport(ERROR,
+			(errcode(ERRCODE_STATEMENT_TOO_COMPLEX),
+			 errmsg("stack depth limit exceeded")));
 }
 
 #define OUT_TYPE(typename, typename_c) pg_query::typename*
@@ -200,12 +229,30 @@ _outAConst(pg_query::A_Const* out_node, const A_Const *node)
 #include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
 
+static void _outNodeDispatch(pg_query::Node* out, const void *obj);
+
 static void
 _outNode(pg_query::Node* out, const void *obj)
 {
 	if (obj == NULL)
 		return; // Keep out as NULL
 
+	if (pg_query_cpp_too_deep ||
+		pg_query_cpp_depth >= max_stack_depth ||
+		stack_is_too_deep())
+	{
+		pg_query_cpp_too_deep = true;
+		return;
+	}
+
+	pg_query_cpp_depth++;
+	_outNodeDispatch(out, obj);
+	pg_query_cpp_depth--;
+}
+
+static void
+_outNodeDispatch(pg_query::Node* out, const void *obj)
+{
 	switch (nodeTag(obj))
 	{
 		#include "pg_query_outfuncs_conds.c"
@@ -224,25 +271,40 @@ pg_query_nodes_to_protobuf(const void *obj)
 {
 	PgQueryProtobuf protobuf;
 	const ListCell *lc;
-	pg_query::ParseResult parse_result;
+	bool too_deep;
+
 	if (obj == NULL) {
 		protobuf.data = strdup("");
 		protobuf.len = 0;
 		return protobuf;
 	}
 
-	parse_result.set_version(PG_VERSION_NUM);
-	foreach(lc, (List*) obj)
+	pg_query_cpp_too_deep = false;
+	pg_query_cpp_depth = 0;
 	{
-		_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		pg_query::ParseResult parse_result;
+
+		parse_result.set_version(PG_VERSION_NUM);
+		foreach(lc, (List*) obj)
+		{
+			_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		}
+
+		too_deep = pg_query_cpp_too_deep;
+		if (!too_deep)
+		{
+			std::string output;
+			parse_result.SerializeToString(&output);
+
+			protobuf.data = (char*) calloc(output.size(), sizeof(char));
+			memcpy(protobuf.data, output.data(), output.size());
+			protobuf.len = output.size();
+		}
 	}
+	pg_query_cpp_too_deep = false;
 
-	std::string output;
-	parse_result.SerializeToString(&output);
-
-	protobuf.data = (char*) calloc(output.size(), sizeof(char));
-	memcpy(protobuf.data, output.data(), output.size());
-	protobuf.len = output.size();
+	if (too_deep)
+		pg_query_cpp_raise_too_deep();
 
 	return protobuf;
 }
@@ -251,19 +313,35 @@ extern "C" char *
 pg_query_nodes_to_json(const void *obj)
 {
 	const ListCell *lc;
-	pg_query::ParseResult parse_result;
+	char	   *json = NULL;
+	bool		too_deep;
 
 	if (obj == NULL)
 		return pstrdup("{}");
 
-	parse_result.set_version(PG_VERSION_NUM);
-	foreach(lc, (List*) obj)
+	pg_query_cpp_too_deep = false;
+	pg_query_cpp_depth = 0;
 	{
-		_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		pg_query::ParseResult parse_result;
+
+		parse_result.set_version(PG_VERSION_NUM);
+		foreach(lc, (List*) obj)
+		{
+			_outRawStmt(parse_result.add_stmts(), (const RawStmt*) lfirst(lc));
+		}
+
+		too_deep = pg_query_cpp_too_deep;
+		if (!too_deep)
+		{
+			std::string output;
+			google::protobuf::util::MessageToJsonString(parse_result, &output);
+			json = pstrdup(output.c_str());
+		}
 	}
+	pg_query_cpp_too_deep = false;
 
-	std::string output;
-	google::protobuf::util::MessageToJsonString(parse_result, &output);
+	if (too_deep)
+		pg_query_cpp_raise_too_deep();
 
-	return pstrdup(output.c_str());
+	return json;
 }

@@ -238,7 +238,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate test/stack_depth
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -257,6 +257,7 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/split || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/summary || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/summary_truncate || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/stack_depth || (cat test/valgrind.log && false)
 	# Output-based tests
 	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
@@ -277,6 +278,7 @@ else
 	test/split
 	test/summary
 	test/summary_truncate
+	test/stack_depth
 	# Output-based tests
 	test/parse_plpgsql
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
@@ -320,6 +322,9 @@ test/summary: test/framework/main.c test/summary.c test/summary_tests.c test/sum
 test/summary_truncate: test/framework/main.c test/summary_truncate.c $(ARLIB)
 	# We have "-Isrc/postgres/include" because this test uses pg_query_summary_direct
 	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/postgres/include test/framework/main.c test/summary_truncate.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/stack_depth: test/stack_depth.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/stack_depth.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_opts.c $(ARLIB) $(TEST_LDFLAGS)
