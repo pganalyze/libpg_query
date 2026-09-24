@@ -85,6 +85,188 @@ pg_query_free_deparse_result(PgQueryDeparseResult result)
 	free(result.query);
 }
 
+/*
+ * Helper functions for building nodes from Rust (bypassing protobuf)
+ *
+ * These wrap PostgreSQL's internal functions to allow Rust to construct
+ * parse trees directly.
+ */
+
+/* Memory context management - exposed for Rust */
+void *
+pg_query_deparse_enter_context(void)
+{
+	return (void *) pg_query_enter_memory_context();
+}
+
+void
+pg_query_deparse_exit_context(void *ctx)
+{
+	pg_query_exit_memory_context((MemoryContext) ctx);
+}
+
+/* Node allocation helper */
+void *
+pg_query_alloc_node(size_t size, int tag)
+{
+	Node *result = (Node *) palloc0(size);
+	result->type = (NodeTag) tag;
+	return result;
+}
+
+/* String duplication helper */
+char *
+pg_query_pstrdup(const char *str)
+{
+	if (str == NULL)
+		return NULL;
+	return pstrdup(str);
+}
+
+/* List building helpers */
+void *
+pg_query_list_make1(void *datum)
+{
+	return (void *) list_make1(datum);
+}
+
+void *
+pg_query_list_append(void *list, void *datum)
+{
+	return (void *) lappend((List *) list, datum);
+}
+
+/* Deparse a list of RawStmt nodes to SQL */
+PgQueryDeparseResult
+pg_query_deparse_nodes(void *stmts_ptr)
+{
+	List	   *stmts = (List *) stmts_ptr;
+	PgQueryDeparseResult result = {0};
+	StringInfoData str;
+	ListCell   *lc;
+
+	if (stmts == NULL)
+	{
+		result.query = strdup("");
+		return result;
+	}
+
+	/* Note: The caller must have already entered a memory context */
+	PG_TRY();
+	{
+		PostgresDeparseOpts opts;
+		MemSet(&opts, 0, sizeof(PostgresDeparseOpts));
+
+		initStringInfo(&str);
+
+		foreach(lc, stmts)
+		{
+			deparseRawStmtOpts(&str, castNode(RawStmt, lfirst(lc)), opts);
+			if (lnext(stmts, lc))
+				appendStringInfoString(&str, "; ");
+		}
+		result.query = strdup(str.data);
+	}
+	PG_CATCH();
+	{
+		ErrorData  *error_data;
+		PgQueryError *error;
+
+		error_data = CopyErrorData();
+
+		error = malloc(sizeof(PgQueryError));
+		error->message = strdup(error_data->message);
+		error->filename = strdup(error_data->filename);
+		error->funcname = strdup(error_data->funcname);
+		error->context = NULL;
+		error->lineno = error_data->lineno;
+		error->cursorpos = error_data->cursorpos;
+
+		result.error = error;
+		FlushErrorState();
+	}
+	PG_END_TRY();
+
+	return result;
+}
+
+PgQueryDeparseResult
+pg_query_deparse_raw(PgQueryRawParseResult parse_result)
+{
+	PostgresDeparseOpts opts;
+
+	MemSet(&opts, 0, sizeof(PostgresDeparseOpts));
+	return pg_query_deparse_raw_opts(parse_result, opts);
+}
+
+PgQueryDeparseResult
+pg_query_deparse_raw_opts(PgQueryRawParseResult parse_result, PostgresDeparseOpts opts)
+{
+	PgQueryDeparseResult result = {0};
+	StringInfoData str;
+	ListCell   *lc;
+
+	/* If there was a parse error, propagate it */
+	if (parse_result.error != NULL)
+	{
+		PgQueryError *error = malloc(sizeof(PgQueryError));
+		error->message = parse_result.error->message ? strdup(parse_result.error->message) : NULL;
+		error->filename = parse_result.error->filename ? strdup(parse_result.error->filename) : NULL;
+		error->funcname = parse_result.error->funcname ? strdup(parse_result.error->funcname) : NULL;
+		error->context = parse_result.error->context ? strdup(parse_result.error->context) : NULL;
+		error->lineno = parse_result.error->lineno;
+		error->cursorpos = parse_result.error->cursorpos;
+		result.error = error;
+		return result;
+	}
+
+	/* If tree is NULL, return empty string */
+	if (parse_result.tree == NULL)
+	{
+		result.query = strdup("");
+		return result;
+	}
+
+	/*
+	 * Note: We use the parse_result's memory context which is already active.
+	 * The caller must ensure the parse_result is still valid.
+	 */
+	PG_TRY();
+	{
+		initStringInfo(&str);
+
+		foreach(lc, parse_result.tree)
+		{
+			deparseRawStmtOpts(&str, castNode(RawStmt, lfirst(lc)), opts);
+			if (lnext(parse_result.tree, lc))
+				appendStringInfoString(&str, "; ");
+		}
+		result.query = strdup(str.data);
+	}
+	PG_CATCH();
+	{
+		ErrorData  *error_data;
+		PgQueryError *error;
+
+		MemoryContextSwitchTo(parse_result.context);
+		error_data = CopyErrorData();
+
+		error = malloc(sizeof(PgQueryError));
+		error->message = strdup(error_data->message);
+		error->filename = strdup(error_data->filename);
+		error->funcname = strdup(error_data->funcname);
+		error->context = NULL;
+		error->lineno = error_data->lineno;
+		error->cursorpos = error_data->cursorpos;
+
+		result.error = error;
+		FlushErrorState();
+	}
+	PG_END_TRY();
+
+	return result;
+}
+
 PgQueryDeparseCommentsResult
 pg_query_deparse_comments_for_query(const char *query)
 {
