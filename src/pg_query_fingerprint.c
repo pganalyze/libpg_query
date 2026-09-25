@@ -17,6 +17,7 @@
 
 #include "common/hashfn.h"
 
+#include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -267,6 +268,60 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
 #include "pg_query_fingerprint_defs.c"
 
 /*
+ * Remove table/schema name segements that look like random or generated
+ * values. A segment is considered "randomish" if it's longer than 2 characters
+ * and contains at least one digit. This handles cases like
+ * "loading_books_dc786da1fead11f" (which has a random hex suffix) and
+ * "_temp__2577316832_vk95nrgo_users" (which has numeric + random alphanumeric segments)
+ */
+static char *
+_fingerprint_remove_randomish_segments(const char *name)
+{
+	int len = strlen(name);
+	char *result = palloc0((len + 1) * sizeof(char));
+	char *p = result;
+	int i = 0;
+
+	while (i < len) {
+		// Find the start of a segment (an underscore after position 0)
+		int seg_start = i;
+		while (i < len && name[i] != '_')
+			i++;
+		int seg_end = i; // exclusive (not included in the segment)
+		int seg_len = seg_end - seg_start;
+
+		if (seg_len > 2) {
+			// Check if the segment contains a digit
+			int has_digit = 0;
+			for (int j = seg_start; j < seg_end; j++)
+				has_digit = isdigit(name[j]);
+
+			if (has_digit)
+				continue;
+		}
+
+		// Keep this segment
+		for (int j = seg_start; j < seg_end; j++) {
+			*p = name[j];
+			p++;
+		}
+		if (i < len) {
+			*p = '_';
+			p++;
+			i++;
+		}
+	}
+
+	// Remove trailing underscore
+	if (p > result && *(p - 1) == '_')
+		p--;
+
+	*p = '\0';
+
+	return result;
+}
+
+/*
  * Fingerprint the relation name.
  *
  * By default, sequences of 2 or more digits are ignored, so that queries
@@ -284,6 +339,7 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 	}
 	else
 	{
+		// Remove consecutive digits, for time-based partition tables.
 		int len = strlen(relname);
 		char *r = palloc0((len + 1) * sizeof(char));
 		char *p = r;
@@ -302,9 +358,17 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 			}
 		}
 		*p = 0;
+
+		// Normalize random-looking segments (e.g., hex IDs, random suffixes)
+		char *r2 = _fingerprint_remove_randomish_segments(relname);
+
 		_fingerprintString(ctx, "relname");
-		_fingerprintString(ctx, r);
+		_fingerprintString(ctx, r2);
+
+		printf("\nr  = '%s'\nr2 = '%s'\n\n", r, r2);
+
 		pfree(r);
+		pfree(r2);
 	}
 }
 

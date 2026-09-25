@@ -203,5 +203,24 @@ const char* tests[] = {
   "1a16559b625d7498",
   "ALTER TABLE baz.bar ADD COLUMN c int",
   "2f36adf7ba9689b8",
+
+
+  "SELECT * FROM t_20210301_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_y",
+  "d357dac4a24fcf1b",
+
+
+  // Test normalization of random table names
+  /*"SELECT * FROM loading_books_dc786da1fead11f",
+  "",
+  "SELECT * FROM loading_books_dc786da1fead11g",
+  "SELECT * FROM _temp__2577316832_vk95nrgo_users",
+  "",
+  "SELECT * FROM _temp__2577316833_vk96nrgo_users",
+  "",*/
+
   NULL // Trailing NULL to tell the test runner we're done.
 };
