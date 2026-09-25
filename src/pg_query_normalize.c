@@ -255,8 +255,8 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 	for (i = 0; i < jstate->clocations_count; i++)
 	{
 		int			off,		/* Offset from start for cur tok */
-					tok_len,	/* Length (in bytes) of that tok */
-					param_id;	/* Param ID to be assigned */
+					tok_len;	/* Length (in bytes) of that tok */
+		int64_t		param_id;	/* Param ID to be assigned */
 
 		off = jstate->clocations[i].location;
 		/* Adjust recorded location if we're dealing with partial string */
@@ -277,9 +277,9 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 
 		/* And insert a param symbol in place of the constant token */
 		param_id = (jstate->clocations[i].param_id < 0) ?
-					jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
+					(int64_t) jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
 					jstate->clocations[i].param_id;
-		n_quer_loc += sprintf(norm_query + n_quer_loc, "$%d", param_id);
+		n_quer_loc += sprintf(norm_query + n_quer_loc, "$" INT64_FORMAT, param_id);
 
 		quer_loc = off + tok_len;
 		last_off = off;
@@ -348,11 +348,26 @@ static bool is_special_string_start(char c)
 
 static void record_defelem_arg_location(pgssConstLocations *jstate, int location)
 {
-	for (int i = location; i < jstate->query_len; i++) {
-		if (is_string_delimiter(jstate->query[i]) || (i + 1 < jstate->query_len && is_special_string_start(jstate->query[i]) && is_string_delimiter(jstate->query[i + 1]))) {
-			RecordConstLocation(jstate, i);
-			break;
-		}
+	for (int i = location; i < jstate->query_len; i++)
+	{
+		if (!is_string_delimiter(jstate->query[i]))
+			continue;
+
+		/*
+		 * Step back over tokens that affect the string constant, placed right
+		 * before the opening quote, so the recorded location includes those
+		 * tokens. "U&" for a Unicode escaped strings, or a single character
+		 * special start token matched by is_special_string_start.
+		 */
+		if (i - 2 >= location && jstate->query[i - 1] == '&' &&
+			(jstate->query[i - 2] == 'u' || jstate->query[i - 2] == 'U'))
+			i -= 2;
+		else if (i - 1 >= location && is_special_string_start(jstate->query[i - 1]))
+			i -= 1;
+
+		RecordConstLocation(jstate, i);
+
+		break;
 	}
 }
 
@@ -566,6 +581,23 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			{
 				if (jstate->normalize_utility_only) return false;
 				return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+			}
+		case T_NotifyStmt:
+			{
+				NotifyStmt *stmt = castNode(NotifyStmt, node);
+
+				if (stmt->payload == NULL)
+					break; // No payload to normalize.
+
+				char *loc = strstr(jstate->query, ",");
+
+				if (loc == NULL)
+					// Somehow there's a payload but no comma?
+					// This should be impossible.
+					break;
+
+				record_defelem_arg_location(jstate, loc - jstate->query + 1);
+				break;
 			}
 		case T_InsertStmt:
 			{

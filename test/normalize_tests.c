@@ -42,6 +42,16 @@ const char* tests[] = {
   "MERGE into measurement m USING new_measurement nm ON (m.city_id = nm.city_id and m.logdate=nm.logdate) WHEN MATCHED AND nm.peaktemp IS NULL THEN DELETE WHEN MATCHED THEN UPDATE SET peaktemp = greatest(m.peaktemp, nm.peaktemp), unitsales = m.unitsales + coalesce(nm.unitsales, $1) WHEN NOT MATCHED THEN INSERT (city_id, logdate, peaktemp, unitsales) VALUES (city_id, logdate, peaktemp, unitsales)",
   "DO language E'plpgsql' 'BEGIN PERFORM 1; END'",
   "DO language $1 $2",
+  "DO U&'' '' ''",
+  "DO $1 $2 $3",
+  "NOTIFY channel, 'a'",
+  "NOTIFY channel, $1",
+  "NOTIFY channel, 'b'",
+  "NOTIFY channel, $1",
+  "NOTIFY channel, 'some text to normalize'",
+  "NOTIFY channel, $1",
+  "NOTIFY channel",
+  "NOTIFY channel",
   // These below are as expected, though questionable if upstream shouldn't be
   // fixed as this could bloat pg_stat_statements
   "DECLARE cursor_b CURSOR FOR SELECT * FROM x WHERE id = 123",
@@ -52,6 +62,7 @@ const char* tests[] = {
   "CLOSE cursor_a",
   "SELECT 1; ALTER USER a WITH PASSWORD 'b'",
   "SELECT $1; ALTER USER a WITH PASSWORD $2",
+  "SELECT 3,$2147483647",
+  "SELECT $2147483648,$2147483647",
+  NULL // Trailing NULL to tell the test runner we're done.
 };
-
-size_t testsLength = __LINE__ - 7;

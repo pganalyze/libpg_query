@@ -323,7 +323,6 @@ class Generator
     ['PrepareStmt', 'name'] => :skip,
     ['ExecuteStmt', 'name'] => :skip,
     ['DeallocateStmt', 'name'] => :skip,
-    ['TransactionStmt', 'options'] => :skip,
     ['TransactionStmt', 'gid'] => :skip,
     ['TransactionStmt', 'savepoint_name'] => :skip,
     ['CreateFunctionStmt', 'options'] => :skip,
@@ -332,6 +331,7 @@ class Generator
     ['ListenStmt', 'conditionname'] => :skip,
     ['UnlistenStmt', 'conditionname'] => :skip,
     ['NotifyStmt', 'conditionname'] => :skip,
+    ['NotifyStmt', 'payload'] => :skip,
     ['DeclareCursorStmt', 'portalname'] => :skip,
     ['FetchStmt', 'portalname'] => :skip,
     ['ClosePortalStmt', 'portalname'] => :skip,
@@ -341,6 +341,10 @@ class Generator
     ['JsonTablePathSpec', 'name_location'] => :skip,
     ['JsonTablePathSpec', 'location'] => :skip,
     ['VariableSetStmt', 'jumble_args'] => :skip, # TODO: Should we be smarter about using this flag ourselves?
+    ['CreateRoleStmt', 'role'] => :skip,
+    ['RenameStmt', 'newname'] => :skip,
+    ['RenameStmt', 'subname'] => :skip,
+    ['RoleSpec', 'rolename'] => :skip,
   }
   INT_TYPES = ['bits32', 'uint32', 'int', 'int32', 'uint16', 'int16', 'Oid', 'Index', 'AttrNumber', 'SubTransactionId', 'RelFileNumber', 'ParseLoc']
   LONG_INT_TYPES = ['long']

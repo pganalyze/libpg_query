@@ -11,7 +11,7 @@ int main() {
   size_t i;
   bool ret_code = 0;
 
-  for (i = 0; i < testsLength; i += 2) {
+  for (i = 0; tests[i]; i += 2) {
     PgQueryNormalizeResult result = pg_query_normalize_utility(tests[i]);
 
     if (result.error) {

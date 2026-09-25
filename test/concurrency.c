@@ -43,7 +43,7 @@ void* test_runner(void* unused_pthread_arg) {
   assert(unused_pthread_arg == NULL);
   size_t i;
 
-  for (i = 0; i < testsLength; i += 2) {
+  for (i = 0; tests[i]; i += 2) {
     PgQueryParseResult result = pg_query_parse(tests[i]);
 
 		if (result.error) {

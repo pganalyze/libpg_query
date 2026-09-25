@@ -481,6 +481,137 @@ void it_separates_CTE_names_from_table_names(TestState* test_state) {
 	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("SelectStmt"));
 }
 
+/*
+ * A non-recursive CTE is not visible inside its own definition, so a reference
+ * to its own name there resolves to a real relation:
+ *
+ *   WITH users AS (SELECT * FROM users) SELECT * FROM users
+ *                              ^^^^^ the table          ^^^^^ the CTE
+ */
+void it_finds_the_table_referenced_inside_a_CTE_definition(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT * FROM users) SELECT * FROM users";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"users", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"users", NULL}));
+	/* Only the reference inside the CTE definition is the table. */
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make1("SelectStmt"));
+}
+
+void it_excludes_a_CTE_whose_definition_reads_another_table(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT * FROM people) SELECT * FROM users";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"people", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+}
+
+void it_excludes_a_CTE_referenced_from_a_later_sibling_CTE(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH a AS (SELECT * FROM a), b AS (SELECT * FROM a) SELECT * FROM b";
+	Summary result = summary(sql, 0, -1);
+	/*
+	 * `a` inside a's own definition is the table, `a` inside b's definition is
+	 * the CTE, since earlier siblings are visible to later ones.
+	 */
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"a", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make2("a", "b"));
+}
+
+void it_keeps_a_WITH_RECURSIVE_self_reference_as_a_CTE_reference(TestState* test_state) {
+	TEST_INIT();
+	/* RECURSIVE does make a CTE visible to itself, so `t` is never the table. */
+	char* sql = "WITH RECURSIVE t AS (SELECT 1 AS n UNION ALL SELECT n + 1 FROM t WHERE n < 5) SELECT * FROM t";
+	Summary result = summary(sql, 0, -1);
+	TEST_ASSERT_LIST_LENGTH(result.tables, 0);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("t"));
+}
+
+void it_keeps_a_schema_qualified_reference_when_a_CTE_shares_the_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH t AS (SELECT * FROM s.t) SELECT 1";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"s.t", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("t"));
+}
+
+void it_finds_the_table_when_a_CTE_definition_is_nested_in_a_subquery(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "SELECT * FROM (WITH users AS (SELECT * FROM users) SELECT * FROM users) sub";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"users", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+}
+
+void it_resolves_to_an_outer_CTE_rather_than_a_table_when_one_is_visible(TestState* test_state) {
+	TEST_INIT();
+	/* The inner definition's `a` resolves to the outer CTE `a`, not to a table. */
+	char* sql = "WITH a AS (SELECT * FROM t) SELECT * FROM (WITH a AS (SELECT * FROM a) SELECT * FROM a) sub";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"t", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
+}
+
+/*
+ * A CTE cannot be the target of DML or DDL, so those always name a real
+ * relation, even when a CTE in the same statement shares the name.
+ */
+void it_finds_the_UPDATE_target_when_a_CTE_shares_its_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT id FROM other) UPDATE users SET name = 'x'";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"users", "other", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"users", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"other", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+	TEST_ASSERT_LIST_EQUAL(result.statement_types, list_make2("SelectStmt", "UpdateStmt"));
+}
+
+void it_finds_the_INSERT_target_when_a_CTE_shares_its_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT id FROM other) INSERT INTO users (id) SELECT id FROM users";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"users", "other", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"users", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"other", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+}
+
+void it_finds_the_DELETE_target_when_a_CTE_shares_its_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT id FROM other) DELETE FROM users WHERE id IN (SELECT id FROM users)";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"users", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+}
+
+void it_finds_the_MERGE_target_when_a_CTE_shares_its_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH tgt AS (SELECT 1) MERGE INTO tgt USING src ON tgt.id = src.id WHEN MATCHED THEN DO NOTHING";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"tgt", NULL}));
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("tgt"));
+}
+
+void it_finds_the_DDL_target_when_a_CTE_shares_its_name(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH users AS (SELECT id FROM other) SELECT * INTO users FROM users";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DDL, ((char*[]){"users", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"other", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+	TEST_ASSERT_LIST_EQUAL(result.cte_names, list_make1("users"));
+}
+
 void it_finds_tables_in_SELECT_FROM_TABLESAMPLE(TestState* test_state) {
 	TEST_INIT();
 	char* sql = "SELECT * FROM tbl TABLESAMPLE sample(1)";

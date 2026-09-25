@@ -4688,10 +4688,7 @@ _fingerprintRoleSpec(FingerprintContext *ctx, const RoleSpec *node, const void *
 {
   // Intentionally ignoring node->location for fingerprinting
 
-  if (node->rolename != NULL) {
-    _fingerprintString(ctx, "rolename");
-    _fingerprintString(ctx, node->rolename);
-  }
+  // Intentionally ignoring node->rolename for fingerprinting
 
   if (true) {
     _fingerprintString(ctx, "roletype");
@@ -11828,10 +11825,7 @@ _fingerprintCreateRoleStmt(FingerprintContext *ctx, const CreateRoleStmt *node, 
     }
     XXH3_freeState(prev);
   }
-  if (node->role != NULL) {
-    _fingerprintString(ctx, "role");
-    _fingerprintString(ctx, node->role);
-  }
+  // Intentionally ignoring node->role for fingerprinting
 
   if (true) {
     _fingerprintString(ctx, "stmt_type");
@@ -13289,10 +13283,7 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
     _fingerprintString(ctx, "true");
   }
 
-  if (node->newname != NULL) {
-    _fingerprintString(ctx, "newname");
-    _fingerprintString(ctx, node->newname);
-  }
+  // Intentionally ignoring node->newname for fingerprinting
 
   if (node->object != NULL) {
     XXH3_state_t* prev = XXH3_createState();
@@ -13338,10 +13329,7 @@ _fingerprintRenameStmt(FingerprintContext *ctx, const RenameStmt *node, const vo
     _fingerprintString(ctx, _enumToStringObjectType(node->renameType));
   }
 
-  if (node->subname != NULL) {
-    _fingerprintString(ctx, "subname");
-    _fingerprintString(ctx, node->subname);
-  }
+  // Intentionally ignoring node->subname for fingerprinting
 
 }
 
@@ -13669,10 +13657,7 @@ _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const vo
 {
   // Intentionally ignoring node->conditionname for fingerprinting
 
-  if (node->payload != NULL) {
-    _fingerprintString(ctx, "payload");
-    _fingerprintString(ctx, node->payload);
-  }
+  // Intentionally ignoring node->payload for fingerprinting
 
 }
 
@@ -13707,8 +13692,22 @@ _fingerprintTransactionStmt(FingerprintContext *ctx, const TransactionStmt *node
 
   // Intentionally ignoring node->location for fingerprinting
 
-  // Intentionally ignoring node->options for fingerprinting
+  if (node->options != NULL && node->options->length > 0) {
+    XXH3_state_t* prev = XXH3_createState();
+    XXH64_hash_t hash;
 
+    XXH3_copyState(prev, ctx->xxh_state);
+    _fingerprintString(ctx, "options");
+
+    hash = XXH3_64bits_digest(ctx->xxh_state);
+    _fingerprintNode(ctx, node->options, node, "options", depth + 1);
+    if (hash == XXH3_64bits_digest(ctx->xxh_state) && !(list_length(node->options) == 1 && linitial(node->options) == NIL)) {
+      XXH3_copyState(ctx->xxh_state, prev);
+      if (ctx->write_tokens)
+        dlist_delete(dlist_tail_node(&ctx->tokens));
+    }
+    XXH3_freeState(prev);
+  }
   // Intentionally ignoring node->savepoint_name for fingerprinting
 
 }

@@ -12,7 +12,7 @@ int main()
 	size_t i;
 	bool ret_code = 0;
 
-	for (i = 0; i < testsLength; i += 3)
+	for (i = 0; tests[i]; i += 3)
 	{
 		PgQueryParseMode mode = atoi(tests[i+1]);
 		PgQueryFingerprintResult result = pg_query_fingerprint_opts(tests[i], mode);

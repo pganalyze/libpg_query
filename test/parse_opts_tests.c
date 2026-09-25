@@ -35,6 +35,5 @@ const char* tests[] = {
   "v3.c1 := '\\''",
   "100",
   "{\"version\":180004,\"stmts\":[{\"stmt\":{\"PLAssignStmt\":{\"name\":\"v3\",\"indirection\":[{\"String\":{\"sval\":\"c1\"}}],\"nnames\":2,\"val\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"'\"},\"location\":9}},\"location\":9}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}}]}",
+  NULL // Trailing NULL to tell the test runner we're done.
 };
-
-size_t testsLength = __LINE__ - 4;

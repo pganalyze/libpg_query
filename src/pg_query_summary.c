@@ -22,6 +22,7 @@
 
 static char *range_var_to_name(RangeVar *rv);
 static bool cte_names_include(WalkState * state, char *relname);
+static void handle_with_clause(WithClause *with_clause, WalkState * state);
 
 
 static PgQueryError * make_pg_query_error(const char *message)
@@ -103,6 +104,87 @@ add_range_var_list(List *clause, ContextType context, WalkState * state)
 	}
 }
 
+typedef struct
+{
+	char	   *ctename;
+	WalkState  *state;
+}			CteSelfReferenceContext;
+
+/*
+ * Records the range vars inside a CTE's own definition that carry the CTE's own
+ * name.
+ */
+static bool
+cte_self_reference_walker(Node *node, CteSelfReferenceContext * context)
+{
+	if (node == NULL)
+		return false;
+
+	if (IsA(node, RangeVar))
+	{
+		RangeVar   *rv = castNode(RangeVar, node);
+
+		/* Schema-qualified names never refer to a CTE. */
+		if (rv->schemaname == NULL && rv->relname != NULL &&
+			strcmp(rv->relname, context->ctename) == 0)
+			context->state->cte_self_reference_range_vars =
+				lappend(context->state->cte_self_reference_range_vars, rv);
+	}
+
+	if (!pg_query_raw_tree_walker_supports(node))
+		return false;
+
+	return raw_expression_tree_walker(node, cte_self_reference_walker, (void *) context);
+}
+
+/*
+ * Records the CTE names a WITH clause defines, plus the range vars inside a
+ * CTE's own definition that carry the CTE's own name: a non-recursive CTE is not
+ * visible inside its own definition, so those name a real relation, like the
+ * first "users" in
+ *
+ *   WITH users AS (SELECT * FROM users) SELECT * FROM users
+ *
+ * Runs before descending into the statement, so that the CTE names of enclosing
+ * scopes are known when a nested WITH clause is reached.
+ */
+static void
+handle_with_clause(WithClause *with_clause, WalkState * state)
+{
+	if (with_clause == NULL)
+		return;
+
+	ListCell   *lc = NULL;
+
+	foreach(lc, with_clause->ctes)
+	{
+		if (!IsA(lfirst(lc), CommonTableExpr))
+			continue;
+
+		CommonTableExpr *cte = castNode(CommonTableExpr, lfirst(lc));
+
+		if (cte->ctename == NULL)
+			continue;
+
+		/*
+		 * WITH RECURSIVE does make a CTE visible to itself, and a name that
+		 * already is a visible CTE from an enclosing scope keeps resolving to
+		 * that CTE inside this definition, like the inner "a" in
+		 *
+		 *   WITH a AS (...) SELECT * FROM (WITH a AS (SELECT * FROM a) ...) s
+		 */
+		if (!with_clause->recursive && cte->ctequery != NULL &&
+			!cte_names_include(state, cte->ctename))
+		{
+			CteSelfReferenceContext context = {cte->ctename, state};
+
+			cte_self_reference_walker(cte->ctequery, &context);
+		}
+
+		state->cte_names = lappend(state->cte_names, pstrdup(cte->ctename));
+	}
+}
+
 static void
 add_function(List *funcname, ContextType context, WalkState * state)
 {
@@ -132,14 +214,6 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 
 	switch (nodeTag(node))
 	{
-		case T_CommonTableExpr:
-			{
-				CommonTableExpr *cte = castNode(CommonTableExpr, node);
-
-				state->cte_names = lappend(state->cte_names, pstrdup(cte->ctename));
-				break;
-			}
-
 		case T_CallStmt:
 			{
 				CallStmt   *stmt = castNode(CallStmt, node);
@@ -158,6 +232,8 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 					return true;
 
 				SelectStmt *stmt = castNode(SelectStmt, node);
+
+				handle_with_clause(stmt->withClause, state);
 
 				if (stmt->op == SETOP_NONE)
 					add_range_var_list(stmt->fromClause, CONTEXT_SELECT, state);
@@ -191,7 +267,10 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 
 		case T_InsertStmt:
 			{
-				add_range_var((Node *) castNode(InsertStmt, node)->relation, CONTEXT_DML, state);
+				InsertStmt *stmt = castNode(InsertStmt, node);
+
+				handle_with_clause(stmt->withClause, state);
+				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
 				break;
 			}
 
@@ -199,6 +278,7 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 			{
 				UpdateStmt *stmt = castNode(UpdateStmt, node);
 
+				handle_with_clause(stmt->withClause, state);
 				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
 				add_range_var_list(stmt->fromClause, CONTEXT_SELECT, state);
 				break;
@@ -208,6 +288,7 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 			{
 				MergeStmt  *stmt = castNode(MergeStmt, node);
 
+				handle_with_clause(stmt->withClause, state);
 				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
 				break;
 			}
@@ -216,6 +297,7 @@ pg_query_summary_walk_impl(Node *node, WalkState * state)
 			{
 				DeleteStmt *stmt = castNode(DeleteStmt, node);
 
+				handle_with_clause(stmt->withClause, state);
 				add_range_var((Node *) stmt->relation, CONTEXT_DML, state);
 				add_range_var_list(stmt->usingClause, CONTEXT_SELECT, state);
 				break;
@@ -599,6 +681,46 @@ cte_names_include(WalkState * state, char *relname)
 	return false;
 }
 
+/*
+ * Returns true if the given range var was recorded as a reference to the CTE it
+ * is defined in - see handle_with_clause().
+ */
+static bool
+cte_self_reference_range_vars_include(WalkState * state, RangeVar *rv)
+{
+	ListCell   *lc = NULL;
+
+	foreach(lc, state->cte_self_reference_range_vars)
+	{
+		if (lfirst(lc) == rv)
+			return true;
+	}
+	return false;
+}
+
+/*
+ * Determines whether a range var refers to a CTE rather than to a relation.
+ *
+ * Only plain (SELECT-style) references can resolve to a CTE: a CTE is not a
+ * valid target for DML (INSERT/UPDATE/DELETE/MERGE) or DDL, so those always name
+ * a real relation, even when a CTE in the same statement shares the name.
+ */
+static bool
+is_cte_reference(WalkState * state, RangeVar *rv, ContextType context)
+{
+	if (context != CONTEXT_SELECT)
+		return false;
+
+	/* Schema-qualified names always refer to a relation. */
+	if (rv->schemaname != NULL)
+		return false;
+
+	if (!cte_names_include(state, rv->relname))
+		return false;
+
+	return !cte_self_reference_range_vars_include(state, rv);
+}
+
 static void
 handle_range_var(RangeVar *node, ContextType context, WalkState * state)
 {
@@ -607,7 +729,7 @@ handle_range_var(RangeVar *node, ContextType context, WalkState * state)
 
 	RangeVar   *rv = node;
 
-	if (!cte_names_include(state, rv->relname))
+	if (!is_cte_reference(state, rv, context))
 	{
 		SummaryTable *table = palloc(sizeof(SummaryTable));
 
@@ -637,9 +759,11 @@ pg_query_summary_walk(Summary * summary, Node *tree)
 
 	/*
 	 * NOTE regarding cte_names and range_vars:
-	 * - We process cte_names as we iterate through the tree.
-	 * - We only add items to tables if they are *not* in cte_names.
-	 * - CTEs can be defined *after* they're referenced as names.
+	 * - We process cte_names as we iterate through the tree, from the WITH
+	 *   clause of a statement, before descending into that statement.
+	 * - We only add items to tables if they are *not* a CTE reference.
+	 * - CTEs can be defined *after* they're referenced as names, since
+	 *   raw_expression_tree_walker() walks the WITH clause of a statement last.
 	 * - Due to this, we store range_vars and process it after the tree walk.
 	 *
 	 * If we try to do it entirely on the initial pass, we wind up with CTEs
