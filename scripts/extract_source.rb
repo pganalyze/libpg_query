@@ -675,6 +675,7 @@ runner.deep_resolve('destroyStringInfo')
 runner.deep_resolve('pg_printf')
 runner.deep_resolve('pg_strncasecmp')
 runner.deep_resolve('set_stack_base')
+runner.deep_resolve('restore_stack_base')
 runner.deep_resolve('assign_max_stack_depth')
 
 # Retain these functions for optional 32-bit support

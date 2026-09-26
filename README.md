@@ -99,38 +99,37 @@ from identifiers and other parts of the query:
 #include <stdio.h>
 
 #include <pg_query.h>
-#include "protobuf/pg_query.pb-c.h"
 
 int main() {
-  PgQueryScanResult result;
-  PgQuery__ScanResult *scan_result;
-  PgQuery__ScanToken *scan_token;
-  const ProtobufCEnumValue *token_kind;
-  const ProtobufCEnumValue *keyword_kind;
+  PgQueryScanTokensResult result;
   const char *input = "SELECT update AS left /* comment */ FROM between";
 
-  result = pg_query_scan(input);
-  scan_result = pg_query__scan_result__unpack(NULL, result.pbuf.len, (const uint8_t *) result.pbuf.data);
-
-  printf("  version: %d, tokens: %ld, size: %zu\n", scan_result->version, scan_result->n_tokens, result.pbuf.len);
-  for (size_t j = 0; j < scan_result->n_tokens; j++) {
-    scan_token = scan_result->tokens[j];
-    token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
-    keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-    printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", scan_token->end - scan_token->start, &(input[scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name);
+  result = pg_query_scan_tokens(input);
+  if (result.error) {
+    printf("error: %s at %d\n", result.error->message, result.error->cursorpos);
+    pg_query_free_scan_tokens_result(result);
+    return 1;
   }
 
-  pg_query__scan_result__free_unpacked(scan_result, NULL);
-  pg_query_free_scan_result(result);
+  printf("  tokens: %d\n", result.n_tokens);
+  for (int j = 0; j < result.n_tokens; j++) {
+    PgQueryScanToken token = result.tokens[j];
+    printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", token.end - token.start, &(input[token.start]), token.start, token.end,
+           pg_query_token_name(token.token), pg_query_keyword_kind_name(token.keyword_kind));
+  }
+
+  pg_query_free_scan_tokens_result(result);
 
   return 0;
 }
 ```
 
+If you need the tokens as a Protobuf message instead, e.g. to decode them in another language, use `pg_query_scan`, which returns the same tokens serialized as a `ScanResult`. It can be decoded with the vendored [upb](https://github.com/protocolbuffers/protobuf/tree/main/upb) runtime, which is included in `libpg_query.a` (the upb headers must then be on the include path as well, `-Ilibpg_query/vendor/upb`).
+
 This will output the following:
 
 ```
-  version: 180004, tokens: 7, size: 77
+  tokens: 7
   "SELECT" = [ 0, 6, SELECT, RESERVED_KEYWORD ]
   "update" = [ 7, 13, UPDATE, UNRESERVED_KEYWORD ]
   "AS" = [ 14, 16, AS, RESERVED_KEYWORD ]
@@ -144,13 +143,15 @@ Where the each element in the token list has the following fields:
 
 1. Start location in the source string
 2. End location in the source string
-3. Token value - see Token type in `protobuf/pg_query.proto`
-4. Keyword type - see KeywordKind type in `protobuf/pg_query.proto`, possible values:
-  `NO_KEYWORD`: Not a keyword
-  `UNRESERVED_KEYWORD`: Unreserved keyword (available for use as any kind of unescaped name)
-  `COL_NAME_KEYWORD`: Unreserved keyword (can be unescaped column/table/etc names, cannot be unescaped function or type name)
-  `TYPE_FUNC_NAME_KEYWORD`: Reserved keyword (can be unescaped function or type name, cannot be unescaped column/table/etc names)
-  `RESERVED_KEYWORD`: Reserved keyword (cannot be unescaped column/table/variable/type/function names)
+3. Token value - `PgQueryToken` enum (e.g. `PG_QUERY_TOKEN_SELECT`), see `pg_query_scan_tokens.h`, or the Token type in `protobuf/pg_query.proto` for the Protobuf output
+4. Keyword type - `PgQueryKeywordKind` enum, see `pg_query_scan_tokens.h`, or the KeywordKind type in `protobuf/pg_query.proto` for the Protobuf output, possible values:
+  `PG_QUERY_NO_KEYWORD`: Not a keyword
+  `PG_QUERY_UNRESERVED_KEYWORD`: Unreserved keyword (available for use as any kind of unescaped name)
+  `PG_QUERY_COL_NAME_KEYWORD`: Unreserved keyword (can be unescaped column/table/etc names, cannot be unescaped function or type name)
+  `PG_QUERY_TYPE_FUNC_NAME_KEYWORD`: Reserved keyword (can be unescaped function or type name, cannot be unescaped column/table/etc names)
+  `PG_QUERY_RESERVED_KEYWORD`: Reserved keyword (cannot be unescaped column/table/variable/type/function names)
+
+The token values are the token numbers of the Postgres grammar, which change between Postgres versions, so compare them by name rather than by value.
 
 Note that whitespace does not show as tokens.
 
@@ -323,6 +324,18 @@ Each major version is maintained in a dedicated git branch. Only the latest Post
 | 9.5                      | 9.5-latest | No longer supported |
 | 9.4                      | 9.4-latest | No longer supported |
 
+## Updating the vendored upb (Protobuf) runtime
+
+Protobuf serialization uses [upb](https://github.com/protocolbuffers/protobuf/tree/main/upb), vendored in `vendor/upb`. The generated code in `protobuf/pg_query.upb*.{c,h}` is tied to the exact upb version it was generated with, so both are updated together:
+
+```sh
+brew upgrade protobuf       # protoc + protoc-gen-upb must match the target release
+make -C vendor/upb update TAG=v$(protoc --version | awk '{print $2}')
+make clean && make && make test
+```
+
+See [vendor/upb/README](vendor/upb/README) for details, including the local patches that are re-applied on each update.
+
 ## Resources
 
 pg_query wrappers in other languages:
@@ -357,6 +370,15 @@ Please feel free to [open a PR](https://github.com/pganalyze/libpg_query/pull/ne
 PostgreSQL server source code, used under the [PostgreSQL license](https://www.postgresql.org/about/licence/).<br>
 Portions Copyright (c) 1996-2026, The PostgreSQL Global Development Group<br>
 Portions Copyright (c) 1994, The Regents of the University of California
+
+upb Protobuf runtime (`vendor/upb`), used under the [3-clause BSD license](vendor/upb/LICENSE).<br>
+Copyright 2008 Google Inc.<br>
+Includes utf8_range (`vendor/upb/third_party/utf8_range`), used under the [MIT license](vendor/upb/third_party/utf8_range/LICENSE).<br>
+Copyright (c) 2019 Yibo Cai<br>
+Copyright 2022 Google LLC
+
+xxHash (`vendor/xxhash`), used under the [2-clause BSD license](vendor/xxhash/xxhash.h).<br>
+Copyright (C) 2012-2020 Yann Collet
 
 All other parts are licensed under the 3-clause BSD license, see LICENSE file for details.<br>
 Copyright (c) 2015, Lukas Fittl <lukas@fittl.com>

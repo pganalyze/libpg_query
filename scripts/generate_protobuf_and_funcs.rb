@@ -31,6 +31,8 @@ class Generator
   OUTNAME_OVERRIDES = {
     ['CreateForeignTableStmt', 'base'] => 'base_stmt',
   }
+  SCAN_ASCII_TOKENS = [36, 37, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 91, 92, 93, 94]
+  SCAN_KEYWORD_KINDS = ['NO_KEYWORD', 'UNRESERVED_KEYWORD', 'COL_NAME_KEYWORD', 'TYPE_FUNC_NAME_KEYWORD', 'RESERVED_KEYWORD']
 
   def generate_outmethods!
     @outmethods = {}
@@ -61,84 +63,89 @@ class Generator
           outname = OUTNAME_OVERRIDES[[node_type, name]] || underscore(name)
           outname_json = name
 
+          # NOTE: For the upb backend every WRITE_*/READ_* macro takes the
+          # enclosing message type (node_type) as its FIRST argument, so the
+          # macro can build the upb accessor name pg_query_<MsgType>_set_<field>.
+          # Keeping it first also lets the typedef-alias handling below rewrite
+          # it with a simple gsub on "(<SourceType>, ".
           if type == :skip
             # Ignore
           elsif type == 'NodeTag'
             # Nothing
           elsif ['char'].include?(type)
-            @outmethods[node_type] += format("  WRITE_CHAR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_CHAR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_CHAR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_CHAR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['bool'].include?(type)
-            @outmethods[node_type] += format("  WRITE_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_BOOL_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_BOOL_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_BOOL_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  bool %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['long'].include?(type)
-            @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_LONG_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_LONG_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_LONG_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['int', 'int16', 'int32', 'AttrNumber', 'ParseLoc'].include?(type)
-            @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_INT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_INT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_INT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['uint', 'uint16', 'uint32', 'Index', 'bits32', 'Oid', 'SubTransactionId', 'RelFileNumber'].include?(type)
-            @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_UINT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_UINT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_UINT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['uint64', 'AclMode'].include?(type)
-            @outmethods[node_type] += format("  WRITE_UINT64_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_UINT64_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_UINT64_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_UINT64_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  uint64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type == 'char*'
-            @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_STRING_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_STRING_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_STRING_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['float', 'double', 'Cost', 'Cardinality', 'Selectivity'].include?(type)
-            @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_FLOAT_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_FLOAT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_FLOAT_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  double %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Bitmapset*', 'Relids'].include?(type)
-            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_BITMAPSET_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_BITMAPSET_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_BITMAPSET_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  repeated uint64 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Value'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_VALUE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_VALUE_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Value*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_VALUE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_VALUE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['List*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_LIST_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_LIST_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  repeated Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Node*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_NODE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['Node'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_NODE_FIELD(%s, %s, %s);\n", outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_NODE_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_NODE_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           # Abstract node types that require casting.
           elsif ['Expr*', 'JsonTablePlan*'].include?(type)
-            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s);\n", outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_ABSTRACT_PTR_FIELD(%s, %s, %s, %s);\n", outname, outname_json, name, type)
+            @outmethods[node_type] += format("  WRITE_NODE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_ABSTRACT_PTR_FIELD(%s, %s, %s, %s, %s);\n", node_type, outname, outname_json, name, type)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           # Abstract types that have no read or out methods.
@@ -147,20 +154,20 @@ class Generator
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif ['CreateStmt'].include?(type)
-            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif @nodetypes.include?(type[0..-2])
-            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s);\n", type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
           elsif type.end_with?('*')
             puts format('ERR: %s %s', name, type)
           else # Enum
-            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s, %s, %s);\n", type, outname, outname_json, name)
-            @readmethods[node_type] += format("  READ_ENUM_FIELD(%s, %s, %s, %s);\n", type, outname, outname_json, name)
+            @outmethods[node_type] += format("  WRITE_ENUM_FIELD(%s, %s, %s, %s, %s);\n", node_type, type, outname, outname_json, name)
+            @readmethods[node_type] += format("  READ_ENUM_FIELD(%s, %s, %s, %s, %s);\n", node_type, type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type, outname, protobuf_field_count, name)
             protobuf_field_count += 1
           end
@@ -199,18 +206,33 @@ class Generator
       end
     end
 
+    # Single-character tokens that are returned 1:1 (identical with "self" list in scan.l)
+    # Either supporting syntax, or single-character operators (some can be both)
+    # Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
+    @scan_token_names = [['NUL', 0]]
+    SCAN_ASCII_TOKENS.each do |c|
+      @scan_token_names << [format('ASCII_%d', c), c]
+    end
+
     scan_values = @enum_defs['../backend/parser/gram']['yytokentype']['values']
     scan_values.each do |value|
       next unless value['name']
       @scan_protobuf_tokens << format('%s = %d;', value['name'], value['value'])
+      @scan_token_names << [value['name'], value['value']]
     end
 
     @typedefs.each do |typedef|
       next unless @outmethods[typedef['source_type']]
 
-      @outmethods[typedef['new_type_name']] = @outmethods[typedef['source_type']]
-      @readmethods[typedef['new_type_name']] = @readmethods[typedef['source_type']]
-      @protobuf_messages[typedef['new_type_name']] = @protobuf_messages[typedef['source_type']]
+      src = typedef['source_type']
+      dst = typedef['new_type_name']
+      # The new (aliased) type gets its own upb message, so the enclosing-type
+      # token baked into each WRITE_*/READ_* macro must point at the alias, not
+      # the source. Every macro takes that token as its first argument, so a
+      # gsub on the "(<SourceType>, " prefix retargets them all.
+      @outmethods[dst] = @outmethods[src].gsub("(#{src}, ", "(#{dst}, ")
+      @readmethods[dst] = @readmethods[src].gsub("(#{src}, ", "(#{dst}, ")
+      @protobuf_messages[dst] = @protobuf_messages[src]
     end
   end
 
@@ -281,10 +303,10 @@ case T_A_Const:
       out_conds += format("  OUT_NODE(%s, %s, %s, %s, %s, %s);\n", type, c_type, underscore(c_type), underscore(c_type).upcase.gsub('__', '_'), type, underscore(type))
       out_conds += "  break;\n"
 
-      read_defs += format("static %s * _read%s(OUT_TYPE(%s, %s) msg);\n", type, c_type, type, c_type)
+      read_defs += format("static %s * _read%s(const OUT_TYPE(%s, %s) msg);\n", type, c_type, type, c_type)
 
       read_impls += format("static %s *\n", type)
-      read_impls += format("_read%s(OUT_TYPE(%s, %s) msg)\n", c_type, type, c_type)
+      read_impls += format("_read%s(const OUT_TYPE(%s, %s) msg)\n", c_type, type, c_type)
       read_impls += "{\n"
       read_impls += format("  %s *node = makeNode(%s);\n", type, type)
       read_impls += readmethod
@@ -406,11 +428,7 @@ message ScanToken {
 }
 
 enum KeywordKind {
-  NO_KEYWORD = 0;
-  UNRESERVED_KEYWORD = 1;
-  COL_NAME_KEYWORD = 2;
-  TYPE_FUNC_NAME_KEYWORD = 3;
-  RESERVED_KEYWORD = 4;
+  #{SCAN_KEYWORD_KINDS.each_with_index.map { |name, i| format('%s = %d;', name, i) }.join("\n  ")}
 }
 
 enum Token {
@@ -418,26 +436,7 @@ enum Token {
   // Single-character tokens that are returned 1:1 (identical with \"self\" list in scan.l)
   // Either supporting syntax, or single-character operators (some can be both)
   // Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
-  ASCII_36 = 36; // \"$\"
-  ASCII_37 = 37; // \"%\"
-  ASCII_40 = 40; // \"\(\"
-  ASCII_41 = 41; // \")\"
-  ASCII_42 = 42; // \"*\"
-  ASCII_43 = 43; // \"+\"
-  ASCII_44 = 44; // \",\"
-  ASCII_45 = 45; // \"-\"
-  ASCII_46 = 46; // \".\"
-  ASCII_47 = 47; // \"/\"
-  ASCII_58 = 58; // \":\"
-  ASCII_59 = 59; // \";\"
-  ASCII_60 = 60; // \"<\"
-  ASCII_61 = 61; // \"=\"
-  ASCII_62 = 62; // \">\"
-  ASCII_63 = 63; // \"?\"
-  ASCII_91 = 91; // \"[\"
-  ASCII_92 = 92; // \"\\\"
-  ASCII_93 = 93; // \"]\"
-  ASCII_94 = 94; // \"^\"
+  #{SCAN_ASCII_TOKENS.map { |c| format('ASCII_%d = %d; // "%s"', c, c, c.chr) }.join("\n  ")}
   // Named tokens in scan.l
   #{@scan_protobuf_tokens.join("\n  ")}
 }
@@ -491,6 +490,64 @@ message SummaryResult {
 "
 
     File.write('./protobuf/pg_query.proto', protobuf)
+
+    # Public C enums for the scan token API, mirroring the Token and KeywordKind
+    # enums above (included from pg_query.h)
+    ascii_tokens = SCAN_ASCII_TOKENS.map { |c| format('PG_QUERY_TOKEN_ASCII_%d = %d, // "%s"', c, c, c.chr) }
+    named_tokens = @scan_token_names.drop(1 + SCAN_ASCII_TOKENS.size).map { |name, v| format('PG_QUERY_TOKEN_%s = %d,', name, v) }
+    File.write('./pg_query_scan_tokens.h', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb
+
+#ifndef PG_QUERY_SCAN_TOKENS_H
+#define PG_QUERY_SCAN_TOKENS_H
+
+// Tokens returned by the Postgres scanner, as used by pg_query_scan_tokens.
+//
+// The values are the token numbers of the Postgres grammar (identical to the
+// Token enum in protobuf/pg_query.proto). They change between Postgres
+// versions, since Bison numbers tokens in declaration order, so compare by
+// name rather than by value.
+typedef enum {
+  PG_QUERY_TOKEN_NUL = 0,
+  // Single-character tokens that are returned 1:1 (identical with \"self\" list in scan.l)
+  // Either supporting syntax, or single-character operators (some can be both)
+  // Also see https://www.postgresql.org/docs/12/sql-syntax-lexical.html#SQL-SYNTAX-SPECIAL-CHARS
+  #{ascii_tokens.join("\n  ")}
+  // Named tokens in scan.l
+  #{named_tokens.join("\n  ")}
+} PgQueryToken;
+
+// Keyword category of a token, as used by pg_query_scan_tokens (identical to
+// the KeywordKind enum in protobuf/pg_query.proto). This is the Postgres
+// keyword category shifted by one, so that non-keywords are zero.
+typedef enum {
+  #{SCAN_KEYWORD_KINDS.each_with_index.map { |name, i| format('PG_QUERY_%s = %d,', name, i) }.join("\n  ")}
+} PgQueryKeywordKind;
+
+#endif
+")
+
+    # Name lookups for the enums above (declared in pg_query.h, included from
+    # pg_query_scan.c)
+    File.write('./src/include/pg_query_scan_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb
+
+const char *
+pg_query_keyword_kind_name(PgQueryKeywordKind keyword_kind)
+{
+  switch (keyword_kind) {
+    #{SCAN_KEYWORD_KINDS.map { |name| format('case PG_QUERY_%s: return "%s";', name, name) }.join("\n    ")}
+  }
+  return NULL;
+}
+
+const char *
+pg_query_token_name(PgQueryToken token)
+{
+  switch (token) {
+    #{@scan_token_names.map { |name, _| format('case PG_QUERY_TOKEN_%s: return "%s";', name, name) }.join("\n    ")}
+  }
+  return NULL;
+}
+")
   end
 end
 
