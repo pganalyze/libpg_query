@@ -624,9 +624,15 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 			}
 		default:
 			{
+				/*
+				 * Note we must not return from inside PG_TRY, since that skips
+				 * PG_END_TRY and leaves PG_exception_stack pointing at this
+				 * frame after it is gone.
+				 */
+				result = false;
 				PG_TRY();
 				{
-					return raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
+					result = raw_expression_tree_walker(node, const_record_walker, (void*) jstate);
 				}
 				PG_CATCH();
 				{
@@ -634,6 +640,7 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 					FlushErrorState();
 				}
 				PG_END_TRY();
+				return result;
 			}
 	}
 
