@@ -159,8 +159,11 @@ class Generator
 
   EOL
 
+  # This recurses into the node type's function directly, bypassing the depth
+  # cutoff in _fingerprintNode, so apply the same cutoff here (e.g. a long UNION
+  # chain nests SelectStmt in SelectStmt without going through _fingerprintNode)
   FINGERPRINT_SPECIFIC_NODE_PTR = <<-EOL
-  if (node->%<name>s != NULL) {
+  if (node->%<name>s != NULL && depth + 1 < 100) {
     XXH3_state_t* prev = XXH3_createState();
     XXH64_hash_t hash;
 
