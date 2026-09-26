@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "protobuf/pg_query.pb-c.h"
-
 size_t testCount = 13;
 const char* tests[] = {
   "SELECT 1",
@@ -22,35 +20,26 @@ const char* tests[] = {
 };
 
 int main() {
-  PgQueryScanResult result;
-  PgQuery__ScanResult *scan_result;
-  PgQuery__ScanToken *scan_token;
-  const ProtobufCEnumValue *token_kind;
-  const ProtobufCEnumValue *keyword_kind;
+  PgQueryScanTokensResult result;
   size_t i;
-  size_t j;
+  int j;
 
   for (i = 0; i < testCount; i++) {
-    result = pg_query_scan(tests[i]);
+    result = pg_query_scan_tokens(tests[i]);
 
     printf("%s\n", tests[i]);
     if (result.error) {
       printf("  error: %s at %d\n", result.error->message, result.error->cursorpos);
     } else {
-      scan_result = pg_query__scan_result__unpack(NULL, result.pbuf.len, (void *) result.pbuf.data);
-
-      printf("  version: %d, tokens: %zu, size: %zu\n", scan_result->version, scan_result->n_tokens, result.pbuf.len);
-      for (j = 0; j < scan_result->n_tokens; j++) {
-        scan_token = scan_result->tokens[j];
-        token_kind = protobuf_c_enum_descriptor_get_value(&pg_query__token__descriptor, scan_token->token);
-        keyword_kind = protobuf_c_enum_descriptor_get_value(&pg_query__keyword_kind__descriptor, scan_token->keyword_kind);
-        printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", scan_token->end - scan_token->start, &(tests[i][scan_token->start]), scan_token->start, scan_token->end, token_kind->name, keyword_kind->name);
+      printf("  tokens: %d\n", result.n_tokens);
+      for (j = 0; j < result.n_tokens; j++) {
+        PgQueryScanToken token = result.tokens[j];
+        printf("  \"%.*s\" = [ %d, %d, %s, %s ]\n", token.end - token.start, &(tests[i][token.start]), token.start, token.end,
+               pg_query_token_name(token.token), pg_query_keyword_kind_name(token.keyword_kind));
       }
-
-      pg_query__scan_result__free_unpacked(scan_result, NULL);
     }
 
-    pg_query_free_scan_result(result);
+    pg_query_free_scan_tokens_result(result);
   }
 
   // Optional, this ensures all memory is freed upon program exit (useful when running Valgrind)

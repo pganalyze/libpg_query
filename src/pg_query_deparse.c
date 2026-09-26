@@ -7,8 +7,9 @@
 #include "postgres.h"
 #include "lib/stringinfo.h"
 #include "nodes/parsenodes.h"
+#include "gramparse.h"
 
-#include "protobuf/pg_query.pb-c.h"
+#include <limits.h>
 
 static PostgresDeparseOpts * copy_deparse_opts_for_stmt(RawStmt *raw_stmt, PostgresDeparseOpts * opts, size_t start, size_t end);
 
@@ -125,36 +126,34 @@ PgQueryDeparseCommentsResult
 pg_query_deparse_comments_for_query(const char *query)
 {
 	PgQueryDeparseCommentsResult result = {0};
-	PgQueryScanResult scan_result_raw = pg_query_scan(query);
-
-	if (scan_result_raw.error)
-	{
-		result.error = scan_result_raw.error;
-		return result;
-	}
-
-	PgQuery__ScanResult *scan_result = pg_query__scan_result__unpack(NULL, scan_result_raw.pbuf.len, (void *) scan_result_raw.pbuf.data);
+	PgQueryScanTokensResult scan_result = pg_query_scan_tokens(query);
+	const PgQueryScanToken *tokens = scan_result.tokens;
+	int			n_tokens = scan_result.n_tokens;
 	bool		prior_token_was_comment = false;
 	int32_t		prior_non_comment_end = 0;
 	int32_t		prior_token_end = 0;
 
-	result.comment_count = 0;
-	for (int i = 0; i < scan_result->n_tokens; i++)
+	if (scan_result.error)
 	{
-		PgQuery__ScanToken *token = scan_result->tokens[i];
+		result.error = scan_result.error;
+		return result;
+	}
 
-		if (token->token == PG_QUERY__TOKEN__SQL_COMMENT || token->token == PG_QUERY__TOKEN__C_COMMENT)
+	result.comment_count = 0;
+	for (int i = 0; i < n_tokens; i++)
+	{
+		if (tokens[i].token == SQL_COMMENT || tokens[i].token == C_COMMENT)
 			result.comment_count++;
 	}
 
 	result.comments = malloc(result.comment_count * sizeof(PostgresDeparseComment *));
 	size_t		comment_idx = 0;
 
-	for (int i = 0; i < scan_result->n_tokens; i++)
+	for (int i = 0; i < n_tokens; i++)
 	{
-		PgQuery__ScanToken *token = scan_result->tokens[i];
+		const PgQueryScanToken *token = &tokens[i];
 
-		if (token->token == PG_QUERY__TOKEN__SQL_COMMENT || token->token == PG_QUERY__TOKEN__C_COMMENT)
+		if (token->token == SQL_COMMENT || token->token == C_COMMENT)
 		{
 			size_t		token_len = token->end - token->start;
 			PostgresDeparseComment *comment = malloc(sizeof(PostgresDeparseComment));
@@ -189,9 +188,9 @@ pg_query_deparse_comments_for_query(const char *query)
 				}
 			}
 
-			if (i < scan_result->n_tokens - 1)
+			if (i < n_tokens - 1)
 			{
-				for (int j = token->end; j < scan_result->tokens[i + 1]->start; j++)
+				for (int j = token->end; j < tokens[i + 1].start; j++)
 				{
 					if (query[j] == '\n')
 						comment->newlines_after_comment++;
@@ -214,8 +213,7 @@ pg_query_deparse_comments_for_query(const char *query)
 		prior_token_end = token->end;
 	}
 
-	pg_query__scan_result__free_unpacked(scan_result, NULL);
-	pg_query_free_scan_result(scan_result_raw);
+	pg_query_free_scan_tokens_result(scan_result);
 
 	return result;
 }

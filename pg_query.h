@@ -6,6 +6,7 @@
 #include <sys/types.h>
 
 #include "postgres_deparse.h"
+#include "pg_query_scan_tokens.h"
 
 typedef struct {
 	char* message; // exception message
@@ -32,6 +33,19 @@ typedef struct {
   char* stderr_buffer;
   PgQueryError* error;
 } PgQueryScanResult;
+
+typedef struct {
+  int start; // byte offset of the token in the input
+  int end; // byte offset just past the token
+  PgQueryToken token; // use pg_query_token_name to get the name as a string
+  PgQueryKeywordKind keyword_kind; // use pg_query_keyword_kind_name to get the name as a string
+} PgQueryScanToken;
+
+typedef struct {
+  PgQueryScanToken* tokens;
+  int n_tokens;
+  PgQueryError* error;
+} PgQueryScanTokensResult;
 
 typedef struct {
   char* parse_tree;
@@ -118,7 +132,15 @@ extern "C" {
 
 PgQueryNormalizeResult pg_query_normalize(const char* input);
 PgQueryNormalizeResult pg_query_normalize_utility(const char* input);
+
+// pg_query_scan returns the tokens as a serialized ScanResult protobuf (for
+// decoding in another language), pg_query_scan_tokens returns them as a plain
+// C array (for use from C).
 PgQueryScanResult pg_query_scan(const char* input);
+PgQueryScanTokensResult pg_query_scan_tokens(const char* input);
+const char* pg_query_token_name(PgQueryToken token);
+const char* pg_query_keyword_kind_name(PgQueryKeywordKind keyword_kind);
+
 PgQueryParseResult pg_query_parse(const char* input);
 PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input);
@@ -148,6 +170,7 @@ PgQuerySummaryParseResult pg_query_summary(const char* input, int parser_options
 
 void pg_query_free_normalize_result(PgQueryNormalizeResult result);
 void pg_query_free_scan_result(PgQueryScanResult result);
+void pg_query_free_scan_tokens_result(PgQueryScanTokensResult result);
 void pg_query_free_parse_result(PgQueryParseResult result);
 void pg_query_free_split_result(PgQuerySplitResult result);
 void pg_query_free_deparse_result(PgQueryDeparseResult result);
