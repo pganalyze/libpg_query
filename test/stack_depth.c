@@ -8,20 +8,21 @@
 // Regression test for stack overflows when walking deeply nested parse trees.
 //
 // A deeply nested expression like "SELECT 1%1%1%...%1" parses into a very deep
-// A_Expr tree. Recursively serializing or walking that tree (JSON/protobuf
+// A_Expr tree, and "SELECT 1 UNION SELECT 1 UNION ..." into a very deep
+// SelectStmt tree. Recursively serializing or walking that tree (JSON/protobuf
 // output, deparsing, normalizing, ...) could overflow the C stack and crash,
 // these tests verify we return an error instead, like Postgres does.
 
-static char *build_deep_query(int depth)
+static char *build_deep_query(const char *repeated, int depth)
 {
-	// "SELECT 1" followed by "%1" repeated `depth` times
-	size_t len = strlen("SELECT 1") + (size_t) depth * 2;
+	// "SELECT 1" followed by `repeated` `depth` times
+	size_t len = strlen("SELECT 1") + (size_t) depth * strlen(repeated);
 	char *query = malloc(len + 1);
 	char *p = query;
 
 	p += sprintf(p, "SELECT 1");
 	for (int i = 0; i < depth; i++)
-		p += sprintf(p, "%%1");
+		p += sprintf(p, "%s", repeated);
 
 	return query;
 }
@@ -33,10 +34,10 @@ static bool is_clean(const PgQueryError *error)
 	return strstr(error->message, "stack depth limit exceeded") != NULL;
 }
 
-int main()
+static bool run_tests(const char *repeated)
 {
 	bool ret_code = 0;
-	char *query = build_deep_query(100000);
+	char *query = build_deep_query(repeated, 100000);
 
 	// JSON output (pg_query_parse)
 	{
@@ -93,7 +94,7 @@ int main()
 	// Deparse (deparseExpr) - exercise via a protobuf round-trip at a depth that
 	// serializes successfully, so deparsing actually walks a deep tree.
 	{
-		char *shallow = build_deep_query(100);
+		char *shallow = build_deep_query(repeated, 100);
 		PgQueryProtobufParseResult parsed = pg_query_parse_protobuf(shallow);
 		if (parsed.error) {
 			ret_code = -1;
@@ -113,9 +114,24 @@ int main()
 		free(shallow);
 	}
 
+	free(query);
+
+	return ret_code;
+}
+
+int main()
+{
+	bool ret_code = 0;
+
+	// Deeply nested expressions go through the generic node dispatchers
+	// (_outNode, _readNode, deparseExpr, ...)
+	ret_code |= run_tests("%1");
+
+	// Set operations recurse into the SelectStmt-specific functions directly
+	ret_code |= run_tests(" UNION SELECT 1");
+
 	printf("\n");
 
-	free(query);
 	pg_query_exit();
 
 	return ret_code;

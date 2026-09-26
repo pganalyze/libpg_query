@@ -100,9 +100,16 @@ _strview_to_cstring(upb_StringView sv)
 	if (pg_query_##msgtype##_has_##outname(msg)) \
 		node->fldname = *_read##typename(pg_query_##msgtype##_##outname(msg));
 
+/*
+ * This recurses into _read##typename directly, bypassing the stack depth check
+ * in _readNode, so check here (e.g. a long UNION chain nests SelectStmt in
+ * SelectStmt without ever going through _readNode).
+ */
 #define READ_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
-	if (pg_query_##msgtype##_has_##outname(msg)) \
-		node->fldname = _read##typename(pg_query_##msgtype##_##outname(msg));
+	if (pg_query_##msgtype##_has_##outname(msg)) { \
+		check_stack_depth(); \
+		node->fldname = _read##typename(pg_query_##msgtype##_##outname(msg)); \
+	}
 
 static Node * _readNode(const pg_query_Node *msg);
 
