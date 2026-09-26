@@ -92,6 +92,7 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_INSERT_RELATION,
 	DEPARSE_NODE_CONTEXT_INSERT_SELECT,
 	DEPARSE_NODE_CONTEXT_A_EXPR,
+	DEPARSE_NODE_CONTEXT_B_EXPR,
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_DOMAIN,
@@ -168,6 +169,8 @@ static void deparseWindowDef(DeparseState *state, WindowDef* window_def);
 static void deparseColumnRef(DeparseState *state, ColumnRef* column_ref);
 static void deparseSubLink(DeparseState *state, SubLink* sub_link);
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context);
+static bool needsParensAsBExpr(Node *node);
+static bool needsParensAsCExpr(Node *node);
 static void deparseBoolExpr(DeparseState *state, BoolExpr *bool_expr);
 static void deparseAStar(DeparseState *state, A_Star* a_star);
 static void deparseCollateClause(DeparseState *state, CollateClause* collate_clause);
@@ -209,7 +212,7 @@ static void deparseReplicaIdentityStmt(DeparseState *state, ReplicaIdentityStmt 
 static void deparseRangeTableSample(DeparseState *state, RangeTableSample *range_table_sample);
 static void deparseRangeTableFunc(DeparseState *state, RangeTableFunc* range_table_func);
 static void deparseGroupingSet(DeparseState *state, GroupingSet *grouping_set);
-static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNodeContext context);
+static void deparseFuncCall(DeparseState *state, FuncCall *func_call);
 static void deparseMinMaxExpr(DeparseState *state, MinMaxExpr *min_max_expr);
 static void deparseXmlExpr(DeparseState *state, XmlExpr* xml_expr, DeparseNodeContext context);
 static void deparseXmlSerialize(DeparseState *state, XmlSerialize *xml_serialize);
@@ -741,7 +744,7 @@ static void deparseFuncExpr(DeparseState *state, Node *node, DeparseNodeContext 
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
-			deparseFuncCall(state, castNode(FuncCall, node), context);
+			deparseFuncCall(state, castNode(FuncCall, node));
 			break;
 		case T_SQLValueFunction:
 			deparseSQLValueFunction(state, castNode(SQLValueFunction, node));
@@ -796,11 +799,14 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 		case T_ParamRef:
 		case T_A_Indirection:
 		case T_CaseExpr:
-		case T_SubLink:
 		case T_A_ArrayExpr:
 		case T_RowExpr:
 		case T_GroupingFunc:
 			deparseCExpr(state, node);
+			break;
+		case T_SubLink:
+			// Not always a "c_expr" (e.g. "x = ANY (...)"), so don't go through deparseCExpr
+			deparseSubLink(state, castNode(SubLink, node));
 			break;
 		case T_TypeCast:
 			deparseTypeCast(state, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
@@ -809,7 +815,8 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 			deparseCollateClause(state, castNode(CollateClause, node));
 			break;
 		case T_A_Expr:
-			deparseAExpr(state, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_A_EXPR);
+			// Operands of A_Expr nodes in "b_expr" positions must be valid "b_expr" as well
+			deparseAExpr(state, castNode(A_Expr, node), context == DEPARSE_NODE_CONTEXT_B_EXPR ? DEPARSE_NODE_CONTEXT_B_EXPR : DEPARSE_NODE_CONTEXT_A_EXPR);
 			break;
 		case T_BoolExpr:
 			deparseBoolExpr(state, castNode(BoolExpr, node));
@@ -865,29 +872,16 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 // "b_expr" in gram.y
 static void deparseBExpr(DeparseState *state, Node *node)
 {
-	if (IsA(node, XmlExpr)) {
-		deparseXmlExpr(state, castNode(XmlExpr, node), DEPARSE_NODE_CONTEXT_NONE);
+	if (needsParensAsBExpr(node))
+	{
+		deparseAppendStringInfoChar(state, '(');
+		// Because we wrap this in parenthesis, the expression inside follows "a_expr" parser rules
+		deparseExpr(state, node, DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseAppendStringInfoChar(state, ')');
 		return;
 	}
 
-	if (IsA(node, A_Expr)) {
-		A_Expr *a_expr = castNode(A_Expr, node);
-		// Other kinds are handled by "c_expr", with parens added around them
-		if (a_expr->kind == AEXPR_OP || a_expr->kind == AEXPR_DISTINCT || a_expr->kind == AEXPR_NOT_DISTINCT) {
-			deparseAExpr(state, a_expr, DEPARSE_NODE_CONTEXT_NONE);
-			return;
-		}
-	}
-
-	if (IsA(node, BoolExpr)) {
-		BoolExpr *bool_expr = castNode(BoolExpr, node);
-		if (bool_expr->boolop == NOT_EXPR) {
-			deparseBoolExpr(state, bool_expr);
-			return;
-		}
-	}
-
-	deparseCExpr(state, node);
+	deparseExpr(state, node, DEPARSE_NODE_CONTEXT_B_EXPR);
 }
 
 // "AexprConst" in gram.y
@@ -911,6 +905,14 @@ static void deparseAexprConst(DeparseState *state, Node *node)
 // "c_expr" in gram.y
 static void deparseCExpr(DeparseState *state, Node *node)
 {
+	if (needsParensAsCExpr(node))
+	{
+		deparseAppendStringInfoChar(state, '(');
+		deparseExpr(state, node, DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseAppendStringInfoChar(state, ')');
+		return;
+	}
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -1256,6 +1258,197 @@ static void deparseSubqueryOp(DeparseState *state, List *op)
 		deparseAnyOperator(state, op);
 		deparseAppendStringInfoString(state, ")");
 	}
+}
+
+// Precedence of "a_expr" rules, lowest to highest (mirrors %left/%right/%nonassoc in gram.y)
+typedef enum DeparseExprPrec
+{
+	DEPARSE_PREC_OR,         /* OR */
+	DEPARSE_PREC_AND,        /* AND */
+	DEPARSE_PREC_NOT,        /* NOT (right-associative) */
+	DEPARSE_PREC_IS,         /* IS, ISNULL, NOTNULL (non-associative) */
+	DEPARSE_PREC_COMPARISON, /* < > = <= >= <> (non-associative) */
+	DEPARSE_PREC_BETWEEN,    /* BETWEEN IN LIKE ILIKE SIMILAR NOT_LA (non-associative) */
+	DEPARSE_PREC_OP,         /* Op OPERATOR, i.e. all other operators */
+	DEPARSE_PREC_ADD,        /* + - */
+	DEPARSE_PREC_MUL,        /* * / % */
+	DEPARSE_PREC_EXP,        /* ^ */
+	DEPARSE_PREC_AT,         /* AT TIME ZONE, AT LOCAL */
+	DEPARSE_PREC_COLLATE,    /* COLLATE */
+	DEPARSE_PREC_UMINUS,     /* unary + - (right-associative) */
+	DEPARSE_PREC_ATOM        /* c_expr, typecasts, and anything else that can't be split apart */
+} DeparseExprPrec;
+
+// Precedence of the binary operator tokens handled by "qual_Op" and its special cases in gram.y
+static DeparseExprPrec getOperatorPrecedence(List *op)
+{
+	const char *name;
+
+	// OPERATOR(schema.op) always has the precedence of Op
+	if (list_length(op) != 1)
+		return DEPARSE_PREC_OP;
+
+	name = strVal(linitial(op));
+	if (strcmp(name, "+") == 0 || strcmp(name, "-") == 0)
+		return DEPARSE_PREC_ADD;
+	if (strcmp(name, "*") == 0 || strcmp(name, "/") == 0 || strcmp(name, "%") == 0)
+		return DEPARSE_PREC_MUL;
+	if (strcmp(name, "^") == 0)
+		return DEPARSE_PREC_EXP;
+	if (strcmp(name, "<") == 0 || strcmp(name, ">") == 0 || strcmp(name, "=") == 0 ||
+		strcmp(name, "<=") == 0 || strcmp(name, ">=") == 0 || strcmp(name, "<>") == 0 ||
+		strcmp(name, "!=") == 0)
+		return DEPARSE_PREC_COMPARISON;
+
+	return DEPARSE_PREC_OP;
+}
+
+// Precedence of the operator token in "a_expr subquery_Op sub_type ..." (i.e. "x = ANY (...)")
+static DeparseExprPrec getSubqueryOperatorPrecedence(List *op)
+{
+	const char *name;
+
+	if (list_length(op) == 1)
+	{
+		name = strVal(linitial(op));
+		// These get output as [NOT] LIKE / [NOT] ILIKE by deparseSubqueryOp
+		if (strcmp(name, "~~") == 0 || strcmp(name, "!~~") == 0 ||
+			strcmp(name, "~~*") == 0 || strcmp(name, "!~~*") == 0)
+			return DEPARSE_PREC_BETWEEN;
+	}
+
+	return getOperatorPrecedence(op);
+}
+
+static bool isSqlSyntaxFuncCall(FuncCall *func_call, const char *name)
+{
+	return func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), name) == 0;
+}
+
+// Precedence of the gram.y rule that a node gets deparsed as (see DeparseExprPrec)
+static DeparseExprPrec getExprPrecedence(Node *node)
+{
+	if (node == NULL)
+		return DEPARSE_PREC_ATOM;
+
+	switch (nodeTag(node))
+	{
+		case T_A_Expr:
+			{
+				A_Expr *a_expr = castNode(A_Expr, node);
+				switch (a_expr->kind)
+				{
+					case AEXPR_OP:
+						// Prefix operators: unary + and - have UMINUS precedence, all others that of Op
+						if (a_expr->lexpr == NULL)
+							return getOperatorPrecedence(a_expr->name) == DEPARSE_PREC_ADD ? DEPARSE_PREC_UMINUS : DEPARSE_PREC_OP;
+						return getOperatorPrecedence(a_expr->name);
+					case AEXPR_OP_ANY:
+					case AEXPR_OP_ALL:
+						// The rule has Op precedence, but as a right operand the operator token may bind looser
+						return Min(getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_PREC_OP);
+					case AEXPR_DISTINCT:
+					case AEXPR_NOT_DISTINCT:
+						return DEPARSE_PREC_IS;
+					case AEXPR_NULLIF:
+						return DEPARSE_PREC_ATOM;
+					default: /* IN, LIKE, ILIKE, SIMILAR TO, BETWEEN */
+						return DEPARSE_PREC_BETWEEN;
+				}
+			}
+		case T_BoolExpr:
+			switch (castNode(BoolExpr, node)->boolop)
+			{
+				case AND_EXPR:
+					return DEPARSE_PREC_AND;
+				case NOT_EXPR:
+					return DEPARSE_PREC_NOT;
+				default:
+					return DEPARSE_PREC_OR;
+			}
+		case T_NullTest:
+		case T_BooleanTest:
+		case T_JsonIsPredicate:
+			return DEPARSE_PREC_IS;
+		case T_CollateClause:
+			return DEPARSE_PREC_COLLATE;
+		case T_XmlExpr:
+			if (castNode(XmlExpr, node)->op == IS_DOCUMENT)
+				return DEPARSE_PREC_IS;
+			return DEPARSE_PREC_ATOM;
+		case T_SubLink:
+			{
+				SubLink *sub_link = castNode(SubLink, node);
+				if (sub_link->subLinkType == ANY_SUBLINK && list_length(sub_link->operName) == 0)
+					return DEPARSE_PREC_BETWEEN; // IN (...)
+				if (sub_link->subLinkType == ANY_SUBLINK || sub_link->subLinkType == ALL_SUBLINK)
+					return Min(getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_PREC_OP);
+				return DEPARSE_PREC_ATOM;
+			}
+		case T_FuncCall:
+			{
+				FuncCall *func_call = castNode(FuncCall, node);
+				if (isSqlSyntaxFuncCall(func_call, "timezone") &&
+					list_length(func_call->args) > 0 &&
+					list_length(func_call->args) <= 2)
+					return DEPARSE_PREC_AT;
+				if (isSqlSyntaxFuncCall(func_call, "is_normalized"))
+					return DEPARSE_PREC_IS;
+				return DEPARSE_PREC_ATOM;
+			}
+		default:
+			return DEPARSE_PREC_ATOM;
+	}
+}
+
+// Which side of the operator an operand is on (prefix operators only have a right operand, postfix ones a left one)
+typedef enum DeparseOperandSide
+{
+	DEPARSE_OPERAND_LEFT,
+	DEPARSE_OPERAND_RIGHT
+} DeparseOperandSide;
+
+/*
+ * Checks whether a node needs parens as the left or right operand of an "a_expr"
+ * rule with the given precedence. At the same precedence, left-associative rules
+ * only need them on the right, non-associative rules on both sides.
+ */
+static bool needsParensForPrecedence(Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side)
+{
+	DeparseExprPrec prec = getExprPrecedence(node);
+
+	if (prec != parent_prec)
+		return prec < parent_prec;
+
+	switch (parent_prec)
+	{
+		case DEPARSE_PREC_IS:
+		case DEPARSE_PREC_COMPARISON:
+		case DEPARSE_PREC_BETWEEN:
+			return true;
+		case DEPARSE_PREC_NOT:
+		case DEPARSE_PREC_UMINUS:
+			// Right-associative prefix operators, e.g. "NOT NOT a"
+			return false;
+		default:
+			return side == DEPARSE_OPERAND_RIGHT;
+	}
+}
+
+// Deparses an operand of an "a_expr" (or "b_expr") rule with the given precedence, adding parens if needed
+static void deparseExprOperand(DeparseState *state, Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side, DeparseNodeContext context)
+{
+	bool need_parens = needsParensForPrecedence(node, parent_prec, side) ||
+		(context == DEPARSE_NODE_CONTEXT_B_EXPR && needsParensAsBExpr(node));
+
+	if (need_parens)
+		deparseAppendStringInfoChar(state, '(');
+	deparseExpr(state, node, need_parens ? DEPARSE_NODE_CONTEXT_A_EXPR : context);
+	if (need_parens)
+		deparseAppendStringInfoChar(state, ')');
 }
 
 // Not present directly in gram.y (usually matched by ColLabel)
@@ -2156,7 +2349,7 @@ static void deparseXmlNamespaceList(DeparseState *state, List *l)
 		if (res_target->name == NULL)
 			deparseAppendStringInfoString(state, "DEFAULT ");
 
-		deparseExpr(state, res_target->val, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+		deparseBExpr(state, res_target->val);
 
 		if (res_target->name != NULL)
 		{
@@ -2410,7 +2603,7 @@ static void deparseFuncExprWindowless(DeparseState *state, Node* node)
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
-			deparseFuncCall(state, castNode(FuncCall, node), DEPARSE_NODE_CONTEXT_NONE /* we don't know which kind of expression */);
+			deparseFuncCall(state, castNode(FuncCall, node));
 			break;
 		case T_SQLValueFunction:
 			deparseSQLValueFunction(state, castNode(SQLValueFunction, node));
@@ -2458,6 +2651,8 @@ static void deparseIndexElem(DeparseState *state, IndexElem* index_elem)
 	}
 	else if (index_elem->expr != NULL)
 	{
+		bool is_func_expr = false;
+
 		switch (nodeTag(index_elem->expr))
 		{
 			// Simple function calls can be written without wrapping parens
@@ -2467,13 +2662,23 @@ static void deparseIndexElem(DeparseState *state, IndexElem* index_elem)
 			case T_MinMaxExpr: // func_expr_common_subexpr
 			case T_XmlExpr: // func_expr_common_subexpr
 			case T_XmlSerialize: // func_expr_common_subexpr
-				deparseFuncExprWindowless(state, index_elem->expr);
-				deparseAppendStringInfoString(state, " ");
+				is_func_expr = true;
 				break;
 			default:
-				deparseAppendStringInfoChar(state, '(');
-				deparseExpr(state, index_elem->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
-				deparseAppendStringInfoString(state, ") ");
+				break;
+		}
+
+		// Some function call nodes are output using operator syntax (e.g. "x AT TIME ZONE y"), and need parens
+		if (is_func_expr && !needsParensAsCExpr(index_elem->expr))
+		{
+			deparseFuncExprWindowless(state, index_elem->expr);
+			deparseAppendStringInfoString(state, " ");
+		}
+		else
+		{
+			deparseAppendStringInfoChar(state, '(');
+			deparseExpr(state, index_elem->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			deparseAppendStringInfoString(state, ") ");
 		}
 	}
 	else
@@ -2912,7 +3117,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 		else if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
 			deparseCExpr(state, stmt->limitCount);
 		else
-			deparseExpr(state, stmt->limitCount, DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+			deparseExpr(state, stmt->limitCount, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 		deparseAppendStringInfoChar(state, ' ');
 
@@ -3094,7 +3299,7 @@ static void deparseAConst(DeparseState *state, A_Const *a_const)
 	deparseValue(state, val, DEPARSE_NODE_CONTEXT_CONSTANT);
 }
 
-static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNodeContext context)
+static void deparseFuncCall(DeparseState *state, FuncCall *func_call)
 {
 	const ListCell *lc = NULL;
 
@@ -3214,20 +3419,17 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		/*
 		 * "OVERLAPS" is a keyword on its own merit, and only accepts the
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlaps)
-		 * format: (start_1, end_1) overlaps (start_2, end_2)
+		 * format: (start_1, end_1) OVERLAPS (start_2, end_2)
 		 */
 		deparseAppendStringInfoChar(state, '(');
 		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, ", ");
 		deparseExpr(state, lsecond(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		deparseAppendStringInfoString(state, ") ");
-
-		deparseAppendStringInfoString(state, "overlaps ");
-		deparseAppendStringInfoChar(state, '(');
+		deparseAppendStringInfoString(state, ") OVERLAPS (");
 		deparseExpr(state, lthird(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, ", ");
 		deparseExpr(state, lfourth(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		deparseAppendStringInfoString(state, ") ");
+		deparseAppendStringInfoChar(state, ')');
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
 		list_length(func_call->funcname) == 2 &&
@@ -3270,7 +3472,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
 		 * Note that the arguments are swapped in this case
 		 */
-		Expr* e;
+		Node* e;
 		bool isLocal = list_length(func_call->args) == 1;
 
 		if (isLocal)
@@ -3278,30 +3480,14 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		else
 			e = lsecond(func_call->args);
 
-		// If we're not inside an a_expr context, we must add wrapping parenthesis around the AT ... syntax
-		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
-			deparseAppendStringInfoChar(state, '(');
-		}
-
-		if (IsA(e, A_Expr)) {
-			deparseAppendStringInfoChar(state, '(');
-		}
-
-		deparseExpr(state, (Node*) e, DEPARSE_NODE_CONTEXT_A_EXPR);
-
-		if (IsA(e, A_Expr)) {
-			deparseAppendStringInfoChar(state, ')');
-		}
+		// Note that callers outside of an "a_expr" context add parens around this (see needsParensAsBExpr)
+		deparseExprOperand(state, e, DEPARSE_PREC_AT, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 		if (isLocal)
 			deparseAppendStringInfoString(state, " AT LOCAL");
 		else {
 			deparseAppendStringInfoString(state, " AT TIME ZONE ");
-			deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		}
-
-		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
-			deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, linitial(func_call->args), DEPARSE_PREC_AT, DEPARSE_OPERAND_RIGHT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		}
 
 		return;
@@ -3338,7 +3524,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		 */
 		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
 
-		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseExprOperand(state, linitial(func_call->args), DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, " IS ");
 		if (list_length(func_call->args) == 2)
 		{
@@ -3355,9 +3541,9 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		list_length(func_call->args) == 2)
 	{
 		deparseAppendStringInfoString(state, "xmlexists (");
-		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+		deparseCExpr(state, linitial(func_call->args));
 		deparseAppendStringInfoString(state, " PASSING ");
-		deparseExpr(state, lsecond(func_call->args), DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+		deparseCExpr(state, lsecond(func_call->args));
 		deparseAppendStringInfoChar(state, ')');
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
@@ -3569,7 +3755,8 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ALL_SUBLINK:
-			deparseExpr(state, sub_link->testexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			// The left operand gets compared against the operator token, not the precedence of the whole rule
+			deparseExprOperand(state, sub_link->testexpr, getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, sub_link->operName);
 			deparseAppendStringInfoString(state, " ALL (");
@@ -3577,7 +3764,10 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ANY_SUBLINK:
-			deparseExpr(state, sub_link->testexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			if (list_length(sub_link->operName) > 0)
+				deparseExprOperand(state, sub_link->testexpr, getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
+			else
+				deparseExprOperand(state, sub_link->testexpr, DEPARSE_PREC_BETWEEN /* IN */, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 			if (list_length(sub_link->operName) > 0)
 			{
 				deparseAppendStringInfoChar(state, ' ');
@@ -3623,56 +3813,77 @@ needsParensAsBExpr(Node *node)
 {
 	if (node == NULL)
 		return false;
-	return IsA(node, BoolExpr) || IsA(node, BooleanTest) || IsA(node, NullTest) || IsA(node, A_Expr);
+
+	// These have their own "b_expr" rules (their operands get deparsed in a "b_expr" context as well)
+	if (IsA(node, A_Expr))
+	{
+		switch (castNode(A_Expr, node)->kind)
+		{
+			case AEXPR_OP:
+			case AEXPR_DISTINCT:
+			case AEXPR_NOT_DISTINCT:
+			case AEXPR_NULLIF: /* function call syntax */
+				return false;
+			default:
+				return true;
+		}
+	}
+	if (IsA(node, XmlExpr) && castNode(XmlExpr, node)->op == IS_DOCUMENT)
+		return false;
+
+	// "row OVERLAPS row" can't be ambiguous (so it has no precedence), but is only handled by "a_expr"
+	if (IsA(node, FuncCall) && isSqlSyntaxFuncCall(castNode(FuncCall, node), "overlaps") &&
+		list_length(castNode(FuncCall, node)->args) == 4)
+		return true;
+
+	// Everything else that isn't a "c_expr" (e.g. NOT, IS NULL, COLLATE, AT TIME ZONE) is only handled by "a_expr"
+	return getExprPrecedence(node) != DEPARSE_PREC_ATOM;
+}
+
+// Checks whether a node needs parens in a "c_expr" context, i.e. anything that isn't deparsed as a "c_expr" (e.g. "a + b", "NOT a", "x = ANY (...)", "x AT TIME ZONE y" or "x IS DOCUMENT")
+static bool
+needsParensAsCExpr(Node *node)
+{
+	return getExprPrecedence(node) != DEPARSE_PREC_ATOM || needsParensAsBExpr(node);
 }
 
 // This handles "A_Expr" parse tree objects, which are a subset of the rules in "a_expr" (handled by deparseExpr)
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context)
 {
-	ListCell *lc;
 	char *name;
-
-	bool need_lexpr_parens = needsParensAsBExpr(a_expr->lexpr);
-	bool need_rexpr_parens = needsParensAsBExpr(a_expr->rexpr);
+	DeparseExprPrec prec = getExprPrecedence((Node *) a_expr);
 
 	switch (a_expr->kind) {
 		case AEXPR_OP: /* normal operator */
 			{
 				if (a_expr->lexpr != NULL)
 				{
-					if (need_lexpr_parens)
-						deparseAppendStringInfoChar(state, '(');
-					deparseExpr(state, a_expr->lexpr, context);
-					if (need_lexpr_parens)
-						deparseAppendStringInfoChar(state, ')');
+					deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 					deparseAppendStringInfoChar(state, ' ');
 				}
 				deparseQualOp(state, a_expr->name);
 				if (a_expr->rexpr != NULL)
 				{
 					deparseAppendStringInfoChar(state, ' ');
-					if (need_rexpr_parens)
-						deparseAppendStringInfoChar(state, '(');
-					deparseExpr(state, a_expr->rexpr, context);
-					if (need_rexpr_parens)
-						deparseAppendStringInfoChar(state, ')');
+					deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 				}
 			}
 			return;
 		case AEXPR_OP_ANY: /* scalar op ANY (array) */
-			deparseExpr(state, a_expr->lexpr, context);
+			// The left operand gets compared against the operator token, not the precedence of the whole rule
+			deparseExprOperand(state, a_expr->lexpr, getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, a_expr->name);
 			deparseAppendStringInfoString(state, " ANY(");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExpr(state, a_expr->rexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case AEXPR_OP_ALL: /* scalar op ALL (array) */
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, a_expr->name);
 			deparseAppendStringInfoString(state, " ALL(");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExpr(state, a_expr->rexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case AEXPR_DISTINCT: /* IS DISTINCT FROM - name must be "=" */
@@ -3680,26 +3891,18 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
 
-			if (need_lexpr_parens)
-				deparseAppendStringInfoChar(state, '(');
-			deparseExpr(state, a_expr->lexpr, context);
-			if (need_lexpr_parens)
-				deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS DISTINCT FROM ");
-			if (need_rexpr_parens)
-				deparseAppendStringInfoChar(state, '(');
-			deparseExpr(state, a_expr->rexpr, context);
-			if (need_rexpr_parens)
-				deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_NOT_DISTINCT: /* IS NOT DISTINCT FROM - name must be "=" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
 
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS NOT DISTINCT FROM ");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_NULLIF: /* NULLIF - name must be "=" */
 			Assert(list_length(a_expr->name) == 1);
@@ -3716,7 +3919,7 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(IsA(a_expr->rexpr, List));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "=") == 0) {
@@ -3736,7 +3939,7 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 		case AEXPR_LIKE: /* [NOT] LIKE - name must be "~~" or "!~~" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3748,12 +3951,12 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 				Assert(false);
 			}
 
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_ILIKE: /* [NOT] ILIKE - name must be "~~*" or "!~~*" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3765,12 +3968,12 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 				Assert(false);
 			}
 
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_SIMILAR: /* [NOT] SIMILAR - name must be "~" or "!~" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3788,11 +3991,11 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(strcmp(strVal(lsecond(n->funcname)), "similar_to_escape") == 0);
 			Assert(list_length(n->args) == 1 || list_length(n->args) == 2);
 
-			deparseExpr(state, linitial(n->args), context);
+			deparseExprOperand(state, linitial(n->args), prec, DEPARSE_OPERAND_RIGHT, context);
 			if (list_length(n->args) == 2)
 			{
 				deparseAppendStringInfoString(state, " ESCAPE ");
-				deparseExpr(state, lsecond(n->args), context);
+				deparseExprOperand(state, lsecond(n->args), prec, DEPARSE_OPERAND_RIGHT, context);
 			}
 
 			return;
@@ -3804,16 +4007,17 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(IsA(a_expr->rexpr, List));
 
-			deparseExpr(state, a_expr->lexpr, context);
+			Assert(list_length(castNode(List, a_expr->rexpr)) == 2);
+
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseAppendStringInfoString(state, strVal(linitial(a_expr->name)));
 			deparseAppendStringInfoChar(state, ' ');
 
-			foreach(lc, castNode(List, a_expr->rexpr)) {
-				deparseExpr(state, lfirst(lc), context);
-				if (lnext(castNode(List, a_expr->rexpr), lc))
-					deparseAppendStringInfoString(state, " AND ");
-			}
+			// The lower bound is a "b_expr" in gram.y, the upper bound an "a_expr"
+			deparseExprOperand(state, linitial(castNode(List, a_expr->rexpr)), prec, DEPARSE_OPERAND_RIGHT, DEPARSE_NODE_CONTEXT_B_EXPR);
+			deparseAppendStringInfoString(state, " AND ");
+			deparseExprOperand(state, lsecond(castNode(List, a_expr->rexpr)), prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 	}
 }
@@ -3885,12 +4089,7 @@ static void deparseCollateClause(DeparseState *state, CollateClause* collate_cla
 	ListCell *lc;
 	if (collate_clause->arg != NULL)
 	{
-		bool need_parens = IsA(collate_clause->arg, A_Expr);
-		if (need_parens)
-			deparseAppendStringInfoChar(state, '(');
-		deparseExpr(state, collate_clause->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
-		if (need_parens)
-			deparseAppendStringInfoChar(state, ')');
+		deparseExprOperand(state, collate_clause->arg, DEPARSE_PREC_COLLATE, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 	deparseAppendStringInfoString(state, "COLLATE ");
@@ -4296,7 +4495,8 @@ static void deparseRowExpr(DeparseState *state, RowExpr *row_expr)
 
 static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNodeContext context)
 {
-	bool need_parens = needsParensAsBExpr(type_cast->arg);
+	// TYPECAST binds tighter than any other operator, so anything that isn't a "c_expr" needs parens
+	bool need_parens = needsParensAsCExpr(type_cast->arg);
 
 	Assert(type_cast->typeName != NULL);
 
@@ -4370,7 +4570,8 @@ static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNod
 
 	if (need_parens)
 		deparseAppendStringInfoChar(state, '(');
-	deparseExpr(state, type_cast->arg, DEPARSE_NODE_CONTEXT_NONE /* could be either a_expr or b_expr (we could pass this down, but that'd require two kinds of contexts most likely) */);
+	// Inside parens the arg follows "a_expr" rules, otherwise it is a "c_expr" (which is valid in any context)
+	deparseExpr(state, type_cast->arg, need_parens ? DEPARSE_NODE_CONTEXT_A_EXPR : DEPARSE_NODE_CONTEXT_NONE);
 	if (need_parens)
 		deparseAppendStringInfoChar(state, ')');
 
@@ -4599,7 +4800,7 @@ static void deparseNullTest(DeparseState *state, NullTest *null_test)
 	// argisrow is always false in raw parser output
 	Assert(null_test->argisrow == false);
 
-	deparseExpr(state, (Node *) null_test->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
+	deparseExprOperand(state, (Node *) null_test->arg, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 	switch (null_test->nulltesttype)
 	{
 		case IS_NULL:
@@ -4656,15 +4857,17 @@ static void deparseCaseWhen(DeparseState *state, CaseWhen *case_when)
 static void deparseAIndirection(DeparseState *state, A_Indirection *a_indirection)
 {
 	ListCell *lc;
-	bool need_parens =
-		IsA(a_indirection->arg, A_Indirection) ||
-		IsA(a_indirection->arg, FuncCall) ||
-		IsA(a_indirection->arg, A_Expr) ||
-		IsA(a_indirection->arg, TypeCast) ||
-		IsA(a_indirection->arg, RowExpr) ||
-		IsA(a_indirection->arg, A_ArrayExpr) ||
-		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices)) ||
-		IsA(a_indirection->arg, JsonFuncExpr);
+	/*
+	 * Only a few "c_expr" rules in gram.y accept indirection without parens:
+	 * "PARAM opt_indirection", "columnref" (whose field names are part of the
+	 * ColumnRef itself, so only subscripts can follow directly) and
+	 * "select_with_parens indirection". Everything else must use
+	 * "'(' a_expr ')' opt_indirection".
+	 */
+	bool need_parens = !(
+		IsA(a_indirection->arg, ParamRef) ||
+		(IsA(a_indirection->arg, ColumnRef) && IsA(linitial(a_indirection->indirection), A_Indices)) ||
+		(IsA(a_indirection->arg, SubLink) && castNode(SubLink, a_indirection->arg)->subLinkType == EXPR_SUBLINK));
 
 	if (need_parens)
 		deparseAppendStringInfoChar(state, '(');
@@ -4713,15 +4916,7 @@ static void deparseMinMaxExpr(DeparseState *state, MinMaxExpr *min_max_expr)
 
 static void deparseBooleanTest(DeparseState *state, BooleanTest *boolean_test)
 {
-	bool need_parens = IsA(boolean_test->arg, BoolExpr);
-
-	if (need_parens)
-		deparseAppendStringInfoChar(state, '(');
-
-	deparseExpr(state, (Node *) boolean_test->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
-
-	if (need_parens)
-		deparseAppendStringInfoChar(state, ')');
+	deparseExprOperand(state, (Node *) boolean_test->arg, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 	switch (boolean_test->booltesttype)
 	{
@@ -10612,7 +10807,7 @@ static void deparseDropSubscriptionStmt(DeparseState *state, DropSubscriptionStm
 static void deparseCallStmt(DeparseState *state, CallStmt *call_stmt)
 {
 	deparseAppendStringInfoString(state, "CALL ");
-	deparseFuncCall(state, call_stmt->funccall, DEPARSE_NODE_CONTEXT_NONE);
+	deparseFuncCall(state, call_stmt->funccall);
 }
 
 static void deparseAlterOwnerStmt(DeparseState *state, AlterOwnerStmt *alter_owner_stmt)
@@ -11010,7 +11205,7 @@ static void deparseXmlExpr(DeparseState *state, XmlExpr* xml_expr, DeparseNodeCo
 			break;
 		case IS_DOCUMENT: /* xmlval IS DOCUMENT */
 			Assert(list_length(xml_expr->args) == 1);
-			deparseExpr(state, linitial(xml_expr->args), context);
+			deparseExprOperand(state, linitial(xml_expr->args), DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS DOCUMENT");
 			break;
 	}
@@ -11034,14 +11229,14 @@ static void deparseRangeTableFuncCol(DeparseState *state, RangeTableFuncCol* ran
 		if (range_table_func_col->colexpr)
 		{
 			deparseAppendStringInfoString(state, "PATH ");
-			deparseExpr(state, range_table_func_col->colexpr, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+			deparseBExpr(state, range_table_func_col->colexpr);
 			deparseAppendStringInfoChar(state, ' ');
 		}
 
 		if (range_table_func_col->coldefexpr)
 		{
 			deparseAppendStringInfoString(state, "DEFAULT ");
-			deparseExpr(state, range_table_func_col->coldefexpr, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+			deparseBExpr(state, range_table_func_col->coldefexpr);
 			deparseAppendStringInfoChar(state, ' ');
 		}
 
@@ -11073,7 +11268,7 @@ static void deparseRangeTableFunc(DeparseState *state, RangeTableFunc* range_tab
 	deparseAppendStringInfoChar(state, ')');
 
 	deparseAppendStringInfoString(state, " PASSING ");
-	deparseExpr(state, range_table_func->docexpr, DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+	deparseCExpr(state, range_table_func->docexpr);
 
 	deparseAppendStringInfoString(state, " COLUMNS ");
 	foreach(lc, range_table_func->columns)
@@ -11145,7 +11340,7 @@ static void deparseJsonFormat(DeparseState *state, JsonFormat *json_format)
 
 static void deparseJsonIsPredicate(DeparseState *state, JsonIsPredicate *j)
 {
-	deparseExpr(state, j->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
+	deparseExprOperand(state, j->expr, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 	deparseAppendStringInfoChar(state, ' ');
 
 	deparseJsonFormat(state, castNode(JsonFormat, j->format));
