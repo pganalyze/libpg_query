@@ -132,9 +132,16 @@ _strview_char(char c)
 		_out##typename(__n, &node->fldname); \
 	}
 
+/*
+ * This recurses into _out##typename directly, bypassing the stack depth check
+ * in _outNode, so check here (e.g. a long UNION chain nests SelectStmt in
+ * SelectStmt without ever going through _outNode).
+ */
 #define WRITE_SPECIFIC_NODE_PTR_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
-		pg_query_##typename *__n = pg_query_##msgtype##_mutable_##outname(out, out_arena); \
+		pg_query_##typename *__n; \
+		check_stack_depth(); \
+		__n = pg_query_##msgtype##_mutable_##outname(out, out_arena); \
 		_out##typename(__n, node->fldname); \
 	}
 
