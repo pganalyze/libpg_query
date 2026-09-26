@@ -80,8 +80,12 @@ extern "C"
 		_out##typename(out->mutable_##outname(), &node->fldname); \
 	}
 
+// This recurses into _out##typename directly, bypassing the stack depth check
+// in _outNode, so check here (e.g. a long UNION chain nests SelectStmt in
+// SelectStmt without ever going through _outNode).
 #define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
+		check_stack_depth(); \
 		out->set_allocated_##outname(new pg_query::typename()); \
 		_out##typename(out->mutable_##outname(), node->fldname); \
 	}

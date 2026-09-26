@@ -91,9 +91,15 @@
 		out->outname = __node; \
 	}
 
+/*
+ * This recurses into _out##typename directly, bypassing the stack depth check
+ * in _outNode, so check here (e.g. a long UNION chain nests SelectStmt in
+ * SelectStmt without ever going through _outNode).
+ */
 #define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
 		PgQuery__##typename *__node = palloc(sizeof(PgQuery__##typename)); \
+		check_stack_depth(); \
 		pg_query__##typename_underscore##__init(__node); \
 		_out##typename(__node, node->fldname); \
 		out->outname = __node; \

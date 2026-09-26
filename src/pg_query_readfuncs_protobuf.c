@@ -1,5 +1,6 @@
 #include "pg_query_readfuncs.h"
 
+#include "miscadmin.h"
 #include "nodes/nodes.h"
 #include "nodes/parsenodes.h"
 #include "nodes/pg_list.h"
@@ -68,8 +69,14 @@
 #define READ_SPECIFIC_NODE_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	node->fldname = *_read##typename(msg->outname);
 
+/*
+ * This recurses into _read##typename directly, bypassing the stack depth check
+ * in _readNode, so check here (e.g. a long UNION chain nests SelectStmt in
+ * SelectStmt without ever going through _readNode).
+ */
 #define READ_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	if (msg->outname != NULL) { \
+		check_stack_depth(); \
 		node->fldname = _read##typename(msg->outname); \
 	}
 
@@ -96,6 +103,8 @@ static List * _readList(PgQuery__List *msg)
 
 static Node * _readNode(PgQuery__Node *msg)
 {
+	check_stack_depth();
+
 	switch (msg->node_case)
 	{
 		#include "pg_query_readfuncs_conds.c"

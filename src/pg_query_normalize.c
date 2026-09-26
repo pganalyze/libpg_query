@@ -6,6 +6,7 @@
 #include "parser/scanner.h"
 #include "parser/scansup.h"
 #include "mb/pg_wchar.h"
+#include "miscadmin.h"
 #include "nodes/nodeFuncs.h"
 
 #include "pg_query_outfuncs.h"
@@ -388,6 +389,13 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 	MemoryContext normalize_context = CurrentMemoryContext;
 
 	if (node == NULL) return false;
+
+	/*
+	 * Most node types recurse via raw_expression_tree_walker(), which checks
+	 * the stack depth itself, but e.g. SelectStmt recurses into this function
+	 * directly for each clause, so a long UNION chain never hits that check.
+	 */
+	check_stack_depth();
 
 	switch (nodeTag(node))
 	{

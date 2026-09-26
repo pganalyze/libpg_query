@@ -2765,6 +2765,9 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 		stmt->op != SETOP_NONE);
 	DeparseStateNestingLevel *parent_level = NULL;
 
+	/* Set operations (UNION etc) recurse here directly, without going through deparseExpr */
+	check_stack_depth();
+
 	if (need_parens)
 	{
 		deparseAppendPart(state, true);
@@ -11850,6 +11853,8 @@ static void deparseStmt(DeparseState *state, Node *node)
 		IsA(node, UpdateStmt) ||
 		IsA(node, DeleteStmt) ||
 		IsA(node, MergeStmt);
+
+	check_stack_depth();
 
 	if (!skip_push_pop)
 		parent_level = deparseStateIncreaseNestingLevel(state);
