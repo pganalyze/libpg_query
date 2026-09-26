@@ -124,8 +124,14 @@
  		appendStringInfo(out, "},"); \
   	}
 
+/*
+ * This recurses into _out##typename directly, bypassing the stack depth check
+ * in _outNode, so check here (e.g. a long UNION chain nests SelectStmt in
+ * SelectStmt without ever going through _outNode).
+ */
 #define WRITE_SPECIFIC_NODE_PTR_FIELD(typename, typename_underscore, outname, outname_json, fldname) \
 	if (node->fldname != NULL) { \
+		 check_stack_depth(); \
 		 appendStringInfo(out, "\"" CppAsString(outname_json) "\":{"); \
 	   	 _out##typename(out, node->fldname); \
 		 removeTrailingDelimiter(out); \

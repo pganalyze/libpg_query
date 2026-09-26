@@ -979,12 +979,27 @@ pg_query_summary_internal(const char *input, int parser_options, int truncate_li
 
 	if (result.error == NULL)
 	{
-		pg_query_summary_walk(&summary, (Node *) parsetree_and_error.tree);
-		pg_query_summary_statement_walk(&summary, (Node *) parsetree_and_error.tree);
-	}
+		/*
+		 * The walks may throw (e.g. "stack depth limit exceeded"), and the
+		 * malloc-ed stderr buffer is only known to this frame at that point, so
+		 * free it before passing on the error.
+		 */
+		PG_TRY();
+		{
+			pg_query_summary_walk(&summary, (Node *) parsetree_and_error.tree);
+			pg_query_summary_statement_walk(&summary, (Node *) parsetree_and_error.tree);
 
-	if (result.error == NULL && should_truncate)
-		pg_query_summary_truncate(&summary, (Node *) parsetree_and_error.tree, truncate_limit);
+			if (should_truncate)
+				pg_query_summary_truncate(&summary, (Node *) parsetree_and_error.tree, truncate_limit);
+		}
+		PG_CATCH();
+		{
+			if (result.stderr_buffer)
+				free(result.stderr_buffer);
+			PG_RE_THROW();
+		}
+		PG_END_TRY();
+	}
 
 	result.summary = summary;
 
