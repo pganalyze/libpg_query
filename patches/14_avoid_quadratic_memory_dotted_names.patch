@@ -1,0 +1,46 @@
+diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
+--- a/src/backend/parser/gram.y
++++ b/src/backend/parser/gram.y
+@@ -362,7 +362,7 @@
+ %type <str>		opt_in_database
+
+ %type <str>		parameter_name
+-%type <list>	OptSchemaEltList parameter_name_list
++%type <list>	OptSchemaEltList parameter_name_list dotted_colid_list
+
+ %type <chr>		am_type
+
+@@ -1846,11 +1846,14 @@
+ 				}
+ 		;
+
+-var_name:	ColId								{ $$ = $1; }
+-			| var_name '.' ColId
+-				{ $$ = psprintf("%s.%s", $1, $3); }
++var_name:	dotted_colid_list						{ $$ = NameListToString($1); }
+ 		;
+
++dotted_colid_list:
++			ColId									{ $$ = list_make1(makeString($1)); }
++			| dotted_colid_list '.' ColId			{ $$ = lappend($1, makeString($3)); }
++		;
++
+ var_list:	var_value								{ $$ = list_make1($1); }
+ 			| var_list ',' var_value				{ $$ = lappend($1, $3); }
+ 		;
+@@ -7828,13 +7831,9 @@
+ 		;
+
+ parameter_name:
+-		ColId
++		dotted_colid_list
+ 			{
+-				$$ = $1;
+-			}
+-		| parameter_name '.' ColId
+-			{
+-				$$ = psprintf("%s.%s", $1, $3);
++				$$ = NameListToString($1);
+ 			}
+ 		;
+
