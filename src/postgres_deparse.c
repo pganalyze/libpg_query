@@ -17,6 +17,7 @@
 #include "utils/datetime.h"
 #include "utils/timestamp.h"
 #include "utils/xml.h"
+#include "miscadmin.h"
 
 /*
  * # Deparser overview
@@ -784,6 +785,8 @@ static void deparseCExpr(DeparseState *state, Node *node);
 // "a_expr" in gram.y
 static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext context)
 {
+	check_stack_depth();
+
 	if (node == NULL)
 		return;
 	switch (nodeTag(node))

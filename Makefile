@@ -238,7 +238,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -255,6 +255,7 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/split || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/stack_depth || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/summary || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/summary_truncate || (cat test/valgrind.log && false)
 	# Output-based tests
@@ -275,6 +276,7 @@ else
 	test/parse_protobuf_opts
 	test/scan
 	test/split
+	test/stack_depth
 	test/summary
 	test/summary_truncate
 	# Output-based tests
@@ -338,6 +340,9 @@ test/scan: test/scan.c test/scan_tests.c $(ARLIB)
 
 test/split: test/split.c test/split_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/split.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/stack_depth: test/stack_depth.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/stack_depth.c $(ARLIB) $(TEST_LDFLAGS)
 
 prefix = /usr/local
 libdir = $(prefix)/lib

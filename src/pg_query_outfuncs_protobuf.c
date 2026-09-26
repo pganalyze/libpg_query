@@ -7,6 +7,7 @@
 #include "nodes/plannodes.h"
 #include "nodes/value.h"
 #include "utils/datum.h"
+#include "miscadmin.h"
 
 #include "protobuf/pg_query.pb-c.h"
 
@@ -246,6 +247,8 @@ _outAConst(PgQuery__AConst* out, const A_Const *node)
 static void
 _outNode(PgQuery__Node* out, const void *obj)
 {
+	check_stack_depth();
+
 	if (obj == NULL)
 		return; // Keep out as NULL
 
