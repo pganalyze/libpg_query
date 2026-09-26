@@ -1,0 +1,27 @@
+From: Lukas Fittl <lukas@fittl.com>
+Subject: [PATCH] exprLocation: Check stack depth
+
+exprLocation recurses into the left operand of an A_Expr (and other
+child nodes), without checking stack depth. The grammar calls it when
+reporting errors like "multiple ORDER BY clauses not allowed", so a
+deeply nested expression (e.g. "(SELECT ORDER BY a) ORDER BY x+x+...")
+could overflow the stack during raw parsing, before any other check
+runs.
+---
+ src/backend/nodes/nodeFuncs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/backend/nodes/nodeFuncs.c b/src/backend/nodes/nodeFuncs.c
+--- a/src/backend/nodes/nodeFuncs.c
++++ b/src/backend/nodes/nodeFuncs.c
+@@ -1387,6 +1387,10 @@ exprLocation(const Node *expr)
+
+ 	if (expr == NULL)
+ 		return -1;
++
++	/* Guard against stack overflow due to overly complex expressions */
++	check_stack_depth();
++
+ 	switch (nodeTag(expr))
+ 	{
+ 		case T_RangeVar:

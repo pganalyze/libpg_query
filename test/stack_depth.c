@@ -12,15 +12,20 @@
 // SelectStmt tree. Recursively serializing or walking that tree (JSON/protobuf
 // output, deparsing, normalizing, ...) could overflow the C stack and crash,
 // these tests verify we return an error instead, like Postgres does.
+//
+// The parser itself can also recurse into a deep tree when it reports an
+// error: "(SELECT ORDER BY a) ORDER BY x+x+..." fails with "multiple ORDER BY
+// clauses not allowed", and computing the error position calls exprLocation,
+// which recurses down the left side of the deep A_Expr tree.
 
-static char *build_deep_query(const char *repeated, int depth)
+static char *build_deep_query(const char *prefix, const char *repeated, int depth)
 {
-	// "SELECT 1" followed by `repeated` `depth` times
-	size_t len = strlen("SELECT 1") + (size_t) depth * strlen(repeated);
+	// `prefix` followed by `repeated` `depth` times
+	size_t len = strlen(prefix) + (size_t) depth * strlen(repeated);
 	char *query = malloc(len + 1);
 	char *p = query;
 
-	p += sprintf(p, "SELECT 1");
+	p += sprintf(p, "%s", prefix);
 	for (int i = 0; i < depth; i++)
 		p += sprintf(p, "%s", repeated);
 
@@ -37,7 +42,7 @@ static bool is_clean(const PgQueryError *error)
 static bool run_tests(const char *repeated)
 {
 	bool ret_code = 0;
-	char *query = build_deep_query(repeated, 100000);
+	char *query = build_deep_query("SELECT 1", repeated, 100000);
 
 	// JSON output (pg_query_parse)
 	{
@@ -107,7 +112,7 @@ static bool run_tests(const char *repeated)
 	// Deparse (deparseExpr) - exercise via a protobuf round-trip at a depth that
 	// serializes successfully, so deparsing actually walks a deep tree.
 	{
-		char *shallow = build_deep_query(repeated, 100);
+		char *shallow = build_deep_query("SELECT 1", repeated, 100);
 		PgQueryProtobufParseResult parsed = pg_query_parse_protobuf(shallow);
 		if (parsed.error) {
 			ret_code = -1;
@@ -132,6 +137,27 @@ static bool run_tests(const char *repeated)
 	return ret_code;
 }
 
+// Unlike run_tests, this expects an error, since the query is invalid
+static bool run_parse_error_test(const char *prefix, const char *repeated)
+{
+	bool ret_code = 0;
+	char *query = build_deep_query(prefix, repeated, 100000);
+	PgQueryParseResult result = pg_query_parse(query);
+
+	if (result.error && is_clean(result.error)) {
+		printf(".");
+	} else {
+		ret_code = -1;
+		printf("INVALID parse result for \"%s...\", expected clean error, got: %s\n",
+			   prefix, result.error ? result.error->message : "(success)");
+	}
+
+	pg_query_free_parse_result(result);
+	free(query);
+
+	return ret_code;
+}
+
 int main()
 {
 	bool ret_code = 0;
@@ -142,6 +168,9 @@ int main()
 
 	// Set operations recurse into the SelectStmt-specific functions directly
 	ret_code |= run_tests(" UNION SELECT 1");
+
+	// Error position reporting in the parser (exprLocation)
+	ret_code |= run_parse_error_test("(SELECT ORDER BY a) ORDER BY x", "+x");
 
 	printf("\n");
 
