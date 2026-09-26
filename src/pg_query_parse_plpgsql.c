@@ -424,13 +424,24 @@ compile_create_function_stmt_via_callback(CreateFunctionStmt *stmt)
 		}
 	}
 
-	if (proc_source == NULL)
+	if (strcmp(language, "plpgsql") != 0)
+		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
+
+	/* Mirrors the checks in upstream interpret_AS_clause */
+	if (stmt->sql_body == NULL && proc_source == NULL)
 		ereport(ERROR,
 				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
 				 errmsg("no function body specified")));
 
-	if (strcmp(language, "plpgsql") != 0)
-		return (PLpgSQL_function *) palloc0(sizeof(PLpgSQL_function));
+	if (stmt->sql_body != NULL && proc_source != NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
+				 errmsg("duplicate function body specified")));
+
+	if (stmt->sql_body != NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_INVALID_FUNCTION_DEFINITION),
+				 errmsg("inline SQL function body only valid for language SQL")));
 
 	wrapper = pg_query_create_function(stmt, language, proc_source,
 									   &is_dml_trigger, &is_event_trigger);
@@ -617,6 +628,7 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 
 	if (statements.stmts_count == 0) {
 		result.plpgsql_funcs = strdup("[]");
+		free(parse_result.stderr_buffer);
 		pg_query_exit_memory_context(ctx);
 		return result;
 	}
