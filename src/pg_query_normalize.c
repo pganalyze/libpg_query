@@ -636,7 +636,21 @@ static bool const_record_walker(Node *node, pgssConstLocations *jstate)
 				}
 				PG_CATCH();
 				{
+					ErrorData  *edata;
+
 					MemoryContextSwitchTo(normalize_context);
+					edata = CopyErrorData();
+
+					/*
+					 * The walker raises for node types it doesn't know, which we
+					 * ignore. But if we ran out of stack, the rest of the tree
+					 * was not walked, and swallowing that would return a partially
+					 * normalized query as if it was complete - pass it on instead.
+					 */
+					if (edata->sqlerrcode == ERRCODE_STATEMENT_TOO_COMPLEX)
+						PG_RE_THROW();
+
+					/* edata is released together with the per-call memory context */
 					FlushErrorState();
 				}
 				PG_END_TRY();
