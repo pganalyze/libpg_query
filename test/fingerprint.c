@@ -31,7 +31,7 @@ int main()
 		{
 			ret_code = -1;
 			printf("\nINVALID result for \"%s\"\nexpected: \"%s\"\nactual: \"%s\"\nactual tokens: ", tests[i], tests[i + 1], result.fingerprint_str);
-			pg_query_fingerprint_with_opts(tests[i], PG_QUERY_PARSE_DEFAULT, true);
+			pg_query_fingerprint_with_opts(tests[i], PG_QUERY_PARSE_DEFAULT, PG_QUERY_FINGERPRINT_DEFAULT, true);
 		}
 
 		pg_query_free_fingerprint_result(result);
