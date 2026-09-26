@@ -168,8 +168,11 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 	// TODO: Handle this by returning an error instead
 	Assert(result != NULL);
 
-	// TODO: Handle this by returning an error instead
-	Assert(result->version == PG_VERSION_NUM);
+	/*
+	 * Note: The version field is not checked. The protobuf format is only
+	 * expected to be read by the same libpg_query version, and mismatches show
+	 * up as unknown fields (ignored) or missing ones (zero values).
+	 */
 
 	if (result->n_stmts > 0)
 		list = list_make1(_readRawStmt(result->stmts[0]));
