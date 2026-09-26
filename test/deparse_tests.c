@@ -415,6 +415,8 @@ const char* tests[] = {
   "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT (now() AT LOCAL))",
   "CREATE TABLE my_table (created_at timestamptz NOT NULL DEFAULT '1 hour'::interval + (current_timestamp AT TIME ZONE 'UTC'))",
   "ALTER TABLE my_table ADD COLUMN created_at timestamptz NOT NULL DEFAULT '1 hour'::interval + (current_timestamp AT TIME ZONE 'UTC')",
+  "SELECT ts AT TIME ZONE (a -> 'b') FROM s",
+  "SELECT ((summary ->> 'ts')::timestamptz AT TIME ZONE ((summary -> 'stop') ->> 'tz'))::date AS d FROM s",
   "CREATE TABLE my_table (created_at int NOT NULL DEFAULT 1 + 2)",
   "/* Comment 1 */ SELECT 1; /* Comment 2 */ SELECT 2",
   "ALTER TABLE ONLY public.api_keys ADD CONSTRAINT api_keys_value_unique UNIQUE (value)",
