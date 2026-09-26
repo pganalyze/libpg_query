@@ -91,6 +91,19 @@ static bool run_tests(const char *repeated)
 		pg_query_free_fingerprint_result(result);
 	}
 
+	// Summary
+	{
+		PgQuerySummaryParseResult result = pg_query_summary(query, PG_QUERY_PARSE_DEFAULT, -1);
+		if (is_clean(result.error)) {
+			printf(".");
+		} else {
+			ret_code = -1;
+			printf("INVALID summary result, expected clean error, got: %s\n",
+				   result.error->message);
+		}
+		pg_query_free_summary_parse_result(result);
+	}
+
 	// Deparse (deparseExpr) - exercise via a protobuf round-trip at a depth that
 	// serializes successfully, so deparsing actually walks a deep tree.
 	{
