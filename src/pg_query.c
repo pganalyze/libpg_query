@@ -40,31 +40,11 @@ static void pg_query_thread_exit(void *key);
 static __thread char *pg_query_lowest_stackaddr = NULL;
 static char *get_lowest_stackaddr(void);
 static void set_max_stack_depth(void);
+static void pg_query_enter_stack_depth_check(void);
+static void pg_query_exit_stack_depth_check(void);
 
 void pg_query_init(void)
 {
-	/*
-	 * Set the reference point for stack depth checking, similiar to how
-	 * Postgres does in its main() function. We have to re-do this on every
-	 * execution since we may be called from different parts in our host
-	 * program.
-	 *
-	 * The check_stack_depth() function called by recursive tree walkers
-	 * measures the current stack depth against this base and raises a
-	 * "stack depth limit exceeded" error before we overflow and crash.
-	 */
-	set_stack_base();
-
-	/*
-	 * Size the budget to this thread's actual stack; must follow
-	 * set_stack_base() so both measure from the same point.
-	 */
-	set_max_stack_depth();
-
-	/*
-	 * Later parts of initialization don't have to re-run if we execute again
-	 * in the same thread, since they are not affected by the calling location.
-	 */
 	if (pg_query_initialized != 0) return;
 	pg_query_initialized = 1;
 
@@ -123,6 +103,7 @@ MemoryContext pg_query_enter_memory_context()
 	MemoryContext ctx = NULL;
 
 	pg_query_init();
+	pg_query_enter_stack_depth_check();
 
 	Assert(CurrentMemoryContext == TopMemoryContext);
 	ctx = AllocSetContextCreate(TopMemoryContext,
@@ -140,6 +121,8 @@ void pg_query_exit_memory_context(MemoryContext ctx)
 
 	MemoryContextDelete(ctx);
 	ctx = NULL;
+
+	pg_query_exit_stack_depth_check();
 }
 
 void pg_query_free_error(PgQueryError *error)
@@ -265,4 +248,32 @@ static void set_max_stack_depth(void)
 
 	max_stack_depth = (int) new_limit;
 	assign_max_stack_depth((int) new_limit, NULL);
+}
+
+/*
+ * Stack depth checking is set up per libpg_query call, since we get called
+ * from varying stack depths in the host program: the reference point is where
+ * the call starts, and the budget is sized to the stack left below it.
+ *
+ * Recursive code (e.g. the tree walkers) measures the current stack depth
+ * against this and raises a "stack depth limit exceeded" error before we
+ * overflow and crash, like Postgres does.
+ */
+static void pg_query_enter_stack_depth_check(void)
+{
+	/* Set the reference point, similar to how Postgres does in its main() */
+	set_stack_base();
+
+	/* Must follow set_stack_base() so both measure from the same point */
+	set_max_stack_depth();
+}
+
+/*
+ * The reference point is only valid for the call it was measured in. Clear it
+ * on exit, so a stack depth check that runs outside of a libpg_query call is a
+ * no-op, instead of comparing against a stale base from a different frame.
+ */
+static void pg_query_exit_stack_depth_check(void)
+{
+	restore_stack_base(NULL);
 }

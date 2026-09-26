@@ -6,6 +6,7 @@
  * - check_stack_depth
  * - max_stack_depth
  * - set_stack_base
+ * - restore_stack_base
  * - assign_max_stack_depth
  *--------------------------------------------------------------------
  */
@@ -88,7 +89,11 @@ set_stack_base(void)
  * the main thread's stack, so it sets the base pointer before the call, and
  * restores it afterwards.
  */
-
+void
+restore_stack_base(pg_stack_base_t base)
+{
+	stack_base_ptr = base;
+}
 
 
 /*
