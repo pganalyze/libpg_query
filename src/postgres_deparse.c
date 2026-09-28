@@ -1412,12 +1412,46 @@ typedef enum DeparseOperandSide
 } DeparseOperandSide;
 
 /*
+ * Subquery comparison forms ("x = ANY (...)", "x < ALL (SELECT ...)", "x IN (...)") are
+ * produced by rules ending in a closing paren token, and once that production is complete
+ * bison has no option but to reduce it (there are no shift items in that state), so the
+ * enclosing operator can never claim part of it later. They therefore never need parens as
+ * a left-hand operand. On the right side the operator token is competing with rules that
+ * reduce earlier (or reject the shift), and bare forms reparse with different trees, so the
+ * normal precedence rules still apply there.
+ */
+static bool isSubqueryComparisonForm(Node *node)
+{
+	if (IsA(node, A_Expr))
+	{
+		switch (castNode(A_Expr, node)->kind)
+		{
+			case AEXPR_OP_ANY:
+			case AEXPR_OP_ALL:
+			case AEXPR_IN:
+				return true;
+			default:
+				return false;
+		}
+	}
+	if (IsA(node, SubLink))
+	{
+		SubLink *sub_link = castNode(SubLink, node);
+		return sub_link->subLinkType == ANY_SUBLINK || sub_link->subLinkType == ALL_SUBLINK;
+	}
+	return false;
+}
+
+/*
  * Checks whether a node needs parens as the left or right operand of an "a_expr"
  * rule with the given precedence. At the same precedence, left-associative rules
  * only need them on the right, non-associative rules on both sides.
  */
 static bool needsParensForPrecedence(Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side)
 {
+	if (side == DEPARSE_OPERAND_LEFT && isSubqueryComparisonForm(node))
+		return false;
+
 	DeparseExprPrec prec = getExprPrecedence(node);
 
 	if (prec != parent_prec)
