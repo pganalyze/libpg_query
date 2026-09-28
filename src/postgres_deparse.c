@@ -1409,13 +1409,12 @@ typedef enum DeparseOperandSide
 } DeparseOperandSide;
 
 /*
- * Subquery comparison forms ("x = ANY (...)", "x < ALL (SELECT ...)", "x IN (...)") are
- * produced by rules ending in a closing paren token, and once that production is complete
- * bison has no option but to reduce it (there are no shift items in that state), so the
- * enclosing operator can never claim part of it later. They therefore never need parens as
- * a left-hand operand. On the right side the operator token is competing with rules that
- * reduce earlier (or reject the shift), and bare forms reparse with different trees, so the
- * normal precedence rules still apply there.
+ * Recognizes subquery comparison forms ("x = ANY (...)", "x < ALL (SELECT ...)",
+ * "x IN (...)"). As the left operand of an operator at the same precedence these never
+ * need parens (see needsParensForPrecedence); at any other precedence the normal rules
+ * apply, since dropping parens there can reassociate the expression or fail to parse:
+ * "d = x = ANY(c)" is rejected outright, and "d || x = ANY(c)" reparses with the
+ * comparison swallowing the concatenation.
  */
 static bool isSubqueryComparisonForm(Node *node)
 {
@@ -1446,10 +1445,11 @@ static bool isSubqueryComparisonForm(Node *node)
  */
 static bool needsParensForPrecedence(Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side)
 {
-	if (side == DEPARSE_OPERAND_LEFT && isSubqueryComparisonForm(node))
-		return false;
-
 	DeparseExprPrec prec = getExprPrecedence(node);
+
+	if (side == DEPARSE_OPERAND_LEFT && isSubqueryComparisonForm(node) &&
+		prec == parent_prec)
+		return false;
 
 	if (prec != parent_prec)
 		return prec < parent_prec;
