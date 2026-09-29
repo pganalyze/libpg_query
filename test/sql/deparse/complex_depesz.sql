@@ -3,10 +3,9 @@ SELECT
     b.par AS "Total object Request", b.ps AS "objects Served",
     b.ar AS "Total sushi Request", a.sushis AS "sushis Served",
     round(decode(b.ar, 0, 0, (b.ar - decode(a.sushis, NULL, 0, a.sushis)::numeric) / b.ar) * 100, 3) AS "USR",
-    a.clk AS points,
-    decode(b.ps, 0, 0, round((a.clk / b.ps) * 100, 3)) AS "CTR", a.cpc AS "CPC",
-    a.tc AS "Cost",
-    decode(b.ps, 0, 0, (a.tc / b.ps) * 1000::numeric(8, 3)) AS effectcost
+    a.clk AS points, decode(b.ps, 0, 0, round(a.clk / b.ps * 100, 3)) AS "CTR",
+    a.cpc AS "CPC", a.tc AS "Cost",
+    decode(b.ps, 0, 0, a.tc / b.ps * 1000::numeric(8, 3)) AS effectcost
 FROM
     (
         SELECT

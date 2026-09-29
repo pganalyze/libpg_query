@@ -272,7 +272,10 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
+ifneq ($(USE_PROTOBUF_CPP),1)
+	# Tests the upb encoder's depth limit, which the C++ backend doesn't have
 	$(VALGRIND_MEMCHECK) test/deparse_depth || (cat test/valgrind.log && false)
+endif
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/is_utility_stmt || (cat test/valgrind.log && false)
@@ -294,7 +297,10 @@ else
 	test/complex
 	test/concurrency
 	test/deparse
+ifneq ($(USE_PROTOBUF_CPP),1)
+	# Tests the upb encoder's depth limit, which the C++ backend doesn't have
 	test/deparse_depth
+endif
 	test/fingerprint
 	test/fingerprint_opts
 	test/is_utility_stmt
