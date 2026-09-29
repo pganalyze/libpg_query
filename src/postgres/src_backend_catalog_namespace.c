@@ -952,14 +952,16 @@ LookupExplicitNamespace(const char *nspname, bool missing_ok)
 		 */
 	}
 
-	// CHANGED: Only support pg_catalog and public namespace
+	// CHANGED: We don't have a real catalog to look namespaces up in. Resolve
+	// pg_catalog to its well-known OID, and treat every other schema (public or
+	// any user schema like "my_schema") as the public namespace so that
+	// schema-qualified variable types resolve to the RECORDOID path instead of
+	// erroring out. The original schema name is preserved in the PL/pgSQL type
+	// string regardless.
     if (strcmp(nspname, "pg_catalog") == 0)
         return PG_CATALOG_NAMESPACE;
 
-    if (strcmp(nspname, "public") == 0)
-        return PG_PUBLIC_NAMESPACE;
-
-    elog(ERROR, "Not implemented (LookupExplicitNamespace only supports pg_catalog and public)");
+    return PG_PUBLIC_NAMESPACE;
 
 	/*namespaceId = get_namespace_oid(nspname, missing_ok);
 	if (missing_ok && !OidIsValid(namespaceId))
