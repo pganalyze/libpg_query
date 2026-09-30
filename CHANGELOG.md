@@ -2,6 +2,10 @@
 
 All versions are tagged by the major Postgres version, plus an individual semver for this library itself.
 
+## 17-6.2.5   2026-09-30
+
+* pg_query_normalize: Fix compiler warning due to mismatch between `int64` and `long`
+
 ## 17-6.2.4   2026-09-30
 
 * Security fix: Heap out-of-bounds write and read in pg_query_normalize ([GHSA-6ggm-xmc9-8ffg](https://github.com/pganalyze/libpg_query/security/advisories/GHSA-6ggm-xmc9-8ffg))
