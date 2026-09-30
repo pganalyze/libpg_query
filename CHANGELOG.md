@@ -35,6 +35,7 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
   - upb is developed as part of the main Protobuf project, and is substantially faster,
     in part due to its built-in arena allocation
   - upb also allows limiting parse depth for complex Protobuf input, avoiding crashes
+* Update to Postgres 18.6 release
 * Add `pg_query_scan_tokens` to get scan results without involving Protobuf
   - This allows pure C callers to walk a simple list of `PgQueryScanToken` structs
 * Ignore comments when parsing queries, only treat them as significant for scanning [#378](https://github.com/pganalyze/libpg_query/pull/378)
