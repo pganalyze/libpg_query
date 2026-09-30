@@ -351,16 +351,16 @@ This will output (formatted for clarity):
 
 For stability, it is recommended you use individual tagged git versions, see CHANGELOG.
 
-Each major version is maintained in a dedicated git branch. Only the latest Postgres stable release receives active updates.
+Each major version is maintained in a dedicated git branch. Only the latest Postgres stable release receives active updates, with exceptions being made for the prior release branch for critical fixes.
 
 | PostgreSQL Major Version | Branch     | Status              |
 |--------------------------|------------|---------------------|
 | 18                       | 18-latest  | Active development  |
 | 17                       | 17-latest  | Critical fixes only |
-| 16                       | 16-latest  | Critical fixes only |
-| 15                       | 15-latest  | Critical fixes only |
-| 14                       | 14-latest  | Critical fixes only |
-| 13                       | 13-latest  | Critical fixes only |
+| 16                       | 16-latest  | No longer supported |
+| 15                       | 15-latest  | No longer supported |
+| 14                       | 14-latest  | No longer supported |
+| 13                       | 13-latest  | No longer supported |
 | 12                       | (n/a)      | Not supported       |
 | 11                       | (n/a)      | Not supported       |
 | 10                       | 10-latest  | No longer supported |
