@@ -289,7 +289,7 @@ generate_normalized_query(pgssConstLocations *jstate, int query_loc, int* query_
 		param_id = (jstate->clocations[i].param_id < 0) ?
 					(int64_t) jstate->highest_extern_param_id + abs(jstate->clocations[i].param_id) :
 					jstate->clocations[i].param_id;
-		n_quer_loc += sprintf(norm_query + n_quer_loc, "$" INT64_FORMAT, param_id);
+		n_quer_loc += sprintf(norm_query + n_quer_loc, "$" INT64_FORMAT, (int64) param_id);
 
 		quer_loc = off + tok_len;
 		last_off = off;
