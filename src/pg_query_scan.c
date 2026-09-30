@@ -42,6 +42,9 @@ scan_tokens(const char *input, int *n_tokens_out)
   /* initialize the flex scanner --- should match raw_parser() */
   yyscanner = scanner_init(input, &yyextra, &ScanKeywords, ScanKeywordTokens);
 
+  /* return comments as tokens, unlike raw_parser() */
+  yyextra.return_comments = true;
+
   /* Lex tokens  */
   for (;;)
   {

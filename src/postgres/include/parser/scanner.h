@@ -115,6 +115,9 @@ typedef struct core_yy_extra_type
 	bool		saw_non_ascii;
 
 	int yyllocend;
+
+	/* return comments as SQL_COMMENT/C_COMMENT tokens, instead of ignoring */
+	bool		return_comments;
 } core_yy_extra_type;
 
 /*
