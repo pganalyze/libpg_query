@@ -226,6 +226,12 @@
  *
  * Returns true if able to find the requested operator(s), false if not.
  * (This indicates that the operator should not have been marked oprcanhash.)
+ *
+ * Callers must beware that for container types (arrays, records, ranges)
+ * this function will succeed for array_eq etc, but the hash function could
+ * fail at runtime if the contained type(s) are not hashable.  If it is
+ * possible that the operator is one of these, precheck with op_hashjoinable
+ * or get_op_hash_functions_ext.
  */
 
 
@@ -243,6 +249,21 @@
  *
  * Returns true if able to find the requested function(s), false if not.
  * (This indicates that the operator should not have been marked oprcanhash.)
+ *
+ * Callers must beware that for container types (arrays, records, ranges)
+ * this function will succeed for array_eq etc, but the hash function could
+ * fail at runtime if the contained type(s) are not hashable.  If it is
+ * possible that the operator is one of these, use get_op_hash_functions_ext
+ * or precheck with op_hashjoinable.
+ */
+
+
+/*
+ * get_op_hash_functions_ext
+ *		As above, but verify hashability in container-type cases.
+ *
+ * As with op_hashjoinable, assume the left input type is sufficient
+ * to disambiguate container-type cases.
  */
 
 
@@ -260,15 +281,22 @@
 
 /*
  * equality_ops_are_compatible
- *		Return true if the two given equality operators have compatible
+ *		Return true if the two given operators have compatible equality
  *		semantics.
  *
  * This is trivially true if they are the same operator.  Otherwise,
- * Otherwise, we look to see if they both belong to an opfamily that
- * guarantees compatible semantics for equality.  Either finding allows us to
- * assume that they have compatible notions of equality.  (The reason we need
- * to do these pushups is that one might be a cross-type operator; for
- * instance int24eq vs int4eq.)
+ * we look to see if they both belong to an opfamily that guarantees
+ * compatible semantics for equality.  Either finding allows us to assume
+ * that they have compatible notions of equality.
+ *
+ * The typical use is to compare two equality operators (for instance the
+ * cross-type operators int24eq vs int4eq), but the test is meaningful for
+ * any pair of operators in a btree/hash opfamily.  Btree marks its
+ * opfamilies as amconsistentequality, which guarantees that every member
+ * of the family (=, <, <=, >, >=) agrees on the equivalence relation
+ * defined by the family's "=".  So a non-equality operator and an
+ * equality operator from the same opfamily are also "compatible" in this
+ * sense.
  */
 
 
@@ -308,6 +336,18 @@
  * two deterministic collations share the same equality relation.  A mismatch
  * involving a nondeterministic collation, however, may mean the two equality
  * relations disagree, and the proof is unsound.
+ */
+
+
+/*
+ * op_is_safe_index_member
+ *		Check if the operator is a member of a B-tree or Hash operator family.
+ *
+ * Membership in such an opfamily has several useful implications: the operator
+ * returns non-null for non-null inputs (i.e. "null-safety", required so that
+ * the operator doesn't break index integrity), and it agrees with other
+ * members of the same opfamily on equality semantics.  Callers use this check
+ * as a proxy for any of those properties.
  */
 
 
@@ -546,10 +586,11 @@
  * Returns true if the operator is hashjoinable.  (There must be a suitable
  * hash opfamily entry for this operator if it is so marked.)
  *
- * In some cases (currently only array_eq), hashjoinability depends on the
- * specific input data type the operator is invoked for, so that must be
- * passed as well.  We currently assume that only one input's type is needed
- * to check this --- by convention, pass the left input's data type.
+ * In some cases (currently array_eq, record_eq, range_eq, multirange_eq),
+ * hashjoinability depends on the specific input data type the operator is
+ * invoked for, so that must be passed as well.  We currently assume that only
+ * one input's type is needed to check this --- by convention, pass the left
+ * input's data type.
  */
 
 

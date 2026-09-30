@@ -7,9 +7,9 @@ PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 PGDIRZIP = $(root_dir)/tmp/postgres.zip
 
-PG_VERSION = 18.4
+PG_VERSION = 18.6
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 180004
+PG_VERSION_NUM = 180006
 PROTOC_VERSION = 25.1
 UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
 

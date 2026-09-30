@@ -59,7 +59,7 @@ This will output the parse tree (whitespace adjusted here for better readability
 
 ```json
 {
-    "version": 180004,
+    "version": 180006,
     "stmts": [
         {
             "stmt": {
