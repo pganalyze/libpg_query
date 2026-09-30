@@ -513,6 +513,8 @@ static void get_json_agg_constructor(JsonConstructorExpr *ctor,
 									 deparse_context *context,
 									 const char *funcname,
 									 bool is_json_objectagg);
+static void get_json_agg_constructor_expr(Node *node, deparse_context *context,
+										  void *callback_arg);
 static void simple_quote_literal(StringInfo buf, const char *val);
 static void get_sublink_expr(SubLink *sublink, deparse_context *context);
 static void get_tablefunc(TableFunc *tf, deparse_context *context,
@@ -1625,6 +1627,12 @@ static void get_json_table_nested_columns(TableFunc *tf, JsonTablePlan *plan,
 
 /*
  * get_json_agg_constructor - Parse back an aggregate JsonConstructorExpr node
+ */
+
+
+/*
+ * Deparse a JsonConstructorExpr whose aggregate is computed by a lower plan
+ * node; resolve_special_varno has located the underlying Aggref/WindowFunc.
  */
 
 

@@ -4,6 +4,7 @@
  * - cstring_to_text
  * - cstring_to_text_with_len
  * - text_to_cstring
+ * - levenshtein_result
  * - rest_of_char_same
  *--------------------------------------------------------------------
  */
@@ -979,7 +980,7 @@ text_to_cstring(const text *t)
  * However, it's not clear that having one function with a bunch of option
  * flags would be much better.
  *
- * XXX there is a version of this function in src/bin/pg_dump/dumputils.c.
+ * XXX there is a version of this function in src/fe_utils/string_utils.c.
  * Be sure to update that if you have to change this.
  *
  * Inputs:
@@ -1403,6 +1404,20 @@ rest_of_char_same(const char *s1, const char *s2, int len)
 			return false;
 	}
 	return true;
+}
+
+/*
+ * Helper function for checking return value of Levenshtein distance functions.
+ * We calculate it as an int64, but the distance functions return an int32.
+ */
+static inline int
+levenshtein_result(int64 res)
+{
+	if (unlikely(res < PG_INT32_MIN || res > PG_INT32_MAX))
+		ereport(ERROR,
+				(errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
+				 errmsg("levenshtein distance out of range")));
+	return res;
 }
 
 /* Expand each Levenshtein distance variant */
