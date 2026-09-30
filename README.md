@@ -186,6 +186,50 @@ This will output:
 50fde20626009aba
 ```
 
+In general, fingerprinting intends to be a superset of the Postgres `queryid` mechanism. That means that for a given Postgres `queryid`, there should only be one valid fingerprint - even when varying the inputs that produce that same `queryid`. A simple example of this would be that the Postgres `queryid` ignores constant values (e.g. `... WHERE id = 123` is the same queryid as `... WHERE id = 456`), and thus the fingerprint also behaves that way.
+
+One special case are the changes done in Postgres 18, which significantly changed how schema names and table aliases in `FROM` clauses are handled for `queryid` values. On Postgres 17 and older, the schema was significant, and the alias was always ignored. On Postgres 18, the schema is always ignored, and the table alias (if present) is used instead of the table name.
+
+To support matching behaviour, you can optionally pass fingerprint options. By default fingerprinting behaves like Postgres 18, but you can pass `PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT` to instead have it behave like Postgres 17 does for `queryid`:
+
+```c
+#include <pg_query.h>
+#include <stdio.h>
+
+int main() {
+  const char *queries[] = {
+    "SELECT * FROM public.users u",
+    "SELECT * FROM myschema.users u",
+  };
+  PgQueryFingerprintResult result;
+
+  for (int i = 0; i < 2; i++) {
+    result = pg_query_fingerprint_opts(queries[i], PG_QUERY_PARSE_DEFAULT, PG_QUERY_FINGERPRINT_DEFAULT);
+    printf("Default:     %s\n", result.fingerprint_str);
+    pg_query_free_fingerprint_result(result);
+
+    result = pg_query_fingerprint_opts(queries[i], PG_QUERY_PARSE_DEFAULT, PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT);
+    printf("PG17 compat: %s\n", result.fingerprint_str);
+    pg_query_free_fingerprint_result(result);
+  }
+
+  return 0;
+}
+```
+
+This will output:
+
+```
+Default:     6640d8be64880eed
+PG17 compat: d3198777453aef12
+Default:     6640d8be64880eed
+PG17 compat: 91e880cf13f4f219
+```
+
+With the default options both queries get the same fingerprint, because the schema is ignored and the alias `u` is used. With `PG_QUERY_FINGERPRINT_RANGEVAR_PG17_COMPAT`, the schema-qualified table name counts, so the two queries get different fingerprints.
+
+The options also allow controlling whether relation names that have subsequent digits (often used for daily partitions) should be ignored for fingerprinting, which is the case by default.
+
 See https://github.com/pganalyze/libpg_query/wiki/Fingerprinting for the full fingerprinting rules.
 
 ## Usage: Parsing a PL/pgSQL function
