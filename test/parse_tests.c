@@ -71,5 +71,36 @@ const char* tests[] = {
   "{\"version\":180004,\"stmts\":[{\"stmt\":{\"CreatePublicationStmt\":{\"pubname\":\"foo\",\"pubobjects\":[{\"PublicationObjSpec\":{\"pubobjtype\":\"PUBLICATIONOBJ_TABLES_IN_SCHEMA\",\"name\":\"bar\",\"location\":44}}]}}}]}",
   "SELECT 123 AS abc where 456=$1OR 10=11",
   "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"name\":\"abc\",\"val\":{\"A_Const\":{\"ival\":{\"ival\":123},\"location\":7}},\"location\":7}}],\"whereClause\":{\"BoolExpr\":{\"boolop\":\"OR_EXPR\",\"args\":[{\"A_Expr\":{\"kind\":\"AEXPR_OP\",\"name\":[{\"String\":{\"sval\":\"=\"}}],\"lexpr\":{\"A_Const\":{\"ival\":{\"ival\":456},\"location\":24}},\"rexpr\":{\"ParamRef\":{\"number\":1,\"location\":28}},\"location\":27}},{\"A_Expr\":{\"kind\":\"AEXPR_OP\",\"name\":[{\"String\":{\"sval\":\"=\"}}],\"lexpr\":{\"A_Const\":{\"ival\":{\"ival\":10},\"location\":33}},\"rexpr\":{\"A_Const\":{\"ival\":{\"ival\":11},\"location\":36}},\"location\":35}}],\"location\":30}},\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT 1 WHERE 1 NOT /* c */ IN (2)",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"ival\":{\"ival\":1},\"location\":7}},\"location\":7}}],\"whereClause\":{\"A_Expr\":{\"kind\":\"AEXPR_IN\",\"name\":[{\"String\":{\"sval\":\"\\u003c\\u003e\"}}],\"lexpr\":{\"A_Const\":{\"ival\":{\"ival\":1},\"location\":15}},\"rexpr\":{\"List\":{\"items\":[{\"A_Const\":{\"ival\":{\"ival\":2},\"location\":33}}]}},\"rexpr_list_start\":32,\"rexpr_list_end\":34,\"location\":17}},\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT 1 WHERE 'a' NOT -- c\nLIKE 'b'",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"ival\":{\"ival\":1},\"location\":7}},\"location\":7}}],\"whereClause\":{\"A_Expr\":{\"kind\":\"AEXPR_LIKE\",\"name\":[{\"String\":{\"sval\":\"!~~\"}}],\"lexpr\":{\"A_Const\":{\"sval\":{\"sval\":\"a\"},\"location\":15}},\"rexpr\":{\"A_Const\":{\"sval\":{\"sval\":\"b\"},\"location\":33}},\"location\":19}},\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT x FROM t ORDER BY x NULLS /* c */ FIRST",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"ColumnRef\":{\"fields\":[{\"String\":{\"sval\":\"x\"}}],\"location\":7}},\"location\":7}}],\"fromClause\":[{\"RangeVar\":{\"relname\":\"t\",\"inh\":true,\"relpersistence\":\"p\",\"location\":14}}],\"sortClause\":[{\"SortBy\":{\"node\":{\"ColumnRef\":{\"fields\":[{\"String\":{\"sval\":\"x\"}}],\"location\":25}},\"sortby_dir\":\"SORTBY_DEFAULT\",\"sortby_nulls\":\"SORTBY_NULLS_FIRST\",\"location\":-1}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT * FROM generate_series(1, 2) WITH /* c */ ORDINALITY",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"ColumnRef\":{\"fields\":[{\"A_Star\":{}}],\"location\":7}},\"location\":7}}],\"fromClause\":[{\"RangeFunction\":{\"ordinality\":true,\"functions\":[{\"List\":{\"items\":[{\"FuncCall\":{\"funcname\":[{\"String\":{\"sval\":\"generate_series\"}}],\"args\":[{\"A_Const\":{\"ival\":{\"ival\":1},\"location\":30}},{\"A_Const\":{\"ival\":{\"ival\":2},\"location\":33}}],\"funcformat\":\"COERCE_EXPLICIT_CALL\",\"location\":14}},{}]}}]}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT '2020-01-01'::timestamp WITH /* c */ TIME ZONE",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"TypeCast\":{\"arg\":{\"A_Const\":{\"sval\":{\"sval\":\"2020-01-01\"},\"location\":7}},\"typeName\":{\"names\":[{\"String\":{\"sval\":\"pg_catalog\"}},{\"String\":{\"sval\":\"timestamptz\"}}],\"typemod\":-1,\"location\":21},\"location\":19}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT '2020-01-01'::timestamp WITHOUT -- c\nTIME ZONE",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"TypeCast\":{\"arg\":{\"A_Const\":{\"sval\":{\"sval\":\"2020-01-01\"},\"location\":7}},\"typeName\":{\"names\":[{\"String\":{\"sval\":\"pg_catalog\"}},{\"String\":{\"sval\":\"timestamp\"}}],\"typemod\":-1,\"location\":21},\"location\":19}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT JSON_OBJECT('a': '1' FORMAT /* c */ JSON)",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"JsonObjectConstructor\":{\"exprs\":[{\"JsonKeyValue\":{\"key\":{\"A_Const\":{\"sval\":{\"sval\":\"a\"},\"location\":19}},\"value\":{\"raw_expr\":{\"A_Const\":{\"sval\":{\"sval\":\"1\"},\"location\":24}},\"format\":{\"format_type\":\"JS_FORMAT_JSON\",\"encoding\":\"JS_ENC_DEFAULT\",\"location\":28}}}}],\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT U&'!0041' /* c */ UESCAPE /* c */ '!'",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"A\"},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT 'a' -- c\n'b'",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"ab\"},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  "SELECT 'a'\n-- c\n'b'",
+  "{\"version\":180004,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"A_Const\":{\"sval\":{\"sval\":\"ab\"},\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
+  NULL // Trailing NULL to tell the test runner we're done.
+};
+
+// Pairs of query and expected error message
+const char* error_tests[] = {
+  "SELECT format /* c */ json",
+  "syntax error at or near \"format\"",
+  "SELECT U&'d\\0061t\\+000061' /* c */ UESCAPE",
+  "UESCAPE must be followed by a simple string literal at end of input",
+  "SELECT 'a' /* c */\n'b'",
+  "syntax error at or near \"'b'\"",
   NULL // Trailing NULL to tell the test runner we're done.
 };

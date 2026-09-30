@@ -398,11 +398,6 @@ internal_yylex(TokenAuxData *auxdata, yyscan_t yyscanner)
 		{
 			auxdata->lval.str = pstrdup(yytext);
 		}
-
-		else if (token == SQL_COMMENT || token == C_COMMENT)
-		{
-			token = internal_yylex(auxdata, yyscanner);
-		}
 	}
 
 	return token;

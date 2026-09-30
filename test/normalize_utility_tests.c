@@ -65,5 +65,7 @@ const char* tests[] = {
   "SELECT 1; ALTER USER a WITH PASSWORD $1",
   "SELECT 3,$2147483647",
   "SELECT 3,$2147483647",
+  "SELECT - /* comment */ 1, 'a' -- comment\n'b'",
+  "SELECT - /* comment */ 1, 'a' -- comment\n'b'",
   NULL // Trailing NULL to tell the test runner we're done.
 };
