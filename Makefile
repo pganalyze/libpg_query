@@ -13,7 +13,7 @@ PG_VERSION_NUM = 180006
 PROTOC_VERSION = 25.1
 UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
 
-VERSION = 18.0.0
+VERSION = 18.1.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
