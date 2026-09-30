@@ -2,9 +2,49 @@
 
 All versions are tagged by the major Postgres version, plus a minor/patch version to indicate changes to the libpg_query supporting code. The minor version does not reflect the Postgres minor version, but is instead used to indicate major or API breaking changes in libpg_query itself.
 
-## Unreleased
+## 18.1.0     2026-09-30
 
-* Fingerprinting: Add fingerprint options to `pg_query_fingerprint_opts`
+* Security fix: Heap out-of-bounds write and read in pg_query_normalize ([GHSA-6ggm-xmc9-8ffg](https://github.com/pganalyze/libpg_query/security/advisories/GHSA-6ggm-xmc9-8ffg))
+  - When normalizing certain utility statements (e.g. `DO ... LANGUAGE`, statements with
+    string options, or `CREATE/ALTER SUBSCRIPTION ... CONNECTION`), pg_query_normalize
+    searched the query text for the location of string constants, which could yield
+    wrong locations for crafted input. This could cause out-of-bounds writes and reads
+    on the heap, leaking process memory in the normalized output or crashing the process.
+  - Constant locations are now recorded by the parser instead, and the normalizer checks
+    at runtime that constant locations never overlap
+  - This adds new location fields to the parse tree output (`DefElem.arg_location`,
+    `NotifyStmt.payload_location`, `CreateSubscriptionStmt.conninfo_location` and
+    `AlterSubscriptionStmt.conninfo_location`). Like other location fields, these are
+    ignored for fingerprinting.
+  - Applications that normalize untrusted query text should upgrade
+  - Reported by Paul Gerste (Cure53)
+* Deparser: Add strict checking for unexpected pointer values
+  - This ensures that a bad input parse tree doesn't cause the deparser to crash, and
+    instead returns an error
+  - Use cases that do not work with user input can define `PG_QUERY_DEPARSE_NO_STRICT_CHECKS`
+    to turn off the most detailed checks, for slightly better performance
+  - Reported by Paul Gerste (Cure53)
+* Add stack overflow crash protection, error out instead [#348](https://github.com/pganalyze/libpg_query/pull/348)
+  - Overly deep queries now return the standard Postgres "stack depth limit exceeded"
+    error instead of crashing the process
+  - The allowed stack depth defaults to 100 kB, auto-sized up to 2 MB, and is
+    recalculated on each call, since callers may use threads with varying stack sizes
+  - Stack depth is also checked when recursing directly into specific node types (e.g.
+    long `UNION` chains), and in `exprLocation` during raw parsing
+* Switch Protobuf implementation from protobuf-c to upb
+  - upb is developed as part of the main Protobuf project, and is substantially faster,
+    in part due to its built-in arena allocation
+  - upb also allows limiting parse depth for complex Protobuf input, avoiding crashes
+* Add `pg_query_scan_tokens` to get scan results without involving Protobuf
+  - This allows pure C callers to walk a simple list of `PgQueryScanToken` structs
+* Ignore comments when parsing queries, only treat them as significant for scanning [#378](https://github.com/pganalyze/libpg_query/pull/378)
+  - This fixes parse errors when comments are placed between related tokens
+    (e.g. `NOT /* comment */ IN`), or between string literals that get concatenated
+* Parser: Avoid quadratic memory use for rules that involve dotted names [#374](https://github.com/pganalyze/libpg_query/pull/374)
+* Return errors for PL/pgSQL statements without bodies [#363](https://github.com/pganalyze/libpg_query/pull/363)
+  - This avoids an assertion failure or crash when `CREATE FUNCTION` or `DO` omits
+    its function body
+* Fingerprinting: Add fingerprint options to `pg_query_fingerprint_opts` [#361](https://github.com/pganalyze/libpg_query/pull/361)
   - This is a breaking change for callers of `pg_query_fingerprint_opts`,
     which now takes a fingerprint options bitmask as a third argument
   - By default, relation references are fingerprinted following Postgres 18+
@@ -20,6 +60,28 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
   - `PG_QUERY_FINGERPRINT_FULL_RELNAME` fingerprints the full relation name,
     instead of the default behavior of ignoring 2+ consecutive digits (which
     groups queries on date/number-suffixed tables together)
+* Fingerprinting:
+  - Ignore `NOTIFY` payloads, similar to channel names [#353](https://github.com/pganalyze/libpg_query/pull/353)
+  - Ignore role names (e.g. in `CREATE ROLE`, `DROP ROLE`, `GRANT` and `ALTER ... RENAME`) [#357](https://github.com/pganalyze/libpg_query/pull/357)
+  - Include `BEGIN`/`START TRANSACTION` options (e.g. read-only, isolation level) [#358](https://github.com/pganalyze/libpg_query/pull/358)
+  - Apply the depth cutoff when recursing into specific node types
+    - This changes fingerprints for set operation chains deeper than 100 levels,
+      which are now cut off consistently like other deeply nested nodes
+* Deparser:
+  - Rework when parentheses are added based on operator precedence [#371](https://github.com/pganalyze/libpg_query/pull/371)
+    - This fixes cases where the deparsed SQL changed meaning or was invalid, and
+      avoids adding unnecessary parentheses in others
+  - Use `strlcpy` instead of `strncpy` in deparser and summary truncate [#345](https://github.com/pganalyze/libpg_query/pull/345)
+* pg_query_normalize:
+  - Add support for `NOTIFY` statements [#340](https://github.com/pganalyze/libpg_query/pull/340)
+  - Avoid undefined behaviour for overly large parameter references [#346](https://github.com/pganalyze/libpg_query/pull/346)
+  - Fix handling of `U&` special constants in DefElem nodes [#347](https://github.com/pganalyze/libpg_query/pull/347)
+  - Don't swallow stack depth errors and return a partially normalized query
+* pg_query_summary:
+  - Fix a relation going missing when a CTE shares its name [#367](https://github.com/pganalyze/libpg_query/pull/367)
+  - Fix memory leak when the tree walk throws an error
+* Use built-in `strlcpy`/`strlcat` on older glibc versions [#339](https://github.com/pganalyze/libpg_query/pull/339)
+* Add new OSS-Fuzz fuzzer targets for Protobuf processing and PL/pgSQL parsing [#341](https://github.com/pganalyze/libpg_query/pull/341) [#343](https://github.com/pganalyze/libpg_query/pull/343)
 
 ## 18.0.0     2026-05-20
 
@@ -40,6 +102,32 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     it avoids implicit shallow copying of the struct (which itself includes
     pointer values, that would be retained in such a copy).
 * Fingerprinting: Rework alias/schema name handling to match Postgres 18
+
+## 17-6.2.4   2026-09-30
+
+* Security fix: Heap out-of-bounds write and read in pg_query_normalize ([GHSA-6ggm-xmc9-8ffg](https://github.com/pganalyze/libpg_query/security/advisories/GHSA-6ggm-xmc9-8ffg))
+  - When normalizing certain utility statements (e.g. `DO ... LANGUAGE`, statements with
+    string options, or `CREATE/ALTER SUBSCRIPTION ... CONNECTION`), pg_query_normalize
+    searched the query text for the location of string constants, which could yield
+    wrong locations for crafted input. This could cause out-of-bounds writes and reads
+    on the heap, leaking process memory in the normalized output or crashing the process.
+  - Constant locations are now recorded by the parser instead, and the normalizer checks
+    at runtime that constant locations never overlap
+  - This adds new location fields to the parse tree output (`DefElem.arg_location`,
+    `NotifyStmt.payload_location`, `CreateSubscriptionStmt.conninfo_location` and
+    `AlterSubscriptionStmt.conninfo_location`). Like other location fields, these are
+    ignored for fingerprinting.
+  - Applications that normalize untrusted query text should upgrade
+  - Reported by Paul Gerste (Cure53)
+* Deparser: Add strict checking for unexpected pointer values
+  - This ensures that a bad input parse tree doesn't cause the deparser to crash, and
+    instead returns an error
+  - Use cases that do not work with user input can define `PG_QUERY_DEPARSE_NO_STRICT_CHECKS`
+    to turn off the most detailed checks, for slightly better performance
+  - Reported by Paul Gerste (Cure53)
+* pg_query_normalize:
+  - Add support for `NOTIFY` statements [#340](https://github.com/pganalyze/libpg_query/pull/340)
+  - Avoid undefined behaviour for overly large parameter references [#346](https://github.com/pganalyze/libpg_query/pull/346)
 
 ## 17-6.2.3   2026-08-24
 
