@@ -100,7 +100,8 @@ sub enum_defs
 	{
 		foreach my $e (LibpgQuery::NodeSupport::Enums::parse_header("$ctx->{srcdir}/src/include/$group.h"))
 		{
-			my @members = @{ $e->{members} };
+			my @members = grep { !LibpgQuery::NodeSupport::Enums::is_bison_internal($_->{name}) }
+			  @{ $e->{members} };
 
 			# The node tags are included from the generated nodes/nodetags.h
 			if ($e->{name} eq 'NodeTag')
@@ -131,6 +132,7 @@ sub typedefs
 		{
 			my ($source, $new) = ($1, $2);
 			next if elem($source, @IGNORE_TYPEDEFS) or elem($new, @IGNORE_TYPEDEFS);
+			next if LibpgQuery::NodeSupport::Enums::is_bison_internal($new);
 			push @typedefs, { new_type_name => $new, source_type => $source };
 		}
 	}

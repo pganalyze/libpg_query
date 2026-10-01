@@ -49,18 +49,64 @@ sub defined_constants
 	return %constants;
 }
 
+# Splits an expression on the given single-character operator, ignoring
+# occurrences inside parentheses
+sub split_top_level
+{
+	my ($op, $expr) = @_;
+	my @parts = ('');
+	my $depth = 0;
+
+	foreach my $c (split //, $expr)
+	{
+		$depth++ if $c eq '(';
+		$depth-- if $c eq ')';
+		if ($c eq $op && $depth == 0)
+		{
+			push @parts, '';
+			next;
+		}
+		$parts[-1] .= $c;
+	}
+	return @parts;
+}
+
+# Removes enclosing parentheses, but only when the opening one at the start
+# matches the closing one at the end (so "(a) | (b)" is left alone)
+sub strip_outer_parens
+{
+	my ($expr) = @_;
+
+	while ($expr =~ /^\((.*)\)$/s)
+	{
+		my $inner = $1;
+		my $depth = 0;
+
+		foreach my $c (split //, $inner)
+		{
+			$depth++ if $c eq '(';
+			$depth-- if $c eq ')';
+			return $expr if $depth < 0;
+		}
+		$expr = $inner;
+		$expr =~ s/^\s+|\s+$//g;
+	}
+	return $expr;
+}
+
 # Evaluates the (limited set of) value expressions used in enum definitions
 sub member_value
 {
 	my ($enum, $expr, $known) = @_;
 
 	$expr =~ s/^\s+|\s+$//g;
-	$expr = $1 while $expr =~ /^\((.*)\)$/;
+	$expr = strip_outer_parens($expr);
 
-	if ($expr =~ /\|/)
+	my @terms = split_top_level('|', $expr);
+	if (@terms > 1)
 	{
 		my $value = 0;
-		$value |= member_value($enum, $_, $known) for split /\|/, $expr;
+		$value |= member_value($enum, $_, $known) for @terms;
 		return $value;
 	}
 	return $expr + 0 if $expr =~ /^-?\d+$/;
@@ -70,6 +116,16 @@ sub member_value
 	return ord($1) if $expr =~ /^'(.)'$/;
 	return $known->{$expr} if exists $known->{$expr};    # earlier member or #define
 	die "unsupported value \"$expr\" in enum $enum\n";
+}
+
+# Symbols bison adds to gram.h for its own use (YYEMPTY, YYEOF, YYerror,
+# YYUNDEF, YYSTYPE, YYLTYPE, ...). Which of these exist depends on the bison
+# version, so they are left out of the generated output to keep it the same
+# regardless of the toolchain used.
+sub is_bison_internal
+{
+	my ($name) = @_;
+	return $name =~ /^YY/;
 }
 
 # Parses all enum definitions in a header. Returns a list of
@@ -91,7 +147,14 @@ sub parse_header
 
 		foreach my $piece (split /,/, $body)
 		{
-			next unless $piece =~ /^\s*(\w+)\s*(?:=\s*(.+?))?\s*$/s;
+			# A trailing comma before the closing brace leaves an empty piece
+			next if $piece =~ /^\s*$/;
+
+			# Silently skipping a member would renumber all following ones
+			# (in the protobuf enum and the enum helper tables), so anything
+			# unexpected is an error
+			$piece =~ /^\s*(\w+)\s*(?:=\s*(.+?))?\s*$/s
+			  or die "could not parse enum $name member \"$piece\" in $path\n";
 			my ($member, $expr) = ($1, $2);
 			my $value =
 			  defined $expr ? member_value($name, $expr, \%known) : $previous + 1;
@@ -140,7 +203,10 @@ sub parse
 
 	return {
 		enums => \@enums,
-		scan_tokens => [ map { [ $_->{name}, $_->{value} ] } @{ $tokens->{members} } ],
+		scan_tokens => [
+			map { [ $_->{name}, $_->{value} ] }
+			grep { !is_bison_internal($_->{name}) } @{ $tokens->{members} }
+		],
 	};
 }
 

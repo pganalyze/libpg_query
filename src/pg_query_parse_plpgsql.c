@@ -698,20 +698,29 @@ pg_query_plpgsql_catch_error(MemoryContext ctx)
 	return error;
 }
 
-PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
+/*
+ * Shared control flow of pg_query_parse_plpgsql() and
+ * pg_query_parse_plpgsql_protobuf(): compiles the functions in the input and
+ * passes them to output_func, which stores its (malloc-ed) result in out.
+ *
+ * Returns the error, if any. It is malloc-ed and survives exiting the memory
+ * context, so the caller is responsible for freeing it.
+ */
+static PgQueryError *
+pg_query_parse_plpgsql_with_output(const char *input,
+								   void (*output_func) (List *funcs, void *out),
+								   void *out)
 {
-	MemoryContext ctx = NULL;
-	PgQueryPlpgsqlParseResult result = {0};
+	MemoryContext ctx;
 	PgQueryInternalPlpgsqlFuncsAndError funcs_and_error;
+	PgQueryError *error;
 
 	ctx = pg_query_enter_memory_context();
 
 	funcs_and_error = pg_query_parse_plpgsql_internal(input);
+	error = funcs_and_error.error;
 
-	// This is malloc-ed and will survive exiting the memory context, the caller is responsible to free it now
-	result.error = funcs_and_error.error;
-
-	if (result.error == NULL)
+	if (error == NULL)
 	{
 		/*
 		 * Serializing walks the trees recursively and may throw (e.g. "stack
@@ -719,14 +728,11 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 		 */
 		PG_TRY();
 		{
-			char	   *json = pg_query_plpgsql_to_json(funcs_and_error.funcs);
-
-			result.plpgsql_funcs = strdup(json);
-			pfree(json);
+			output_func(funcs_and_error.funcs, out);
 		}
 		PG_CATCH();
 		{
-			result.error = pg_query_plpgsql_catch_error(ctx);
+			error = pg_query_plpgsql_catch_error(ctx);
 		}
 		PG_END_TRY();
 
@@ -734,40 +740,39 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 	}
 
 	pg_query_exit_memory_context(ctx);
+
+	return error;
+}
+
+static void
+pg_query_plpgsql_output_json(List *funcs, void *out)
+{
+	char	   *json = pg_query_plpgsql_to_json(funcs);
+
+	*(char **) out = strdup(json);
+	pfree(json);
+}
+
+static void
+pg_query_plpgsql_output_protobuf(List *funcs, void *out)
+{
+	*(PgQueryProtobuf *) out = pg_query_plpgsql_to_protobuf(funcs);
+}
+
+PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
+{
+	PgQueryPlpgsqlParseResult result = {0};
+
+	result.error = pg_query_parse_plpgsql_with_output(input, pg_query_plpgsql_output_json, &result.plpgsql_funcs);
 
 	return result;
 }
 
 PgQueryPlpgsqlProtobufParseResult pg_query_parse_plpgsql_protobuf(const char* input)
 {
-	MemoryContext ctx = NULL;
 	PgQueryPlpgsqlProtobufParseResult result = {0};
-	PgQueryInternalPlpgsqlFuncsAndError funcs_and_error;
 
-	ctx = pg_query_enter_memory_context();
-
-	funcs_and_error = pg_query_parse_plpgsql_internal(input);
-
-	// This is malloc-ed and will survive exiting the memory context, the caller is responsible to free it now
-	result.error = funcs_and_error.error;
-
-	if (result.error == NULL)
-	{
-		/* See pg_query_parse_plpgsql */
-		PG_TRY();
-		{
-			result.parse_tree = pg_query_plpgsql_to_protobuf(funcs_and_error.funcs);
-		}
-		PG_CATCH();
-		{
-			result.error = pg_query_plpgsql_catch_error(ctx);
-		}
-		PG_END_TRY();
-
-		free_plpgsql_funcs(funcs_and_error.funcs);
-	}
-
-	pg_query_exit_memory_context(ctx);
+	result.error = pg_query_parse_plpgsql_with_output(input, pg_query_plpgsql_output_protobuf, &result.parse_tree);
 
 	return result;
 }

@@ -29,14 +29,16 @@ Without --hook the script behaves exactly as before.
 ---
 diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_support.pl--- a/src/backend/nodes/gen_node_support.pl
 +++ b/src/backend/nodes/gen_node_support.pl
-@@ -27,11 +27,26 @@
+@@ -27,11 +27,31 @@
  use Catalog;    # for RenameTempFile
- 
+
++use Cwd qw(realpath);
++
  my $output_path = '.';
 +my $hook_file = '';
 +my $hook_outdir = '';
 +my @hook_extra_inputs;
- 
+
 -GetOptions('outdir:s' => \$output_path)
 +GetOptions(
 +	'outdir:s' => \$output_path,
@@ -44,9 +46,12 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
 +	'hook-outdir:s' => \$hook_outdir,
 +	'hook-extra-input:s' => \@hook_extra_inputs)
    or die "$0: wrong arguments";
- 
+
 +$hook_outdir = $output_path if $hook_outdir eq '';
- 
+
++# Source tree root, passed to the hook and used to name its extra inputs
++my $srcdir = realpath("$FindBin::RealBin/../../..");
++
 +# Additional headers parsed for the benefit of the hook only (see
 +# --hook-extra-input). Every struct in them is recorded, whether or not it is
 +# a node, and nothing from them participates in the normal output.
@@ -57,7 +62,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  # Test whether first argument is element of the list in the second
  # argument
  sub elem
-@@ -192,8 +207,10 @@
+@@ -192,8 +212,10 @@
  ## read input
  
  my $next_input_file = 0;
@@ -69,15 +74,17 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  	my $in_struct;
  	my $in_struct_lineno;
  	my $subline;
-@@ -211,12 +228,20 @@
+@@ -211,12 +233,22 @@
  	open my $ifh, '<', $infile or die "could not open \"$infile\": $!";
- 
+
  	# now shorten filename for use below
 -	$infile =~ s!.*src/include/!!;
 +	if ($is_extra)
 +	{
-+		# extra headers need not live under src/include
-+		$infile =~ s!.*?/src/!!;
++		# extra headers need not live under src/include, so they are
++		# recorded relative to the source tree root instead
++		$infile = realpath($infile);
++		$infile =~ s!^\Q$srcdir\E/!!;
 +	}
 +	else
 +	{
@@ -95,7 +102,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  
  	my $raw_file_content = do { local $/; <$ifh> };
  
-@@ -291,9 +316,16 @@
+@@ -291,9 +323,16 @@
  			# next line should have node tag or supertype
  			elsif ($subline == 2)
  			{
@@ -113,7 +120,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  					next;
  				}
  				elsif ($line =~ /\s*(\w+)\s+(\w+);/ and elem $1, @node_types)
-@@ -308,8 +340,22 @@
+@@ -308,8 +347,22 @@
  			# end of struct
  			if ($line =~ /^\}\s*(?:\Q$in_struct\E\s*)?;$/)
  			{
@@ -137,7 +144,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  					# This is the end of a node struct definition.
  					# Save everything we have collected.
  
-@@ -410,6 +456,16 @@
+@@ -410,6 +463,16 @@
  					$node_type_info{$in_struct}->{fields} = \@f;
  					$node_type_info{$in_struct}->{field_types} = \%ft;
  					$node_type_info{$in_struct}->{field_attrs} = \%fa;
@@ -154,7 +161,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  
  					# Propagate nodetag_only marking from files to nodes
  					push @nodetag_only, $in_struct
-@@ -548,7 +604,9 @@
+@@ -548,7 +611,9 @@
  				$subline = 0;
  			}
  			# one node type typedef'ed directly from another
@@ -165,7 +172,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  			{
  				my $alias_of = $1;
  				my $n = $2;
-@@ -561,11 +619,26 @@
+@@ -561,11 +626,26 @@
  				$node_type_info{$n}->{fields} = \@f;
  				$node_type_info{$n}->{field_types} = \%ft;
  				$node_type_info{$n}->{field_attrs} = \%fa;
@@ -193,7 +200,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  			}
  		}
  	}
-@@ -1374,6 +1447,47 @@
+@@ -1374,6 +1454,47 @@
  close $jff;
  close $jfs;
  
@@ -233,7 +240,7 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
 +			manual_nodetag_number => \%manual_nodetag_number,
 +			extra_struct_info => \%extra_struct_info,
 +			extra_enum_types => \@extra_enum_types,
-+			srcdir => "$FindBin::RealBin/../../..",
++			srcdir => $srcdir,
 +			outdir => $hook_outdir,
 +		});
 +}

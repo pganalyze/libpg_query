@@ -31,7 +31,8 @@
 # - fingerprint_omit_fields ("Node.field"): the field is ignored without a
 #   trace in the generated output. Used for fields that only exist after parse
 #   analysis (and thus can never be set in the raw parse trees libpg_query
-#   fingerprints), where a comment for every field would just be noise.
+#   fingerprints), where a comment for every field would just be noise. These
+#   come from %analysis_only_fields below, shared with outfuncs_skip_fields.
 #
 # - fingerprint_conds_wrap: opening C code wrapped around the dispatch case
 #   body ("  }\n" is appended automatically), for context-dependent dispatch.
@@ -45,7 +46,8 @@
 #   numbers are assigned sequentially, adding or removing entries here changes
 #   the numbering of all subsequent fields of the message (i.e. breaks wire
 #   compatibility). Fields Postgres marks as read_write_ignore must have an
-#   entry here (the generator errors out otherwise).
+#   entry here (the generator errors out otherwise). Includes
+#   %analysis_only_fields below, shared with fingerprint_omit_fields.
 #
 # - outfuncs_outname_overrides ("Node.field"): Protobuf field name to use
 #   instead of the snake_case version of the C field name.
@@ -86,6 +88,30 @@
 #     field of the struct must be in one of the two lists or consumed by an
 #     entry above; the generator errors out otherwise, so a field added by a
 #     Postgres upgrade has to be decided on here.
+
+# Fields that are only set during parse analysis, and thus can never be set
+# in the raw parse trees libpg_query fingerprints and outputs. They are
+# omitted from the fingerprint functions (without a trace, since a comment
+# for every one of them would just be noise) and skipped in the output
+# functions and the Protobuf definition (to keep the field numbering, and
+# thus wire compatibility, unchanged). One list, so the two can't drift.
+my %analysis_only_fields = (
+	# Postgres itself also doesn't output this (see its read_write_ignore
+	# attribute)
+	'Query.queryId' => 1,
+	'Var.varnosyn' => 1,
+	'Var.varattnosyn' => 1,
+	'Aggref.aggtranstype' => 1,
+	'Aggref.aggpresorted' => 1,
+	'GroupingFunc.cols' => 1,
+	'OpExpr.opfuncid' => 1,
+	'ScalarArrayOpExpr.opfuncid' => 1,
+	'ScalarArrayOpExpr.hashfuncid' => 1,
+	'ScalarArrayOpExpr.negfuncid' => 1,
+	# Added in Postgres 18.6
+	'CreateStatsStmt.owner' => 1,
+);
+
 {
 	fingerprint_exclude_nodes => [
 		# Contains a union; contents are fingerprinted via the value nodes
@@ -153,22 +179,7 @@
 	},
 
 	fingerprint_omit_fields => {
-		# Fields that are only set during parse analysis, and thus can never
-		# be set in the raw parse trees that libpg_query fingerprints. These
-		# are also skipped in the output functions (see outfuncs_skip_fields
-		# below) to keep protobuf field numbering unchanged.
-		'Query.queryId' => 1,
-		'Var.varnosyn' => 1,
-		'Var.varattnosyn' => 1,
-		'Aggref.aggtranstype' => 1,
-		'Aggref.aggpresorted' => 1,
-		'GroupingFunc.cols' => 1,
-		'OpExpr.opfuncid' => 1,
-		'ScalarArrayOpExpr.opfuncid' => 1,
-		'ScalarArrayOpExpr.hashfuncid' => 1,
-		'ScalarArrayOpExpr.negfuncid' => 1,
-		# Added in Postgres 18.6
-		'CreateStatsStmt.owner' => 1,
+		%analysis_only_fields,
 	},
 
 	fingerprint_conds_wrap => {
@@ -188,25 +199,9 @@
 	],
 
 	outfuncs_skip_fields => {
-		# We intentionally do not output the queryId field (which Postgres
-		# itself also doesn't, see its read_write_ignore attribute)
-		'Query.queryId' => 1,
+		%analysis_only_fields,
 		# Contains a Const, which we can't output
 		'JsonTablePath.value' => 1,
-		# Fields that are only set during parse analysis, and thus can never
-		# be set in the raw parse trees libpg_query produces. Skipped to keep
-		# the protobuf field numbering (and thus wire compatibility) unchanged.
-		'Var.varnosyn' => 1,
-		'Var.varattnosyn' => 1,
-		'Aggref.aggtranstype' => 1,
-		'Aggref.aggpresorted' => 1,
-		'GroupingFunc.cols' => 1,
-		'OpExpr.opfuncid' => 1,
-		'ScalarArrayOpExpr.opfuncid' => 1,
-		'ScalarArrayOpExpr.hashfuncid' => 1,
-		'ScalarArrayOpExpr.negfuncid' => 1,
-		# Added in Postgres 18.6
-		'CreateStatsStmt.owner' => 1,
 	},
 
 	outfuncs_outname_overrides => {

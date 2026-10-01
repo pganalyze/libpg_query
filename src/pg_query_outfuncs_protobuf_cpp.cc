@@ -336,17 +336,43 @@ pg_query_plpgsql_to_protobuf(const void *funcs)
 	return protobuf;
 }
 
-// Note: Unlike the JSON backend this prints int64 fields (how_many) as strings,
-// per the proto3 JSON mapping
+// Converts a message to JSON the way the JSON backend does it (int64 fields
+// like how_many as numbers, not as strings per the proto3 JSON mapping), or
+// throws if protobuf refuses to convert it.
+static std::string
+_messageToJson(const google::protobuf::Message &message)
+{
+	google::protobuf::util::JsonPrintOptions options;
+	std::string output;
+
+	options.unquote_int64_if_possible = true;
+
+	auto status = google::protobuf::util::MessageToJsonString(message, &output, options);
+	if (!status.ok())
+		elog(ERROR, "could not convert parse result to JSON: %s", status.ToString().c_str());
+
+	return output;
+}
+
 extern "C" char *
 pg_query_plpgsql_to_json(const void *funcs)
 {
 	pg_query::PLpgSQLParseResult *result = _plpgsqlResult(funcs);
-	std::string output;
+	char	   *json = NULL;
 
-	google::protobuf::util::MessageToJsonString(*result, &output);
+	PG_TRY();
+	{
+		json = pstrdup(_messageToJson(*result).c_str());
+	}
+	PG_CATCH();
+	{
+		delete result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
 	delete result;
-	return pstrdup(output.c_str());
+	return json;
 }
 
 extern "C" PgQueryProtobuf
@@ -408,9 +434,7 @@ pg_query_nodes_to_json(const void *obj)
 			_outRawStmt(parse_result->add_stmts(), (const RawStmt*) lfirst(lc));
 		}
 
-		std::string output;
-		google::protobuf::util::MessageToJsonString(*parse_result, &output);
-		result = pstrdup(output.c_str());
+		result = pstrdup(_messageToJson(*parse_result).c_str());
 	}
 	PG_CATCH();
 	{
