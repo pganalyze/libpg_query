@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+#
+# Runs the patched gen_node_support.pl (see patches/16_gen_node_support_hook.patch)
+# from an already-patched Postgres source tree, with scripts/node_support/hook.pl
+# as its hook, to generate:
+#
+#   src/include/pg_query_fingerprint_defs.c
+#   src/include/pg_query_fingerprint_conds.c
+#   src/include/pg_query_enum_defs.c
+#   src/include/pg_query_outfuncs_defs.c
+#   src/include/pg_query_outfuncs_conds.c
+#   src/include/pg_query_outfuncs_plpgsql_defs.c
+#   src/include/pg_query_readfuncs_defs.c
+#   src/include/pg_query_readfuncs_conds.c
+#   src/include/pg_query_scan_defs.c
+#   protobuf/pg_query.proto
+#   pg_query_scan_tokens.h
+#   srcdata/*.json
+#
+# Usage: ./scripts/generate_node_support.sh <postgres_source_dir>
+#
+# This is normally invoked via "make node_support", which ensures the patched
+# source tree exists in tmp/postgres first.
+
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+	echo "Usage: $0 <postgres_source_dir>" >&2
+	exit 1
+fi
+
+pgsrc=$(cd "$1" && pwd)
+here=$(cd "$(dirname "$0")/.." && pwd)
+
+gen=$pgsrc/src/backend/nodes/gen_node_support.pl
+incdir=$pgsrc/src/include
+
+if [ ! -f "$gen" ]; then
+	echo "error: $gen not found" >&2
+	exit 1
+fi
+
+if ! grep -q 'hook-extra-input' "$gen"; then
+	echo "error: $gen does not support the --hook / --hook-extra-input options" >&2
+	echo "       (is patches/16_gen_node_support_hook.patch applied?)" >&2
+	exit 1
+fi
+
+# PL/pgSQL's structs are not nodes and live outside src/include, so they are
+# parsed via --hook-extra-input (see LibpgQuery::NodeSupport::Plpgsql)
+plpgsql_h=$pgsrc/src/pl/plpgsql/src/plpgsql.h
+
+# Extract @all_input_files (the node headers, in the exact order the
+# generator asserts) from the generator script itself, since the list
+# changes between Postgres versions.
+headers=()
+while IFS= read -r h; do headers+=("$incdir/$h"); done < <(perl -ne '
+	$in = 1 if /\@all_input_files\s*=\s*qw\(/;
+	next unless $in;
+	$in = 0, last if /^\s*\)\s*;/;
+	while (/([\w\/]+\.h)/g) { print "$1\n"; }
+' "$gen")
+
+if [ ${#headers[@]} -eq 0 ]; then
+	echo "error: could not extract input file list from $gen" >&2
+	exit 1
+fi
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+(cd "$pgsrc/src/backend/nodes" && perl "$gen" \
+	--outdir "$tmp" \
+	--hook "$here/scripts/node_support/hook.pl" \
+	--hook-outdir "$tmp" \
+	--hook-extra-input "$plpgsql_h" \
+	"${headers[@]}")
+
+# The extra input must not change any of the generator's own output
+# (nodetags.h in particular, whose numbering is ABI)
+mkdir "$tmp/plain"
+(cd "$pgsrc/src/backend/nodes" && perl "$gen" --outdir "$tmp/plain" "${headers[@]}")
+for f in "$tmp"/plain/*; do
+	cmp -s "$f" "$tmp/$(basename "$f")" || {
+		echo "error: $(basename "$f") differs when --hook-extra-input is passed" >&2
+		exit 1
+	}
+done
+
+for f in pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c \
+	pg_query_enum_defs.c pg_query_outfuncs_defs.c pg_query_outfuncs_conds.c \
+	pg_query_outfuncs_plpgsql_defs.c \
+	pg_query_readfuncs_defs.c pg_query_readfuncs_conds.c pg_query_scan_defs.c; do
+	cp "$tmp/$f" "$here/src/include/$f"
+done
+cp "$tmp/pg_query.proto" "$here/protobuf/pg_query.proto"
+cp "$tmp/pg_query_scan_tokens.h" "$here/pg_query_scan_tokens.h"
+for f in nodetypes all_known_enums struct_defs enum_defs typedefs; do
+	cp "$tmp/$f.json" "$here/srcdata/$f.json"
+done
+
+echo "Generated src/include/pg_query_*_{defs,conds}.c, protobuf/pg_query.proto, pg_query_scan_tokens.h and srcdata/*.json"

@@ -20,6 +20,8 @@ extern "C"
 #include "nodes/value.h"
 #include "utils/datum.h"
 #include "miscadmin.h"
+
+#include "plpgsql.h"
 }
 
 #define OUT_TYPE(typename, typename_c) pg_query::typename*
@@ -232,6 +234,147 @@ _outNode(pg_query::Node* out, const void *obj)
 	}
 }
 
+/*
+ * PL/pgSQL parse trees
+ *
+ * The generated pg_query_outfuncs_plpgsql_defs.c uses the WRITE_*_FIELD macros
+ * above plus the following, for the things PL/pgSQL structs have and parse
+ * nodes don't (see the plpgsql section of scripts/node_support/overrides.pl).
+ */
+
+/* dno of a referenced variable, or -1 if there is none */
+#define PLPGSQL_DATUM_DNO(d) \
+	((d) != NULL ? ((const PLpgSQL_datum *) (d))->dno : -1)
+
+#define OUT_PLPGSQL_NODE(wrapper, typename, fldname) \
+	{ \
+		pg_query::typename *__n = new pg_query::typename(); \
+		out->set_allocated_##fldname(__n); \
+		_out##typename(__n, (const typename *) node); \
+	}
+
+#define WRITE_PLPGSQL_DATUM_REF_FIELD(msgtype, outname, outname_json, fldname) \
+	out->set_##outname(PLPGSQL_DATUM_DNO(node->fldname));
+
+#define WRITE_PLPGSQL_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *lc; \
+		foreach(lc, node->fldname) \
+		{ \
+			_out##elemtype(out->add_##outname(), (const elemtype *) lfirst(lc)); \
+		} \
+	}
+
+#define WRITE_PLPGSQL_PTR_ARRAY_FIELD(msgtype, elemtype, outname, outname_json, fldname, countfld) \
+	for (int __i = 0; __i < node->countfld; __i++) \
+		_out##elemtype(out->add_##outname(), (const elemtype *) node->fldname[__i]);
+
+#define WRITE_PLPGSQL_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, countfld) \
+	for (int __i = 0; __i < node->countfld; __i++) \
+		out->add_##outname(node->fldname[__i]);
+
+#define WRITE_PLPGSQL_LINKED_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname, nextfld) \
+	for (const elemtype *__e = node->fldname; __e != NULL; __e = __e->nextfld) \
+		_out##elemtype(out->add_##outname(), __e);
+
+#define WRITE_PLPGSQL_CUSTOM_FIELD(msgtype, outname, outname_json, fldname) \
+	_out##msgtype##_##fldname(out, node);
+
+/* PLpgSQL_row.fieldnames[] / varnos[], zipped into a list of PLpgSQL_row_field */
+static void
+_outPLpgSQL_row_fieldnames(pg_query::PLpgSQL_row *out, const PLpgSQL_row *node)
+{
+	for (int i = 0; i < node->nfields; i++)
+	{
+		pg_query::PLpgSQL_row_field *field = out->add_fields();
+
+		if (node->fieldnames[i] != NULL)
+			field->set_name(node->fieldnames[i]);
+		field->set_varno(node->varnos[i]);
+	}
+}
+
+#include "pg_query_outfuncs_plpgsql_defs.c"
+
+static pg_query::PLpgSQLParseResult *
+_plpgsqlResult(const void *funcs)
+{
+	pg_query::PLpgSQLParseResult *result = new pg_query::PLpgSQLParseResult();
+	const ListCell *lc;
+
+	PG_TRY();
+	{
+		result->set_version(PG_VERSION_NUM);
+		foreach(lc, (const List *) funcs)
+		{
+			_outPLpgSQL_function(result->add_functions(), (const PLpgSQL_function *) lfirst(lc));
+		}
+	}
+	PG_CATCH();
+	{
+		delete result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	return result;
+}
+
+extern "C" PgQueryProtobuf
+pg_query_plpgsql_to_protobuf(const void *funcs)
+{
+	PgQueryProtobuf protobuf;
+	pg_query::PLpgSQLParseResult *result = _plpgsqlResult(funcs);
+	std::string output;
+
+	result->SerializeToString(&output);
+	protobuf.data = (char*) calloc(output.size(), sizeof(char));
+	memcpy(protobuf.data, output.data(), output.size());
+	protobuf.len = output.size();
+
+	delete result;
+	return protobuf;
+}
+
+// Converts a message to JSON the way the JSON backend does it (int64 fields
+// like how_many as numbers, not as strings per the proto3 JSON mapping), or
+// throws if protobuf refuses to convert it.
+static std::string
+_messageToJson(const google::protobuf::Message &message)
+{
+	google::protobuf::util::JsonPrintOptions options;
+	std::string output;
+
+	options.unquote_int64_if_possible = true;
+
+	auto status = google::protobuf::util::MessageToJsonString(message, &output, options);
+	if (!status.ok())
+		elog(ERROR, "could not convert parse result to JSON: %s", status.ToString().c_str());
+
+	return output;
+}
+
+extern "C" char *
+pg_query_plpgsql_to_json(const void *funcs)
+{
+	pg_query::PLpgSQLParseResult *result = _plpgsqlResult(funcs);
+	char	   *json = NULL;
+
+	PG_TRY();
+	{
+		json = pstrdup(_messageToJson(*result).c_str());
+	}
+	PG_CATCH();
+	{
+		delete result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	delete result;
+	return json;
+}
+
 extern "C" PgQueryProtobuf
 pg_query_nodes_to_protobuf(const void *obj)
 {
@@ -291,9 +434,7 @@ pg_query_nodes_to_json(const void *obj)
 			_outRawStmt(parse_result->add_stmts(), (const RawStmt*) lfirst(lc));
 		}
 
-		std::string output;
-		google::protobuf::util::MessageToJsonString(*parse_result, &output);
-		result = pstrdup(output.c_str());
+		result = pstrdup(_messageToJson(*parse_result).c_str());
 	}
 	PG_CATCH();
 	{

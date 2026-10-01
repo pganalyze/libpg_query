@@ -25,20 +25,21 @@ jobs:
       id: cache-protobuf
       uses: actions/cache@v4
       with:
-        path: protobuf-25.1
-        key: ${{ runner.os }}-${{ matrix.compiler }}-protobuf-25.1
+        path: protobuf-36.2
+        key: ${{ runner.os }}-${{ matrix.compiler }}-protobuf-36.2
+    # Must match vendor/upb/VERSION (see PROTOC_VERSION in the Makefile)
     - name: Build protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp' && steps.cache-protobuf.outputs.cache-hit != 'true'
       run: |
-        git clone --depth 1 --branch v25.1 https://github.com/protocolbuffers/protobuf.git protobuf-25.1
-        cd protobuf-25.1
+        git clone --depth 1 --branch v36.2 https://github.com/protocolbuffers/protobuf.git protobuf-36.2
+        cd protobuf-36.2
         git submodule update --init --recursive
-        cmake .
+        cmake . -Dprotobuf_BUILD_TESTS=OFF
         cmake --build . --parallel 10
     - name: Install protobuf library
       if: matrix.protobuf_lib == 'protobuf-cpp'
       run: |
-        cd protobuf-25.1
+        cd protobuf-36.2
         sudo make install
         sudo ldconfig
     - name: Install Valgrind
@@ -83,6 +84,28 @@ jobs:
       uses: actions/checkout@v4
     - name: Build and run tests
       run: make
+  check_generated_node_support:
+    # Re-runs "make node_support" and verifies the checked-in generated files
+    # (fingerprint defs/conds, srcdata JSON, outfuncs/readfuncs/enum defs,
+    # protobuf definition, scan token defs) are unchanged, guarding against
+    # hand-edits of generated files and stale files after patch or generator
+    # script changes
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    - name: Cache Postgres source
+      uses: actions/cache@v4
+      with:
+        path: tmp/postgres
+        key: ${{ runner.os }}-node-support-postgres-${{ hashFiles('Makefile', 'patches/*.patch') }}
+    - name: Regenerate node support files
+      run: make node_support
+    - name: Check for differences
+      # git add -N makes newly created (untracked) generated files show up in the diff
+      run: |
+        git add -N src/include/ srcdata/ protobuf/pg_query.proto pg_query_scan_tokens.h
+        git diff --exit-code src/include/ srcdata/ protobuf/pg_query.proto pg_query_scan_tokens.h
   build_windows_msvc:
     runs-on: windows-latest
     strategy:

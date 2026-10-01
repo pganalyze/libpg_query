@@ -11,6 +11,8 @@
 #include "utils/datum.h"
 #include "miscadmin.h"
 
+#include "plpgsql.h"
+
 #include "pg_query_json_helper.c"
 
 #define OUT_TYPE(typename, typename_c) StringInfo
@@ -329,6 +331,126 @@ _outNode(StringInfo out, const void *obj)
 	}
 }
 
+/*
+ * PL/pgSQL parse trees
+ *
+ * The generated pg_query_outfuncs_plpgsql_defs.c uses the WRITE_*_FIELD macros
+ * above plus the following, for the things PL/pgSQL structs have and parse
+ * nodes don't (see the plpgsql section of scripts/node_support/overrides.pl).
+ */
+
+/* dno of a referenced variable, or -1 if there is none */
+#define PLPGSQL_DATUM_DNO(d) \
+	((d) != NULL ? ((const PLpgSQL_datum *) (d))->dno : -1)
+
+/* Dispatch case of a cmd_type / dtype switch: the concrete struct, wrapped in
+ * its type name like a parse node */
+#define OUT_PLPGSQL_NODE(wrapper, typename, fldname) \
+	{ \
+		WRITE_NODE_TYPE(CppAsString(typename)); \
+		_out##typename(out, (const typename *) node); \
+		removeTrailingDelimiter(out); \
+		appendStringInfoString(out, "},"); \
+	}
+
+#define WRITE_PLPGSQL_DATUM_REF_FIELD(msgtype, outname, outname_json, fldname) \
+	if (PLPGSQL_DATUM_DNO(node->fldname) != 0) { \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":%d,", PLPGSQL_DATUM_DNO(node->fldname)); \
+	}
+
+/* List of elemtype structs (or of a dispatch wrapper type, in which case each
+ * element gets its type name wrapper) */
+#define WRITE_PLPGSQL_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *lc; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		foreach(lc, node->fldname) { \
+			appendStringInfoChar(out, '{'); \
+			_out##elemtype(out, (const elemtype *) lfirst(lc)); \
+			removeTrailingDelimiter(out); \
+			appendStringInfoChar(out, '}'); \
+			if (lnext(node->fldname, lc)) \
+				appendStringInfoChar(out, ','); \
+		} \
+		appendStringInfoString(out, "],"); \
+	}
+
+#define WRITE_PLPGSQL_PTR_ARRAY_FIELD(msgtype, elemtype, outname, outname_json, fldname, countfld) \
+	if (node->countfld > 0) { \
+		int i; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (i = 0; i < node->countfld; i++) { \
+			appendStringInfoChar(out, '{'); \
+			_out##elemtype(out, (const elemtype *) node->fldname[i]); \
+			removeTrailingDelimiter(out); \
+			appendStringInfoChar(out, '}'); \
+			if (i + 1 < node->countfld) \
+				appendStringInfoChar(out, ','); \
+		} \
+		appendStringInfoString(out, "],"); \
+	}
+
+#define WRITE_PLPGSQL_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, countfld) \
+	if (node->countfld > 0) { \
+		int i; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (i = 0; i < node->countfld; i++) { \
+			appendStringInfo(out, "%d", node->fldname[i]); \
+			if (i + 1 < node->countfld) \
+				appendStringInfoChar(out, ','); \
+		} \
+		appendStringInfoString(out, "],"); \
+	}
+
+#define WRITE_PLPGSQL_LINKED_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname, nextfld) \
+	if (node->fldname != NULL) { \
+		const elemtype *e; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (e = node->fldname; e != NULL; e = e->nextfld) { \
+			appendStringInfoChar(out, '{'); \
+			_out##elemtype(out, e); \
+			removeTrailingDelimiter(out); \
+			appendStringInfoChar(out, '}'); \
+			if (e->nextfld != NULL) \
+				appendStringInfoChar(out, ','); \
+		} \
+		appendStringInfoString(out, "],"); \
+	}
+
+#define WRITE_PLPGSQL_CUSTOM_FIELD(msgtype, outname, outname_json, fldname) \
+	_out##msgtype##_##fldname(out, node);
+
+/* PLpgSQL_row.fieldnames[] / varnos[], zipped into a list of PLpgSQL_row_field */
+static void
+_outPLpgSQL_row_fieldnames(StringInfo out, const PLpgSQL_row *node)
+{
+	int			i;
+
+	if (node->nfields <= 0)
+		return;
+
+	appendStringInfoString(out, "\"fields\":[");
+	for (i = 0; i < node->nfields; i++)
+	{
+		appendStringInfoChar(out, '{');
+		if (node->fieldnames[i] != NULL && node->fieldnames[i][0] != '\0')
+		{
+			appendStringInfoString(out, "\"name\":");
+			_outToken(out, node->fieldnames[i]);
+			appendStringInfoChar(out, ',');
+		}
+		if (node->varnos[i] != 0)
+			appendStringInfo(out, "\"varno\":%d,", node->varnos[i]);
+		removeTrailingDelimiter(out);
+		appendStringInfoChar(out, '}');
+		if (i + 1 < node->nfields)
+			appendStringInfoChar(out, ',');
+	}
+	appendStringInfoString(out, "],");
+}
+
+#include "pg_query_outfuncs_plpgsql_defs.c"
+
 char *
 pg_query_node_to_json(const void *obj)
 {
@@ -373,6 +495,32 @@ pg_query_nodes_to_json(const void *obj)
 		appendStringInfoChar(&out, ']');
 		appendStringInfoString(&out, "}");
 	}
+
+	return out.data;
+}
+
+char *
+pg_query_plpgsql_to_json(const void *funcs)
+{
+	StringInfoData out;
+	const ListCell *lc;
+
+	initStringInfo(&out);
+
+	appendStringInfo(&out, "{\"version\":%d,\"functions\":[", PG_VERSION_NUM);
+
+	foreach(lc, (const List *) funcs)
+	{
+		appendStringInfoChar(&out, '{');
+		_outPLpgSQL_function(&out, (const PLpgSQL_function *) lfirst(lc));
+		removeTrailingDelimiter(&out);
+		appendStringInfoChar(&out, '}');
+
+		if (lnext((const List *) funcs, lc))
+			appendStringInfoChar(&out, ',');
+	}
+
+	appendStringInfoString(&out, "]}");
 
 	return out.data;
 }

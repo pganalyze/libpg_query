@@ -10,8 +10,10 @@ PGDIRZIP = $(root_dir)/tmp/postgres.zip
 PG_VERSION = 18.6
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 180006
-PROTOC_VERSION = 25.1
 UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
+# The experimental C++ backend (USE_PROTOBUF_CPP=1) uses the same protobuf
+# release as the vendored upb runtime, so one protoc install covers both
+PROTOC_VERSION := $(UPB_PROTOC_VERSION)
 
 VERSION = 18.1.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
@@ -118,7 +120,7 @@ clean:
 	-@ $(RM) -rf {test,examples,benchmark}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2) $(PGDIRZIP)
 
-.PHONY: all clean build build_shared extract_source examples test benchmark install
+.PHONY: all clean build build_shared extract_source node_support examples test benchmark install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -138,6 +140,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/13_exprlocation_check_stack_depth.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/14_avoid_quadratic_memory_dotted_names.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/15_node_string_constant_locations.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/16_gen_node_support_hook.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -150,7 +153,7 @@ $(PGDIR):
 	# Add pg_config.h overrides
 	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
 	# Only define strlcpy when needed
-	sed -i "" '$(shell echo 's/\#include "c.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/')' $(PGDIR)/src/port/strlcpy.c
+	perl -pi -e 's/#include "c\.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/' $(PGDIR)/src/port/strlcpy.c
 	echo "#endif // HAVE_DECL_STRLCPY == 0" >> $(PGDIR)/src/port/strlcpy.c
 	# Define symbols needed by elog.c that are commonly defined by win32/signal.c
 	echo "#ifdef WIN32" >> $(PGDIR)/src/backend/utils/error/elog.c
@@ -158,6 +161,11 @@ $(PGDIR):
 	echo "int pg_signal_mask;" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "void pgwin32_dispatch_queued_signals(void) {}" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "#endif" >> $(PGDIR)/src/backend/utils/error/elog.c
+
+# Regenerates the node support files (fingerprint funcs, outfuncs/readfuncs/enum
+# defs, protobuf definition and srcdata JSON) from the patched Postgres source
+node_support: $(PGDIR)
+	./scripts/generate_node_support.sh $(PGDIR)
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
@@ -176,11 +184,11 @@ extract_source: $(PGDIR)
 	echo "#endif /* __clang__ */" >> ./src/postgres/include/pg_config_os.h
 	echo "#endif" >> ./src/postgres/include/pg_config_os.h
 	# Adjust version string to ignore differences in build environments
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
+	perl -pi -e 's/#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) (libpg_query)"/' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/')' pg_query.h
+	perl -pi -e 's/#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	rm -f ./test/sql/plpgsql_regress/*.sql
@@ -241,7 +249,7 @@ benchmark/bench_protobuf: benchmark/bench_protobuf.c $(ARLIB)
 benchmark/microbench_protobuf: benchmark/microbench_protobuf.c $(ARLIB)
 	$(CC) $(BENCHMARK_CFLAGS) -o $@ benchmark/microbench_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
-EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
+EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql examples/simple_plpgsql_protobuf
 examples: $(EXAMPLES)
 	examples/simple
 	examples/scan
@@ -249,6 +257,7 @@ examples: $(EXAMPLES)
 	examples/simple_error
 	examples/normalize_error
 	examples/simple_plpgsql
+	examples/simple_plpgsql_protobuf
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple.c $(ARLIB) $(TEST_LDFLAGS)
@@ -268,7 +277,10 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
+examples/simple_plpgsql_protobuf: examples/simple_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
+
+TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/parse_plpgsql_protobuf test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -287,6 +299,7 @@ endif
 	$(VALGRIND_MEMCHECK) test/parse_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf_opts || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse_plpgsql_protobuf || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/split || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/stack_depth || (cat test/valgrind.log && false)
@@ -312,6 +325,7 @@ endif
 	test/parse_opts
 	test/parse_protobuf
 	test/parse_protobuf_opts
+	test/parse_plpgsql_protobuf
 	test/scan
 	test/split
 	test/stack_depth
@@ -369,6 +383,9 @@ test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/parse_plpgsql_protobuf: test/parse_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)

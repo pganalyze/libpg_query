@@ -1,142 +1,170 @@
 [
-  {
-    "new_type_name": "AclMode",
-    "source_type": "uint64",
-    "comment": "/*\n * Grantable rights are encoded so that we can OR them together in a bitmask.\n * The present representation of AclItem limits us to 32 distinct rights,\n * even though AclMode is defined as uint64.  See utils/acl.h.\n *\n * Caution: changing these codes breaks stored ACLs, hence forces initdb.\n */\n"
-  },
-  {
-    "new_type_name": "DistinctExpr",
-    "source_type": "OpExpr",
-    "comment": "/*\n * DistinctExpr - expression node for \"x IS DISTINCT FROM y\"\n *\n * Except for the nodetag, this is represented identically to an OpExpr\n * referencing the \"=\" operator for x and y.\n * We use \"=\", not the more obvious \"<>\", because more datatypes have \"=\"\n * than \"<>\".  This means the executor must invert the operator result.\n * Note that the operator function won't be called at all if either input\n * is NULL, since then the result can be determined directly.\n */\n"
-  },
-  {
-    "new_type_name": "NullIfExpr",
-    "source_type": "OpExpr",
-    "comment": "/*\n * NullIfExpr - a NULLIF expression\n *\n * Like DistinctExpr, this is represented the same as an OpExpr referencing\n * the \"=\" operator for x and y.\n */\n"
-  },
-  {
-    "new_type_name": "ParseLoc",
-    "source_type": "int",
-    "comment": "/*\n * Typedef for parse location.  This is just an int, but this way\n * gen_node_support.pl knows which fields should get special treatment for\n * location values.\n *\n * -1 is used for unknown.\n */\n"
-  },
-  {
-    "new_type_name": "Selectivity",
-    "source_type": "double",
-    "comment": "/*\n * Typedefs for identifying qualifier selectivities, plan costs, and row\n * counts as such.  These are just plain \"double\"s, but declaring a variable\n * as Selectivity, Cost, or Cardinality makes the intent more obvious.\n *\n * These could have gone into plannodes.h or some such, but many files\n * depend on them...\n */\n"
-  },
-  {
-    "new_type_name": "Cost",
-    "source_type": "double",
-    "comment": null
-  },
-  {
-    "new_type_name": "Cardinality",
-    "source_type": "double",
-    "comment": null
-  },
-  {
-    "new_type_name": "ParamListInfo",
-    "source_type": "ParamListInfoData",
-    "comment": null
-  },
-  {
-    "new_type_name": "AttrNumber",
-    "source_type": "int16",
-    "comment": "/*\n * user defined attribute numbers start at 1.   -ay 2/95\n */\n"
-  },
-  {
-    "new_type_name": "Pointer",
-    "source_type": "char",
-    "comment": "/*\n * Pointer\n *\t\tVariable holding address of any memory resident object.\n *\n *\t\tXXX Pointer arithmetic is done with this, so it can't be void *\n *\t\tunder \"true\" ANSI compilers.\n */\n"
-  },
-  {
-    "new_type_name": "Index",
-    "source_type": "unsigned int",
-    "comment": "/*\n * Index\n *\t\tIndex into any memory resident array.\n *\n * Note:\n *\t\tIndices are non negative.\n */\n"
-  },
-  {
-    "new_type_name": "Offset",
-    "source_type": "signed int",
-    "comment": "/*\n * Offset\n *\t\tOffset into any memory resident array.\n *\n * Note:\n *\t\tThis differs from an Index in that an Index is always\n *\t\tnon negative, whereas Offset may be negative.\n */\n"
-  },
-  {
-    "new_type_name": "regproc",
-    "source_type": "Oid",
-    "comment": "/*\n * regproc is the type name used in the include/catalog headers, but\n * RegProcedure is the preferred name in C code.\n */\n"
-  },
-  {
-    "new_type_name": "RegProcedure",
-    "source_type": "regproc",
-    "comment": null
-  },
-  {
-    "new_type_name": "TransactionId",
-    "source_type": "uint32",
-    "comment": null
-  },
-  {
-    "new_type_name": "LocalTransactionId",
-    "source_type": "uint32",
-    "comment": null
-  },
-  {
-    "new_type_name": "SubTransactionId",
-    "source_type": "uint32",
-    "comment": null
-  },
-  {
-    "new_type_name": "MultiXactId",
-    "source_type": "TransactionId",
-    "comment": "/* MultiXactId must be equivalent to TransactionId, to fit in t_xmax */\n"
-  },
-  {
-    "new_type_name": "MultiXactOffset",
-    "source_type": "uint32",
-    "comment": null
-  },
-  {
-    "new_type_name": "CommandId",
-    "source_type": "uint32",
-    "comment": null
-  },
-  {
-    "new_type_name": "Name",
-    "source_type": "NameData",
-    "comment": "/*\n * Representation of a Name: effectively just a C string, but null-padded to\n * exactly NAMEDATALEN bytes.  The use of a struct is historical.\n */\n"
-  },
-  {
-    "new_type_name": "Datum",
-    "source_type": "uintptr_t",
-    "comment": "/*\n * A Datum contains either a value of a pass-by-value type or a pointer to a\n * value of a pass-by-reference type.  Therefore, we require:\n *\n * sizeof(Datum) == sizeof(void *) == 4 or 8\n *\n * The functions below and the analogous functions for other types should be used to\n * convert between a Datum and the appropriate C type.\n */\n"
-  },
-  {
-    "new_type_name": "Oid",
-    "source_type": "unsigned int",
-    "comment": "/*\n * Object ID is a fundamental type in Postgres.\n */\n"
-  },
-  {
-    "new_type_name": "ParallelVacuumState",
-    "source_type": "ParallelVacuumState",
-    "comment": "/* Abstract type for parallel vacuum state */\n"
-  },
-  {
-    "new_type_name": "VacAttrStatsP",
-    "source_type": "VacAttrStats",
-    "comment": "/*----------\n * ANALYZE builds one of these structs for each attribute (column) that is\n * to be analyzed.  The struct and subsidiary data are in anl_context,\n * so they live until the end of the ANALYZE operation.\n *\n * The type-specific typanalyze function is passed a pointer to this struct\n * and must return true to continue analysis, false to skip analysis of this\n * column.  In the true case it must set the compute_stats and minrows fields,\n * and can optionally set extra_data to pass additional info to compute_stats.\n * minrows is its request for the minimum number of sample rows to be gathered\n * (but note this request might not be honored, eg if there are fewer rows\n * than that in the table).\n *\n * The compute_stats routine will be called after sample rows have been\n * gathered.  Aside from this struct, it is passed:\n *\t\tfetchfunc: a function for accessing the column values from the\n *\t\t\t\t   sample rows\n *\t\tsamplerows: the number of sample tuples\n *\t\ttotalrows: estimated total number of rows in relation\n * The fetchfunc may be called with rownum running from 0 to samplerows-1.\n * It returns a Datum and an isNull flag.\n *\n * compute_stats should set stats_valid true if it is able to compute\n * any useful statistics.  If it does, the remainder of the struct holds\n * the information to be stored in a pg_statistic row for the column.  Be\n * careful to allocate any pointed-to data in anl_context, which will NOT\n * be CurrentMemoryContext when compute_stats is called.\n *\n * Note: all comparisons done for statistical purposes should use the\n * underlying column's collation (attcollation), except in situations\n * where a noncollatable container type contains a collatable type;\n * in that case use the type's default collation.  Be sure to record\n * the appropriate collation in stacoll.\n *----------\n */\n"
-  },
-  {
-    "new_type_name": "BlockNumber",
-    "source_type": "uint32",
-    "comment": "/*\n * BlockNumber:\n *\n * each data file (heap or index) is divided into postgres disk blocks\n * (which may be thought of as the unit of i/o -- a postgres buffer\n * contains exactly one disk block).  the blocks are numbered\n * sequentially, 0 to 0xFFFFFFFE.\n *\n * InvalidBlockNumber is the same thing as P_NEW in bufmgr.h.\n *\n * the access methods, the buffer manager and the storage manager are\n * more or less the only pieces of code that should be accessing disk\n * blocks directly.\n */\n"
-  },
-  {
-    "new_type_name": "BlockId",
-    "source_type": "BlockIdData",
-    "comment": null
-  },
-  {
-    "new_type_name": "pg_wchar",
-    "source_type": "unsigned int",
-    "comment": "/*\n * The pg_wchar type\n */\n"
-  }
+   {
+      "new_type_name" : "AclMode",
+      "source_type" : "uint64"
+   },
+   {
+      "new_type_name" : "DistinctExpr",
+      "source_type" : "OpExpr"
+   },
+   {
+      "new_type_name" : "NullIfExpr",
+      "source_type" : "OpExpr"
+   },
+   {
+      "new_type_name" : "ParseLoc",
+      "source_type" : "int"
+   },
+   {
+      "new_type_name" : "Selectivity",
+      "source_type" : "double"
+   },
+   {
+      "new_type_name" : "Cost",
+      "source_type" : "double"
+   },
+   {
+      "new_type_name" : "Cardinality",
+      "source_type" : "double"
+   },
+   {
+      "new_type_name" : "ParamListInfo",
+      "source_type" : "ParamListInfoData"
+   },
+   {
+      "new_type_name" : "AttrNumber",
+      "source_type" : "int16"
+   },
+   {
+      "new_type_name" : "Pointer",
+      "source_type" : "char"
+   },
+   {
+      "new_type_name" : "int8",
+      "source_type" : "int8_t"
+   },
+   {
+      "new_type_name" : "int16",
+      "source_type" : "int16_t"
+   },
+   {
+      "new_type_name" : "int32",
+      "source_type" : "int32_t"
+   },
+   {
+      "new_type_name" : "int64",
+      "source_type" : "int64_t"
+   },
+   {
+      "new_type_name" : "uint8",
+      "source_type" : "uint8_t"
+   },
+   {
+      "new_type_name" : "uint16",
+      "source_type" : "uint16_t"
+   },
+   {
+      "new_type_name" : "uint32",
+      "source_type" : "uint32_t"
+   },
+   {
+      "new_type_name" : "uint64",
+      "source_type" : "uint64_t"
+   },
+   {
+      "new_type_name" : "bits8",
+      "source_type" : "uint8"
+   },
+   {
+      "new_type_name" : "bits16",
+      "source_type" : "uint16"
+   },
+   {
+      "new_type_name" : "bits32",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "Index",
+      "source_type" : "unsigned int"
+   },
+   {
+      "new_type_name" : "Offset",
+      "source_type" : "signed int"
+   },
+   {
+      "new_type_name" : "float4",
+      "source_type" : "float"
+   },
+   {
+      "new_type_name" : "float8",
+      "source_type" : "double"
+   },
+   {
+      "new_type_name" : "regproc",
+      "source_type" : "Oid"
+   },
+   {
+      "new_type_name" : "RegProcedure",
+      "source_type" : "regproc"
+   },
+   {
+      "new_type_name" : "TransactionId",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "LocalTransactionId",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "SubTransactionId",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "MultiXactId",
+      "source_type" : "TransactionId"
+   },
+   {
+      "new_type_name" : "MultiXactOffset",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "CommandId",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "Name",
+      "source_type" : "NameData"
+   },
+   {
+      "new_type_name" : "Datum",
+      "source_type" : "uintptr_t"
+   },
+   {
+      "new_type_name" : "Oid",
+      "source_type" : "unsigned int"
+   },
+   {
+      "new_type_name" : "pg_int64",
+      "source_type" : "int64_t"
+   },
+   {
+      "new_type_name" : "ParallelVacuumState",
+      "source_type" : "ParallelVacuumState"
+   },
+   {
+      "new_type_name" : "VacAttrStatsP",
+      "source_type" : "VacAttrStats"
+   },
+   {
+      "new_type_name" : "BlockNumber",
+      "source_type" : "uint32"
+   },
+   {
+      "new_type_name" : "BlockId",
+      "source_type" : "BlockIdData"
+   },
+   {
+      "new_type_name" : "pg_wchar",
+      "source_type" : "unsigned int"
+   }
 ]

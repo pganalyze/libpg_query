@@ -234,7 +234,11 @@ See https://github.com/pganalyze/libpg_query/wiki/Fingerprinting for the full fi
 
 ## Usage: Parsing a PL/pgSQL function
 
-A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this:
+`pg_query_parse_plpgsql` compiles the PL/pgSQL bodies of the `CREATE FUNCTION`, `CREATE PROCEDURE` and `DO` statements in its input, and returns the resulting PL/pgSQL parse trees (one per statement) as JSON. `pg_query_parse_plpgsql_protobuf` returns the same trees as a serialized `PLpgSQLParseResult` Protobuf message (see `protobuf/pg_query.proto`), for decoding in other languages.
+
+The output mirrors the structs of Postgres' `plpgsql.h`, with the fields set at compile time (runtime state is left out). Variables live in the function's `datums` array, and everything that refers to a variable does so by its index (`dno`) into that array, e.g. `varno`, `curvar`, `found_varno`, or `target_dno` and `var_dno` for the fields that are pointers in `plpgsql.h` (`-1` means none). SQL statements and expressions are kept as their query text in `PLpgSQL_expr.query`, with the parse mode (`parseMode`, absent for `0`) to pass to `pg_query_parse_opts` / `pg_query_parse_protobuf_opts` to parse them: expressions need it, since e.g. assignments are parsed with a special grammar entry point.
+
+A [full example](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql.c) that parses a [PL/pgSQL](https://www.postgresql.org/docs/current/static/plpgsql.html) method looks like this (see [examples/simple_plpgsql_protobuf.c](https://github.com/pganalyze/libpg_query/blob/master/examples/simple_plpgsql_protobuf.c) for the Protobuf variant):
 
 ```c
 #include <pg_query.h>
@@ -271,81 +275,114 @@ $$ LANGUAGE plpgsql;");
 This will output (formatted for clarity):
 
 ```json
-[
+{
+  "version": 180006,
+  "functions": [
     {
-        "PLpgSQL_function": {
-            "datums": [
-                {
-                    "PLpgSQL_var": {
-                        "refname": "v_name",
-                        "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "varchar"
-                            }
-                        }
-                    }
-                },
-                {
-                    "PLpgSQL_var": {
-                        "refname": "v_version",
-                        "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "varchar"
-                            }
-                        }
-                    }
-                },
-                {
-                    "PLpgSQL_var": {
-                        "refname": "found",
-                        "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "bool"
-                            }
-                        }
-                    }
-                }
-            ],
-            "action": {
-                "PLpgSQL_stmt_block": {
-                    "lineno": 1,
-                    "body": [
-                        {
-                            "PLpgSQL_stmt_if": {
-                                "lineno": 1,
-                                "cond": {
-                                    "PLpgSQL_expr": {
-                                        "query": "v_version IS NULL",
-                                        "parseMode": 2
-                                    }
-                                },
-                                "then_body": [
-                                    {
-                                        "PLpgSQL_stmt_return": {
-                                            "lineno": 1
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "PLpgSQL_stmt_return": {
-                                "lineno": 1,
-                                "expr": {
-                                    "PLpgSQL_expr": {
-                                        "query": "v_name || '/' || v_version",
-                                        "parseMode": 2
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
+      "fn_signature": "plpgsql_function",
+      "fn_is_trigger": "PLPGSQL_NOT_TRIGGER",
+      "fn_rettype": 1043,
+      "fn_rettyplen": -1,
+      "fn_prokind": "f",
+      "fn_argvarnos": [0, 1],
+      "out_param_varno": -1,
+      "found_varno": 2,
+      "resolve_option": "PLPGSQL_RESOLVE_ERROR",
+      "datums": [
+        {
+          "PLpgSQL_var": {
+            "refname": "v_name",
+            "datatype": {
+              "typname": "varchar",
+              "typoid": 1043,
+              "ttype": "PLPGSQL_TTYPE_SCALAR",
+              "typlen": -1,
+              "typtype": "b",
+              "collation": 100,
+              "atttypmod": -1
+            },
+            "promise": "PLPGSQL_PROMISE_NONE"
+          }
+        },
+        {
+          "PLpgSQL_var": {
+            "dno": 1,
+            "refname": "v_version",
+            "datatype": {
+              "typname": "varchar",
+              "typoid": 1043,
+              "ttype": "PLPGSQL_TTYPE_SCALAR",
+              "typlen": -1,
+              "typtype": "b",
+              "collation": 100,
+              "atttypmod": -1
+            },
+            "promise": "PLPGSQL_PROMISE_NONE"
+          }
+        },
+        {
+          "PLpgSQL_var": {
+            "dno": 2,
+            "refname": "found",
+            "datatype": {
+              "typname": "bool",
+              "typoid": 16,
+              "ttype": "PLPGSQL_TTYPE_SCALAR",
+              "typlen": 1,
+              "typbyval": true,
+              "typtype": "b",
+              "atttypmod": -1
+            },
+            "promise": "PLPGSQL_PROMISE_NONE"
+          }
         }
+      ],
+      "action": {
+        "lineno": 1,
+        "stmtid": 4,
+        "body": [
+          {
+            "PLpgSQL_stmt_if": {
+              "lineno": 1,
+              "stmtid": 2,
+              "cond": {
+                "query": "v_version IS NULL",
+                "parseMode": 2,
+                "target_param": -1
+              },
+              "then_body": [
+                {
+                  "PLpgSQL_stmt_return": {
+                    "lineno": 1,
+                    "stmtid": 1
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PLpgSQL_stmt_return": {
+              "lineno": 1,
+              "stmtid": 3,
+              "expr": {
+                "query": "v_name || '/' || v_version",
+                "parseMode": 2,
+                "target_param": -1
+              },
+              "retvarno": -1
+            }
+          }
+        ]
+      },
+      "nstatements": 4
     }
-]
+  ]
+}
 ```
+
+Like for parse trees, zero and false values are omitted, so e.g. the first `RETURN v_name;` above returns variable `0` (`retvarno` is absent), while the final `RETURN` of an expression has `retvarno: -1`. Fields that only reflect the catalog libpg_query compiles against (type OIDs, `fn_signature`, ...) are included for completeness but carry no information about the function.
+
+The fields and their types are listed in `srcdata/struct_defs.json` (under `../pl/plpgsql/src/plpgsql`), and in the `PLpgSQL_*` messages of `protobuf/pg_query.proto`.
 
 ## Versions
 

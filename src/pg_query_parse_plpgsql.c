@@ -2,8 +2,10 @@
 
 #include "pg_query.h"
 #include "pg_query_internal.h"
-#include "pg_query_json_plpgsql.h"
+#include "pg_query_outfuncs.h"
 #include "pg_query_proctup_attrs.h"
+
+#include "plpgsql.h"
 
 #include <assert.h>
 
@@ -603,81 +605,174 @@ static bool stmts_walker(Node *node, plStmts *state)
 	return result;
 }
 
-PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
-{
-	MemoryContext ctx = NULL;
-	PgQueryPlpgsqlParseResult result = {0};
-	PgQueryInternalParsetreeAndError parse_result;
-	plStmts statements;
-	size_t i;
+typedef struct {
+	List	   *funcs;			/* PLpgSQL_function *, one per CREATE FUNCTION / DO statement */
+	PgQueryError *error;
+} PgQueryInternalPlpgsqlFuncsAndError;
 
-	ctx = pg_query_enter_memory_context();
+/*
+ * Frees compiled functions. This is required even though we are inside a
+ * libpg_query memory context: on success, plpgsql_compile_callback reparents
+ * the function's memory context to CacheMemoryContext (which libpg_query never
+ * creates, so it becomes a root context), and that outlives
+ * pg_query_exit_memory_context().
+ */
+static void
+free_plpgsql_funcs(List *funcs)
+{
+	ListCell   *lc;
+
+	foreach(lc, funcs)
+		plpgsql_free_function_memory((PLpgSQL_function *) lfirst(lc));
+}
+
+/*
+ * Compiles the PL/pgSQL function bodies in the input. The caller must free the
+ * returned functions with free_plpgsql_funcs(), after producing its output
+ * (the protobuf output references the functions' strings directly).
+ */
+static PgQueryInternalPlpgsqlFuncsAndError
+pg_query_parse_plpgsql_internal(const char *input)
+{
+	PgQueryInternalPlpgsqlFuncsAndError result = {0};
+	PgQueryInternalParsetreeAndError parse_result;
+	plStmts		statements;
+	int			i;
 
 	parse_result = pg_query_raw_parse(input, PG_QUERY_PARSE_DEFAULT);
-	result.error = parse_result.error;
-	if (result.error != NULL) {
-		pg_query_exit_memory_context(ctx);
+	free(parse_result.stderr_buffer);
+	if (parse_result.error != NULL)
+	{
+		result.error = parse_result.error;
 		return result;
 	}
 
 	statements.stmts_buf_size = 100;
-	statements.stmts = (Node**) palloc(statements.stmts_buf_size * sizeof(Node*));
+	statements.stmts = (Node **) palloc(statements.stmts_buf_size * sizeof(Node *));
 	statements.stmts_count = 0;
 
-	stmts_walker((Node*) parse_result.tree, &statements);
+	stmts_walker((Node *) parse_result.tree, &statements);
 
-	if (statements.stmts_count == 0) {
-		result.plpgsql_funcs = strdup("[]");
-		free(parse_result.stderr_buffer);
-		pg_query_exit_memory_context(ctx);
-		return result;
-	}
-
-	result.plpgsql_funcs = strdup("[\n");
-
-	for (i = 0; i < statements.stmts_count; i++) {
+	for (i = 0; i < statements.stmts_count; i++)
+	{
 		PgQueryInternalPlpgsqlFuncAndError func_and_error;
 
 		func_and_error = pg_query_raw_parse_plpgsql(statements.stmts[i]);
 
-		// These are all malloc-ed and will survive exiting the memory context, the caller is responsible to free them now
-		result.error = func_and_error.error;
-
-		if (result.error != NULL) {
-			free(parse_result.stderr_buffer);
-			pg_query_exit_memory_context(ctx);
+		if (func_and_error.error != NULL)
+		{
+			free_plpgsql_funcs(result.funcs);
+			result.funcs = NIL;
+			result.error = func_and_error.error;
 			return result;
 		}
 
-		if (func_and_error.func != NULL) {
-			char *func_json;
-			char *new_out;
-			size_t new_out_len;
-
-			func_json = plpgsqlToJSON(func_and_error.func);
-			plpgsql_free_function_memory(func_and_error.func);
-
-			new_out_len = strlen(result.plpgsql_funcs) + strlen(func_json) + 3;
-			new_out = malloc(new_out_len);
-			int n = snprintf(new_out, new_out_len, "%s%s,\n", result.plpgsql_funcs, func_json);
-			if (n < 0 || n >= new_out_len) {
-				PgQueryError* error = malloc(sizeof(PgQueryError));
-				error->message = strdup("Failed to output PL/pgSQL functions due to snprintf failure");
-				result.error = error;
-			} else {
-				free(result.plpgsql_funcs);
-				result.plpgsql_funcs = new_out;
-			}
-
-			pfree(func_json);
-		}
+		if (func_and_error.func != NULL)
+			result.funcs = lappend(result.funcs, func_and_error.func);
 	}
 
-	result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 2] = '\n';
-	result.plpgsql_funcs[strlen(result.plpgsql_funcs) - 1] = ']';
+	return result;
+}
 
-	free(parse_result.stderr_buffer);
+/* Turns the error caught by PG_CATCH into a PgQueryError (must be called inside PG_CATCH) */
+static PgQueryError *
+pg_query_plpgsql_catch_error(MemoryContext ctx)
+{
+	ErrorData  *error_data;
+	PgQueryError *error;
+
+	MemoryContextSwitchTo(ctx);
+	error_data = CopyErrorData();
+
+	// Note: This is intentionally malloc so exiting the memory context doesn't free this
+	error = malloc(sizeof(PgQueryError));
+	error->message   = strdup(error_data->message);
+	error->filename  = strdup(error_data->filename);
+	error->funcname  = strdup(error_data->funcname);
+	error->context   = NULL;
+	error->lineno    = error_data->lineno;
+	error->cursorpos = error_data->cursorpos;
+
+	FlushErrorState();
+
+	return error;
+}
+
+/*
+ * Shared control flow of pg_query_parse_plpgsql() and
+ * pg_query_parse_plpgsql_protobuf(): compiles the functions in the input and
+ * passes them to output_func, which stores its (malloc-ed) result in out.
+ *
+ * Returns the error, if any. It is malloc-ed and survives exiting the memory
+ * context, so the caller is responsible for freeing it.
+ */
+static PgQueryError *
+pg_query_parse_plpgsql_with_output(const char *input,
+								   void (*output_func) (List *funcs, void *out),
+								   void *out)
+{
+	MemoryContext ctx;
+	PgQueryInternalPlpgsqlFuncsAndError funcs_and_error;
+	PgQueryError *error;
+
+	ctx = pg_query_enter_memory_context();
+
+	funcs_and_error = pg_query_parse_plpgsql_internal(input);
+	error = funcs_and_error.error;
+
+	if (error == NULL)
+	{
+		/*
+		 * Serializing walks the trees recursively and may throw (e.g. "stack
+		 * depth limit exceeded"), so it needs its own error handling.
+		 */
+		PG_TRY();
+		{
+			output_func(funcs_and_error.funcs, out);
+		}
+		PG_CATCH();
+		{
+			error = pg_query_plpgsql_catch_error(ctx);
+		}
+		PG_END_TRY();
+
+		free_plpgsql_funcs(funcs_and_error.funcs);
+	}
+
 	pg_query_exit_memory_context(ctx);
+
+	return error;
+}
+
+static void
+pg_query_plpgsql_output_json(List *funcs, void *out)
+{
+	char	   *json = pg_query_plpgsql_to_json(funcs);
+
+	*(char **) out = strdup(json);
+	pfree(json);
+}
+
+static void
+pg_query_plpgsql_output_protobuf(List *funcs, void *out)
+{
+	*(PgQueryProtobuf *) out = pg_query_plpgsql_to_protobuf(funcs);
+}
+
+PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
+{
+	PgQueryPlpgsqlParseResult result = {0};
+
+	result.error = pg_query_parse_plpgsql_with_output(input, pg_query_plpgsql_output_json, &result.plpgsql_funcs);
+
+	return result;
+}
+
+PgQueryPlpgsqlProtobufParseResult pg_query_parse_plpgsql_protobuf(const char* input)
+{
+	PgQueryPlpgsqlProtobufParseResult result = {0};
+
+	result.error = pg_query_parse_plpgsql_with_output(input, pg_query_plpgsql_output_protobuf, &result.parse_tree);
 
 	return result;
 }
@@ -689,4 +784,13 @@ void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result)
 	}
 
 	free(result.plpgsql_funcs);
+}
+
+void pg_query_free_plpgsql_protobuf_parse_result(PgQueryPlpgsqlProtobufParseResult result)
+{
+	if (result.error) {
+		pg_query_free_error(result.error);
+	}
+
+	free(result.parse_tree.data);
 }
