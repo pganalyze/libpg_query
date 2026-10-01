@@ -144,10 +144,6 @@
             },
             {
                "c_type" : "bool",
-               "name" : "fn_retbyval"
-            },
-            {
-               "c_type" : "bool",
                "name" : "fn_retistuple"
             },
             {
@@ -1177,10 +1173,6 @@
             {
                "c_type" : "int16",
                "name" : "typlen"
-            },
-            {
-               "c_type" : "bool",
-               "name" : "typbyval"
             },
             {
                "c_type" : "char",

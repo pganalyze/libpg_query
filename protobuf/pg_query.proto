@@ -3637,26 +3637,25 @@ message PLpgSQL_function
   uint32 fn_input_collation = 4 [json_name="fn_input_collation"];
   uint32 fn_rettype = 5 [json_name="fn_rettype"];
   int32 fn_rettyplen = 6 [json_name="fn_rettyplen"];
-  bool fn_retbyval = 7 [json_name="fn_retbyval"];
-  bool fn_retistuple = 8 [json_name="fn_retistuple"];
-  bool fn_retisdomain = 9 [json_name="fn_retisdomain"];
-  bool fn_retset = 10 [json_name="fn_retset"];
-  bool fn_readonly = 11 [json_name="fn_readonly"];
-  string fn_prokind = 12 [json_name="fn_prokind"];
-  repeated int32 fn_argvarnos = 13 [json_name="fn_argvarnos"];
-  int32 out_param_varno = 14 [json_name="out_param_varno"];
-  int32 found_varno = 15 [json_name="found_varno"];
-  int32 new_varno = 16 [json_name="new_varno"];
-  int32 old_varno = 17 [json_name="old_varno"];
-  PLpgSQL_resolve_option resolve_option = 18 [json_name="resolve_option"];
-  bool print_strict_params = 19 [json_name="print_strict_params"];
-  int32 extra_warnings = 20 [json_name="extra_warnings"];
-  int32 extra_errors = 21 [json_name="extra_errors"];
-  repeated PLpgSQL_datum datums = 22 [json_name="datums"];
-  PLpgSQL_stmt_block action = 23 [json_name="action"];
-  uint32 nstatements = 24 [json_name="nstatements"];
-  bool requires_procedure_resowner = 25 [json_name="requires_procedure_resowner"];
-  bool has_exception_block = 26 [json_name="has_exception_block"];
+  bool fn_retistuple = 7 [json_name="fn_retistuple"];
+  bool fn_retisdomain = 8 [json_name="fn_retisdomain"];
+  bool fn_retset = 9 [json_name="fn_retset"];
+  bool fn_readonly = 10 [json_name="fn_readonly"];
+  string fn_prokind = 11 [json_name="fn_prokind"];
+  repeated int32 fn_argvarnos = 12 [json_name="fn_argvarnos"];
+  int32 out_param_varno = 13 [json_name="out_param_varno"];
+  int32 found_varno = 14 [json_name="found_varno"];
+  int32 new_varno = 15 [json_name="new_varno"];
+  int32 old_varno = 16 [json_name="old_varno"];
+  PLpgSQL_resolve_option resolve_option = 17 [json_name="resolve_option"];
+  bool print_strict_params = 18 [json_name="print_strict_params"];
+  int32 extra_warnings = 19 [json_name="extra_warnings"];
+  int32 extra_errors = 20 [json_name="extra_errors"];
+  repeated PLpgSQL_datum datums = 21 [json_name="datums"];
+  PLpgSQL_stmt_block action = 22 [json_name="action"];
+  uint32 nstatements = 23 [json_name="nstatements"];
+  bool requires_procedure_resowner = 24 [json_name="requires_procedure_resowner"];
+  bool has_exception_block = 25 [json_name="has_exception_block"];
 }
 
 message PLpgSQL_datum
@@ -3780,12 +3779,11 @@ message PLpgSQL_type
   uint32 typoid = 2 [json_name="typoid"];
   PLpgSQL_type_type ttype = 3 [json_name="ttype"];
   int32 typlen = 4 [json_name="typlen"];
-  bool typbyval = 5 [json_name="typbyval"];
-  string typtype = 6 [json_name="typtype"];
-  uint32 collation = 7 [json_name="collation"];
-  bool typisarray = 8 [json_name="typisarray"];
-  int32 atttypmod = 9 [json_name="atttypmod"];
-  TypeName origtypname = 10 [json_name="origtypname"];
+  string typtype = 5 [json_name="typtype"];
+  uint32 collation = 6 [json_name="collation"];
+  bool typisarray = 7 [json_name="typisarray"];
+  int32 atttypmod = 8 [json_name="atttypmod"];
+  TypeName origtypname = 9 [json_name="origtypname"];
 }
 
 message PLpgSQL_stmt_assign

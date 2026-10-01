@@ -307,14 +307,18 @@ EOT
 		# Emit everything the compiler sets, including values that only
 		# reflect the mock catalog libpg_query compiles against (type OIDs,
 		# fn_signature is always "0", ...). Skip only runtime/executor state,
-		# back pointers, and the dispatch tag (which the oneof wrapper
-		# conveys, like the NodeTag of parse nodes).
+		# back pointers, the dispatch tag (which the oneof wrapper conveys,
+		# like the NodeTag of parse nodes), and the pass-by-value flags
+		# (typbyval, fn_retbyval): those come from FLOAT8PASSBYVAL, which
+		# depends on the platform (false on Windows, where libpg_query is
+		# built with a 32-bit SIZEOF_VOID_P), so the output would differ
+		# between platforms for every 8-byte type.
 		structs => {
 			PLpgSQL_function => {
 				emit => [
-					qw(fn_signature fn_oid fn_is_trigger fn_input_collation fn_rettype fn_rettyplen fn_retbyval fn_retistuple fn_retisdomain fn_retset fn_readonly fn_prokind fn_argvarnos out_param_varno found_varno new_varno old_varno resolve_option print_strict_params extra_warnings extra_errors datums action nstatements requires_procedure_resowner has_exception_block)
+					qw(fn_signature fn_oid fn_is_trigger fn_input_collation fn_rettype fn_rettyplen fn_retistuple fn_retisdomain fn_retset fn_readonly fn_prokind fn_argvarnos out_param_varno found_varno new_varno old_varno resolve_option print_strict_params extra_warnings extra_errors datums action nstatements requires_procedure_resowner has_exception_block)
 				],
-				skip => [qw(cfunc fn_cxt copiable_size cur_estate)],
+				skip => [qw(cfunc fn_cxt copiable_size cur_estate fn_retbyval)],
 			},
 			PLpgSQL_stmt_block => {
 				emit => [qw(lineno stmtid label body initvarnos exceptions)],
@@ -474,9 +478,9 @@ EOT
 			},
 			PLpgSQL_type => {
 				emit => [
-					qw(typname typoid ttype typlen typbyval typtype collation typisarray atttypmod origtypname)
+					qw(typname typoid ttype typlen typtype collation typisarray atttypmod origtypname)
 				],
-				skip => [qw(tcache tupdesc_id)],
+				skip => [qw(tcache tupdesc_id typbyval)],
 			},
 		},
 	},

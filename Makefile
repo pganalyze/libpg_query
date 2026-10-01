@@ -10,8 +10,10 @@ PGDIRZIP = $(root_dir)/tmp/postgres.zip
 PG_VERSION = 18.6
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
 PG_VERSION_NUM = 180006
-PROTOC_VERSION = 25.1
 UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
+# The experimental C++ backend (USE_PROTOBUF_CPP=1) uses the same protobuf
+# release as the vendored upb runtime, so one protoc install covers both
+PROTOC_VERSION := $(UPB_PROTOC_VERSION)
 
 VERSION = 18.1.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)

@@ -10236,37 +10236,36 @@ const upb_MiniTable pg_0query__PLpgSQLParseResult_msg_init = {
 };
 
 typedef struct {
-  upb_MiniTableField fields[26];
+  upb_MiniTableField fields[25];
   upb_MiniTableSubInternal subs[2];
 } pg_0query__PLpgSQL_0function_msg_init_Fields;
 
 static const pg_0query__PLpgSQL_0function_msg_init_Fields pg_query_PLpgSQL_function__fields = {{
-  {1, UPB_SIZE(84, 72), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
-  {2, 20, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {3, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {4, 28, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {5, 32, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {6, 36, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {1, UPB_SIZE(80, 72), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
+  {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {4, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {5, 28, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {6, 32, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {7, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
   {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
   {9, 11, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
   {10, 12, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
-  {11, 13, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
-  {12, UPB_SIZE(92, 88), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
-  {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
+  {11, 88, 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
+  {12, UPB_SIZE(36, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
+  {13, UPB_SIZE(40, 36), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {14, UPB_SIZE(44, 40), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {15, UPB_SIZE(48, 44), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {16, UPB_SIZE(52, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {17, UPB_SIZE(56, 52), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {18, UPB_SIZE(60, 56), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {19, 14, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
+  {17, UPB_SIZE(56, 52), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {18, 13, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
+  {19, UPB_SIZE(60, 56), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {20, UPB_SIZE(64, 60), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {21, UPB_SIZE(68, 64), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
-  {23, UPB_SIZE(76, 120), 64, UPB_SIZE(13, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
-  {24, UPB_SIZE(80, 68), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {21, UPB_SIZE(68, 112), 0, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
+  {22, UPB_SIZE(72, 120), 64, UPB_SIZE(13, 15), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
+  {23, UPB_SIZE(76, 64), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {24, 14, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
   {25, 15, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
-  {26, 16, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
  },
   {
   {.UPB_PRIVATE(submsg) = &pg_0query__PLpgSQL_0datum_msg_init},
@@ -10275,38 +10274,38 @@ static const pg_0query__PLpgSQL_0function_msg_init_Fields pg_query_PLpgSQL_funct
 
 const upb_MiniTable pg_0query__PLpgSQL_0function_msg_init = {
   &pg_query_PLpgSQL_function__fields.fields[0],
-  UPB_SIZE(104, 128), 26, kUpb_ExtMode_NonExtendable, 26, UPB_FASTTABLE_MASK(248), 0,
+  UPB_SIZE(96, 128), 25, kUpb_ExtMode_NonExtendable, 25, UPB_FASTTABLE_MASK(248), 0,
 #ifdef UPB_TRACING_ENABLED
   "pg_query.PLpgSQL_function",
 #endif
   UPB_FASTTABLE_INIT({
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x004800003f00000a, &upb_DecodeFast_String_Scalar_Tag1Byte},
-    {0x001400003f000010, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x001800003f000018, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x001c00003f000020, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x002000003f000028, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x002400003f000030, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x001000003f000010, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x001400003f000018, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x001800003f000020, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x001c00003f000028, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x002000003f000030, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x000900003f000038, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
     {0x000a00003f000040, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
     {0x000b00003f000048, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
     {0x000c00003f000050, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
-    {0x000d00003f000058, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
-    {0x005800003f000062, &upb_DecodeFast_String_Scalar_Tag1Byte},
-    {0x006800003f00006a, &upb_DecodeFast_Varint32_Packed_Tag1Byte},
+    {0x005800003f00005a, &upb_DecodeFast_String_Scalar_Tag1Byte},
+    {0x006800003f000062, &upb_DecodeFast_Varint32_Packed_Tag1Byte},
+    {0x002400003f000068, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x002800003f000070, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x002c00003f000078, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x003000003f000180, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
     {0x003400003f000188, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
-    {0x003800003f000190, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
-    {0x000e00003f000198, &upb_DecodeFast_Bool_Scalar_Tag2Byte},
+    {0x000d00003f000190, &upb_DecodeFast_Bool_Scalar_Tag2Byte},
+    {0x003800003f000198, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
     {0x003c00003f0001a0, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
-    {0x004000003f0001a8, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
-    {0x007000003f2701b2, &upb_DecodeFast_Message_Repeated_Tag2Byte},
-    {0x00780000002801ba, &upb_DecodeFast_Message_Scalar_Tag2Byte},
-    {0x004400003f0001c0, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
+    {0x007000003f2601aa, &upb_DecodeFast_Message_Repeated_Tag2Byte},
+    {0x00780000002701b2, &upb_DecodeFast_Message_Scalar_Tag2Byte},
+    {0x004000003f0001b8, &upb_DecodeFast_Varint32_Scalar_Tag2Byte},
+    {0x000e00003f0001c0, &upb_DecodeFast_Bool_Scalar_Tag2Byte},
     {0x000f00003f0001c8, &upb_DecodeFast_Bool_Scalar_Tag2Byte},
-    {0x001000003f0001d0, &upb_DecodeFast_Bool_Scalar_Tag2Byte},
+    {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
@@ -10714,7 +10713,7 @@ const upb_MiniTable pg_0query__PLpgSQL_0expr_msg_init = {
 };
 
 typedef struct {
-  upb_MiniTableField fields[10];
+  upb_MiniTableField fields[9];
   upb_MiniTableSubInternal subs[1];
 } pg_0query__PLpgSQL_0type_msg_init_Fields;
 
@@ -10723,12 +10722,11 @@ static const pg_0query__PLpgSQL_0type_msg_init_Fields pg_query_PLpgSQL_type__fie
   {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
   {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {5, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
-  {6, UPB_SIZE(44, 48), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
-  {7, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
-  {9, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
-  {10, UPB_SIZE(32, 64), 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
+  {5, UPB_SIZE(44, 48), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)},
+  {6, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {7, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)},
+  {8, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)},
+  {9, UPB_SIZE(32, 64), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)},
  },
   {
   {.UPB_PRIVATE(submsg) = &pg_0query__TypeName_msg_init},
@@ -10736,7 +10734,7 @@ static const pg_0query__PLpgSQL_0type_msg_init_Fields pg_query_PLpgSQL_type__fie
 
 const upb_MiniTable pg_0query__PLpgSQL_0type_msg_init = {
   &pg_query_PLpgSQL_type__fields.fields[0],
-  UPB_SIZE(56, 72), 10, kUpb_ExtMode_NonExtendable, 10, UPB_FASTTABLE_MASK(120), 0,
+  UPB_SIZE(56, 72), 9, kUpb_ExtMode_NonExtendable, 9, UPB_FASTTABLE_MASK(120), 0,
 #ifdef UPB_TRACING_ENABLED
   "pg_query.PLpgSQL_type",
 #endif
@@ -10746,12 +10744,12 @@ const upb_MiniTable pg_0query__PLpgSQL_0type_msg_init = {
     {0x000c00003f000010, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x001000003f000018, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
     {0x001400003f000020, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x000900003f000028, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
-    {0x003000003f000032, &upb_DecodeFast_String_Scalar_Tag1Byte},
-    {0x001800003f000038, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x000a00003f000040, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
-    {0x001c00003f000048, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
-    {0x00400000000f0052, &upb_DecodeFast_Message_Scalar_Tag1Byte},
+    {0x003000003f00002a, &upb_DecodeFast_String_Scalar_Tag1Byte},
+    {0x001800003f000030, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x000900003f000038, &upb_DecodeFast_Bool_Scalar_Tag1Byte},
+    {0x001c00003f000040, &upb_DecodeFast_Varint32_Scalar_Tag1Byte},
+    {0x00400000000e004a, &upb_DecodeFast_Message_Scalar_Tag1Byte},
+    {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},
     {0x0000000000000000, &_upb_FastDecoder_DecodeUnknown},

@@ -327,7 +327,6 @@ _outPLpgSQL_function(OUT_TYPE(PLpgSQL_function, PLpgSQL_function) out, const PLp
   WRITE_UINT_FIELD(PLpgSQL_function, fn_input_collation, fn_input_collation, fn_input_collation);
   WRITE_UINT_FIELD(PLpgSQL_function, fn_rettype, fn_rettype, fn_rettype);
   WRITE_INT_FIELD(PLpgSQL_function, fn_rettyplen, fn_rettyplen, fn_rettyplen);
-  WRITE_BOOL_FIELD(PLpgSQL_function, fn_retbyval, fn_retbyval, fn_retbyval);
   WRITE_BOOL_FIELD(PLpgSQL_function, fn_retistuple, fn_retistuple, fn_retistuple);
   WRITE_BOOL_FIELD(PLpgSQL_function, fn_retisdomain, fn_retisdomain, fn_retisdomain);
   WRITE_BOOL_FIELD(PLpgSQL_function, fn_retset, fn_retset, fn_retset);
@@ -553,7 +552,6 @@ _outPLpgSQL_type(OUT_TYPE(PLpgSQL_type, PLpgSQL_type) out, const PLpgSQL_type *n
   WRITE_UINT_FIELD(PLpgSQL_type, typoid, typoid, typoid);
   WRITE_ENUM_FIELD(PLpgSQL_type, PLpgSQL_type_type, ttype, ttype, ttype);
   WRITE_INT_FIELD(PLpgSQL_type, typlen, typlen, typlen);
-  WRITE_BOOL_FIELD(PLpgSQL_type, typbyval, typbyval, typbyval);
   WRITE_CHAR_FIELD(PLpgSQL_type, typtype, typtype, typtype);
   WRITE_UINT_FIELD(PLpgSQL_type, collation, collation, collation);
   WRITE_BOOL_FIELD(PLpgSQL_type, typisarray, typisarray, typisarray);
