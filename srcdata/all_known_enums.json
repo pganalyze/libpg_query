@@ -74,5 +74,16 @@
    "VacOptValue",
    "ScanDirection",
    "pg_enc",
-   "yytokentype"
+   "yytokentype",
+   "PLpgSQL_nsitem_type",
+   "PLpgSQL_label_type",
+   "PLpgSQL_datum_type",
+   "PLpgSQL_promise_type",
+   "PLpgSQL_type_type",
+   "PLpgSQL_stmt_type",
+   "PLpgSQL_getdiag_kind",
+   "PLpgSQL_raise_option_type",
+   "PLpgSQL_resolve_option",
+   "PLpgSQL_rwopt",
+   "PLpgSQL_trigtype"
 ]
