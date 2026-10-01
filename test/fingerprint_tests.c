@@ -214,13 +214,16 @@ const char* tests[] = {
 
 
   // Test normalization of random table names
-  /*"SELECT * FROM loading_books_dc786da1fead11f",
-  "",
+  "SELECT * FROM loading_books_dc786da1fead11f",
+  "a3beafd30116328d",
   "SELECT * FROM loading_books_dc786da1fead11g",
+  "a3beafd30116328d",
   "SELECT * FROM _temp__2577316832_vk95nrgo_users",
-  "",
+  "167db20b43982916",
   "SELECT * FROM _temp__2577316833_vk96nrgo_users",
-  "",*/
+  "167db20b43982916",
+  "SELECT * FROM _temp__2577316835_vk9nrgo_users",
+  "167db20b43982916",
 
   NULL // Trailing NULL to tell the test runner we're done.
 };

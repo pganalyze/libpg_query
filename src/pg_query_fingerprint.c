@@ -268,16 +268,29 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
 #include "pg_query_fingerprint_defs.c"
 
 /*
- * Remove table/schema name segements that look like random or generated
- * values. A segment is considered "randomish" if it's longer than 2 characters
- * and contains at least one digit. This handles cases like
- * "loading_books_dc786da1fead11f" (which has a random hex suffix) and
- * "_temp__2577316832_vk95nrgo_users" (which has numeric + random alphanumeric segments)
- */
-static char *
-_fingerprint_remove_randomish_segments(const char *name)
+ * Fingerprint the relation name.
+ *
+ * By default:
+ * 1. Sequences of 2 or more digits are ignored, so that queries on
+ *    date/number-suffixed tables (e.g. partitions like "orders_2024_01")
+ *    get the same fingerprint.
+ * 2. Sequences of 4 or more characters with at least one digit are also
+ *    ignored, for tables with hex suffixes or random alphanumeric segments.
+ *
+ * With PG_QUERY_FINGERPRINT_RELNAME_FULL set, the relation name is
+ * fingerprinted as-is.
+  */
+static void
+_fingerprintRelname(FingerprintContext *ctx, const char *relname)
 {
-	int len = strlen(name);
+	if (ctx->fingerprint_options & PG_QUERY_FINGERPRINT_RELNAME_FULL)
+	{
+		_fingerprintString(ctx, "relname");
+		_fingerprintString(ctx, relname);
+		return;
+	}
+
+	int len = strlen(relname);
 	char *result = palloc0((len + 1) * sizeof(char));
 	char *p = result;
 	int i = 0;
@@ -286,23 +299,31 @@ _fingerprint_remove_randomish_segments(const char *name)
 		int seg_start = i;
 
 		int digits_in_seg = 0;
-		while (i < len && name[i] != '_') {
-			if (isdigit(name[i]))
+		while (i < len && relname[i] != '_') {
+			if (isdigit(relname[i]))
 				digits_in_seg++;
 			i++;
 		}
 		// fixme: DRY
-		if (isdigit(name[i]))
+		if (isdigit(relname[i]))
 			digits_in_seg++;
 		int seg_end = i;
+		int seg_len = seg_end - seg_start;
 
-		// If we found two digits, skip this segment.
-		if (digits_in_seg >= 2)
+		int all_digits = (seg_len >= 2 && digits_in_seg == seg_len);
+		// If you want to change how to determine if a segment is "randomish",
+		// this variable is what you should change.
+		//
+		// seg_len is arbitrary, and currently based off "ft1" existing in
+		// the test suite.
+		int randomish = (seg_len >= 4 && digits_in_seg >= 1);
+
+		if (all_digits || randomish)
 			continue;
 
 		// Keep this segment
 		for (int j = seg_start; j < seg_end; j++) {
-			*p = name[j];
+			*p = relname[j];
 			p++;
 		}
 		if (i < len) {
@@ -318,34 +339,10 @@ _fingerprint_remove_randomish_segments(const char *name)
 
 	*p = '\0';
 
-	return result;
-}
-
-/*
- * Fingerprint the relation name.
- *
- * By default, sequences of 2 or more digits are ignored, so that queries
- * on date/number-suffixed tables (e.g. partitions like "orders_2024_01")
- * get the same fingerprint. With PG_QUERY_FINGERPRINT_RELNAME_FULL set,
- * the relation name is fingerprinted as-is.
- */
-static void
-_fingerprintRelname(FingerprintContext *ctx, const char *relname)
-{
-	if (ctx->fingerprint_options & PG_QUERY_FINGERPRINT_RELNAME_FULL)
-	{
-		_fingerprintString(ctx, "relname");
-		_fingerprintString(ctx, relname);
-		return;
-	}
-
-	// Normalize random-looking segments (e.g., hex IDs, random suffixes)
-	char *r = _fingerprint_remove_randomish_segments(relname);
-
 	_fingerprintString(ctx, "relname");
-	_fingerprintString(ctx, r);
+	_fingerprintString(ctx, result);
 
-	pfree(r);
+	pfree(result);
 }
 
 /*
