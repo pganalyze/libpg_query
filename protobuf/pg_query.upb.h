@@ -1114,6 +1114,186 @@ typedef struct pg_query_DropSubscriptionStmt {
   upb_Message UPB_PRIVATE(base);
 } pg_query_DropSubscriptionStmt;
 
+typedef struct pg_query_PLpgSQLParseResult {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQLParseResult;
+
+typedef struct pg_query_PLpgSQL_function {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_function;
+
+typedef struct pg_query_PLpgSQL_datum {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_datum;
+
+typedef struct pg_query_PLpgSQL_stmt_block {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_block;
+
+typedef struct pg_query_PLpgSQL_var {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_var;
+
+typedef struct pg_query_PLpgSQL_row {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_row;
+
+typedef struct pg_query_PLpgSQL_rec {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_rec;
+
+typedef struct pg_query_PLpgSQL_recfield {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_recfield;
+
+typedef struct pg_query_PLpgSQL_stmt {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt;
+
+typedef struct pg_query_PLpgSQL_exception_block {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_exception_block;
+
+typedef struct pg_query_PLpgSQL_expr {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_expr;
+
+typedef struct pg_query_PLpgSQL_type {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_type;
+
+typedef struct pg_query_PLpgSQL_stmt_assign {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_assign;
+
+typedef struct pg_query_PLpgSQL_stmt_if {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_if;
+
+typedef struct pg_query_PLpgSQL_stmt_case {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_case;
+
+typedef struct pg_query_PLpgSQL_stmt_loop {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_loop;
+
+typedef struct pg_query_PLpgSQL_stmt_while {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_while;
+
+typedef struct pg_query_PLpgSQL_stmt_fori {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_fori;
+
+typedef struct pg_query_PLpgSQL_stmt_fors {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_fors;
+
+typedef struct pg_query_PLpgSQL_stmt_forc {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_forc;
+
+typedef struct pg_query_PLpgSQL_stmt_foreach_a {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_foreach_a;
+
+typedef struct pg_query_PLpgSQL_stmt_exit {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_exit;
+
+typedef struct pg_query_PLpgSQL_stmt_return {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_return;
+
+typedef struct pg_query_PLpgSQL_stmt_return_next {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_return_next;
+
+typedef struct pg_query_PLpgSQL_stmt_return_query {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_return_query;
+
+typedef struct pg_query_PLpgSQL_stmt_raise {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_raise;
+
+typedef struct pg_query_PLpgSQL_stmt_assert {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_assert;
+
+typedef struct pg_query_PLpgSQL_stmt_execsql {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_execsql;
+
+typedef struct pg_query_PLpgSQL_stmt_dynexecute {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_dynexecute;
+
+typedef struct pg_query_PLpgSQL_stmt_dynfors {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_dynfors;
+
+typedef struct pg_query_PLpgSQL_stmt_getdiag {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_getdiag;
+
+typedef struct pg_query_PLpgSQL_stmt_open {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_open;
+
+typedef struct pg_query_PLpgSQL_stmt_fetch {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_fetch;
+
+typedef struct pg_query_PLpgSQL_stmt_close {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_close;
+
+typedef struct pg_query_PLpgSQL_stmt_perform {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_perform;
+
+typedef struct pg_query_PLpgSQL_stmt_call {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_call;
+
+typedef struct pg_query_PLpgSQL_stmt_commit {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_commit;
+
+typedef struct pg_query_PLpgSQL_stmt_rollback {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_stmt_rollback;
+
+typedef struct pg_query_PLpgSQL_exception {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_exception;
+
+typedef struct pg_query_PLpgSQL_if_elsif {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_if_elsif;
+
+typedef struct pg_query_PLpgSQL_case_when {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_case_when;
+
+typedef struct pg_query_PLpgSQL_raise_option {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_raise_option;
+
+typedef struct pg_query_PLpgSQL_diag_item {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_diag_item;
+
+typedef struct pg_query_PLpgSQL_condition {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_condition;
+
+typedef struct pg_query_PLpgSQL_row_field {
+  upb_Message UPB_PRIVATE(base);
+} pg_query_PLpgSQL_row_field;
+
 typedef struct pg_query_ScanToken {
   upb_Message UPB_PRIVATE(base);
 } pg_query_ScanToken;
@@ -1642,6 +1822,73 @@ typedef enum {
   pg_query_OVERRIDING_USER_VALUE = 2,
   pg_query_OVERRIDING_SYSTEM_VALUE = 3
 } pg_query_OverridingKind;
+
+typedef enum {
+  pg_query_PLPGSQL_GETDIAG_KIND_UNDEFINED = 0,
+  pg_query_PLPGSQL_GETDIAG_ROW_COUNT = 1,
+  pg_query_PLPGSQL_GETDIAG_ROUTINE_OID = 2,
+  pg_query_PLPGSQL_GETDIAG_CONTEXT = 3,
+  pg_query_PLPGSQL_GETDIAG_ERROR_CONTEXT = 4,
+  pg_query_PLPGSQL_GETDIAG_ERROR_DETAIL = 5,
+  pg_query_PLPGSQL_GETDIAG_ERROR_HINT = 6,
+  pg_query_PLPGSQL_GETDIAG_RETURNED_SQLSTATE = 7,
+  pg_query_PLPGSQL_GETDIAG_COLUMN_NAME = 8,
+  pg_query_PLPGSQL_GETDIAG_CONSTRAINT_NAME = 9,
+  pg_query_PLPGSQL_GETDIAG_DATATYPE_NAME = 10,
+  pg_query_PLPGSQL_GETDIAG_MESSAGE_TEXT = 11,
+  pg_query_PLPGSQL_GETDIAG_TABLE_NAME = 12,
+  pg_query_PLPGSQL_GETDIAG_SCHEMA_NAME = 13
+} pg_query_PLpgSQL_getdiag_kind;
+
+typedef enum {
+  pg_query_PLPGSQL_PROMISE_TYPE_UNDEFINED = 0,
+  pg_query_PLPGSQL_PROMISE_NONE = 1,
+  pg_query_PLPGSQL_PROMISE_TG_NAME = 2,
+  pg_query_PLPGSQL_PROMISE_TG_WHEN = 3,
+  pg_query_PLPGSQL_PROMISE_TG_LEVEL = 4,
+  pg_query_PLPGSQL_PROMISE_TG_OP = 5,
+  pg_query_PLPGSQL_PROMISE_TG_RELID = 6,
+  pg_query_PLPGSQL_PROMISE_TG_TABLE_NAME = 7,
+  pg_query_PLPGSQL_PROMISE_TG_TABLE_SCHEMA = 8,
+  pg_query_PLPGSQL_PROMISE_TG_NARGS = 9,
+  pg_query_PLPGSQL_PROMISE_TG_ARGV = 10,
+  pg_query_PLPGSQL_PROMISE_TG_EVENT = 11,
+  pg_query_PLPGSQL_PROMISE_TG_TAG = 12
+} pg_query_PLpgSQL_promise_type;
+
+typedef enum {
+  pg_query_PLPGSQL_RAISE_OPTION_TYPE_UNDEFINED = 0,
+  pg_query_PLPGSQL_RAISEOPTION_ERRCODE = 1,
+  pg_query_PLPGSQL_RAISEOPTION_MESSAGE = 2,
+  pg_query_PLPGSQL_RAISEOPTION_DETAIL = 3,
+  pg_query_PLPGSQL_RAISEOPTION_HINT = 4,
+  pg_query_PLPGSQL_RAISEOPTION_COLUMN = 5,
+  pg_query_PLPGSQL_RAISEOPTION_CONSTRAINT = 6,
+  pg_query_PLPGSQL_RAISEOPTION_DATATYPE = 7,
+  pg_query_PLPGSQL_RAISEOPTION_TABLE = 8,
+  pg_query_PLPGSQL_RAISEOPTION_SCHEMA = 9
+} pg_query_PLpgSQL_raise_option_type;
+
+typedef enum {
+  pg_query_PLPGSQL_RESOLVE_OPTION_UNDEFINED = 0,
+  pg_query_PLPGSQL_RESOLVE_ERROR = 1,
+  pg_query_PLPGSQL_RESOLVE_VARIABLE = 2,
+  pg_query_PLPGSQL_RESOLVE_COLUMN = 3
+} pg_query_PLpgSQL_resolve_option;
+
+typedef enum {
+  pg_query_PLPGSQL_TRIGTYPE_UNDEFINED = 0,
+  pg_query_PLPGSQL_DML_TRIGGER = 1,
+  pg_query_PLPGSQL_EVENT_TRIGGER = 2,
+  pg_query_PLPGSQL_NOT_TRIGGER = 3
+} pg_query_PLpgSQL_trigtype;
+
+typedef enum {
+  pg_query_PLPGSQL_TYPE_TYPE_UNDEFINED = 0,
+  pg_query_PLPGSQL_TTYPE_SCALAR = 1,
+  pg_query_PLPGSQL_TTYPE_REC = 2,
+  pg_query_PLPGSQL_TTYPE_PSEUDO = 3
+} pg_query_PLpgSQL_type_type;
 
 typedef enum {
   pg_query_PARAM_KIND_UNDEFINED = 0,
@@ -70364,6 +70611,9154 @@ UPB_INLINE void pg_query_DropSubscriptionStmt_set_missing_ok(pg_query_DropSubscr
 }
 UPB_INLINE void pg_query_DropSubscriptionStmt_set_behavior(pg_query_DropSubscriptionStmt* msg, int32_t value) {
   const upb_MiniTableField field = {3, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQLParseResult */
+UPB_INLINE pg_query_PLpgSQLParseResult* pg_query_PLpgSQLParseResult_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQLParseResult*)_upb_Message_New(&pg_0query__PLpgSQLParseResult_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQLParseResult* pg_query_PLpgSQLParseResult_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQLParseResult* ret = pg_query_PLpgSQLParseResult_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQLParseResult_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQLParseResult* pg_query_PLpgSQLParseResult_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQLParseResult* ret = pg_query_PLpgSQLParseResult_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQLParseResult_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQLParseResult_serialize(const pg_query_PLpgSQLParseResult* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQLParseResult_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQLParseResult_serialize_ex(const pg_query_PLpgSQLParseResult* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQLParseResult_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQLParseResult_clear_version(pg_query_PLpgSQLParseResult* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQLParseResult_version(const pg_query_PLpgSQLParseResult* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQLParseResult_clear_functions(pg_query_PLpgSQLParseResult* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_function* const* pg_query_PLpgSQLParseResult_functions(const pg_query_PLpgSQLParseResult* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_function* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQLParseResult_functions_upb_array(
+    const pg_query_PLpgSQLParseResult* msg, size_t* size) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQLParseResult_functions_mutable_upb_array(
+    pg_query_PLpgSQLParseResult* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQLParseResult_set_version(pg_query_PLpgSQLParseResult* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_function** pg_query_PLpgSQLParseResult_mutable_functions(pg_query_PLpgSQLParseResult* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_function**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_function** pg_query_PLpgSQLParseResult_resize_functions(pg_query_PLpgSQLParseResult* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  return (pg_query_PLpgSQL_function**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_function* pg_query_PLpgSQLParseResult_add_functions(
+    pg_query_PLpgSQLParseResult* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0function_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_function* sub =
+      (struct pg_query_PLpgSQL_function*)_upb_Message_New(&pg_0query__PLpgSQL_0function_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_function */
+UPB_INLINE pg_query_PLpgSQL_function* pg_query_PLpgSQL_function_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_function*)_upb_Message_New(&pg_0query__PLpgSQL_0function_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_function* pg_query_PLpgSQL_function_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_function* ret = pg_query_PLpgSQL_function_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0function_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_function* pg_query_PLpgSQL_function_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_function* ret = pg_query_PLpgSQL_function_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0function_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_function_serialize(const pg_query_PLpgSQL_function* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0function_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_function_serialize_ex(const pg_query_PLpgSQL_function* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0function_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_signature(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(84, 72), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_function_fn_signature(const pg_query_PLpgSQL_function* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(84, 72), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_oid(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {2, 20, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_function_fn_oid(const pg_query_PLpgSQL_function* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 20, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_is_trigger(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {3, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_fn_is_trigger(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_input_collation(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {4, 28, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_function_fn_input_collation(const pg_query_PLpgSQL_function* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {4, 28, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_rettype(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {5, 32, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_function_fn_rettype(const pg_query_PLpgSQL_function* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {5, 32, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_rettyplen(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {6, 36, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_fn_rettyplen(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {6, 36, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_retbyval(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {7, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_fn_retbyval(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {7, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_retistuple(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_fn_retistuple(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_retisdomain(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {9, 11, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_fn_retisdomain(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {9, 11, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_retset(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {10, 12, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_fn_retset(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {10, 12, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_readonly(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {11, 13, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_fn_readonly(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {11, 13, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_prokind(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {12, UPB_SIZE(92, 88), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_function_fn_prokind(const pg_query_PLpgSQL_function* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {12, UPB_SIZE(92, 88), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_fn_argvarnos(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t const* pg_query_PLpgSQL_function_fn_argvarnos(const pg_query_PLpgSQL_function* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (int32_t const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_function_fn_argvarnos_upb_array(
+    const pg_query_PLpgSQL_function* msg, size_t* size) {
+  const upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_function_fn_argvarnos_mutable_upb_array(
+    pg_query_PLpgSQL_function* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_out_param_varno(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {14, UPB_SIZE(44, 40), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_out_param_varno(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {14, UPB_SIZE(44, 40), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_found_varno(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {15, UPB_SIZE(48, 44), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_found_varno(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {15, UPB_SIZE(48, 44), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_new_varno(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {16, UPB_SIZE(52, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_new_varno(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {16, UPB_SIZE(52, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_old_varno(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {17, UPB_SIZE(56, 52), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_old_varno(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {17, UPB_SIZE(56, 52), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_resolve_option(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {18, UPB_SIZE(60, 56), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_resolve_option(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {18, UPB_SIZE(60, 56), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_print_strict_params(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {19, 14, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_print_strict_params(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {19, 14, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_extra_warnings(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {20, UPB_SIZE(64, 60), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_extra_warnings(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {20, UPB_SIZE(64, 60), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_extra_errors(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {21, UPB_SIZE(68, 64), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_function_extra_errors(const pg_query_PLpgSQL_function* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {21, UPB_SIZE(68, 64), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_datums(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_datum* const* pg_query_PLpgSQL_function_datums(const pg_query_PLpgSQL_function* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_datum* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_function_datums_upb_array(
+    const pg_query_PLpgSQL_function* msg, size_t* size) {
+  const upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_function_datums_mutable_upb_array(
+    pg_query_PLpgSQL_function* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_action(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {23, UPB_SIZE(76, 120), 64, UPB_SIZE(13, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_function_action(const pg_query_PLpgSQL_function* msg) {
+  const pg_query_PLpgSQL_stmt_block* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_block* ret;
+  const upb_MiniTableField field = {23, UPB_SIZE(76, 120), 64, UPB_SIZE(13, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0block_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_has_action(const pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {23, UPB_SIZE(76, 120), 64, UPB_SIZE(13, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_nstatements(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {24, UPB_SIZE(80, 68), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_function_nstatements(const pg_query_PLpgSQL_function* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {24, UPB_SIZE(80, 68), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_requires_procedure_resowner(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {25, 15, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_requires_procedure_resowner(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {25, 15, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_clear_has_exception_block(pg_query_PLpgSQL_function* msg) {
+  const upb_MiniTableField field = {26, 16, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_has_exception_block(const pg_query_PLpgSQL_function* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {26, 16, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_signature(pg_query_PLpgSQL_function* msg, upb_StringView value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(84, 72), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_oid(pg_query_PLpgSQL_function* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 20, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_is_trigger(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_input_collation(pg_query_PLpgSQL_function* msg, uint32_t value) {
+  const upb_MiniTableField field = {4, 28, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_rettype(pg_query_PLpgSQL_function* msg, uint32_t value) {
+  const upb_MiniTableField field = {5, 32, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_rettyplen(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {6, 36, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_retbyval(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {7, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_retistuple(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_retisdomain(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {9, 11, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_retset(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {10, 12, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_readonly(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {11, 13, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_fn_prokind(pg_query_PLpgSQL_function* msg, upb_StringView value) {
+  const upb_MiniTableField field = {12, UPB_SIZE(92, 88), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE int32_t* pg_query_PLpgSQL_function_mutable_fn_argvarnos(pg_query_PLpgSQL_function* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (int32_t*)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE int32_t* pg_query_PLpgSQL_function_resize_fn_argvarnos(pg_query_PLpgSQL_function* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return (int32_t*)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE bool pg_query_PLpgSQL_function_add_fn_argvarnos(pg_query_PLpgSQL_function* msg, int32_t val,
+                                      upb_Arena* arena) {
+  upb_MiniTableField field = {13, UPB_SIZE(40, 104), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return false;
+  }
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &val, sizeof(val));
+  return true;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_out_param_varno(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {14, UPB_SIZE(44, 40), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_found_varno(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {15, UPB_SIZE(48, 44), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_new_varno(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {16, UPB_SIZE(52, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_old_varno(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {17, UPB_SIZE(56, 52), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_resolve_option(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {18, UPB_SIZE(60, 56), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_print_strict_params(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {19, 14, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_extra_warnings(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {20, UPB_SIZE(64, 60), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_extra_errors(pg_query_PLpgSQL_function* msg, int32_t value) {
+  const upb_MiniTableField field = {21, UPB_SIZE(68, 64), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_datum** pg_query_PLpgSQL_function_mutable_datums(pg_query_PLpgSQL_function* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_datum**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_datum** pg_query_PLpgSQL_function_resize_datums(pg_query_PLpgSQL_function* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  return (pg_query_PLpgSQL_datum**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_datum* pg_query_PLpgSQL_function_add_datums(
+    pg_query_PLpgSQL_function* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {22, UPB_SIZE(72, 112), 0, 15, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0datum_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_datum* sub =
+      (struct pg_query_PLpgSQL_datum*)_upb_Message_New(&pg_0query__PLpgSQL_0datum_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_action(pg_query_PLpgSQL_function* msg, pg_query_PLpgSQL_stmt_block* value) {
+  const upb_MiniTableField field = {23, UPB_SIZE(76, 120), 64, UPB_SIZE(13, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0block_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_function_mutable_action(
+    pg_query_PLpgSQL_function* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_block* sub = (struct pg_query_PLpgSQL_stmt_block*)pg_query_PLpgSQL_function_action(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_block*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0block_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_function_set_action(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_nstatements(pg_query_PLpgSQL_function* msg, uint32_t value) {
+  const upb_MiniTableField field = {24, UPB_SIZE(80, 68), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_requires_procedure_resowner(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {25, 15, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_function_set_has_exception_block(pg_query_PLpgSQL_function* msg, bool value) {
+  const upb_MiniTableField field = {26, 16, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_datum */
+UPB_INLINE pg_query_PLpgSQL_datum* pg_query_PLpgSQL_datum_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_datum*)_upb_Message_New(&pg_0query__PLpgSQL_0datum_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_datum* pg_query_PLpgSQL_datum_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_datum* ret = pg_query_PLpgSQL_datum_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0datum_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_datum* pg_query_PLpgSQL_datum_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_datum* ret = pg_query_PLpgSQL_datum_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0datum_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_datum_serialize(const pg_query_PLpgSQL_datum* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0datum_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_datum_serialize_ex(const pg_query_PLpgSQL_datum* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0datum_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+typedef enum {
+  pg_query_PLpgSQL_datum_node_var = 1,
+  pg_query_PLpgSQL_datum_node_row = 2,
+  pg_query_PLpgSQL_datum_node_rec = 3,
+  pg_query_PLpgSQL_datum_node_recfield = 4,
+  pg_query_PLpgSQL_datum_node_NOT_SET = 0
+} pg_query_PLpgSQL_datum_node_oneofcases;
+
+UPB_INLINE pg_query_PLpgSQL_datum_node_oneofcases
+pg_query_PLpgSQL_datum_node_case(const pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return (pg_query_PLpgSQL_datum_node_oneofcases)upb_Message_WhichOneofFieldNumber(
+      UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_clear_node(pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearOneof(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0datum_msg_init, &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_clear_var(pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_var* pg_query_PLpgSQL_datum_var(const pg_query_PLpgSQL_datum* msg) {
+  const pg_query_PLpgSQL_var* default_val = NULL;
+  const pg_query_PLpgSQL_var* ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0var_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_datum_has_var(const pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_clear_row(pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_row* pg_query_PLpgSQL_datum_row(const pg_query_PLpgSQL_datum* msg) {
+  const pg_query_PLpgSQL_row* default_val = NULL;
+  const pg_query_PLpgSQL_row* ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_datum_has_row(const pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_clear_rec(pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_rec* pg_query_PLpgSQL_datum_rec(const pg_query_PLpgSQL_datum* msg) {
+  const pg_query_PLpgSQL_rec* default_val = NULL;
+  const pg_query_PLpgSQL_rec* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0rec_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_datum_has_rec(const pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_clear_recfield(pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_recfield* pg_query_PLpgSQL_datum_recfield(const pg_query_PLpgSQL_datum* msg) {
+  const pg_query_PLpgSQL_recfield* default_val = NULL;
+  const pg_query_PLpgSQL_recfield* ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0recfield_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_datum_has_recfield(const pg_query_PLpgSQL_datum* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_datum_set_var(pg_query_PLpgSQL_datum* msg, pg_query_PLpgSQL_var* value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0var_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_var* pg_query_PLpgSQL_datum_mutable_var(
+    pg_query_PLpgSQL_datum* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_var* sub = (struct pg_query_PLpgSQL_var*)pg_query_PLpgSQL_datum_var(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_var*)_upb_Message_New(&pg_0query__PLpgSQL_0var_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_datum_set_var(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_set_row(pg_query_PLpgSQL_datum* msg, pg_query_PLpgSQL_row* value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_row* pg_query_PLpgSQL_datum_mutable_row(
+    pg_query_PLpgSQL_datum* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_row* sub = (struct pg_query_PLpgSQL_row*)pg_query_PLpgSQL_datum_row(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_row*)_upb_Message_New(&pg_0query__PLpgSQL_0row_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_datum_set_row(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_set_rec(pg_query_PLpgSQL_datum* msg, pg_query_PLpgSQL_rec* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0rec_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_rec* pg_query_PLpgSQL_datum_mutable_rec(
+    pg_query_PLpgSQL_datum* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_rec* sub = (struct pg_query_PLpgSQL_rec*)pg_query_PLpgSQL_datum_rec(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_rec*)_upb_Message_New(&pg_0query__PLpgSQL_0rec_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_datum_set_rec(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_datum_set_recfield(pg_query_PLpgSQL_datum* msg, pg_query_PLpgSQL_recfield* value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0recfield_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_recfield* pg_query_PLpgSQL_datum_mutable_recfield(
+    pg_query_PLpgSQL_datum* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_recfield* sub = (struct pg_query_PLpgSQL_recfield*)pg_query_PLpgSQL_datum_recfield(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_recfield*)_upb_Message_New(&pg_0query__PLpgSQL_0recfield_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_datum_set_recfield(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_block */
+UPB_INLINE pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_stmt_block_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_block*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0block_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_stmt_block_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_block* ret = pg_query_PLpgSQL_stmt_block_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0block_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_stmt_block_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_block* ret = pg_query_PLpgSQL_stmt_block_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0block_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_block_serialize(const pg_query_PLpgSQL_stmt_block* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0block_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_block_serialize_ex(const pg_query_PLpgSQL_stmt_block* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0block_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_lineno(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_block_lineno(const pg_query_PLpgSQL_stmt_block* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_stmtid(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_block_stmtid(const pg_query_PLpgSQL_stmt_block* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_label(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_block_label(const pg_query_PLpgSQL_stmt_block* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_body(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_block_body(const pg_query_PLpgSQL_stmt_block* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_block_body_upb_array(
+    const pg_query_PLpgSQL_stmt_block* msg, size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_block_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_block* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_initvarnos(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t const* pg_query_PLpgSQL_stmt_block_initvarnos(const pg_query_PLpgSQL_stmt_block* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (int32_t const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_block_initvarnos_upb_array(
+    const pg_query_PLpgSQL_stmt_block* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_block_initvarnos_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_block* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_clear_exceptions(pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_exception_block* pg_query_PLpgSQL_stmt_block_exceptions(const pg_query_PLpgSQL_stmt_block* msg) {
+  const pg_query_PLpgSQL_exception_block* default_val = NULL;
+  const pg_query_PLpgSQL_exception_block* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_0block_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_block_has_exceptions(const pg_query_PLpgSQL_stmt_block* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_set_lineno(pg_query_PLpgSQL_stmt_block* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_set_stmtid(pg_query_PLpgSQL_stmt_block* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_set_label(pg_query_PLpgSQL_stmt_block* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_block_mutable_body(pg_query_PLpgSQL_stmt_block* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_block_resize_body(pg_query_PLpgSQL_stmt_block* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_block_add_body(
+    pg_query_PLpgSQL_stmt_block* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 40), 0, 9, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE int32_t* pg_query_PLpgSQL_stmt_block_mutable_initvarnos(pg_query_PLpgSQL_stmt_block* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (int32_t*)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE int32_t* pg_query_PLpgSQL_stmt_block_resize_initvarnos(pg_query_PLpgSQL_stmt_block* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return (int32_t*)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_block_add_initvarnos(pg_query_PLpgSQL_stmt_block* msg, int32_t val,
+                                      upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Array | (int)kUpb_LabelFlags_IsPacked | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return false;
+  }
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &val, sizeof(val));
+  return true;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_block_set_exceptions(pg_query_PLpgSQL_stmt_block* msg, pg_query_PLpgSQL_exception_block* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_0block_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_exception_block* pg_query_PLpgSQL_stmt_block_mutable_exceptions(
+    pg_query_PLpgSQL_stmt_block* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_exception_block* sub = (struct pg_query_PLpgSQL_exception_block*)pg_query_PLpgSQL_stmt_block_exceptions(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_exception_block*)_upb_Message_New(&pg_0query__PLpgSQL_0exception_0block_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_block_set_exceptions(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_var */
+UPB_INLINE pg_query_PLpgSQL_var* pg_query_PLpgSQL_var_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_var*)_upb_Message_New(&pg_0query__PLpgSQL_0var_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_var* pg_query_PLpgSQL_var_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_var* ret = pg_query_PLpgSQL_var_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0var_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_var* pg_query_PLpgSQL_var_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_var* ret = pg_query_PLpgSQL_var_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0var_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_var_serialize(const pg_query_PLpgSQL_var* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0var_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_var_serialize_ex(const pg_query_PLpgSQL_var* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0var_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_dno(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_var_dno(const pg_query_PLpgSQL_var* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_refname(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_var_refname(const pg_query_PLpgSQL_var* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_lineno(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_var_lineno(const pg_query_PLpgSQL_var* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_isconst(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_var_isconst(const pg_query_PLpgSQL_var* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_notnull(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_var_notnull(const pg_query_PLpgSQL_var* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_default_val(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(18, 19), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_var_default_val(const pg_query_PLpgSQL_var* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(18, 19), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_var_has_default_val(const pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(18, 19), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_datatype(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(16, 18), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_type* pg_query_PLpgSQL_var_datatype(const pg_query_PLpgSQL_var* msg) {
+  const pg_query_PLpgSQL_type* default_val = NULL;
+  const pg_query_PLpgSQL_type* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(16, 18), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0type_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_var_has_datatype(const pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(16, 18), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_cursor_explicit_expr(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 64), 66, UPB_SIZE(14, 17), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_var_cursor_explicit_expr(const pg_query_PLpgSQL_var* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 64), 66, UPB_SIZE(14, 17), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_var_has_cursor_explicit_expr(const pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 64), 66, UPB_SIZE(14, 17), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_cursor_explicit_argrow(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_var_cursor_explicit_argrow(const pg_query_PLpgSQL_var* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_cursor_options(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {10, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_var_cursor_options(const pg_query_PLpgSQL_var* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {10, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_clear_promise(pg_query_PLpgSQL_var* msg) {
+  const upb_MiniTableField field = {11, UPB_SIZE(40, 28), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_var_promise(const pg_query_PLpgSQL_var* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {11, UPB_SIZE(40, 28), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_var_set_dno(pg_query_PLpgSQL_var* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_refname(pg_query_PLpgSQL_var* msg, upb_StringView value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_lineno(pg_query_PLpgSQL_var* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_isconst(pg_query_PLpgSQL_var* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_notnull(pg_query_PLpgSQL_var* msg, bool value) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_default_val(pg_query_PLpgSQL_var* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(18, 19), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_var_mutable_default_val(
+    pg_query_PLpgSQL_var* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_var_default_val(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_var_set_default_val(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_datatype(pg_query_PLpgSQL_var* msg, pg_query_PLpgSQL_type* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(16, 18), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0type_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_type* pg_query_PLpgSQL_var_mutable_datatype(
+    pg_query_PLpgSQL_var* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_type* sub = (struct pg_query_PLpgSQL_type*)pg_query_PLpgSQL_var_datatype(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_type*)_upb_Message_New(&pg_0query__PLpgSQL_0type_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_var_set_datatype(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_cursor_explicit_expr(pg_query_PLpgSQL_var* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 64), 66, UPB_SIZE(14, 17), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_var_mutable_cursor_explicit_expr(
+    pg_query_PLpgSQL_var* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_var_cursor_explicit_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_var_set_cursor_explicit_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_cursor_explicit_argrow(pg_query_PLpgSQL_var* msg, int32_t value) {
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_cursor_options(pg_query_PLpgSQL_var* msg, int32_t value) {
+  const upb_MiniTableField field = {10, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_var_set_promise(pg_query_PLpgSQL_var* msg, int32_t value) {
+  const upb_MiniTableField field = {11, UPB_SIZE(40, 28), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_row */
+UPB_INLINE pg_query_PLpgSQL_row* pg_query_PLpgSQL_row_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_row*)_upb_Message_New(&pg_0query__PLpgSQL_0row_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_row* pg_query_PLpgSQL_row_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_row* ret = pg_query_PLpgSQL_row_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0row_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_row* pg_query_PLpgSQL_row_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_row* ret = pg_query_PLpgSQL_row_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0row_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_row_serialize(const pg_query_PLpgSQL_row* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0row_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_row_serialize_ex(const pg_query_PLpgSQL_row* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0row_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_dno(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_row_dno(const pg_query_PLpgSQL_row* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_refname(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_row_refname(const pg_query_PLpgSQL_row* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_lineno(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_row_lineno(const pg_query_PLpgSQL_row* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_isconst(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_row_isconst(const pg_query_PLpgSQL_row* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_notnull(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_row_notnull(const pg_query_PLpgSQL_row* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_default_val(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_row_default_val(const pg_query_PLpgSQL_row* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_row_has_default_val(const pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_clear_fields(pg_query_PLpgSQL_row* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_row_field* const* pg_query_PLpgSQL_row_fields(const pg_query_PLpgSQL_row* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_row_field* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_row_fields_upb_array(
+    const pg_query_PLpgSQL_row* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_row_fields_mutable_upb_array(
+    pg_query_PLpgSQL_row* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_row_set_dno(pg_query_PLpgSQL_row* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_set_refname(pg_query_PLpgSQL_row* msg, upb_StringView value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_set_lineno(pg_query_PLpgSQL_row* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_set_isconst(pg_query_PLpgSQL_row* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_set_notnull(pg_query_PLpgSQL_row* msg, bool value) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_set_default_val(pg_query_PLpgSQL_row* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_row_mutable_default_val(
+    pg_query_PLpgSQL_row* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_row_default_val(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_row_set_default_val(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_row_field** pg_query_PLpgSQL_row_mutable_fields(pg_query_PLpgSQL_row* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_row_field**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_row_field** pg_query_PLpgSQL_row_resize_fields(pg_query_PLpgSQL_row* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  return (pg_query_PLpgSQL_row_field**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_row_field* pg_query_PLpgSQL_row_add_fields(
+    pg_query_PLpgSQL_row* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0row_0field_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_row_field* sub =
+      (struct pg_query_PLpgSQL_row_field*)_upb_Message_New(&pg_0query__PLpgSQL_0row_0field_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_rec */
+UPB_INLINE pg_query_PLpgSQL_rec* pg_query_PLpgSQL_rec_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_rec*)_upb_Message_New(&pg_0query__PLpgSQL_0rec_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_rec* pg_query_PLpgSQL_rec_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_rec* ret = pg_query_PLpgSQL_rec_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0rec_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_rec* pg_query_PLpgSQL_rec_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_rec* ret = pg_query_PLpgSQL_rec_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0rec_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_rec_serialize(const pg_query_PLpgSQL_rec* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0rec_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_rec_serialize_ex(const pg_query_PLpgSQL_rec* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0rec_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_dno(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_rec_dno(const pg_query_PLpgSQL_rec* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_refname(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_rec_refname(const pg_query_PLpgSQL_rec* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_lineno(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_rec_lineno(const pg_query_PLpgSQL_rec* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_isconst(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_rec_isconst(const pg_query_PLpgSQL_rec* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_notnull(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_rec_notnull(const pg_query_PLpgSQL_rec* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_default_val(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(12, 13), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_rec_default_val(const pg_query_PLpgSQL_rec* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(12, 13), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_rec_has_default_val(const pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(12, 13), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_datatype(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_type* pg_query_PLpgSQL_rec_datatype(const pg_query_PLpgSQL_rec* msg) {
+  const pg_query_PLpgSQL_type* default_val = NULL;
+  const pg_query_PLpgSQL_type* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0type_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_rec_has_datatype(const pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_rectypeid(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 20), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_rec_rectypeid(const pg_query_PLpgSQL_rec* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 20), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_clear_firstfield(pg_query_PLpgSQL_rec* msg) {
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_rec_firstfield(const pg_query_PLpgSQL_rec* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_rec_set_dno(pg_query_PLpgSQL_rec* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_refname(pg_query_PLpgSQL_rec* msg, upb_StringView value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_lineno(pg_query_PLpgSQL_rec* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_isconst(pg_query_PLpgSQL_rec* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_notnull(pg_query_PLpgSQL_rec* msg, bool value) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_default_val(pg_query_PLpgSQL_rec* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 48), 64, UPB_SIZE(12, 13), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_rec_mutable_default_val(
+    pg_query_PLpgSQL_rec* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_rec_default_val(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_rec_set_default_val(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_datatype(pg_query_PLpgSQL_rec* msg, pg_query_PLpgSQL_type* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 56), 65, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0type_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_type* pg_query_PLpgSQL_rec_mutable_datatype(
+    pg_query_PLpgSQL_rec* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_type* sub = (struct pg_query_PLpgSQL_type*)pg_query_PLpgSQL_rec_datatype(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_type*)_upb_Message_New(&pg_0query__PLpgSQL_0type_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_rec_set_datatype(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_rectypeid(pg_query_PLpgSQL_rec* msg, uint32_t value) {
+  const upb_MiniTableField field = {8, UPB_SIZE(28, 20), 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_rec_set_firstfield(pg_query_PLpgSQL_rec* msg, int32_t value) {
+  const upb_MiniTableField field = {9, UPB_SIZE(32, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_recfield */
+UPB_INLINE pg_query_PLpgSQL_recfield* pg_query_PLpgSQL_recfield_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_recfield*)_upb_Message_New(&pg_0query__PLpgSQL_0recfield_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_recfield* pg_query_PLpgSQL_recfield_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_recfield* ret = pg_query_PLpgSQL_recfield_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0recfield_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_recfield* pg_query_PLpgSQL_recfield_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_recfield* ret = pg_query_PLpgSQL_recfield_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0recfield_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_recfield_serialize(const pg_query_PLpgSQL_recfield* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0recfield_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_recfield_serialize_ex(const pg_query_PLpgSQL_recfield* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0recfield_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_clear_dno(pg_query_PLpgSQL_recfield* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_recfield_dno(const pg_query_PLpgSQL_recfield* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_clear_fieldname(pg_query_PLpgSQL_recfield* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_recfield_fieldname(const pg_query_PLpgSQL_recfield* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_clear_recparentno(pg_query_PLpgSQL_recfield* msg) {
+  const upb_MiniTableField field = {3, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_recfield_recparentno(const pg_query_PLpgSQL_recfield* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_clear_nextfield(pg_query_PLpgSQL_recfield* msg) {
+  const upb_MiniTableField field = {4, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_recfield_nextfield(const pg_query_PLpgSQL_recfield* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_recfield_set_dno(pg_query_PLpgSQL_recfield* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_set_fieldname(pg_query_PLpgSQL_recfield* msg, upb_StringView value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_set_recparentno(pg_query_PLpgSQL_recfield* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_recfield_set_nextfield(pg_query_PLpgSQL_recfield* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt */
+UPB_INLINE pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt* ret = pg_query_PLpgSQL_stmt_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt* ret = pg_query_PLpgSQL_stmt_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_serialize(const pg_query_PLpgSQL_stmt* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_serialize_ex(const pg_query_PLpgSQL_stmt* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+typedef enum {
+  pg_query_PLpgSQL_stmt_node_stmt_block = 1,
+  pg_query_PLpgSQL_stmt_node_stmt_assign = 2,
+  pg_query_PLpgSQL_stmt_node_stmt_if = 3,
+  pg_query_PLpgSQL_stmt_node_stmt_case = 4,
+  pg_query_PLpgSQL_stmt_node_stmt_loop = 5,
+  pg_query_PLpgSQL_stmt_node_stmt_while = 6,
+  pg_query_PLpgSQL_stmt_node_stmt_fori = 7,
+  pg_query_PLpgSQL_stmt_node_stmt_fors = 8,
+  pg_query_PLpgSQL_stmt_node_stmt_forc = 9,
+  pg_query_PLpgSQL_stmt_node_stmt_foreach_a = 10,
+  pg_query_PLpgSQL_stmt_node_stmt_exit = 11,
+  pg_query_PLpgSQL_stmt_node_stmt_return = 12,
+  pg_query_PLpgSQL_stmt_node_stmt_return_next = 13,
+  pg_query_PLpgSQL_stmt_node_stmt_return_query = 14,
+  pg_query_PLpgSQL_stmt_node_stmt_raise = 15,
+  pg_query_PLpgSQL_stmt_node_stmt_assert = 16,
+  pg_query_PLpgSQL_stmt_node_stmt_execsql = 17,
+  pg_query_PLpgSQL_stmt_node_stmt_dynexecute = 18,
+  pg_query_PLpgSQL_stmt_node_stmt_dynfors = 19,
+  pg_query_PLpgSQL_stmt_node_stmt_getdiag = 20,
+  pg_query_PLpgSQL_stmt_node_stmt_open = 21,
+  pg_query_PLpgSQL_stmt_node_stmt_fetch = 22,
+  pg_query_PLpgSQL_stmt_node_stmt_close = 23,
+  pg_query_PLpgSQL_stmt_node_stmt_perform = 24,
+  pg_query_PLpgSQL_stmt_node_stmt_call = 25,
+  pg_query_PLpgSQL_stmt_node_stmt_commit = 26,
+  pg_query_PLpgSQL_stmt_node_stmt_rollback = 27,
+  pg_query_PLpgSQL_stmt_node_NOT_SET = 0
+} pg_query_PLpgSQL_stmt_node_oneofcases;
+
+UPB_INLINE pg_query_PLpgSQL_stmt_node_oneofcases
+pg_query_PLpgSQL_stmt_node_case(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return (pg_query_PLpgSQL_stmt_node_oneofcases)upb_Message_WhichOneofFieldNumber(
+      UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_node(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearOneof(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_msg_init, &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_block(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_stmt_stmt_block(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_block* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_block* ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0block_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_block(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_assign(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(79, 81), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_assign* pg_query_PLpgSQL_stmt_stmt_assign(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_assign* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_assign* ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(79, 81), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0assign_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_assign(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(79, 81), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_if(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(77, 80), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_if* pg_query_PLpgSQL_stmt_stmt_if(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_if* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_if* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(77, 80), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0if_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_if(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(77, 80), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_case(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(75, 79), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_case* pg_query_PLpgSQL_stmt_stmt_case(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_case* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_case* ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(75, 79), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0case_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_case(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(75, 79), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_loop(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(12, 16), -9, UPB_SIZE(73, 78), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_loop* pg_query_PLpgSQL_stmt_stmt_loop(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_loop* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_loop* ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(12, 16), -9, UPB_SIZE(73, 78), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0loop_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_loop(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(12, 16), -9, UPB_SIZE(73, 78), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_while(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(12, 16), -9, UPB_SIZE(71, 77), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_while* pg_query_PLpgSQL_stmt_stmt_while(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_while* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_while* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(12, 16), -9, UPB_SIZE(71, 77), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0while_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_while(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(12, 16), -9, UPB_SIZE(71, 77), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_fori(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(12, 16), -9, UPB_SIZE(69, 76), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_fori* pg_query_PLpgSQL_stmt_stmt_fori(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_fori* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_fori* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(12, 16), -9, UPB_SIZE(69, 76), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fori_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_fori(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(12, 16), -9, UPB_SIZE(69, 76), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_fors(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(12, 16), -9, UPB_SIZE(67, 75), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_fors* pg_query_PLpgSQL_stmt_stmt_fors(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_fors* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_fors* ret;
+  const upb_MiniTableField field = {8, UPB_SIZE(12, 16), -9, UPB_SIZE(67, 75), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fors_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_fors(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(12, 16), -9, UPB_SIZE(67, 75), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_forc(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {9, UPB_SIZE(12, 16), -9, UPB_SIZE(65, 74), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_forc* pg_query_PLpgSQL_stmt_stmt_forc(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_forc* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_forc* ret;
+  const upb_MiniTableField field = {9, UPB_SIZE(12, 16), -9, UPB_SIZE(65, 74), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0forc_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_forc(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {9, UPB_SIZE(12, 16), -9, UPB_SIZE(65, 74), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_foreach_a(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {10, UPB_SIZE(12, 16), -9, UPB_SIZE(63, 73), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_foreach_a* pg_query_PLpgSQL_stmt_stmt_foreach_a(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_foreach_a* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_foreach_a* ret;
+  const upb_MiniTableField field = {10, UPB_SIZE(12, 16), -9, UPB_SIZE(63, 73), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_foreach_a(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {10, UPB_SIZE(12, 16), -9, UPB_SIZE(63, 73), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_exit(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {11, UPB_SIZE(12, 16), -9, UPB_SIZE(61, 72), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_exit* pg_query_PLpgSQL_stmt_stmt_exit(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_exit* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_exit* ret;
+  const upb_MiniTableField field = {11, UPB_SIZE(12, 16), -9, UPB_SIZE(61, 72), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0exit_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_exit(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {11, UPB_SIZE(12, 16), -9, UPB_SIZE(61, 72), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_return(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {12, UPB_SIZE(12, 16), -9, UPB_SIZE(59, 71), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_return* pg_query_PLpgSQL_stmt_stmt_return(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_return* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_return* ret;
+  const upb_MiniTableField field = {12, UPB_SIZE(12, 16), -9, UPB_SIZE(59, 71), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_return(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {12, UPB_SIZE(12, 16), -9, UPB_SIZE(59, 71), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_return_next(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {13, UPB_SIZE(12, 16), -9, UPB_SIZE(57, 70), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_return_next* pg_query_PLpgSQL_stmt_stmt_return_next(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_return_next* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_return_next* ret;
+  const upb_MiniTableField field = {13, UPB_SIZE(12, 16), -9, UPB_SIZE(57, 70), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_0next_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_return_next(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {13, UPB_SIZE(12, 16), -9, UPB_SIZE(57, 70), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_return_query(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {14, UPB_SIZE(12, 16), -9, UPB_SIZE(55, 69), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_return_query* pg_query_PLpgSQL_stmt_stmt_return_query(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_return_query* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_return_query* ret;
+  const upb_MiniTableField field = {14, UPB_SIZE(12, 16), -9, UPB_SIZE(55, 69), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_0query_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_return_query(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {14, UPB_SIZE(12, 16), -9, UPB_SIZE(55, 69), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_raise(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {15, UPB_SIZE(12, 16), -9, UPB_SIZE(53, 68), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_raise* pg_query_PLpgSQL_stmt_stmt_raise(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_raise* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_raise* ret;
+  const upb_MiniTableField field = {15, UPB_SIZE(12, 16), -9, UPB_SIZE(53, 68), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0raise_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_raise(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {15, UPB_SIZE(12, 16), -9, UPB_SIZE(53, 68), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_assert(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {16, UPB_SIZE(12, 16), -9, UPB_SIZE(51, 67), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_assert* pg_query_PLpgSQL_stmt_stmt_assert(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_assert* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_assert* ret;
+  const upb_MiniTableField field = {16, UPB_SIZE(12, 16), -9, UPB_SIZE(51, 67), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0assert_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_assert(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {16, UPB_SIZE(12, 16), -9, UPB_SIZE(51, 67), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_execsql(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {17, UPB_SIZE(12, 16), -9, UPB_SIZE(49, 66), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_execsql* pg_query_PLpgSQL_stmt_stmt_execsql(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_execsql* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_execsql* ret;
+  const upb_MiniTableField field = {17, UPB_SIZE(12, 16), -9, UPB_SIZE(49, 66), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0execsql_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_execsql(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {17, UPB_SIZE(12, 16), -9, UPB_SIZE(49, 66), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_dynexecute(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {18, UPB_SIZE(12, 16), -9, UPB_SIZE(47, 65), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_dynexecute* pg_query_PLpgSQL_stmt_stmt_dynexecute(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_dynexecute* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_dynexecute* ret;
+  const upb_MiniTableField field = {18, UPB_SIZE(12, 16), -9, UPB_SIZE(47, 65), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_dynexecute(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {18, UPB_SIZE(12, 16), -9, UPB_SIZE(47, 65), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_dynfors(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {19, UPB_SIZE(12, 16), -9, UPB_SIZE(45, 64), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_dynfors* pg_query_PLpgSQL_stmt_stmt_dynfors(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_dynfors* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_dynfors* ret;
+  const upb_MiniTableField field = {19, UPB_SIZE(12, 16), -9, UPB_SIZE(45, 64), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0dynfors_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_dynfors(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {19, UPB_SIZE(12, 16), -9, UPB_SIZE(45, 64), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_getdiag(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {20, UPB_SIZE(12, 16), -9, UPB_SIZE(43, 63), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_getdiag* pg_query_PLpgSQL_stmt_stmt_getdiag(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_getdiag* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_getdiag* ret;
+  const upb_MiniTableField field = {20, UPB_SIZE(12, 16), -9, UPB_SIZE(43, 63), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0getdiag_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_getdiag(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {20, UPB_SIZE(12, 16), -9, UPB_SIZE(43, 63), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_open(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {21, UPB_SIZE(12, 16), -9, UPB_SIZE(41, 62), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_open* pg_query_PLpgSQL_stmt_stmt_open(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_open* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_open* ret;
+  const upb_MiniTableField field = {21, UPB_SIZE(12, 16), -9, UPB_SIZE(41, 62), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0open_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_open(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {21, UPB_SIZE(12, 16), -9, UPB_SIZE(41, 62), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_fetch(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {22, UPB_SIZE(12, 16), -9, UPB_SIZE(39, 61), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_fetch* pg_query_PLpgSQL_stmt_stmt_fetch(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_fetch* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_fetch* ret;
+  const upb_MiniTableField field = {22, UPB_SIZE(12, 16), -9, UPB_SIZE(39, 61), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fetch_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_fetch(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {22, UPB_SIZE(12, 16), -9, UPB_SIZE(39, 61), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_close(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {23, UPB_SIZE(12, 16), -9, UPB_SIZE(37, 60), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_close* pg_query_PLpgSQL_stmt_stmt_close(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_close* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_close* ret;
+  const upb_MiniTableField field = {23, UPB_SIZE(12, 16), -9, UPB_SIZE(37, 60), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0close_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_close(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {23, UPB_SIZE(12, 16), -9, UPB_SIZE(37, 60), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_perform(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {24, UPB_SIZE(12, 16), -9, UPB_SIZE(35, 59), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_perform* pg_query_PLpgSQL_stmt_stmt_perform(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_perform* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_perform* ret;
+  const upb_MiniTableField field = {24, UPB_SIZE(12, 16), -9, UPB_SIZE(35, 59), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0perform_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_perform(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {24, UPB_SIZE(12, 16), -9, UPB_SIZE(35, 59), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_call(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {25, UPB_SIZE(12, 16), -9, UPB_SIZE(33, 58), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_call* pg_query_PLpgSQL_stmt_stmt_call(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_call* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_call* ret;
+  const upb_MiniTableField field = {25, UPB_SIZE(12, 16), -9, UPB_SIZE(33, 58), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0call_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_call(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {25, UPB_SIZE(12, 16), -9, UPB_SIZE(33, 58), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_commit(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {26, UPB_SIZE(12, 16), -9, UPB_SIZE(31, 57), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_commit* pg_query_PLpgSQL_stmt_stmt_commit(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_commit* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_commit* ret;
+  const upb_MiniTableField field = {26, UPB_SIZE(12, 16), -9, UPB_SIZE(31, 57), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0commit_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_commit(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {26, UPB_SIZE(12, 16), -9, UPB_SIZE(31, 57), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_clear_stmt_rollback(pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {27, UPB_SIZE(12, 16), -9, UPB_SIZE(29, 56), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt_rollback* pg_query_PLpgSQL_stmt_stmt_rollback(const pg_query_PLpgSQL_stmt* msg) {
+  const pg_query_PLpgSQL_stmt_rollback* default_val = NULL;
+  const pg_query_PLpgSQL_stmt_rollback* ret;
+  const upb_MiniTableField field = {27, UPB_SIZE(12, 16), -9, UPB_SIZE(29, 56), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0rollback_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_has_stmt_rollback(const pg_query_PLpgSQL_stmt* msg) {
+  const upb_MiniTableField field = {27, UPB_SIZE(12, 16), -9, UPB_SIZE(29, 56), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_block(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_block* value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), -9, UPB_SIZE(81, 82), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0block_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_block* pg_query_PLpgSQL_stmt_mutable_stmt_block(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_block* sub = (struct pg_query_PLpgSQL_stmt_block*)pg_query_PLpgSQL_stmt_stmt_block(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_block*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0block_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_block(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_assign(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_assign* value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), -9, UPB_SIZE(79, 81), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0assign_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_assign* pg_query_PLpgSQL_stmt_mutable_stmt_assign(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_assign* sub = (struct pg_query_PLpgSQL_stmt_assign*)pg_query_PLpgSQL_stmt_stmt_assign(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_assign*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0assign_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_assign(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_if(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_if* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(12, 16), -9, UPB_SIZE(77, 80), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0if_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_if* pg_query_PLpgSQL_stmt_mutable_stmt_if(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_if* sub = (struct pg_query_PLpgSQL_stmt_if*)pg_query_PLpgSQL_stmt_stmt_if(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_if*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0if_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_if(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_case(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_case* value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(12, 16), -9, UPB_SIZE(75, 79), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0case_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_case* pg_query_PLpgSQL_stmt_mutable_stmt_case(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_case* sub = (struct pg_query_PLpgSQL_stmt_case*)pg_query_PLpgSQL_stmt_stmt_case(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_case*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0case_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_case(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_loop(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_loop* value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(12, 16), -9, UPB_SIZE(73, 78), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0loop_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_loop* pg_query_PLpgSQL_stmt_mutable_stmt_loop(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_loop* sub = (struct pg_query_PLpgSQL_stmt_loop*)pg_query_PLpgSQL_stmt_stmt_loop(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_loop*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0loop_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_loop(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_while(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_while* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(12, 16), -9, UPB_SIZE(71, 77), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0while_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_while* pg_query_PLpgSQL_stmt_mutable_stmt_while(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_while* sub = (struct pg_query_PLpgSQL_stmt_while*)pg_query_PLpgSQL_stmt_stmt_while(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_while*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0while_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_while(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_fori(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_fori* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(12, 16), -9, UPB_SIZE(69, 76), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fori_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_fori* pg_query_PLpgSQL_stmt_mutable_stmt_fori(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_fori* sub = (struct pg_query_PLpgSQL_stmt_fori*)pg_query_PLpgSQL_stmt_stmt_fori(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_fori*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fori_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_fori(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_fors(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_fors* value) {
+  const upb_MiniTableField field = {8, UPB_SIZE(12, 16), -9, UPB_SIZE(67, 75), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fors_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_fors* pg_query_PLpgSQL_stmt_mutable_stmt_fors(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_fors* sub = (struct pg_query_PLpgSQL_stmt_fors*)pg_query_PLpgSQL_stmt_stmt_fors(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_fors*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fors_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_fors(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_forc(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_forc* value) {
+  const upb_MiniTableField field = {9, UPB_SIZE(12, 16), -9, UPB_SIZE(65, 74), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0forc_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_forc* pg_query_PLpgSQL_stmt_mutable_stmt_forc(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_forc* sub = (struct pg_query_PLpgSQL_stmt_forc*)pg_query_PLpgSQL_stmt_stmt_forc(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_forc*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0forc_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_forc(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_foreach_a(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_foreach_a* value) {
+  const upb_MiniTableField field = {10, UPB_SIZE(12, 16), -9, UPB_SIZE(63, 73), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_foreach_a* pg_query_PLpgSQL_stmt_mutable_stmt_foreach_a(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_foreach_a* sub = (struct pg_query_PLpgSQL_stmt_foreach_a*)pg_query_PLpgSQL_stmt_stmt_foreach_a(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_foreach_a*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_foreach_a(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_exit(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_exit* value) {
+  const upb_MiniTableField field = {11, UPB_SIZE(12, 16), -9, UPB_SIZE(61, 72), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0exit_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_exit* pg_query_PLpgSQL_stmt_mutable_stmt_exit(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_exit* sub = (struct pg_query_PLpgSQL_stmt_exit*)pg_query_PLpgSQL_stmt_stmt_exit(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_exit*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0exit_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_exit(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_return(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_return* value) {
+  const upb_MiniTableField field = {12, UPB_SIZE(12, 16), -9, UPB_SIZE(59, 71), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_return* pg_query_PLpgSQL_stmt_mutable_stmt_return(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_return* sub = (struct pg_query_PLpgSQL_stmt_return*)pg_query_PLpgSQL_stmt_stmt_return(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_return*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_return(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_return_next(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_return_next* value) {
+  const upb_MiniTableField field = {13, UPB_SIZE(12, 16), -9, UPB_SIZE(57, 70), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_0next_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_return_next* pg_query_PLpgSQL_stmt_mutable_stmt_return_next(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_return_next* sub = (struct pg_query_PLpgSQL_stmt_return_next*)pg_query_PLpgSQL_stmt_stmt_return_next(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_return_next*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_return_next(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_return_query(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_return_query* value) {
+  const upb_MiniTableField field = {14, UPB_SIZE(12, 16), -9, UPB_SIZE(55, 69), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0return_0query_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_return_query* pg_query_PLpgSQL_stmt_mutable_stmt_return_query(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_return_query* sub = (struct pg_query_PLpgSQL_stmt_return_query*)pg_query_PLpgSQL_stmt_stmt_return_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_return_query*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_return_query(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_raise(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_raise* value) {
+  const upb_MiniTableField field = {15, UPB_SIZE(12, 16), -9, UPB_SIZE(53, 68), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0raise_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_raise* pg_query_PLpgSQL_stmt_mutable_stmt_raise(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_raise* sub = (struct pg_query_PLpgSQL_stmt_raise*)pg_query_PLpgSQL_stmt_stmt_raise(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_raise*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0raise_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_raise(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_assert(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_assert* value) {
+  const upb_MiniTableField field = {16, UPB_SIZE(12, 16), -9, UPB_SIZE(51, 67), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0assert_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_assert* pg_query_PLpgSQL_stmt_mutable_stmt_assert(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_assert* sub = (struct pg_query_PLpgSQL_stmt_assert*)pg_query_PLpgSQL_stmt_stmt_assert(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_assert*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0assert_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_assert(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_execsql(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_execsql* value) {
+  const upb_MiniTableField field = {17, UPB_SIZE(12, 16), -9, UPB_SIZE(49, 66), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0execsql_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_execsql* pg_query_PLpgSQL_stmt_mutable_stmt_execsql(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_execsql* sub = (struct pg_query_PLpgSQL_stmt_execsql*)pg_query_PLpgSQL_stmt_stmt_execsql(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_execsql*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0execsql_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_execsql(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_dynexecute(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_dynexecute* value) {
+  const upb_MiniTableField field = {18, UPB_SIZE(12, 16), -9, UPB_SIZE(47, 65), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_dynexecute* pg_query_PLpgSQL_stmt_mutable_stmt_dynexecute(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_dynexecute* sub = (struct pg_query_PLpgSQL_stmt_dynexecute*)pg_query_PLpgSQL_stmt_stmt_dynexecute(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_dynexecute*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_dynexecute(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_dynfors(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_dynfors* value) {
+  const upb_MiniTableField field = {19, UPB_SIZE(12, 16), -9, UPB_SIZE(45, 64), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0dynfors_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_dynfors* pg_query_PLpgSQL_stmt_mutable_stmt_dynfors(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_dynfors* sub = (struct pg_query_PLpgSQL_stmt_dynfors*)pg_query_PLpgSQL_stmt_stmt_dynfors(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_dynfors*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_dynfors(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_getdiag(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_getdiag* value) {
+  const upb_MiniTableField field = {20, UPB_SIZE(12, 16), -9, UPB_SIZE(43, 63), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0getdiag_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_getdiag* pg_query_PLpgSQL_stmt_mutable_stmt_getdiag(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_getdiag* sub = (struct pg_query_PLpgSQL_stmt_getdiag*)pg_query_PLpgSQL_stmt_stmt_getdiag(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_getdiag*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_getdiag(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_open(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_open* value) {
+  const upb_MiniTableField field = {21, UPB_SIZE(12, 16), -9, UPB_SIZE(41, 62), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0open_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_open* pg_query_PLpgSQL_stmt_mutable_stmt_open(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_open* sub = (struct pg_query_PLpgSQL_stmt_open*)pg_query_PLpgSQL_stmt_stmt_open(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_open*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0open_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_open(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_fetch(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_fetch* value) {
+  const upb_MiniTableField field = {22, UPB_SIZE(12, 16), -9, UPB_SIZE(39, 61), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0fetch_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_fetch* pg_query_PLpgSQL_stmt_mutable_stmt_fetch(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_fetch* sub = (struct pg_query_PLpgSQL_stmt_fetch*)pg_query_PLpgSQL_stmt_stmt_fetch(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_fetch*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fetch_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_fetch(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_close(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_close* value) {
+  const upb_MiniTableField field = {23, UPB_SIZE(12, 16), -9, UPB_SIZE(37, 60), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0close_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_close* pg_query_PLpgSQL_stmt_mutable_stmt_close(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_close* sub = (struct pg_query_PLpgSQL_stmt_close*)pg_query_PLpgSQL_stmt_stmt_close(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_close*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0close_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_close(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_perform(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_perform* value) {
+  const upb_MiniTableField field = {24, UPB_SIZE(12, 16), -9, UPB_SIZE(35, 59), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0perform_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_perform* pg_query_PLpgSQL_stmt_mutable_stmt_perform(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_perform* sub = (struct pg_query_PLpgSQL_stmt_perform*)pg_query_PLpgSQL_stmt_stmt_perform(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_perform*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0perform_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_perform(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_call(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_call* value) {
+  const upb_MiniTableField field = {25, UPB_SIZE(12, 16), -9, UPB_SIZE(33, 58), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0call_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_call* pg_query_PLpgSQL_stmt_mutable_stmt_call(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_call* sub = (struct pg_query_PLpgSQL_stmt_call*)pg_query_PLpgSQL_stmt_stmt_call(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_call*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0call_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_call(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_commit(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_commit* value) {
+  const upb_MiniTableField field = {26, UPB_SIZE(12, 16), -9, UPB_SIZE(31, 57), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0commit_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_commit* pg_query_PLpgSQL_stmt_mutable_stmt_commit(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_commit* sub = (struct pg_query_PLpgSQL_stmt_commit*)pg_query_PLpgSQL_stmt_stmt_commit(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_commit*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0commit_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_commit(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_set_stmt_rollback(pg_query_PLpgSQL_stmt* msg, pg_query_PLpgSQL_stmt_rollback* value) {
+  const upb_MiniTableField field = {27, UPB_SIZE(12, 16), -9, UPB_SIZE(29, 56), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_0rollback_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt_rollback* pg_query_PLpgSQL_stmt_mutable_stmt_rollback(
+    pg_query_PLpgSQL_stmt* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_stmt_rollback* sub = (struct pg_query_PLpgSQL_stmt_rollback*)pg_query_PLpgSQL_stmt_stmt_rollback(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_stmt_rollback*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0rollback_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_set_stmt_rollback(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_exception_block */
+UPB_INLINE pg_query_PLpgSQL_exception_block* pg_query_PLpgSQL_exception_block_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_exception_block*)_upb_Message_New(&pg_0query__PLpgSQL_0exception_0block_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_exception_block* pg_query_PLpgSQL_exception_block_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_exception_block* ret = pg_query_PLpgSQL_exception_block_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0exception_0block_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_exception_block* pg_query_PLpgSQL_exception_block_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_exception_block* ret = pg_query_PLpgSQL_exception_block_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0exception_0block_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_exception_block_serialize(const pg_query_PLpgSQL_exception_block* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0exception_0block_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_exception_block_serialize_ex(const pg_query_PLpgSQL_exception_block* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0exception_0block_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_block_clear_sqlstate_varno(pg_query_PLpgSQL_exception_block* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_exception_block_sqlstate_varno(const pg_query_PLpgSQL_exception_block* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_block_clear_sqlerrm_varno(pg_query_PLpgSQL_exception_block* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_exception_block_sqlerrm_varno(const pg_query_PLpgSQL_exception_block* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_block_clear_exc_list(pg_query_PLpgSQL_exception_block* msg) {
+  const upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_exception* const* pg_query_PLpgSQL_exception_block_exc_list(const pg_query_PLpgSQL_exception_block* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_exception* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_exception_block_exc_list_upb_array(
+    const pg_query_PLpgSQL_exception_block* msg, size_t* size) {
+  const upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_exception_block_exc_list_mutable_upb_array(
+    pg_query_PLpgSQL_exception_block* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_exception_block_set_sqlstate_varno(pg_query_PLpgSQL_exception_block* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_block_set_sqlerrm_varno(pg_query_PLpgSQL_exception_block* msg, int32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_exception** pg_query_PLpgSQL_exception_block_mutable_exc_list(pg_query_PLpgSQL_exception_block* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_exception**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_exception** pg_query_PLpgSQL_exception_block_resize_exc_list(pg_query_PLpgSQL_exception_block* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  return (pg_query_PLpgSQL_exception**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_exception* pg_query_PLpgSQL_exception_block_add_exc_list(
+    pg_query_PLpgSQL_exception_block* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {3, 16, 0, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0exception_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_exception* sub =
+      (struct pg_query_PLpgSQL_exception*)_upb_Message_New(&pg_0query__PLpgSQL_0exception_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_expr */
+UPB_INLINE pg_query_PLpgSQL_expr* pg_query_PLpgSQL_expr_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_expr* pg_query_PLpgSQL_expr_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_expr* ret = pg_query_PLpgSQL_expr_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0expr_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_expr* pg_query_PLpgSQL_expr_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_expr* ret = pg_query_PLpgSQL_expr_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0expr_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_expr_serialize(const pg_query_PLpgSQL_expr* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0expr_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_expr_serialize_ex(const pg_query_PLpgSQL_expr* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0expr_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_clear_query(pg_query_PLpgSQL_expr* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_expr_query(const pg_query_PLpgSQL_expr* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_clear_parse_mode(pg_query_PLpgSQL_expr* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_expr_parse_mode(const pg_query_PLpgSQL_expr* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_clear_target_param(pg_query_PLpgSQL_expr* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_expr_target_param(const pg_query_PLpgSQL_expr* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_clear_target_is_local(pg_query_PLpgSQL_expr* msg) {
+  const upb_MiniTableField field = {4, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_expr_target_is_local(const pg_query_PLpgSQL_expr* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_expr_set_query(pg_query_PLpgSQL_expr* msg, upb_StringView value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(20, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_set_parse_mode(pg_query_PLpgSQL_expr* msg, int32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_set_target_param(pg_query_PLpgSQL_expr* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_expr_set_target_is_local(pg_query_PLpgSQL_expr* msg, bool value) {
+  const upb_MiniTableField field = {4, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_type */
+UPB_INLINE pg_query_PLpgSQL_type* pg_query_PLpgSQL_type_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_type*)_upb_Message_New(&pg_0query__PLpgSQL_0type_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_type* pg_query_PLpgSQL_type_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_type* ret = pg_query_PLpgSQL_type_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0type_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_type* pg_query_PLpgSQL_type_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_type* ret = pg_query_PLpgSQL_type_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0type_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_type_serialize(const pg_query_PLpgSQL_type* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0type_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_type_serialize_ex(const pg_query_PLpgSQL_type* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0type_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typname(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_type_typname(const pg_query_PLpgSQL_type* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typoid(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_type_typoid(const pg_query_PLpgSQL_type* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_ttype(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_type_ttype(const pg_query_PLpgSQL_type* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typlen(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_type_typlen(const pg_query_PLpgSQL_type* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typbyval(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {5, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_type_typbyval(const pg_query_PLpgSQL_type* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typtype(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(44, 48), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_type_typtype(const pg_query_PLpgSQL_type* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(44, 48), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_collation(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {7, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_type_collation(const pg_query_PLpgSQL_type* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {7, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_typisarray(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_type_typisarray(const pg_query_PLpgSQL_type* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_atttypmod(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {9, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_type_atttypmod(const pg_query_PLpgSQL_type* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {9, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_type_clear_origtypname(pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {10, UPB_SIZE(32, 64), 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_TypeName* pg_query_PLpgSQL_type_origtypname(const pg_query_PLpgSQL_type* msg) {
+  const pg_query_TypeName* default_val = NULL;
+  const pg_query_TypeName* ret;
+  const upb_MiniTableField field = {10, UPB_SIZE(32, 64), 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__TypeName_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_type_has_origtypname(const pg_query_PLpgSQL_type* msg) {
+  const upb_MiniTableField field = {10, UPB_SIZE(32, 64), 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_type_set_typname(pg_query_PLpgSQL_type* msg, upb_StringView value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_typoid(pg_query_PLpgSQL_type* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_ttype(pg_query_PLpgSQL_type* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_typlen(pg_query_PLpgSQL_type* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_typbyval(pg_query_PLpgSQL_type* msg, bool value) {
+  const upb_MiniTableField field = {5, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_typtype(pg_query_PLpgSQL_type* msg, upb_StringView value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(44, 48), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_collation(pg_query_PLpgSQL_type* msg, uint32_t value) {
+  const upb_MiniTableField field = {7, 24, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_typisarray(pg_query_PLpgSQL_type* msg, bool value) {
+  const upb_MiniTableField field = {8, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_atttypmod(pg_query_PLpgSQL_type* msg, int32_t value) {
+  const upb_MiniTableField field = {9, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_type_set_origtypname(pg_query_PLpgSQL_type* msg, pg_query_TypeName* value) {
+  const upb_MiniTableField field = {10, UPB_SIZE(32, 64), 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__TypeName_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_TypeName* pg_query_PLpgSQL_type_mutable_origtypname(
+    pg_query_PLpgSQL_type* msg, upb_Arena* arena) {
+  struct pg_query_TypeName* sub = (struct pg_query_TypeName*)pg_query_PLpgSQL_type_origtypname(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_TypeName*)_upb_Message_New(&pg_0query__TypeName_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_type_set_origtypname(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_assign */
+UPB_INLINE pg_query_PLpgSQL_stmt_assign* pg_query_PLpgSQL_stmt_assign_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_assign*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0assign_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_assign* pg_query_PLpgSQL_stmt_assign_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_assign* ret = pg_query_PLpgSQL_stmt_assign_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0assign_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_assign* pg_query_PLpgSQL_stmt_assign_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_assign* ret = pg_query_PLpgSQL_stmt_assign_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0assign_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_assign_serialize(const pg_query_PLpgSQL_stmt_assign* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0assign_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_assign_serialize_ex(const pg_query_PLpgSQL_stmt_assign* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0assign_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_clear_lineno(pg_query_PLpgSQL_stmt_assign* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_assign_lineno(const pg_query_PLpgSQL_stmt_assign* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_clear_stmtid(pg_query_PLpgSQL_stmt_assign* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_assign_stmtid(const pg_query_PLpgSQL_stmt_assign* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_clear_varno(pg_query_PLpgSQL_stmt_assign* msg) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_assign_varno(const pg_query_PLpgSQL_stmt_assign* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_clear_expr(pg_query_PLpgSQL_stmt_assign* msg) {
+  const upb_MiniTableField field = {4, 24, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assign_expr(const pg_query_PLpgSQL_stmt_assign* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {4, 24, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_assign_has_expr(const pg_query_PLpgSQL_stmt_assign* msg) {
+  const upb_MiniTableField field = {4, 24, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_set_lineno(pg_query_PLpgSQL_stmt_assign* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_set_stmtid(pg_query_PLpgSQL_stmt_assign* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_set_varno(pg_query_PLpgSQL_stmt_assign* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assign_set_expr(pg_query_PLpgSQL_stmt_assign* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {4, 24, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assign_mutable_expr(
+    pg_query_PLpgSQL_stmt_assign* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_assign_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_assign_set_expr(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_if */
+UPB_INLINE pg_query_PLpgSQL_stmt_if* pg_query_PLpgSQL_stmt_if_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_if*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0if_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_if* pg_query_PLpgSQL_stmt_if_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_if* ret = pg_query_PLpgSQL_stmt_if_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0if_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_if* pg_query_PLpgSQL_stmt_if_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_if* ret = pg_query_PLpgSQL_stmt_if_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0if_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_if_serialize(const pg_query_PLpgSQL_stmt_if* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0if_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_if_serialize_ex(const pg_query_PLpgSQL_stmt_if* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0if_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_lineno(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_if_lineno(const pg_query_PLpgSQL_stmt_if* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_stmtid(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_if_stmtid(const pg_query_PLpgSQL_stmt_if* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_cond(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_if_cond(const pg_query_PLpgSQL_stmt_if* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_if_has_cond(const pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_then_body(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_if_then_body(const pg_query_PLpgSQL_stmt_if* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_if_then_body_upb_array(
+    const pg_query_PLpgSQL_stmt_if* msg, size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_if_then_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_if* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_elsif_list(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_if_elsif* const* pg_query_PLpgSQL_stmt_if_elsif_list(const pg_query_PLpgSQL_stmt_if* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_if_elsif* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_if_elsif_list_upb_array(
+    const pg_query_PLpgSQL_stmt_if* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_if_elsif_list_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_if* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_clear_else_body(pg_query_PLpgSQL_stmt_if* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_if_else_body(const pg_query_PLpgSQL_stmt_if* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_if_else_body_upb_array(
+    const pg_query_PLpgSQL_stmt_if* msg, size_t* size) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_if_else_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_if* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_set_lineno(pg_query_PLpgSQL_stmt_if* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_set_stmtid(pg_query_PLpgSQL_stmt_if* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_if_set_cond(pg_query_PLpgSQL_stmt_if* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_if_mutable_cond(
+    pg_query_PLpgSQL_stmt_if* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_if_cond(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_if_set_cond(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_if_mutable_then_body(pg_query_PLpgSQL_stmt_if* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_if_resize_then_body(pg_query_PLpgSQL_stmt_if* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_if_add_then_body(
+    pg_query_PLpgSQL_stmt_if* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(24, 32), 0, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_if_elsif** pg_query_PLpgSQL_stmt_if_mutable_elsif_list(pg_query_PLpgSQL_stmt_if* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_if_elsif**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_if_elsif** pg_query_PLpgSQL_stmt_if_resize_elsif_list(pg_query_PLpgSQL_stmt_if* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  return (pg_query_PLpgSQL_if_elsif**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_if_elsif* pg_query_PLpgSQL_stmt_if_add_elsif_list(
+    pg_query_PLpgSQL_stmt_if* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0if_0elsif_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_if_elsif* sub =
+      (struct pg_query_PLpgSQL_if_elsif*)_upb_Message_New(&pg_0query__PLpgSQL_0if_0elsif_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_if_mutable_else_body(pg_query_PLpgSQL_stmt_if* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_if_resize_else_body(pg_query_PLpgSQL_stmt_if* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_if_add_else_body(
+    pg_query_PLpgSQL_stmt_if* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {6, UPB_SIZE(32, 48), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_case */
+UPB_INLINE pg_query_PLpgSQL_stmt_case* pg_query_PLpgSQL_stmt_case_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_case*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0case_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_case* pg_query_PLpgSQL_stmt_case_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_case* ret = pg_query_PLpgSQL_stmt_case_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0case_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_case* pg_query_PLpgSQL_stmt_case_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_case* ret = pg_query_PLpgSQL_stmt_case_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0case_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_case_serialize(const pg_query_PLpgSQL_stmt_case* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0case_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_case_serialize_ex(const pg_query_PLpgSQL_stmt_case* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0case_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_lineno(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_case_lineno(const pg_query_PLpgSQL_stmt_case* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_stmtid(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_case_stmtid(const pg_query_PLpgSQL_stmt_case* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_t_expr(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_case_t_expr(const pg_query_PLpgSQL_stmt_case* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_case_has_t_expr(const pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_t_varno(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_case_t_varno(const pg_query_PLpgSQL_stmt_case* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_case_when_list(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_case_when* const* pg_query_PLpgSQL_stmt_case_case_when_list(const pg_query_PLpgSQL_stmt_case* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_case_when* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_case_case_when_list_upb_array(
+    const pg_query_PLpgSQL_stmt_case* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_case_case_when_list_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_case* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_have_else(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {6, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_case_have_else(const pg_query_PLpgSQL_stmt_case* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {6, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_clear_else_stmts(pg_query_PLpgSQL_stmt_case* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_case_else_stmts(const pg_query_PLpgSQL_stmt_case* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_case_else_stmts_upb_array(
+    const pg_query_PLpgSQL_stmt_case* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_case_else_stmts_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_case* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_set_lineno(pg_query_PLpgSQL_stmt_case* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_set_stmtid(pg_query_PLpgSQL_stmt_case* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_set_t_expr(pg_query_PLpgSQL_stmt_case* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_case_mutable_t_expr(
+    pg_query_PLpgSQL_stmt_case* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_case_t_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_case_set_t_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_set_t_varno(pg_query_PLpgSQL_stmt_case* msg, int32_t value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_case_when** pg_query_PLpgSQL_stmt_case_mutable_case_when_list(pg_query_PLpgSQL_stmt_case* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_case_when**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_case_when** pg_query_PLpgSQL_stmt_case_resize_case_when_list(pg_query_PLpgSQL_stmt_case* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  return (pg_query_PLpgSQL_case_when**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_case_when* pg_query_PLpgSQL_stmt_case_add_case_when_list(
+    pg_query_PLpgSQL_stmt_case* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 32), 0, UPB_SIZE(10, 12), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0case_0when_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_case_when* sub =
+      (struct pg_query_PLpgSQL_case_when*)_upb_Message_New(&pg_0query__PLpgSQL_0case_0when_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_case_set_have_else(pg_query_PLpgSQL_stmt_case* msg, bool value) {
+  const upb_MiniTableField field = {6, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_case_mutable_else_stmts(pg_query_PLpgSQL_stmt_case* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_case_resize_else_stmts(pg_query_PLpgSQL_stmt_case* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_case_add_else_stmts(
+    pg_query_PLpgSQL_stmt_case* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_loop */
+UPB_INLINE pg_query_PLpgSQL_stmt_loop* pg_query_PLpgSQL_stmt_loop_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_loop*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0loop_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_loop* pg_query_PLpgSQL_stmt_loop_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_loop* ret = pg_query_PLpgSQL_stmt_loop_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0loop_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_loop* pg_query_PLpgSQL_stmt_loop_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_loop* ret = pg_query_PLpgSQL_stmt_loop_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0loop_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_loop_serialize(const pg_query_PLpgSQL_stmt_loop* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0loop_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_loop_serialize_ex(const pg_query_PLpgSQL_stmt_loop* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0loop_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_clear_lineno(pg_query_PLpgSQL_stmt_loop* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_loop_lineno(const pg_query_PLpgSQL_stmt_loop* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_clear_stmtid(pg_query_PLpgSQL_stmt_loop* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_loop_stmtid(const pg_query_PLpgSQL_stmt_loop* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_clear_label(pg_query_PLpgSQL_stmt_loop* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_loop_label(const pg_query_PLpgSQL_stmt_loop* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_clear_body(pg_query_PLpgSQL_stmt_loop* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_loop_body(const pg_query_PLpgSQL_stmt_loop* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_loop_body_upb_array(
+    const pg_query_PLpgSQL_stmt_loop* msg, size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_loop_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_loop* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_set_lineno(pg_query_PLpgSQL_stmt_loop* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_set_stmtid(pg_query_PLpgSQL_stmt_loop* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_loop_set_label(pg_query_PLpgSQL_stmt_loop* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_loop_mutable_body(pg_query_PLpgSQL_stmt_loop* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_loop_resize_body(pg_query_PLpgSQL_stmt_loop* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_loop_add_body(
+    pg_query_PLpgSQL_stmt_loop* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(16, 32), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_while */
+UPB_INLINE pg_query_PLpgSQL_stmt_while* pg_query_PLpgSQL_stmt_while_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_while*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0while_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_while* pg_query_PLpgSQL_stmt_while_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_while* ret = pg_query_PLpgSQL_stmt_while_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0while_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_while* pg_query_PLpgSQL_stmt_while_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_while* ret = pg_query_PLpgSQL_stmt_while_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0while_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_while_serialize(const pg_query_PLpgSQL_stmt_while* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0while_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_while_serialize_ex(const pg_query_PLpgSQL_stmt_while* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0while_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_clear_lineno(pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_while_lineno(const pg_query_PLpgSQL_stmt_while* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_clear_stmtid(pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_while_stmtid(const pg_query_PLpgSQL_stmt_while* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_clear_label(pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_while_label(const pg_query_PLpgSQL_stmt_while* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_clear_cond(pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_while_cond(const pg_query_PLpgSQL_stmt_while* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_while_has_cond(const pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_clear_body(pg_query_PLpgSQL_stmt_while* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_while_body(const pg_query_PLpgSQL_stmt_while* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_while_body_upb_array(
+    const pg_query_PLpgSQL_stmt_while* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_while_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_while* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_set_lineno(pg_query_PLpgSQL_stmt_while* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_set_stmtid(pg_query_PLpgSQL_stmt_while* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_set_label(pg_query_PLpgSQL_stmt_while* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_while_set_cond(pg_query_PLpgSQL_stmt_while* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 40), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_while_mutable_cond(
+    pg_query_PLpgSQL_stmt_while* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_while_cond(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_while_set_cond(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_while_mutable_body(pg_query_PLpgSQL_stmt_while* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_while_resize_body(pg_query_PLpgSQL_stmt_while* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_while_add_body(
+    pg_query_PLpgSQL_stmt_while* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_fori */
+UPB_INLINE pg_query_PLpgSQL_stmt_fori* pg_query_PLpgSQL_stmt_fori_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_fori*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fori_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fori* pg_query_PLpgSQL_stmt_fori_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fori* ret = pg_query_PLpgSQL_stmt_fori_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fori_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fori* pg_query_PLpgSQL_stmt_fori_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fori* ret = pg_query_PLpgSQL_stmt_fori_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fori_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fori_serialize(const pg_query_PLpgSQL_stmt_fori* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fori_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fori_serialize_ex(const pg_query_PLpgSQL_stmt_fori* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fori_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_lineno(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fori_lineno(const pg_query_PLpgSQL_stmt_fori* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_stmtid(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_fori_stmtid(const pg_query_PLpgSQL_stmt_fori* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_label(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_fori_label(const pg_query_PLpgSQL_stmt_fori* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_var_dno(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fori_var_dno(const pg_query_PLpgSQL_stmt_fori* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_lower(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_lower(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fori_has_lower(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_upper(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 65, UPB_SIZE(13, 15), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_upper(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 65, UPB_SIZE(13, 15), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fori_has_upper(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 65, UPB_SIZE(13, 15), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_step(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 64), 66, UPB_SIZE(11, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_step(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 64), 66, UPB_SIZE(11, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fori_has_step(const pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 64), 66, UPB_SIZE(11, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_reverse(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fori_reverse(const pg_query_PLpgSQL_stmt_fori* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {8, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_clear_body(pg_query_PLpgSQL_stmt_fori* msg) {
+  const upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_fori_body(const pg_query_PLpgSQL_stmt_fori* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_fori_body_upb_array(
+    const pg_query_PLpgSQL_stmt_fori* msg, size_t* size) {
+  const upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_fori_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_fori* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_lineno(pg_query_PLpgSQL_stmt_fori* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_stmtid(pg_query_PLpgSQL_stmt_fori* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_label(pg_query_PLpgSQL_stmt_fori* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(44, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_var_dno(pg_query_PLpgSQL_stmt_fori* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_lower(pg_query_PLpgSQL_stmt_fori* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_mutable_lower(
+    pg_query_PLpgSQL_stmt_fori* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_fori_lower(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_fori_set_lower(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_upper(pg_query_PLpgSQL_stmt_fori* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 56), 65, UPB_SIZE(13, 15), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_mutable_upper(
+    pg_query_PLpgSQL_stmt_fori* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_fori_upper(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_fori_set_upper(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_step(pg_query_PLpgSQL_stmt_fori* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 64), 66, UPB_SIZE(11, 14), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fori_mutable_step(
+    pg_query_PLpgSQL_stmt_fori* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_fori_step(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_fori_set_step(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fori_set_reverse(pg_query_PLpgSQL_stmt_fori* msg, int32_t value) {
+  const upb_MiniTableField field = {8, UPB_SIZE(36, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_fori_mutable_body(pg_query_PLpgSQL_stmt_fori* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_fori_resize_body(pg_query_PLpgSQL_stmt_fori* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_fori_add_body(
+    pg_query_PLpgSQL_stmt_fori* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {9, UPB_SIZE(40, 72), 0, UPB_SIZE(6, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_fors */
+UPB_INLINE pg_query_PLpgSQL_stmt_fors* pg_query_PLpgSQL_stmt_fors_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_fors*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fors_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fors* pg_query_PLpgSQL_stmt_fors_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fors* ret = pg_query_PLpgSQL_stmt_fors_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fors_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fors* pg_query_PLpgSQL_stmt_fors_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fors* ret = pg_query_PLpgSQL_stmt_fors_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fors_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fors_serialize(const pg_query_PLpgSQL_stmt_fors* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fors_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fors_serialize_ex(const pg_query_PLpgSQL_stmt_fors* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fors_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_lineno(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fors_lineno(const pg_query_PLpgSQL_stmt_fors* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_stmtid(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_fors_stmtid(const pg_query_PLpgSQL_stmt_fors* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_label(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_fors_label(const pg_query_PLpgSQL_stmt_fors* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_var_dno(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fors_var_dno(const pg_query_PLpgSQL_stmt_fors* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_body(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_fors_body(const pg_query_PLpgSQL_stmt_fors* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_fors_body_upb_array(
+    const pg_query_PLpgSQL_stmt_fors* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_fors_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_fors* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_clear_query(pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fors_query(const pg_query_PLpgSQL_stmt_fors* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fors_has_query(const pg_query_PLpgSQL_stmt_fors* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_set_lineno(pg_query_PLpgSQL_stmt_fors* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_set_stmtid(pg_query_PLpgSQL_stmt_fors* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_set_label(pg_query_PLpgSQL_stmt_fors* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(32, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_set_var_dno(pg_query_PLpgSQL_stmt_fors* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_fors_mutable_body(pg_query_PLpgSQL_stmt_fors* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_fors_resize_body(pg_query_PLpgSQL_stmt_fors* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_fors_add_body(
+    pg_query_PLpgSQL_stmt_fors* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, 6, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fors_set_query(pg_query_PLpgSQL_stmt_fors* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fors_mutable_query(
+    pg_query_PLpgSQL_stmt_fors* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_fors_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_fors_set_query(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_forc */
+UPB_INLINE pg_query_PLpgSQL_stmt_forc* pg_query_PLpgSQL_stmt_forc_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_forc*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0forc_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_forc* pg_query_PLpgSQL_stmt_forc_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_forc* ret = pg_query_PLpgSQL_stmt_forc_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0forc_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_forc* pg_query_PLpgSQL_stmt_forc_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_forc* ret = pg_query_PLpgSQL_stmt_forc_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0forc_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_forc_serialize(const pg_query_PLpgSQL_stmt_forc* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0forc_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_forc_serialize_ex(const pg_query_PLpgSQL_stmt_forc* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0forc_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_lineno(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_forc_lineno(const pg_query_PLpgSQL_stmt_forc* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_stmtid(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_forc_stmtid(const pg_query_PLpgSQL_stmt_forc* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_label(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_forc_label(const pg_query_PLpgSQL_stmt_forc* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_var_dno(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_forc_var_dno(const pg_query_PLpgSQL_stmt_forc* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_body(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_forc_body(const pg_query_PLpgSQL_stmt_forc* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_forc_body_upb_array(
+    const pg_query_PLpgSQL_stmt_forc* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_forc_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_forc* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_curvar(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_forc_curvar(const pg_query_PLpgSQL_stmt_forc* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_clear_argquery(pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 64, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_forc_argquery(const pg_query_PLpgSQL_stmt_forc* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 64, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_forc_has_argquery(const pg_query_PLpgSQL_stmt_forc* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 64, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_lineno(pg_query_PLpgSQL_stmt_forc* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_stmtid(pg_query_PLpgSQL_stmt_forc* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_label(pg_query_PLpgSQL_stmt_forc* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_var_dno(pg_query_PLpgSQL_stmt_forc* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_forc_mutable_body(pg_query_PLpgSQL_stmt_forc* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_forc_resize_body(pg_query_PLpgSQL_stmt_forc* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_forc_add_body(
+    pg_query_PLpgSQL_stmt_forc* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 48), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_curvar(pg_query_PLpgSQL_stmt_forc* msg, int32_t value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 24), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_forc_set_argquery(pg_query_PLpgSQL_stmt_forc* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 64, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_forc_mutable_argquery(
+    pg_query_PLpgSQL_stmt_forc* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_forc_argquery(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_forc_set_argquery(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_foreach_a */
+UPB_INLINE pg_query_PLpgSQL_stmt_foreach_a* pg_query_PLpgSQL_stmt_foreach_a_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_foreach_a*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_foreach_a* pg_query_PLpgSQL_stmt_foreach_a_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_foreach_a* ret = pg_query_PLpgSQL_stmt_foreach_a_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_foreach_a* pg_query_PLpgSQL_stmt_foreach_a_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_foreach_a* ret = pg_query_PLpgSQL_stmt_foreach_a_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_foreach_a_serialize(const pg_query_PLpgSQL_stmt_foreach_a* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_foreach_a_serialize_ex(const pg_query_PLpgSQL_stmt_foreach_a* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0foreach_0a_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_lineno(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_foreach_a_lineno(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_stmtid(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_foreach_a_stmtid(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_label(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_foreach_a_label(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_varno(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_foreach_a_varno(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_slice(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {5, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_foreach_a_slice(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {5, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_expr(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_foreach_a_expr(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_foreach_a_has_expr(const pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_clear_body(pg_query_PLpgSQL_stmt_foreach_a* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_foreach_a_body(const pg_query_PLpgSQL_stmt_foreach_a* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_foreach_a_body_upb_array(
+    const pg_query_PLpgSQL_stmt_foreach_a* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_foreach_a_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_foreach_a* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_lineno(pg_query_PLpgSQL_stmt_foreach_a* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_stmtid(pg_query_PLpgSQL_stmt_foreach_a* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_label(pg_query_PLpgSQL_stmt_foreach_a* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 32), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_varno(pg_query_PLpgSQL_stmt_foreach_a* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_slice(pg_query_PLpgSQL_stmt_foreach_a* msg, int32_t value) {
+  const upb_MiniTableField field = {5, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_foreach_a_set_expr(pg_query_PLpgSQL_stmt_foreach_a* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_foreach_a_mutable_expr(
+    pg_query_PLpgSQL_stmt_foreach_a* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_foreach_a_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_foreach_a_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_foreach_a_mutable_body(pg_query_PLpgSQL_stmt_foreach_a* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_foreach_a_resize_body(pg_query_PLpgSQL_stmt_foreach_a* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_foreach_a_add_body(
+    pg_query_PLpgSQL_stmt_foreach_a* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_exit */
+UPB_INLINE pg_query_PLpgSQL_stmt_exit* pg_query_PLpgSQL_stmt_exit_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_exit*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0exit_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_exit* pg_query_PLpgSQL_stmt_exit_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_exit* ret = pg_query_PLpgSQL_stmt_exit_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0exit_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_exit* pg_query_PLpgSQL_stmt_exit_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_exit* ret = pg_query_PLpgSQL_stmt_exit_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0exit_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_exit_serialize(const pg_query_PLpgSQL_stmt_exit* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0exit_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_exit_serialize_ex(const pg_query_PLpgSQL_stmt_exit* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0exit_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_clear_lineno(pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_exit_lineno(const pg_query_PLpgSQL_stmt_exit* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_clear_stmtid(pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_exit_stmtid(const pg_query_PLpgSQL_stmt_exit* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_clear_is_exit(pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {3, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_exit_is_exit(const pg_query_PLpgSQL_stmt_exit* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {3, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_clear_label(pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_exit_label(const pg_query_PLpgSQL_stmt_exit* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_clear_cond(pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(20, 40), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_exit_cond(const pg_query_PLpgSQL_stmt_exit* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(20, 40), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_exit_has_cond(const pg_query_PLpgSQL_stmt_exit* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(20, 40), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_set_lineno(pg_query_PLpgSQL_stmt_exit* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_set_stmtid(pg_query_PLpgSQL_stmt_exit* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_set_is_exit(pg_query_PLpgSQL_stmt_exit* msg, bool value) {
+  const upb_MiniTableField field = {3, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_set_label(pg_query_PLpgSQL_stmt_exit* msg, upb_StringView value) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_exit_set_cond(pg_query_PLpgSQL_stmt_exit* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(20, 40), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_exit_mutable_cond(
+    pg_query_PLpgSQL_stmt_exit* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_exit_cond(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_exit_set_cond(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_return */
+UPB_INLINE pg_query_PLpgSQL_stmt_return* pg_query_PLpgSQL_stmt_return_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_return*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return* pg_query_PLpgSQL_stmt_return_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return* ret = pg_query_PLpgSQL_stmt_return_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return* pg_query_PLpgSQL_stmt_return_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return* ret = pg_query_PLpgSQL_stmt_return_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_serialize(const pg_query_PLpgSQL_stmt_return* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_serialize_ex(const pg_query_PLpgSQL_stmt_return* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_clear_lineno(pg_query_PLpgSQL_stmt_return* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_return_lineno(const pg_query_PLpgSQL_stmt_return* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_clear_stmtid(pg_query_PLpgSQL_stmt_return* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_return_stmtid(const pg_query_PLpgSQL_stmt_return* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_clear_expr(pg_query_PLpgSQL_stmt_return* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_expr(const pg_query_PLpgSQL_stmt_return* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_return_has_expr(const pg_query_PLpgSQL_stmt_return* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_clear_retvarno(pg_query_PLpgSQL_stmt_return* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_return_retvarno(const pg_query_PLpgSQL_stmt_return* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_set_lineno(pg_query_PLpgSQL_stmt_return* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_set_stmtid(pg_query_PLpgSQL_stmt_return* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_set_expr(pg_query_PLpgSQL_stmt_return* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_mutable_expr(
+    pg_query_PLpgSQL_stmt_return* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_return_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_return_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_set_retvarno(pg_query_PLpgSQL_stmt_return* msg, int32_t value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_return_next */
+UPB_INLINE pg_query_PLpgSQL_stmt_return_next* pg_query_PLpgSQL_stmt_return_next_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_return_next*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return_next* pg_query_PLpgSQL_stmt_return_next_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return_next* ret = pg_query_PLpgSQL_stmt_return_next_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return_next* pg_query_PLpgSQL_stmt_return_next_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return_next* ret = pg_query_PLpgSQL_stmt_return_next_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_next_serialize(const pg_query_PLpgSQL_stmt_return_next* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_next_serialize_ex(const pg_query_PLpgSQL_stmt_return_next* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_0next_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_clear_lineno(pg_query_PLpgSQL_stmt_return_next* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_return_next_lineno(const pg_query_PLpgSQL_stmt_return_next* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_clear_stmtid(pg_query_PLpgSQL_stmt_return_next* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_return_next_stmtid(const pg_query_PLpgSQL_stmt_return_next* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_clear_expr(pg_query_PLpgSQL_stmt_return_next* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_next_expr(const pg_query_PLpgSQL_stmt_return_next* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_return_next_has_expr(const pg_query_PLpgSQL_stmt_return_next* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_clear_retvarno(pg_query_PLpgSQL_stmt_return_next* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_return_next_retvarno(const pg_query_PLpgSQL_stmt_return_next* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_set_lineno(pg_query_PLpgSQL_stmt_return_next* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_set_stmtid(pg_query_PLpgSQL_stmt_return_next* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_set_expr(pg_query_PLpgSQL_stmt_return_next* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_next_mutable_expr(
+    pg_query_PLpgSQL_stmt_return_next* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_return_next_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_return_next_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_next_set_retvarno(pg_query_PLpgSQL_stmt_return_next* msg, int32_t value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_return_query */
+UPB_INLINE pg_query_PLpgSQL_stmt_return_query* pg_query_PLpgSQL_stmt_return_query_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_return_query*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return_query* pg_query_PLpgSQL_stmt_return_query_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return_query* ret = pg_query_PLpgSQL_stmt_return_query_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_return_query* pg_query_PLpgSQL_stmt_return_query_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_return_query* ret = pg_query_PLpgSQL_stmt_return_query_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_query_serialize(const pg_query_PLpgSQL_stmt_return_query* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_return_query_serialize_ex(const pg_query_PLpgSQL_stmt_return_query* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0return_0query_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_clear_lineno(pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_return_query_lineno(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_clear_stmtid(pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_return_query_stmtid(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_clear_query(pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_query_query(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_return_query_has_query(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_clear_dynquery(pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_query_dynquery(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_return_query_has_dynquery(const pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_clear_params(pg_query_PLpgSQL_stmt_return_query* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* const* pg_query_PLpgSQL_stmt_return_query_params(const pg_query_PLpgSQL_stmt_return_query* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_expr* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_return_query_params_upb_array(
+    const pg_query_PLpgSQL_stmt_return_query* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_return_query_params_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_return_query* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_set_lineno(pg_query_PLpgSQL_stmt_return_query* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_set_stmtid(pg_query_PLpgSQL_stmt_return_query* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_set_query(pg_query_PLpgSQL_stmt_return_query* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_query_mutable_query(
+    pg_query_PLpgSQL_stmt_return_query* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_return_query_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_return_query_set_query(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_return_query_set_dynquery(pg_query_PLpgSQL_stmt_return_query* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_query_mutable_dynquery(
+    pg_query_PLpgSQL_stmt_return_query* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_return_query_dynquery(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_return_query_set_dynquery(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_return_query_mutable_params(pg_query_PLpgSQL_stmt_return_query* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_expr**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_return_query_resize_params(pg_query_PLpgSQL_stmt_return_query* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  return (pg_query_PLpgSQL_expr**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_return_query_add_params(
+    pg_query_PLpgSQL_stmt_return_query* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(28, 40), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_expr* sub =
+      (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_raise */
+UPB_INLINE pg_query_PLpgSQL_stmt_raise* pg_query_PLpgSQL_stmt_raise_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_raise*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0raise_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_raise* pg_query_PLpgSQL_stmt_raise_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_raise* ret = pg_query_PLpgSQL_stmt_raise_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0raise_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_raise* pg_query_PLpgSQL_stmt_raise_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_raise* ret = pg_query_PLpgSQL_stmt_raise_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0raise_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_raise_serialize(const pg_query_PLpgSQL_stmt_raise* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0raise_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_raise_serialize_ex(const pg_query_PLpgSQL_stmt_raise* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0raise_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_lineno(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_raise_lineno(const pg_query_PLpgSQL_stmt_raise* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_stmtid(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_raise_stmtid(const pg_query_PLpgSQL_stmt_raise* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_elog_level(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_raise_elog_level(const pg_query_PLpgSQL_stmt_raise* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_condname(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_raise_condname(const pg_query_PLpgSQL_stmt_raise* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_message(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(36, 40), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_raise_message(const pg_query_PLpgSQL_stmt_raise* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(36, 40), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_params(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* const* pg_query_PLpgSQL_stmt_raise_params(const pg_query_PLpgSQL_stmt_raise* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_expr* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_raise_params_upb_array(
+    const pg_query_PLpgSQL_stmt_raise* msg, size_t* size) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_raise_params_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_raise* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_clear_options(pg_query_PLpgSQL_stmt_raise* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_raise_option* const* pg_query_PLpgSQL_stmt_raise_options(const pg_query_PLpgSQL_stmt_raise* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_raise_option* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_raise_options_upb_array(
+    const pg_query_PLpgSQL_stmt_raise* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_raise_options_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_raise* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_set_lineno(pg_query_PLpgSQL_stmt_raise* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_set_stmtid(pg_query_PLpgSQL_stmt_raise* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_set_elog_level(pg_query_PLpgSQL_stmt_raise* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_set_condname(pg_query_PLpgSQL_stmt_raise* msg, upb_StringView value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(28, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_raise_set_message(pg_query_PLpgSQL_stmt_raise* msg, upb_StringView value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(36, 40), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_raise_mutable_params(pg_query_PLpgSQL_stmt_raise* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_expr**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_raise_resize_params(pg_query_PLpgSQL_stmt_raise* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  return (pg_query_PLpgSQL_expr**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_raise_add_params(
+    pg_query_PLpgSQL_stmt_raise* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {6, UPB_SIZE(20, 56), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_expr* sub =
+      (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_raise_option** pg_query_PLpgSQL_stmt_raise_mutable_options(pg_query_PLpgSQL_stmt_raise* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_raise_option**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_raise_option** pg_query_PLpgSQL_stmt_raise_resize_options(pg_query_PLpgSQL_stmt_raise* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  return (pg_query_PLpgSQL_raise_option**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_raise_option* pg_query_PLpgSQL_stmt_raise_add_options(
+    pg_query_PLpgSQL_stmt_raise* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(24, 64), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0raise_0option_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_raise_option* sub =
+      (struct pg_query_PLpgSQL_raise_option*)_upb_Message_New(&pg_0query__PLpgSQL_0raise_0option_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_assert */
+UPB_INLINE pg_query_PLpgSQL_stmt_assert* pg_query_PLpgSQL_stmt_assert_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_assert*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0assert_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_assert* pg_query_PLpgSQL_stmt_assert_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_assert* ret = pg_query_PLpgSQL_stmt_assert_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0assert_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_assert* pg_query_PLpgSQL_stmt_assert_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_assert* ret = pg_query_PLpgSQL_stmt_assert_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0assert_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_assert_serialize(const pg_query_PLpgSQL_stmt_assert* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0assert_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_assert_serialize_ex(const pg_query_PLpgSQL_stmt_assert* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0assert_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_clear_lineno(pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_assert_lineno(const pg_query_PLpgSQL_stmt_assert* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_clear_stmtid(pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_assert_stmtid(const pg_query_PLpgSQL_stmt_assert* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_clear_cond(pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assert_cond(const pg_query_PLpgSQL_stmt_assert* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_assert_has_cond(const pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_clear_message(pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assert_message(const pg_query_PLpgSQL_stmt_assert* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_assert_has_message(const pg_query_PLpgSQL_stmt_assert* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_set_lineno(pg_query_PLpgSQL_stmt_assert* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_set_stmtid(pg_query_PLpgSQL_stmt_assert* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_set_cond(pg_query_PLpgSQL_stmt_assert* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 6, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assert_mutable_cond(
+    pg_query_PLpgSQL_stmt_assert* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_assert_cond(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_assert_set_cond(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_assert_set_message(pg_query_PLpgSQL_stmt_assert* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {4, UPB_SIZE(24, 32), 65, UPB_SIZE(4, 5), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_assert_mutable_message(
+    pg_query_PLpgSQL_stmt_assert* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_assert_message(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_assert_set_message(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_execsql */
+UPB_INLINE pg_query_PLpgSQL_stmt_execsql* pg_query_PLpgSQL_stmt_execsql_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_execsql*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0execsql_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_execsql* pg_query_PLpgSQL_stmt_execsql_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_execsql* ret = pg_query_PLpgSQL_stmt_execsql_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0execsql_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_execsql* pg_query_PLpgSQL_stmt_execsql_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_execsql* ret = pg_query_PLpgSQL_stmt_execsql_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0execsql_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_execsql_serialize(const pg_query_PLpgSQL_stmt_execsql* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0execsql_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_execsql_serialize_ex(const pg_query_PLpgSQL_stmt_execsql* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0execsql_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_lineno(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_execsql_lineno(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_stmtid(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_execsql_stmtid(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_sqlstmt(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_execsql_sqlstmt(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_execsql_has_sqlstmt(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_into(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_execsql_into(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_strict(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_execsql_strict(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_clear_target_dno(pg_query_PLpgSQL_stmt_execsql* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_execsql_target_dno(const pg_query_PLpgSQL_stmt_execsql* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_lineno(pg_query_PLpgSQL_stmt_execsql* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_stmtid(pg_query_PLpgSQL_stmt_execsql* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_sqlstmt(pg_query_PLpgSQL_stmt_execsql* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_execsql_mutable_sqlstmt(
+    pg_query_PLpgSQL_stmt_execsql* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_execsql_sqlstmt(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_execsql_set_sqlstmt(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_into(pg_query_PLpgSQL_stmt_execsql* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_strict(pg_query_PLpgSQL_stmt_execsql* msg, bool value) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_execsql_set_target_dno(pg_query_PLpgSQL_stmt_execsql* msg, int32_t value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_dynexecute */
+UPB_INLINE pg_query_PLpgSQL_stmt_dynexecute* pg_query_PLpgSQL_stmt_dynexecute_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_dynexecute*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_dynexecute* pg_query_PLpgSQL_stmt_dynexecute_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_dynexecute* ret = pg_query_PLpgSQL_stmt_dynexecute_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_dynexecute* pg_query_PLpgSQL_stmt_dynexecute_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_dynexecute* ret = pg_query_PLpgSQL_stmt_dynexecute_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_dynexecute_serialize(const pg_query_PLpgSQL_stmt_dynexecute* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_dynexecute_serialize_ex(const pg_query_PLpgSQL_stmt_dynexecute* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0dynexecute_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_lineno(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_dynexecute_lineno(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_stmtid(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_dynexecute_stmtid(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_query(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynexecute_query(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_dynexecute_has_query(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_into(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_dynexecute_into(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_strict(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_dynexecute_strict(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_target_dno(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_dynexecute_target_dno(const pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_clear_params(pg_query_PLpgSQL_stmt_dynexecute* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* const* pg_query_PLpgSQL_stmt_dynexecute_params(const pg_query_PLpgSQL_stmt_dynexecute* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_expr* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_dynexecute_params_upb_array(
+    const pg_query_PLpgSQL_stmt_dynexecute* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_dynexecute_params_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_dynexecute* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_lineno(pg_query_PLpgSQL_stmt_dynexecute* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_stmtid(pg_query_PLpgSQL_stmt_dynexecute* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_query(pg_query_PLpgSQL_stmt_dynexecute* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(15, 16), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynexecute_mutable_query(
+    pg_query_PLpgSQL_stmt_dynexecute* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_dynexecute_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_dynexecute_set_query(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_into(pg_query_PLpgSQL_stmt_dynexecute* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_strict(pg_query_PLpgSQL_stmt_dynexecute* msg, bool value) {
+  const upb_MiniTableField field = {5, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynexecute_set_target_dno(pg_query_PLpgSQL_stmt_dynexecute* msg, int32_t value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_dynexecute_mutable_params(pg_query_PLpgSQL_stmt_dynexecute* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_expr**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_dynexecute_resize_params(pg_query_PLpgSQL_stmt_dynexecute* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  return (pg_query_PLpgSQL_expr**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynexecute_add_params(
+    pg_query_PLpgSQL_stmt_dynexecute* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(28, 32), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_expr* sub =
+      (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_dynfors */
+UPB_INLINE pg_query_PLpgSQL_stmt_dynfors* pg_query_PLpgSQL_stmt_dynfors_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_dynfors*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_dynfors* pg_query_PLpgSQL_stmt_dynfors_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_dynfors* ret = pg_query_PLpgSQL_stmt_dynfors_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_dynfors* pg_query_PLpgSQL_stmt_dynfors_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_dynfors* ret = pg_query_PLpgSQL_stmt_dynfors_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_dynfors_serialize(const pg_query_PLpgSQL_stmt_dynfors* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_dynfors_serialize_ex(const pg_query_PLpgSQL_stmt_dynfors* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0dynfors_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_lineno(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_dynfors_lineno(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_stmtid(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_dynfors_stmtid(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_label(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_stmt_dynfors_label(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_var_dno(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_dynfors_var_dno(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_body(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_stmt_dynfors_body(const pg_query_PLpgSQL_stmt_dynfors* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_dynfors_body_upb_array(
+    const pg_query_PLpgSQL_stmt_dynfors* msg, size_t* size) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_dynfors_body_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_dynfors* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_query(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynfors_query(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_dynfors_has_query(const pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_clear_params(pg_query_PLpgSQL_stmt_dynfors* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* const* pg_query_PLpgSQL_stmt_dynfors_params(const pg_query_PLpgSQL_stmt_dynfors* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_expr* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_dynfors_params_upb_array(
+    const pg_query_PLpgSQL_stmt_dynfors* msg, size_t* size) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_dynfors_params_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_dynfors* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_set_lineno(pg_query_PLpgSQL_stmt_dynfors* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_set_stmtid(pg_query_PLpgSQL_stmt_dynfors* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_set_label(pg_query_PLpgSQL_stmt_dynfors* msg, upb_StringView value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(36, 24), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_set_var_dno(pg_query_PLpgSQL_stmt_dynfors* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_dynfors_mutable_body(pg_query_PLpgSQL_stmt_dynfors* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_stmt_dynfors_resize_body(pg_query_PLpgSQL_stmt_dynfors* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_stmt_dynfors_add_body(
+    pg_query_PLpgSQL_stmt_dynfors* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {5, UPB_SIZE(24, 40), 0, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_dynfors_set_query(pg_query_PLpgSQL_stmt_dynfors* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(28, 48), 64, UPB_SIZE(7, 9), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynfors_mutable_query(
+    pg_query_PLpgSQL_stmt_dynfors* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_dynfors_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_dynfors_set_query(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_dynfors_mutable_params(pg_query_PLpgSQL_stmt_dynfors* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_expr**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_dynfors_resize_params(pg_query_PLpgSQL_stmt_dynfors* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  return (pg_query_PLpgSQL_expr**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_dynfors_add_params(
+    pg_query_PLpgSQL_stmt_dynfors* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {7, UPB_SIZE(32, 56), 0, UPB_SIZE(5, 8), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_expr* sub =
+      (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_getdiag */
+UPB_INLINE pg_query_PLpgSQL_stmt_getdiag* pg_query_PLpgSQL_stmt_getdiag_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_getdiag*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_getdiag* pg_query_PLpgSQL_stmt_getdiag_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_getdiag* ret = pg_query_PLpgSQL_stmt_getdiag_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_getdiag* pg_query_PLpgSQL_stmt_getdiag_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_getdiag* ret = pg_query_PLpgSQL_stmt_getdiag_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_getdiag_serialize(const pg_query_PLpgSQL_stmt_getdiag* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_getdiag_serialize_ex(const pg_query_PLpgSQL_stmt_getdiag* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0getdiag_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_clear_lineno(pg_query_PLpgSQL_stmt_getdiag* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_getdiag_lineno(const pg_query_PLpgSQL_stmt_getdiag* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_clear_stmtid(pg_query_PLpgSQL_stmt_getdiag* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_getdiag_stmtid(const pg_query_PLpgSQL_stmt_getdiag* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_clear_is_stacked(pg_query_PLpgSQL_stmt_getdiag* msg) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_getdiag_is_stacked(const pg_query_PLpgSQL_stmt_getdiag* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_clear_diag_items(pg_query_PLpgSQL_stmt_getdiag* msg) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_diag_item* const* pg_query_PLpgSQL_stmt_getdiag_diag_items(const pg_query_PLpgSQL_stmt_getdiag* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_diag_item* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_getdiag_diag_items_upb_array(
+    const pg_query_PLpgSQL_stmt_getdiag* msg, size_t* size) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_getdiag_diag_items_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_getdiag* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_set_lineno(pg_query_PLpgSQL_stmt_getdiag* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_set_stmtid(pg_query_PLpgSQL_stmt_getdiag* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_getdiag_set_is_stacked(pg_query_PLpgSQL_stmt_getdiag* msg, bool value) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_diag_item** pg_query_PLpgSQL_stmt_getdiag_mutable_diag_items(pg_query_PLpgSQL_stmt_getdiag* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_diag_item**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_diag_item** pg_query_PLpgSQL_stmt_getdiag_resize_diag_items(pg_query_PLpgSQL_stmt_getdiag* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  return (pg_query_PLpgSQL_diag_item**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_diag_item* pg_query_PLpgSQL_stmt_getdiag_add_diag_items(
+    pg_query_PLpgSQL_stmt_getdiag* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {4, UPB_SIZE(20, 24), 0, 3, 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0diag_0item_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_diag_item* sub =
+      (struct pg_query_PLpgSQL_diag_item*)_upb_Message_New(&pg_0query__PLpgSQL_0diag_0item_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_open */
+UPB_INLINE pg_query_PLpgSQL_stmt_open* pg_query_PLpgSQL_stmt_open_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_open*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0open_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_open* pg_query_PLpgSQL_stmt_open_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_open* ret = pg_query_PLpgSQL_stmt_open_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0open_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_open* pg_query_PLpgSQL_stmt_open_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_open* ret = pg_query_PLpgSQL_stmt_open_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0open_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_open_serialize(const pg_query_PLpgSQL_stmt_open* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0open_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_open_serialize_ex(const pg_query_PLpgSQL_stmt_open* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0open_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_lineno(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_open_lineno(const pg_query_PLpgSQL_stmt_open* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_stmtid(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_open_stmtid(const pg_query_PLpgSQL_stmt_open* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_curvar(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_open_curvar(const pg_query_PLpgSQL_stmt_open* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_cursor_options(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_open_cursor_options(const pg_query_PLpgSQL_stmt_open* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_argquery(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_argquery(const pg_query_PLpgSQL_stmt_open* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_open_has_argquery(const pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_query(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 40), 65, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_query(const pg_query_PLpgSQL_stmt_open* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 40), 65, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_open_has_query(const pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 40), 65, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_dynquery(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(36, 48), 66, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_dynquery(const pg_query_PLpgSQL_stmt_open* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(36, 48), 66, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_open_has_dynquery(const pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(36, 48), 66, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_clear_params(pg_query_PLpgSQL_stmt_open* msg) {
+  const upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* const* pg_query_PLpgSQL_stmt_open_params(const pg_query_PLpgSQL_stmt_open* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_expr* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_stmt_open_params_upb_array(
+    const pg_query_PLpgSQL_stmt_open* msg, size_t* size) {
+  const upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_stmt_open_params_mutable_upb_array(
+    pg_query_PLpgSQL_stmt_open* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_lineno(pg_query_PLpgSQL_stmt_open* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_stmtid(pg_query_PLpgSQL_stmt_open* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_curvar(pg_query_PLpgSQL_stmt_open* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_cursor_options(pg_query_PLpgSQL_stmt_open* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_argquery(pg_query_PLpgSQL_stmt_open* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(28, 32), 64, 12, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_mutable_argquery(
+    pg_query_PLpgSQL_stmt_open* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_open_argquery(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_open_set_argquery(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_query(pg_query_PLpgSQL_stmt_open* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(32, 40), 65, UPB_SIZE(10, 11), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_mutable_query(
+    pg_query_PLpgSQL_stmt_open* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_open_query(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_open_set_query(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_open_set_dynquery(pg_query_PLpgSQL_stmt_open* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(36, 48), 66, UPB_SIZE(8, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_mutable_dynquery(
+    pg_query_PLpgSQL_stmt_open* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_open_dynquery(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_open_set_dynquery(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_open_mutable_params(pg_query_PLpgSQL_stmt_open* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_expr**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_expr** pg_query_PLpgSQL_stmt_open_resize_params(pg_query_PLpgSQL_stmt_open* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  return (pg_query_PLpgSQL_expr**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_open_add_params(
+    pg_query_PLpgSQL_stmt_open* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {8, UPB_SIZE(40, 56), 0, UPB_SIZE(6, 9), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_expr* sub =
+      (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_fetch */
+UPB_INLINE pg_query_PLpgSQL_stmt_fetch* pg_query_PLpgSQL_stmt_fetch_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_fetch*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0fetch_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fetch* pg_query_PLpgSQL_stmt_fetch_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fetch* ret = pg_query_PLpgSQL_stmt_fetch_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fetch_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_fetch* pg_query_PLpgSQL_stmt_fetch_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_fetch* ret = pg_query_PLpgSQL_stmt_fetch_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0fetch_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fetch_serialize(const pg_query_PLpgSQL_stmt_fetch* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fetch_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_fetch_serialize_ex(const pg_query_PLpgSQL_stmt_fetch* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0fetch_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_lineno(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fetch_lineno(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_stmtid(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_fetch_stmtid(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_target_dno(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fetch_target_dno(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_curvar(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fetch_curvar(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_direction(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {5, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_fetch_direction(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {5, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_how_many(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {6, UPB_SIZE(40, 32), 0, kUpb_NoSub, 3, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_8Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int64_t pg_query_PLpgSQL_stmt_fetch_how_many(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  int64_t default_val = (int64_t)0ll;
+  int64_t ret;
+  const upb_MiniTableField field = {6, UPB_SIZE(40, 32), 0, kUpb_NoSub, 3, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_8Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_expr(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fetch_expr(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fetch_has_expr(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_is_move(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {8, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fetch_is_move(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {8, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_clear_returns_multiple_rows(pg_query_PLpgSQL_stmt_fetch* msg) {
+  const upb_MiniTableField field = {9, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_fetch_returns_multiple_rows(const pg_query_PLpgSQL_stmt_fetch* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {9, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_lineno(pg_query_PLpgSQL_stmt_fetch* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_stmtid(pg_query_PLpgSQL_stmt_fetch* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_target_dno(pg_query_PLpgSQL_stmt_fetch* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 20, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_curvar(pg_query_PLpgSQL_stmt_fetch* msg, int32_t value) {
+  const upb_MiniTableField field = {4, 24, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_direction(pg_query_PLpgSQL_stmt_fetch* msg, int32_t value) {
+  const upb_MiniTableField field = {5, 28, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_how_many(pg_query_PLpgSQL_stmt_fetch* msg, int64_t value) {
+  const upb_MiniTableField field = {6, UPB_SIZE(40, 32), 0, kUpb_NoSub, 3, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_8Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_expr(pg_query_PLpgSQL_stmt_fetch* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {7, UPB_SIZE(32, 40), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_fetch_mutable_expr(
+    pg_query_PLpgSQL_stmt_fetch* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_fetch_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_fetch_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_is_move(pg_query_PLpgSQL_stmt_fetch* msg, bool value) {
+  const upb_MiniTableField field = {8, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_fetch_set_returns_multiple_rows(pg_query_PLpgSQL_stmt_fetch* msg, bool value) {
+  const upb_MiniTableField field = {9, 10, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_close */
+UPB_INLINE pg_query_PLpgSQL_stmt_close* pg_query_PLpgSQL_stmt_close_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_close*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0close_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_close* pg_query_PLpgSQL_stmt_close_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_close* ret = pg_query_PLpgSQL_stmt_close_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0close_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_close* pg_query_PLpgSQL_stmt_close_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_close* ret = pg_query_PLpgSQL_stmt_close_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0close_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_close_serialize(const pg_query_PLpgSQL_stmt_close* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0close_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_close_serialize_ex(const pg_query_PLpgSQL_stmt_close* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0close_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_clear_lineno(pg_query_PLpgSQL_stmt_close* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_close_lineno(const pg_query_PLpgSQL_stmt_close* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_clear_stmtid(pg_query_PLpgSQL_stmt_close* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_close_stmtid(const pg_query_PLpgSQL_stmt_close* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_clear_curvar(pg_query_PLpgSQL_stmt_close* msg) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_close_curvar(const pg_query_PLpgSQL_stmt_close* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_set_lineno(pg_query_PLpgSQL_stmt_close* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_set_stmtid(pg_query_PLpgSQL_stmt_close* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_close_set_curvar(pg_query_PLpgSQL_stmt_close* msg, int32_t value) {
+  const upb_MiniTableField field = {3, 16, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_perform */
+UPB_INLINE pg_query_PLpgSQL_stmt_perform* pg_query_PLpgSQL_stmt_perform_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_perform*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0perform_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_perform* pg_query_PLpgSQL_stmt_perform_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_perform* ret = pg_query_PLpgSQL_stmt_perform_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0perform_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_perform* pg_query_PLpgSQL_stmt_perform_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_perform* ret = pg_query_PLpgSQL_stmt_perform_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0perform_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_perform_serialize(const pg_query_PLpgSQL_stmt_perform* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0perform_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_perform_serialize_ex(const pg_query_PLpgSQL_stmt_perform* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0perform_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_clear_lineno(pg_query_PLpgSQL_stmt_perform* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_perform_lineno(const pg_query_PLpgSQL_stmt_perform* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_clear_stmtid(pg_query_PLpgSQL_stmt_perform* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_perform_stmtid(const pg_query_PLpgSQL_stmt_perform* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_clear_expr(pg_query_PLpgSQL_stmt_perform* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_perform_expr(const pg_query_PLpgSQL_stmt_perform* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_perform_has_expr(const pg_query_PLpgSQL_stmt_perform* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_set_lineno(pg_query_PLpgSQL_stmt_perform* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_set_stmtid(pg_query_PLpgSQL_stmt_perform* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_perform_set_expr(pg_query_PLpgSQL_stmt_perform* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(3, 4), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_perform_mutable_expr(
+    pg_query_PLpgSQL_stmt_perform* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_perform_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_perform_set_expr(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_stmt_call */
+UPB_INLINE pg_query_PLpgSQL_stmt_call* pg_query_PLpgSQL_stmt_call_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_call*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0call_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_call* pg_query_PLpgSQL_stmt_call_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_call* ret = pg_query_PLpgSQL_stmt_call_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0call_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_call* pg_query_PLpgSQL_stmt_call_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_call* ret = pg_query_PLpgSQL_stmt_call_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0call_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_call_serialize(const pg_query_PLpgSQL_stmt_call* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0call_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_call_serialize_ex(const pg_query_PLpgSQL_stmt_call* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0call_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_clear_lineno(pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_call_lineno(const pg_query_PLpgSQL_stmt_call* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_clear_stmtid(pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_call_stmtid(const pg_query_PLpgSQL_stmt_call* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_clear_expr(pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_call_expr(const pg_query_PLpgSQL_stmt_call* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_call_has_expr(const pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_clear_is_call(pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_call_is_call(const pg_query_PLpgSQL_stmt_call* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_clear_target_dno(pg_query_PLpgSQL_stmt_call* msg) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_call_target_dno(const pg_query_PLpgSQL_stmt_call* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_set_lineno(pg_query_PLpgSQL_stmt_call* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_set_stmtid(pg_query_PLpgSQL_stmt_call* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_set_expr(pg_query_PLpgSQL_stmt_call* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 64, UPB_SIZE(9, 10), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_stmt_call_mutable_expr(
+    pg_query_PLpgSQL_stmt_call* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_stmt_call_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_stmt_call_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_set_is_call(pg_query_PLpgSQL_stmt_call* msg, bool value) {
+  const upb_MiniTableField field = {4, 9, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_call_set_target_dno(pg_query_PLpgSQL_stmt_call* msg, int32_t value) {
+  const upb_MiniTableField field = {5, UPB_SIZE(24, 20), 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_commit */
+UPB_INLINE pg_query_PLpgSQL_stmt_commit* pg_query_PLpgSQL_stmt_commit_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_commit*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0commit_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_commit* pg_query_PLpgSQL_stmt_commit_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_commit* ret = pg_query_PLpgSQL_stmt_commit_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0commit_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_commit* pg_query_PLpgSQL_stmt_commit_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_commit* ret = pg_query_PLpgSQL_stmt_commit_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0commit_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_commit_serialize(const pg_query_PLpgSQL_stmt_commit* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0commit_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_commit_serialize_ex(const pg_query_PLpgSQL_stmt_commit* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0commit_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_clear_lineno(pg_query_PLpgSQL_stmt_commit* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_commit_lineno(const pg_query_PLpgSQL_stmt_commit* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_clear_stmtid(pg_query_PLpgSQL_stmt_commit* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_commit_stmtid(const pg_query_PLpgSQL_stmt_commit* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_clear_chain(pg_query_PLpgSQL_stmt_commit* msg) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_commit_chain(const pg_query_PLpgSQL_stmt_commit* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_set_lineno(pg_query_PLpgSQL_stmt_commit* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_set_stmtid(pg_query_PLpgSQL_stmt_commit* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_commit_set_chain(pg_query_PLpgSQL_stmt_commit* msg, bool value) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_stmt_rollback */
+UPB_INLINE pg_query_PLpgSQL_stmt_rollback* pg_query_PLpgSQL_stmt_rollback_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_stmt_rollback*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_0rollback_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_rollback* pg_query_PLpgSQL_stmt_rollback_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_rollback* ret = pg_query_PLpgSQL_stmt_rollback_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0rollback_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt_rollback* pg_query_PLpgSQL_stmt_rollback_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_stmt_rollback* ret = pg_query_PLpgSQL_stmt_rollback_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0stmt_0rollback_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_rollback_serialize(const pg_query_PLpgSQL_stmt_rollback* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0rollback_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_stmt_rollback_serialize_ex(const pg_query_PLpgSQL_stmt_rollback* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0stmt_0rollback_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_clear_lineno(pg_query_PLpgSQL_stmt_rollback* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_stmt_rollback_lineno(const pg_query_PLpgSQL_stmt_rollback* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_clear_stmtid(pg_query_PLpgSQL_stmt_rollback* msg) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE uint32_t pg_query_PLpgSQL_stmt_rollback_stmtid(const pg_query_PLpgSQL_stmt_rollback* msg) {
+  uint32_t default_val = (uint32_t)0u;
+  uint32_t ret;
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_clear_chain(pg_query_PLpgSQL_stmt_rollback* msg) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE bool pg_query_PLpgSQL_stmt_rollback_chain(const pg_query_PLpgSQL_stmt_rollback* msg) {
+  bool default_val = false;
+  bool ret;
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_set_lineno(pg_query_PLpgSQL_stmt_rollback* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_set_stmtid(pg_query_PLpgSQL_stmt_rollback* msg, uint32_t value) {
+  const upb_MiniTableField field = {2, 16, 0, kUpb_NoSub, 13, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_stmt_rollback_set_chain(pg_query_PLpgSQL_stmt_rollback* msg, bool value) {
+  const upb_MiniTableField field = {3, 8, 0, kUpb_NoSub, 8, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_1Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_exception */
+UPB_INLINE pg_query_PLpgSQL_exception* pg_query_PLpgSQL_exception_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_exception*)_upb_Message_New(&pg_0query__PLpgSQL_0exception_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_exception* pg_query_PLpgSQL_exception_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_exception* ret = pg_query_PLpgSQL_exception_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0exception_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_exception* pg_query_PLpgSQL_exception_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_exception* ret = pg_query_PLpgSQL_exception_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0exception_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_exception_serialize(const pg_query_PLpgSQL_exception* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0exception_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_exception_serialize_ex(const pg_query_PLpgSQL_exception* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0exception_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_clear_lineno(pg_query_PLpgSQL_exception* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_exception_lineno(const pg_query_PLpgSQL_exception* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_clear_conditions(pg_query_PLpgSQL_exception* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_condition* const* pg_query_PLpgSQL_exception_conditions(const pg_query_PLpgSQL_exception* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_condition* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_exception_conditions_upb_array(
+    const pg_query_PLpgSQL_exception* msg, size_t* size) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_exception_conditions_mutable_upb_array(
+    pg_query_PLpgSQL_exception* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+UPB_INLINE void pg_query_PLpgSQL_exception_clear_action(pg_query_PLpgSQL_exception* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_exception_action(const pg_query_PLpgSQL_exception* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_exception_action_upb_array(
+    const pg_query_PLpgSQL_exception* msg, size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_exception_action_mutable_upb_array(
+    pg_query_PLpgSQL_exception* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_exception_set_lineno(pg_query_PLpgSQL_exception* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE pg_query_PLpgSQL_condition** pg_query_PLpgSQL_exception_mutable_conditions(pg_query_PLpgSQL_exception* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_condition**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_condition** pg_query_PLpgSQL_exception_resize_conditions(pg_query_PLpgSQL_exception* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  return (pg_query_PLpgSQL_condition**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_condition* pg_query_PLpgSQL_exception_add_conditions(
+    pg_query_PLpgSQL_exception* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0condition_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_condition* sub =
+      (struct pg_query_PLpgSQL_condition*)_upb_Message_New(&pg_0query__PLpgSQL_0condition_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_exception_mutable_action(pg_query_PLpgSQL_exception* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_exception_resize_action(pg_query_PLpgSQL_exception* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_exception_add_action(
+    pg_query_PLpgSQL_exception* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(16, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_if_elsif */
+UPB_INLINE pg_query_PLpgSQL_if_elsif* pg_query_PLpgSQL_if_elsif_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_if_elsif*)_upb_Message_New(&pg_0query__PLpgSQL_0if_0elsif_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_if_elsif* pg_query_PLpgSQL_if_elsif_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_if_elsif* ret = pg_query_PLpgSQL_if_elsif_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0if_0elsif_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_if_elsif* pg_query_PLpgSQL_if_elsif_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_if_elsif* ret = pg_query_PLpgSQL_if_elsif_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0if_0elsif_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_if_elsif_serialize(const pg_query_PLpgSQL_if_elsif* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0if_0elsif_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_if_elsif_serialize_ex(const pg_query_PLpgSQL_if_elsif* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0if_0elsif_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_if_elsif_clear_lineno(pg_query_PLpgSQL_if_elsif* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_if_elsif_lineno(const pg_query_PLpgSQL_if_elsif* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_if_elsif_clear_cond(pg_query_PLpgSQL_if_elsif* msg) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_if_elsif_cond(const pg_query_PLpgSQL_if_elsif* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_if_elsif_has_cond(const pg_query_PLpgSQL_if_elsif* msg) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_if_elsif_clear_stmts(pg_query_PLpgSQL_if_elsif* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_if_elsif_stmts(const pg_query_PLpgSQL_if_elsif* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_if_elsif_stmts_upb_array(
+    const pg_query_PLpgSQL_if_elsif* msg, size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_if_elsif_stmts_mutable_upb_array(
+    pg_query_PLpgSQL_if_elsif* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_if_elsif_set_lineno(pg_query_PLpgSQL_if_elsif* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_if_elsif_set_cond(pg_query_PLpgSQL_if_elsif* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_if_elsif_mutable_cond(
+    pg_query_PLpgSQL_if_elsif* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_if_elsif_cond(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_if_elsif_set_cond(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_if_elsif_mutable_stmts(pg_query_PLpgSQL_if_elsif* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_if_elsif_resize_stmts(pg_query_PLpgSQL_if_elsif* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_if_elsif_add_stmts(
+    pg_query_PLpgSQL_if_elsif* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_case_when */
+UPB_INLINE pg_query_PLpgSQL_case_when* pg_query_PLpgSQL_case_when_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_case_when*)_upb_Message_New(&pg_0query__PLpgSQL_0case_0when_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_case_when* pg_query_PLpgSQL_case_when_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_case_when* ret = pg_query_PLpgSQL_case_when_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0case_0when_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_case_when* pg_query_PLpgSQL_case_when_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_case_when* ret = pg_query_PLpgSQL_case_when_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0case_0when_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_case_when_serialize(const pg_query_PLpgSQL_case_when* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0case_0when_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_case_when_serialize_ex(const pg_query_PLpgSQL_case_when* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0case_0when_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_case_when_clear_lineno(pg_query_PLpgSQL_case_when* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_case_when_lineno(const pg_query_PLpgSQL_case_when* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_case_when_clear_expr(pg_query_PLpgSQL_case_when* msg) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_case_when_expr(const pg_query_PLpgSQL_case_when* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_case_when_has_expr(const pg_query_PLpgSQL_case_when* msg) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE void pg_query_PLpgSQL_case_when_clear_stmts(pg_query_PLpgSQL_case_when* msg) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_stmt* const* pg_query_PLpgSQL_case_when_stmts(const pg_query_PLpgSQL_case_when* msg,
+                                                  size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (const pg_query_PLpgSQL_stmt* const*)upb_Array_DataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+//
+UPB_INLINE const upb_Array* _pg_query_PLpgSQL_case_when_stmts_upb_array(
+    const pg_query_PLpgSQL_case_when* msg, size_t* size) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  const upb_Array* arr = upb_Message_GetArray(UPB_UPCAST(msg), &field);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE upb_Array* _pg_query_PLpgSQL_case_when_stmts_mutable_upb_array(
+    pg_query_PLpgSQL_case_when* msg, size_t* size, upb_Arena* arena) {
+  const upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(UPB_UPCAST(msg),
+                                                       &field, arena);
+  if (size) {
+    *size = arr ? arr->UPB_PRIVATE(size) : 0;
+  }
+  return arr;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_case_when_set_lineno(pg_query_PLpgSQL_case_when* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_case_when_set_expr(pg_query_PLpgSQL_case_when* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {2, 16, 64, UPB_SIZE(6, 7), 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_case_when_mutable_expr(
+    pg_query_PLpgSQL_case_when* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_case_when_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_case_when_set_expr(msg, sub);
+  }
+  return sub;
+}
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_case_when_mutable_stmts(pg_query_PLpgSQL_case_when* msg,
+                                              size_t* size) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetMutableArray(UPB_UPCAST(msg), &field);
+  if (arr) {
+    if (size) *size = arr->UPB_PRIVATE(size);
+    return (pg_query_PLpgSQL_stmt**)upb_Array_MutableDataPtr(arr);
+  } else {
+    if (size) *size = 0;
+    return NULL;
+  }
+}
+
+UPB_INLINE pg_query_PLpgSQL_stmt** pg_query_PLpgSQL_case_when_resize_stmts(pg_query_PLpgSQL_case_when* msg,
+                                             size_t size,
+                                             upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  return (pg_query_PLpgSQL_stmt**)upb_Message_ResizeArrayUninitialized(
+      UPB_UPCAST(msg), &field, size, arena);
+}
+UPB_INLINE struct pg_query_PLpgSQL_stmt* pg_query_PLpgSQL_case_when_add_stmts(
+    pg_query_PLpgSQL_case_when* msg, upb_Arena* arena) {
+  upb_MiniTableField field = {3, UPB_SIZE(20, 24), 0, UPB_SIZE(4, 6), 11, (int)kUpb_FieldMode_Array | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0stmt_msg_init);
+  upb_Array* arr = upb_Message_GetOrCreateMutableArray(
+      UPB_UPCAST(msg), &field, arena);
+  if (!arr || !UPB_PRIVATE(_upb_Array_ResizeUninitialized)(
+                  arr, arr->UPB_PRIVATE(size) + 1, arena)) {
+    return NULL;
+  }
+  struct pg_query_PLpgSQL_stmt* sub =
+      (struct pg_query_PLpgSQL_stmt*)_upb_Message_New(&pg_0query__PLpgSQL_0stmt_msg_init, arena);
+  if (!arr || !sub) return NULL;
+  UPB_PRIVATE(_upb_Array_Set)
+  (arr, arr->UPB_PRIVATE(size) - 1, &sub, sizeof(sub));
+  return sub;
+}
+
+/* pg_query.PLpgSQL_raise_option */
+UPB_INLINE pg_query_PLpgSQL_raise_option* pg_query_PLpgSQL_raise_option_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_raise_option*)_upb_Message_New(&pg_0query__PLpgSQL_0raise_0option_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_raise_option* pg_query_PLpgSQL_raise_option_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_raise_option* ret = pg_query_PLpgSQL_raise_option_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0raise_0option_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_raise_option* pg_query_PLpgSQL_raise_option_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_raise_option* ret = pg_query_PLpgSQL_raise_option_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0raise_0option_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_raise_option_serialize(const pg_query_PLpgSQL_raise_option* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0raise_0option_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_raise_option_serialize_ex(const pg_query_PLpgSQL_raise_option* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0raise_0option_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_raise_option_clear_opt_type(pg_query_PLpgSQL_raise_option* msg) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_raise_option_opt_type(const pg_query_PLpgSQL_raise_option* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_raise_option_clear_expr(pg_query_PLpgSQL_raise_option* msg) {
+  const upb_MiniTableField field = {2, 16, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE const pg_query_PLpgSQL_expr* pg_query_PLpgSQL_raise_option_expr(const pg_query_PLpgSQL_raise_option* msg) {
+  const pg_query_PLpgSQL_expr* default_val = NULL;
+  const pg_query_PLpgSQL_expr* ret;
+  const upb_MiniTableField field = {2, 16, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE bool pg_query_PLpgSQL_raise_option_has_expr(const pg_query_PLpgSQL_raise_option* msg) {
+  const upb_MiniTableField field = {2, 16, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  return upb_Message_HasBaseField(UPB_UPCAST(msg), &field);
+}
+
+UPB_INLINE void pg_query_PLpgSQL_raise_option_set_opt_type(pg_query_PLpgSQL_raise_option* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_raise_option_set_expr(pg_query_PLpgSQL_raise_option* msg, pg_query_PLpgSQL_expr* value) {
+  const upb_MiniTableField field = {2, 16, 64, 3, 11, (int)kUpb_FieldMode_Scalar | ((int)UPB_SIZE(kUpb_FieldRep_4Byte, kUpb_FieldRep_8Byte) << kUpb_FieldRep_Shift)};
+  UPB_PRIVATE(_upb_MiniTable_StrongReference)(&pg_0query__PLpgSQL_0expr_msg_init);
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE struct pg_query_PLpgSQL_expr* pg_query_PLpgSQL_raise_option_mutable_expr(
+    pg_query_PLpgSQL_raise_option* msg, upb_Arena* arena) {
+  struct pg_query_PLpgSQL_expr* sub = (struct pg_query_PLpgSQL_expr*)pg_query_PLpgSQL_raise_option_expr(msg);
+  if (sub == NULL) {
+    sub = (struct pg_query_PLpgSQL_expr*)_upb_Message_New(&pg_0query__PLpgSQL_0expr_msg_init, arena);
+    if (sub) pg_query_PLpgSQL_raise_option_set_expr(msg, sub);
+  }
+  return sub;
+}
+
+/* pg_query.PLpgSQL_diag_item */
+UPB_INLINE pg_query_PLpgSQL_diag_item* pg_query_PLpgSQL_diag_item_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_diag_item*)_upb_Message_New(&pg_0query__PLpgSQL_0diag_0item_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_diag_item* pg_query_PLpgSQL_diag_item_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_diag_item* ret = pg_query_PLpgSQL_diag_item_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0diag_0item_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_diag_item* pg_query_PLpgSQL_diag_item_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_diag_item* ret = pg_query_PLpgSQL_diag_item_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0diag_0item_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_diag_item_serialize(const pg_query_PLpgSQL_diag_item* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0diag_0item_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_diag_item_serialize_ex(const pg_query_PLpgSQL_diag_item* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0diag_0item_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_diag_item_clear_kind(pg_query_PLpgSQL_diag_item* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_diag_item_kind(const pg_query_PLpgSQL_diag_item* msg) {
+  int32_t default_val = 0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_diag_item_clear_target(pg_query_PLpgSQL_diag_item* msg) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_diag_item_target(const pg_query_PLpgSQL_diag_item* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_diag_item_set_kind(pg_query_PLpgSQL_diag_item* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | (int)kUpb_LabelFlags_IsAlternate | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_diag_item_set_target(pg_query_PLpgSQL_diag_item* msg, int32_t value) {
+  const upb_MiniTableField field = {2, 12, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_condition */
+UPB_INLINE pg_query_PLpgSQL_condition* pg_query_PLpgSQL_condition_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_condition*)_upb_Message_New(&pg_0query__PLpgSQL_0condition_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_condition* pg_query_PLpgSQL_condition_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_condition* ret = pg_query_PLpgSQL_condition_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0condition_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_condition* pg_query_PLpgSQL_condition_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_condition* ret = pg_query_PLpgSQL_condition_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0condition_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_condition_serialize(const pg_query_PLpgSQL_condition* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0condition_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_condition_serialize_ex(const pg_query_PLpgSQL_condition* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0condition_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_condition_clear_sqlerrstate(pg_query_PLpgSQL_condition* msg) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_condition_sqlerrstate(const pg_query_PLpgSQL_condition* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_condition_clear_condname(pg_query_PLpgSQL_condition* msg) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_condition_condname(const pg_query_PLpgSQL_condition* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_condition_set_sqlerrstate(pg_query_PLpgSQL_condition* msg, int32_t value) {
+  const upb_MiniTableField field = {1, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_condition_set_condname(pg_query_PLpgSQL_condition* msg, upb_StringView value) {
+  const upb_MiniTableField field = {2, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+
+/* pg_query.PLpgSQL_row_field */
+UPB_INLINE pg_query_PLpgSQL_row_field* pg_query_PLpgSQL_row_field_new(upb_Arena* arena) {
+  return (pg_query_PLpgSQL_row_field*)_upb_Message_New(&pg_0query__PLpgSQL_0row_0field_msg_init, arena);
+}
+UPB_INLINE pg_query_PLpgSQL_row_field* pg_query_PLpgSQL_row_field_parse(const char* buf, size_t size,
+                                        upb_Arena* arena) {
+  pg_query_PLpgSQL_row_field* ret = pg_query_PLpgSQL_row_field_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0row_0field_msg_init, NULL, 0,
+                 arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE pg_query_PLpgSQL_row_field* pg_query_PLpgSQL_row_field_parse_ex(
+    const char* buf, size_t size, const upb_ExtensionRegistry* extreg,
+    int options, upb_Arena* arena) {
+  pg_query_PLpgSQL_row_field* ret = pg_query_PLpgSQL_row_field_new(arena);
+  if (!ret) return NULL;
+  if (upb_Decode(buf, size, UPB_UPCAST(ret), &pg_0query__PLpgSQL_0row_0field_msg_init, extreg,
+                 options, arena) != kUpb_DecodeStatus_Ok) {
+    return NULL;
+  }
+  return ret;
+}
+UPB_INLINE char* pg_query_PLpgSQL_row_field_serialize(const pg_query_PLpgSQL_row_field* msg,
+                                      upb_Arena* arena, size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0row_0field_msg_init, 0, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE char* pg_query_PLpgSQL_row_field_serialize_ex(const pg_query_PLpgSQL_row_field* msg,
+                                         int options, upb_Arena* arena,
+                                         size_t* len) {
+  char* ptr;
+  (void)upb_Encode(UPB_UPCAST(msg), &pg_0query__PLpgSQL_0row_0field_msg_init, options, arena, &ptr, len);
+  return ptr;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_field_clear_name(pg_query_PLpgSQL_row_field* msg) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE upb_StringView pg_query_PLpgSQL_row_field_name(const pg_query_PLpgSQL_row_field* msg) {
+  upb_StringView default_val = upb_StringView_FromString("");
+  upb_StringView ret;
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+UPB_INLINE void pg_query_PLpgSQL_row_field_clear_varno(pg_query_PLpgSQL_row_field* msg) {
+  const upb_MiniTableField field = {2, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  upb_Message_ClearBaseField(UPB_UPCAST(msg), &field);
+}
+UPB_INLINE int32_t pg_query_PLpgSQL_row_field_varno(const pg_query_PLpgSQL_row_field* msg) {
+  int32_t default_val = (int32_t)0;
+  int32_t ret;
+  const upb_MiniTableField field = {2, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
+  _upb_Message_GetNonExtensionField(UPB_UPCAST(msg), &field,
+                                    &default_val, &ret);
+  return ret;
+}
+
+UPB_INLINE void pg_query_PLpgSQL_row_field_set_name(pg_query_PLpgSQL_row_field* msg, upb_StringView value) {
+  const upb_MiniTableField field = {1, UPB_SIZE(12, 16), 0, kUpb_NoSub, 9, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_StringView << kUpb_FieldRep_Shift)};
+  upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
+}
+UPB_INLINE void pg_query_PLpgSQL_row_field_set_varno(pg_query_PLpgSQL_row_field* msg, int32_t value) {
+  const upb_MiniTableField field = {2, 8, 0, kUpb_NoSub, 5, (int)kUpb_FieldMode_Scalar | ((int)kUpb_FieldRep_4Byte << kUpb_FieldRep_Shift)};
   upb_Message_SetBaseField((upb_Message*)msg, &field, &value);
 }
 

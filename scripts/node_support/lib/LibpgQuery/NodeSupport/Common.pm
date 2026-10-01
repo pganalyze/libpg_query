@@ -6,16 +6,44 @@ use strict;
 use warnings FATAL => 'all';
 use Exporter 'import';
 
-our @EXPORT_OK = qw(elem write_file node_fields parse_tree_nodes underscore);
+our @EXPORT_OK =
+  qw(elem write_file node_fields parse_tree_nodes underscore scalar_kind);
 
 # Header files defining the raw parse tree nodes libpg_query works with
 my @PARSE_TREE_HEADERS = ('nodes/parsenodes.h', 'nodes/primnodes.h');
+
+# C types output via the simple WRITE_<KIND>_FIELD macros, and the protobuf
+# type each maps to
+my @INT_TYPES = qw(int int16 int32 AttrNumber ParseLoc);
+my @UINT_TYPES =
+  qw(uint uint16 uint32 Index bits32 Oid SubTransactionId RelFileNumber);
+my @UINT64_TYPES = qw(uint64 AclMode);
+my @FLOAT_TYPES = qw(float double Cost Cardinality Selectivity);
+my @BITMAPSET_TYPES = ('Bitmapset*', 'Relids');
 
 # Test whether first argument is element of the list in the second argument
 sub elem
 {
 	my $x = shift;
 	return grep { $_ eq $x } @_;
+}
+
+# Returns (macro kind, protobuf type) for a scalar C type, or an empty list
+# if the type is not a scalar handled by the simple WRITE_*_FIELD macros
+sub scalar_kind
+{
+	my ($t) = @_;
+
+	return ('CHAR', 'string') if $t eq 'char';
+	return ('BOOL', 'bool') if $t eq 'bool';
+	return ('LONG', 'int64') if $t eq 'long';
+	return ('INT', 'int32') if elem($t, @INT_TYPES);
+	return ('UINT', 'uint32') if elem($t, @UINT_TYPES) or $t eq 'unsigned int';
+	return ('UINT64', 'uint64') if elem($t, @UINT64_TYPES);
+	return ('STRING', 'string') if $t eq 'char*';
+	return ('FLOAT', 'double') if elem($t, @FLOAT_TYPES);
+	return ('BITMAPSET', 'repeated uint64') if elem($t, @BITMAPSET_TYPES);
+	return ();
 }
 
 # Converts CamelCase names to snake_case, for protobuf field and message

@@ -3623,6 +3623,536 @@ enum CompareType
   COMPARE_CONTAINED_BY = 9;
 }
 
+message PLpgSQLParseResult
+{
+  int32 version = 1;
+  repeated PLpgSQL_function functions = 2;
+}
+
+message PLpgSQL_function
+{
+  string fn_signature = 1 [json_name="fn_signature"];
+  uint32 fn_oid = 2 [json_name="fn_oid"];
+  PLpgSQL_trigtype fn_is_trigger = 3 [json_name="fn_is_trigger"];
+  uint32 fn_input_collation = 4 [json_name="fn_input_collation"];
+  uint32 fn_rettype = 5 [json_name="fn_rettype"];
+  int32 fn_rettyplen = 6 [json_name="fn_rettyplen"];
+  bool fn_retbyval = 7 [json_name="fn_retbyval"];
+  bool fn_retistuple = 8 [json_name="fn_retistuple"];
+  bool fn_retisdomain = 9 [json_name="fn_retisdomain"];
+  bool fn_retset = 10 [json_name="fn_retset"];
+  bool fn_readonly = 11 [json_name="fn_readonly"];
+  string fn_prokind = 12 [json_name="fn_prokind"];
+  repeated int32 fn_argvarnos = 13 [json_name="fn_argvarnos"];
+  int32 out_param_varno = 14 [json_name="out_param_varno"];
+  int32 found_varno = 15 [json_name="found_varno"];
+  int32 new_varno = 16 [json_name="new_varno"];
+  int32 old_varno = 17 [json_name="old_varno"];
+  PLpgSQL_resolve_option resolve_option = 18 [json_name="resolve_option"];
+  bool print_strict_params = 19 [json_name="print_strict_params"];
+  int32 extra_warnings = 20 [json_name="extra_warnings"];
+  int32 extra_errors = 21 [json_name="extra_errors"];
+  repeated PLpgSQL_datum datums = 22 [json_name="datums"];
+  PLpgSQL_stmt_block action = 23 [json_name="action"];
+  uint32 nstatements = 24 [json_name="nstatements"];
+  bool requires_procedure_resowner = 25 [json_name="requires_procedure_resowner"];
+  bool has_exception_block = 26 [json_name="has_exception_block"];
+}
+
+message PLpgSQL_datum
+{
+  oneof node {
+    PLpgSQL_var var = 1 [json_name="PLpgSQL_var"];
+    PLpgSQL_row row = 2 [json_name="PLpgSQL_row"];
+    PLpgSQL_rec rec = 3 [json_name="PLpgSQL_rec"];
+    PLpgSQL_recfield recfield = 4 [json_name="PLpgSQL_recfield"];
+  }
+}
+
+message PLpgSQL_stmt_block
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  repeated PLpgSQL_stmt body = 4 [json_name="body"];
+  repeated int32 initvarnos = 5 [json_name="initvarnos"];
+  PLpgSQL_exception_block exceptions = 6 [json_name="exceptions"];
+}
+
+message PLpgSQL_var
+{
+  int32 dno = 1 [json_name="dno"];
+  string refname = 2 [json_name="refname"];
+  int32 lineno = 3 [json_name="lineno"];
+  bool isconst = 4 [json_name="isconst"];
+  bool notnull = 5 [json_name="notnull"];
+  PLpgSQL_expr default_val = 6 [json_name="default_val"];
+  PLpgSQL_type datatype = 7 [json_name="datatype"];
+  PLpgSQL_expr cursor_explicit_expr = 8 [json_name="cursor_explicit_expr"];
+  int32 cursor_explicit_argrow = 9 [json_name="cursor_explicit_argrow"];
+  int32 cursor_options = 10 [json_name="cursor_options"];
+  PLpgSQL_promise_type promise = 11 [json_name="promise"];
+}
+
+message PLpgSQL_row
+{
+  int32 dno = 1 [json_name="dno"];
+  string refname = 2 [json_name="refname"];
+  int32 lineno = 3 [json_name="lineno"];
+  bool isconst = 4 [json_name="isconst"];
+  bool notnull = 5 [json_name="notnull"];
+  PLpgSQL_expr default_val = 6 [json_name="default_val"];
+  repeated PLpgSQL_row_field fields = 7 [json_name="fields"];
+}
+
+message PLpgSQL_rec
+{
+  int32 dno = 1 [json_name="dno"];
+  string refname = 2 [json_name="refname"];
+  int32 lineno = 3 [json_name="lineno"];
+  bool isconst = 4 [json_name="isconst"];
+  bool notnull = 5 [json_name="notnull"];
+  PLpgSQL_expr default_val = 6 [json_name="default_val"];
+  PLpgSQL_type datatype = 7 [json_name="datatype"];
+  uint32 rectypeid = 8 [json_name="rectypeid"];
+  int32 firstfield = 9 [json_name="firstfield"];
+}
+
+message PLpgSQL_recfield
+{
+  int32 dno = 1 [json_name="dno"];
+  string fieldname = 2 [json_name="fieldname"];
+  int32 recparentno = 3 [json_name="recparentno"];
+  int32 nextfield = 4 [json_name="nextfield"];
+}
+
+message PLpgSQL_stmt
+{
+  oneof node {
+    PLpgSQL_stmt_block stmt_block = 1 [json_name="PLpgSQL_stmt_block"];
+    PLpgSQL_stmt_assign stmt_assign = 2 [json_name="PLpgSQL_stmt_assign"];
+    PLpgSQL_stmt_if stmt_if = 3 [json_name="PLpgSQL_stmt_if"];
+    PLpgSQL_stmt_case stmt_case = 4 [json_name="PLpgSQL_stmt_case"];
+    PLpgSQL_stmt_loop stmt_loop = 5 [json_name="PLpgSQL_stmt_loop"];
+    PLpgSQL_stmt_while stmt_while = 6 [json_name="PLpgSQL_stmt_while"];
+    PLpgSQL_stmt_fori stmt_fori = 7 [json_name="PLpgSQL_stmt_fori"];
+    PLpgSQL_stmt_fors stmt_fors = 8 [json_name="PLpgSQL_stmt_fors"];
+    PLpgSQL_stmt_forc stmt_forc = 9 [json_name="PLpgSQL_stmt_forc"];
+    PLpgSQL_stmt_foreach_a stmt_foreach_a = 10 [json_name="PLpgSQL_stmt_foreach_a"];
+    PLpgSQL_stmt_exit stmt_exit = 11 [json_name="PLpgSQL_stmt_exit"];
+    PLpgSQL_stmt_return stmt_return = 12 [json_name="PLpgSQL_stmt_return"];
+    PLpgSQL_stmt_return_next stmt_return_next = 13 [json_name="PLpgSQL_stmt_return_next"];
+    PLpgSQL_stmt_return_query stmt_return_query = 14 [json_name="PLpgSQL_stmt_return_query"];
+    PLpgSQL_stmt_raise stmt_raise = 15 [json_name="PLpgSQL_stmt_raise"];
+    PLpgSQL_stmt_assert stmt_assert = 16 [json_name="PLpgSQL_stmt_assert"];
+    PLpgSQL_stmt_execsql stmt_execsql = 17 [json_name="PLpgSQL_stmt_execsql"];
+    PLpgSQL_stmt_dynexecute stmt_dynexecute = 18 [json_name="PLpgSQL_stmt_dynexecute"];
+    PLpgSQL_stmt_dynfors stmt_dynfors = 19 [json_name="PLpgSQL_stmt_dynfors"];
+    PLpgSQL_stmt_getdiag stmt_getdiag = 20 [json_name="PLpgSQL_stmt_getdiag"];
+    PLpgSQL_stmt_open stmt_open = 21 [json_name="PLpgSQL_stmt_open"];
+    PLpgSQL_stmt_fetch stmt_fetch = 22 [json_name="PLpgSQL_stmt_fetch"];
+    PLpgSQL_stmt_close stmt_close = 23 [json_name="PLpgSQL_stmt_close"];
+    PLpgSQL_stmt_perform stmt_perform = 24 [json_name="PLpgSQL_stmt_perform"];
+    PLpgSQL_stmt_call stmt_call = 25 [json_name="PLpgSQL_stmt_call"];
+    PLpgSQL_stmt_commit stmt_commit = 26 [json_name="PLpgSQL_stmt_commit"];
+    PLpgSQL_stmt_rollback stmt_rollback = 27 [json_name="PLpgSQL_stmt_rollback"];
+  }
+}
+
+message PLpgSQL_exception_block
+{
+  int32 sqlstate_varno = 1 [json_name="sqlstate_varno"];
+  int32 sqlerrm_varno = 2 [json_name="sqlerrm_varno"];
+  repeated PLpgSQL_exception exc_list = 3 [json_name="exc_list"];
+}
+
+message PLpgSQL_expr
+{
+  string query = 1 [json_name="query"];
+  int32 parse_mode = 2 [json_name="parseMode"];
+  int32 target_param = 3 [json_name="target_param"];
+  bool target_is_local = 4 [json_name="target_is_local"];
+}
+
+message PLpgSQL_type
+{
+  string typname = 1 [json_name="typname"];
+  uint32 typoid = 2 [json_name="typoid"];
+  PLpgSQL_type_type ttype = 3 [json_name="ttype"];
+  int32 typlen = 4 [json_name="typlen"];
+  bool typbyval = 5 [json_name="typbyval"];
+  string typtype = 6 [json_name="typtype"];
+  uint32 collation = 7 [json_name="collation"];
+  bool typisarray = 8 [json_name="typisarray"];
+  int32 atttypmod = 9 [json_name="atttypmod"];
+  TypeName origtypname = 10 [json_name="origtypname"];
+}
+
+message PLpgSQL_stmt_assign
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  int32 varno = 3 [json_name="varno"];
+  PLpgSQL_expr expr = 4 [json_name="expr"];
+}
+
+message PLpgSQL_stmt_if
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr cond = 3 [json_name="cond"];
+  repeated PLpgSQL_stmt then_body = 4 [json_name="then_body"];
+  repeated PLpgSQL_if_elsif elsif_list = 5 [json_name="elsif_list"];
+  repeated PLpgSQL_stmt else_body = 6 [json_name="else_body"];
+}
+
+message PLpgSQL_stmt_case
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr t_expr = 3 [json_name="t_expr"];
+  int32 t_varno = 4 [json_name="t_varno"];
+  repeated PLpgSQL_case_when case_when_list = 5 [json_name="case_when_list"];
+  bool have_else = 6 [json_name="have_else"];
+  repeated PLpgSQL_stmt else_stmts = 7 [json_name="else_stmts"];
+}
+
+message PLpgSQL_stmt_loop
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  repeated PLpgSQL_stmt body = 4 [json_name="body"];
+}
+
+message PLpgSQL_stmt_while
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  PLpgSQL_expr cond = 4 [json_name="cond"];
+  repeated PLpgSQL_stmt body = 5 [json_name="body"];
+}
+
+message PLpgSQL_stmt_fori
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  int32 var_dno = 4 [json_name="var_dno"];
+  PLpgSQL_expr lower = 5 [json_name="lower"];
+  PLpgSQL_expr upper = 6 [json_name="upper"];
+  PLpgSQL_expr step = 7 [json_name="step"];
+  int32 reverse = 8 [json_name="reverse"];
+  repeated PLpgSQL_stmt body = 9 [json_name="body"];
+}
+
+message PLpgSQL_stmt_fors
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  int32 var_dno = 4 [json_name="var_dno"];
+  repeated PLpgSQL_stmt body = 5 [json_name="body"];
+  PLpgSQL_expr query = 6 [json_name="query"];
+}
+
+message PLpgSQL_stmt_forc
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  int32 var_dno = 4 [json_name="var_dno"];
+  repeated PLpgSQL_stmt body = 5 [json_name="body"];
+  int32 curvar = 6 [json_name="curvar"];
+  PLpgSQL_expr argquery = 7 [json_name="argquery"];
+}
+
+message PLpgSQL_stmt_foreach_a
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  int32 varno = 4 [json_name="varno"];
+  int32 slice = 5 [json_name="slice"];
+  PLpgSQL_expr expr = 6 [json_name="expr"];
+  repeated PLpgSQL_stmt body = 7 [json_name="body"];
+}
+
+message PLpgSQL_stmt_exit
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  bool is_exit = 3 [json_name="is_exit"];
+  string label = 4 [json_name="label"];
+  PLpgSQL_expr cond = 5 [json_name="cond"];
+}
+
+message PLpgSQL_stmt_return
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr expr = 3 [json_name="expr"];
+  int32 retvarno = 4 [json_name="retvarno"];
+}
+
+message PLpgSQL_stmt_return_next
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr expr = 3 [json_name="expr"];
+  int32 retvarno = 4 [json_name="retvarno"];
+}
+
+message PLpgSQL_stmt_return_query
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr query = 3 [json_name="query"];
+  PLpgSQL_expr dynquery = 4 [json_name="dynquery"];
+  repeated PLpgSQL_expr params = 5 [json_name="params"];
+}
+
+message PLpgSQL_stmt_raise
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  int32 elog_level = 3 [json_name="elog_level"];
+  string condname = 4 [json_name="condname"];
+  string message = 5 [json_name="message"];
+  repeated PLpgSQL_expr params = 6 [json_name="params"];
+  repeated PLpgSQL_raise_option options = 7 [json_name="options"];
+}
+
+message PLpgSQL_stmt_assert
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr cond = 3 [json_name="cond"];
+  PLpgSQL_expr message = 4 [json_name="message"];
+}
+
+message PLpgSQL_stmt_execsql
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr sqlstmt = 3 [json_name="sqlstmt"];
+  bool into = 4 [json_name="into"];
+  bool strict = 5 [json_name="strict"];
+  int32 target_dno = 6 [json_name="target_dno"];
+}
+
+message PLpgSQL_stmt_dynexecute
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr query = 3 [json_name="query"];
+  bool into = 4 [json_name="into"];
+  bool strict = 5 [json_name="strict"];
+  int32 target_dno = 6 [json_name="target_dno"];
+  repeated PLpgSQL_expr params = 7 [json_name="params"];
+}
+
+message PLpgSQL_stmt_dynfors
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  string label = 3 [json_name="label"];
+  int32 var_dno = 4 [json_name="var_dno"];
+  repeated PLpgSQL_stmt body = 5 [json_name="body"];
+  PLpgSQL_expr query = 6 [json_name="query"];
+  repeated PLpgSQL_expr params = 7 [json_name="params"];
+}
+
+message PLpgSQL_stmt_getdiag
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  bool is_stacked = 3 [json_name="is_stacked"];
+  repeated PLpgSQL_diag_item diag_items = 4 [json_name="diag_items"];
+}
+
+message PLpgSQL_stmt_open
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  int32 curvar = 3 [json_name="curvar"];
+  int32 cursor_options = 4 [json_name="cursor_options"];
+  PLpgSQL_expr argquery = 5 [json_name="argquery"];
+  PLpgSQL_expr query = 6 [json_name="query"];
+  PLpgSQL_expr dynquery = 7 [json_name="dynquery"];
+  repeated PLpgSQL_expr params = 8 [json_name="params"];
+}
+
+message PLpgSQL_stmt_fetch
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  int32 target_dno = 3 [json_name="target_dno"];
+  int32 curvar = 4 [json_name="curvar"];
+  FetchDirection direction = 5 [json_name="direction"];
+  int64 how_many = 6 [json_name="how_many"];
+  PLpgSQL_expr expr = 7 [json_name="expr"];
+  bool is_move = 8 [json_name="is_move"];
+  bool returns_multiple_rows = 9 [json_name="returns_multiple_rows"];
+}
+
+message PLpgSQL_stmt_close
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  int32 curvar = 3 [json_name="curvar"];
+}
+
+message PLpgSQL_stmt_perform
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr expr = 3 [json_name="expr"];
+}
+
+message PLpgSQL_stmt_call
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  PLpgSQL_expr expr = 3 [json_name="expr"];
+  bool is_call = 4 [json_name="is_call"];
+  int32 target_dno = 5 [json_name="target_dno"];
+}
+
+message PLpgSQL_stmt_commit
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  bool chain = 3 [json_name="chain"];
+}
+
+message PLpgSQL_stmt_rollback
+{
+  int32 lineno = 1 [json_name="lineno"];
+  uint32 stmtid = 2 [json_name="stmtid"];
+  bool chain = 3 [json_name="chain"];
+}
+
+message PLpgSQL_exception
+{
+  int32 lineno = 1 [json_name="lineno"];
+  repeated PLpgSQL_condition conditions = 2 [json_name="conditions"];
+  repeated PLpgSQL_stmt action = 3 [json_name="action"];
+}
+
+message PLpgSQL_if_elsif
+{
+  int32 lineno = 1 [json_name="lineno"];
+  PLpgSQL_expr cond = 2 [json_name="cond"];
+  repeated PLpgSQL_stmt stmts = 3 [json_name="stmts"];
+}
+
+message PLpgSQL_case_when
+{
+  int32 lineno = 1 [json_name="lineno"];
+  PLpgSQL_expr expr = 2 [json_name="expr"];
+  repeated PLpgSQL_stmt stmts = 3 [json_name="stmts"];
+}
+
+message PLpgSQL_raise_option
+{
+  PLpgSQL_raise_option_type opt_type = 1 [json_name="opt_type"];
+  PLpgSQL_expr expr = 2 [json_name="expr"];
+}
+
+message PLpgSQL_diag_item
+{
+  PLpgSQL_getdiag_kind kind = 1 [json_name="kind"];
+  int32 target = 2 [json_name="target"];
+}
+
+message PLpgSQL_condition
+{
+  int32 sqlerrstate = 1 [json_name="sqlerrstate"];
+  string condname = 2 [json_name="condname"];
+}
+
+message PLpgSQL_row_field
+{
+  string name = 1 [json_name="name"];
+  int32 varno = 2 [json_name="varno"];
+}
+
+enum PLpgSQL_promise_type
+{
+  PLPGSQL_PROMISE_TYPE_UNDEFINED = 0;
+  PLPGSQL_PROMISE_NONE = 1;
+  PLPGSQL_PROMISE_TG_NAME = 2;
+  PLPGSQL_PROMISE_TG_WHEN = 3;
+  PLPGSQL_PROMISE_TG_LEVEL = 4;
+  PLPGSQL_PROMISE_TG_OP = 5;
+  PLPGSQL_PROMISE_TG_RELID = 6;
+  PLPGSQL_PROMISE_TG_TABLE_NAME = 7;
+  PLPGSQL_PROMISE_TG_TABLE_SCHEMA = 8;
+  PLPGSQL_PROMISE_TG_NARGS = 9;
+  PLPGSQL_PROMISE_TG_ARGV = 10;
+  PLPGSQL_PROMISE_TG_EVENT = 11;
+  PLPGSQL_PROMISE_TG_TAG = 12;
+}
+
+enum PLpgSQL_type_type
+{
+  PLPGSQL_TYPE_TYPE_UNDEFINED = 0;
+  PLPGSQL_TTYPE_SCALAR = 1;
+  PLPGSQL_TTYPE_REC = 2;
+  PLPGSQL_TTYPE_PSEUDO = 3;
+}
+
+enum PLpgSQL_getdiag_kind
+{
+  PLPGSQL_GETDIAG_KIND_UNDEFINED = 0;
+  PLPGSQL_GETDIAG_ROW_COUNT = 1;
+  PLPGSQL_GETDIAG_ROUTINE_OID = 2;
+  PLPGSQL_GETDIAG_CONTEXT = 3;
+  PLPGSQL_GETDIAG_ERROR_CONTEXT = 4;
+  PLPGSQL_GETDIAG_ERROR_DETAIL = 5;
+  PLPGSQL_GETDIAG_ERROR_HINT = 6;
+  PLPGSQL_GETDIAG_RETURNED_SQLSTATE = 7;
+  PLPGSQL_GETDIAG_COLUMN_NAME = 8;
+  PLPGSQL_GETDIAG_CONSTRAINT_NAME = 9;
+  PLPGSQL_GETDIAG_DATATYPE_NAME = 10;
+  PLPGSQL_GETDIAG_MESSAGE_TEXT = 11;
+  PLPGSQL_GETDIAG_TABLE_NAME = 12;
+  PLPGSQL_GETDIAG_SCHEMA_NAME = 13;
+}
+
+enum PLpgSQL_raise_option_type
+{
+  PLPGSQL_RAISE_OPTION_TYPE_UNDEFINED = 0;
+  PLPGSQL_RAISEOPTION_ERRCODE = 1;
+  PLPGSQL_RAISEOPTION_MESSAGE = 2;
+  PLPGSQL_RAISEOPTION_DETAIL = 3;
+  PLPGSQL_RAISEOPTION_HINT = 4;
+  PLPGSQL_RAISEOPTION_COLUMN = 5;
+  PLPGSQL_RAISEOPTION_CONSTRAINT = 6;
+  PLPGSQL_RAISEOPTION_DATATYPE = 7;
+  PLPGSQL_RAISEOPTION_TABLE = 8;
+  PLPGSQL_RAISEOPTION_SCHEMA = 9;
+}
+
+enum PLpgSQL_resolve_option
+{
+  PLPGSQL_RESOLVE_OPTION_UNDEFINED = 0;
+  PLPGSQL_RESOLVE_ERROR = 1;
+  PLPGSQL_RESOLVE_VARIABLE = 2;
+  PLPGSQL_RESOLVE_COLUMN = 3;
+}
+
+enum PLpgSQL_trigtype
+{
+  PLPGSQL_TRIGTYPE_UNDEFINED = 0;
+  PLPGSQL_DML_TRIGGER = 1;
+  PLPGSQL_EVENT_TRIGGER = 2;
+  PLPGSQL_NOT_TRIGGER = 3;
+}
+
+
 message ScanToken {
   int32 start = 1;
   int32 end = 2;

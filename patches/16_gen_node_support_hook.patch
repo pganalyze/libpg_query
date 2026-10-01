@@ -19,32 +19,125 @@ To make a node struct reconstructible as declared, the parsed information
 now also records the header a node type came from, its supertype (and the
 field it is embedded as) and, for typedef aliases, the aliased node type.
 
+The repeatable --hook-extra-input option names additional headers whose
+structs are parsed for the hook only (every struct is recorded, whether or
+not it is a node, together with the header's enum type names). Nothing from
+these headers reaches the regular output. This lets a hook generate support
+code for struct trees that are not nodes, such as PL/pgSQL's.
+
 Without --hook the script behaves exactly as before.
 ---
-diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_support.pl
---- a/src/backend/nodes/gen_node_support.pl
+diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_support.pl--- a/src/backend/nodes/gen_node_support.pl
 +++ b/src/backend/nodes/gen_node_support.pl
-@@ -27,11 +27,18 @@
+@@ -27,11 +27,26 @@
  use Catalog;    # for RenameTempFile
  
  my $output_path = '.';
 +my $hook_file = '';
 +my $hook_outdir = '';
++my @hook_extra_inputs;
  
 -GetOptions('outdir:s' => \$output_path)
 +GetOptions(
 +	'outdir:s' => \$output_path,
 +	'hook:s' => \$hook_file,
-+	'hook-outdir:s' => \$hook_outdir)
++	'hook-outdir:s' => \$hook_outdir,
++	'hook-extra-input:s' => \@hook_extra_inputs)
    or die "$0: wrong arguments";
  
 +$hook_outdir = $output_path if $hook_outdir eq '';
  
++# Additional headers parsed for the benefit of the hook only (see
++# --hook-extra-input). Every struct in them is recorded, whether or not it is
++# a node, and nothing from them participates in the normal output.
++my %extra_struct_info;
++my @extra_enum_types;
++
 +
  # Test whether first argument is element of the list in the second
  # argument
  sub elem
-@@ -410,6 +417,16 @@
+@@ -192,8 +207,10 @@
+ ## read input
+ 
+ my $next_input_file = 0;
+-foreach my $infile (@ARGV)
++my %is_extra_input = map { $_ => 1 } @hook_extra_inputs;
++foreach my $infile (@ARGV, @hook_extra_inputs)
+ {
++	my $is_extra = $is_extra_input{$infile} ? 1 : 0;
+ 	my $in_struct;
+ 	my $in_struct_lineno;
+ 	my $subline;
+@@ -211,12 +228,20 @@
+ 	open my $ifh, '<', $infile or die "could not open \"$infile\": $!";
+ 
+ 	# now shorten filename for use below
+-	$infile =~ s!.*src/include/!!;
++	if ($is_extra)
++	{
++		# extra headers need not live under src/include
++		$infile =~ s!.*?/src/!!;
++	}
++	else
++	{
++		$infile =~ s!.*src/include/!!;
+ 
+-	# check it against next member of @all_input_files
+-	die "wrong input file ordering, expected @all_input_files\n"
+-	  if ($infile ne $all_input_files[$next_input_file]);
+-	$next_input_file++;
++		# check it against next member of @all_input_files
++		die "wrong input file ordering, expected @all_input_files\n"
++		  if ($infile ne $all_input_files[$next_input_file]);
++		$next_input_file++;
++	}
+ 
+ 	my $raw_file_content = do { local $/; <$ifh> };
+ 
+@@ -291,9 +316,16 @@
+ 			# next line should have node tag or supertype
+ 			elsif ($subline == 2)
+ 			{
+-				if ($line =~ /^\s*NodeTag\s+type;/)
++				if ($is_extra)
+ 				{
++					# In extra headers every struct is recorded, and the
++					# first line is an ordinary field (no node tag or
++					# supertype detection)
+ 					$is_node_struct = 1;
++				}
++				elsif ($line =~ /^\s*NodeTag\s+type;/)
++				{
++					$is_node_struct = 1;
+ 					next;
+ 				}
+ 				elsif ($line =~ /\s*(\w+)\s+(\w+);/ and elem $1, @node_types)
+@@ -308,8 +340,22 @@
+ 			# end of struct
+ 			if ($line =~ /^\}\s*(?:\Q$in_struct\E\s*)?;$/)
+ 			{
+-				if ($is_node_struct)
++				if ($is_node_struct && $is_extra)
+ 				{
++					# Struct from an extra header: record it for the hook
++					# only, without making it a node type
++					my @f = @my_fields;
++					my %ft = %my_field_types;
++					my %fa = %my_field_attrs;
++					$extra_struct_info{$in_struct} = {
++						fields => \@f,
++						field_types => \%ft,
++						field_attrs => \%fa,
++						source_header => $infile,
++					};
++				}
++				elsif ($is_node_struct)
++				{
+ 					# This is the end of a node struct definition.
+ 					# Save everything we have collected.
+ 
+@@ -410,6 +456,16 @@
  					$node_type_info{$in_struct}->{fields} = \@f;
  					$node_type_info{$in_struct}->{field_types} = \%ft;
  					$node_type_info{$in_struct}->{field_attrs} = \%fa;
@@ -61,7 +154,18 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  
  					# Propagate nodetag_only marking from files to nodes
  					push @nodetag_only, $in_struct
-@@ -561,6 +578,14 @@
+@@ -548,7 +604,9 @@
+ 				$subline = 0;
+ 			}
+ 			# one node type typedef'ed directly from another
+-			elsif ($line =~ /^typedef (\w+) (\w+);$/ and elem $1, @node_types)
++			elsif (!$is_extra
++				and $line =~ /^typedef (\w+) (\w+);$/
++				and elem $1, @node_types)
+ 			{
+ 				my $alias_of = $1;
+ 				my $n = $2;
+@@ -561,11 +619,26 @@
  				$node_type_info{$n}->{fields} = \@f;
  				$node_type_info{$n}->{field_types} = \%ft;
  				$node_type_info{$n}->{field_attrs} = \%fa;
@@ -76,7 +180,20 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
  			}
  			# collect enum names
  			elsif ($line =~ /^typedef enum (\w+)(\s*\/\*.*)?$/)
-@@ -1374,6 +1399,40 @@
+ 			{
+-				push @enum_types, $1;
++				if ($is_extra)
++				{
++					push @extra_enum_types, $1;
++				}
++				else
++				{
++					push @enum_types, $1;
++				}
+ 			}
+ 		}
+ 	}
+@@ -1374,6 +1447,47 @@
  close $jff;
  close $jfs;
  
@@ -84,6 +201,11 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
 +# Optional hook for external node support generators: the given Perl file is
 +# loaded after all input headers have been parsed, and must return a code
 +# reference, which is called with the collected node type information.
++#
++# --hook-extra-input names additional headers (outside the canonical input
++# list) whose structs and enum type names are parsed for the hook only, into
++# extra_struct_info / extra_enum_types. Every struct in them is recorded (no
++# node tag required), and they do not affect any of the regular output.
 +if ($hook_file ne '')
 +{
 +	my $hook = require $hook_file;
@@ -109,6 +231,8 @@ diff --git a/src/backend/nodes/gen_node_support.pl b/src/backend/nodes/gen_node_
 +			custom_read_write => \@custom_read_write,
 +			custom_query_jumble => \@custom_query_jumble,
 +			manual_nodetag_number => \%manual_nodetag_number,
++			extra_struct_info => \%extra_struct_info,
++			extra_enum_types => \@extra_enum_types,
 +			srcdir => "$FindBin::RealBin/../../..",
 +			outdir => $hook_outdir,
 +		});

@@ -4,6 +4,36 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
 
 ## Unreleased
 
+* Emit PL/pgSQL parse trees output as Protobuf, update JSON format to match
+* **Breaking change:** PL/pgSQL parse trees are now generated from Postgres' plpgsql.h, and the JSON output format changes
+  - The hand-written PL/pgSQL JSON dumper is replaced by output functions
+    generated via gen_node_support.pl (the same mechanism as for parse
+    nodes), so the output follows the structs in plpgsql.h and Postgres
+    upgrades no longer need manual field checks. This is a **breaking change**
+    for any current users of the PL/pgSQL JSON output.
+  - The new `pg_query_parse_plpgsql_protobuf` returns the trees as a serialized
+    `PLpgSQLParseResult` Protobuf message
+  - `pg_query_parse_plpgsql` keeps its signature, but the JSON changes:
+    - The top level is `{"version":N,"functions":[...]}` instead of a bare
+      array, and the entries have no `PLpgSQL_function` wrapper.
+    - Variables are referenced by their index into `datums` instead of
+      being inlined: the pointer fields `target` and `var` become
+      `target_dno` / `var_dno` (`-1` for none), like the `varno`, `curvar`,
+      etc. fields that were already indices. Every datum has its `dno`.
+    - Only the polymorphic types (statements, datums) are wrapped in their
+      type name; `expr`, `datatype`, `exceptions`, list elements of a
+      single type (`params`, `exc_list`, `elsif_list`, ...) and
+      `conditions` are plain objects, as in the parse tree JSON.
+    - Enums are output as their names (`"direction":"FETCH_FORWARD"`,
+      `PLpgSQL_diag_item.kind` as `"PLPGSQL_GETDIAG_ROW_COUNT"` instead of
+      the ad-hoc name), and `PLpgSQL_stmt_fori.reverse` is an int, as in
+      plpgsql.h.
+    - All compile-time fields are included, which adds e.g. `stmtid` on
+      every statement, `retvarno` (previously lost, so `RETURN variable;`
+      had no target), `initvarnos` on blocks, `sqlerrstate` on conditions,
+      `target_param` on expressions, `PLpgSQL_rec.datatype` / `firstfield`,
+      `PLpgSQL_recfield.nextfield`, the type details of `PLpgSQL_type`,
+      and the `fn_*` fields of `PLpgSQL_function`.
 * Generate srcdata/*.json via gen_node_support.pl, replacing scripts/extract_headers.rb
   - Node struct definitions now come from Postgres' own node header parser,
     which adds fields the previous regex-based parsing silently dropped

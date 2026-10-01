@@ -138,15 +138,33 @@ sub typedefs
 	return \@typedefs;
 }
 
+# $extra: additional definitions to merge in, as { struct_defs => { group =>
+# { name => {...} } }, enum_defs => { group => { name => {...} } }, enum_names
+# => [...] } (the PL/pgSQL parse tree, see Plpgsql.pm)
 sub generate
 {
-	my ($ctx) = @_;
+	my ($ctx, $extra) = @_;
 	my $outdir = $ctx->{outdir};
 
 	my @nodetags = nodetags($ctx);
 	my $struct_defs = struct_defs($ctx);
 	my ($enum_defs, $all_known_enums) = enum_defs($ctx, \@nodetags);
 	my $typedefs = typedefs($ctx);
+
+	if ($extra)
+	{
+		foreach my $group (keys %{ $extra->{struct_defs} || {} })
+		{
+			die "srcdata struct group $group already exists\n" if $struct_defs->{$group};
+			$struct_defs->{$group} = $extra->{struct_defs}{$group};
+		}
+		foreach my $group (keys %{ $extra->{enum_defs} || {} })
+		{
+			die "srcdata enum group $group already exists\n" if $enum_defs->{$group};
+			$enum_defs->{$group} = $extra->{enum_defs}{$group};
+		}
+		push @$all_known_enums, @{ $extra->{enum_names} || [] };
+	}
 
 	my $json = JSON::PP->new->pretty->canonical;
 	write_file("$outdir/nodetypes.json", $json->encode([ map { $_->{name} } @nodetags ]));

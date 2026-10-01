@@ -88,6 +88,11 @@ typedef struct {
 } PgQueryPlpgsqlParseResult;
 
 typedef struct {
+  PgQueryProtobuf parse_tree; // serialized PLpgSQLParseResult message
+  PgQueryError* error;
+} PgQueryPlpgsqlProtobufParseResult;
+
+typedef struct {
   uint64_t fingerprint;
   char* fingerprint_str;
   char* stderr_buffer;
@@ -170,7 +175,17 @@ PgQueryParseResult pg_query_parse(const char* input);
 PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options);
 PgQueryProtobufParseResult pg_query_parse_protobuf(const char* input);
 PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int parser_options);
+
+// Compiles the PL/pgSQL function bodies of the CREATE FUNCTION / CREATE
+// PROCEDURE / DO statements in the input, and returns the resulting PL/pgSQL
+// parse trees (one PLpgSQL_function per statement; empty for other languages)
+// as JSON, or as a serialized PLpgSQLParseResult protobuf message.
+//
+// The SQL statements and expressions in them are kept as query text
+// (PLpgSQL_expr.query), together with the parse mode (PLpgSQL_expr.parseMode) to
+// pass to pg_query_parse_opts / pg_query_parse_protobuf_opts to parse them.
 PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input);
+PgQueryPlpgsqlProtobufParseResult pg_query_parse_plpgsql_protobuf(const char* input);
 
 PgQueryFingerprintResult pg_query_fingerprint(const char* input);
 PgQueryFingerprintResult pg_query_fingerprint_opts(const char* input, int parser_options, int fingerprint_options);
@@ -202,6 +217,7 @@ void pg_query_free_deparse_result(PgQueryDeparseResult result);
 void pg_query_free_deparse_comments_result(PgQueryDeparseCommentsResult result);
 void pg_query_free_protobuf_parse_result(PgQueryProtobufParseResult result);
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result);
+void pg_query_free_plpgsql_protobuf_parse_result(PgQueryPlpgsqlProtobufParseResult result);
 void pg_query_free_fingerprint_result(PgQueryFingerprintResult result);
 void pg_query_free_is_utility_result(PgQueryIsUtilityResult result);
 void pg_query_free_summary_parse_result(PgQuerySummaryParseResult result);

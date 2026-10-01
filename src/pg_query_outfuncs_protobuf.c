@@ -10,15 +10,18 @@
 #include "utils/datum.h"
 #include "miscadmin.h"
 
+#include "plpgsql.h"
+
 #include "protobuf/pg_query.upb.h"
 
 /*
- * The arena that all messages for the current pg_query_nodes_to_protobuf() call
- * are built in. It is thread-local (libpg_query runs per-thread) and set once at
- * the top of that function; the WRITE_* macros and _out* helpers below read it
- * instead of threading an arena parameter through every function. Keeping it out
- * of the function signatures matters because the generated _out* declarations in
- * pg_query_outfuncs_defs.c are shared with the JSON backend, which has no arena.
+ * The arena that all messages for the current pg_query_nodes_to_protobuf() (or
+ * pg_query_plpgsql_to_protobuf()) call are built in. It is thread-local
+ * (libpg_query runs per-thread) and set once at the top of that function; the
+ * WRITE_* macros and _out* helpers below read it instead of threading an arena
+ * parameter through every function. Keeping it out of the function signatures
+ * matters because the generated _out* declarations in pg_query_outfuncs_defs.c
+ * are shared with the JSON backend, which has no arena.
  */
 static __thread upb_Arena *out_arena;
 
@@ -27,7 +30,9 @@ static __thread upb_Arena *out_arena;
  * bytes must outlive the message. The parse tree is palloc'd in the memory
  * context of the current libpg_query call, which is only exited after the
  * message has been serialized and copied out, so its strings can be referenced
- * directly instead of being duplicated into the arena.
+ * directly instead of being duplicated into the arena. (Compiled PL/pgSQL
+ * functions live in their own memory contexts, which pg_query_parse_plpgsql.c
+ * only frees after the output has been produced, so the same holds for them.)
  */
 static inline upb_StringView
 _strview(const char *s)
@@ -266,10 +271,126 @@ _outNode(pg_query_Node* out, const void *obj)
 	}
 }
 
+/*
+ * PL/pgSQL parse trees
+ *
+ * The generated pg_query_outfuncs_plpgsql_defs.c uses the WRITE_*_FIELD macros
+ * above plus the following, for the things PL/pgSQL structs have and parse
+ * nodes don't (see the plpgsql section of scripts/node_support/overrides.pl).
+ */
+
+/* dno of a referenced variable, or -1 if there is none */
+#define PLPGSQL_DATUM_DNO(d) \
+	((d) != NULL ? ((const PLpgSQL_datum *) (d))->dno : -1)
+
+/* Dispatch case of a cmd_type / dtype switch: the concrete struct, as the
+ * oneof member of the wrapper message */
+#define OUT_PLPGSQL_NODE(wrapper, typename, fldname) \
+	{ \
+		pg_query_##typename *__node = pg_query_##wrapper##_mutable_##fldname(out, out_arena); \
+		_out##typename(__node, (const typename *) node); \
+	}
+
+#define WRITE_PLPGSQL_DATUM_REF_FIELD(msgtype, outname, outname_json, fldname) \
+	pg_query_##msgtype##_set_##outname(out, PLPGSQL_DATUM_DNO(node->fldname));
+
+#define WRITE_PLPGSQL_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *__lc; \
+		foreach(__lc, node->fldname) { \
+			pg_query_##elemtype *__n = pg_query_##msgtype##_add_##outname(out, out_arena); \
+			_out##elemtype(__n, (const elemtype *) lfirst(__lc)); \
+		} \
+	}
+
+#define WRITE_PLPGSQL_PTR_ARRAY_FIELD(msgtype, elemtype, outname, outname_json, fldname, countfld) \
+	{ \
+		int __i; \
+		for (__i = 0; __i < node->countfld; __i++) { \
+			pg_query_##elemtype *__n = pg_query_##msgtype##_add_##outname(out, out_arena); \
+			_out##elemtype(__n, (const elemtype *) node->fldname[__i]); \
+		} \
+	}
+
+#define WRITE_PLPGSQL_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, countfld) \
+	{ \
+		int __i; \
+		for (__i = 0; __i < node->countfld; __i++) \
+			pg_query_##msgtype##_add_##outname(out, node->fldname[__i], out_arena); \
+	}
+
+#define WRITE_PLPGSQL_LINKED_LIST_FIELD(msgtype, elemtype, outname, outname_json, fldname, nextfld) \
+	{ \
+		const elemtype *__e; \
+		for (__e = node->fldname; __e != NULL; __e = __e->nextfld) { \
+			pg_query_##elemtype *__n = pg_query_##msgtype##_add_##outname(out, out_arena); \
+			_out##elemtype(__n, __e); \
+		} \
+	}
+
+#define WRITE_PLPGSQL_CUSTOM_FIELD(msgtype, outname, outname_json, fldname) \
+	_out##msgtype##_##fldname(out, node);
+
+/* PLpgSQL_row.fieldnames[] / varnos[], zipped into a list of PLpgSQL_row_field */
+static void
+_outPLpgSQL_row_fieldnames(pg_query_PLpgSQL_row *out, const PLpgSQL_row *node)
+{
+	int			i;
+
+	for (i = 0; i < node->nfields; i++)
+	{
+		pg_query_PLpgSQL_row_field *field = pg_query_PLpgSQL_row_add_fields(out, out_arena);
+
+		if (node->fieldnames[i] != NULL)
+			pg_query_PLpgSQL_row_field_set_name(field, _strview(node->fieldnames[i]));
+		pg_query_PLpgSQL_row_field_set_varno(field, node->varnos[i]);
+	}
+}
+
+#include "pg_query_outfuncs_plpgsql_defs.c"
+
+/*
+ * Serializes the message built in out_arena, copies it out and frees the
+ * arena. Throws if the message could not be serialized.
+ */
+static PgQueryProtobuf
+finish_protobuf(char *data, size_t len)
+{
+	PgQueryProtobuf protobuf;
+
+	/*
+	 * Serialization fails (data is NULL) for trees deeper than the encoder's
+	 * depth limit (which is set to match the decoder's, so anything we emit
+	 * can be read back), or when the stack depth limit is reached while
+	 * encoding.
+	 *
+	 * Note: upb also returns NULL when the arena runs out of memory
+	 * (kUpb_EncodeStatus_OutOfMemory), which we report with the same message
+	 * since the generated serialize_ex wrapper discards the encode status. That
+	 * is unlikely enough in practice that we don't call upb_Encode directly to
+	 * tell the two apart.
+	 */
+	if (data == NULL)
+	{
+		upb_Arena_Free(out_arena);
+		out_arena = NULL;
+		elog(ERROR, "parse tree is nested too deeply to serialize to protobuf");
+	}
+
+	protobuf.len = len;
+	// Note: This is intentionally malloc so exiting the memory context doesn't free this
+	protobuf.data = malloc(len);
+	memcpy(protobuf.data, data, len);
+
+	upb_Arena_Free(out_arena);
+	out_arena = NULL;
+
+	return protobuf;
+}
+
 PgQueryProtobuf
 pg_query_nodes_to_protobuf(const void *obj)
 {
-	PgQueryProtobuf protobuf;
 	pg_query_ParseResult *parse_result;
 	char	   *data;
 	size_t		len;
@@ -305,32 +426,44 @@ pg_query_nodes_to_protobuf(const void *obj)
 	}
 	PG_END_TRY();
 
-	/*
-	 * Encode with the same depth limit the decoder uses, so anything we emit
-	 * can be read back. Serialization fails (returns NULL) for deeper trees, or
-	 * when the stack depth limit is reached while encoding.
-	 *
-	 * Note: upb also returns NULL when the arena runs out of memory
-	 * (kUpb_EncodeStatus_OutOfMemory), which we report with the same message
-	 * since the generated serialize_ex wrapper discards the encode status. That
-	 * is unlikely enough in practice that we don't call upb_Encode directly to
-	 * tell the two apart.
-	 */
+	/* Encode with the same depth limit the decoder uses */
 	data = pg_query_ParseResult_serialize_ex(parse_result, upb_EncodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH), out_arena, &len);
-	if (data == NULL)
+
+	return finish_protobuf(data, len);
+}
+
+PgQueryProtobuf
+pg_query_plpgsql_to_protobuf(const void *funcs)
+{
+	pg_query_PLpgSQLParseResult *result;
+	char	   *data;
+	size_t		len;
+
+	out_arena = upb_Arena_New();
+	result = pg_query_PLpgSQLParseResult_new(out_arena);
+
+	pg_query_PLpgSQLParseResult_set_version(result, PG_VERSION_NUM);
+
+	/* See pg_query_nodes_to_protobuf for why this needs error handling */
+	PG_TRY();
+	{
+		const ListCell *lc;
+
+		foreach(lc, (const List *) funcs)
+		{
+			pg_query_PLpgSQL_function *func = pg_query_PLpgSQLParseResult_add_functions(result, out_arena);
+			_outPLpgSQL_function(func, (const PLpgSQL_function *) lfirst(lc));
+		}
+	}
+	PG_CATCH();
 	{
 		upb_Arena_Free(out_arena);
 		out_arena = NULL;
-		elog(ERROR, "parse tree is nested too deeply to serialize to protobuf");
+		PG_RE_THROW();
 	}
+	PG_END_TRY();
 
-	protobuf.len = len;
-	// Note: This is intentionally malloc so exiting the memory context doesn't free this
-	protobuf.data = malloc(len);
-	memcpy(protobuf.data, data, len);
+	data = pg_query_PLpgSQLParseResult_serialize_ex(result, upb_EncodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH), out_arena, &len);
 
-	upb_Arena_Free(out_arena);
-	out_arena = NULL;
-
-	return protobuf;
+	return finish_protobuf(data, len);
 }

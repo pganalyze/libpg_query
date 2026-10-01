@@ -1,4 +1,1258 @@
 {
+   "../pl/plpgsql/src/plpgsql" : {
+      "PLpgSQL_case_when" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "stmts"
+            }
+         ]
+      },
+      "PLpgSQL_condition" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "sqlerrstate"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "condname"
+            }
+         ]
+      },
+      "PLpgSQL_datum" : {
+         "fields" : [
+            {
+               "c_type" : "PLpgSQL_datum_type",
+               "name" : "dtype"
+            },
+            {
+               "c_type" : "PLpgSQL_var*",
+               "name" : "var"
+            },
+            {
+               "c_type" : "PLpgSQL_row*",
+               "name" : "row"
+            },
+            {
+               "c_type" : "PLpgSQL_rec*",
+               "name" : "rec"
+            },
+            {
+               "c_type" : "PLpgSQL_recfield*",
+               "name" : "recfield"
+            }
+         ]
+      },
+      "PLpgSQL_diag_item" : {
+         "fields" : [
+            {
+               "c_type" : "PLpgSQL_getdiag_kind",
+               "name" : "kind"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target"
+            }
+         ]
+      },
+      "PLpgSQL_exception" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "PLpgSQL_condition*[]",
+               "name" : "conditions"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "action"
+            }
+         ]
+      },
+      "PLpgSQL_exception_block" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "sqlstate_varno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "sqlerrm_varno"
+            },
+            {
+               "c_type" : "PLpgSQL_exception*[]",
+               "name" : "exc_list"
+            }
+         ]
+      },
+      "PLpgSQL_expr" : {
+         "fields" : [
+            {
+               "c_type" : "char*",
+               "name" : "query"
+            },
+            {
+               "c_type" : "RawParseMode",
+               "name" : "parseMode"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target_param"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "target_is_local"
+            }
+         ]
+      },
+      "PLpgSQL_function" : {
+         "fields" : [
+            {
+               "c_type" : "char*",
+               "name" : "fn_signature"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "fn_oid"
+            },
+            {
+               "c_type" : "PLpgSQL_trigtype",
+               "name" : "fn_is_trigger"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "fn_input_collation"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "fn_rettype"
+            },
+            {
+               "c_type" : "int",
+               "name" : "fn_rettyplen"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "fn_retbyval"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "fn_retistuple"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "fn_retisdomain"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "fn_retset"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "fn_readonly"
+            },
+            {
+               "c_type" : "char",
+               "name" : "fn_prokind"
+            },
+            {
+               "c_type" : "int[]",
+               "name" : "fn_argvarnos"
+            },
+            {
+               "c_type" : "int",
+               "name" : "out_param_varno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "found_varno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "new_varno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "old_varno"
+            },
+            {
+               "c_type" : "PLpgSQL_resolve_option",
+               "name" : "resolve_option"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "print_strict_params"
+            },
+            {
+               "c_type" : "int",
+               "name" : "extra_warnings"
+            },
+            {
+               "c_type" : "int",
+               "name" : "extra_errors"
+            },
+            {
+               "c_type" : "PLpgSQL_datum*[]",
+               "name" : "datums"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_block*",
+               "name" : "action"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "nstatements"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "requires_procedure_resowner"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "has_exception_block"
+            }
+         ]
+      },
+      "PLpgSQL_if_elsif" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cond"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "stmts"
+            }
+         ]
+      },
+      "PLpgSQL_raise_option" : {
+         "fields" : [
+            {
+               "c_type" : "PLpgSQL_raise_option_type",
+               "name" : "opt_type"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            }
+         ]
+      },
+      "PLpgSQL_rec" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "dno"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "refname"
+            },
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "isconst"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "notnull"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "default_val"
+            },
+            {
+               "c_type" : "PLpgSQL_type*",
+               "name" : "datatype"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "rectypeid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "firstfield"
+            }
+         ]
+      },
+      "PLpgSQL_recfield" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "dno"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "fieldname"
+            },
+            {
+               "c_type" : "int",
+               "name" : "recparentno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "nextfield"
+            }
+         ]
+      },
+      "PLpgSQL_row" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "dno"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "refname"
+            },
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "isconst"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "notnull"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "default_val"
+            },
+            {
+               "c_type" : "PLpgSQL_row_field[]",
+               "name" : "fields"
+            }
+         ]
+      },
+      "PLpgSQL_stmt" : {
+         "fields" : [
+            {
+               "c_type" : "PLpgSQL_stmt_type",
+               "name" : "cmd_type"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_block*",
+               "name" : "stmt_block"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_assign*",
+               "name" : "stmt_assign"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_if*",
+               "name" : "stmt_if"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_case*",
+               "name" : "stmt_case"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_loop*",
+               "name" : "stmt_loop"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_while*",
+               "name" : "stmt_while"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_fori*",
+               "name" : "stmt_fori"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_fors*",
+               "name" : "stmt_fors"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_forc*",
+               "name" : "stmt_forc"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_foreach_a*",
+               "name" : "stmt_foreach_a"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_exit*",
+               "name" : "stmt_exit"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_return*",
+               "name" : "stmt_return"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_return_next*",
+               "name" : "stmt_return_next"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_return_query*",
+               "name" : "stmt_return_query"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_raise*",
+               "name" : "stmt_raise"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_assert*",
+               "name" : "stmt_assert"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_execsql*",
+               "name" : "stmt_execsql"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_dynexecute*",
+               "name" : "stmt_dynexecute"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_dynfors*",
+               "name" : "stmt_dynfors"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_getdiag*",
+               "name" : "stmt_getdiag"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_open*",
+               "name" : "stmt_open"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_fetch*",
+               "name" : "stmt_fetch"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_close*",
+               "name" : "stmt_close"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_perform*",
+               "name" : "stmt_perform"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_call*",
+               "name" : "stmt_call"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_commit*",
+               "name" : "stmt_commit"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt_rollback*",
+               "name" : "stmt_rollback"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_assert" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cond"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "message"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_assign" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "varno"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_block" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            },
+            {
+               "c_type" : "int[]",
+               "name" : "initvarnos"
+            },
+            {
+               "c_type" : "PLpgSQL_exception_block*",
+               "name" : "exceptions"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_call" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "is_call"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target_dno"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_case" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "t_expr"
+            },
+            {
+               "c_type" : "int",
+               "name" : "t_varno"
+            },
+            {
+               "c_type" : "PLpgSQL_case_when*[]",
+               "name" : "case_when_list"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "have_else"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "else_stmts"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_close" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "curvar"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_commit" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "chain"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_dynexecute" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "query"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "into"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "strict"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target_dno"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*[]",
+               "name" : "params"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_dynfors" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "int",
+               "name" : "var_dno"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "query"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*[]",
+               "name" : "params"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_execsql" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "sqlstmt"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "into"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "strict"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target_dno"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_exit" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "is_exit"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cond"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_fetch" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "target_dno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "curvar"
+            },
+            {
+               "c_type" : "FetchDirection",
+               "name" : "direction"
+            },
+            {
+               "c_type" : "long",
+               "name" : "how_many"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "is_move"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "returns_multiple_rows"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_forc" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "int",
+               "name" : "var_dno"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            },
+            {
+               "c_type" : "int",
+               "name" : "curvar"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "argquery"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_foreach_a" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "int",
+               "name" : "varno"
+            },
+            {
+               "c_type" : "int",
+               "name" : "slice"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_fori" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "int",
+               "name" : "var_dno"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "lower"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "upper"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "step"
+            },
+            {
+               "c_type" : "int",
+               "name" : "reverse"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_fors" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "int",
+               "name" : "var_dno"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "query"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_getdiag" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "is_stacked"
+            },
+            {
+               "c_type" : "PLpgSQL_diag_item*[]",
+               "name" : "diag_items"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_if" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cond"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "then_body"
+            },
+            {
+               "c_type" : "PLpgSQL_if_elsif*[]",
+               "name" : "elsif_list"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "else_body"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_loop" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_open" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "curvar"
+            },
+            {
+               "c_type" : "int",
+               "name" : "cursor_options"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "argquery"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "query"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "dynquery"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*[]",
+               "name" : "params"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_perform" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_raise" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "int",
+               "name" : "elog_level"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "condname"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "message"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*[]",
+               "name" : "params"
+            },
+            {
+               "c_type" : "PLpgSQL_raise_option*[]",
+               "name" : "options"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_return" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "int",
+               "name" : "retvarno"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_return_next" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "expr"
+            },
+            {
+               "c_type" : "int",
+               "name" : "retvarno"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_return_query" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "query"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "dynquery"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*[]",
+               "name" : "params"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_rollback" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "chain"
+            }
+         ]
+      },
+      "PLpgSQL_stmt_while" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "unsigned int",
+               "name" : "stmtid"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "label"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cond"
+            },
+            {
+               "c_type" : "PLpgSQL_stmt*[]",
+               "name" : "body"
+            }
+         ]
+      },
+      "PLpgSQL_type" : {
+         "fields" : [
+            {
+               "c_type" : "char*",
+               "name" : "typname"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "typoid"
+            },
+            {
+               "c_type" : "PLpgSQL_type_type",
+               "name" : "ttype"
+            },
+            {
+               "c_type" : "int16",
+               "name" : "typlen"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "typbyval"
+            },
+            {
+               "c_type" : "char",
+               "name" : "typtype"
+            },
+            {
+               "c_type" : "Oid",
+               "name" : "collation"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "typisarray"
+            },
+            {
+               "c_type" : "int32",
+               "name" : "atttypmod"
+            },
+            {
+               "c_type" : "TypeName*",
+               "name" : "origtypname"
+            }
+         ]
+      },
+      "PLpgSQL_var" : {
+         "fields" : [
+            {
+               "c_type" : "int",
+               "name" : "dno"
+            },
+            {
+               "c_type" : "char*",
+               "name" : "refname"
+            },
+            {
+               "c_type" : "int",
+               "name" : "lineno"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "isconst"
+            },
+            {
+               "c_type" : "bool",
+               "name" : "notnull"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "default_val"
+            },
+            {
+               "c_type" : "PLpgSQL_type*",
+               "name" : "datatype"
+            },
+            {
+               "c_type" : "PLpgSQL_expr*",
+               "name" : "cursor_explicit_expr"
+            },
+            {
+               "c_type" : "int",
+               "name" : "cursor_explicit_argrow"
+            },
+            {
+               "c_type" : "int",
+               "name" : "cursor_options"
+            },
+            {
+               "c_type" : "PLpgSQL_promise_type",
+               "name" : "promise"
+            }
+         ]
+      }
+   },
    "nodes/parsenodes" : {
       "ATAlterConstraint" : {
          "fields" : [
