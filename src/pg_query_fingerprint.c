@@ -283,22 +283,22 @@ _fingerprint_remove_randomish_segments(const char *name)
 	int i = 0;
 
 	while (i < len) {
-		// Find the start of a segment (an underscore after position 0)
 		int seg_start = i;
-		while (i < len && name[i] != '_')
+
+		int digits_in_seg = 0;
+		while (i < len && name[i] != '_') {
+			if (isdigit(name[i]))
+				digits_in_seg++;
 			i++;
-		int seg_end = i; // exclusive (not included in the segment)
-		int seg_len = seg_end - seg_start;
-
-		if (seg_len > 2) {
-			// Check if the segment contains a digit
-			int has_digit = 0;
-			for (int j = seg_start; j < seg_end; j++)
-				has_digit = isdigit(name[j]);
-
-			if (has_digit)
-				continue;
 		}
+		// fixme: DRY
+		if (isdigit(name[i]))
+			digits_in_seg++;
+		int seg_end = i;
+
+		// If we found two digits, skip this segment.
+		if (digits_in_seg >= 2)
+			continue;
 
 		// Keep this segment
 		for (int j = seg_start; j < seg_end; j++) {
@@ -339,36 +339,13 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 	}
 	else
 	{
-		// Remove consecutive digits, for time-based partition tables.
-		int len = strlen(relname);
-		char *r = palloc0((len + 1) * sizeof(char));
-		char *p = r;
-		for (int i = 0; i < len; i++)
-		{
-			if (relname[i] >= '0' && relname[i] <= '9' &&
-				((i + 1 < len && relname[i + 1] >= '0' && relname[i + 1] <= '9') ||
-				 (i > 0 && relname[i - 1] >= '0' && relname[i - 1] <= '9')))
-			{
-				// Skip
-			}
-			else
-			{
-				*p = relname[i];
-				p++;
-			}
-		}
-		*p = 0;
-
 		// Normalize random-looking segments (e.g., hex IDs, random suffixes)
-		char *r2 = _fingerprint_remove_randomish_segments(relname);
+		char *r = _fingerprint_remove_randomish_segments(relname);
 
 		_fingerprintString(ctx, "relname");
-		_fingerprintString(ctx, r2);
-
-		printf("\nr  = '%s'\nr2 = '%s'\n\n", r, r2);
+		_fingerprintString(ctx, r);
 
 		pfree(r);
-		pfree(r2);
 	}
 }
 
