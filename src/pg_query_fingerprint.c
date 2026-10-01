@@ -336,17 +336,16 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 	{
 		_fingerprintString(ctx, "relname");
 		_fingerprintString(ctx, relname);
+		return;
 	}
-	else
-	{
-		// Normalize random-looking segments (e.g., hex IDs, random suffixes)
-		char *r = _fingerprint_remove_randomish_segments(relname);
 
-		_fingerprintString(ctx, "relname");
-		_fingerprintString(ctx, r);
+	// Normalize random-looking segments (e.g., hex IDs, random suffixes)
+	char *r = _fingerprint_remove_randomish_segments(relname);
 
-		pfree(r);
-	}
+	_fingerprintString(ctx, "relname");
+	_fingerprintString(ctx, r);
+
+	pfree(r);
 }
 
 /*
