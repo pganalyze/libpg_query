@@ -2441,6 +2441,7 @@ _outCreateStatsStmt(OUT_TYPE(CreateStatsStmt, CreateStatsStmt) out, const Create
   WRITE_STRING_FIELD(CreateStatsStmt, stxcomment, stxcomment, stxcomment);
   WRITE_BOOL_FIELD(CreateStatsStmt, transformed, transformed, transformed);
   WRITE_BOOL_FIELD(CreateStatsStmt, if_not_exists, if_not_exists, if_not_exists);
+  WRITE_UINT_FIELD(CreateStatsStmt, owner, owner, owner);
 }
 
 static void
@@ -2591,6 +2592,7 @@ _outNotifyStmt(OUT_TYPE(NotifyStmt, NotifyStmt) out, const NotifyStmt *node)
   WRITE_STRING_FIELD(NotifyStmt, conditionname, conditionname, conditionname);
   WRITE_STRING_FIELD(NotifyStmt, payload, payload, payload);
   WRITE_INT_FIELD(NotifyStmt, payload_location, payload_location, payload_location);
+  WRITE_NODE_PTR_FIELD(NotifyStmt, payload_param, payload_param, payload_param);
 }
 
 static void

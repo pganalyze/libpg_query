@@ -52,6 +52,8 @@ const char* tests[] = {
   "NOTIFY channel, $1",
   "NOTIFY channel",
   "NOTIFY channel",
+  "NOTIFY channel, $1",
+  "NOTIFY channel, $1",
   // The grammar records where each of these string constants starts, so we
   // never have to search the query text for them. Searching used to land in
   // the middle of a token, making constants overlap and corrupting the
