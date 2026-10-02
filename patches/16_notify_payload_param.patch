@@ -1,0 +1,29 @@
+--- a/src/backend/parser/gram.y
++++ b/src/backend/parser/gram.y
+@@ -11116,6 +11116,15 @@
+ 					n->payload_location = @4;
+ 					$$ = (Node *) n;
+ 				}
++			| NOTIFY ColId ',' PARAM
++				{
++					NotifyStmt *n = makeNode(NotifyStmt);
++
++					n->conditionname = $2;
++					n->payload = NULL;
++					n->payload_param = makeParamRef($4, @4);
++					$$ = (Node *) n;
++				}
+ 			| NOTIFY ColId
+ 				{
+ 					NotifyStmt *n = makeNode(NotifyStmt);
+--- a/src/include/nodes/parsenodes.h
++++ b/src/include/nodes/parsenodes.h
+@@ -3730,6 +3730,8 @@
+ 	char	   *payload;		/* the payload string, or NULL if none */
+ 	/* location of payload's string constant; only set when payload is */
+ 	ParseLoc	payload_location pg_node_attr(query_jumble_ignore);
++	/* ParamRef passed as the payload (instead of a string), or NULL if none */
++	Node	   *payload_param;
+ } NotifyStmt;
+ 
+ /* ----------------------

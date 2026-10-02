@@ -3730,6 +3730,8 @@ typedef struct NotifyStmt
 	char	   *payload;		/* the payload string, or NULL if none */
 	/* location of payload's string constant; only set when payload is */
 	ParseLoc	payload_location pg_node_attr(query_jumble_ignore);
+	/* ParamRef passed as the payload (instead of a string), or NULL if none */
+	Node	   *payload_param;
 } NotifyStmt;
 
 /* ----------------------

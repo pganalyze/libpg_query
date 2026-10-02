@@ -2367,6 +2367,7 @@ message CreateStatsStmt
   string stxcomment = 5 [json_name="stxcomment"];
   bool transformed = 6 [json_name="transformed"];
   bool if_not_exists = 7 [json_name="if_not_exists"];
+  uint32 owner = 8 [json_name="owner"];
 }
 
 message StatsElem
@@ -2500,6 +2501,7 @@ message NotifyStmt
   string conditionname = 1 [json_name="conditionname"];
   string payload = 2 [json_name="payload"];
   int32 payload_location = 3 [json_name="payload_location"];
+  Node payload_param = 4 [json_name="payload_param"];
 }
 
 message ListenStmt
