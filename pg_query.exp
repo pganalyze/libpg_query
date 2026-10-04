@@ -1,0 +1,5 @@
+# Mach-O exported symbols list, companion to pg_query.map for ELF.
+# Mach-O prefixes C symbols with a leading underscore.
+_pg_query_*
+_deparseRawStmt
+_deparseRawStmtOpts
