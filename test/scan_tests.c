@@ -96,6 +96,15 @@ const char* const tests[] = {
     "SELECT = SELECT, RESERVED_KEYWORD\n"
     "$ = ASCII_36, NO_KEYWORD\n"
     "identifier = IDENT, NO_KEYWORD\n",
+  "SELECT 'a' -- comment\n'b'",
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "'a' -- comment\n'b' = SCONST, NO_KEYWORD\n",
+  "SELECT 'a' -- comment\n, 'b'",
+    "SELECT = SELECT, RESERVED_KEYWORD\n"
+    "'a' = SCONST, NO_KEYWORD\n"
+    "-- comment = SQL_COMMENT, NO_KEYWORD\n"
+    ", = ASCII_44, NO_KEYWORD\n"
+    "'b' = SCONST, NO_KEYWORD\n",
 };
 
 const size_t testsCount = sizeof(tests)/sizeof(*tests)/2;

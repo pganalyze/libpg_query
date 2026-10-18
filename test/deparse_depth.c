@@ -39,22 +39,20 @@ static const int roundtrip_terms[] = {10, 50, 100};
 #define TOO_DEEP_PROTOBUF_NESTINGS 20000
 
 /*
- * Builds "SELECT ((1 + 1) + 1) + ... + 1" with the given number of terms (at
- * least 2), each nesting one expression level deeper. The explicit parentheses
- * match the deparser's output, so the result can be compared exactly.
+ * Builds "SELECT 1 + 1 + ... + 1" with the given number of terms (at least 2).
+ * Since "+" is left-associative, each term nests one expression level deeper.
+ * The deparser omits parentheses for left-associative chains, so the result
+ * can be compared exactly.
  */
 static char *
 make_nested_query(int terms)
 {
-	char	   *query = malloc(strlen("SELECT 1 + 1") + (terms - 2) * strlen("() + 1") + 1);
+	char	   *query = malloc(strlen("SELECT 1") + (terms - 1) * strlen(" + 1") + 1);
 	char	   *p = query;
 
-	p += sprintf(p, "SELECT ");
-	for (int i = 2; i < terms; i++)
-		*p++ = '(';
-	p += sprintf(p, "1 + 1");
-	for (int i = 2; i < terms; i++)
-		p += sprintf(p, ") + 1");
+	p += sprintf(p, "SELECT 1");
+	for (int i = 1; i < terms; i++)
+		p += sprintf(p, " + 1");
 
 	return query;
 }

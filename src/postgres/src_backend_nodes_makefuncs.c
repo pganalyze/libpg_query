@@ -308,6 +308,7 @@ makeDefElem(char *name, Node *arg, int location)
 	res->arg = arg;
 	res->defaction = DEFELEM_UNSPEC;
 	res->location = location;
+	res->arg_location = -1;
 
 	return res;
 }
@@ -327,6 +328,7 @@ makeDefElemExtended(char *nameSpace, char *name, Node *arg,
 	res->arg = arg;
 	res->defaction = defaction;
 	res->location = location;
+	res->arg_location = -1;
 
 	return res;
 }
@@ -519,6 +521,8 @@ makeJsonIsPredicate(Node *expr, JsonFormat *format, JsonValueType item_type,
 					bool unique_keys, int location)
 {
 	JsonIsPredicate *n = makeNode(JsonIsPredicate);
+
+	Assert(expr != NULL);
 
 	n->expr = expr;
 	n->format = format;

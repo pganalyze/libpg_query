@@ -10327,7 +10327,9 @@ const char* query = "select $1 as field_id \
     union all select $10311 \
     union all select $10312";
 
-const char *fingerprint = "fc5a0500dddc25aa";
+// Note: The fingerprint only covers the first 100 levels of the UNION chain,
+// since deeper set operations get cut off like other deeply nested nodes
+const char *fingerprint = "b5b11dd6edc2f57f";
 
 int main() {
     size_t i;
@@ -10344,7 +10346,7 @@ int main() {
         } else {
             ret_code = -1;
             printf("INVALID result, expected: %s\nactual: %s\nactual tokens: \n", fingerprint, result.fingerprint_str);
-            pg_query_fingerprint_with_opts(query, PG_QUERY_PARSE_DEFAULT, true);
+            pg_query_fingerprint_with_opts(query, PG_QUERY_PARSE_DEFAULT, PG_QUERY_FINGERPRINT_DEFAULT, true);
         }
 
         pg_query_free_fingerprint_result(result);

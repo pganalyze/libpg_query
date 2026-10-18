@@ -2,20 +2,24 @@ commit 17aa7e51f4a3bf12d4662720ef39f6f60336dc83
 Author: Lukas Fittl <lukas@fittl.com>
 Date:   Sun Jan 3 16:01:44 2021 -0800
 
-    pg_query: Track comments separately from whitespace in lexer/parser
-    
+    pg_query: Optionally return comments as tokens from the lexer
+
     For syntax highlighting and extracting comments from a query, its very
     helpful to know the exact locations of a comment in the query string.
-    
+
     Previously the lexer discarded all comments as whitespace, making it
     impossible to determine where they are located in the query string. With
-    this change, the lexer returns them as SQL_COMMENT/C_COMMENT tokens.
+    this change, the lexer returns them as SQL_COMMENT/C_COMMENT tokens when
+    return_comments is set in core_yy_extra_type (as done by pg_query_scan).
+
+    By default (e.g. when called from the parser) comments continue to be
+    ignored like whitespace, so parsing behaves the same as upstream Postgres.
+    Comments are always treated as whitespace within {quotecontinue}.
 
 diff --git a/src/backend/parser/gram.y b/src/backend/parser/gram.y
-index 452e17edf2..87e6e1c858 100644
 --- a/src/backend/parser/gram.y
 +++ b/src/backend/parser/gram.y
-@@ -695,6 +695,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
+@@ -690,6 +690,7 @@ static Node *makeRecursiveViewSelect(char *relname, List *aliases, Node *query);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -23,87 +27,70 @@ index 452e17edf2..87e6e1c858 100644
  
  /*
   * If you want to make any keyword changes, update the keyword table in
-diff --git a/src/backend/parser/parser.c b/src/backend/parser/parser.c
-index 118488c3f3..551b37a09a 100644
---- a/src/backend/parser/parser.c
-+++ b/src/backend/parser/parser.c
-@@ -156,6 +156,9 @@ base_yylex(YYSTYPE *lvalp, YYLTYPE *llocp, core_yyscan_t yyscanner)
- 		case WITHOUT:
- 			cur_token_length = 7;
- 			break;
-+		case SQL_COMMENT:
-+		case C_COMMENT:
-+			return base_yylex(lvalp, llocp, yyscanner);
- 		default:
- 			return cur_token;
- 	}
 diff --git a/src/backend/parser/scan.l b/src/backend/parser/scan.l
-index 28fdd262b1..5c930dfda2 100644
 --- a/src/backend/parser/scan.l
 +++ b/src/backend/parser/scan.l
-@@ -226,7 +226,7 @@ non_newline			[^\n\r]
+@@ -440,10 +440,19 @@ other			.
  
- comment			("--"{non_newline}*)
+ %%
  
--whitespace		({space}+|{comment})
-+whitespace		({space}+)
- 
- /*
-  * SQL requires at least one newline in the whitespace separating
-@@ -235,8 +235,8 @@ whitespace		({space}+|{comment})
-  * it, whereas {whitespace} should generally have a * after it...
-  */
- 
--special_whitespace		({space}+|{comment}{newline})
--non_newline_whitespace	({non_newline_space}|{comment})
-+special_whitespace		({space}+)
-+non_newline_whitespace	({non_newline_space})
- whitespace_with_newline	({non_newline_whitespace}*{newline}{special_whitespace}*)
- 
- quote			'
-@@ -444,6 +444,11 @@ other			.
+-{whitespace}	{
++{space}+	{
  					/* ignore */
  				}
  
 +{comment}	{
-+					SET_YYLLOC();
-+					return SQL_COMMENT;
++					/* ignore, unless comments were requested as tokens */
++					if (yyextra->return_comments)
++					{
++						SET_YYLLOC();
++						return SQL_COMMENT;
++					}
 +				}
 +
  {xcstart}		{
  					/* Set location in case of syntax error in comment */
  					SET_YYLLOC();
-@@ -462,7 +467,11 @@ other			.
+@@ -462,7 +471,14 @@ other			.
  
  {xcstop}		{
  					if (yyextra->xcdepth <= 0)
 +					{
  						BEGIN(INITIAL);
-+						yyextra->yyllocend = yytext - yyextra->scanbuf + yyleng;
-+						return C_COMMENT;
++						if (yyextra->return_comments)
++						{
++							yyextra->yyllocend = yytext - yyextra->scanbuf + yyleng;
++							return C_COMMENT;
++						}
 +					}
  					else
  						(yyextra->xcdepth)--;
  				}
-diff --git a/src/interfaces/ecpg/preproc/parser.c b/src/interfaces/ecpg/preproc/parser.c
-index 9daeee3303..1c32d3ccce 100644
---- a/src/interfaces/ecpg/preproc/parser.c
-+++ b/src/interfaces/ecpg/preproc/parser.c
-@@ -86,6 +86,9 @@ filtered_base_yylex(void)
- 		case UIDENT:
- 		case USCONST:
- 			break;
-+		case SQL_COMMENT:
-+		case C_COMMENT:
-+			return filtered_base_yylex();
- 		default:
- 			return cur_token;
- 	}
+@@ -1275,6 +1291,7 @@ scanner_init(const char *str,
+ 	yyext->backslash_quote = backslash_quote;
+ 	yyext->escape_string_warning = escape_string_warning;
+ 	yyext->standard_conforming_strings = standard_conforming_strings;
++	yyext->return_comments = false;
+ 
+ 	/*
+ 	 * Make a scan buffer with special termination needed by flex.
+diff --git a/src/include/parser/scanner.h b/src/include/parser/scanner.h
+--- a/src/include/parser/scanner.h
++++ b/src/include/parser/scanner.h
+@@ -115,6 +115,9 @@ typedef struct core_yy_extra_type
+ 	bool		saw_non_ascii;
+ 
+ 	int yyllocend;
++
++	/* return comments as SQL_COMMENT/C_COMMENT tokens, instead of ignoring */
++	bool		return_comments;
+ } core_yy_extra_type;
+ 
+ /*
 diff --git a/src/pl/plpgsql/src/pl_gram.y b/src/pl/plpgsql/src/pl_gram.y
-index 97be9239e3..165b9b0a8c 100644
 --- a/src/pl/plpgsql/src/pl_gram.y
 +++ b/src/pl/plpgsql/src/pl_gram.y
-@@ -232,6 +232,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
+@@ -247,6 +247,7 @@ static	void			check_raise_parameters(PLpgSQL_stmt_raise *stmt);
  %token <ival>	ICONST PARAM
  %token			TYPECAST DOT_DOT COLON_EQUALS EQUALS_GREATER
  %token			LESS_EQUALS GREATER_EQUALS NOT_EQUALS
@@ -111,19 +98,3 @@ index 97be9239e3..165b9b0a8c 100644
  
  /*
   * Other tokens recognized by plpgsql's lexer interface layer (pl_scanner.c).
-diff --git a/src/pl/plpgsql/src/pl_scanner.c b/src/pl/plpgsql/src/pl_scanner.c
-index 9407da51ef..51919febe5 100644
---- a/src/pl/plpgsql/src/pl_scanner.c
-+++ b/src/pl/plpgsql/src/pl_scanner.c
-@@ -359,6 +359,11 @@ internal_yylex(TokenAuxData *auxdata)
- 		{
- 			auxdata->lval.str = pstrdup(yytext);
- 		}
-+
-+		else if (token == SQL_COMMENT || token == C_COMMENT)
-+		{
-+			token = internal_yylex(auxdata, yyscanner);
-+		}
- 	}
- 
- 	return token;

@@ -46,6 +46,9 @@ void remove_node_locations(char *parse_tree_json)
 	remove_numeric_key(parse_tree_json, "location");
 	remove_numeric_key(parse_tree_json, "name_location");
 	remove_numeric_key(parse_tree_json, "stmt_location");
+	remove_numeric_key(parse_tree_json, "arg_location");
+	remove_numeric_key(parse_tree_json, "conninfo_location");
+	remove_numeric_key(parse_tree_json, "payload_location");
 	remove_numeric_key(parse_tree_json, "rexpr_list_start");
 	remove_numeric_key(parse_tree_json, "rexpr_list_end");
 	remove_numeric_key(parse_tree_json, "list_start");

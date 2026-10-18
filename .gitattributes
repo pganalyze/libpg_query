@@ -1,2 +1,7 @@
-*.sql binary
-*.psql binary
+# Never convert line endings for test SQL files (e.g. to CRLF on Windows checkouts),
+# since the tests compare exact bytes. These are still text, so diffs show up in reviews.
+*.sql -text
+*.psql -text
+
+# Contains WIN1252-encoded (non-UTF-8) data
+test/sql/postgres_regress/collate.windows.win1252.sql binary

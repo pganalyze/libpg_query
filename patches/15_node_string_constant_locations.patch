@@ -1,0 +1,182 @@
+--- a/src/backend/nodes/makefuncs.c
++++ b/src/backend/nodes/makefuncs.c
+@@ -643,6 +643,7 @@
+ 	res->arg = arg;
+ 	res->defaction = DEFELEM_UNSPEC;
+ 	res->location = location;
++	res->arg_location = -1;
+ 
+ 	return res;
+ }
+@@ -662,6 +663,7 @@
+ 	res->arg = arg;
+ 	res->defaction = defaction;
+ 	res->location = location;
++	res->arg_location = -1;
+ 
+ 	return res;
+ }
+--- a/src/backend/parser/gram.y
++++ b/src/backend/parser/gram.y
+@@ -574,7 +574,7 @@
+ %type <boolean> opt_varying opt_timezone opt_no_inherit
+ 
+ %type <ival>	Iconst SignedIconst
+-%type <str>		Sconst comment_text notify_payload
++%type <str>		Sconst comment_text
+ %type <str>		RoleId opt_boolean_or_string
+ %type <list>	var_list
+ %type <str>		ColId ColLabel BareColLabel
+@@ -1200,6 +1200,7 @@
+ 				{
+ 					$$ = makeDefElem("password",
+ 									 (Node *) makeString($2), @1);
++					$$->arg_location = @2;
+ 				}
+ 			| PASSWORD NULL_P
+ 				{
+@@ -1214,6 +1215,7 @@
+ 					 */
+ 					$$ = makeDefElem("password",
+ 									 (Node *) makeString($3), @1);
++					$$->arg_location = @3;
+ 				}
+ 			| UNENCRYPTED PASSWORD Sconst
+ 				{
+@@ -1234,6 +1236,7 @@
+ 			| VALID UNTIL Sconst
+ 				{
+ 					$$ = makeDefElem("validUntil", (Node *) makeString($3), @1);
++					$$->arg_location = @3;
+ 				}
+ 		/*	Supported but not documented for roles, for use by ALTER GROUP. */
+ 			| USER role_list
+@@ -5560,6 +5563,7 @@
+ 			generic_option_name generic_option_arg
+ 				{
+ 					$$ = makeDefElem($1, $2, @1);
++					$$->arg_location = @2;
+ 				}
+ 		;
+ 
+@@ -8800,11 +8804,17 @@
+ 			AS func_as
+ 				{
+ 					$$ = makeDefElem("as", (Node *) $2, @1);
++					$$->arg_location = @2;
+ 				}
+-			| LANGUAGE NonReservedWord_or_Sconst
++			| LANGUAGE NonReservedWord
+ 				{
+ 					$$ = makeDefElem("language", (Node *) makeString($2), @1);
+ 				}
++			| LANGUAGE Sconst
++				{
++					$$ = makeDefElem("language", (Node *) makeString($2), @1);
++					$$->arg_location = @2;
++				}
+ 			| TRANSFORM transform_type_list
+ 				{
+ 					$$ = makeDefElem("transform", (Node *) $2, @1);
+@@ -9160,10 +9170,16 @@
+ 			Sconst
+ 				{
+ 					$$ = makeDefElem("as", (Node *) makeString($1), @1);
++					$$->arg_location = @1;
+ 				}
+-			| LANGUAGE NonReservedWord_or_Sconst
++			| LANGUAGE NonReservedWord
++				{
++					$$ = makeDefElem("language", (Node *) makeString($2), @1);
++				}
++			| LANGUAGE Sconst
+ 				{
+ 					$$ = makeDefElem("language", (Node *) makeString($2), @1);
++					$$->arg_location = @2;
+ 				}
+ 		;
+ 
+@@ -10827,6 +10843,7 @@
+ 						makeNode(CreateSubscriptionStmt);
+ 					n->subname = $3;
+ 					n->conninfo = $5;
++					n->conninfo_location = @5;
+ 					n->publication = $7;
+ 					n->options = $8;
+ 					$$ = (Node *) n;
+@@ -10858,6 +10875,7 @@
+ 					n->kind = ALTER_SUBSCRIPTION_CONNECTION;
+ 					n->subname = $3;
+ 					n->conninfo = $5;
++					n->conninfo_location = @5;
+ 					$$ = (Node *) n;
+ 				}
+ 			| ALTER SUBSCRIPTION name REFRESH PUBLICATION opt_definition
+@@ -11042,19 +11060,23 @@
+  *
+  *****************************************************************************/
+ 
+-NotifyStmt: NOTIFY ColId notify_payload
++NotifyStmt: NOTIFY ColId ',' Sconst
+ 				{
+ 					NotifyStmt *n = makeNode(NotifyStmt);
+ 
+ 					n->conditionname = $2;
+-					n->payload = $3;
++					n->payload = $4;
++					n->payload_location = @4;
+ 					$$ = (Node *) n;
+ 				}
+-		;
++			| NOTIFY ColId
++				{
++					NotifyStmt *n = makeNode(NotifyStmt);
+ 
+-notify_payload:
+-			',' Sconst							{ $$ = $2; }
+-			| /*EMPTY*/							{ $$ = NULL; }
++					n->conditionname = $2;
++					n->payload = NULL;
++					$$ = (Node *) n;
++				}
+ 		;
+ 
+ ListenStmt: LISTEN ColId
+--- a/src/include/nodes/parsenodes.h
++++ b/src/include/nodes/parsenodes.h
+@@ -843,6 +843,8 @@
+ 								 * TypeName */
+ 	DefElemAction defaction;	/* unspecified action, or SET/ADD/DROP */
+ 	ParseLoc	location;		/* token location, or -1 if unknown */
++	/* location of arg's string constant, or -1 if not a string constant */
++	ParseLoc	arg_location pg_node_attr(query_jumble_ignore);
+ } DefElem;
+ 
+ /*
+@@ -3725,6 +3727,8 @@
+ 	NodeTag		type;
+ 	char	   *conditionname;	/* condition name to notify */
+ 	char	   *payload;		/* the payload string, or NULL if none */
++	/* location of payload's string constant; only set when payload is */
++	ParseLoc	payload_location pg_node_attr(query_jumble_ignore);
+ } NotifyStmt;
+ 
+ /* ----------------------
+@@ -4299,6 +4303,8 @@
+ 	char	   *conninfo;		/* Connection string to publisher */
+ 	List	   *publication;	/* One or more publication to subscribe to */
+ 	List	   *options;		/* List of DefElem nodes */
++	/* location of conninfo's string constant; only set when conninfo is */
++	ParseLoc	conninfo_location pg_node_attr(query_jumble_ignore);
+ } CreateSubscriptionStmt;
+ 
+ typedef enum AlterSubscriptionType
+@@ -4321,6 +4327,8 @@
+ 	char	   *conninfo;		/* Connection string to publisher */
+ 	List	   *publication;	/* One or more publication to subscribe to */
+ 	List	   *options;		/* List of DefElem nodes */
++	/* location of conninfo's string constant; only set when conninfo is */
++	ParseLoc	conninfo_location pg_node_attr(query_jumble_ignore);
+ } AlterSubscriptionStmt;
+ 
+ typedef struct DropSubscriptionStmt

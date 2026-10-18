@@ -20,6 +20,96 @@
 #include "miscadmin.h"
 
 /*
+ * Strict structural checking of the input tree (on by default).
+ *
+ * The deparser receives its parse tree from the caller (in libpg_query, from
+ * an arbitrary protobuf), so the tree may not have the shape a given deparse
+ * path expects. The stock code documents those expectations with Assert(),
+ * which is a no-op in a release build, so a malformed tree instead triggers
+ * out-of-bounds reads that can leak adjacent heap memory or crash. Two cases:
+ *
+ *   - A node's actual type not matching what a path expects. The stock
+ *     castNode() is a bare cast with no runtime check, so intVal()/strVal()/
+ *     boolVal()/floatVal() read the wrong union member.
+ *
+ *   - A list being shorter than a path assumes. The stock linitial()/lsecond()/
+ *     lthird()/lfourth()/llast() index past the end of the ListCell array.
+ *
+ * By default we redefine those macros here to check and raise a normal error
+ * on violation, caught by libpg_query's surrounding PG_TRY and returned as a
+ * PgQueryError. Redefining castNode() covers intVal()/strVal()/etc., since
+ * they are all defined in terms of it; redefining the positional list
+ * accessors covers every fixed-index access.
+ *
+ * Define PG_QUERY_DEPARSE_NO_STRICT_CHECKS to opt out and keep the stock
+ * unchecked macros -- e.g. if you feed the deparser only trees you have
+ * already validated and want to avoid the per-access checks.
+ */
+#ifndef PG_QUERY_DEPARSE_NO_STRICT_CHECKS
+static inline void *
+pg_query_strict_cast_node(NodeTag type, void *ptr, const char *file, int line)
+{
+	if (ptr != NULL && nodeTag(ptr) != type)
+		elog(ERROR, "deparse: unexpected node type %d, expected %d (%s:%d)",
+			 (int) nodeTag(ptr), (int) type, file, line);
+	return ptr;
+}
+#undef castNode
+#define castNode(_type_, nodeptr) \
+	((_type_ *) pg_query_strict_cast_node(T_##_type_, (nodeptr), __FILE__, __LINE__))
+
+/*
+ * intVal()/strVal()/boolVal()/floatVal() extract a scalar from a value node, so
+ * a NULL node is always a bug (a genuinely-absent value is handled by the
+ * caller before extraction, e.g. "PASSWORD NULL"). Reject NULL here rather than
+ * dereferencing it. castNode()'s own check then covers a wrong node type.
+ */
+static inline void *
+pg_query_require_value_node(void *ptr, const char *file, int line)
+{
+	if (ptr == NULL)
+		elog(ERROR, "deparse: value extraction from NULL node (%s:%d)", file, line);
+	return ptr;
+}
+#undef intVal
+#undef floatVal
+#undef boolVal
+#undef strVal
+#define intVal(v)	(castNode(Integer, pg_query_require_value_node((v), __FILE__, __LINE__))->ival)
+#define floatVal(v)	atof(castNode(Float, pg_query_require_value_node((v), __FILE__, __LINE__))->fval)
+#define boolVal(v)	(castNode(Boolean, pg_query_require_value_node((v), __FILE__, __LINE__))->boolval)
+#define strVal(v)	(castNode(String, pg_query_require_value_node((v), __FILE__, __LINE__))->sval)
+
+static inline void *
+pg_query_checked_list_nth(const List *l, int n, const char *file, int line)
+{
+	if (l == NIL || n < 0 || n >= list_length(l))
+		elog(ERROR, "deparse: list index %d out of range for length %d (%s:%d)",
+			 n, list_length(l), file, line);
+	return list_nth(l, n);
+}
+
+static inline void *
+pg_query_checked_list_last(const List *l, const char *file, int line)
+{
+	if (l == NIL)
+		elog(ERROR, "deparse: llast() on empty list (%s:%d)", file, line);
+	return list_nth(l, list_length(l) - 1);
+}
+
+#undef linitial
+#undef lsecond
+#undef lthird
+#undef lfourth
+#undef llast
+#define linitial(l)	pg_query_checked_list_nth((l), 0, __FILE__, __LINE__)
+#define lsecond(l)	pg_query_checked_list_nth((l), 1, __FILE__, __LINE__)
+#define lthird(l)	pg_query_checked_list_nth((l), 2, __FILE__, __LINE__)
+#define lfourth(l)	pg_query_checked_list_nth((l), 3, __FILE__, __LINE__)
+#define llast(l)	pg_query_checked_list_last((l), __FILE__, __LINE__)
+#endif
+
+/*
  * # Deparser overview
  *
  * The deparser works by walking the input parse tree and emitting into the
@@ -92,6 +182,7 @@ typedef enum DeparseNodeContext {
 	DEPARSE_NODE_CONTEXT_INSERT_RELATION,
 	DEPARSE_NODE_CONTEXT_INSERT_SELECT,
 	DEPARSE_NODE_CONTEXT_A_EXPR,
+	DEPARSE_NODE_CONTEXT_B_EXPR,
 	DEPARSE_NODE_CONTEXT_CREATE_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_TYPE,
 	DEPARSE_NODE_CONTEXT_ALTER_DOMAIN,
@@ -168,6 +259,8 @@ static void deparseWindowDef(DeparseState *state, WindowDef* window_def);
 static void deparseColumnRef(DeparseState *state, ColumnRef* column_ref);
 static void deparseSubLink(DeparseState *state, SubLink* sub_link);
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context);
+static bool needsParensAsBExpr(Node *node);
+static bool needsParensAsCExpr(Node *node);
 static void deparseBoolExpr(DeparseState *state, BoolExpr *bool_expr);
 static void deparseAStar(DeparseState *state, A_Star* a_star);
 static void deparseCollateClause(DeparseState *state, CollateClause* collate_clause);
@@ -209,7 +302,7 @@ static void deparseReplicaIdentityStmt(DeparseState *state, ReplicaIdentityStmt 
 static void deparseRangeTableSample(DeparseState *state, RangeTableSample *range_table_sample);
 static void deparseRangeTableFunc(DeparseState *state, RangeTableFunc* range_table_func);
 static void deparseGroupingSet(DeparseState *state, GroupingSet *grouping_set);
-static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNodeContext context);
+static void deparseFuncCall(DeparseState *state, FuncCall *func_call);
 static void deparseMinMaxExpr(DeparseState *state, MinMaxExpr *min_max_expr);
 static void deparseXmlExpr(DeparseState *state, XmlExpr* xml_expr, DeparseNodeContext context);
 static void deparseXmlSerialize(DeparseState *state, XmlSerialize *xml_serialize);
@@ -738,10 +831,13 @@ static void deparseAnyNameSkipLast(DeparseState *state, List *parts)
 // "func_expr" in gram.y
 static void deparseFuncExpr(DeparseState *state, Node *node, DeparseNodeContext context)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
-			deparseFuncCall(state, castNode(FuncCall, node), context);
+			deparseFuncCall(state, castNode(FuncCall, node));
 			break;
 		case T_SQLValueFunction:
 			deparseSQLValueFunction(state, castNode(SQLValueFunction, node));
@@ -789,6 +885,7 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 
 	if (node == NULL)
 		return;
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -796,11 +893,14 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 		case T_ParamRef:
 		case T_A_Indirection:
 		case T_CaseExpr:
-		case T_SubLink:
 		case T_A_ArrayExpr:
 		case T_RowExpr:
 		case T_GroupingFunc:
 			deparseCExpr(state, node);
+			break;
+		case T_SubLink:
+			// Not always a "c_expr" (e.g. "x = ANY (...)"), so don't go through deparseCExpr
+			deparseSubLink(state, castNode(SubLink, node));
 			break;
 		case T_TypeCast:
 			deparseTypeCast(state, castNode(TypeCast, node), DEPARSE_NODE_CONTEXT_NONE);
@@ -809,7 +909,8 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 			deparseCollateClause(state, castNode(CollateClause, node));
 			break;
 		case T_A_Expr:
-			deparseAExpr(state, castNode(A_Expr, node), DEPARSE_NODE_CONTEXT_A_EXPR);
+			// Operands of A_Expr nodes in "b_expr" positions must be valid "b_expr" as well
+			deparseAExpr(state, castNode(A_Expr, node), context == DEPARSE_NODE_CONTEXT_B_EXPR ? DEPARSE_NODE_CONTEXT_B_EXPR : DEPARSE_NODE_CONTEXT_A_EXPR);
 			break;
 		case T_BoolExpr:
 			deparseBoolExpr(state, castNode(BoolExpr, node));
@@ -865,34 +966,27 @@ static void deparseExpr(DeparseState *state, Node *node, DeparseNodeContext cont
 // "b_expr" in gram.y
 static void deparseBExpr(DeparseState *state, Node *node)
 {
-	if (IsA(node, XmlExpr)) {
-		deparseXmlExpr(state, castNode(XmlExpr, node), DEPARSE_NODE_CONTEXT_NONE);
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node in deparseBExpr");
+
+	if (needsParensAsBExpr(node))
+	{
+		deparseAppendStringInfoChar(state, '(');
+		// Because we wrap this in parenthesis, the expression inside follows "a_expr" parser rules
+		deparseExpr(state, node, DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseAppendStringInfoChar(state, ')');
 		return;
 	}
 
-	if (IsA(node, A_Expr)) {
-		A_Expr *a_expr = castNode(A_Expr, node);
-		// Other kinds are handled by "c_expr", with parens added around them
-		if (a_expr->kind == AEXPR_OP || a_expr->kind == AEXPR_DISTINCT || a_expr->kind == AEXPR_NOT_DISTINCT) {
-			deparseAExpr(state, a_expr, DEPARSE_NODE_CONTEXT_NONE);
-			return;
-		}
-	}
-
-	if (IsA(node, BoolExpr)) {
-		BoolExpr *bool_expr = castNode(BoolExpr, node);
-		if (bool_expr->boolop == NOT_EXPR) {
-			deparseBoolExpr(state, bool_expr);
-			return;
-		}
-	}
-
-	deparseCExpr(state, node);
+	deparseExpr(state, node, DEPARSE_NODE_CONTEXT_B_EXPR);
 }
 
 // "AexprConst" in gram.y
 static void deparseAexprConst(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_A_Const:
@@ -911,6 +1005,17 @@ static void deparseAexprConst(DeparseState *state, Node *node)
 // "c_expr" in gram.y
 static void deparseCExpr(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
+	if (needsParensAsCExpr(node))
+	{
+		deparseAppendStringInfoChar(state, '(');
+		deparseExpr(state, node, DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseAppendStringInfoChar(state, ')');
+		return;
+	}
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnRef:
@@ -1046,6 +1151,9 @@ static void deparseSimpleTypename(DeparseState *state, Node *node)
 // "NumericOnly" in gram.y
 static void deparseNumericOnly(DeparseState *state, union ValUnion *value)
 {
+	if (value == NULL)
+		elog(ERROR, "deparse: unexpected NULL value in deparseNumericOnly");
+
 	switch (nodeTag(value))
 	{
 		case T_Integer:
@@ -1258,6 +1366,231 @@ static void deparseSubqueryOp(DeparseState *state, List *op)
 	}
 }
 
+// Precedence of "a_expr" rules, lowest to highest (mirrors %left/%right/%nonassoc in gram.y)
+typedef enum DeparseExprPrec
+{
+	DEPARSE_PREC_OR,         /* OR */
+	DEPARSE_PREC_AND,        /* AND */
+	DEPARSE_PREC_NOT,        /* NOT (right-associative) */
+	DEPARSE_PREC_IS,         /* IS, ISNULL, NOTNULL (non-associative) */
+	DEPARSE_PREC_COMPARISON, /* < > = <= >= <> (non-associative) */
+	DEPARSE_PREC_BETWEEN,    /* BETWEEN IN LIKE ILIKE SIMILAR NOT_LA (non-associative) */
+	DEPARSE_PREC_OP,         /* Op OPERATOR, i.e. all other operators */
+	DEPARSE_PREC_ADD,        /* + - */
+	DEPARSE_PREC_MUL,        /* * / % */
+	DEPARSE_PREC_EXP,        /* ^ */
+	DEPARSE_PREC_AT,         /* AT TIME ZONE, AT LOCAL */
+	DEPARSE_PREC_COLLATE,    /* COLLATE */
+	DEPARSE_PREC_UMINUS,     /* unary + - (right-associative) */
+	DEPARSE_PREC_ATOM        /* c_expr, typecasts, and anything else that can't be split apart */
+} DeparseExprPrec;
+
+// Precedence of the binary operator tokens handled by "qual_Op" and its special cases in gram.y
+static DeparseExprPrec getOperatorPrecedence(List *op)
+{
+	const char *name;
+
+	// OPERATOR(schema.op) always has the precedence of Op
+	if (list_length(op) != 1)
+		return DEPARSE_PREC_OP;
+
+	name = strVal(linitial(op));
+	if (strcmp(name, "+") == 0 || strcmp(name, "-") == 0)
+		return DEPARSE_PREC_ADD;
+	if (strcmp(name, "*") == 0 || strcmp(name, "/") == 0 || strcmp(name, "%") == 0)
+		return DEPARSE_PREC_MUL;
+	if (strcmp(name, "^") == 0)
+		return DEPARSE_PREC_EXP;
+	if (strcmp(name, "<") == 0 || strcmp(name, ">") == 0 || strcmp(name, "=") == 0 ||
+		strcmp(name, "<=") == 0 || strcmp(name, ">=") == 0 || strcmp(name, "<>") == 0 ||
+		strcmp(name, "!=") == 0)
+		return DEPARSE_PREC_COMPARISON;
+
+	return DEPARSE_PREC_OP;
+}
+
+// Precedence of the operator token in "a_expr subquery_Op sub_type ..." (i.e. "x = ANY (...)")
+static DeparseExprPrec getSubqueryOperatorPrecedence(List *op)
+{
+	const char *name;
+
+	if (list_length(op) == 1)
+	{
+		name = strVal(linitial(op));
+		// These get output as [NOT] LIKE / [NOT] ILIKE by deparseSubqueryOp
+		if (strcmp(name, "~~") == 0 || strcmp(name, "!~~") == 0 ||
+			strcmp(name, "~~*") == 0 || strcmp(name, "!~~*") == 0)
+			return DEPARSE_PREC_BETWEEN;
+	}
+
+	return getOperatorPrecedence(op);
+}
+
+static bool isSqlSyntaxFuncCall(FuncCall *func_call, const char *name)
+{
+	return func_call->funcformat == COERCE_SQL_SYNTAX &&
+		list_length(func_call->funcname) == 2 &&
+		strcmp(strVal(linitial(func_call->funcname)), "pg_catalog") == 0 &&
+		strcmp(strVal(lsecond(func_call->funcname)), name) == 0;
+}
+
+// Precedence of the gram.y rule that a node gets deparsed as (see DeparseExprPrec)
+static DeparseExprPrec getExprPrecedence(Node *node)
+{
+	if (node == NULL)
+		return DEPARSE_PREC_ATOM;
+
+	switch (nodeTag(node))
+	{
+		case T_A_Expr:
+			{
+				A_Expr *a_expr = castNode(A_Expr, node);
+				switch (a_expr->kind)
+				{
+					case AEXPR_OP:
+						// Prefix operators: unary + and - have UMINUS precedence, all others that of Op
+						if (a_expr->lexpr == NULL)
+							return getOperatorPrecedence(a_expr->name) == DEPARSE_PREC_ADD ? DEPARSE_PREC_UMINUS : DEPARSE_PREC_OP;
+						return getOperatorPrecedence(a_expr->name);
+					case AEXPR_OP_ANY:
+					case AEXPR_OP_ALL:
+						// The rule has Op precedence, but as a right operand the operator token may bind looser
+						return Min(getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_PREC_OP);
+					case AEXPR_DISTINCT:
+					case AEXPR_NOT_DISTINCT:
+						return DEPARSE_PREC_IS;
+					case AEXPR_NULLIF:
+						return DEPARSE_PREC_ATOM;
+					default: /* IN, LIKE, ILIKE, SIMILAR TO, BETWEEN */
+						return DEPARSE_PREC_BETWEEN;
+				}
+			}
+		case T_BoolExpr:
+			switch (castNode(BoolExpr, node)->boolop)
+			{
+				case AND_EXPR:
+					return DEPARSE_PREC_AND;
+				case NOT_EXPR:
+					return DEPARSE_PREC_NOT;
+				default:
+					return DEPARSE_PREC_OR;
+			}
+		case T_NullTest:
+		case T_BooleanTest:
+		case T_JsonIsPredicate:
+			return DEPARSE_PREC_IS;
+		case T_CollateClause:
+			return DEPARSE_PREC_COLLATE;
+		case T_XmlExpr:
+			if (castNode(XmlExpr, node)->op == IS_DOCUMENT)
+				return DEPARSE_PREC_IS;
+			return DEPARSE_PREC_ATOM;
+		case T_SubLink:
+			{
+				SubLink *sub_link = castNode(SubLink, node);
+				if (sub_link->subLinkType == ANY_SUBLINK && list_length(sub_link->operName) == 0)
+					return DEPARSE_PREC_BETWEEN; // IN (...)
+				if (sub_link->subLinkType == ANY_SUBLINK || sub_link->subLinkType == ALL_SUBLINK)
+					return Min(getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_PREC_OP);
+				return DEPARSE_PREC_ATOM;
+			}
+		case T_FuncCall:
+			{
+				FuncCall *func_call = castNode(FuncCall, node);
+				if (isSqlSyntaxFuncCall(func_call, "timezone") &&
+					list_length(func_call->args) > 0 &&
+					list_length(func_call->args) <= 2)
+					return DEPARSE_PREC_AT;
+				if (isSqlSyntaxFuncCall(func_call, "is_normalized"))
+					return DEPARSE_PREC_IS;
+				return DEPARSE_PREC_ATOM;
+			}
+		default:
+			return DEPARSE_PREC_ATOM;
+	}
+}
+
+// Which side of the operator an operand is on (prefix operators only have a right operand, postfix ones a left one)
+typedef enum DeparseOperandSide
+{
+	DEPARSE_OPERAND_LEFT,
+	DEPARSE_OPERAND_RIGHT
+} DeparseOperandSide;
+
+/*
+ * Recognizes subquery comparison forms ("x = ANY (...)", "x < ALL (SELECT ...)",
+ * "x IN (...)"). As the left operand of an operator at the same precedence these never
+ * need parens (see needsParensForPrecedence); at any other precedence the normal rules
+ * apply, since dropping parens there can reassociate the expression or fail to parse:
+ * "d = x = ANY(c)" is rejected outright, and "d || x = ANY(c)" reparses with the
+ * comparison swallowing the concatenation.
+ */
+static bool isSubqueryComparisonForm(Node *node)
+{
+	if (IsA(node, A_Expr))
+	{
+		switch (castNode(A_Expr, node)->kind)
+		{
+			case AEXPR_OP_ANY:
+			case AEXPR_OP_ALL:
+			case AEXPR_IN:
+				return true;
+			default:
+				return false;
+		}
+	}
+	if (IsA(node, SubLink))
+	{
+		SubLink *sub_link = castNode(SubLink, node);
+		return sub_link->subLinkType == ANY_SUBLINK || sub_link->subLinkType == ALL_SUBLINK;
+	}
+	return false;
+}
+
+/*
+ * Checks whether a node needs parens as the left or right operand of an "a_expr"
+ * rule with the given precedence. At the same precedence, left-associative rules
+ * only need them on the right, non-associative rules on both sides.
+ */
+static bool needsParensForPrecedence(Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side)
+{
+	DeparseExprPrec prec = getExprPrecedence(node);
+
+	if (side == DEPARSE_OPERAND_LEFT && isSubqueryComparisonForm(node) &&
+		prec == parent_prec)
+		return false;
+
+	if (prec != parent_prec)
+		return prec < parent_prec;
+
+	switch (parent_prec)
+	{
+		case DEPARSE_PREC_IS:
+		case DEPARSE_PREC_COMPARISON:
+		case DEPARSE_PREC_BETWEEN:
+			return true;
+		case DEPARSE_PREC_NOT:
+		case DEPARSE_PREC_UMINUS:
+			// Right-associative prefix operators, e.g. "NOT NOT a"
+			return false;
+		default:
+			return side == DEPARSE_OPERAND_RIGHT;
+	}
+}
+
+// Deparses an operand of an "a_expr" (or "b_expr") rule with the given precedence, adding parens if needed
+static void deparseExprOperand(DeparseState *state, Node *node, DeparseExprPrec parent_prec, DeparseOperandSide side, DeparseNodeContext context)
+{
+	bool need_parens = needsParensForPrecedence(node, parent_prec, side) ||
+		(context == DEPARSE_NODE_CONTEXT_B_EXPR && needsParensAsBExpr(node));
+
+	if (need_parens)
+		deparseAppendStringInfoChar(state, '(');
+	deparseExpr(state, node, need_parens ? DEPARSE_NODE_CONTEXT_A_EXPR : context);
+	if (need_parens)
+		deparseAppendStringInfoChar(state, ')');
+}
+
 // Not present directly in gram.y (usually matched by ColLabel)
 static void deparseGenericDefElemName(DeparseState *state, const char *in)
 {
@@ -1427,7 +1760,7 @@ static void deparseCommonFuncOptItem(DeparseState *state, DefElem *def_elem)
 		deparseAppendStringInfoString(state, "SUPPORT ");
 		deparseAnyName(state, castNode(List, def_elem->arg));
 	}
-	else if (strcmp(def_elem->defname, "set") == 0 && IsA(def_elem->arg, VariableSetStmt)) // FunctionSetResetClause
+	else if (strcmp(def_elem->defname, "set") == 0 && def_elem->arg != NULL && IsA(def_elem->arg, VariableSetStmt)) // FunctionSetResetClause
 	{
 		deparseVariableSetStmt(state, castNode(VariableSetStmt, def_elem->arg));
 	}
@@ -1576,6 +1909,9 @@ static void deparseFuncName(DeparseState *state, List *func_name)
 // "function_with_argtypes" in gram.y
 static void deparseFunctionWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	ListCell *lc;
 	deparseFuncName(state, object_with_args->objname);
 
@@ -1615,6 +1951,9 @@ static void deparseFunctionWithArgtypesList(DeparseState *state, List *l)
 // "operator_with_argtypes" in gram.y
 static void deparseOperatorWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	deparseAnyOperator(state, object_with_args->objname);
 
 	Assert(list_length(object_with_args->objargs) == 2);
@@ -1677,6 +2016,9 @@ static void deparseAggrArgs(DeparseState *state, List *aggr_args)
 // "aggregate_with_argtypes" in gram.y
 static void deparseAggregateWithArgtypes(DeparseState *state, ObjectWithArgs *object_with_args)
 {
+	if (object_with_args == NULL)
+		elog(ERROR, "deparse: unexpected NULL ObjectWithArgs");
+
 	ListCell *lc = NULL;
 
 	deparseFuncName(state, object_with_args->objname);
@@ -2156,7 +2498,7 @@ static void deparseXmlNamespaceList(DeparseState *state, List *l)
 		if (res_target->name == NULL)
 			deparseAppendStringInfoString(state, "DEFAULT ");
 
-		deparseExpr(state, res_target->val, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+		deparseBExpr(state, res_target->val);
 
 		if (res_target->name != NULL)
 		{
@@ -2172,6 +2514,9 @@ static void deparseXmlNamespaceList(DeparseState *state, List *l)
 // "table_ref" in gram.y
 static void deparseTableRef(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_RangeVar:
@@ -2377,7 +2722,8 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 			deparseAppendCommaAndPart(state);
 
 		ResTarget *res_target = castNode(ResTarget, lfirst(lc));
-		Assert(res_target->val != NULL);
+		if (res_target->val == NULL)
+			elog(ERROR, "deparse: unexpected NULL val in SET clause ResTarget");
 
 		if (IsA(res_target->val, MultiAssignRef))
 		{
@@ -2407,10 +2753,13 @@ static void deparseSetClauseList(DeparseState *state, List *target_list)
 // "func_expr_windowless" in gram.y
 static void deparseFuncExprWindowless(DeparseState *state, Node* node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_FuncCall:
-			deparseFuncCall(state, castNode(FuncCall, node), DEPARSE_NODE_CONTEXT_NONE /* we don't know which kind of expression */);
+			deparseFuncCall(state, castNode(FuncCall, node));
 			break;
 		case T_SQLValueFunction:
 			deparseSQLValueFunction(state, castNode(SQLValueFunction, node));
@@ -2458,6 +2807,8 @@ static void deparseIndexElem(DeparseState *state, IndexElem* index_elem)
 	}
 	else if (index_elem->expr != NULL)
 	{
+		bool is_func_expr = false;
+
 		switch (nodeTag(index_elem->expr))
 		{
 			// Simple function calls can be written without wrapping parens
@@ -2467,13 +2818,23 @@ static void deparseIndexElem(DeparseState *state, IndexElem* index_elem)
 			case T_MinMaxExpr: // func_expr_common_subexpr
 			case T_XmlExpr: // func_expr_common_subexpr
 			case T_XmlSerialize: // func_expr_common_subexpr
-				deparseFuncExprWindowless(state, index_elem->expr);
-				deparseAppendStringInfoString(state, " ");
+				is_func_expr = true;
 				break;
 			default:
-				deparseAppendStringInfoChar(state, '(');
-				deparseExpr(state, index_elem->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
-				deparseAppendStringInfoString(state, ") ");
+				break;
+		}
+
+		// Some function call nodes are output using operator syntax (e.g. "x AT TIME ZONE y"), and need parens
+		if (is_func_expr && !needsParensAsCExpr(index_elem->expr))
+		{
+			deparseFuncExprWindowless(state, index_elem->expr);
+			deparseAppendStringInfoString(state, " ");
+		}
+		else
+		{
+			deparseAppendStringInfoChar(state, '(');
+			deparseExpr(state, index_elem->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			deparseAppendStringInfoString(state, ") ");
 		}
 	}
 	else
@@ -2754,6 +3115,9 @@ static void deparseUtilityOptionList(DeparseState *state, List *options)
 
 static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNodeContext context)
 {
+	if (stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL SelectStmt");
+
 	const ListCell *lc = NULL;
 	const ListCell *lc2 = NULL;
 	bool need_parens = context == DEPARSE_NODE_CONTEXT_SELECT_SETOP && (
@@ -2764,6 +3128,9 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 		stmt->withClause != NULL ||
 		stmt->op != SETOP_NONE);
 	DeparseStateNestingLevel *parent_level = NULL;
+
+	/* Set operations (UNION etc) recurse here directly, without going through deparseExpr */
+	check_stack_depth();
 
 	if (need_parens)
 	{
@@ -2822,6 +3189,8 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 
 			if (stmt->intoClause != NULL)
 			{
+				if (stmt->intoClause->rel == NULL)
+					elog(ERROR, "deparse: unexpected NULL rel in IntoClause");
 				deparseAppendPartGroup(state, "INTO", DEPARSE_PART_INDENT);
 				deparseOptTemp(state, stmt->intoClause->rel->relpersistence);
 				deparseIntoClause(state, stmt->intoClause);
@@ -2912,7 +3281,7 @@ static void deparseSelectStmt(DeparseState *state, SelectStmt *stmt, DeparseNode
 		else if (stmt->limitOption == LIMIT_OPTION_WITH_TIES)
 			deparseCExpr(state, stmt->limitCount);
 		else
-			deparseExpr(state, stmt->limitCount, DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+			deparseExpr(state, stmt->limitCount, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 		deparseAppendStringInfoChar(state, ' ');
 
@@ -2998,6 +3367,9 @@ static void deparseIntoClause(DeparseState *state, IntoClause *into_clause)
 
 static void deparseRangeVar(DeparseState *state, RangeVar *range_var, DeparseNodeContext context)
 {
+	if (range_var == NULL)
+		elog(ERROR, "deparse: unexpected NULL RangeVar");
+
 	if (!range_var->inh && context != DEPARSE_NODE_CONTEXT_CREATE_TYPE && context != DEPARSE_NODE_CONTEXT_ALTER_TYPE)
 		deparseAppendStringInfoString(state, "ONLY ");
 
@@ -3094,8 +3466,11 @@ static void deparseAConst(DeparseState *state, A_Const *a_const)
 	deparseValue(state, val, DEPARSE_NODE_CONTEXT_CONSTANT);
 }
 
-static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNodeContext context)
+static void deparseFuncCall(DeparseState *state, FuncCall *func_call)
 {
+	if (func_call == NULL)
+		elog(ERROR, "deparse: unexpected NULL FuncCall");
+
 	const ListCell *lc = NULL;
 
 	Assert(list_length(func_call->funcname) > 0);
@@ -3214,20 +3589,17 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		/*
 		 * "OVERLAPS" is a keyword on its own merit, and only accepts the
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.overlaps)
-		 * format: (start_1, end_1) overlaps (start_2, end_2)
+		 * format: (start_1, end_1) OVERLAPS (start_2, end_2)
 		 */
 		deparseAppendStringInfoChar(state, '(');
 		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, ", ");
 		deparseExpr(state, lsecond(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		deparseAppendStringInfoString(state, ") ");
-
-		deparseAppendStringInfoString(state, "overlaps ");
-		deparseAppendStringInfoChar(state, '(');
+		deparseAppendStringInfoString(state, ") OVERLAPS (");
 		deparseExpr(state, lthird(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, ", ");
 		deparseExpr(state, lfourth(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		deparseAppendStringInfoString(state, ") ");
+		deparseAppendStringInfoChar(state, ')');
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
 		list_length(func_call->funcname) == 2 &&
@@ -3270,7 +3642,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		 * keyword parameter style when its called as a keyword, not as a regular function (i.e. pg_catalog.timezone)
 		 * Note that the arguments are swapped in this case
 		 */
-		Expr* e;
+		Node* e;
 		bool isLocal = list_length(func_call->args) == 1;
 
 		if (isLocal)
@@ -3278,30 +3650,14 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		else
 			e = lsecond(func_call->args);
 
-		// If we're not inside an a_expr context, we must add wrapping parenthesis around the AT ... syntax
-		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
-			deparseAppendStringInfoChar(state, '(');
-		}
-
-		if (IsA(e, A_Expr)) {
-			deparseAppendStringInfoChar(state, '(');
-		}
-
-		deparseExpr(state, (Node*) e, DEPARSE_NODE_CONTEXT_A_EXPR);
-
-		if (IsA(e, A_Expr)) {
-			deparseAppendStringInfoChar(state, ')');
-		}
+		// Note that callers outside of an "a_expr" context add parens around this (see needsParensAsBExpr)
+		deparseExprOperand(state, e, DEPARSE_PREC_AT, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 		if (isLocal)
 			deparseAppendStringInfoString(state, " AT LOCAL");
 		else {
 			deparseAppendStringInfoString(state, " AT TIME ZONE ");
-			deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
-		}
-
-		if (context != DEPARSE_NODE_CONTEXT_A_EXPR) {
-			deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, linitial(func_call->args), DEPARSE_PREC_AT, DEPARSE_OPERAND_RIGHT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		}
 
 		return;
@@ -3338,7 +3694,7 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		 */
 		Assert(list_length(func_call->args) == 1 || list_length(func_call->args) == 2);
 
-		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_A_EXPR);
+		deparseExprOperand(state, linitial(func_call->args), DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoString(state, " IS ");
 		if (list_length(func_call->args) == 2)
 		{
@@ -3355,9 +3711,9 @@ static void deparseFuncCall(DeparseState *state, FuncCall *func_call, DeparseNod
 		list_length(func_call->args) == 2)
 	{
 		deparseAppendStringInfoString(state, "xmlexists (");
-		deparseExpr(state, linitial(func_call->args), DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+		deparseCExpr(state, linitial(func_call->args));
 		deparseAppendStringInfoString(state, " PASSING ");
-		deparseExpr(state, lsecond(func_call->args), DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+		deparseCExpr(state, lsecond(func_call->args));
 		deparseAppendStringInfoChar(state, ')');
 		return;
 	} else if (func_call->funcformat == COERCE_SQL_SYNTAX &&
@@ -3569,7 +3925,8 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ALL_SUBLINK:
-			deparseExpr(state, sub_link->testexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			// The left operand gets compared against the operator token, not the precedence of the whole rule
+			deparseExprOperand(state, sub_link->testexpr, getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, sub_link->operName);
 			deparseAppendStringInfoString(state, " ALL (");
@@ -3577,7 +3934,10 @@ static void deparseSubLink(DeparseState *state, SubLink* sub_link)
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case ANY_SUBLINK:
-			deparseExpr(state, sub_link->testexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
+			if (list_length(sub_link->operName) > 0)
+				deparseExprOperand(state, sub_link->testexpr, getSubqueryOperatorPrecedence(sub_link->operName), DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
+			else
+				deparseExprOperand(state, sub_link->testexpr, DEPARSE_PREC_BETWEEN /* IN */, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 			if (list_length(sub_link->operName) > 0)
 			{
 				deparseAppendStringInfoChar(state, ' ');
@@ -3623,56 +3983,80 @@ needsParensAsBExpr(Node *node)
 {
 	if (node == NULL)
 		return false;
-	return IsA(node, BoolExpr) || IsA(node, BooleanTest) || IsA(node, NullTest) || IsA(node, A_Expr);
+
+	// These have their own "b_expr" rules (their operands get deparsed in a "b_expr" context as well)
+	if (IsA(node, A_Expr))
+	{
+		switch (castNode(A_Expr, node)->kind)
+		{
+			case AEXPR_OP:
+			case AEXPR_DISTINCT:
+			case AEXPR_NOT_DISTINCT:
+			case AEXPR_NULLIF: /* function call syntax */
+				return false;
+			default:
+				return true;
+		}
+	}
+	if (IsA(node, XmlExpr) && castNode(XmlExpr, node)->op == IS_DOCUMENT)
+		return false;
+
+	// "row OVERLAPS row" can't be ambiguous (so it has no precedence), but is only handled by "a_expr"
+	if (IsA(node, FuncCall) && isSqlSyntaxFuncCall(castNode(FuncCall, node), "overlaps") &&
+		list_length(castNode(FuncCall, node)->args) == 4)
+		return true;
+
+	// Everything else that isn't a "c_expr" (e.g. NOT, IS NULL, COLLATE, AT TIME ZONE) is only handled by "a_expr"
+	return getExprPrecedence(node) != DEPARSE_PREC_ATOM;
+}
+
+// Checks whether a node needs parens in a "c_expr" context, i.e. anything that isn't deparsed as a "c_expr" (e.g. "a + b", "NOT a", "x = ANY (...)", "x AT TIME ZONE y" or "x IS DOCUMENT")
+static bool
+needsParensAsCExpr(Node *node)
+{
+	return getExprPrecedence(node) != DEPARSE_PREC_ATOM || needsParensAsBExpr(node);
 }
 
 // This handles "A_Expr" parse tree objects, which are a subset of the rules in "a_expr" (handled by deparseExpr)
 static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext context)
 {
-	ListCell *lc;
-	char *name;
+	if (a_expr->rexpr == NULL)
+		elog(ERROR, "deparse: unexpected NULL rexpr in A_Expr");
 
-	bool need_lexpr_parens = needsParensAsBExpr(a_expr->lexpr);
-	bool need_rexpr_parens = needsParensAsBExpr(a_expr->rexpr);
+	char *name;
+	DeparseExprPrec prec = getExprPrecedence((Node *) a_expr);
 
 	switch (a_expr->kind) {
 		case AEXPR_OP: /* normal operator */
 			{
 				if (a_expr->lexpr != NULL)
 				{
-					if (need_lexpr_parens)
-						deparseAppendStringInfoChar(state, '(');
-					deparseExpr(state, a_expr->lexpr, context);
-					if (need_lexpr_parens)
-						deparseAppendStringInfoChar(state, ')');
+					deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 					deparseAppendStringInfoChar(state, ' ');
 				}
 				deparseQualOp(state, a_expr->name);
 				if (a_expr->rexpr != NULL)
 				{
 					deparseAppendStringInfoChar(state, ' ');
-					if (need_rexpr_parens)
-						deparseAppendStringInfoChar(state, '(');
-					deparseExpr(state, a_expr->rexpr, context);
-					if (need_rexpr_parens)
-						deparseAppendStringInfoChar(state, ')');
+					deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 				}
 			}
 			return;
 		case AEXPR_OP_ANY: /* scalar op ANY (array) */
-			deparseExpr(state, a_expr->lexpr, context);
+			// The left operand gets compared against the operator token, not the precedence of the whole rule
+			deparseExprOperand(state, a_expr->lexpr, getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, a_expr->name);
 			deparseAppendStringInfoString(state, " ANY(");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExpr(state, a_expr->rexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case AEXPR_OP_ALL: /* scalar op ALL (array) */
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, getSubqueryOperatorPrecedence(a_expr->name), DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseSubqueryOp(state, a_expr->name);
 			deparseAppendStringInfoString(state, " ALL(");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExpr(state, a_expr->rexpr, DEPARSE_NODE_CONTEXT_A_EXPR);
 			deparseAppendStringInfoChar(state, ')');
 			return;
 		case AEXPR_DISTINCT: /* IS DISTINCT FROM - name must be "=" */
@@ -3680,26 +4064,18 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
 
-			if (need_lexpr_parens)
-				deparseAppendStringInfoChar(state, '(');
-			deparseExpr(state, a_expr->lexpr, context);
-			if (need_lexpr_parens)
-				deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS DISTINCT FROM ");
-			if (need_rexpr_parens)
-				deparseAppendStringInfoChar(state, '(');
-			deparseExpr(state, a_expr->rexpr, context);
-			if (need_rexpr_parens)
-				deparseAppendStringInfoChar(state, ')');
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_NOT_DISTINCT: /* IS NOT DISTINCT FROM - name must be "=" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(strcmp(strVal(linitial(a_expr->name)), "=") == 0);
 
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS NOT DISTINCT FROM ");
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_NULLIF: /* NULLIF - name must be "=" */
 			Assert(list_length(a_expr->name) == 1);
@@ -3716,7 +4092,7 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(IsA(a_expr->rexpr, List));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
 			if (strcmp(name, "=") == 0) {
@@ -3736,7 +4112,7 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 		case AEXPR_LIKE: /* [NOT] LIKE - name must be "~~" or "!~~" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3748,12 +4124,12 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 				Assert(false);
 			}
 
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_ILIKE: /* [NOT] ILIKE - name must be "~~*" or "!~~*" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3765,12 +4141,12 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 				Assert(false);
 			}
 
-			deparseExpr(state, a_expr->rexpr, context);
+			deparseExprOperand(state, a_expr->rexpr, prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 		case AEXPR_SIMILAR: /* [NOT] SIMILAR - name must be "~" or "!~" */
 			Assert(list_length(a_expr->name) == 1);
 			Assert(IsA(linitial(a_expr->name), String));
-			deparseExpr(state, a_expr->lexpr, context);
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 
 			name = ((union ValUnion *) linitial(a_expr->name))->sval.sval;
@@ -3788,11 +4164,11 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(strcmp(strVal(lsecond(n->funcname)), "similar_to_escape") == 0);
 			Assert(list_length(n->args) == 1 || list_length(n->args) == 2);
 
-			deparseExpr(state, linitial(n->args), context);
+			deparseExprOperand(state, linitial(n->args), prec, DEPARSE_OPERAND_RIGHT, context);
 			if (list_length(n->args) == 2)
 			{
 				deparseAppendStringInfoString(state, " ESCAPE ");
-				deparseExpr(state, lsecond(n->args), context);
+				deparseExprOperand(state, lsecond(n->args), prec, DEPARSE_OPERAND_RIGHT, context);
 			}
 
 			return;
@@ -3804,16 +4180,17 @@ static void deparseAExpr(DeparseState *state, A_Expr* a_expr, DeparseNodeContext
 			Assert(IsA(linitial(a_expr->name), String));
 			Assert(IsA(a_expr->rexpr, List));
 
-			deparseExpr(state, a_expr->lexpr, context);
+			Assert(list_length(castNode(List, a_expr->rexpr)) == 2);
+
+			deparseExprOperand(state, a_expr->lexpr, prec, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoChar(state, ' ');
 			deparseAppendStringInfoString(state, strVal(linitial(a_expr->name)));
 			deparseAppendStringInfoChar(state, ' ');
 
-			foreach(lc, castNode(List, a_expr->rexpr)) {
-				deparseExpr(state, lfirst(lc), context);
-				if (lnext(castNode(List, a_expr->rexpr), lc))
-					deparseAppendStringInfoString(state, " AND ");
-			}
+			// The lower bound is a "b_expr" in gram.y, the upper bound an "a_expr"
+			deparseExprOperand(state, linitial(castNode(List, a_expr->rexpr)), prec, DEPARSE_OPERAND_RIGHT, DEPARSE_NODE_CONTEXT_B_EXPR);
+			deparseAppendStringInfoString(state, " AND ");
+			deparseExprOperand(state, lsecond(castNode(List, a_expr->rexpr)), prec, DEPARSE_OPERAND_RIGHT, context);
 			return;
 	}
 }
@@ -3885,12 +4262,7 @@ static void deparseCollateClause(DeparseState *state, CollateClause* collate_cla
 	ListCell *lc;
 	if (collate_clause->arg != NULL)
 	{
-		bool need_parens = IsA(collate_clause->arg, A_Expr);
-		if (need_parens)
-			deparseAppendStringInfoChar(state, '(');
-		deparseExpr(state, collate_clause->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
-		if (need_parens)
-			deparseAppendStringInfoChar(state, ')');
+		deparseExprOperand(state, collate_clause->arg, DEPARSE_PREC_COLLATE, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 		deparseAppendStringInfoChar(state, ' ');
 	}
 	deparseAppendStringInfoString(state, "COLLATE ");
@@ -4020,6 +4392,9 @@ static void deparseWithClause(DeparseState *state, WithClause *with_clause)
 // "joined_table" in gram.y
 static void deparseJoinExpr(DeparseState *state, JoinExpr *join_expr)
 {
+	if (join_expr->larg == NULL || join_expr->rarg == NULL)
+		elog(ERROR, "deparse: unexpected NULL larg/rarg in JoinExpr");
+
 	ListCell *lc;
 	bool need_alias_parens = join_expr->alias != NULL;
 	bool need_rarg_parens = IsA(join_expr->rarg, JoinExpr) && castNode(JoinExpr, join_expr->rarg)->alias == NULL;
@@ -4296,9 +4671,13 @@ static void deparseRowExpr(DeparseState *state, RowExpr *row_expr)
 
 static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNodeContext context)
 {
-	bool need_parens = needsParensAsBExpr(type_cast->arg);
+	bool need_parens;
 
-	Assert(type_cast->typeName != NULL);
+	if (type_cast->arg == NULL || type_cast->typeName == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg/typeName in TypeCast");
+
+	// TYPECAST binds tighter than any other operator, so anything that isn't a "c_expr" needs parens
+	need_parens = needsParensAsCExpr(type_cast->arg);
 
 	if (context == DEPARSE_NODE_CONTEXT_FUNC_EXPR)
 	{
@@ -4370,7 +4749,8 @@ static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNod
 
 	if (need_parens)
 		deparseAppendStringInfoChar(state, '(');
-	deparseExpr(state, type_cast->arg, DEPARSE_NODE_CONTEXT_NONE /* could be either a_expr or b_expr (we could pass this down, but that'd require two kinds of contexts most likely) */);
+	// Inside parens the arg follows "a_expr" rules, otherwise it is a "c_expr" (which is valid in any context)
+	deparseExpr(state, type_cast->arg, need_parens ? DEPARSE_NODE_CONTEXT_A_EXPR : DEPARSE_NODE_CONTEXT_NONE);
 	if (need_parens)
 		deparseAppendStringInfoChar(state, ')');
 
@@ -4380,6 +4760,9 @@ static void deparseTypeCast(DeparseState *state, TypeCast *type_cast, DeparseNod
 
 static void deparseTypeName(DeparseState *state, TypeName *type_name)
 {
+	if (type_name == NULL)
+		elog(ERROR, "deparse: unexpected NULL TypeName");
+
 	ListCell *lc;
 	bool skip_typmods = false;
 
@@ -4599,7 +4982,7 @@ static void deparseNullTest(DeparseState *state, NullTest *null_test)
 	// argisrow is always false in raw parser output
 	Assert(null_test->argisrow == false);
 
-	deparseExpr(state, (Node *) null_test->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
+	deparseExprOperand(state, (Node *) null_test->arg, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 	switch (null_test->nulltesttype)
 	{
 		case IS_NULL:
@@ -4655,16 +5038,21 @@ static void deparseCaseWhen(DeparseState *state, CaseWhen *case_when)
 
 static void deparseAIndirection(DeparseState *state, A_Indirection *a_indirection)
 {
+	if (a_indirection->arg == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg in A_Indirection");
+
 	ListCell *lc;
-	bool need_parens =
-		IsA(a_indirection->arg, A_Indirection) ||
-		IsA(a_indirection->arg, FuncCall) ||
-		IsA(a_indirection->arg, A_Expr) ||
-		IsA(a_indirection->arg, TypeCast) ||
-		IsA(a_indirection->arg, RowExpr) ||
-		IsA(a_indirection->arg, A_ArrayExpr) ||
-		(IsA(a_indirection->arg, ColumnRef) && !IsA(linitial(a_indirection->indirection), A_Indices)) ||
-		IsA(a_indirection->arg, JsonFuncExpr);
+	/*
+	 * Only a few "c_expr" rules in gram.y accept indirection without parens:
+	 * "PARAM opt_indirection", "columnref" (whose field names are part of the
+	 * ColumnRef itself, so only subscripts can follow directly) and
+	 * "select_with_parens indirection". Everything else must use
+	 * "'(' a_expr ')' opt_indirection".
+	 */
+	bool need_parens = !(
+		IsA(a_indirection->arg, ParamRef) ||
+		(IsA(a_indirection->arg, ColumnRef) && IsA(linitial(a_indirection->indirection), A_Indices)) ||
+		(IsA(a_indirection->arg, SubLink) && castNode(SubLink, a_indirection->arg)->subLinkType == EXPR_SUBLINK));
 
 	if (need_parens)
 		deparseAppendStringInfoChar(state, '(');
@@ -4713,15 +5101,10 @@ static void deparseMinMaxExpr(DeparseState *state, MinMaxExpr *min_max_expr)
 
 static void deparseBooleanTest(DeparseState *state, BooleanTest *boolean_test)
 {
-	bool need_parens = IsA(boolean_test->arg, BoolExpr);
+	if (boolean_test->arg == NULL)
+		elog(ERROR, "deparse: unexpected NULL arg in BooleanTest");
 
-	if (need_parens)
-		deparseAppendStringInfoChar(state, '(');
-
-	deparseExpr(state, (Node *) boolean_test->arg, DEPARSE_NODE_CONTEXT_A_EXPR);
-
-	if (need_parens)
-		deparseAppendStringInfoChar(state, ')');
+	deparseExprOperand(state, (Node *) boolean_test->arg, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 
 	switch (boolean_test->booltesttype)
 	{
@@ -4751,6 +5134,9 @@ static void deparseBooleanTest(DeparseState *state, BooleanTest *boolean_test)
 // "columnDef" and "alter_table_cmd" in gram.y
 static void deparseColumnDef(DeparseState *state, ColumnDef *column_def)
 {
+	if (column_def == NULL)
+		elog(ERROR, "deparse: unexpected NULL ColumnDef");
+
 	ListCell *lc;
 
 	if (column_def->colname != NULL)
@@ -5426,6 +5812,9 @@ static void deparseCreateExtensionStmt(DeparseState *state, CreateExtensionStmt 
 // "ColConstraintElem" and "ConstraintElem" in gram.y
 static void deparseConstraint(DeparseState *state, Constraint *constraint, DeparseNodeContext context)
 {
+	if (constraint == NULL)
+		elog(ERROR, "deparse: unexpected NULL Constraint");
+
 	ListCell *lc;
 
 	if (constraint->conname != NULL)
@@ -5979,6 +6368,9 @@ static void deparseCreateConversionStmt(DeparseState *state, CreateConversionStm
 
 static void deparseRoleSpec(DeparseState *state, RoleSpec *role_spec)
 {
+	if (role_spec == NULL)
+		elog(ERROR, "deparse: unexpected NULL RoleSpec");
+
 	switch (role_spec->roletype)
 	{
 		case ROLESPEC_CSTRING:
@@ -6089,6 +6481,9 @@ static void deparsePartitionBoundSpec(DeparseState *state, PartitionBoundSpec *p
 
 static void deparsePartitionCmd(DeparseState *state, PartitionCmd *partition_cmd)
 {
+	if (partition_cmd == NULL)
+		elog(ERROR, "deparse: unexpected NULL PartitionCmd");
+
 	deparseRangeVar(state, partition_cmd->name, DEPARSE_NODE_CONTEXT_NONE);
 
 	if (partition_cmd->bound != NULL)
@@ -6103,6 +6498,9 @@ static void deparsePartitionCmd(DeparseState *state, PartitionCmd *partition_cmd
 // "TableElement" in gram.y
 static void deparseTableElement(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_ColumnDef:
@@ -6121,6 +6519,9 @@ static void deparseTableElement(DeparseState *state, Node *node)
 
 static void deparseCreateStmt(DeparseState *state, CreateStmt *create_stmt, bool is_foreign_table)
 {
+	if (create_stmt->relation == NULL)
+		elog(ERROR, "deparse: unexpected NULL relation in CreateStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -6544,6 +6945,10 @@ static void deparseImportForeignSchemaStmt(DeparseState *state, ImportForeignSch
 
 static void deparseCreateTableAsStmt(DeparseState *state, CreateTableAsStmt *create_table_as_stmt)
 {
+	if (create_table_as_stmt->into == NULL || create_table_as_stmt->into->rel == NULL ||
+		create_table_as_stmt->query == NULL)
+		elog(ERROR, "deparse: unexpected NULL into/query in CreateTableAsStmt");
+
 	ListCell *lc;
 	deparseAppendStringInfoString(state, "CREATE ");
 
@@ -6584,6 +6989,9 @@ static void deparseCreateTableAsStmt(DeparseState *state, CreateTableAsStmt *cre
 
 static void deparseViewStmt(DeparseState *state, ViewStmt *view_stmt)
 {
+	if (view_stmt->view == NULL)
+		elog(ERROR, "deparse: unexpected NULL view in ViewStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -7892,6 +8300,9 @@ static void deparseTransactionStmt(DeparseState *state, TransactionStmt *transac
 
 static void deparseVariableSetStmt(DeparseState *state, VariableSetStmt* variable_set_stmt)
 {
+	if (variable_set_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL VariableSetStmt");
+
 	ListCell *lc;
 
 	switch (variable_set_stmt->kind)
@@ -8302,6 +8713,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				else if (strcmp(def_elem->defname, "force_quote") == 0)
 				{
 					deparseAppendStringInfoString(state, "FORCE_QUOTE ");
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_QUOTE");
 					if (IsA(def_elem->arg, A_Star))
 					{
 						deparseAppendStringInfoChar(state, '*');
@@ -8321,6 +8734,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				{
 					deparseAppendStringInfoString(state, "FORCE_NOT_NULL ");
 
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_NOT_NULL");
 					if (IsA(def_elem->arg, A_Star))
 						deparseAStar(state, castNode(A_Star, def_elem->arg));
 					else
@@ -8334,6 +8749,8 @@ static void deparseCopyStmt(DeparseState *state, CopyStmt *copy_stmt)
 				{
 					deparseAppendStringInfoString(state, "FORCE_NULL ");
 
+					if (def_elem->arg == NULL)
+						elog(ERROR, "deparse: unexpected NULL arg for FORCE_NULL");
 					if (IsA(def_elem->arg, A_Star))
 						deparseAStar(state, castNode(A_Star, def_elem->arg));
 					else
@@ -8851,6 +9268,9 @@ static void deparseAccessPriv(DeparseState *state, AccessPriv *access_priv)
 
 static void deparseGrantStmt(DeparseState *state, GrantStmt *grant_stmt)
 {
+	if (grant_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL GrantStmt");
+
 	ListCell *lc;
 	if (grant_stmt->is_grant)
 		deparseAppendStringInfoString(state, "GRANT ");
@@ -8918,6 +9338,8 @@ static void deparseGrantRoleStmt(DeparseState *state, GrantRoleStmt *grant_role_
 
 	if (!grant_role_stmt->is_grant && list_length(grant_role_stmt->opt)) {
 		DefElem *defelem = castNode(DefElem, linitial(grant_role_stmt->opt));
+		if (defelem->arg == NULL)
+			elog(ERROR, "deparse: unexpected NULL arg in GRANT role option");
 		Assert(!castNode(Boolean, defelem->arg)->boolval);
 
 		if (strcmp("admin", defelem->defname) == 0) {
@@ -8954,6 +9376,8 @@ static void deparseGrantRoleStmt(DeparseState *state, GrantRoleStmt *grant_role_
 
 		foreach(lc, grant_role_stmt->opt) {
 			DefElem *defelem = castNode(DefElem, lfirst(lc));
+			if (defelem->arg == NULL)
+				elog(ERROR, "deparse: unexpected NULL arg in GRANT role option");
 			if (strcmp("admin", defelem->defname) == 0) {
 				deparseAppendStringInfoString(state, "ADMIN ");
 				deparseAppendStringInfoString(state, castNode(Boolean, defelem->arg)->boolval ? "OPTION" : "FALSE");
@@ -9616,6 +10040,9 @@ static void deparseUnlistenStmt(DeparseState *state, UnlistenStmt *unlisten_stmt
 
 static void deparseCreateSeqStmt(DeparseState *state, CreateSeqStmt *create_seq_stmt)
 {
+	if (create_seq_stmt->sequence == NULL)
+		elog(ERROR, "deparse: unexpected NULL sequence in CreateSeqStmt");
+
 	ListCell *lc;
 
 	deparseAppendStringInfoString(state, "CREATE ");
@@ -9767,6 +10194,9 @@ static void deparseRefreshMatViewStmt(DeparseState *state, RefreshMatViewStmt *r
 
 static void deparseReplicaIdentityStmt(DeparseState *state, ReplicaIdentityStmt *replica_identity_stmt)
 {
+	if (replica_identity_stmt == NULL)
+		elog(ERROR, "deparse: unexpected NULL ReplicaIdentityStmt");
+
 	switch (replica_identity_stmt->identity_type)
 	{
 		case REPLICA_IDENTITY_NOTHING:
@@ -9953,6 +10383,8 @@ static void deparsePublicationObjectList(DeparseState *state, List *pubobjects) 
 
 		switch (obj->pubobjtype) {
 			case PUBLICATIONOBJ_TABLE:
+				if (obj->pubtable == NULL)
+					elog(ERROR, "deparse: unexpected NULL pubtable in PublicationObjSpec");
 				deparseAppendStringInfoString(state, "TABLE ");
 				deparseRangeVar(state, obj->pubtable->relation, DEPARSE_NODE_CONTEXT_NONE);
 				
@@ -10612,7 +11044,7 @@ static void deparseDropSubscriptionStmt(DeparseState *state, DropSubscriptionStm
 static void deparseCallStmt(DeparseState *state, CallStmt *call_stmt)
 {
 	deparseAppendStringInfoString(state, "CALL ");
-	deparseFuncCall(state, call_stmt->funccall, DEPARSE_NODE_CONTEXT_NONE);
+	deparseFuncCall(state, call_stmt->funccall);
 }
 
 static void deparseAlterOwnerStmt(DeparseState *state, AlterOwnerStmt *alter_owner_stmt)
@@ -11010,7 +11442,7 @@ static void deparseXmlExpr(DeparseState *state, XmlExpr* xml_expr, DeparseNodeCo
 			break;
 		case IS_DOCUMENT: /* xmlval IS DOCUMENT */
 			Assert(list_length(xml_expr->args) == 1);
-			deparseExpr(state, linitial(xml_expr->args), context);
+			deparseExprOperand(state, linitial(xml_expr->args), DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, context);
 			deparseAppendStringInfoString(state, " IS DOCUMENT");
 			break;
 	}
@@ -11034,14 +11466,14 @@ static void deparseRangeTableFuncCol(DeparseState *state, RangeTableFuncCol* ran
 		if (range_table_func_col->colexpr)
 		{
 			deparseAppendStringInfoString(state, "PATH ");
-			deparseExpr(state, range_table_func_col->colexpr, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+			deparseBExpr(state, range_table_func_col->colexpr);
 			deparseAppendStringInfoChar(state, ' ');
 		}
 
 		if (range_table_func_col->coldefexpr)
 		{
 			deparseAppendStringInfoString(state, "DEFAULT ");
-			deparseExpr(state, range_table_func_col->coldefexpr, DEPARSE_NODE_CONTEXT_NONE /* b_expr */);
+			deparseBExpr(state, range_table_func_col->coldefexpr);
 			deparseAppendStringInfoChar(state, ' ');
 		}
 
@@ -11073,7 +11505,7 @@ static void deparseRangeTableFunc(DeparseState *state, RangeTableFunc* range_tab
 	deparseAppendStringInfoChar(state, ')');
 
 	deparseAppendStringInfoString(state, " PASSING ");
-	deparseExpr(state, range_table_func->docexpr, DEPARSE_NODE_CONTEXT_NONE /* c_expr */);
+	deparseCExpr(state, range_table_func->docexpr);
 
 	deparseAppendStringInfoString(state, " COLUMNS ");
 	foreach(lc, range_table_func->columns)
@@ -11145,7 +11577,7 @@ static void deparseJsonFormat(DeparseState *state, JsonFormat *json_format)
 
 static void deparseJsonIsPredicate(DeparseState *state, JsonIsPredicate *j)
 {
-	deparseExpr(state, j->expr, DEPARSE_NODE_CONTEXT_A_EXPR);
+	deparseExprOperand(state, j->expr, DEPARSE_PREC_IS, DEPARSE_OPERAND_LEFT, DEPARSE_NODE_CONTEXT_A_EXPR);
 	deparseAppendStringInfoChar(state, ' ');
 
 	deparseJsonFormat(state, castNode(JsonFormat, j->format));
@@ -11177,6 +11609,9 @@ static void deparseJsonIsPredicate(DeparseState *state, JsonIsPredicate *j)
 // "json_value_expr" in gram.y
 static void deparseJsonValueExpr(DeparseState *state, JsonValueExpr *json_value_expr)
 {
+	if (json_value_expr == NULL)
+		elog(ERROR, "deparse: unexpected NULL JsonValueExpr");
+
 	deparseExpr(state, (Node *) json_value_expr->raw_expr, DEPARSE_NODE_CONTEXT_A_EXPR);
 	deparseAppendStringInfoChar(state, ' ');
 	deparseJsonFormat(state, json_value_expr->format);
@@ -11223,7 +11658,8 @@ static void deparseJsonOutput(DeparseState *state, JsonOutput *json_output)
 	if (json_output == NULL)
 		return;
 
-	Assert(json_output->returning != NULL);
+	if (json_output->returning == NULL)
+		elog(ERROR, "deparse: unexpected NULL returning in JsonOutput");
 
 	deparseAppendStringInfoString(state, "RETURNING ");
 	deparseTypeName(state, json_output->typeName);
@@ -11726,6 +12162,9 @@ static void deparseValue(DeparseState *state, union ValUnion *value, DeparseNode
 // "PrepareableStmt" in gram.y
 static void deparsePreparableStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11751,6 +12190,9 @@ static void deparsePreparableStmt(DeparseState *state, Node *node)
 // "RuleActionStmt" in gram.y
 static void deparseRuleActionStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11776,6 +12218,9 @@ static void deparseRuleActionStmt(DeparseState *state, Node *node)
 // "ExplainableStmt" in gram.y
 static void deparseExplainableStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_SelectStmt:
@@ -11813,6 +12258,9 @@ static void deparseExplainableStmt(DeparseState *state, Node *node)
 // "schema_stmt" in gram.y
 static void deparseSchemaStmt(DeparseState *state, Node *node)
 {
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_CreateStmt:
@@ -11851,6 +12299,8 @@ static void deparseStmt(DeparseState *state, Node *node)
 		IsA(node, DeleteStmt) ||
 		IsA(node, MergeStmt);
 
+	check_stack_depth();
+
 	if (!skip_push_pop)
 		parent_level = deparseStateIncreaseNestingLevel(state);
 
@@ -11878,6 +12328,9 @@ static void deparseStmt(DeparseState *state, Node *node)
 	//
 	// And the following grammar names error out in the parser:
 	// - CreateAssertionStmt (not supported yet)
+	if (node == NULL)
+		elog(ERROR, "deparse: unexpected NULL node");
+
 	switch (nodeTag(node))
 	{
 		case T_AlterEventTrigStmt:

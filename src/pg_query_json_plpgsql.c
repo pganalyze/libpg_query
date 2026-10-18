@@ -94,6 +94,7 @@
 static void dump_record(StringInfo out, PLpgSQL_rec *stmt);
 static void dump_row(StringInfo out, PLpgSQL_row *stmt);
 static void dump_var(StringInfo out, PLpgSQL_var *stmt);
+static void dump_promise(StringInfo out, PLpgSQL_var *stmt);
 static void dump_variable(StringInfo out, PLpgSQL_variable *stmt);
 static void dump_record_field(StringInfo out, PLpgSQL_recfield *node);
 static void dump_stmt(StringInfo out, PLpgSQL_stmt *stmt);
@@ -660,6 +661,9 @@ dump_function(StringInfo out, PLpgSQL_function *node)
 			case PLPGSQL_DTYPE_RECFIELD:
 				dump_record_field(out, (PLpgSQL_recfield *) d);
 				break;
+			case PLPGSQL_DTYPE_PROMISE:
+				dump_promise(out, (PLpgSQL_var *) d);
+				break;
 			default:
 				elog(WARNING, "could not dump unrecognized dtype: %d",
 					 (int) d->dtype);
@@ -689,6 +693,18 @@ dump_var(StringInfo out, PLpgSQL_var *node)
 	WRITE_INT_FIELD(cursor_options, cursor_options, cursor_options);
 }
 
+/*
+ * Promise datums (e.g. the TG_* variables of trigger functions) are regular
+ * PLpgSQL_var structs with a different dtype, so output them as such, with
+ * the promise type added.
+ */
+static void
+dump_promise(StringInfo out, PLpgSQL_var *node)
+{
+	dump_var(out, node);
+	WRITE_ENUM_FIELD(promise, promise, promise);
+}
+
 static void
 dump_variable(StringInfo out, PLpgSQL_variable *node)
 {
@@ -699,6 +715,9 @@ dump_variable(StringInfo out, PLpgSQL_variable *node)
 			break;
 		case PLPGSQL_DTYPE_VAR:
 			dump_var(out, (PLpgSQL_var *) node);
+			break;
+		case PLPGSQL_DTYPE_PROMISE:
+			dump_promise(out, (PLpgSQL_var *) node);
 			break;
 		case PLPGSQL_DTYPE_ROW:
 			dump_row(out, (PLpgSQL_row *) node);

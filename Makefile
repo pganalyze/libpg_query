@@ -7,13 +7,13 @@ PGDIR = $(root_dir)/tmp/postgres
 PGDIRBZ2 = $(root_dir)/tmp/postgres.tar.bz2
 PGDIRZIP = $(root_dir)/tmp/postgres.zip
 
-PG_VERSION = 18.4
+PG_VERSION = 18.6
 PG_VERSION_MAJOR = $(call word-dot,$(PG_VERSION),1)
-PG_VERSION_NUM = 180004
+PG_VERSION_NUM = 180006
 PROTOC_VERSION = 25.1
 UPB_PROTOC_VERSION := $(patsubst v%,%,$(shell head -n1 vendor/upb/VERSION 2>/dev/null))
 
-VERSION = 18.0.0
+VERSION = 18.1.0
 VERSION_MAJOR = $(call word-dot,$(VERSION),1)
 VERSION_MINOR = $(call word-dot,$(VERSION),2)
 VERSION_PATCH = $(call word-dot,$(VERSION),3)
@@ -135,6 +135,9 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/10_avoid_namespace_hashtab_impl_gen.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/11_ifndef_namedatalen.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/12_remove_acl_check.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/13_exprlocation_check_stack_depth.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/14_avoid_quadratic_memory_dotted_names.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/15_node_string_constant_locations.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -271,7 +274,10 @@ ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
+ifneq ($(USE_PROTOBUF_CPP),1)
+	# Tests the upb encoder's depth limit, which the C++ backend doesn't have
 	$(VALGRIND_MEMCHECK) test/deparse_depth || (cat test/valgrind.log && false)
+endif
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/is_utility_stmt || (cat test/valgrind.log && false)
@@ -293,7 +299,10 @@ else
 	test/complex
 	test/concurrency
 	test/deparse
+ifneq ($(USE_PROTOBUF_CPP),1)
+	# Tests the upb encoder's depth limit, which the C++ backend doesn't have
 	test/deparse_depth
+endif
 	test/fingerprint
 	test/fingerprint_opts
 	test/is_utility_stmt

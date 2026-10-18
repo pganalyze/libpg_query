@@ -1212,6 +1212,7 @@ _equalDefElem(const DefElem *a, const DefElem *b)
 	COMPARE_NODE_FIELD(arg);
 	COMPARE_SCALAR_FIELD(defaction);
 	COMPARE_LOCATION_FIELD(location);
+	COMPARE_LOCATION_FIELD(arg_location);
 
 	return true;
 }
@@ -2633,6 +2634,7 @@ _equalCreateStatsStmt(const CreateStatsStmt *a, const CreateStatsStmt *b)
 	COMPARE_STRING_FIELD(stxcomment);
 	COMPARE_SCALAR_FIELD(transformed);
 	COMPARE_SCALAR_FIELD(if_not_exists);
+	COMPARE_SCALAR_FIELD(owner);
 
 	return true;
 }
@@ -2797,6 +2799,7 @@ _equalNotifyStmt(const NotifyStmt *a, const NotifyStmt *b)
 {
 	COMPARE_STRING_FIELD(conditionname);
 	COMPARE_STRING_FIELD(payload);
+	COMPARE_LOCATION_FIELD(payload_location);
 
 	return true;
 }
@@ -3207,6 +3210,7 @@ _equalCreateSubscriptionStmt(const CreateSubscriptionStmt *a, const CreateSubscr
 	COMPARE_STRING_FIELD(conninfo);
 	COMPARE_NODE_FIELD(publication);
 	COMPARE_NODE_FIELD(options);
+	COMPARE_LOCATION_FIELD(conninfo_location);
 
 	return true;
 }
@@ -3219,6 +3223,7 @@ _equalAlterSubscriptionStmt(const AlterSubscriptionStmt *a, const AlterSubscript
 	COMPARE_STRING_FIELD(conninfo);
 	COMPARE_NODE_FIELD(publication);
 	COMPARE_NODE_FIELD(options);
+	COMPARE_LOCATION_FIELD(conninfo_location);
 
 	return true;
 }
