@@ -610,3 +610,11 @@ BEGIN
     RETURN local_a < local_b;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Record variables with options and a default value
+CREATE FUNCTION record_default() RETURNS void AS $$
+DECLARE
+    r CONSTANT mytable NOT NULL := ROW(1);
+BEGIN
+END;
+$$ LANGUAGE plpgsql;
