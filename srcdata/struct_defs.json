@@ -5966,6 +5966,11 @@
           "name": "if_not_exists",
           "c_type": "bool",
           "comment": "/* do nothing if stats name already exists */"
+        },
+        {
+          "name": "owner",
+          "c_type": "Oid",
+          "comment": "/* OID of owner, or InvalidOid for default */"
         }
       ],
       "comment": "/* ----------------------\n *\t\tCreate Statistics Statement\n * ----------------------\n */\n"
@@ -6472,6 +6477,14 @@
         {
           "name": "payload_location",
           "c_type": "ParseLoc",
+          "comment": null
+        },
+        {
+          "comment": "\t/* ParamRef passed as the payload (instead of a string), or NULL if none */\n"
+        },
+        {
+          "name": "payload_param",
+          "c_type": "Node*",
           "comment": null
         }
       ],

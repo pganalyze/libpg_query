@@ -10021,6 +10021,11 @@ static void deparseNotifyStmt(DeparseState *state, NotifyStmt *notify_stmt)
 		deparseAppendStringInfoString(state, ", ");
 		deparseStringLiteral(state, notify_stmt->payload);
 	}
+	else if (notify_stmt->payload_param != NULL)
+	{
+		deparseAppendStringInfoString(state, ", ");
+		deparseParamRef(state, castNode(ParamRef, notify_stmt->payload_param));
+	}
 }
 
 static void deparseListenStmt(DeparseState *state, ListenStmt *listen_stmt)

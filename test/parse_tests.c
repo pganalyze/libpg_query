@@ -37,6 +37,8 @@ const char* tests[] = {
   "{\"version\":180006,\"stmts\":[{\"stmt\":{\"VariableSetStmt\":{\"kind\":\"VAR_SET_VALUE\",\"name\":\"role\",\"args\":[{\"ParamRef\":{\"number\":4,\"location\":9}}]}}}]}",
   "SET SESSION AUTHORIZATION $5",
   "{\"version\":180006,\"stmts\":[{\"stmt\":{\"VariableSetStmt\":{\"kind\":\"VAR_SET_VALUE\",\"name\":\"session_authorization\",\"args\":[{\"ParamRef\":{\"number\":5,\"location\":26}}]}}}]}",
+  "NOTIFY channel, $1",
+  "{\"version\":180006,\"stmts\":[{\"stmt\":{\"NotifyStmt\":{\"conditionname\":\"channel\",\"payload_param\":{\"ParamRef\":{\"number\":1,\"location\":16}}}}}]}",
   "SELECT EXTRACT($1 FROM TIMESTAMP $2)",
   "{\"version\":180006,\"stmts\":[{\"stmt\":{\"SelectStmt\":{\"targetList\":[{\"ResTarget\":{\"val\":{\"FuncCall\":{\"funcname\":[{\"String\":{\"sval\":\"pg_catalog\"}},{\"String\":{\"sval\":\"extract\"}}],\"args\":[{\"ParamRef\":{\"number\":1,\"location\":15}},{\"TypeCast\":{\"arg\":{\"ParamRef\":{\"number\":2,\"location\":33}},\"typeName\":{\"names\":[{\"String\":{\"sval\":\"pg_catalog\"}},{\"String\":{\"sval\":\"timestamp\"}}],\"typemod\":-1,\"location\":23},\"location\":-1}}],\"funcformat\":\"COERCE_SQL_SYNTAX\",\"location\":7}},\"location\":7}}],\"limitOption\":\"LIMIT_OPTION_DEFAULT\",\"op\":\"SETOP_NONE\"}}}]}",
   "SELECT DATE $1",

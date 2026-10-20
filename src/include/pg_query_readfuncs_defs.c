@@ -2845,6 +2845,7 @@ _readCreateStatsStmt(const OUT_TYPE(CreateStatsStmt, CreateStatsStmt) msg)
   READ_STRING_FIELD(CreateStatsStmt, stxcomment, stxcomment, stxcomment);
   READ_BOOL_FIELD(CreateStatsStmt, transformed, transformed, transformed);
   READ_BOOL_FIELD(CreateStatsStmt, if_not_exists, if_not_exists, if_not_exists);
+  READ_UINT_FIELD(CreateStatsStmt, owner, owner, owner);
   return node;
 }
 
@@ -3029,6 +3030,7 @@ _readNotifyStmt(const OUT_TYPE(NotifyStmt, NotifyStmt) msg)
   READ_STRING_FIELD(NotifyStmt, conditionname, conditionname, conditionname);
   READ_STRING_FIELD(NotifyStmt, payload, payload, payload);
   READ_INT_FIELD(NotifyStmt, payload_location, payload_location, payload_location);
+  READ_NODE_PTR_FIELD(NotifyStmt, payload_param, payload_param, payload_param);
   return node;
 }
 
