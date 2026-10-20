@@ -17,6 +17,7 @@
 
 #include "common/hashfn.h"
 
+#include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -269,11 +270,16 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
 /*
  * Fingerprint the relation name.
  *
- * By default, sequences of 2 or more digits are ignored, so that queries
- * on date/number-suffixed tables (e.g. partitions like "orders_2024_01")
- * get the same fingerprint. With PG_QUERY_FINGERPRINT_FULL_RELNAME set,
- * the relation name is fingerprinted as-is.
- */
+ * By default:
+ * 1. Sequences of 2 or more digits are ignored, so that queries on
+ *    date/number-suffixed tables (e.g. partitions like "orders_2024_01")
+ *    get the same fingerprint.
+ * 2. Sequences of 4 or more characters with at least one digit are also
+ *    ignored, for tables with hex suffixes or random alphanumeric segments.
+ *
+ * With PG_QUERY_FINGERPRINT_FULL_RELNAME set, the relation name is
+ * fingerprinted as-is.
+  */
 static void
 _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 {
@@ -281,31 +287,66 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 	{
 		_fingerprintString(ctx, "relname");
 		_fingerprintString(ctx, relname);
+		return;
 	}
-	else
-	{
-		int len = strlen(relname);
-		char *r = palloc0((len + 1) * sizeof(char));
-		char *p = r;
-		for (int i = 0; i < len; i++)
-		{
-			if (relname[i] >= '0' && relname[i] <= '9' &&
-				((i + 1 < len && relname[i + 1] >= '0' && relname[i + 1] <= '9') ||
-				 (i > 0 && relname[i - 1] >= '0' && relname[i - 1] <= '9')))
-			{
-				// Skip
-			}
-			else
-			{
-				*p = relname[i];
+
+	int len = strlen(relname);
+	char *result = palloc0((len + 1) * sizeof(char));
+	char *p = result;
+	int i = 0;
+
+	while (i < len) {
+		int seg_start = i;
+
+		int digits_in_seg = 0;
+		while (i < len && relname[i] != '_') {
+			// The cast is to avoid undefined behavior on platforms where
+			// char is equivalent to signed char.
+			if (isdigit((unsigned char) relname[i]))
+				digits_in_seg++;
+			i++;
+		}
+		// fixme: DRY
+		if (isdigit(relname[i]))
+			digits_in_seg++;
+		int seg_end = i;
+		int seg_len = seg_end - seg_start;
+
+		int all_digits = (seg_len >= 2 && digits_in_seg == seg_len);
+		// If you want to change how to determine if a segment is "randomish",
+		// this variable is what you should change.
+		//
+		// The seg_len threshold is arbitrary, and currently based off "ft1"
+		// existing in the test suite.
+		int randomish = (seg_len >= 4 && digits_in_seg >= 1);
+
+		/*printf("\n\nrelname    = '%s'\n"
+				   "segment    = '%s'\n"
+				   "all_digits = %i\n"
+				   "randomish  = %i\n",
+				   relname, relname + seg_start, all_digits, randomish);*/
+		if (!(all_digits || randomish)) {
+			// Keep this segment
+			for (int j = seg_start; j < seg_end; j++) {
+				*p = relname[j];
 				p++;
 			}
 		}
-		*p = 0;
-		_fingerprintString(ctx, "relname");
-		_fingerprintString(ctx, r);
-		pfree(r);
+
+		if (i < len) {
+			*p = '_';
+			p++;
+			i++;
+		}
 	}
+
+	*p = '\0';
+
+	_fingerprintString(ctx, "relname");
+	_fingerprintString(ctx, result);
+	//printf("result = '%s'\n", result);
+
+	pfree(result);
 }
 
 /*

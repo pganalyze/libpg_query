@@ -236,5 +236,25 @@ const char* tests[] = {
   "REASSIGN OWNED BY role_a TO role_b",
   "30516c6e029e9e94",
 
+  // Test normalization of segments that are all numbers.
+  "SELECT * FROM t_20210301_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_x",
+  "6f8169980cd70a25",
+  "SELECT * FROM t_20210302_y",
+  "d357dac4a24fcf1b",
+
+  // Test normalization of random table names
+  "SELECT * FROM loading_books_dc786da1fead11f",
+  "16f848a0a6908916",
+  "SELECT * FROM loading_books_dc786da1fead11g",
+  "16f848a0a6908916",
+  "SELECT * FROM _temp__2577316832_vk95nrgo_users",
+  "167db20b43982916",
+  "SELECT * FROM _temp__2577316833_vk96nrgo_users",
+  "167db20b43982916",
+  "SELECT * FROM _temp__2577316835_vk9nrgo_users",
+  "167db20b43982916",
+
   NULL // Trailing NULL to tell the test runner we're done.
 };
