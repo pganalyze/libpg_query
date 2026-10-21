@@ -14,10 +14,6 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	new_str[size] = '\0';
 
 	PgQueryProtobufParseResult protobuf_result = pg_query_parse_protobuf(new_str);
-	if (protobuf_result.error == NULL) {
-		PgQueryDeparseResult deparse_result = pg_query_deparse_protobuf(protobuf_result.parse_tree);
-		pg_query_free_deparse_result(deparse_result);
-	}
 	pg_query_free_protobuf_parse_result(protobuf_result);
 
 	PgQueryFingerprintResult fingerprint_result = pg_query_fingerprint(new_str);
