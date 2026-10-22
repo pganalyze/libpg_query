@@ -10262,6 +10262,12 @@ static char* encode_exts(char* ptr, upb_encstate* e, const upb_MiniTable* m,
   return ptr;
 }
 
+/* libpg_query local patch: every field of the Node message is a member of a
+ * single oneof, so encode_message() encodes the one named by the oneof case
+ * directly, instead of checking each of its hundreds of members. See
+ * vendor/upb/README. */
+extern const upb_MiniTable pg_0query__Node_msg_init;
+
 char* encode_message(char* ptr, upb_encstate* e, const upb_Message* msg,
                      const upb_MiniTable* m, size_t* size) {
   size_t pre_len = upb_BackAlloc_Size(&e->alloc, ptr);
@@ -10296,7 +10302,15 @@ char* encode_message(char* ptr, upb_encstate* e, const upb_Message* msg,
 
   ptr = encode_exts(ptr, e, m, msg);
 
-  if (upb_MiniTable_FieldCount(m)) {
+  if (m == &pg_0query__Node_msg_init) {
+    const upb_MiniTableField* first = &m->UPB_PRIVATE(fields)[0];
+    uint32_t number = UPB_PRIVATE(_upb_Message_GetOneofCase)(msg, first);
+    if (number != 0) {
+      const upb_MiniTableField* f = upb_MiniTable_FindFieldByNumber(m, number);
+      UPB_ASSERT(f);
+      ptr = encode_field(ptr, e, msg, f);
+    }
+  } else if (upb_MiniTable_FieldCount(m)) {
     const upb_MiniTableField* f =
         &m->UPB_PRIVATE(fields)[m->UPB_PRIVATE(field_count)];
     const upb_MiniTableField* first = &m->UPB_PRIVATE(fields)[0];
