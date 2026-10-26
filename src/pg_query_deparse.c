@@ -221,6 +221,11 @@ pg_query_deparse_comments_for_query(const char *query)
 void
 pg_query_free_deparse_comments_result(PgQueryDeparseCommentsResult result)
 {
+	if (result.error)
+	{
+		pg_query_free_error(result.error);
+	}
+
 	for (int i = 0; i < result.comment_count; i++)
 	{
 		free(result.comments[i]->str);
