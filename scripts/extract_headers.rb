@@ -59,7 +59,8 @@ class Extractor
 
     ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'access/cmptype', 'c', 'postgres', 'postgres_ext',
-     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram', '../backend/parser/gramparse'].each do |group|
+     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram', '../backend/parser/gramparse',
+     'parser/parser', '../pl/plpgsql/src/plpgsql'].each do |group|
       @target_group = group
       @struct_defs[@target_group] = {}
       @enum_defs[@target_group] = {}
@@ -96,7 +97,7 @@ class Extractor
   end
 
   def handle_struct(line)
-    if line[/^\s+(struct |const )?([A-z0-9]+)\s+(\*){0,2}([A-z_]+)(?:\s+pg_node_attr\(\w+\))?;\s*(\/\*.+)?/]
+    if line[/^\s+(struct |const )?([A-z0-9]+)\s+(\*{0,2})([A-z_]+)(?:\s+pg_node_attr\(\w+\))?;\s*(\/\*.+)?/]
       name = $4
       c_type = $2 + $3.to_s
       comment = $5
@@ -149,8 +150,11 @@ class Extractor
       @open_comment = line.include?('/*') && !line.include?('*/')
     elsif line[/^\s*\}\s*([A-z]+)?;/]
       name = @current_enum_def.delete(:name) || $1
-      @all_known_enums << name
-      @enum_defs[@target_group][name] = @current_enum_def
+      # Anonymous enums (e.g. PLPGSQL_RC_* in plpgsql.h) can't be referenced by a field
+      unless name.nil?
+        @all_known_enums << name
+        @enum_defs[@target_group][name] = @current_enum_def
+      end
       @current_enum_def = nil
     elsif line.strip.start_with?('/*')
       @current_enum_def[:values] << { comment: line }
