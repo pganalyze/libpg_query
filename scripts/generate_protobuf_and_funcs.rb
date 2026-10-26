@@ -16,6 +16,7 @@ class Generator
   def underscore(camel_cased_word)
     return camel_cased_word unless /[A-Z-]|::/.match?(camel_cased_word)
     word = camel_cased_word.to_s.gsub("::", "/")
+    word.sub!(/^PLpgSQL/, 'Plpgsql')
     word.gsub!(/^([A-Z\d])([A-Z][a-z])/, '\1__\2')
     word.gsub!(/([A-Z\d]+[a-z]+)([A-Z][a-z])/, '\1_\2')
     word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
@@ -31,6 +32,67 @@ class Generator
   OUTNAME_OVERRIDES = {
     ['CreateForeignTableStmt', 'base'] => 'base_stmt',
   }
+
+  # PL/pgSQL functions are output from the struct definitions in plpgsql.h,
+  # starting with PLpgSQL_function. What can't be told from the definitions
+  # alone is described below.
+  PLPGSQL_GROUP = '../pl/plpgsql/src/plpgsql'
+  # Only the enums used by output fields are generated for these headers
+  PLPGSQL_ENUM_GROUPS = ['parser/parser', PLPGSQL_GROUP]
+
+  # Fields that are not output: state that is only set when the function is
+  # planned or executed, information looked up in the catalog (which
+  # libpg_query only mocks) or in configuration settings, back-pointers, and
+  # data derived from other fields
+  PLPGSQL_SKIP_FIELDS = {
+    'PLpgSQL_type' => ['typoid', 'ttype', 'typlen', 'typbyval', 'typtype', 'collation', 'typisarray', 'atttypmod',
+                       'origtypname', 'tcache', 'tupdesc_id'],
+    'PLpgSQL_expr' => ['func', 'ns', 'target_param', 'target_is_local', 'plan', 'paramnos', 'expr_simple_expr',
+                       'expr_simple_type', 'expr_simple_typmod', 'expr_simple_mutable', 'expr_rwopt', 'expr_rw_param',
+                       'expr_simple_plansource', 'expr_simple_plan', 'expr_simple_plan_lxid', 'expr_simple_state',
+                       'expr_simple_in_use', 'expr_simple_lxid'],
+    'PLpgSQL_var' => ['value', 'isnull', 'freeval'],
+    'PLpgSQL_row' => ['rowtupdesc'],
+    'PLpgSQL_rec' => ['rectypeid', 'firstfield', 'erh'],
+    'PLpgSQL_recfield' => ['nextfield', 'rectupledescid', 'finfo'],
+    'PLpgSQL_condition' => ['sqlerrstate'],
+    'PLpgSQL_stmt_execsql' => ['mod_stmt', 'mod_stmt_set'],
+    'PLpgSQL_function' => ['cfunc', 'fn_signature', 'fn_oid', 'fn_is_trigger', 'fn_input_collation', 'fn_cxt',
+                           'fn_rettype', 'fn_rettyplen', 'fn_retbyval', 'fn_retistuple', 'fn_retisdomain', 'fn_retset',
+                           'fn_readonly', 'fn_prokind', 'fn_nargs', 'fn_argvarnos[FUNC_MAX_ARGS]', 'out_param_varno',
+                           'extra_warnings', 'extra_errors', 'copiable_size', 'requires_procedure_resowner',
+                           'has_exception_block', 'cur_estate'],
+  }
+  # Lists contain PL/pgSQL structs instead of Nodes, which one depends on the field
+  PLPGSQL_LIST_TYPES = {
+    'PLpgSQL_stmt' => ['action', 'body', 'else_body', 'else_stmts', 'stmts', 'then_body'],
+    'PLpgSQL_expr' => ['params'],
+    'PLpgSQL_exception' => ['exc_list'],
+    'PLpgSQL_diag_item' => ['diag_items'],
+    'PLpgSQL_if_elsif' => ['elsif_list'],
+    'PLpgSQL_case_when' => ['case_when_list'],
+    'PLpgSQL_raise_option' => ['options'],
+  }
+  # Arrays, and the field that holds their length
+  PLPGSQL_ARRAY_LENGTHS = {
+    ['PLpgSQL_function', 'datums'] => 'ndatums',
+    ['PLpgSQL_row', 'fieldnames'] => 'nfields',
+    ['PLpgSQL_row', 'varnos'] => 'nfields',
+    ['PLpgSQL_stmt_block', 'initvarnos'] => 'n_initvars',
+  }
+  # Types only used through pointers to one of several structs that start with
+  # the same fields, told apart by a tag field (like Node and NodeTag). These
+  # are output as a message with a oneof of the structs.
+  PLPGSQL_ABSTRACT_TYPES = {
+    'PLpgSQL_datum' => 'dtype',
+    'PLpgSQL_variable' => 'dtype',
+    'PLpgSQL_stmt' => 'cmd_type',
+  }
+  # The struct for a tag value is named after it (PLPGSQL_DTYPE_VAR is a
+  # PLpgSQL_var, PLPGSQL_STMT_BLOCK a PLpgSQL_stmt_block, etc), except for:
+  PLPGSQL_TAG_STRUCT_OVERRIDES = {
+    'PLPGSQL_DTYPE_PROMISE' => 'PLpgSQL_var',
+  }
   SCAN_ASCII_TOKENS = [36, 37, 40, 41, 42, 43, 44, 45, 46, 47, 58, 59, 60, 61, 62, 63, 91, 92, 93, 94]
   SCAN_KEYWORD_KINDS = ['NO_KEYWORD', 'UNRESERVED_KEYWORD', 'COL_NAME_KEYWORD', 'TYPE_FUNC_NAME_KEYWORD', 'RESERVED_KEYWORD']
 
@@ -44,8 +106,10 @@ class Generator
     @enum_to_ints = {}
     @int_to_enums = {}
 
-    ['nodes/parsenodes', 'nodes/primnodes'].each do |group|
-      @struct_defs[group].each do |node_type, struct_def|
+    generate_plpgsql_struct_defs!
+
+    [@struct_defs['nodes/parsenodes'], @struct_defs['nodes/primnodes'], @plpgsql_struct_defs].each do |struct_defs|
+      struct_defs.each do |node_type, struct_def|
         @outmethods[node_type] = ''
         @readmethods[node_type] = ''
         @protobuf_messages[node_type] = ''
@@ -127,6 +191,24 @@ class Generator
             @readmethods[node_type] += format("  READ_VALUE_PTR_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  Node %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
             protobuf_field_count += 1
+          elsif (length_name = PLPGSQL_ARRAY_LENGTHS[[node_type, name]])
+            element_type = type[0..-2]
+            if element_type == 'char*'
+              @outmethods[node_type] += format("  WRITE_STRING_ARRAY_FIELD(%s, %s, %s, %s, %s);\n", node_type, outname, outname_json, name, length_name)
+              @protobuf_messages[node_type] += format("  repeated string %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            elsif element_type == 'int'
+              @outmethods[node_type] += format("  WRITE_INT_ARRAY_FIELD(%s, %s, %s, %s, %s);\n", node_type, outname, outname_json, name, length_name)
+              @protobuf_messages[node_type] += format("  repeated int32 %s = %d [json_name=\"%s\"];\n", outname, protobuf_field_count, name)
+            else
+              element_type = element_type[0..-2]
+              @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_ARRAY_FIELD(%s, %s, %s, %s, %s, %s, %s);\n", node_type, element_type, underscore(element_type), outname, outname_json, name, length_name)
+              @protobuf_messages[node_type] += format("  repeated %s %s = %d [json_name=\"%s\"];\n", element_type, outname, protobuf_field_count, name)
+            end
+            protobuf_field_count += 1
+          elsif (element_type = @plpgsql_list_types[[node_type, name]])
+            @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_LIST_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, element_type, underscore(element_type), outname, outname_json, name)
+            @protobuf_messages[node_type] += format("  repeated %s %s = %d [json_name=\"%s\"];\n", element_type, outname, protobuf_field_count, name)
+            protobuf_field_count += 1
           elsif ['List*'].include?(type)
             @outmethods[node_type] += format("  WRITE_LIST_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
             @readmethods[node_type] += format("  READ_LIST_FIELD(%s, %s, %s, %s);\n", node_type, outname, outname_json, name)
@@ -158,7 +240,7 @@ class Generator
             @readmethods[node_type] += format("  READ_SPECIFIC_NODE_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
             protobuf_field_count += 1
-          elsif @nodetypes.include?(type[0..-2])
+          elsif @nodetypes.include?(type[0..-2]) || @plpgsql_types.include?(type[0..-2])
             @outmethods[node_type] += format("  WRITE_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @readmethods[node_type] += format("  READ_SPECIFIC_NODE_PTR_FIELD(%s, %s, %s, %s, %s, %s);\n", node_type, type.gsub('*', ''), underscore(type.gsub('*', '')).downcase, outname, outname_json, name)
             @protobuf_messages[node_type] += format("  %s %s = %d [json_name=\"%s\"];\n", type.gsub('*', ''), outname, protobuf_field_count, name)
@@ -175,9 +257,10 @@ class Generator
       end
     end
 
-    ['nodes/parsenodes', 'nodes/primnodes', 'nodes/nodes', 'nodes/lockoptions', 'access/cmptype'].each do |group|
+    (['nodes/parsenodes', 'nodes/primnodes', 'nodes/nodes', 'nodes/lockoptions', 'access/cmptype'] + PLPGSQL_ENUM_GROUPS).each do |group|
       @enum_defs[group].each do |enum_type, enum_def|
         next if enum_type == 'NodeTag'
+        next if PLPGSQL_ENUM_GROUPS.include?(group) && !@plpgsql_enums.include?(enum_type)
 
         @protobuf_enums[enum_type] = format("enum %s\n{\n", enum_type)
         @enum_to_strings[enum_type] = format("static const char*\n_enumToString%s(%s value) {\n  switch(value) {\n", enum_type, enum_type)
@@ -234,6 +317,65 @@ class Generator
       @readmethods[dst] = @readmethods[src].gsub("(#{src}, ", "(#{dst}, ")
       @protobuf_messages[dst] = @protobuf_messages[src]
     end
+  end
+
+  # Finds the PL/pgSQL structs reachable from PLpgSQL_function, and the fields
+  # of them that are output
+  def generate_plpgsql_struct_defs!
+    structs = @struct_defs[PLPGSQL_GROUP]
+    field_names = ->(type) { structs[type]['fields'].map { |f| f['name'] }.compact }
+
+    @plpgsql_abstract_types = {}
+    tag_fields = Hash.new { |h, k| h[k] = [] }
+    PLPGSQL_ABSTRACT_TYPES.each do |abstract_type, tag|
+      tag_type = structs[abstract_type]['fields'].find { |f| f['name'] == tag }['c_type']
+      tag_values = @enum_defs[PLPGSQL_GROUP][tag_type]['values'].map { |v| v['name'] }.compact
+      @plpgsql_abstract_types[abstract_type] = { tag: tag, values: {} }
+      tag_values.each do |value|
+        type = PLPGSQL_TAG_STRUCT_OVERRIDES[value] || 'PLpgSQL_' + value.sub(/^PLPGSQL_(DTYPE_)?/, '').downcase
+        raise format('ERR: no struct for %s', value) unless structs[type]
+        next unless field_names.(type).first(field_names.(abstract_type).size) == field_names.(abstract_type)
+        @plpgsql_abstract_types[abstract_type][:values][value] = type
+        tag_fields[type] |= [tag]
+      end
+    end
+
+    @plpgsql_list_types = {}
+    output_fields = {}
+    pending = ['PLpgSQL_function']
+    until pending.empty?
+      type = pending.shift
+      next if output_fields[type]
+      if @plpgsql_abstract_types[type]
+        output_fields[type] = []
+        pending += @plpgsql_abstract_types[type][:values].values
+        next
+      end
+
+      lengths = PLPGSQL_ARRAY_LENGTHS.select { |(t, _), _| t == type }.values
+      output_fields[type] = structs[type]['fields'].select do |f|
+        f['name'] && !(PLPGSQL_SKIP_FIELDS[type] || []).include?(f['name']) &&
+          !tag_fields[type].include?(f['name']) && !lengths.include?(f['name'])
+      end
+      output_fields[type].each do |f|
+        referenced_type = f['c_type'].delete('*')
+        if f['c_type'] == 'List*'
+          referenced_type = PLPGSQL_LIST_TYPES.find { |_, names| names.include?(f['name']) }&.first
+          raise format('ERR: unknown list type for %s.%s', type, f['name']) unless referenced_type
+          @plpgsql_list_types[[type, f['name']]] = referenced_type
+        end
+        pending << referenced_type if structs[referenced_type]
+      end
+    end
+
+    @plpgsql_struct_defs = {}
+    structs.each_key do |type|
+      next unless output_fields[type] && !@plpgsql_abstract_types[type]
+      @plpgsql_struct_defs[type] = { 'fields' => output_fields[type] }
+    end
+    @plpgsql_types = structs.keys.select { |type| output_fields[type] }
+    @plpgsql_enums = @plpgsql_struct_defs.values.flat_map { |d| d['fields'].map { |f| f['c_type'] } }.uniq &
+                     PLPGSQL_ENUM_GROUPS.flat_map { |group| @enum_defs[group].keys }
   end
 
   IGNORE_LIST = [
@@ -328,10 +470,51 @@ case T_A_Const:
       protobuf_nodes << format("%s %s = %d [json_name=\"%s\"];", type, underscore(type), protobuf_nodes.size + 1, type)
     end
 
+    plpgsql_out_defs = ''
+    plpgsql_out_impls = ''
+
+    @plpgsql_types.each do |type|
+      plpgsql_out_defs += format("static void _out%s(OUT_TYPE(%s, %s) out_node, const %s *node);\n", type, type, type, type)
+
+      plpgsql_out_impls += "static void\n"
+      plpgsql_out_impls += format("_out%s(OUT_TYPE(%s, %s) out, const %s *node)\n", type, type, type, type)
+      plpgsql_out_impls += "{\n"
+
+      protobuf_messages += format("message %s\n{\n", type)
+
+      if (abstract_type = @plpgsql_abstract_types[type])
+        plpgsql_out_impls += format("  switch (node->%s)\n  {\n", abstract_type[:tag])
+        abstract_type[:values].each do |value, struct|
+          plpgsql_out_impls += format("    case %s:\n      OUT_ONEOF(%s, %s, %s);\n      break;\n", value, type, struct, underscore(struct))
+        end
+        plpgsql_out_impls += "    default:\n"
+        plpgsql_out_impls += format("      elog(WARNING, \"could not dump unrecognized %s %s: %%d\", (int) node->%s);\n", type, abstract_type[:tag], abstract_type[:tag])
+        plpgsql_out_impls += "  }\n"
+
+        protobuf_messages += "  oneof node {\n"
+        abstract_type[:values].values.uniq.each_with_index do |struct, i|
+          protobuf_messages += format("    %s %s = %d [json_name=\"%s\"];\n", struct, underscore(struct), i + 1, struct)
+        end
+        protobuf_messages += "  }\n"
+      else
+        plpgsql_out_impls += @outmethods[type]
+        protobuf_messages += @protobuf_messages[type]
+      end
+
+      plpgsql_out_impls += "}\n"
+      plpgsql_out_impls += "\n"
+
+      protobuf_messages += "}\n\n"
+    end
+
     protobuf_messages += @protobuf_enums.values.join("\n\n")
 
+    enum_to_strings, plpgsql_enum_to_strings = @enum_to_strings.partition { |enum_type, _| !@plpgsql_enums.include?(enum_type) }.map(&:to_h)
+    enum_to_ints, plpgsql_enum_to_ints = @enum_to_ints.partition { |enum_type, _| !@plpgsql_enums.include?(enum_type) }.map(&:to_h)
+    int_to_enums = @int_to_enums.reject { |enum_type, _| @plpgsql_enums.include?(enum_type) }
+
     File.write('./src/include/pg_query_enum_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" +
-      @enum_to_strings.values.join("\n\n") + @enum_to_ints.values.join("\n\n") + @int_to_enums.values.join("\n\n"))
+      enum_to_strings.values.join("\n\n") + enum_to_ints.values.join("\n\n") + int_to_enums.values.join("\n\n"))
 
     File.write('./src/include/pg_query_outfuncs_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" +
       out_defs + "\n\n" + out_impls)
@@ -342,6 +525,10 @@ case T_A_Const:
       read_defs + "\n\n" + read_impls)
 
     File.write('./src/include/pg_query_readfuncs_conds.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" + read_conds)
+
+    File.write('./src/include/pg_query_outfuncs_plpgsql_defs.c', "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb\n\n" +
+      plpgsql_enum_to_strings.values.join("\n\n") + "\n\n" + plpgsql_enum_to_ints.values.join("\n\n") + "\n\n" +
+      plpgsql_out_defs + "\n\n" + plpgsql_out_impls)
 
     protobuf = "// This file is autogenerated by ./scripts/generate_protobuf_and_funcs.rb
 
@@ -357,6 +544,11 @@ message ParseResult {
 message ScanResult {
   int32 version = 1;
   repeated ScanToken tokens = 2;
+}
+
+message PlpgsqlParseResult {
+  int32 version = 1;
+  repeated PLpgSQL_function plpgsql_funcs = 2;
 }
 
 message Node {

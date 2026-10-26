@@ -9,6 +9,7 @@
 #include "nodes/value.h"
 #include "utils/datum.h"
 #include "miscadmin.h"
+#include "plpgsql.h"
 
 #include "protobuf/pg_query.upb.h"
 
@@ -145,6 +146,47 @@ _strview_char(char c)
 		_out##typename(__n, node->fldname); \
 	}
 
+/* The following are only used for PL/pgSQL functions, see pg_query_outfuncs_json.c */
+#define WRITE_SPECIFIC_NODE_LIST_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *__lc; \
+		check_stack_depth(); \
+		foreach(__lc, node->fldname) { \
+			pg_query_##typename *__n = pg_query_##msgtype##_add_##outname(out, out_arena); \
+			_out##typename(__n, lfirst(__lc)); \
+		} \
+	}
+
+#define WRITE_SPECIFIC_NODE_ARRAY_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int __i; \
+		check_stack_depth(); \
+		for (__i = 0; __i < node->lenfldname; __i++) { \
+			pg_query_##typename *__n = pg_query_##msgtype##_add_##outname(out, out_arena); \
+			_out##typename(__n, node->fldname[__i]); \
+		} \
+	}
+
+#define WRITE_STRING_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int __i; \
+		for (__i = 0; __i < node->lenfldname; __i++) \
+			pg_query_##msgtype##_add_##outname(out, _strview(node->fldname[__i]), out_arena); \
+	}
+
+#define WRITE_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int __i; \
+		for (__i = 0; __i < node->lenfldname; __i++) \
+			pg_query_##msgtype##_add_##outname(out, node->fldname[__i], out_arena); \
+	}
+
+#define OUT_ONEOF(msgtype, typename, fldname) \
+	{ \
+		pg_query_##typename *__n = pg_query_##msgtype##_mutable_##fldname(out, out_arena); \
+		_out##typename(__n, (const typename *) node); \
+	}
+
 static void _outNode(pg_query_Node* out, const void *obj);
 
 static void
@@ -245,6 +287,7 @@ _outAConst(pg_query_A_Const* out, const A_Const *node)
 
 #include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
+#include "pg_query_outfuncs_plpgsql_defs.c"
 
 static void
 _outNode(pg_query_Node* out, const void *obj)
@@ -322,6 +365,57 @@ pg_query_nodes_to_protobuf(const void *obj)
 		upb_Arena_Free(out_arena);
 		out_arena = NULL;
 		elog(ERROR, "parse tree is nested too deeply to serialize to protobuf");
+	}
+
+	protobuf.len = len;
+	// Note: This is intentionally malloc so exiting the memory context doesn't free this
+	protobuf.data = malloc(len);
+	memcpy(protobuf.data, data, len);
+
+	upb_Arena_Free(out_arena);
+	out_arena = NULL;
+
+	return protobuf;
+}
+
+PgQueryProtobuf
+pg_query_plpgsql_funcs_to_protobuf(const void *obj)
+{
+	PgQueryProtobuf protobuf;
+	pg_query_PlpgsqlParseResult *parse_result;
+	char	   *data;
+	size_t		len;
+
+	out_arena = upb_Arena_New();
+	parse_result = pg_query_PlpgsqlParseResult_new(out_arena);
+
+	pg_query_PlpgsqlParseResult_set_version(parse_result, PG_VERSION_NUM);
+
+	/* See pg_query_nodes_to_protobuf for the error handling */
+	PG_TRY();
+	{
+		const ListCell *lc;
+
+		foreach(lc, (const List *) obj)
+		{
+			pg_query_PLpgSQL_function *func = pg_query_PlpgsqlParseResult_add_plpgsql_funcs(parse_result, out_arena);
+			_outPLpgSQL_function(func, lfirst(lc));
+		}
+	}
+	PG_CATCH();
+	{
+		upb_Arena_Free(out_arena);
+		out_arena = NULL;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	data = pg_query_PlpgsqlParseResult_serialize_ex(parse_result, upb_EncodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH), out_arena, &len);
+	if (data == NULL)
+	{
+		upb_Arena_Free(out_arena);
+		out_arena = NULL;
+		elog(ERROR, "PL/pgSQL function is nested too deeply to serialize to protobuf");
 	}
 
 	protobuf.len = len;

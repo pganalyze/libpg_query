@@ -268,7 +268,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/parse_plpgsql_protobuf test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -285,6 +285,7 @@ endif
 	$(VALGRIND_MEMCHECK) test/normalize_utility || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_opts || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/parse_plpgsql_protobuf || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/parse_protobuf_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/scan || (cat test/valgrind.log && false)
@@ -310,6 +311,7 @@ endif
 	test/normalize_utility
 	test/parse
 	test/parse_opts
+	test/parse_plpgsql_protobuf
 	test/parse_protobuf
 	test/parse_protobuf_opts
 	test/scan
@@ -369,6 +371,9 @@ test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/parse_plpgsql_protobuf: test/parse_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/parse_plpgsql_protobuf.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB) $(TEST_LDFLAGS)

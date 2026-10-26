@@ -618,3 +618,52 @@ DECLARE
 BEGIN
 END;
 $$ LANGUAGE plpgsql;
+
+-- Statement types, compiler options and exception conditions not covered above
+CREATE FUNCTION test_statements(p_ids int[], p_query text) RETURNS SETOF int AS $$
+#variable_conflict use_column
+#print_strict_params on
+DECLARE
+  v_slice int[];
+  v_count bigint;
+  v_state text;
+  v_msg text;
+  v_rec record;
+  c_ids CURSOR (p_min int) FOR SELECT id FROM t WHERE id > p_min;
+  v_const CONSTANT int NOT NULL := 1;
+BEGIN
+  <<outer>>
+  FOREACH v_slice SLICE 1 IN ARRAY p_ids LOOP
+    CONTINUE outer WHEN v_slice IS NULL;
+  END LOOP;
+  CASE v_const
+    WHEN 1, 2 THEN v_msg := 'low';
+    ELSE v_msg := 'high';
+  END CASE;
+  CASE WHEN v_const > 0 THEN PERFORM pg_sleep(0); END CASE;
+  OPEN c_ids(p_min := 0);
+  CLOSE c_ids;
+  FOR v_rec IN EXECUTE p_query USING v_const LOOP
+    RETURN NEXT v_rec.id;
+  END LOOP;
+  RETURN QUERY EXECUTE p_query USING v_const;
+  SELECT count(*) INTO STRICT v_count FROM t;
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN;
+EXCEPTION
+  WHEN division_by_zero OR unique_violation THEN
+    GET STACKED DIAGNOSTICS v_state = RETURNED_SQLSTATE, v_msg = MESSAGE_TEXT;
+    RAISE WARNING 'error % %', v_state, v_msg USING HINT = 'check input', ERRCODE = 'P0001';
+  WHEN OTHERS THEN
+    RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Transaction control statements in procedures
+CREATE PROCEDURE test_transaction_statements() AS $$
+BEGIN
+  CALL other_procedure(1);
+  COMMIT;
+  ROLLBACK AND CHAIN;
+END;
+$$ LANGUAGE plpgsql;
