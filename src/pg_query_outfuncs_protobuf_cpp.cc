@@ -349,6 +349,34 @@ _outPlpgsqlParseResult(pg_query::PlpgsqlParseResult *out, const void *obj)
 	}
 }
 
+extern "C" PgQueryProtobuf
+pg_query_plpgsql_funcs_to_protobuf(const void *obj)
+{
+	PgQueryProtobuf protobuf;
+	pg_query::PlpgsqlParseResult *parse_result = new pg_query::PlpgsqlParseResult();
+
+	PG_TRY();
+	{
+		_outPlpgsqlParseResult(parse_result, obj);
+
+		std::string output;
+		parse_result->SerializeToString(&output);
+
+		protobuf.data = (char*) calloc(output.size(), sizeof(char));
+		memcpy(protobuf.data, output.data(), output.size());
+		protobuf.len = output.size();
+	}
+	PG_CATCH();
+	{
+		delete parse_result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	delete parse_result;
+	return protobuf;
+}
+
 extern "C" char *
 pg_query_plpgsql_funcs_to_json(const void *obj)
 {

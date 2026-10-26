@@ -345,6 +345,8 @@ This will output (formatted for clarity):
 
 The output for each function follows the `PLpgSQL_function` message (and the messages it references) in `protobuf/pg_query.proto`. Like for the parse tree, fields with zero values are omitted.
 
+If you need the functions as a Protobuf message instead, use `pg_query_parse_plpgsql_protobuf`, which returns them serialized as a `PlpgsqlParseResult`, and free the result with `pg_query_free_plpgsql_protobuf_parse_result`.
+
 ## Versions
 
 For stability, it is recommended you use individual tagged git versions, see CHANGELOG.

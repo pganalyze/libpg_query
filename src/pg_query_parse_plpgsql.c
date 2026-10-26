@@ -717,6 +717,36 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 	return result;
 }
 
+PgQueryPlpgsqlProtobufParseResult pg_query_parse_plpgsql_protobuf(const char* input)
+{
+	MemoryContext ctx = NULL;
+	PgQueryPlpgsqlProtobufParseResult result = {0};
+	PgQueryInternalPlpgsqlFuncsAndError funcs_and_error;
+
+	ctx = pg_query_enter_memory_context();
+
+	funcs_and_error = pg_query_raw_parse_plpgsql_funcs(input);
+	result.error = funcs_and_error.error;
+
+	if (result.error == NULL)
+	{
+		PG_TRY();
+		{
+			result.plpgsql_funcs = pg_query_plpgsql_funcs_to_protobuf(funcs_and_error.funcs);
+		}
+		PG_CATCH();
+		{
+			result.error = copy_output_error(ctx);
+		}
+		PG_END_TRY();
+	}
+
+	free_plpgsql_funcs(funcs_and_error.funcs);
+	pg_query_exit_memory_context(ctx);
+
+	return result;
+}
+
 void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result)
 {
 	if (result.error) {
@@ -724,4 +754,13 @@ void pg_query_free_plpgsql_parse_result(PgQueryPlpgsqlParseResult result)
 	}
 
 	free(result.plpgsql_funcs);
+}
+
+void pg_query_free_plpgsql_protobuf_parse_result(PgQueryPlpgsqlProtobufParseResult result)
+{
+	if (result.error) {
+		pg_query_free_error(result.error);
+	}
+
+	free(result.plpgsql_funcs.data);
 }
