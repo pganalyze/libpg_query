@@ -274,78 +274,76 @@ This will output (formatted for clarity):
 [
     {
         "PLpgSQL_function": {
+            "found_varno": 2,
+            "resolve_option": "PLPGSQL_RESOLVE_ERROR",
             "datums": [
                 {
                     "PLpgSQL_var": {
                         "refname": "v_name",
                         "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "varchar"
-                            }
-                        }
+                            "typname": "varchar"
+                        },
+                        "promise": "PLPGSQL_PROMISE_NONE"
                     }
                 },
                 {
                     "PLpgSQL_var": {
+                        "dno": 1,
                         "refname": "v_version",
                         "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "varchar"
-                            }
-                        }
+                            "typname": "varchar"
+                        },
+                        "promise": "PLPGSQL_PROMISE_NONE"
                     }
                 },
                 {
                     "PLpgSQL_var": {
+                        "dno": 2,
                         "refname": "found",
                         "datatype": {
-                            "PLpgSQL_type": {
-                                "typname": "bool"
-                            }
-                        }
+                            "typname": "bool"
+                        },
+                        "promise": "PLPGSQL_PROMISE_NONE"
                     }
                 }
             ],
             "action": {
-                "PLpgSQL_stmt_block": {
-                    "lineno": 1,
-                    "body": [
-                        {
-                            "PLpgSQL_stmt_if": {
-                                "lineno": 1,
-                                "cond": {
-                                    "PLpgSQL_expr": {
-                                        "query": "v_version IS NULL",
-                                        "parseMode": 2
-                                    }
-                                },
-                                "then_body": [
-                                    {
-                                        "PLpgSQL_stmt_return": {
-                                            "lineno": 1
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "PLpgSQL_stmt_return": {
-                                "lineno": 1,
-                                "expr": {
-                                    "PLpgSQL_expr": {
-                                        "query": "v_name || '/' || v_version",
-                                        "parseMode": 2
+                "lineno": 1,
+                "body": [
+                    {
+                        "PLpgSQL_stmt_if": {
+                            "lineno": 1,
+                            "cond": {
+                                "query": "v_version IS NULL",
+                                "parseMode": "RAW_PARSE_PLPGSQL_EXPR"
+                            },
+                            "then_body": [
+                                {
+                                    "PLpgSQL_stmt_return": {
+                                        "lineno": 1
                                     }
                                 }
-                            }
+                            ]
                         }
-                    ]
-                }
+                    },
+                    {
+                        "PLpgSQL_stmt_return": {
+                            "lineno": 1,
+                            "expr": {
+                                "query": "v_name || '/' || v_version",
+                                "parseMode": "RAW_PARSE_PLPGSQL_EXPR"
+                            },
+                            "retvarno": -1
+                        }
+                    }
+                ]
             }
         }
     }
 ]
 ```
+
+The output for each function follows the `PLpgSQL_function` message (and the messages it references) in `protobuf/pg_query.proto`. Like for the parse tree, fields with zero values are omitted.
 
 ## Versions
 
