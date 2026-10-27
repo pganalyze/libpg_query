@@ -39,7 +39,7 @@ UPB_SRC_FILES := $(UPB_DIR)/upb.c $(UPB_DIR)/third_party/utf8_range/utf8_range.c
 SRC_FILES := $(wildcard src/*.c src/postgres/*.c) vendor/xxhash/xxhash.c $(UPB_SRC_FILES)
 OBJ_FILES := $(SRC_FILES:.c=.o)
 
-override CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC
+override CFLAGS += -g -I. -I./vendor $(UPB_INCLUDES) -I./src/include -I./src/postgres/include -Wall -Wno-unused-function -Wno-unused-value -Wno-unused-variable -fno-strict-aliasing -fwrapv -fPIC -MMD -MP
 
 ifeq ($(OS),Windows_NT)
 override CFLAGS += -I./src/postgres/include/port/win32
@@ -70,7 +70,7 @@ ifeq ($(VALGRIND),1)
 endif
 
 CLEANLIBS = $(ARLIB)
-CLEANOBJS = $(OBJ_FILES)
+CLEANOBJS = $(OBJ_FILES) $(OBJ_FILES:.o=.d)
 CLEANFILES = $(PGDIRBZ2) $(PGDIRZIP)
 
 AR ?= ar
@@ -91,7 +91,7 @@ CC ?= cc
 # Experimental use of Protobuf C++ library, primarily used to validate JSON output matches Protobuf JSON mapping
 CXX_SRC_FILES := src/pg_query_outfuncs_protobuf_cpp.cc protobuf/pg_query.pb.cc
 ifeq ($(USE_PROTOBUF_CPP),1)
-	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/include -I./src/postgres/include -DHAVE_PTHREAD -std=c++17 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC
+	override CXXFLAGS += `pkg-config --cflags protobuf` -I. -I./src/include -I./src/postgres/include -DHAVE_PTHREAD -std=c++17 -Wall -Wno-unused-function -Wno-zero-length-array -Wno-c99-extensions -fwrapv -fPIC -MMD -MP
 	ifeq ($(DEBUG),1)
 		override CXXFLAGS += -O0 -g
 	else
@@ -198,6 +198,11 @@ extract_source: $(PGDIR)
 
 $(ARLIB): $(OBJ_FILES) Makefile
 	@$(AR) $(ARFLAGS) $@ $(OBJ_FILES)
+
+# Track generated-header dependencies (src/include/*.c are #include'd and can
+# change without the including .c changing, which silently leaves stale objects
+# with mismatched struct layouts in the archive)
+-include $(OBJ_FILES:.o=.d)
 
 $(SOLIB): $(OBJ_FILES) Makefile
 	@$(CC) $(CFLAGS) -shared -Wl,$(SOFLAG),$(SONAME) $(LDFLAGS) -o $@ $(OBJ_FILES) $(LIBS)
