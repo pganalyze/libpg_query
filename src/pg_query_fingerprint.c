@@ -276,6 +276,7 @@ _fingerprintFreeContext(FingerprintContext *ctx) {
  *    get the same fingerprint.
  * 2. Sequences of 4 or more characters with at least one digit are also
  *    ignored, for tables with hex suffixes or random alphanumeric segments.
+ * 3. The first segment is never considered to be hex.
  *
  * With PG_QUERY_FINGERPRINT_FULL_RELNAME set, the relation name is
  * fingerprinted as-is.
@@ -293,27 +294,26 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 	int len = strlen(relname);
 	char *result = palloc0((len + 1) * sizeof(char));
 	char *p = result;
+	int first_segment = 1;
 	int i = 0;
 
 	while (i < len) {
 		int seg_start = i;
 
 		int alpha_in_seg = 0;
+		int hex_in_seg = 0;
 		int digits_in_seg = 0;
-		while (i < len && relname[i] != '_') {
+		while (i < len && relname[i] != '_' && relname[i] != '\0') {
 			// The cast is to avoid undefined behavior on platforms where
 			// char is equivalent to signed char.
 			if (isdigit((unsigned char) relname[i]))
 				digits_in_seg++;
+			if (isxdigit((unsigned char) relname[i]))
+				hex_in_seg++;
 			if (isalpha((unsigned char) relname[i]))
 				alpha_in_seg++;
 			i++;
 		}
-		// fixme: DRY
-		if (isdigit((unsigned char) relname[i]))
-			digits_in_seg++;
-		if (isalpha((unsigned char) relname[i]))
-			alpha_in_seg++;
 
 		int seg_end = i;
 		int seg_len = seg_end - seg_start;
@@ -322,17 +322,24 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 
 		int non_number_start = !isdigit((unsigned char) relname[seg_start]);
 		int non_number_end = !isdigit((unsigned char) relname[seg_end - 1]);
-		int digit_in_middle = (seg_len > 2 && digits_in_seg >= 1 &&
+		int digit_in_middle = (seg_len >= 3 && digits_in_seg >= 2 &&
 				 non_number_start && non_number_end);
+		int all_hex = (hex_in_seg == seg_len);
+		int likely_hex = (!first_segment && seg_len >= 6 && all_hex && digits_in_seg >= 1);
 
-		int ignored = all_digits || digit_in_middle;
+		int ignored = all_digits || likely_hex || digit_in_middle;
 		/*printf("\n\nrelname    = '%s'\n"
 				   "segment    = '%s'\n"
 				   "all_digits = %i\n"
 				   "digit_mid  = %i\n"
 				   "ignored    = %i\n",
 				   relname, relname + seg_start, all_digits, digit_in_middle, ignored);
-		*/
+		printf("\nlikely_hex     = %i\n"
+				"=>\n"
+				"seg_len = %i\n"
+				"all_hex = %i\n"
+				"digs_seg = %i\n\n",
+				likely_hex, seg_len, all_hex, digits_in_seg);*/
 		if (!ignored) {
 			// Keep this segment
 			for (int j = seg_start; j < seg_end; j++) {
@@ -346,13 +353,15 @@ _fingerprintRelname(FingerprintContext *ctx, const char *relname)
 			p++;
 			i++;
 		}
+
+		first_segment = 0;
 	}
 
 	*p = '\0';
 
 	_fingerprintString(ctx, "relname");
 	_fingerprintString(ctx, result);
-	//printf("result = '%s'\n", result);
+	printf("result = '%s'\n", result);
 
 	pfree(result);
 }
