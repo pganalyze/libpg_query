@@ -20,6 +20,7 @@ extern "C"
 #include "nodes/value.h"
 #include "utils/datum.h"
 #include "miscadmin.h"
+#include "plpgsql.h"
 }
 
 #define OUT_TYPE(typename, typename_c) pg_query::typename*
@@ -95,6 +96,35 @@ extern "C"
 		out->set_allocated_##outname(new pg_query::typename()); \
 		_out##typename(out->mutable_##outname(), node->fldname); \
 	}
+
+// The following are only used for PL/pgSQL functions, see pg_query_outfuncs_json.c
+#define WRITE_SPECIFIC_NODE_LIST_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *lc; \
+		check_stack_depth(); \
+		foreach(lc, node->fldname) \
+		{ \
+			_out##typename(out->add_##outname(), (const typename *) lfirst(lc)); \
+		} \
+	}
+
+#define WRITE_SPECIFIC_NODE_ARRAY_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		check_stack_depth(); \
+		for (int i = 0; i < node->lenfldname; i++) \
+			_out##typename(out->add_##outname(), node->fldname[i]); \
+	}
+
+#define WRITE_STRING_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	for (int i = 0; i < node->lenfldname; i++) \
+		out->add_##outname(node->fldname[i]);
+
+#define WRITE_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	for (int i = 0; i < node->lenfldname; i++) \
+		out->add_##outname(node->fldname[i]);
+
+#define OUT_ONEOF(msgtype, typename, fldname) \
+	_out##typename(out->mutable_##fldname(), (const typename *) node);
 
 static void _outNode(pg_query::Node* out, const void *obj);
 
@@ -210,6 +240,7 @@ _outAConst(pg_query::A_Const* out_node, const A_Const *node)
 
 #include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
+#include "pg_query_outfuncs_plpgsql_defs.c"
 
 static void
 _outNode(pg_query::Node* out, const void *obj)
@@ -293,6 +324,83 @@ pg_query_nodes_to_json(const void *obj)
 
 		std::string output;
 		google::protobuf::util::MessageToJsonString(*parse_result, &output);
+		result = pstrdup(output.c_str());
+	}
+	PG_CATCH();
+	{
+		delete parse_result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	delete parse_result;
+	return result;
+}
+
+static void
+_outPlpgsqlParseResult(pg_query::PlpgsqlParseResult *out, const void *obj)
+{
+	const ListCell *lc;
+
+	out->set_version(PG_VERSION_NUM);
+	foreach(lc, (List*) obj)
+	{
+		_outPLpgSQL_function(out->add_plpgsql_funcs(), (const PLpgSQL_function*) lfirst(lc));
+	}
+}
+
+extern "C" PgQueryProtobuf
+pg_query_plpgsql_funcs_to_protobuf(const void *obj)
+{
+	PgQueryProtobuf protobuf;
+	pg_query::PlpgsqlParseResult *parse_result = new pg_query::PlpgsqlParseResult();
+
+	PG_TRY();
+	{
+		_outPlpgsqlParseResult(parse_result, obj);
+
+		std::string output;
+		parse_result->SerializeToString(&output);
+
+		protobuf.data = (char*) calloc(output.size(), sizeof(char));
+		memcpy(protobuf.data, output.data(), output.size());
+		protobuf.len = output.size();
+	}
+	PG_CATCH();
+	{
+		delete parse_result;
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
+
+	delete parse_result;
+	return protobuf;
+}
+
+extern "C" char *
+pg_query_plpgsql_funcs_to_json(const void *obj)
+{
+	char	   *result = NULL;
+	pg_query::PlpgsqlParseResult *parse_result = new pg_query::PlpgsqlParseResult();
+
+	PG_TRY();
+	{
+		_outPlpgsqlParseResult(parse_result, obj);
+
+		// One function per line, like pg_query_plpgsql_funcs_to_json in pg_query_outfuncs_json.c
+		std::string output = "[";
+		for (int i = 0; i < parse_result->plpgsql_funcs_size(); i++)
+		{
+			std::string func_json;
+			google::protobuf::util::MessageToJsonString(parse_result->plpgsql_funcs(i), &func_json);
+			if (i > 0)
+				output += ",";
+			output += "\n{\"PLpgSQL_function\":" + func_json + "}";
+		}
+		if (parse_result->plpgsql_funcs_size() > 0)
+			output += "\n";
+		output += "]";
+
 		result = pstrdup(output.c_str());
 	}
 	PG_CATCH();

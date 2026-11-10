@@ -10,6 +10,7 @@
 #include "nodes/value.h"
 #include "utils/datum.h"
 #include "miscadmin.h"
+#include "plpgsql.h"
 
 #include "pg_query_json_helper.c"
 
@@ -157,6 +158,72 @@
 		appendStringInfo(out, "],"); \
 	}
 
+/*
+ * The following are only used for PL/pgSQL functions, whose structs aren't
+ * Nodes. Their Lists and arrays hold one specific (or abstract) struct type,
+ * and abstract types (e.g. PLpgSQL_stmt) are output like a Node, as a oneof of
+ * the concrete type.
+ */
+#define WRITE_SPECIFIC_NODE_LIST_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname) \
+	if (node->fldname != NULL) { \
+		const ListCell *lc; \
+		check_stack_depth(); \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		foreach(lc, node->fldname) { \
+			appendStringInfoChar(out, '{'); \
+			_out##typename(out, lfirst(lc)); \
+			removeTrailingDelimiter(out); \
+			appendStringInfoString(out, "},"); \
+		} \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, "],"); \
+	}
+
+#define WRITE_SPECIFIC_NODE_ARRAY_FIELD(msgtype, typename, typename_underscore, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int i; \
+		check_stack_depth(); \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (i = 0; i < node->lenfldname; i++) { \
+			appendStringInfoChar(out, '{'); \
+			_out##typename(out, node->fldname[i]); \
+			removeTrailingDelimiter(out); \
+			appendStringInfoString(out, "},"); \
+		} \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, "],"); \
+	}
+
+#define WRITE_STRING_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int i; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (i = 0; i < node->lenfldname; i++) { \
+			_outToken(out, node->fldname[i]); \
+			appendStringInfoChar(out, ','); \
+		} \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, "],"); \
+	}
+
+#define WRITE_INT_ARRAY_FIELD(msgtype, outname, outname_json, fldname, lenfldname) \
+	if (node->lenfldname > 0) { \
+		int i; \
+		appendStringInfo(out, "\"" CppAsString(outname_json) "\":["); \
+		for (i = 0; i < node->lenfldname; i++) \
+			appendStringInfo(out, "%d,", node->fldname[i]); \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, "],"); \
+	}
+
+#define OUT_ONEOF(msgtype, typename, fldname) \
+	{ \
+		WRITE_NODE_TYPE(CppAsString(typename)); \
+		_out##typename(out, (const typename *) node); \
+		removeTrailingDelimiter(out); \
+		appendStringInfo(out, "},"); \
+	}
+
 static void _outNode(StringInfo out, const void *obj);
 
 static void
@@ -300,6 +367,7 @@ _outAConst(StringInfo out, const A_Const *node)
 
 #include "pg_query_enum_defs.c"
 #include "pg_query_outfuncs_defs.c"
+#include "pg_query_outfuncs_plpgsql_defs.c"
 
 static void
 _outNode(StringInfo out, const void *obj)
@@ -373,6 +441,35 @@ pg_query_nodes_to_json(const void *obj)
 		appendStringInfoChar(&out, ']');
 		appendStringInfoString(&out, "}");
 	}
+
+	return out.data;
+}
+
+char *
+pg_query_plpgsql_funcs_to_json(const void *obj)
+{
+	StringInfoData out;
+	const ListCell *lc;
+
+	initStringInfo(&out);
+
+	/* One function per line, e.g. "[\n{...},\n{...}\n]" */
+	appendStringInfoChar(&out, '[');
+
+	foreach(lc, obj)
+	{
+		appendStringInfoString(&out, "\n{\"PLpgSQL_function\":{");
+		_outPLpgSQL_function(&out, lfirst(lc));
+		removeTrailingDelimiter(&out);
+		appendStringInfoString(&out, "}}");
+
+		if (lnext(obj, lc))
+			appendStringInfoChar(&out, ',');
+	}
+
+	if (obj != NULL)
+		appendStringInfoChar(&out, '\n');
+	appendStringInfoChar(&out, ']');
 
 	return out.data;
 }

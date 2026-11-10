@@ -7041,5 +7041,529 @@
     }
   },
   "../backend/parser/gramparse": {
+  },
+  "parser/parser": {
+    "RawParseMode": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "RAW_PARSE_DEFAULT",
+          "value": 0
+        },
+        {
+          "name": "RAW_PARSE_TYPE_NAME",
+          "value": 1
+        },
+        {
+          "name": "RAW_PARSE_PLPGSQL_EXPR",
+          "value": 2
+        },
+        {
+          "name": "RAW_PARSE_PLPGSQL_ASSIGN1",
+          "value": 3
+        },
+        {
+          "name": "RAW_PARSE_PLPGSQL_ASSIGN2",
+          "value": 4
+        },
+        {
+          "name": "RAW_PARSE_PLPGSQL_ASSIGN3",
+          "value": 5
+        }
+      ],
+      "comment": "/*\n * RawParseMode determines the form of the string that raw_parser() accepts:\n *\n * RAW_PARSE_DEFAULT: parse a semicolon-separated list of SQL commands,\n * and return a List of RawStmt nodes.\n *\n * RAW_PARSE_TYPE_NAME: parse a type name, and return a one-element List\n * containing a TypeName node.\n *\n * RAW_PARSE_PLPGSQL_EXPR: parse a PL/pgSQL expression, and return\n * a one-element List containing a RawStmt node.\n *\n * RAW_PARSE_PLPGSQL_ASSIGNn: parse a PL/pgSQL assignment statement,\n * and return a one-element List containing a RawStmt node.  \"n\"\n * gives the number of dotted names comprising the target ColumnRef.\n */\n"
+    },
+    "BackslashQuoteType": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "BACKSLASH_QUOTE_OFF",
+          "value": 0
+        },
+        {
+          "name": "BACKSLASH_QUOTE_ON",
+          "value": 1
+        },
+        {
+          "name": "BACKSLASH_QUOTE_SAFE_ENCODING",
+          "value": 2
+        }
+      ],
+      "comment": "/* Values for the backslash_quote GUC */\n"
+    }
+  },
+  "../pl/plpgsql/src/plpgsql": {
+    "PLpgSQL_nsitem_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_NSTYPE_LABEL",
+          "value": 0,
+          "comment": "/* block label */"
+        },
+        {
+          "name": "PLPGSQL_NSTYPE_VAR",
+          "value": 1,
+          "comment": "/* scalar variable */"
+        },
+        {
+          "name": "PLPGSQL_NSTYPE_REC",
+          "value": 2,
+          "comment": "/* composite variable */"
+        }
+      ],
+      "comment": "/*\n * Compiler's namespace item types\n */\n"
+    },
+    "PLpgSQL_label_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_LABEL_BLOCK",
+          "value": 0,
+          "comment": "/* DECLARE/BEGIN block */"
+        },
+        {
+          "name": "PLPGSQL_LABEL_LOOP",
+          "value": 1,
+          "comment": "/* looping construct */"
+        },
+        {
+          "name": "PLPGSQL_LABEL_OTHER",
+          "value": 2,
+          "comment": "/* anything else */"
+        }
+      ],
+      "comment": "/*\n * A PLPGSQL_NSTYPE_LABEL stack entry must be one of these types\n */\n"
+    },
+    "PLpgSQL_datum_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_DTYPE_VAR",
+          "value": 0
+        },
+        {
+          "name": "PLPGSQL_DTYPE_ROW",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_DTYPE_REC",
+          "value": 2
+        },
+        {
+          "name": "PLPGSQL_DTYPE_RECFIELD",
+          "value": 3
+        },
+        {
+          "name": "PLPGSQL_DTYPE_PROMISE",
+          "value": 4
+        }
+      ],
+      "comment": "/*\n * Datum array node types\n */\n"
+    },
+    "PLpgSQL_promise_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_PROMISE_NONE",
+          "value": 0,
+          "comment": "/* not a promise, or promise satisfied */"
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_NAME",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_WHEN",
+          "value": 2
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_LEVEL",
+          "value": 3
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_OP",
+          "value": 4
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_RELID",
+          "value": 5
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_TABLE_NAME",
+          "value": 6
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_TABLE_SCHEMA",
+          "value": 7
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_NARGS",
+          "value": 8
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_ARGV",
+          "value": 9
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_EVENT",
+          "value": 10
+        },
+        {
+          "name": "PLPGSQL_PROMISE_TG_TAG",
+          "value": 11
+        }
+      ],
+      "comment": "/*\n * DTYPE_PROMISE datums have these possible ways of computing the promise\n */\n"
+    },
+    "PLpgSQL_type_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_TTYPE_SCALAR",
+          "value": 0,
+          "comment": "/* scalar types and domains */"
+        },
+        {
+          "name": "PLPGSQL_TTYPE_REC",
+          "value": 1,
+          "comment": "/* composite types, including RECORD */"
+        },
+        {
+          "name": "PLPGSQL_TTYPE_PSEUDO",
+          "value": 2,
+          "comment": "/* pseudotypes */"
+        }
+      ],
+      "comment": "/*\n * Variants distinguished in PLpgSQL_type structs\n */\n"
+    },
+    "PLpgSQL_stmt_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_STMT_BLOCK",
+          "value": 0
+        },
+        {
+          "name": "PLPGSQL_STMT_ASSIGN",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_STMT_IF",
+          "value": 2
+        },
+        {
+          "name": "PLPGSQL_STMT_CASE",
+          "value": 3
+        },
+        {
+          "name": "PLPGSQL_STMT_LOOP",
+          "value": 4
+        },
+        {
+          "name": "PLPGSQL_STMT_WHILE",
+          "value": 5
+        },
+        {
+          "name": "PLPGSQL_STMT_FORI",
+          "value": 6
+        },
+        {
+          "name": "PLPGSQL_STMT_FORS",
+          "value": 7
+        },
+        {
+          "name": "PLPGSQL_STMT_FORC",
+          "value": 8
+        },
+        {
+          "name": "PLPGSQL_STMT_FOREACH_A",
+          "value": 9
+        },
+        {
+          "name": "PLPGSQL_STMT_EXIT",
+          "value": 10
+        },
+        {
+          "name": "PLPGSQL_STMT_RETURN",
+          "value": 11
+        },
+        {
+          "name": "PLPGSQL_STMT_RETURN_NEXT",
+          "value": 12
+        },
+        {
+          "name": "PLPGSQL_STMT_RETURN_QUERY",
+          "value": 13
+        },
+        {
+          "name": "PLPGSQL_STMT_RAISE",
+          "value": 14
+        },
+        {
+          "name": "PLPGSQL_STMT_ASSERT",
+          "value": 15
+        },
+        {
+          "name": "PLPGSQL_STMT_EXECSQL",
+          "value": 16
+        },
+        {
+          "name": "PLPGSQL_STMT_DYNEXECUTE",
+          "value": 17
+        },
+        {
+          "name": "PLPGSQL_STMT_DYNFORS",
+          "value": 18
+        },
+        {
+          "name": "PLPGSQL_STMT_GETDIAG",
+          "value": 19
+        },
+        {
+          "name": "PLPGSQL_STMT_OPEN",
+          "value": 20
+        },
+        {
+          "name": "PLPGSQL_STMT_FETCH",
+          "value": 21
+        },
+        {
+          "name": "PLPGSQL_STMT_CLOSE",
+          "value": 22
+        },
+        {
+          "name": "PLPGSQL_STMT_PERFORM",
+          "value": 23
+        },
+        {
+          "name": "PLPGSQL_STMT_CALL",
+          "value": 24
+        },
+        {
+          "name": "PLPGSQL_STMT_COMMIT",
+          "value": 25
+        },
+        {
+          "name": "PLPGSQL_STMT_ROLLBACK",
+          "value": 26
+        }
+      ],
+      "comment": "/*\n * Execution tree node types\n */\n"
+    },
+    "PLpgSQL_getdiag_kind": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_ROW_COUNT",
+          "value": 0
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_ROUTINE_OID",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_CONTEXT",
+          "value": 2
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_ERROR_CONTEXT",
+          "value": 3
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_ERROR_DETAIL",
+          "value": 4
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_ERROR_HINT",
+          "value": 5
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_RETURNED_SQLSTATE",
+          "value": 6
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_COLUMN_NAME",
+          "value": 7
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_CONSTRAINT_NAME",
+          "value": 8
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_DATATYPE_NAME",
+          "value": 9
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_MESSAGE_TEXT",
+          "value": 10
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_TABLE_NAME",
+          "value": 11
+        },
+        {
+          "name": "PLPGSQL_GETDIAG_SCHEMA_NAME",
+          "value": 12
+        }
+      ],
+      "comment": "/*\n * GET DIAGNOSTICS information items\n */\n"
+    },
+    "PLpgSQL_raise_option_type": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_ERRCODE",
+          "value": 0
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_MESSAGE",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_DETAIL",
+          "value": 2
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_HINT",
+          "value": 3
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_COLUMN",
+          "value": 4
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_CONSTRAINT",
+          "value": 5
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_DATATYPE",
+          "value": 6
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_TABLE",
+          "value": 7
+        },
+        {
+          "name": "PLPGSQL_RAISEOPTION_SCHEMA",
+          "value": 8
+        }
+      ],
+      "comment": "/*\n * RAISE statement options\n */\n"
+    },
+    "PLpgSQL_resolve_option": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_RESOLVE_ERROR",
+          "value": 0,
+          "comment": "/* throw error if ambiguous */"
+        },
+        {
+          "name": "PLPGSQL_RESOLVE_VARIABLE",
+          "value": 1,
+          "comment": "/* prefer plpgsql var to table column */"
+        },
+        {
+          "name": "PLPGSQL_RESOLVE_COLUMN",
+          "value": 2,
+          "comment": "/* prefer table column to plpgsql var */"
+        }
+      ],
+      "comment": "/*\n * Behavioral modes for plpgsql variable resolution\n */\n"
+    },
+    "PLpgSQL_rwopt": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_RWOPT_UNKNOWN",
+          "value": 0,
+          "comment": "/* applicability not determined yet */"
+        },
+        {
+          "name": "PLPGSQL_RWOPT_NOPE",
+          "value": 1,
+          "comment": "/* cannot do any optimization */"
+        },
+        {
+          "name": "PLPGSQL_RWOPT_TRANSFER",
+          "value": 2,
+          "comment": "/* transfer the old value into expr state */"
+        },
+        {
+          "name": "PLPGSQL_RWOPT_INPLACE",
+          "value": 3,
+          "comment": "/* pass value as R/W to top-level function */"
+        }
+      ],
+      "comment": "/*\n * Status of optimization of assignment to a read/write expanded object\n */\n"
+    },
+    "PLpgSQL_trigtype": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "PLPGSQL_DML_TRIGGER",
+          "value": 0
+        },
+        {
+          "name": "PLPGSQL_EVENT_TRIGGER",
+          "value": 1
+        },
+        {
+          "name": "PLPGSQL_NOT_TRIGGER",
+          "value": 2
+        }
+      ],
+      "comment": "/*\n * Trigger type\n */\n"
+    },
+    "IdentifierLookup": {
+      "values": [
+        {
+          "comment": ""
+        },
+        {
+          "name": "IDENTIFIER_LOOKUP_NORMAL",
+          "value": 0,
+          "comment": "/* normal processing of var names */"
+        },
+        {
+          "name": "IDENTIFIER_LOOKUP_DECLARE",
+          "value": 1,
+          "comment": "/* In DECLARE --- don't look up names */"
+        },
+        {
+          "name": "IDENTIFIER_LOOKUP_EXPR",
+          "value": 2,
+          "comment": "/* In SQL expression --- special case */"
+        }
+      ],
+      "comment": "/**********************************************************************\n * Global variable declarations\n **********************************************************************/\n"
+    }
   }
 }
