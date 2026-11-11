@@ -268,7 +268,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
+TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_comparisons test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
@@ -279,6 +279,7 @@ ifneq ($(USE_PROTOBUF_CPP),1)
 	$(VALGRIND_MEMCHECK) test/deparse_depth || (cat test/valgrind.log && false)
 endif
 	$(VALGRIND_MEMCHECK) test/fingerprint || (cat test/valgrind.log && false)
+	$(VALGRIND_MEMCHECK) test/fingerprint_comparisons || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/fingerprint_opts || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/is_utility_stmt || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/normalize || (cat test/valgrind.log && false)
@@ -304,6 +305,7 @@ ifneq ($(USE_PROTOBUF_CPP),1)
 	test/deparse_depth
 endif
 	test/fingerprint
+	test/fingerprint_comparisons
 	test/fingerprint_opts
 	test/is_utility_stmt
 	test/normalize
@@ -338,6 +340,11 @@ test/deparse_depth: test/deparse_depth.c $(ARLIB)
 test/fingerprint: test/fingerprint.c test/fingerprint_tests.c $(ARLIB)
 	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
 	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/ test/fingerprint.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/fingerprint_comparisons: test/fingerprint_comparisons.c $(ARLIB)
+	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
+	# We have "-Isrc/postgres/include" because the test framework uses nodes/pg_list.h.
+	$(CC) $(TEST_CFLAGS) -o $@ -Isrc/postgres/include -Isrc/ test/framework/main.c test/fingerprint_comparisons.c $(ARLIB) $(TEST_LDFLAGS)
 
 test/fingerprint_opts: test/fingerprint_opts.c test/fingerprint_opts_tests.c $(ARLIB)
 	# We have "-Isrc/" because this test uses pg_query_fingerprint_with_opts
