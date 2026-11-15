@@ -34,7 +34,9 @@ __thread sig_atomic_t pg_query_initialized = 0;
 
 #ifdef HAVE_PTHREAD
 static pthread_key_t pg_query_thread_exit_key;
+static pthread_once_t pg_query_thread_exit_once = PTHREAD_ONCE_INIT;
 static void pg_query_thread_exit(void *key);
+static void pg_query_make_thread_exit_key(void);
 #endif
 
 static __thread char *pg_query_lowest_stackaddr = NULL;
@@ -52,7 +54,7 @@ void pg_query_init(void)
 	SetDatabaseEncoding(PG_UTF8);
 
 #ifdef HAVE_PTHREAD
-	pthread_key_create(&pg_query_thread_exit_key, pg_query_thread_exit);
+	pthread_once(&pg_query_thread_exit_once, pg_query_make_thread_exit_key);
 	pthread_setspecific(pg_query_thread_exit_key, TopMemoryContext);
 #endif
 }
@@ -90,6 +92,15 @@ static void pg_query_thread_exit(void *key)
 {
 	MemoryContext context = (MemoryContext) key;
 	pg_query_free_top_memory_context(context);
+}
+
+/*
+ * The key is shared by all threads, so it is created once per process. Each
+ * thread sets its own TopMemoryContext as the value in pg_query_init().
+ */
+static void pg_query_make_thread_exit_key(void)
+{
+	pthread_key_create(&pg_query_thread_exit_key, pg_query_thread_exit);
 }
 #endif
 

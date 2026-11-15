@@ -1,6 +1,7 @@
 #include <pg_query.h>
 
 #include <assert.h>
+#include <limits.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -15,7 +16,15 @@
 #define THREAD_COUNT 500
 #endif
 
+/* More threads than a process has thread-specific keys */
+#ifdef PTHREAD_KEYS_MAX
+#define SEQUENTIAL_THREAD_COUNT (PTHREAD_KEYS_MAX + 100)
+#else
+#define SEQUENTIAL_THREAD_COUNT 1100
+#endif
+
 void* test_runner(void*);
+void* parse_once(void*);
 
 int main() {
   size_t i;
@@ -36,7 +45,33 @@ int main() {
 
   printf("\n");
 
+  /* Each thread that parses must not use up a thread-specific key */
+  for (i = 0; i < SEQUENTIAL_THREAD_COUNT; i += 1) {
+    pthread_t thread;
+    ret = pthread_create(&thread, NULL, parse_once, NULL);
+    if (ret) {
+      perror("ERROR creating pthread");
+      return 1;
+    }
+    pthread_join(thread, NULL);
+  }
+
+  pthread_key_t key;
+  ret = pthread_key_create(&key, NULL);
+  if (ret) {
+    printf("ERROR creating a pthread key after %d parsing threads: %s\n", SEQUENTIAL_THREAD_COUNT, strerror(ret));
+    return 1;
+  }
+  pthread_key_delete(key);
+
   return 0;
+}
+
+void* parse_once(void* unused_pthread_arg) {
+  assert(unused_pthread_arg == NULL);
+  PgQueryParseResult result = pg_query_parse("SELECT 1");
+  pg_query_free_parse_result(result);
+  return NULL;
 }
 
 void* test_runner(void* unused_pthread_arg) {
