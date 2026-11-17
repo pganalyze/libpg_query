@@ -583,6 +583,24 @@ void it_excludes_a_nested_CTE_referenced_from_a_later_sibling(TestState* test_st
 	TEST_ASSERT_LIST_LENGTH(result.tables, 1);
 }
 
+void it_finds_the_table_referenced_from_an_earlier_sibling_of_a_nested_redefinition(TestState* test_state) {
+	TEST_INIT();
+	/* `b` is defined before the nested `a`, so its `a` is the table. */
+	char* sql = "WITH a AS (WITH b AS (SELECT * FROM a), a AS (SELECT 1 FROM t) SELECT * FROM a, b) SELECT * FROM a";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES(result.tables, ((char*[]){"a", "t", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+}
+
+void it_excludes_a_nested_CTE_that_redefines_the_name_on_an_INSERT(TestState* test_state) {
+	TEST_INIT();
+	char* sql = "WITH a AS (WITH a AS (SELECT 1 FROM t) INSERT INTO x SELECT * FROM a RETURNING *) SELECT * FROM a";
+	Summary result = summary(sql, 0, -1);
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_SELECT, ((char*[]){"t", NULL}));
+	TEST_SUMMARY_ASSERT_TABLES_WITH_CTX(result.tables, CONTEXT_DML, ((char*[]){"x", NULL}));
+	TEST_ASSERT_LIST_LENGTH(result.tables, 2);
+}
+
 void it_finds_the_table_referenced_inside_a_nested_redefinition(TestState* test_state) {
 	TEST_INIT();
 	/* Neither `a` is visible inside its own non-recursive definition, so the innermost `a` is the table. */
