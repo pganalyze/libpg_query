@@ -110,6 +110,76 @@ typedef struct
 	WalkState  *state;
 }			CteSelfReferenceContext;
 
+static bool cte_self_reference_walker(Node *node, CteSelfReferenceContext * context);
+
+static WithClause *
+statement_with_clause(Node *node)
+{
+	switch (nodeTag(node))
+	{
+		case T_SelectStmt:
+			return castNode(SelectStmt, node)->withClause;
+		case T_InsertStmt:
+			return castNode(InsertStmt, node)->withClause;
+		case T_UpdateStmt:
+			return castNode(UpdateStmt, node)->withClause;
+		case T_DeleteStmt:
+			return castNode(DeleteStmt, node)->withClause;
+		case T_MergeStmt:
+			return castNode(MergeStmt, node)->withClause;
+		default:
+			return NULL;
+	}
+}
+
+static CommonTableExpr *
+with_clause_find_cte(WithClause *with_clause, const char *ctename)
+{
+	ListCell   *lc = NULL;
+
+	foreach(lc, with_clause->ctes)
+	{
+		if (!IsA(lfirst(lc), CommonTableExpr))
+			continue;
+
+		CommonTableExpr *cte = castNode(CommonTableExpr, lfirst(lc));
+
+		if (cte->ctename != NULL && strcmp(cte->ctename, ctename) == 0)
+			return cte;
+	}
+	return NULL;
+}
+
+/*
+ * A nested WITH that redefines the CTE's name shadows it: the statement body,
+ * later siblings and (if RECURSIVE) every definition in that WITH see the inner
+ * CTE, so only the definitions up to and including the redefinition can still
+ * reference the real relation.
+ */
+static void
+cte_self_reference_walk_shadowing_with(WithClause *with_clause,
+									   CommonTableExpr *redefinition,
+									   CteSelfReferenceContext * context)
+{
+	if (with_clause->recursive)
+		return;
+
+	ListCell   *lc = NULL;
+
+	foreach(lc, with_clause->ctes)
+	{
+		if (!IsA(lfirst(lc), CommonTableExpr))
+			continue;
+
+		CommonTableExpr *cte = castNode(CommonTableExpr, lfirst(lc));
+
+		cte_self_reference_walker(cte->ctequery, context);
+
+		if (cte == redefinition)
+			break;
+	}
+}
+
 /*
  * Records the range vars inside a CTE's own definition that carry the CTE's own
  * name.
@@ -119,6 +189,19 @@ cte_self_reference_walker(Node *node, CteSelfReferenceContext * context)
 {
 	if (node == NULL)
 		return false;
+
+	WithClause *with_clause = statement_with_clause(node);
+
+	if (with_clause != NULL)
+	{
+		CommonTableExpr *redefinition = with_clause_find_cte(with_clause, context->ctename);
+
+		if (redefinition != NULL)
+		{
+			cte_self_reference_walk_shadowing_with(with_clause, redefinition, context);
+			return false;
+		}
+	}
 
 	if (IsA(node, RangeVar))
 	{
