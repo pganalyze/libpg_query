@@ -336,7 +336,8 @@ This will output (formatted for clarity):
                                         "query": "v_name || '/' || v_version",
                                         "parseMode": 2
                                     }
-                                }
+                                },
+                                "retvarno": -1
                             }
                         }
                     ]

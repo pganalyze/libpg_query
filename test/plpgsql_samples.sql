@@ -618,3 +618,10 @@ DECLARE
 BEGIN
 END;
 $$ LANGUAGE plpgsql;
+
+-- A trigger returning OLD, which only retvarno tells apart from returning NEW
+CREATE FUNCTION return_old() RETURNS trigger AS $$
+BEGIN
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
