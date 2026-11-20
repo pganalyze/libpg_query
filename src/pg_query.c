@@ -35,6 +35,9 @@ __thread sig_atomic_t pg_query_initialized = 0;
 #ifdef HAVE_PTHREAD
 static pthread_key_t pg_query_thread_exit_key;
 static pthread_once_t pg_query_thread_exit_once = PTHREAD_ONCE_INIT;
+/* Written by the once routine below; pthread_key_create can still fail, and
+   pthread_once then never retries, so guard every use of the key with this. */
+static bool pg_query_thread_exit_key_valid = false;
 static void pg_query_thread_exit(void *key);
 static void pg_query_make_thread_exit_key(void);
 #endif
@@ -55,7 +58,8 @@ void pg_query_init(void)
 
 #ifdef HAVE_PTHREAD
 	pthread_once(&pg_query_thread_exit_once, pg_query_make_thread_exit_key);
-	pthread_setspecific(pg_query_thread_exit_key, TopMemoryContext);
+	if (pg_query_thread_exit_key_valid)
+		pthread_setspecific(pg_query_thread_exit_key, TopMemoryContext);
 #endif
 }
 
@@ -100,12 +104,23 @@ static void pg_query_thread_exit(void *key)
  */
 static void pg_query_make_thread_exit_key(void)
 {
-	pthread_key_create(&pg_query_thread_exit_key, pg_query_thread_exit);
+	/* If the process is out of thread-specific keys, threads keep working
+	   without automatic cleanup, like on platforms without pthread support. */
+	pg_query_thread_exit_key_valid =
+		pthread_key_create(&pg_query_thread_exit_key, pg_query_thread_exit) == 0;
 }
 #endif
 
 void pg_query_exit(void)
 {
+#ifdef HAVE_PTHREAD
+	/* The thread-exit destructor frees the context stored under the key, so
+	   clear this thread's value first to keep it from being freed a second
+	   time when the thread exits. */
+	if (pg_query_thread_exit_key_valid)
+		pthread_setspecific(pg_query_thread_exit_key, NULL);
+#endif
+
 	pg_query_free_top_memory_context(TopMemoryContext);
 }
 
