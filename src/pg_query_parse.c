@@ -13,6 +13,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 {
 	PgQueryInternalParsetreeAndError result = {0};
 	MemoryContext parse_context = CurrentMemoryContext;
+	MemoryContext volatile raw_parse_context = NULL;
 
 	char stderr_buffer[STDERR_BUFFER_LEN + 1] = {0};
 #ifndef DEBUG
@@ -43,6 +44,17 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 	PG_TRY();
 	{
 		RawParseMode rawParseMode = RAW_PARSE_DEFAULT;
+
+		/*
+		 * Parse in a child context, so that its memory can be released before
+		 * copying the error data in case the parser runs out of memory. On
+		 * success the tree stays there, and is freed with parse_context.
+		 */
+		raw_parse_context = AllocSetContextCreate(parse_context,
+												  "pg_query_raw_parse",
+												  ALLOCSET_DEFAULT_SIZES);
+		MemoryContextSwitchTo(raw_parse_context);
+
 		switch (parser_options & PG_QUERY_PARSE_MODE_BITMASK)
 		{
 			case PG_QUERY_PARSE_TYPE_NAME:
@@ -82,6 +94,8 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 #endif
 
 		result.stderr_buffer = strdup(stderr_buffer);
+
+		MemoryContextSwitchTo(parse_context);
 	}
 	PG_CATCH();
 	{
@@ -89,6 +103,8 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 		PgQueryError* error;
 
 		MemoryContextSwitchTo(parse_context);
+		if (raw_parse_context != NULL)
+			MemoryContextDelete(raw_parse_context);
 		error_data = CopyErrorData();
 
 		// Note: This is intentionally malloc so exiting the memory context doesn't free this
@@ -158,6 +174,8 @@ PgQueryParseResult pg_query_parse_opts(const char* input, int parser_options)
 		PgQueryError* error;
 
 		MemoryContextSwitchTo(ctx);
+		// The tree is not needed anymore, free it so there is room to copy the error data
+		MemoryContextReset(ctx);
 		error_data = CopyErrorData();
 
 		// Note: This is intentionally malloc so exiting the memory context doesn't free this
@@ -220,6 +238,8 @@ PgQueryProtobufParseResult pg_query_parse_protobuf_opts(const char* input, int p
 		PgQueryError* error;
 
 		MemoryContextSwitchTo(ctx);
+		// The tree is not needed anymore, free it so there is room to copy the error data
+		MemoryContextReset(ctx);
 		error_data = CopyErrorData();
 
 		// Note: This is intentionally malloc so exiting the memory context doesn't free this
