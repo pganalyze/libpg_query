@@ -1,7 +1,6 @@
 #include <pg_query.h>
 
 #include <assert.h>
-#include <limits.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -16,12 +15,8 @@
 #define THREAD_COUNT 500
 #endif
 
-/* More threads than a process has thread-specific keys */
-#ifdef PTHREAD_KEYS_MAX
-#define SEQUENTIAL_THREAD_COUNT (PTHREAD_KEYS_MAX + 100)
-#else
+/* More threads than glibc (1024) or macOS (512) has thread-specific keys */
 #define SEQUENTIAL_THREAD_COUNT 1100
-#endif
 
 void* test_runner(void*);
 void* parse_once(void*);
