@@ -50,7 +50,7 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+TESTS = test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/parse_plpgsql_protobuf test/scan test/split test/summary test/summary_truncate
 test: $(TESTS)
 	.\test\deparse
 	.\test\deparse_depth
@@ -104,6 +104,9 @@ test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB)
+
+test/parse_plpgsql_protobuf: test/parse_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_plpgsql_protobuf.c $(ARLIB)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB)
