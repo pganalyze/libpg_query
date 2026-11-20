@@ -923,69 +923,86 @@ static inline upb_StringView sv(const char *s)
 static void
 summary_to_protobuf(PgQuerySummaryParseResult * result, Summary * summary)
 {
-	upb_Arena  *a = upb_Arena_New();
-	pg_query_SummaryResult *sr = pg_query_SummaryResult_new(a);
+	/* volatile: assigned inside PG_TRY and read in PG_CATCH (after longjmp) */
+	upb_Arena  *volatile a = NULL;
+	pg_query_SummaryResult *sr;
 	ListCell   *lc = NULL;
 	char	   *data;
 	size_t		len;
 
-	foreach(lc, summary->tables)
-	{
-		SummaryTable *table = lfirst(lc);
-		pg_query_SummaryResult_Table *t = pg_query_SummaryResult_add_tables(sr, a);
-
-		pg_query_SummaryResult_Table_set_name(t, sv(table->name));
-		pg_query_SummaryResult_Table_set_schema_name(t, sv(table->schema_name));
-		pg_query_SummaryResult_Table_set_table_name(t, sv(table->table_name));
-		pg_query_SummaryResult_Table_set_context(t, ctx_to_protobuf_ctx(table->context));
-	}
-
-	foreach(lc, summary->aliases)
-	{
-		SummaryAlias *alias = lfirst(lc);
-
-		pg_query_SummaryResult_aliases_set(sr, sv(alias->key), sv(alias->value), a);
-	}
-
-	foreach(lc, summary->cte_names)
-		pg_query_SummaryResult_add_cte_names(sr, sv(lfirst(lc)), a);
-
-	foreach(lc, summary->functions)
-	{
-		SummaryFunction *fn = lfirst(lc);
-		pg_query_SummaryResult_Function *f = pg_query_SummaryResult_add_functions(sr, a);
-
-		pg_query_SummaryResult_Function_set_name(f, sv(fn->name));
-		pg_query_SummaryResult_Function_set_function_name(f, sv(fn->function_name));
-		pg_query_SummaryResult_Function_set_schema_name(f, sv(fn->schema_name));
-		pg_query_SummaryResult_Function_set_context(f, ctx_to_protobuf_ctx(fn->context));
-	}
-
-	foreach(lc, summary->filter_columns)
-	{
-		FilterColumn *fc = lfirst(lc);
-		pg_query_SummaryResult_FilterColumn *c = pg_query_SummaryResult_add_filter_columns(sr, a);
-
-		pg_query_SummaryResult_FilterColumn_set_schema_name(c, sv(fc->schema_name));
-		pg_query_SummaryResult_FilterColumn_set_table_name(c, sv(fc->table_name));
-		pg_query_SummaryResult_FilterColumn_set_column(c, sv(fc->column));
-	}
-
-	foreach(lc, summary->statement_types)
-		pg_query_SummaryResult_add_statement_types(sr, sv(lfirst(lc)), a);
-
-	pg_query_SummaryResult_set_truncated_query(sr, sv(summary->truncated_query));
-
 	/*
-	 * Serialization fails (returns NULL) e.g. when the arena runs out of
-	 * memory. The arena is malloc-backed, so free it before throwing.
+	 * Building or serializing the message may throw ("out of memory" from the
+	 * arena allocator, see pg_query_upb_alloc), and the arena is
+	 * malloc-backed, so it needs to be freed here before passing on the error.
 	 */
-	data = pg_query_SummaryResult_serialize(sr, a, &len);
-	if (data == NULL)
+	PG_TRY();
 	{
-		upb_Arena_Free(a);
-		elog(ERROR, "could not serialize summary to protobuf");
+		a = upb_Arena_Init(NULL, 0, pg_query_upb_alloc());
+		sr = pg_query_SummaryResult_new(a);
+
+		foreach(lc, summary->tables)
+		{
+			SummaryTable *table = lfirst(lc);
+			pg_query_SummaryResult_Table *t = pg_query_SummaryResult_add_tables(sr, a);
+
+			pg_query_SummaryResult_Table_set_name(t, sv(table->name));
+			pg_query_SummaryResult_Table_set_schema_name(t, sv(table->schema_name));
+			pg_query_SummaryResult_Table_set_table_name(t, sv(table->table_name));
+			pg_query_SummaryResult_Table_set_context(t, ctx_to_protobuf_ctx(table->context));
+		}
+
+		foreach(lc, summary->aliases)
+		{
+			SummaryAlias *alias = lfirst(lc);
+
+			pg_query_SummaryResult_aliases_set(sr, sv(alias->key), sv(alias->value), a);
+		}
+
+		foreach(lc, summary->cte_names)
+			pg_query_SummaryResult_add_cte_names(sr, sv(lfirst(lc)), a);
+
+		foreach(lc, summary->functions)
+		{
+			SummaryFunction *fn = lfirst(lc);
+			pg_query_SummaryResult_Function *f = pg_query_SummaryResult_add_functions(sr, a);
+
+			pg_query_SummaryResult_Function_set_name(f, sv(fn->name));
+			pg_query_SummaryResult_Function_set_function_name(f, sv(fn->function_name));
+			pg_query_SummaryResult_Function_set_schema_name(f, sv(fn->schema_name));
+			pg_query_SummaryResult_Function_set_context(f, ctx_to_protobuf_ctx(fn->context));
+		}
+
+		foreach(lc, summary->filter_columns)
+		{
+			FilterColumn *fc = lfirst(lc);
+			pg_query_SummaryResult_FilterColumn *c = pg_query_SummaryResult_add_filter_columns(sr, a);
+
+			pg_query_SummaryResult_FilterColumn_set_schema_name(c, sv(fc->schema_name));
+			pg_query_SummaryResult_FilterColumn_set_table_name(c, sv(fc->table_name));
+			pg_query_SummaryResult_FilterColumn_set_column(c, sv(fc->column));
+		}
+
+		foreach(lc, summary->statement_types)
+			pg_query_SummaryResult_add_statement_types(sr, sv(lfirst(lc)), a);
+
+		pg_query_SummaryResult_set_truncated_query(sr, sv(summary->truncated_query));
+
+		/*
+		 * A failing arena allocation raises an error via pg_query_upb_alloc
+		 * before serialization can report anything; the NULL check stays as a
+		 * safety net for other encode failures.
+		 */
+		data = pg_query_SummaryResult_serialize(sr, a, &len);
+		if (data == NULL)
+			elog(ERROR, "could not serialize summary to protobuf");
 	}
+	PG_CATCH();
+	{
+		if (a != NULL)
+			upb_Arena_Free(a);
+		PG_RE_THROW();
+	}
+	PG_END_TRY();
 
 	/*
 	 * Note: This is intentionally malloc so exiting the memory context

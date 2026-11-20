@@ -28,6 +28,12 @@
 
 #include <signal.h>
 
+/*
+ * Must be the last header included: upb opens its macro defines with
+ * upb/port/def.inc and only closes them at the end of the header.
+ */
+#include "protobuf/pg_query.upb.h"
+
 const char* progname = "pg_query";
 
 __thread sig_atomic_t pg_query_initialized = 0;
@@ -134,6 +140,57 @@ void pg_query_exit_memory_context(MemoryContext ctx)
 	ctx = NULL;
 
 	pg_query_exit_stack_depth_check();
+}
+
+/*
+ * upb allocator used for all protobuf arenas (parse output, scan output,
+ * protobuf input, summary output). upb's generated message setters write
+ * through the message pointer without checking it, so an arena allocation
+ * that merely fails would end up written through as a NULL pointer; raising a
+ * PostgreSQL out-of-memory error instead turns every arena OOM into a normal
+ * libpg_query error result, which the callers' PG_CATCH blocks already handle
+ * (freeing the malloc-backed arena first).
+ *
+ * The free half (size == 0) must not throw, so upb_Arena_Free always runs to
+ * completion.
+ */
+static void *
+pg_query_upb_alloc_func(upb_alloc *alloc, void *ptr, size_t oldsize,
+						size_t size, size_t *actual_size)
+{
+	void	   *result;
+
+	if (size == 0)
+	{
+		free(ptr);
+		return NULL;
+	}
+
+	/*
+	 * The vendored upb only ever enters this function with ptr == NULL (arena
+	 * blocks are malloc'd whole and handed back with size == 0), but the
+	 * upb_alloc_func contract also allows in-place growth, so keep the realloc
+	 * branch for correctness with any future upb version.
+	 */
+	result = (ptr != NULL) ? realloc(ptr, size) : malloc(size);
+	if (result == NULL)
+		ereport(ERROR,
+				(errcode(ERRCODE_OUT_OF_MEMORY),
+				 errmsg("out of memory"),
+				 errdetail("Failed on request of size %zu.", size)));
+
+	if (actual_size != NULL)
+		*actual_size = size;
+
+	return result;
+}
+
+static upb_alloc pg_query_upb_alloc_impl = { .func = pg_query_upb_alloc_func };
+
+upb_alloc *
+pg_query_upb_alloc(void)
+{
+	return &pg_query_upb_alloc_impl;
 }
 
 void pg_query_free_error(PgQueryError *error)

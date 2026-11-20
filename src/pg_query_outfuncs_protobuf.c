@@ -15,7 +15,8 @@
 /*
  * The arena that all messages for the current pg_query_nodes_to_protobuf() call
  * are built in. It is thread-local (libpg_query runs per-thread) and set once at
- * the top of that function; the WRITE_* macros and _out* helpers below read it
+ * the start of that function's PG_TRY block (NULL before and after); the WRITE_*
+ * macros and _out* helpers below read it
  * instead of threading an arena parameter through every function. Keeping it out
  * of the function signatures matters because the generated _out* declarations in
  * pg_query_outfuncs_defs.c are shared with the JSON backend, which has no arena.
@@ -270,22 +271,23 @@ PgQueryProtobuf
 pg_query_nodes_to_protobuf(const void *obj)
 {
 	PgQueryProtobuf protobuf;
-	pg_query_ParseResult *parse_result;
-	char	   *data;
-	size_t		len;
-
-	out_arena = upb_Arena_New();
-	parse_result = pg_query_ParseResult_new(out_arena);
-
-	pg_query_ParseResult_set_version(parse_result, PG_VERSION_NUM);
+	char	   *data = NULL;
+	size_t		len = 0;
 
 	/*
 	 * Building the message may throw (e.g. "stack depth limit exceeded" from
-	 * _outNode), and the arena is malloc-backed, so it needs to be freed here
-	 * before passing on the error.
+	 * _outNode, or "out of memory" from the arena allocator), and the arena is
+	 * malloc-backed, so it needs to be freed here before passing on the error.
 	 */
 	PG_TRY();
 	{
+		pg_query_ParseResult *parse_result;
+
+		out_arena = upb_Arena_Init(NULL, 0, pg_query_upb_alloc());
+		parse_result = pg_query_ParseResult_new(out_arena);
+
+		pg_query_ParseResult_set_version(parse_result, PG_VERSION_NUM);
+
 		if (obj != NULL)
 		{
 			const ListCell *lc;
@@ -296,33 +298,26 @@ pg_query_nodes_to_protobuf(const void *obj)
 				_outRawStmt(stmt, lfirst(lc));
 			}
 		}
+
+		/*
+		 * Encode with the same depth limit the decoder uses, so anything we
+		 * emit can be read back. The generated serialize_ex wrapper discards
+		 * the encode status, but with the arena allocator raising OOM as an
+		 * error (see pg_query_upb_alloc), a NULL result means the depth limit
+		 * was exceeded.
+		 */
+		data = pg_query_ParseResult_serialize_ex(parse_result, upb_EncodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH), out_arena, &len);
+		if (data == NULL)
+			elog(ERROR, "parse tree is nested too deeply to serialize to protobuf");
 	}
 	PG_CATCH();
 	{
-		upb_Arena_Free(out_arena);
+		if (out_arena != NULL)
+			upb_Arena_Free(out_arena);
 		out_arena = NULL;
 		PG_RE_THROW();
 	}
 	PG_END_TRY();
-
-	/*
-	 * Encode with the same depth limit the decoder uses, so anything we emit
-	 * can be read back. Serialization fails (returns NULL) for deeper trees, or
-	 * when the stack depth limit is reached while encoding.
-	 *
-	 * Note: upb also returns NULL when the arena runs out of memory
-	 * (kUpb_EncodeStatus_OutOfMemory), which we report with the same message
-	 * since the generated serialize_ex wrapper discards the encode status. That
-	 * is unlikely enough in practice that we don't call upb_Encode directly to
-	 * tell the two apart.
-	 */
-	data = pg_query_ParseResult_serialize_ex(parse_result, upb_EncodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH), out_arena, &len);
-	if (data == NULL)
-	{
-		upb_Arena_Free(out_arena);
-		out_arena = NULL;
-		elog(ERROR, "parse tree is nested too deeply to serialize to protobuf");
-	}
 
 	protobuf.len = len;
 	// Note: This is intentionally malloc so exiting the memory context doesn't free this

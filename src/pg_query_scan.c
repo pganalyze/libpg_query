@@ -128,7 +128,7 @@ PgQueryScanResult pg_query_scan(const char* input)
     int n_tokens;
     PgQueryScanToken *tokens = scan_tokens(input, &n_tokens);
 
-    arena = upb_Arena_New();
+    arena = upb_Arena_Init(NULL, 0, pg_query_upb_alloc());
     scan_result = pg_query_ScanResult_new(arena);
     pg_query_ScanResult_set_version(scan_result, PG_VERSION_NUM);
 
@@ -144,8 +144,9 @@ PgQueryScanResult pg_query_scan(const char* input)
 
     /* Serialize into the arena, then copy out into a malloc'd buffer that
      * survives exiting the memory context (freed in pg_query_free_scan_result).
-     * Serialization fails (returns NULL) e.g. when the arena runs out of memory;
-     * PG_CATCH below frees the arena. */
+     * A failing arena allocation raises an error via pg_query_upb_alloc before
+     * serialization can report anything; the NULL check stays as a safety net
+     * for other encode failures. PG_CATCH below frees the arena. */
     packed_data = pg_query_ScanResult_serialize(scan_result, arena, &packed_len);
     if (packed_data == NULL)
       elog(ERROR, "could not serialize scan result to protobuf");
