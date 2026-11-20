@@ -20,6 +20,7 @@
 
 void* test_runner(void*);
 void* parse_once(void*);
+void* parse_and_exit(void*);
 
 int main() {
   size_t i;
@@ -59,6 +60,16 @@ int main() {
   }
   pthread_key_delete(key);
 
+  /* A thread that cleans up with pg_query_exit() must not have the thread-exit
+     destructor free the same memory context again when it exits */
+  pthread_t exit_thread;
+  ret = pthread_create(&exit_thread, NULL, parse_and_exit, NULL);
+  if (ret) {
+    perror("ERROR creating pthread");
+    return 1;
+  }
+  pthread_join(exit_thread, NULL);
+
   return 0;
 }
 
@@ -66,6 +77,14 @@ void* parse_once(void* unused_pthread_arg) {
   assert(unused_pthread_arg == NULL);
   PgQueryParseResult result = pg_query_parse("SELECT 1");
   pg_query_free_parse_result(result);
+  return NULL;
+}
+
+void* parse_and_exit(void* unused_pthread_arg) {
+  assert(unused_pthread_arg == NULL);
+  PgQueryParseResult result = pg_query_parse("SELECT 1");
+  pg_query_free_parse_result(result);
+  pg_query_exit();
   return NULL;
 }
 

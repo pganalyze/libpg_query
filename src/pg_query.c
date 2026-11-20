@@ -106,6 +106,15 @@ static void pg_query_make_thread_exit_key(void)
 
 void pg_query_exit(void)
 {
+#ifdef HAVE_PTHREAD
+	/* The thread-exit destructor frees the context stored under the key, so
+	   clear this thread's value first to keep it from being freed a second
+	   time when the thread exits. Skip when this thread never initialized,
+	   since the key may not exist yet. */
+	if (pg_query_initialized != 0)
+		pthread_setspecific(pg_query_thread_exit_key, NULL);
+#endif
+
 	pg_query_free_top_memory_context(TopMemoryContext);
 }
 
