@@ -269,9 +269,11 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ -g examples/simple_plpgsql.c $(ARLIB) $(TEST_LDFLAGS)
 
-TESTS = test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
+TESTS = test/arena_oom test/complex test/concurrency test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/normalize_utility test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/stack_depth test/summary test/summary_truncate
 test: $(TESTS)
 ifeq ($(VALGRIND),1)
+# test/arena_oom is deliberately not run under valgrind: it overrides malloc
+# in the test binary, which fights valgrind's own malloc redirection
 	$(VALGRIND_MEMCHECK) test/complex || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/concurrency || (cat test/valgrind.log && false)
 	$(VALGRIND_MEMCHECK) test/deparse || (cat test/valgrind.log && false)
@@ -297,6 +299,7 @@ endif
 	$(VALGRIND_MEMCHECK) test/parse_plpgsql || (cat test/valgrind.log && false)
 	diff -Naur test/plpgsql_samples.expected.json test/plpgsql_samples.actual.json
 else
+	test/arena_oom
 	test/complex
 	test/concurrency
 	test/deparse
@@ -385,6 +388,9 @@ test/split: test/split.c test/split_tests.c $(ARLIB)
 
 test/stack_depth: test/stack_depth.c $(ARLIB)
 	$(CC) $(TEST_CFLAGS) -o $@ test/stack_depth.c $(ARLIB) $(TEST_LDFLAGS)
+
+test/arena_oom: test/arena_oom.c $(ARLIB)
+	$(CC) $(TEST_CFLAGS) -o $@ test/arena_oom.c $(ARLIB) $(TEST_LDFLAGS)
 
 prefix = /usr/local
 libdir = $(prefix)/lib
