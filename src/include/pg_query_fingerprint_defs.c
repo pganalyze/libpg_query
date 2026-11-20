@@ -12810,6 +12810,13 @@ _fingerprintCreateStatsStmt(FingerprintContext *ctx, const CreateStatsStmt *node
     _fingerprintString(ctx, "true");
   }
 
+  if (node->owner != 0) {
+    char buffer[50];
+    sprintf(buffer, "%d", node->owner);
+    _fingerprintString(ctx, "owner");
+    _fingerprintString(ctx, buffer);
+  }
+
   if (node->relations != NULL && node->relations->length > 0) {
     XXH3_state_t* prev = XXH3_createState();
     XXH64_hash_t hash;
@@ -13587,6 +13594,8 @@ _fingerprintNotifyStmt(FingerprintContext *ctx, const NotifyStmt *node, const vo
   // Intentionally ignoring node->payload for fingerprinting
 
   // Intentionally ignoring node->payload_location for fingerprinting
+
+  // Intentionally ignoring node->payload_param for fingerprinting
 
 }
 

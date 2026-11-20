@@ -253,6 +253,7 @@ class Generator
     ['UnlistenStmt', 'conditionname'] => :skip,
     ['NotifyStmt', 'conditionname'] => :skip,
     ['NotifyStmt', 'payload'] => :skip,
+    ['NotifyStmt', 'payload_param'] => :skip,
     ['DeclareCursorStmt', 'portalname'] => :skip,
     ['FetchStmt', 'portalname'] => :skip,
     ['ClosePortalStmt', 'portalname'] => :skip,

@@ -3243,6 +3243,7 @@ _copyNotifyStmt(const NotifyStmt *from)
 	COPY_STRING_FIELD(conditionname);
 	COPY_STRING_FIELD(payload);
 	COPY_LOCATION_FIELD(payload_location);
+	COPY_NODE_FIELD(payload_param);
 
 	return newnode;
 }

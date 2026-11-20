@@ -2800,6 +2800,7 @@ _equalNotifyStmt(const NotifyStmt *a, const NotifyStmt *b)
 	COMPARE_STRING_FIELD(conditionname);
 	COMPARE_STRING_FIELD(payload);
 	COMPARE_LOCATION_FIELD(payload_location);
+	COMPARE_NODE_FIELD(payload_param);
 
 	return true;
 }
