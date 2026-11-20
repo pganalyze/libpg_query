@@ -2,6 +2,7 @@ postgres/*
 postgres.tar.bz2
 
 *.o
+*.d
 *.a
 *.obj
 pg_query.lib
