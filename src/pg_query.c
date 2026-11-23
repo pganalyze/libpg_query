@@ -27,6 +27,8 @@
 #endif
 
 #include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 const char* progname = "pg_query";
 
@@ -135,6 +137,107 @@ void pg_query_exit_memory_context(MemoryContext ctx)
 
 	pg_query_exit_stack_depth_check();
 }
+
+/*
+ * Opt-in stderr capture (-DPG_QUERY_CAPTURE_STDERR): fd 2 is pointed at a
+ * pipe for the duration of a call and the captured text is returned as the
+ * result's stderr_buffer. The default build leaves stderr alone: the vendored
+ * elog.c stubs send_message_to_server_log and send_message_to_frontend, so
+ * PostgreSQL output never reaches fd 2 in the first place, and an always-on
+ * redirection would only capture unrelated writes to it while paying a few
+ * syscalls per call.
+ *
+ * When capture is enabled, only one call can do it at a time: fd 2 is
+ * process-wide, so two concurrent redirections would corrupt each other's
+ * descriptor state (test/concurrency.c parses from hundreds of threads at
+ * once). The trylock keeps the single-threaded case captured while a
+ * concurrent call comes back uncaptured, with an empty stderr_buffer.
+ */
+#ifdef HAVE_PTHREAD
+static pthread_mutex_t pg_query_stderr_capture_mutex = PTHREAD_MUTEX_INITIALIZER;
+#define PG_QUERY_STDERR_UNLOCK() pthread_mutex_unlock(&pg_query_stderr_capture_mutex)
+#else
+#define PG_QUERY_STDERR_UNLOCK()
+#endif
+
+PgQueryStderrCaptureStatus
+pg_query_stderr_capture_begin(PgQueryStderrCapture *cap)
+{
+	int			pipe_fd[2];
+
+#ifndef PG_QUERY_CAPTURE_STDERR
+	(void) cap;
+	return PG_QUERY_STDERR_SKIPPED;
+#else
+#ifdef HAVE_PTHREAD
+	if (pthread_mutex_trylock(&pg_query_stderr_capture_mutex) != 0)
+		return PG_QUERY_STDERR_SKIPPED;
+#endif
+
+	if (pipe(pipe_fd) != 0)
+	{
+		PG_QUERY_STDERR_UNLOCK();
+		return PG_QUERY_STDERR_PIPE_FAILED;
+	}
+
+	cap->read_fd = pipe_fd[0];
+	fcntl(cap->read_fd, F_SETFL, fcntl(cap->read_fd, F_GETFL) | O_NONBLOCK);
+
+	cap->saved_stderr_fd = dup(STDERR_FILENO);
+	if (cap->saved_stderr_fd < 0)
+	{
+		close(cap->read_fd);
+		close(pipe_fd[1]);
+		PG_QUERY_STDERR_UNLOCK();
+		return PG_QUERY_STDERR_PIPE_FAILED;
+	}
+
+	dup2(pipe_fd[1], STDERR_FILENO);
+	close(pipe_fd[1]);
+	cap->capturing = true;
+
+	return PG_QUERY_STDERR_CAPTURED;
+#endif
+}
+
+/*
+ * Moves everything the redirection captured into buffer. Only the success
+ * path drains: on error the message reaches the caller through PgQueryError
+ * instead.
+ */
+void
+pg_query_stderr_capture_drain(PgQueryStderrCapture *cap, char *buffer, size_t buffer_len)
+{
+	ssize_t		nbytes;
+
+	if (!cap->capturing || buffer_len == 0)
+		return;
+
+	nbytes = read(cap->read_fd, buffer, buffer_len - 1);
+	if (nbytes < 0)
+		nbytes = 0;
+	buffer[nbytes] = '\0';
+}
+
+/*
+ * Restores the descriptor state begin() changed. Always safe to call, even
+ * after a skipped begin().
+ */
+void
+pg_query_stderr_capture_end(PgQueryStderrCapture *cap)
+{
+	if (!cap->capturing)
+		return;
+
+	dup2(cap->saved_stderr_fd, STDERR_FILENO);
+	close(cap->read_fd);
+	close(cap->saved_stderr_fd);
+	cap->capturing = false;
+
+	PG_QUERY_STDERR_UNLOCK();
+}
+
+#undef PG_QUERY_STDERR_UNLOCK
 
 void pg_query_free_error(PgQueryError *error)
 {

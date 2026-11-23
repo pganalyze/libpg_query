@@ -16,30 +16,17 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 	MemoryContext volatile raw_parse_context = NULL;
 
 	char stderr_buffer[STDERR_BUFFER_LEN + 1] = {0};
-#ifndef DEBUG
-	int stderr_global;
-	int stderr_pipe[2];
-#endif
+	PgQueryStderrCapture stderr_capture = {0};
 
-#ifndef DEBUG
-	// Setup pipe for stderr redirection
-	if (pipe(stderr_pipe) != 0) {
+	if (pg_query_stderr_capture_begin(&stderr_capture) == PG_QUERY_STDERR_PIPE_FAILED) {
 		PgQueryError* error = malloc(sizeof(PgQueryError));
 
-		error->message = strdup("Failed to open pipe, too many open file descriptors")
+		error->message = strdup("Failed to open pipe, too many open file descriptors");
 
 		result.error = error;
 
 		return result;
 	}
-
-	fcntl(stderr_pipe[0], F_SETFL, fcntl(stderr_pipe[0], F_GETFL) | O_NONBLOCK);
-
-	// Redirect stderr to the pipe
-	stderr_global = dup(STDERR_FILENO);
-	dup2(stderr_pipe[1], STDERR_FILENO);
-	close(stderr_pipe[1]);
-#endif
 
 	PG_TRY();
 	{
@@ -88,10 +75,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 		standard_conforming_strings = true;
 		escape_string_warning = true;
 
-#ifndef DEBUG
-		// Save stderr for result
-		read(stderr_pipe[0], stderr_buffer, STDERR_BUFFER_LEN);
-#endif
+		pg_query_stderr_capture_drain(&stderr_capture, stderr_buffer, sizeof(stderr_buffer));
 
 		result.stderr_buffer = strdup(stderr_buffer);
 
@@ -121,12 +105,7 @@ PgQueryInternalParsetreeAndError pg_query_raw_parse(const char* input, int parse
 	}
 	PG_END_TRY();
 
-#ifndef DEBUG
-	// Restore stderr, close pipe
-	dup2(stderr_global, STDERR_FILENO);
-	close(stderr_pipe[0]);
-	close(stderr_global);
-#endif
+	pg_query_stderr_capture_end(&stderr_capture);
 
 	return result;
 }

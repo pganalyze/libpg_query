@@ -6,7 +6,6 @@
 #include "nodes/pg_list.h"
 
 #define STDERR_BUFFER_LEN 4096
-#define DEBUG
 
 /*
  * Maximum protobuf message nesting depth, used for both encoding
@@ -38,5 +37,35 @@ void		pg_query_free_error(PgQueryError * error);
 
 MemoryContext pg_query_enter_memory_context();
 void		pg_query_exit_memory_context(MemoryContext ctx);
+
+/*
+ * Opt-in stderr capture around calls that can write to fd 2 (see
+ * pg_query_stderr_capture_begin in src/pg_query.c for why this is off by
+ * default). When enabled, fd 2 is pointed at a pipe for the duration of the
+ * call and the captured text becomes the result's stderr_buffer. The
+ * redirection is process-wide, so only one call captures at a time; a
+ * concurrent call comes back uncaptured with an empty stderr_buffer.
+ *
+ * Usage: begin before the work, then on the success path only drain before
+ * strduping the buffer, and end after the error handling (idempotent, also
+ * correct after a skipped or failed begin).
+ */
+typedef enum PgQueryStderrCaptureStatus
+{
+	PG_QUERY_STDERR_CAPTURED,	/* fd 2 redirected; end must run */
+	PG_QUERY_STDERR_SKIPPED,	/* capture disabled or contended */
+	PG_QUERY_STDERR_PIPE_FAILED	/* no pipe; caller should fail the call */
+} PgQueryStderrCaptureStatus;
+
+typedef struct PgQueryStderrCapture
+{
+	bool		capturing;
+	int			read_fd;
+	int			saved_stderr_fd;
+} PgQueryStderrCapture;
+
+PgQueryStderrCaptureStatus pg_query_stderr_capture_begin(PgQueryStderrCapture *cap);
+void		pg_query_stderr_capture_drain(PgQueryStderrCapture *cap, char *buffer, size_t buffer_len);
+void		pg_query_stderr_capture_end(PgQueryStderrCapture *cap);
 
 #endif

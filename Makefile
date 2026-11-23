@@ -68,6 +68,11 @@ ifeq ($(VALGRIND),1)
 	override CFLAGS += -DUSE_VALGRIND
 	override TEST_CFLAGS += -DUSE_VALGRIND
 endif
+ifeq ($(CAPTURE_STDERR),1)
+	# Route stderr written during calls into result.stderr_buffer; off by
+	# default, see pg_query_stderr_capture_begin in src/pg_query.c
+	override CFLAGS += -D PG_QUERY_CAPTURE_STDERR
+endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = $(OBJ_FILES)
