@@ -238,5 +238,65 @@ const char* tests[] = {
   "REASSIGN OWNED BY role_a TO role_b",
   "30516c6e029e9e94",
 
+  /* === Test normalization of random table names === */
+
+  // TODO: Migrate these to tests/fingerprint_comparisons.c
+
+  // django-bulk-load
+  "SELECT * FROM loading_books_dc786da1fead11f",
+  "16f848a0a6908916",
+  "SELECT * FROM loading_books_dc786da1fead11g",
+  "16f848a0a6908916",
+  "SELECT * FROM loading_books_8f14e45fceea16f",
+  "16f848a0a6908916",
+  "SELECT * FROM _temp__2577316832_vk95nrgo_users",
+  "167db20b43982916",
+  "SELECT * FROM _temp__2577316833_vk96nrgo_users",
+  "167db20b43982916",
+  "SELECT * FROM _temp__2577316835_vk9nrgo_users",
+  "167db20b43982916",
+
+  // date/time partitions
+  "SELECT * FROM orders_2024_01",
+  "0e612f391ad711b8",
+  "SELECT * FROM orders_2024_02",
+  "0e612f391ad711b8",
+  "SELECT * FROM events_20231231",
+  "60480c0b721313fd",
+
+  "SELECT * FROM plt2_adv_p2_2",
+  "d60dc29d5bb07ebd",
+  "SELECT * FROM pp_intrangepart2inf",
+  "da5e4f16f24908d5",
+  "SELECT * FROM rangep_0_to_100",
+  "9f9a60d52dce0e06",
+  "SELECT * FROM rangep_0_to_100_1",
+  "69be33fa83bc8192",
+  "SELECT * FROM rangep_0_to_100_2",
+  "955051b877c4aa8d",
+  // rangep_0_to_200 should match rangep_0_to_100.
+  "SELECT * FROM rangep_0_to_200",
+  "9f9a60d52dce0e06",
+  "SELECT * FROM rangep_100_to_200",
+  "a694fb88dd14470c",
+  "SELECT * FROM rf_tbl_abcd_part_pk_1",
+  "5120a6aaa2ecaf52",
+  "SELECT * FROM rparted_by_int2_maxvalue",
+  "85cade2b611c0cac",
+  "SELECT * FROM temporal_fk2_mltrng2mltrng",
+  "c43c1635dd899e10",
+  "SELECT * FROM temporal_fk2_rng2rng",
+  "219ce02af5b0de2b",
+  "SELECT * FROM temporal_partitioned_fk_mltrng2mltrng",
+  "d915e77df48fed7f",
+  "SELECT * FROM temporal_partitioned_fk_rng2rng",
+  "5d466c4b17566a65",
+  "SELECT * FROM tenk1",
+  "872c8c8807624d6a",
+  "SELECT * FROM tenk2",
+  "193d60d2e4af63bc",
+  "SELECT * FROM testpub_insert_onconfl_part_no_ri",
+  "58942aa6c1445b6c",
+
   NULL // Trailing NULL to tell the test runner we're done.
 };
