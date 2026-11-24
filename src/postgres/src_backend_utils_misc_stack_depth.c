@@ -1,9 +1,9 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
+ * - check_stack_depth
  * - stack_is_too_deep
  * - stack_base_ptr
  * - max_stack_depth_bytes
- * - check_stack_depth
  * - max_stack_depth
  * - set_stack_base
  * - restore_stack_base

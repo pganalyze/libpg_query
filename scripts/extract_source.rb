@@ -509,6 +509,14 @@ runner.blocklist('SPI_freeplan')
 runner.blocklist('get_ps_display')
 runner.blocklist('pq_beginmessage')
 
+# The library must never write to stdout or stderr. port.h maps printf,
+# fprintf, vprintf and vfprintf to these pg_* variants, so fail the extraction
+# if any of the Postgres code we pull in uses them - mock the caller instead.
+runner.blocklist('pg_printf')
+runner.blocklist('pg_fprintf')
+runner.blocklist('pg_vprintf')
+runner.blocklist('pg_vfprintf')
+
 # The following pull in unnecessary dependencies but could technically be permitted
 runner.blocklist('lookup_type_cache')
 runner.blocklist('get_database_name')
@@ -537,9 +545,16 @@ runner.mock('GetExtensibleNodeMethods', 'return NULL;')
 # Mocks REQUIRED for basic operations (error handling, memory management)
 runner.mock('ProcessInterrupts', :do_nothing) # Required by errfinish
 runner.mock('PqCommMethods', 'const PQcommMethods *PqCommMethods = NULL;') # Required by errfinish
-runner.mock('proc_exit', 'printf("Terminating process due to FATAL error\n"); exit(1);') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
+runner.mock('proc_exit', 'exit(1);') # Required by errfinish (we use PG_TRY/PG_CATCH, so this should never be reached in practice)
 runner.mock('send_message_to_server_log', :do_nothing)
 runner.mock('send_message_to_frontend', :do_nothing)
+
+# Mocks that keep the library from writing to stdout or stderr (see the
+# pg_printf and related blocklist entries above, which enforce this)
+runner.mock('flushbuffer', :do_nothing) # Writes snprintf.c's buffer to a stream, which only the blocklisted pg_vfprintf sets up; drops the fwrite reference
+runner.mock('ExceptionalCondition', 'abort();') # Skip the TRAP message and the backtrace written directly to fd 2; use a debugger instead
+runner.mock('MemoryContextStats', :do_nothing) # Called on out of memory, don't walk and format the context tree just to discard the output
+runner.mock('plpgsql_dumptree', :do_nothing) # Debug dump to stdout, only called when plpgsql_DumpExecTree is set (which it never is)
 
 # Mocks REQUIRED for PL/pgSQL parsing
 runner.mock('SearchSysCache1')
@@ -590,7 +605,7 @@ runner.mock('pg_detoast_datum_packed', 'if (VARATT_IS_COMPRESSED(datum) || VARAT
 		return datum;')
 
 # Mocks REQUIRED for Windows support
-runner.mock('write_stderr') # Avoid pulling in write_console/write_eventlog, and instead always output to stderr (like on POSIX)
+runner.mock('write_stderr') # Avoid pulling in write_console/write_eventlog, and never write to stderr
 runner.mock('should_output_to_client', 'return false;') # Avoid pulling in postmaster.c, which has a bunch of Windows-specific code hidden behind a define
 
 ## ---
@@ -672,7 +687,6 @@ runner.deep_resolve('pg_mbstrlen')
 runner.deep_resolve('destroyStringInfo')
 
 # Other required functions
-runner.deep_resolve('pg_printf')
 runner.deep_resolve('pg_strncasecmp')
 runner.deep_resolve('set_stack_base')
 runner.deep_resolve('restore_stack_base')

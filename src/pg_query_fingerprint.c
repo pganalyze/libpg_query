@@ -17,8 +17,12 @@
 
 #include "common/hashfn.h"
 
-#include <unistd.h>
-#include <fcntl.h>
+/*
+ * The printTokens debugging aid is the one place the library prints on
+ * purpose. port.h maps printf to pg_printf, which is stubbed out so that
+ * Postgres code can never write to stdout or stderr, so use libc's printf.
+ */
+#undef printf
 
 // Definitions
 

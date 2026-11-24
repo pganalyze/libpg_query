@@ -1,6 +1,5 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - pg_encoding_max_length
  * - pg_wchar_table
  * - pg_utf_mblen_private
  * - pg_mule_mblen
@@ -78,6 +77,7 @@
  * - pg_johab_verifystr
  * - pg_encoding_mblen_or_incomplete
  * - pg_encoding_mblen
+ * - pg_encoding_max_length
  *--------------------------------------------------------------------
  */
 

@@ -18,12 +18,8 @@
  * - fmtptr
  * - fmtfloat
  * - dopr_outch
- * - pg_fprintf
- * - pg_vfprintf
  * - pg_sprintf
  * - pg_vsprintf
- * - pg_printf
- * - pg_printf
  *--------------------------------------------------------------------
  */
 
@@ -267,77 +263,23 @@ pg_sprintf(char *str, const char *fmt,...)
 	return len;
 }
 
-int
-pg_vfprintf(FILE *stream, const char *fmt, va_list args)
-{
-	PrintfTarget target;
-	char		buffer[1024];	/* size is arbitrary */
-
-	if (stream == NULL)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-	target.bufstart = target.bufptr = buffer;
-	target.bufend = buffer + sizeof(buffer);	/* use the whole buffer */
-	target.stream = stream;
-	target.nchars = 0;
-	target.failed = false;
-	dopr(&target, fmt, args);
-	/* dump any remaining buffer contents */
-	flushbuffer(&target);
-	return target.failed ? -1 : target.nchars;
-}
-
-int
-pg_fprintf(FILE *stream, const char *fmt,...)
-{
-	int			len;
-	va_list		args;
-
-	va_start(args, fmt);
-	len = pg_vfprintf(stream, fmt, args);
-	va_end(args);
-	return len;
-}
 
 
 
-int
-pg_printf(const char *fmt,...)
-{
-	int			len;
-	va_list		args;
 
-	va_start(args, fmt);
-	len = pg_vfprintf(stdout, fmt, args);
-	va_end(args);
-	return len;
-}
+
+
+
 
 /*
  * Attempt to write the entire buffer to target->stream; discard the entire
  * buffer in any case.  Call this only when target->stream is defined.
  */
+
 static void
 flushbuffer(PrintfTarget *target)
 {
-	size_t		nc = target->bufptr - target->bufstart;
-
-	/*
-	 * Don't write anything if we already failed; this is to ensure we
-	 * preserve the original failure's errno.
-	 */
-	if (!target->failed && nc > 0)
-	{
-		size_t		written;
-
-		written = fwrite(target->bufstart, 1, nc, target->stream);
-		target->nchars += written;
-		if (written != nc)
-			target->failed = true;
-	}
-	target->bufptr = target->bufstart;
+	/* Do nothing */
 }
 
 

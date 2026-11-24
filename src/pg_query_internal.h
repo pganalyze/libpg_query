@@ -5,9 +5,6 @@
 #include "utils/memutils.h"
 #include "nodes/pg_list.h"
 
-#define STDERR_BUFFER_LEN 4096
-#define DEBUG
-
 /*
  * Maximum protobuf message nesting depth, used for both encoding
  * (pg_query_nodes_to_protobuf) and decoding (pg_query_protobuf_to_nodes).

@@ -9,8 +9,6 @@
 #include "nodes/nodeFuncs.h"
 #include "utils/builtins.h"
 
-#include <unistd.h>
-#include <fcntl.h>
 #include <string.h>
 
 #include "pg_query_summary.h"

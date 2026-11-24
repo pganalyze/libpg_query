@@ -479,32 +479,6 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt)
 	PgQueryInternalPlpgsqlFuncAndError result = {0};
 	MemoryContext cctx = CurrentMemoryContext;
 
-	char stderr_buffer[STDERR_BUFFER_LEN + 1] = {0};
-#ifndef DEBUG
-	int stderr_global;
-	int stderr_pipe[2];
-#endif
-
-#ifndef DEBUG
-	// Setup pipe for stderr redirection
-	if (pipe(stderr_pipe) != 0) {
-		PgQueryError* error = malloc(sizeof(PgQueryError));
-
-		error->message = strdup("Failed to open pipe, too many open file descriptors")
-
-		result.error = error;
-
-		return result;
-	}
-
-	fcntl(stderr_pipe[0], F_SETFL, fcntl(stderr_pipe[0], F_GETFL) | O_NONBLOCK);
-
-	// Redirect stderr to the pipe
-	stderr_global = dup(STDERR_FILENO);
-	dup2(stderr_pipe[1], STDERR_FILENO);
-	close(stderr_pipe[1]);
-#endif
-
 	PG_TRY();
 	{
 		if (IsA(stmt, CreateFunctionStmt)) {
@@ -513,20 +487,6 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt)
 			result.func = compile_do_stmt((DoStmt *) stmt);
 		} else {
 			elog(ERROR, "Unexpected node type for PL/pgSQL parsing: %d", nodeTag(stmt));
-		}
-
-#ifndef DEBUG
-		// Save stderr for result
-		read(stderr_pipe[0], stderr_buffer, STDERR_BUFFER_LEN);
-#endif
-
-		if (strlen(stderr_buffer) > 0) {
-			PgQueryError* error = malloc(sizeof(PgQueryError));
-			error->message = strdup(stderr_buffer);
-			error->filename = "";
-			error->funcname = "";
-			error->context  = "";
-			result.error = error;
 		}
 	}
 	PG_CATCH();
@@ -550,13 +510,6 @@ PgQueryInternalPlpgsqlFuncAndError pg_query_raw_parse_plpgsql(Node* stmt)
 		FlushErrorState();
 	}
 	PG_END_TRY();
-
-#ifndef DEBUG
-	// Restore stderr, close pipe
-	dup2(stderr_global, STDERR_FILENO);
-	close(stderr_pipe[0]);
-	close(stderr_global);
-#endif
 
 	return result;
 }

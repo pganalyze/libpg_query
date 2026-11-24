@@ -113,7 +113,7 @@ struct ONEXIT
 void
 proc_exit(int code)
 {
-printf("Terminating process due to FATAL error\n"); exit(1);}
+exit(1);}
 
 /*
  * Code shared between proc_exit and the atexit handler.  Note that in

@@ -38,6 +38,12 @@
 								 * compile errors. */
 #include "nodes/pg_list.h"		/* For `List` type. */
 
+/*
+ * The Postgres headers map printf to pg_printf, which libpg_query does not
+ * provide (the library never writes to stdout or stderr), so use libc's.
+ */
+#undef printf
+
 typedef struct
 {
 	char		*wanted_test;
