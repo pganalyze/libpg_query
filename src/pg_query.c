@@ -136,6 +136,23 @@ void pg_query_exit_memory_context(MemoryContext ctx)
 	pg_query_exit_stack_depth_check();
 }
 
+/*
+ * Create an error for a failure that didn't come from a Postgres error report.
+ *
+ * All fields are initialized, since callers read them and pg_query_free_error
+ * frees them.
+ */
+PgQueryError *pg_query_make_error(const char *message)
+{
+	PgQueryError *error = calloc(1, sizeof(PgQueryError));
+
+	error->message = strdup(message);
+	error->funcname = strdup("");
+	error->filename = strdup("");
+
+	return error;
+}
+
 void pg_query_free_error(PgQueryError *error)
 {
 	free(error->message);

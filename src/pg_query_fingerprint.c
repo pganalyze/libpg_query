@@ -509,9 +509,7 @@ PgQueryFingerprintResult pg_query_fingerprint_with_opts(const char* input, int p
 						   chash.digest[0], chash.digest[1], chash.digest[2], chash.digest[3],
 						   chash.digest[4], chash.digest[5], chash.digest[6], chash.digest[7]);
 		if (n < 0 || n >= 17) {
-			PgQueryError* error = malloc(sizeof(PgQueryError));
-			error->message = strdup("Failed to output fingerprint string due to snprintf failure");
-			result.error = error;
+			result.error = pg_query_make_error("Failed to output fingerprint string due to snprintf failure");
 		}
 	}
 

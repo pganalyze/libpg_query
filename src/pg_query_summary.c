@@ -25,14 +25,6 @@ static bool cte_names_include(WalkState * state, char *relname);
 static void handle_with_clause(WithClause *with_clause, WalkState * state);
 
 
-static PgQueryError * make_pg_query_error(const char *message)
-{
-	PgQueryError *error = malloc(sizeof(PgQueryError));
-
-	error->message = strdup(message);
-	return error;
-}
-
 /*
  * Given a Node (node) and WalkState (state), wraps node in a RangeVarWithContext
  * and adds it to the state->range_vars list.
