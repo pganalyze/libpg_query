@@ -73,7 +73,7 @@ endif
 
 CLEANLIBS = $(ARLIB)
 CLEANOBJS = $(OBJ_FILES)
-CLEANFILES = $(PGDIRBZ2) $(PGDIRZIP)
+CLEANFILES = $(PGDIRBZ2) $(PGDIRZIP) protobuf/pg_query.pb.cc protobuf/pg_query.pb.h
 
 AR ?= ar
 ARFLAGS ?= rs
@@ -230,7 +230,10 @@ endif
 
 src/pg_query_scan.c: protobuf/pg_query.upb.h
 
-# Only used when USE_PROTOBUF_CPP is used (experimental for testing only)
+# Only used when USE_PROTOBUF_CPP is used (experimental for testing only).
+# Generated at build time and not checked in: protoc reorders the generated
+# classes on every .proto change, causing large diffs, and building this
+# backend already requires a matching protobuf install, which includes protoc.
 src/pg_query_outfuncs_protobuf_cpp.cc: protobuf/pg_query.pb.cc
 protobuf/pg_query.pb.cc: protobuf/pg_query.proto
 ifneq ($(shell protoc --version 2>/dev/null | cut -f2 -d" "), $(PROTOC_VERSION))

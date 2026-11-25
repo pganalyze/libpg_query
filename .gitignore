@@ -27,3 +27,7 @@ tmp/*
 .vs/*
 
 vendor/upb/.upb-update-tmp/
+
+# Generated at build time for the experimental C++ backend (USE_PROTOBUF_CPP=1)
+protobuf/pg_query.pb.cc
+protobuf/pg_query.pb.h

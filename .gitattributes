@@ -5,3 +5,16 @@
 
 # Contains WIN1252-encoded (non-UTF-8) data
 test/sql/postgres_regress/collate.windows.win1252.sql binary
+
+# Generated files (see "make node_support" and the protobuf rules in the
+# Makefile), collapsed by default in GitHub diffs. protobuf/pg_query.proto is
+# generated too, but intentionally not listed, since it defines the public
+# Protobuf API and changes to it should be reviewed.
+src/include/pg_query_*_defs.c linguist-generated=true
+src/include/pg_query_*_conds.c linguist-generated=true
+src/include/pg_query_pg_type.c linguist-generated=true
+pg_query_scan_tokens.h linguist-generated=true
+protobuf/pg_query.upb.h linguist-generated=true
+protobuf/pg_query.upb_minitable.c linguist-generated=true
+protobuf/pg_query.upb_minitable.h linguist-generated=true
+srcdata/*.json linguist-generated=true
