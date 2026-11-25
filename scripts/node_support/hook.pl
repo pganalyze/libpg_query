@@ -17,6 +17,7 @@ use lib dirname(__FILE__) . '/lib';
 use LibpgQuery::NodeSupport::Enums;
 use LibpgQuery::NodeSupport::Fingerprint;
 use LibpgQuery::NodeSupport::Outfuncs;
+use LibpgQuery::NodeSupport::Plpgsql;
 use LibpgQuery::NodeSupport::Srcdata;
 
 my $overrides_file = dirname(__FILE__) . '/overrides.pl';
@@ -29,6 +30,12 @@ return sub {
 
 	my $enums = LibpgQuery::NodeSupport::Enums::parse($ctx);
 	LibpgQuery::NodeSupport::Fingerprint::generate($ctx, $overrides);
-	LibpgQuery::NodeSupport::Outfuncs::generate($ctx, $overrides, $enums);
-	LibpgQuery::NodeSupport::Srcdata::generate($ctx);
+
+	# PL/pgSQL parse tree support, from the structs of plpgsql.h (passed via
+	# --hook-extra-input). Its protobuf definitions and srcdata entries are
+	# merged into the regular outputs below.
+	my $plpgsql = LibpgQuery::NodeSupport::Plpgsql::generate($ctx, $overrides, $enums);
+
+	LibpgQuery::NodeSupport::Outfuncs::generate($ctx, $overrides, $enums, $plpgsql->{proto});
+	LibpgQuery::NodeSupport::Srcdata::generate($ctx, $plpgsql->{srcdata});
 };

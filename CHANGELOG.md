@@ -24,6 +24,16 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     (e.g. Query.queryId, Var.varnosyn) and fixes several wrong enum values
     (e.g. AggSplit, ScanDirection). Comments and non-node structs are no
     longer included, and the JSON formatting has changed.
+* **Breaking change:** PL/pgSQL parse trees are now generated from Postgres' plpgsql.h, and can be output as Protobuf
+  - The new `pg_query_parse_plpgsql_protobuf` returns the trees as a
+    `PLpgSQLParseResult` Protobuf message
+  - The JSON returned by `pg_query_parse_plpgsql` changes to match the proto3
+    JSON mapping of that message: the top level is
+    `{"version":N,"functions":[...]}`, variables are referenced by their index
+    into `datums` instead of being inlined (e.g. `target_dno`, `-1` for none),
+    only statements and datums are wrapped in their type name, enums are
+    output as their names, and all compile-time fields are included (e.g.
+    `retvarno`, previously lost)
 
 ## 18.1.0     2026-09-30
 

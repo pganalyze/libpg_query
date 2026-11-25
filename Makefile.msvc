@@ -23,7 +23,7 @@ $(ARLIB): clean $(SRC_FILES)
 	$(CC) $(CFLAGS) /c $(SRC_FILES)
 	lib /OUT:pg_query.lib *.obj
 
-EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql
+EXAMPLES = examples/simple examples/scan examples/normalize examples/simple_error examples/normalize_error examples/simple_plpgsql examples/simple_plpgsql_protobuf
 examples: $(EXAMPLES)
 	.\examples\simple
 	.\examples\scan
@@ -31,6 +31,7 @@ examples: $(EXAMPLES)
 	.\examples\simple_error
 	.\examples\normalize_error
 	.\examples\simple_plpgsql
+	.\examples\simple_plpgsql_protobuf
 
 examples/simple: examples/simple.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple.c $(ARLIB)
@@ -50,7 +51,10 @@ examples/normalize_error: examples/normalize_error.c $(ARLIB)
 examples/simple_plpgsql: examples/simple_plpgsql.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql.c $(ARLIB)
 
-TESTS = test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/scan test/split test/summary test/summary_truncate
+examples/simple_plpgsql_protobuf: examples/simple_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ examples/simple_plpgsql_protobuf.c $(ARLIB)
+
+TESTS = test/deparse test/deparse_depth test/fingerprint test/fingerprint_opts test/is_utility_stmt test/normalize test/parse test/parse_opts test/parse_protobuf test/parse_protobuf_opts test/parse_plpgsql test/parse_plpgsql_protobuf test/scan test/split test/summary test/summary_truncate
 test: $(TESTS)
 	.\test\deparse
 	.\test\deparse_depth
@@ -62,6 +66,7 @@ test: $(TESTS)
 	.\test\parse_opts
 	.\test\parse_protobuf
 	.\test\parse_protobuf_opts
+	.\test\parse_plpgsql_protobuf
 	.\test\scan
 	.\test\split
 	.\test\summary
@@ -104,6 +109,9 @@ test/parse_opts: test/parse_opts.c test/parse_opts_tests.c $(ARLIB)
 
 test/parse_plpgsql: test/parse_plpgsql.c test/parse_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/parse_plpgsql.c $(ARLIB)
+
+test/parse_plpgsql_protobuf: test/parse_plpgsql_protobuf.c $(ARLIB)
+	$(CC) $(CFLAGS) -o $@ test/parse_plpgsql_protobuf.c $(ARLIB)
 
 test/parse_protobuf: test/parse_protobuf.c test/parse_tests.c $(ARLIB)
 	$(CC) $(CFLAGS) -o $@ test/parse_protobuf.c $(ARLIB)
