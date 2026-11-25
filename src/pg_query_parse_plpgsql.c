@@ -219,6 +219,13 @@ pg_query_procedure_create(const char *procedureName,
 
 	parameterCount = parameterTypes->dim1;
 
+	/* Mirrors the check in upstream ProcedureCreate */
+	if (parameterCount < 0 || parameterCount > FUNC_MAX_ARGS)
+		ereport(ERROR,
+				(errcode(ERRCODE_TOO_MANY_ARGUMENTS),
+				 errmsg("functions cannot have more than %d arguments",
+						FUNC_MAX_ARGS)));
+
 	/* Fixed-size attributes that GETSTRUCT will read back via procStruct. */
 	namestrcpy(&procStruct.proname, procedureName);
 	procStruct.prokind = prokind;

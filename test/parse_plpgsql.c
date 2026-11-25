@@ -44,6 +44,23 @@ expect_no_error(const char *input)
 	return success;
 }
 
+/* Build a CREATE FUNCTION statement with nargs integer parameters */
+static char *
+many_args_function(int nargs)
+{
+	size_t		size = 64 + (size_t) nargs * 16;
+	char	   *sql = malloc(size);
+	size_t		len;
+	int			i;
+
+	len = snprintf(sql, size, "CREATE FUNCTION f(");
+	for (i = 0; i < nargs; i++)
+		len += snprintf(sql + len, size - len, "%sa%d int", i > 0 ? ", " : "", i);
+	snprintf(sql + len, size - len,
+			 ") RETURNS int AS $$ BEGIN RETURN a0; END; $$ LANGUAGE plpgsql;");
+	return sql;
+}
+
 int main() {
 	bool ret_code = EXIT_SUCCESS;
 	char *sample_buffer;
@@ -114,6 +131,20 @@ int main() {
 
 	if (!expect_no_error("SELECT 1;"))
 		ret_code = EXIT_FAILURE;
+
+	/* FUNC_MAX_ARGS is 100: the limit is accepted, one more is an error */
+	{
+		char	   *sql = many_args_function(100);
+
+		if (!expect_no_error(sql))
+			ret_code = EXIT_FAILURE;
+		free(sql);
+
+		sql = many_args_function(101);
+		if (!expect_error(sql, "functions cannot have more than 100 arguments"))
+			ret_code = EXIT_FAILURE;
+		free(sql);
+	}
 
 	pg_query_exit();
 
