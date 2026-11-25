@@ -18,6 +18,12 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     output is unchanged.
   - libpg_query-specific overrides live in scripts/node_support/overrides.pl,
     regenerate with "make node_support".
+* Generate srcdata/*.json via gen_node_support.pl, replacing scripts/extract_headers.rb
+  - Node struct definitions now come from Postgres' own node header parser,
+    which adds fields the previous regex-based parsing silently dropped
+    (e.g. Query.queryId, Var.varnosyn) and fixes several wrong enum values
+    (e.g. AggSplit, ScanDirection). Comments and non-node structs are no
+    longer included, and the JSON formatting has changed.
 
 ## 18.1.0     2026-09-30
 

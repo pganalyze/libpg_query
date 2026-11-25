@@ -14,6 +14,7 @@
 #   src/include/pg_query_scan_defs.c
 #   protobuf/pg_query.proto
 #   pg_query_scan_tokens.h
+#   srcdata/*.json
 #
 # Usage: ./scripts/generate_node_support.sh <postgres_source_dir>
 #
@@ -76,5 +77,8 @@ for f in pg_query_fingerprint_defs.c pg_query_fingerprint_conds.c \
 done
 cp "$tmp/pg_query.proto" "$here/protobuf/pg_query.proto"
 cp "$tmp/pg_query_scan_tokens.h" "$here/pg_query_scan_tokens.h"
+for f in nodetypes all_known_enums struct_defs enum_defs typedefs; do
+	cp "$tmp/$f.json" "$here/srcdata/$f.json"
+done
 
-echo "Generated src/include/pg_query_*_{defs,conds}.c, protobuf/pg_query.proto and pg_query_scan_tokens.h"
+echo "Generated src/include/pg_query_*_{defs,conds}.c, protobuf/pg_query.proto, pg_query_scan_tokens.h and srcdata/*.json"
