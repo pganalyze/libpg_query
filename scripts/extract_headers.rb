@@ -59,7 +59,8 @@ class Extractor
 
     ['nodes/parsenodes', 'nodes/primnodes', 'nodes/lockoptions',
      'nodes/nodes', 'nodes/params', 'access/attnum', 'access/cmptype', 'c', 'postgres', 'postgres_ext',
-     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram', '../backend/parser/gramparse'].each do |group|
+     'commands/vacuum', 'storage/block', 'access/sdir', 'mb/pg_wchar', '../backend/parser/gram', '../backend/parser/gramparse',
+     '../pl/plpgsql/src/plpgsql'].each do |group|
       @target_group = group
       @struct_defs[@target_group] = {}
       @enum_defs[@target_group] = {}
@@ -149,8 +150,11 @@ class Extractor
       @open_comment = line.include?('/*') && !line.include?('*/')
     elsif line[/^\s*\}\s*([A-z]+)?;/]
       name = @current_enum_def.delete(:name) || $1
-      @all_known_enums << name
-      @enum_defs[@target_group][name] = @current_enum_def
+      # Anonymous enums (plain constants without a type name, e.g. PLPGSQL_RC_OK in plpgsql.h) can not be referenced by type
+      unless name.nil?
+        @all_known_enums << name
+        @enum_defs[@target_group][name] = @current_enum_def
+      end
       @current_enum_def = nil
     elsif line.strip.start_with?('/*')
       @current_enum_def[:values] << { comment: line }
