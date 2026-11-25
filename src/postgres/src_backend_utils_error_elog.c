@@ -18,8 +18,6 @@
  * - errcode
  * - errmsg
  * - errdetail
- * - errhidestmt
- * - errhidecontext
  * - errfinish
  * - pg_re_throw
  * - EmitErrorReport
@@ -1247,18 +1245,7 @@ set_errcontext_domain(const char *domain)
  *
  * This should be called if the message text already includes the statement.
  */
-int
-errhidestmt(bool hide_stmt)
-{
-	ErrorData  *edata = &errordata[errordata_stack_depth];
 
-	/* we don't bother incrementing recursion_depth */
-	CHECK_STACK_DEPTH();
-
-	edata->hide_stmt = hide_stmt;
-
-	return 0;					/* return value does not matter */
-}
 
 /*
  * errhidecontext --- optionally suppress CONTEXT: field of log entry
@@ -1266,18 +1253,7 @@ errhidestmt(bool hide_stmt)
  * This should only be used for verbose debugging messages where the repeated
  * inclusion of context would bloat the log volume too much.
  */
-int
-errhidecontext(bool hide_ctx)
-{
-	ErrorData  *edata = &errordata[errordata_stack_depth];
 
-	/* we don't bother incrementing recursion_depth */
-	CHECK_STACK_DEPTH();
-
-	edata->hide_ctx = hide_ctx;
-
-	return 0;					/* return value does not matter */
-}
 
 /*
  * errposition --- add cursor position to the current error
@@ -1939,12 +1915,9 @@ send_message_to_frontend(ErrorData *edata)
 void
 write_stderr(const char *fmt,...)
 {
-	va_list	ap;
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	fflush(stderr);
-	va_end(ap);
+	/* Do nothing */
 }
+
 
 
 

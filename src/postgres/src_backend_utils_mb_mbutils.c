@@ -1,20 +1,20 @@
 /*--------------------------------------------------------------------
  * Symbols referenced in this file:
- * - pg_mbcliplen
- * - pg_encoding_mbcliplen
- * - cliplen
- * - DatabaseEncoding
  * - pg_verifymbstr
  * - pg_verify_mbstr
  * - report_invalid_encoding
  * - report_invalid_encoding_int
  * - GetDatabaseEncoding
+ * - DatabaseEncoding
  * - pg_get_client_encoding
  * - ClientEncoding
  * - pg_database_encoding_max_length
  * - pg_unicode_to_server
  * - GetDatabaseEncodingName
  * - Utf8ToServerConvProc
+ * - pg_mbcliplen
+ * - pg_encoding_mbcliplen
+ * - cliplen
  * - pg_mbstrlen_with_len
  * - pg_mblen_with_len
  * - report_invalid_encoding_db

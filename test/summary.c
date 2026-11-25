@@ -28,17 +28,6 @@ static Summary summary(char *query, int parser_options, int truncate_limit)
 		exit(1);
 	}
 
-	/*
-	 * This is (roughly) equivalent to the Rust tests that assert
-	 * `result.warnings` is empty.
-	 */
-	if (parse_result.stderr_buffer &&
-		strstr(parse_result.stderr_buffer, "WARNING"))
-	{
-		printf("  ERROR: stderr_buffer contained a warning:\n%s\n", parse_result.stderr_buffer);
-		exit(1);
-	}
-
 	Summary		summary = parse_result.summary;
 
 	/* We no longer have a use for parts using the system allocator. */

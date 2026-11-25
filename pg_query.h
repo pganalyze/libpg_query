@@ -28,6 +28,13 @@ typedef struct {
   char* data;
 } PgQueryProtobuf;
 
+/*
+ * Note the stderr_buffer field of the result structs below is always an empty
+ * string (or NULL when an error is returned), and is only kept for API
+ * compatibility. The library does not write to stderr or stdout, outside of
+ * internal debugging aids used by tests.
+ */
+
 typedef struct {
   PgQueryProtobuf pbuf;
   char* stderr_buffer;

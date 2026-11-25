@@ -21,6 +21,14 @@
 #include <string.h>
 #include <time.h>
 
+/*
+ * The Postgres headers map these to pg_printf/pg_fprintf, which libpg_query
+ * does not provide (the library never writes to stdout or stderr), so use
+ * libc's.
+ */
+#undef printf
+#undef fprintf
+
 static const char *queries[] = {
 	"SELECT 1",
 	"SELECT id, name FROM users WHERE active = true ORDER BY created_at DESC LIMIT 10",

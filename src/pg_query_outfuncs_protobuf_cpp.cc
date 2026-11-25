@@ -224,7 +224,6 @@ _outNode(pg_query::Node* out, const void *obj)
 		#include "pg_query_outfuncs_conds.c"
 
 		default:
-			printf("could not dump unrecognized node type: %d", (int) nodeTag(obj));
 			elog(WARNING, "could not dump unrecognized node type: %d",
 					(int) nodeTag(obj));
 

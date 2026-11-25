@@ -15,10 +15,6 @@
  * - mcxt_methods
  * - MemoryContextAllocationFailure
  * - MemoryContextStats
- * - MemoryContextStatsDetail
- * - MemoryContextStatsInternal
- * - MemoryContextStatsPrint
- * - MemoryContextTraverseNext
  * - GetMemoryChunkSpace
  * - MemoryContextAllocAligned
  * - MemoryContextAllocExtended
@@ -313,28 +309,7 @@ GetMemoryChunkHeader(const void *pointer)
  * This visits all the contexts in pre-order, that is a node is visited
  * before its children.
  */
-static MemoryContext
-MemoryContextTraverseNext(MemoryContext curr, MemoryContext top)
-{
-	/* After processing a node, traverse to its first child if any */
-	if (curr->firstchild != NULL)
-		return curr->firstchild;
 
-	/*
-	 * After processing a childless node, traverse to its next sibling if
-	 * there is one.  If there isn't, traverse back up to the parent (which
-	 * has already been visited, and now so have all its descendants).  We're
-	 * done if that is "top", otherwise traverse to its next sibling if any,
-	 * otherwise repeat moving up.
-	 */
-	while (curr->nextchild == NULL)
-	{
-		curr = curr->parent;
-		if (curr == top)
-			return NULL;
-	}
-	return curr->nextchild;
-}
 
 /*
  * Support routines to trap use of invalid memory context method IDs
@@ -793,11 +768,11 @@ GetMemoryChunkSpace(void *pointer)
  * make some effort to summarize when the output would otherwise be very long.
  * The statistics are sent to stderr.
  */
+
 void
 MemoryContextStats(MemoryContext context)
 {
-	/* Hard-wired limits are usually good enough */
-	MemoryContextStatsDetail(context, 100, 100, true);
+	/* Do nothing */
 }
 
 /*
@@ -808,45 +783,7 @@ MemoryContextStats(MemoryContext context)
  * If print_to_stderr is true, print statistics about the memory contexts
  * with fprintf(stderr), otherwise use ereport().
  */
-void
-MemoryContextStatsDetail(MemoryContext context,
-						 int max_level, int max_children,
-						 bool print_to_stderr)
-{
-	MemoryContextCounters grand_totals;
 
-	memset(&grand_totals, 0, sizeof(grand_totals));
-
-	MemoryContextStatsInternal(context, 1, max_level, max_children,
-							   &grand_totals, print_to_stderr);
-
-	if (print_to_stderr)
-		fprintf(stderr,
-				"Grand total: %zu bytes in %zu blocks; %zu free (%zu chunks); %zu used\n",
-				grand_totals.totalspace, grand_totals.nblocks,
-				grand_totals.freespace, grand_totals.freechunks,
-				grand_totals.totalspace - grand_totals.freespace);
-	else
-	{
-		/*
-		 * Use LOG_SERVER_ONLY to prevent the memory contexts from being sent
-		 * to the connected client.
-		 *
-		 * We don't buffer the information about all memory contexts in a
-		 * backend into StringInfo and log it as one message.  That would
-		 * require the buffer to be enlarged, risking an OOM as there could be
-		 * a large number of memory contexts in a backend.  Instead, we log
-		 * one message per memory context.
-		 */
-		ereport(LOG_SERVER_ONLY,
-				(errhidestmt(true),
-				 errhidecontext(true),
-				 errmsg_internal("Grand total: %zu bytes in %zu blocks; %zu free (%zu chunks); %zu used",
-								 grand_totals.totalspace, grand_totals.nblocks,
-								 grand_totals.freespace, grand_totals.freechunks,
-								 grand_totals.totalspace - grand_totals.freespace)));
-	}
-}
 
 /*
  * MemoryContextStatsInternal
@@ -855,95 +792,7 @@ MemoryContextStatsDetail(MemoryContext context,
  * Print stats for this context if possible, but in any case accumulate counts
  * into *totals (if not NULL).
  */
-static void
-MemoryContextStatsInternal(MemoryContext context, int level,
-						   int max_level, int max_children,
-						   MemoryContextCounters *totals,
-						   bool print_to_stderr)
-{
-	MemoryContext child;
-	int			ichild;
 
-	Assert(MemoryContextIsValid(context));
-
-	/* Examine the context itself */
-	context->methods->stats(context,
-							MemoryContextStatsPrint,
-							&level,
-							totals, print_to_stderr);
-
-	/*
-	 * Examine children.
-	 *
-	 * If we are past the recursion depth limit or already running low on
-	 * stack, do not print them explicitly but just summarize them. Similarly,
-	 * if there are more than max_children of them, we do not print the rest
-	 * explicitly, but just summarize them.
-	 */
-	child = context->firstchild;
-	ichild = 0;
-	if (level <= max_level && !stack_is_too_deep())
-	{
-		for (; child != NULL && ichild < max_children;
-			 child = child->nextchild, ichild++)
-		{
-			MemoryContextStatsInternal(child, level + 1,
-									   max_level, max_children,
-									   totals,
-									   print_to_stderr);
-		}
-	}
-
-	if (child != NULL)
-	{
-		/* Summarize the rest of the children, avoiding recursion. */
-		MemoryContextCounters local_totals;
-
-		memset(&local_totals, 0, sizeof(local_totals));
-
-		ichild = 0;
-		while (child != NULL)
-		{
-			child->methods->stats(child, NULL, NULL, &local_totals, false);
-			ichild++;
-			child = MemoryContextTraverseNext(child, context);
-		}
-
-		if (print_to_stderr)
-		{
-			for (int i = 0; i < level; i++)
-				fprintf(stderr, "  ");
-			fprintf(stderr,
-					"%d more child contexts containing %zu total in %zu blocks; %zu free (%zu chunks); %zu used\n",
-					ichild,
-					local_totals.totalspace,
-					local_totals.nblocks,
-					local_totals.freespace,
-					local_totals.freechunks,
-					local_totals.totalspace - local_totals.freespace);
-		}
-		else
-			ereport(LOG_SERVER_ONLY,
-					(errhidestmt(true),
-					 errhidecontext(true),
-					 errmsg_internal("level: %d; %d more child contexts containing %zu total in %zu blocks; %zu free (%zu chunks); %zu used",
-									 level,
-									 ichild,
-									 local_totals.totalspace,
-									 local_totals.nblocks,
-									 local_totals.freespace,
-									 local_totals.freechunks,
-									 local_totals.totalspace - local_totals.freespace)));
-
-		if (totals)
-		{
-			totals->nblocks += local_totals.nblocks;
-			totals->freechunks += local_totals.freechunks;
-			totals->totalspace += local_totals.totalspace;
-			totals->freespace += local_totals.freespace;
-		}
-	}
-}
 
 /*
  * MemoryContextStatsPrint
@@ -952,77 +801,7 @@ MemoryContextStatsInternal(MemoryContext context, int level,
  * For now, the passthru pointer just points to "int level"; later we might
  * make that more complicated.
  */
-static void
-MemoryContextStatsPrint(MemoryContext context, void *passthru,
-						const char *stats_string,
-						bool print_to_stderr)
-{
-	int			level = *(int *) passthru;
-	const char *name = context->name;
-	const char *ident = context->ident;
-	char		truncated_ident[110];
-	int			i;
 
-	/*
-	 * It seems preferable to label dynahash contexts with just the hash table
-	 * name.  Those are already unique enough, so the "dynahash" part isn't
-	 * very helpful, and this way is more consistent with pre-v11 practice.
-	 */
-	if (ident && strcmp(name, "dynahash") == 0)
-	{
-		name = ident;
-		ident = NULL;
-	}
-
-	truncated_ident[0] = '\0';
-
-	if (ident)
-	{
-		/*
-		 * Some contexts may have very long identifiers (e.g., SQL queries).
-		 * Arbitrarily truncate at 100 bytes, but be careful not to break
-		 * multibyte characters.  Also, replace ASCII control characters, such
-		 * as newlines, with spaces.
-		 */
-		int			idlen = strlen(ident);
-		bool		truncated = false;
-
-		strcpy(truncated_ident, ": ");
-		i = strlen(truncated_ident);
-
-		if (idlen > 100)
-		{
-			idlen = pg_mbcliplen(ident, idlen, 100);
-			truncated = true;
-		}
-
-		while (idlen-- > 0)
-		{
-			unsigned char c = *ident++;
-
-			if (c < ' ')
-				c = ' ';
-			truncated_ident[i++] = c;
-		}
-		truncated_ident[i] = '\0';
-
-		if (truncated)
-			strcat(truncated_ident, "...");
-	}
-
-	if (print_to_stderr)
-	{
-		for (i = 1; i < level; i++)
-			fprintf(stderr, "  ");
-		fprintf(stderr, "%s: %s%s\n", name, stats_string, truncated_ident);
-	}
-	else
-		ereport(LOG_SERVER_ONLY,
-				(errhidestmt(true),
-				 errhidecontext(true),
-				 errmsg_internal("level: %d; %s: %s%s",
-								 level, name, stats_string, truncated_ident)));
-}
 
 /*
  * MemoryContextCheck

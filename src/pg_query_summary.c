@@ -14,8 +14,6 @@
 
 #include "protobuf/pg_query.upb.h"
 
-#include <unistd.h>
-#include <fcntl.h>
 #include <string.h>
 
 #include "pg_query_summary.h"

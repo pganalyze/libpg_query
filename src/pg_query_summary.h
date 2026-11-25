@@ -6,8 +6,6 @@
 
 #include "nodes/primnodes.h"
 
-#include <unistd.h>
-
 typedef enum
 {
 	CONTEXT_NONE = 0,

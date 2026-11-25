@@ -2,6 +2,16 @@
 
 All versions are tagged by the major Postgres version, plus a minor/patch version to indicate changes to the libpg_query supporting code. The minor version does not reflect the Postgres minor version, but is instead used to indicate major or API breaking changes in libpg_query itself.
 
+## Unreleased
+
+* Never write to stdout or stderr from library code
+  - Previously the Postgres memory context statistics were written to stderr when
+    running out of memory, and a message was written to stdout before exiting on a
+    FATAL error. Assertion failures in debug builds (`DEBUG=1`) now abort without
+    printing the failed assertion and a backtrace, use a debugger instead.
+  - Remove the stderr capture code that was never compiled in. The `stderr_buffer`
+    result field is kept for API compatibility, and remains always empty.
+
 ## 18.1.0     2026-09-30
 
 * Security fix: Heap out-of-bounds write and read in pg_query_normalize ([GHSA-6ggm-xmc9-8ffg](https://github.com/pganalyze/libpg_query/security/advisories/GHSA-6ggm-xmc9-8ffg))
