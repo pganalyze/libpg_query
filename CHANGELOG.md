@@ -11,6 +11,13 @@ All versions are tagged by the major Postgres version, plus a minor/patch versio
     printing the failed assertion and a backtrace, use a debugger instead.
   - Remove the stderr capture code that was never compiled in. The `stderr_buffer`
     result field is kept for API compatibility, and remains always empty.
+* Generate node support code via Postgres' own gen_node_support.pl
+  - Fingerprint functions, outfuncs/readfuncs, enum definitions and the
+    Protobuf definition are now generated from Postgres' own parsing of the
+    node headers, replacing the regex-based Ruby generator scripts. Generated
+    output is unchanged.
+  - libpg_query-specific overrides live in scripts/node_support/overrides.pl,
+    regenerate with "make node_support".
 
 ## 18.1.0     2026-09-30
 

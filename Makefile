@@ -120,7 +120,7 @@ clean:
 	-@ $(RM) -rf {test,examples,benchmark}/*.dSYM
 	-@ $(RM) -r $(PGDIR) $(PGDIRBZ2) $(PGDIRZIP)
 
-.PHONY: all clean build build_shared extract_source examples test benchmark install
+.PHONY: all clean build build_shared extract_source node_support examples test benchmark install
 
 $(PGDIR):
 	curl -o $(PGDIRBZ2) https://ftp.postgresql.org/pub/source/v$(PG_VERSION)/postgresql-$(PG_VERSION).tar.bz2
@@ -141,6 +141,7 @@ $(PGDIR):
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/14_avoid_quadratic_memory_dotted_names.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/15_node_string_constant_locations.patch
 	cd $(PGDIR); patch -p1 < $(root_dir)/patches/16_notify_payload_param.patch
+	cd $(PGDIR); patch -p1 < $(root_dir)/patches/17_gen_node_support_hook.patch
 	cd $(PGDIR); ./configure $(PG_CONFIGURE_FLAGS)
 	cd $(PGDIR); make -C src/pl/plpgsql/src pl_gram.h plerrcodes.h pl_reserved_kwlist_d.h pl_unreserved_kwlist_d.h
 	cd $(PGDIR); make -C src/port pg_config_paths.h
@@ -153,7 +154,7 @@ $(PGDIR):
 	# Add pg_config.h overrides
 	cat scripts/pg_config_overrides.h >> $(PGDIR)/src/include/pg_config.h
 	# Only define strlcpy when needed
-	sed -i "" '$(shell echo 's/\#include "c.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/')' $(PGDIR)/src/port/strlcpy.c
+	perl -pi -e 's/#include "c\.h"/#include "c.h"\n#if HAVE_DECL_STRLCPY == 0/' $(PGDIR)/src/port/strlcpy.c
 	echo "#endif // HAVE_DECL_STRLCPY == 0" >> $(PGDIR)/src/port/strlcpy.c
 	# Define symbols needed by elog.c that are commonly defined by win32/signal.c
 	echo "#ifdef WIN32" >> $(PGDIR)/src/backend/utils/error/elog.c
@@ -161,6 +162,13 @@ $(PGDIR):
 	echo "int pg_signal_mask;" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "void pgwin32_dispatch_queued_signals(void) {}" >> $(PGDIR)/src/backend/utils/error/elog.c
 	echo "#endif" >> $(PGDIR)/src/backend/utils/error/elog.c
+
+# Regenerates the node support files from the patched Postgres source: the
+# fingerprint funcs, outfuncs/readfuncs/enum defs and protobuf definition (via
+# the patched gen_node_support.pl), and the srcdata JSON
+node_support: $(PGDIR)
+	./scripts/generate_node_support.sh $(PGDIR)
+	ruby ./scripts/extract_headers.rb $(PGDIR)
 
 extract_source: $(PGDIR)
 	-@ $(RM) -rf ./src/postgres/
@@ -179,11 +187,11 @@ extract_source: $(PGDIR)
 	echo "#endif /* __clang__ */" >> ./src/postgres/include/pg_config_os.h
 	echo "#endif" >> ./src/postgres/include/pg_config_os.h
 	# Adjust version string to ignore differences in build environments
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) \(libpg_query\)"/')' ./src/postgres/include/pg_config.h
+	perl -pi -e 's/#define PG_VERSION_STR .*/#define PG_VERSION_STR "PostgreSQL $(PG_VERSION) (libpg_query)"/' ./src/postgres/include/pg_config.h
 	# Copy version information so its easily accessible
-	sed -i "" '$(shell echo 's/\#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/')' pg_query.h
-	sed -i "" '$(shell echo 's/\#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/')' pg_query.h
+	perl -pi -e 's/#define PG_MAJORVERSION .*/#define PG_MAJORVERSION "$(PG_VERSION_MAJOR)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION .*/#define PG_VERSION "$(PG_VERSION)"/' pg_query.h
+	perl -pi -e 's/#define PG_VERSION_NUM .*/#define PG_VERSION_NUM $(PG_VERSION_NUM)/' pg_query.h
 	# Copy regress SQL files so we can use them in tests
 	rm -f ./test/sql/postgres_regress/*.sql
 	rm -f ./test/sql/plpgsql_regress/*.sql
