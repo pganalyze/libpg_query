@@ -197,7 +197,8 @@ _readNode(const pg_query_Node *msg)
 
 List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 {
-	upb_Arena  *arena = upb_Arena_New();
+	/* volatile: assigned inside PG_TRY and read in PG_CATCH (after longjmp) */
+	upb_Arena  *volatile arena = NULL;
 	pg_query_ParseResult *result;
 	List	   *list = NULL;
 	size_t		n_stmts = 0;
@@ -205,41 +206,42 @@ List * pg_query_protobuf_to_nodes(PgQueryProtobuf protobuf)
 	size_t		i;
 
 	/*
-	 * upb's default depth limit (100) is far too low for real queries, use the
-	 * same limit as the encoder so we accept any tree we produce ourselves.
-	 * Decoding also fails once the stack depth limit is reached (see
-	 * vendor/upb/patches/0003-stack-depth-check.patch).
-	 */
-	result = pg_query_ParseResult_parse_ex(protobuf.data, protobuf.len, NULL,
-										   upb_DecodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH),
-										   arena);
-
-	if (result == NULL)
-	{
-		upb_Arena_Free(arena);
-		elog(ERROR, "could not parse protobuf");
-	}
-
-	/*
-	 * Note: The version field is not checked. The protobuf format is only
-	 * expected to be read by the same libpg_query version, and mismatches show
-	 * up as unknown fields (ignored) or missing ones (zero values).
-	 */
-
-	/*
-	 * Reading the nodes may throw (e.g. "stack depth limit exceeded" from
-	 * _readNode), and the arena is malloc-backed, so it needs to be freed here
-	 * before passing on the error.
+	 * Decoding or reading the nodes may throw ("out of memory" from the arena
+	 * allocator, or "stack depth limit exceeded" from _readNode and from
+	 * upb's decoder, see vendor/upb/patches/0003-stack-depth-check.patch), and
+	 * the arena is malloc-backed, so it needs to be freed here before passing
+	 * on the error.
 	 */
 	PG_TRY();
 	{
+		arena = upb_Arena_Init(NULL, 0, pg_query_upb_alloc());
+
+		/*
+		 * upb's default depth limit (100) is far too low for real queries, use
+		 * the same limit as the encoder so we accept any tree we produce
+		 * ourselves.
+		 */
+		result = pg_query_ParseResult_parse_ex(protobuf.data, protobuf.len, NULL,
+											   upb_DecodeOptions_MaxDepth(PG_QUERY_PROTOBUF_MAX_DEPTH),
+											   arena);
+
+		if (result == NULL)
+			elog(ERROR, "could not parse protobuf");
+
+		/*
+		 * Note: The version field is not checked. The protobuf format is only
+		 * expected to be read by the same libpg_query version, and mismatches
+		 * show up as unknown fields (ignored) or missing ones (zero values).
+		 */
+
 		stmts = pg_query_ParseResult_stmts(result, &n_stmts);
 		for (i = 0; i < n_stmts; i++)
 			list = lappend(list, _readRawStmt(stmts[i]));
 	}
 	PG_CATCH();
 	{
-		upb_Arena_Free(arena);
+		if (arena != NULL)
+			upb_Arena_Free(arena);
 		PG_RE_THROW();
 	}
 	PG_END_TRY();

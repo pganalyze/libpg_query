@@ -36,4 +36,15 @@ void		pg_query_free_error(PgQueryError * error);
 MemoryContext pg_query_enter_memory_context();
 void		pg_query_exit_memory_context(MemoryContext ctx);
 
+/*
+ * upb allocator for the malloc-backed arenas that protobuf output and input
+ * are built in. upb's generated message setters write through the message
+ * pointer without checking it, so an arena allocation must never fail by
+ * returning NULL; this allocator raises a PostgreSQL out-of-memory error
+ * instead. Callers handle that error in their PG_CATCH blocks, freeing the
+ * arena first (upb_Arena_Free does not accept NULL). See pg_query.c.
+ */
+struct		upb_alloc;
+struct		upb_alloc *pg_query_upb_alloc(void);
+
 #endif
