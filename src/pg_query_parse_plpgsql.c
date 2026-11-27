@@ -614,9 +614,8 @@ PgQueryPlpgsqlParseResult pg_query_parse_plpgsql(const char* input)
 			new_out = malloc(new_out_len);
 			int n = snprintf(new_out, new_out_len, "%s%s,\n", result.plpgsql_funcs, func_json);
 			if (n < 0 || n >= new_out_len) {
-				PgQueryError* error = malloc(sizeof(PgQueryError));
-				error->message = strdup("Failed to output PL/pgSQL functions due to snprintf failure");
-				result.error = error;
+				result.error = pg_query_make_error("Failed to output PL/pgSQL functions due to snprintf failure");
+				free(new_out);
 			} else {
 				free(result.plpgsql_funcs);
 				result.plpgsql_funcs = new_out;

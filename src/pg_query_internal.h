@@ -31,6 +31,7 @@ typedef struct
 
 PgQueryInternalParsetreeAndError pg_query_raw_parse(const char *input, int parser_options);
 
+PgQueryError *pg_query_make_error(const char *message);
 void		pg_query_free_error(PgQueryError * error);
 
 MemoryContext pg_query_enter_memory_context();
