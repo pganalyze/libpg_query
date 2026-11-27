@@ -112,6 +112,13 @@ a "libpg_query local patch" comment.
   (pg_query_init), the same one its own recursive walkers check via
   check_stack_depth(). After an update, re-check that these are still all the
   places where upb recurses (grep for "depth" in the encoder/decoder).
+- 0004-encode-node-oneof-directly.patch: in encode_message(), encode the
+  member of the Node oneof named by the oneof case directly. Otherwise every
+  field is checked, and all of Node's hundreds of fields belong to that oneof,
+  so encoding a parse tree spent most of its time looking for the set member
+  of each node. Node's minitable is referenced by its generated name
+  (pg_0query__Node_msg_init), so if a newer protoc-gen-upb names it
+  differently, linking fails until the patch is updated.
 
 Updating a patch (or adding a new one)
 --------------------------------------
